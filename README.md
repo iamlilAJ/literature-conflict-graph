@@ -77,7 +77,7 @@ The demo includes:
 - 9 extracted claims.
 - 39 graph nodes and 50 graph edges.
 - 1 detected benchmark inconsistency around RAG on domain QA.
-- 5 possible explanations / follow-up checks.
+- 3 LLM-generated possible explanations / follow-up checks.
 
 To keep the repository lightweight and redistribution-friendly, this example
 keeps paper titles, years, venues, and links, but omits full abstracts and paper
@@ -119,7 +119,7 @@ aigraph fetch-openalex --query "retrieval augmented generation" --limit 20 --out
 aigraph extract --input data/papers.jsonl --output outputs/claims.jsonl --extractor llm
 aigraph build-graph --claims outputs/claims.jsonl --output outputs/graph.json
 aigraph detect-anomalies --graph outputs/graph.json --claims outputs/claims.jsonl --output outputs/anomalies.jsonl
-aigraph generate-hypotheses --anomalies outputs/anomalies.jsonl --claims outputs/claims.jsonl --output outputs/hypotheses.jsonl
+aigraph generate-hypotheses --anomalies outputs/anomalies.jsonl --claims outputs/claims.jsonl --output outputs/hypotheses.jsonl --generator llm
 aigraph select --hypotheses outputs/hypotheses.jsonl --claims outputs/claims.jsonl --anomalies outputs/anomalies.jsonl --output outputs/report.md
 aigraph visualize --input-dir outputs --output outputs/index.html
 ```
@@ -140,7 +140,7 @@ aigraph visualize --input-dir outputs --output outputs/index.html
 - LLM-extracted claims can be noisy and should be verified by humans.
 - Claim links currently resolve to source papers, not exact PDF paragraphs.
 - Canonicalization of methods/tasks is heuristic.
-- Hypothesis/explanation generation is template-based in the open-source MVP.
+- LLM-generated explanations are candidate interpretations, not verified conclusions.
 - Scoring weights are hand-set, not learned from human feedback.
 
 ## Development

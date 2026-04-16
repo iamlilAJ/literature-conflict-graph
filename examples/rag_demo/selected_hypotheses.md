@@ -1,6 +1,6 @@
 # Selected Hypotheses
 
-Selected **4** hypotheses across **1** anomalies.
+Selected **3** hypotheses across **1** anomalies.
 
 ## Anomaly a001 — benchmark_inconsistency
 
@@ -17,91 +17,71 @@ Selected **4** hypotheses across **1** anomalies.
 - `c008` (openalex:W4401198848 — "MedExpQA: Multilingual benchmarking of Large Language Models for Medical Question Answering", 2024, negative): LLMs achieve best results around 75% accuracy for English medical QA, with accuracy dropping 10 points for languages other than English
 - `c009` (openalex:W4401198848 — "MedExpQA: Multilingual benchmarking of Large Language Models for Medical Question Answering", 2024, negative): State-of-the-art RAG methods demonstrate difficulty in obtaining and integrating readily available medical knowledge to positively impact Medical Question Answering results
 
-### h001 — High top-k retrieval injects distractor passages that overwhelm the generator on domain-QA, flipping the effect of RAG from positive to negative.
+### h003 — Performance discrepancies reflect benchmark-specific difficulty and language coverage, where MIRAGE (c001) enables high gains due to English-only questions, while MedExpQA (c008, c009) introduces multilingual complexity that triggers lost-in-the-middle effects (c003) and 10-point accuracy drops in non-English settings.
 
-**Mechanism.** Distractor evidence competes for the generator's attention; the signal-to-noise ratio of the retrieved set, not retrieval recall, governs downstream accuracy.
+**Mechanism.** Dataset difficulty and linguistic scope
 
 **Predictions:**
-- Holding the retriever fixed, increasing top_k from 3 to 20 monotonically degrades domain-QA accuracy.
-- Entailment or reranker filtering improves accuracy without changing various and related retrieval settings.
+- MEDRAG achieves <80% accuracy on MedExpQA despite 18% gains on MIRAGE
+- Non-English queries show 10+ point larger accuracy gaps than English within the same RAG system
 
-**Minimal test.** Sweep top_k in {1, 3, 5, 10, 20} on MIRAGE and related benchmarks with a fixed generator and various and related retrieval settings; measure accuracy plus evidence support.
+**Minimal test.** Evaluate MEDRAG on MedExpQA stratified by English vs non-English queries and compare against MIRAGE baseline
 
-**Scope.** task_type=factual, retrieval_noise=high
+**Scope.** method=MEDRAG, task=medical QA
 
-**Evidence gap.** Most RAG papers hold top_k constant or sweep it only on factual QA, rarely on multi-hop.
+**Evidence gap.** Difficulty metrics and language distribution of the MIRAGE dataset
 
-**Graph bridge.** RAG → domain-QA
+**Graph bridge.** benchmark_language_scope → rag_accuracy_ceiling
 
 **Utility breakdown**
 
 | explain | grounding | testability | novelty | discrim | cost | utility |
 |---|---|---|---|---|---|---|
-| 1.00 | 1.00 | 1.00 | 0.96 | 0.93 | 0.00 | 0.98 |
+| 1.00 | 1.00 | 1.00 | 0.93 | 0.83 | 0.00 | 0.96 |
 
-### h003 — Partial test-set contamination in pretraining inflates closed-book baselines, which shrinks or reverses the apparent benefit of retrieval on standard benchmarks.
+### h001 — RAG effectiveness in domain-QA is moderated by domain knowledge structure, where authoritative stable documentation enables consistent gains in security (c004, c005) while fragmented medical knowledge causes integration failures (c009) and accuracy ceilings (c008) despite high performance with optimized ensembles (c001, c002).
 
-**Mechanism.** Web-crawled pretraining data overlaps with benchmark test questions, letting larger models answer without retrieval and collapsing the measured RAG gain.
+**Mechanism.** Domain authority and knowledge stability
 
 **Predictions:**
-- On a held-out, date-filtered version of MIRAGE and related benchmarks, RAG gains move away from up to 18% and reported effects.
-- chain-of-thought prompting performance correlates with membership-inference scores on the evaluation set.
+- RAG accuracy on security QA exceeds medical QA by >20% using identical retrievers
+- Medical RAG shows higher variance in knowledge integration success than security RAG
 
-**Minimal test.** Build a post-cutoff evaluation set matching MIRAGE and related benchmarks; evaluate RAG and chain-of-thought prompting; compare delta accuracy to the original benchmark.
+**Minimal test.** Apply identical RAG pipeline to OWASP docs and MedExpQA measuring accuracy and retrieval precision
 
-**Scope.** task_type=factual
+**Scope.** retriever_configuration=fixed, task_type=domain-QA
 
-**Evidence gap.** Few papers quantify pretraining overlap with MIRAGE and related benchmarks.
+**Evidence gap.** Direct measurement of corpus noise and authority differences between medical and security domains
 
-**Graph bridge.** RAG → domain-QA
+**Graph bridge.** domain_knowledge_structure → rag_integration_success
 
 **Utility breakdown**
 
 | explain | grounding | testability | novelty | discrim | cost | utility |
 |---|---|---|---|---|---|---|
-| 1.00 | 1.00 | 1.00 | 0.97 | 0.92 | 0.00 | 0.98 |
+| 1.00 | 1.00 | 1.00 | 0.90 | 0.84 | 0.00 | 0.96 |
 
-### h005 — An unreported moderator variable drives the conflicting results around RAG on domain-QA.
+### h002 — The inconsistency stems from retrieval configuration, where multi-corpus ensemble methods (c002) overcome lost-in-the-middle effects (c003) to achieve 18% gains (c001), while standard single-retriever setups on MedExpQA hit accuracy ceilings (c008) and fail to integrate knowledge (c009).
 
-**Mechanism.** A confound in data preprocessing, prompt formatting, or decoding parameters correlates with outcome direction and is not held constant across the claims.
+**Mechanism.** Ensemble retrieval mitigates context window limitations
 
 **Predictions:**
-- Holding prompt template and decoding fixed shrinks the between-claim variance by >50%.
-- A covariate analysis reveals prompt/decoding parameters account for the sign flip.
+- Single-retriever setups exhibit stronger lost-in-the-middle effects than multi-retriever configurations
+- Ensemble methods reduce knowledge integration difficulty on MedExpQA by >15%
 
-**Minimal test.** Replay all claims on MIRAGE and related benchmarks in a common harness with identical prompts and decoding settings; recompute accuracy deltas.
+**Minimal test.** Ablate MEDRAG from multi-corpus to single-corpus retrieval and measure lost-in-the-middle effect magnitude and accuracy on MedExpQA
 
-**Evidence gap.** Prompt and decoding configurations are inconsistently reported across the claims.
+**Scope.** domain=medical, language=English
 
-**Graph bridge.** RAG → domain-QA
+**Evidence gap.** Whether c009 used single or multi-retriever configurations
+
+**Graph bridge.** retriever_ensemble_size → context_window_utilization
 
 **Utility breakdown**
 
 | explain | grounding | testability | novelty | discrim | cost | utility |
 |---|---|---|---|---|---|---|
-| 1.00 | 1.00 | 1.00 | 0.89 | 0.94 | 0.00 | 0.98 |
-
-### h004 — Gains attributed to RAG are inflated when compared against weak baselines; the sign of the effect depends primarily on baseline choice.
-
-**Mechanism.** Weak baselines (under-prompted closed-book LLMs, small models) leave more headroom, so any additional evidence appears to help even when retrieval is noisy.
-
-**Predictions:**
-- Replacing chain-of-thought prompting with a stronger matched baseline reduces the reported RAG gain.
-- The correlation between baseline strength and RAG gain is negative across papers in this anomaly.
-
-**Minimal test.** Re-run the positive claims on MIRAGE and related benchmarks against chain-of-thought prompting and a stronger matched baseline; report the baseline-conditioned delta in accuracy.
-
-**Scope.** baseline_strength=low_vs_high
-
-**Evidence gap.** Baseline strength is rarely controlled across RAG reports.
-
-**Graph bridge.** RAG → domain-QA
-
-**Utility breakdown**
-
-| explain | grounding | testability | novelty | discrim | cost | utility |
-|---|---|---|---|---|---|---|
-| 1.00 | 1.00 | 1.00 | 0.96 | 0.93 | 0.00 | 0.98 |
+| 1.00 | 1.00 | 1.00 | 0.92 | 0.83 | 0.00 | 0.96 |
 
 ## Evidence claims
 

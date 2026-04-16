@@ -160,13 +160,29 @@ def generate_hypotheses_cmd(
     anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
     claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
     output: Path = typer.Option(DEFAULT_HYPOTHESES, "--output"),
+    generator: str = typer.Option("template", "--generator", help="template|llm"),
+    model: Optional[str] = typer.Option(None, "--model", help="LLM model id when --generator llm"),
 ) -> None:
-    """Generate candidate hypotheses per anomaly using deterministic templates."""
+    """Generate candidate explanations per anomaly."""
     anom_records = read_jsonl(anomalies, Anomaly)
     claim_records = read_jsonl(claims, Claim)
-    hyps = generate_hypotheses(anom_records, claim_records)
+    generator_impl = _build_hypothesis_generator(generator, model)
+    hyps = generate_hypotheses(anom_records, claim_records, generator=generator_impl)
     write_jsonl(output, hyps)
-    console.print(f"[green]Generated {len(hyps)} hypotheses to[/] {output}")
+    console.print(f"[green]Generated {len(hyps)} hypotheses to[/] {output} [dim](generator={generator})[/]")
+
+
+def _build_hypothesis_generator(kind: str, model: Optional[str]):
+    kind = (kind or "template").lower()
+    if kind == "template":
+        from .hypotheses import TemplateGenerator
+
+        return TemplateGenerator()
+    if kind == "llm":
+        from .llm_hypotheses import LLMHypothesisGenerator
+
+        return LLMHypothesisGenerator(model=model)
+    raise typer.BadParameter(f"Unknown generator '{kind}'. Use 'template' or 'llm'.")
 
 
 @app.command("select")
@@ -254,7 +270,13 @@ def run_real_demo(
     extract_cmd(input=papers_path, output=claims_path, extractor="llm", model=model, resume=False)
     build_graph_cmd(claims=claims_path, output=graph_path)
     detect_anomalies_cmd(graph=graph_path, claims=claims_path, output=anomalies_path)
-    generate_hypotheses_cmd(anomalies=anomalies_path, claims=claims_path, output=hyps_path)
+    generate_hypotheses_cmd(
+        anomalies=anomalies_path,
+        claims=claims_path,
+        output=hyps_path,
+        generator="template",
+        model=None,
+    )
     select_cmd(
         hypotheses=hyps_path,
         claims=claims_path,
@@ -276,7 +298,13 @@ def run_demo() -> None:
     extract_cmd(input=DEFAULT_PAPERS, output=DEFAULT_CLAIMS, extractor="rule", model=None, resume=False)
     build_graph_cmd(claims=DEFAULT_CLAIMS, output=DEFAULT_GRAPH)
     detect_anomalies_cmd(graph=DEFAULT_GRAPH, claims=DEFAULT_CLAIMS, output=DEFAULT_ANOMALIES)
-    generate_hypotheses_cmd(anomalies=DEFAULT_ANOMALIES, claims=DEFAULT_CLAIMS, output=DEFAULT_HYPOTHESES)
+    generate_hypotheses_cmd(
+        anomalies=DEFAULT_ANOMALIES,
+        claims=DEFAULT_CLAIMS,
+        output=DEFAULT_HYPOTHESES,
+        generator="template",
+        model=None,
+    )
     select_cmd(
         hypotheses=DEFAULT_HYPOTHESES,
         claims=DEFAULT_CLAIMS,

@@ -45,6 +45,28 @@ Open `outputs/index.html` in a browser.
 
 The synthetic demo is deterministic and runs without network access or API keys.
 
+## Included Real-Paper Demo
+
+The repository includes a small sanitized RAG demo in `examples/rag_demo/`.
+It was produced from OpenAlex metadata plus LLM claim extraction over a handful
+of retrieval-augmented generation papers.
+
+```bash
+open examples/rag_demo/index.html
+```
+
+The demo includes:
+
+- 5 real paper records with OpenAlex links.
+- 9 extracted claims.
+- 39 graph nodes and 50 graph edges.
+- 1 detected benchmark inconsistency around RAG on domain QA.
+- 5 possible explanations / follow-up checks.
+
+To keep the repository lightweight and redistribution-friendly, this example
+keeps paper titles, years, venues, and links, but omits full abstracts and paper
+text. The extracted claims still include short evidence spans for inspection.
+
 ## Real-Paper Demo
 
 Create a local `.env` file or export environment variables:

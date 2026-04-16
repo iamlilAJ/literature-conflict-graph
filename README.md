@@ -13,8 +13,8 @@ automatically determine scientific truth.
 ![Animated RAG conflict explorer demo](docs/assets/rag-demo.gif)
 
 **Demo:** open `examples/rag_demo/index.html` locally, or use the GitHub Pages
-deployment after the Pages workflow finishes:
-[https://iamlilAJ.github.io/literature-conflict-graph/](https://iamlilAJ.github.io/literature-conflict-graph/)
+deployment:
+[https://iamlilaj.github.io/literature-conflict-graph/](https://iamlilaj.github.io/literature-conflict-graph/)
 
 ## What It Does
 

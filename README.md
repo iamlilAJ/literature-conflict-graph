@@ -10,6 +10,12 @@ which evidence supports each side, and what checks might be worth running next.
 This is an alpha research prototype. It is not a claim that the system can
 automatically determine scientific truth.
 
+![RAG conflict explorer demo](docs/assets/rag-demo.png)
+
+**Demo:** open `examples/rag_demo/index.html` locally, or use the GitHub Pages
+deployment after the Pages workflow finishes:
+[https://iamlilAJ.github.io/literature-conflict-graph/](https://iamlilAJ.github.io/literature-conflict-graph/)
+
 ## What It Does
 
 ```text

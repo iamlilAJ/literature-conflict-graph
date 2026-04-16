@@ -10,11 +10,21 @@ which evidence supports each side, and what checks might be worth running next.
 This is an alpha research prototype. It is not a claim that the system can
 automatically determine scientific truth.
 
-![Animated RAG conflict explorer demo](docs/assets/rag-demo.gif)
+<p align="center">
+  <a href="https://iamlilaj.github.io/literature-conflict-graph/">
+    <img src="docs/assets/rag-demo.gif" alt="Animated RAG conflict explorer demo" width="900">
+  </a>
+</p>
 
-**Demo:** open `examples/rag_demo/index.html` locally, or use the GitHub Pages
-deployment:
-[https://iamlilaj.github.io/literature-conflict-graph/](https://iamlilaj.github.io/literature-conflict-graph/)
+<p align="center">
+  <a href="https://iamlilaj.github.io/literature-conflict-graph/"><strong>Open the live demo</strong></a>
+  ·
+  <a href="examples/rag_demo">View demo files</a>
+</p>
+
+GitHub README files cannot embed the interactive D3 page directly because
+GitHub strips scripts and iframes from Markdown. The preview above links to the
+live GitHub Pages demo.
 
 ## What It Does
 

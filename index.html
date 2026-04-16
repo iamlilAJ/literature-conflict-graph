@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>literature conflict explorer</title>
+  <style>
+    :root {
+      --paper: #6b7280;
+      --claim: #2563eb;
+      --method: #059669;
+      --task: #d97706;
+      --dataset: #7c3aed;
+      --metric: #dc2626;
+      --baseline: #9333ea;
+      --setting: #0891b2;
+      --edge: #a3a3a3;
+      --ink: #171717;
+      --muted: #666666;
+      --line: #d9d9d9;
+      --panel: #ffffff;
+      --bg: #f7f7f7;
+      --highlight: #ef4444;
+      --soft: #f1f5f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      letter-spacing: 0;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+      padding: 14px 18px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    .summary {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 7px 9px;
+      min-width: 86px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.1;
+    }
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    main {
+      min-height: calc(100vh - 82px);
+      display: grid;
+      grid-template-columns: 300px minmax(420px, 1fr) 360px;
+    }
+    aside, section, .detail {
+      min-width: 0;
+    }
+    aside {
+      border-right: 1px solid var(--line);
+      background: #ffffff;
+      padding: 14px;
+      overflow: auto;
+      max-height: calc(100vh - 82px);
+    }
+    .detail {
+      border-left: 1px solid var(--line);
+      background: #ffffff;
+      padding: 14px;
+      overflow: auto;
+      max-height: calc(100vh - 82px);
+    }
+    h2 {
+      font-size: 14px;
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      color: #3f3f46;
+    }
+    h2:first-child { margin-top: 0; }
+    button.item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px;
+      margin: 7px 0;
+      cursor: pointer;
+      font: inherit;
+    }
+    button.item:hover, button.item.active {
+      border-color: #2563eb;
+      background: var(--soft);
+    }
+    .item-title {
+      font-weight: 650;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .item-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+      line-height: 1.3;
+    }
+    #graph-wrap {
+      position: relative;
+      min-height: calc(100vh - 82px);
+      background: #fbfbfb;
+    }
+    #graph {
+      display: block;
+      width: 100%;
+      height: calc(100vh - 82px);
+    }
+    .legend {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      max-width: calc(100% - 24px);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .legend span {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      display: inline-block;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .node circle {
+      stroke: #ffffff;
+      stroke-width: 1.5px;
+      cursor: pointer;
+    }
+    .node text {
+      pointer-events: none;
+      font-size: 10px;
+      fill: #262626;
+      paint-order: stroke;
+      stroke: #ffffff;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .link {
+      stroke: var(--edge);
+      stroke-opacity: 0.55;
+    }
+    .link.highlight {
+      stroke: var(--highlight);
+      stroke-width: 2.4px;
+      stroke-opacity: 0.95;
+    }
+    .node.highlight circle {
+      stroke: var(--highlight);
+      stroke-width: 3px;
+    }
+    .node.dim, .link.dim {
+      opacity: 0.16;
+    }
+    .field {
+      margin: 10px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eeeeee;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+    .value {
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .value a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .value a:hover {
+      text-decoration: underline;
+    }
+    .pill {
+      display: inline-block;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 2px 6px;
+      margin: 2px;
+      font-size: 12px;
+      color: #262626;
+      background: #ffffff;
+    }
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      aside, .detail {
+        max-height: none;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      #graph, #graph-wrap {
+        height: 620px;
+        min-height: 620px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>literature conflict explorer</h1>
+    <div class="summary" id="summary"></div>
+  </header>
+  <main>
+    <aside>
+      <h2>Conflicts & Gaps</h2>
+      <div id="anomaly-list"></div>
+      <h2>Possible Explanations</h2>
+      <div id="hypothesis-list"></div>
+    </aside>
+    <section id="graph-wrap" aria-label="Graph visualization">
+      <svg id="graph"></svg>
+      <div class="legend" id="legend"></div>
+    </section>
+    <div class="detail">
+      <h2>Details</h2>
+      <div id="detail" class="empty">Click a node, anomaly, or hypothesis.</div>
+    </div>
+  </main>
+  <script type="application/json" id="aigraph-data">{"summary": {"papers": 5, "claims": 9, "nodes": 39, "edges": 50, "anomalies": 1, "hypotheses": 5}, "graph": {"directed": true, "multigraph": true, "graph": {}, "nodes": [{"node_type": "Paper", "paper_id": "openalex:W4402670290", "id": "Paper:openalex:W4402670290"}, {"node_type": "Claim", "claim_id": "c001", "claim_text": "MEDRAG improves the accuracy of six different LLMs by up to 18% over chain-of-thought prompting", "direction": "positive", "method": "MEDRAG", "task": "medical QA", "dataset": "MIRAGE", "metric": "accuracy", "id": "Claim:c001"}, {"node_type": "Method", "name": "MEDRAG", "id": "Method:medrag"}, {"node_type": "Model", "name": "GPT-3.5, Mixtral, and other LLMs", "id": "Model:gpt-3.5, mixtral, and other llms"}, {"node_type": "Task", "name": "medical QA", "id": "Task:medical qa"}, {"node_type": "Dataset", "name": "MIRAGE", "id": "Dataset:mirage"}, {"node_type": "Metric", "name": "accuracy", "id": "Metric:accuracy"}, {"node_type": "Baseline", "name": "chain-of-thought prompting", "id": "Baseline:chain-of-thought prompting"}, {"node_type": "Claim", "claim_id": "c002", "claim_text": "Combination of various medical corpora and retrievers achieves the best performance", "direction": "positive", "method": "combination of various medical corpora and retrievers", "task": "medical QA", "dataset": null, "metric": null, "id": "Claim:c002"}, {"node_type": "Method", "name": "combination of various medical corpora and retrievers", "id": "Method:combination of various medical corpora and retrievers"}, {"node_type": "Setting", "field": "retriever", "value": "various", "id": "Setting:retriever=various"}, {"node_type": "Claim", "claim_id": "c003", "claim_text": "Medical RAG exhibits log-linear scaling property and lost-in-the-middle effects", "direction": "mixed", "method": "medical RAG", "task": "medical QA", "dataset": null, "metric": null, "id": "Claim:c003"}, {"node_type": "Method", "name": "medical RAG", "id": "Method:medical rag"}, {"node_type": "Paper", "paper_id": "openalex:W4387156782", "id": "Paper:openalex:W4387156782"}, {"node_type": "Claim", "claim_id": "c004", "claim_text": "RAG system enables security-focused question answering with reduced risk of hallucinated responses", "direction": "positive", "method": "RAG", "task": "security-focused question answering", "dataset": "OWASP Cheat Sheet Series", "metric": null, "id": "Claim:c004"}, {"node_type": "Method", "name": "RAG", "id": "Method:rag"}, {"node_type": "Task", "name": "security-focused question answering", "id": "Task:security-focused question answering"}, {"node_type": "Dataset", "name": "OWASP Cheat Sheet Series", "id": "Dataset:owasp cheat sheet series"}, {"node_type": "Setting", "field": "retriever", "value": "semantic retrieval", "id": "Setting:retriever=semantic retrieval"}, {"node_type": "Setting", "field": "task_type", "value": "factual", "id": "Setting:task_type=factual"}, {"node_type": "Claim", "claim_id": "c005", "claim_text": "RAG pipeline grounds large language model outputs in authoritative security documentation", "direction": "positive", "method": "RAG", "task": "security-focused question answering", "dataset": "OWASP Cheat Sheet Series", "metric": null, "id": "Claim:c005"}, {"node_type": "Paper", "paper_id": "openalex:W4308900200", "id": "Paper:openalex:W4308900200"}, {"node_type": "Claim", "claim_id": "c006", "claim_text": "Retrieval-based prompt selection using semantically-similar examples outperforms random sampling for GPT-3 few-shot learning", "direction": "positive", "method": "retrieval-based prompt selection", "task": "table-to-text generation and open-domain question answering", "dataset": "ToTTo and NQ", "metric": null, "id": "Claim:c006"}, {"node_type": "Method", "name": "retrieval-based prompt selection", "id": "Method:retrieval-based prompt selection"}, {"node_type": "Model", "name": "GPT-3", "id": "Model:gpt-3"}, {"node_type": "Task", "name": "table-to-text generation and open-domain question answering", "id": "Task:table-to-text generation and open-domain question answering"}, {"node_type": "Dataset", "name": "ToTTo and NQ", "id": "Dataset:totto and nq"}, {"node_type": "Baseline", "name": "random sampling", "id": "Baseline:random sampling"}, {"node_type": "Setting", "field": "retriever", "value": "sentence encoder", "id": "Setting:retriever=sentence encoder"}, {"node_type": "Claim", "claim_id": "c007", "claim_text": "Sentence encoders fine-tuned on task-related datasets yield more helpful retrieval results for in-context example selection", "direction": "positive", "method": "fine-tuned sentence encoders", "task": "natural language understanding and generation", "dataset": null, "metric": null, "id": "Claim:c007"}, {"node_type": "Method", "name": "fine-tuned sentence encoders", "id": "Method:fine-tuned sentence encoders"}, {"node_type": "Task", "name": "natural language understanding and generation", "id": "Task:natural language understanding and generation"}, {"node_type": "Baseline", "name": "non-fine-tuned sentence encoders", "id": "Baseline:non-fine-tuned sentence encoders"}, {"node_type": "Setting", "field": "retriever", "value": "fine-tuned sentence encoder", "id": "Setting:retriever=fine-tuned sentence encoder"}, {"node_type": "Paper", "paper_id": "openalex:W4401198848", "id": "Paper:openalex:W4401198848"}, {"node_type": "Claim", "claim_id": "c008", "claim_text": "LLMs achieve best results around 75% accuracy for English medical QA, with accuracy dropping 10 points for languages other than English", "direction": "negative", "method": "RAG", "task": "Medical Question Answering", "dataset": "MedExpQA", "metric": "accuracy", "id": "Claim:c008"}, {"node_type": "Task", "name": "Medical Question Answering", "id": "Task:medical question answering"}, {"node_type": "Dataset", "name": "MedExpQA", "id": "Dataset:medexpqa"}, {"node_type": "Claim", "claim_id": "c009", "claim_text": "State-of-the-art RAG methods demonstrate difficulty in obtaining and integrating readily available medical knowledge to positively impact Medical Question Answering results", "direction": "negative", "method": "RAG", "task": "Medical Question Answering", "dataset": "MedExpQA", "metric": null, "id": "Claim:c009"}], "edges": [{"edge_type": "makes", "source": "Paper:openalex:W4402670290", "target": "Claim:c001", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4402670290", "target": "Claim:c002", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4402670290", "target": "Claim:c003", "key": 0}, {"edge_type": "uses", "source": "Claim:c001", "target": "Method:medrag", "key": 0}, {"edge_type": "evaluated_with", "source": "Claim:c001", "target": "Model:gpt-3.5, mixtral, and other llms", "key": 0}, {"edge_type": "targets", "source": "Claim:c001", "target": "Task:medical qa", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c001", "target": "Dataset:mirage", "key": 0}, {"edge_type": "measured_by", "source": "Claim:c001", "target": "Metric:accuracy", "key": 0}, {"edge_type": "compares_against", "source": "Claim:c001", "target": "Baseline:chain-of-thought prompting", "key": 0}, {"edge_type": "uses", "source": "Claim:c002", "target": "Method:combination of various medical corpora and retrievers", "key": 0}, {"edge_type": "targets", "source": "Claim:c002", "target": "Task:medical qa", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c002", "target": "Setting:retriever=various", "key": 0}, {"edge_type": "uses", "source": "Claim:c003", "target": "Method:medical rag", "key": 0}, {"edge_type": "targets", "source": "Claim:c003", "target": "Task:medical qa", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4387156782", "target": "Claim:c004", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4387156782", "target": "Claim:c005", "key": 0}, {"edge_type": "uses", "source": "Claim:c004", "target": "Method:rag", "key": 0}, {"edge_type": "targets", "source": "Claim:c004", "target": "Task:security-focused question answering", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c004", "target": "Dataset:owasp cheat sheet series", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c004", "target": "Setting:retriever=semantic retrieval", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c004", "target": "Setting:task_type=factual", "key": 0}, {"edge_type": "uses", "source": "Claim:c005", "target": "Method:rag", "key": 0}, {"edge_type": "targets", "source": "Claim:c005", "target": "Task:security-focused question answering", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c005", "target": "Dataset:owasp cheat sheet series", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c005", "target": "Setting:task_type=factual", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4308900200", "target": "Claim:c006", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4308900200", "target": "Claim:c007", "key": 0}, {"edge_type": "uses", "source": "Claim:c006", "target": "Method:retrieval-based prompt selection", "key": 0}, {"edge_type": "evaluated_with", "source": "Claim:c006", "target": "Model:gpt-3", "key": 0}, {"edge_type": "targets", "source": "Claim:c006", "target": "Task:table-to-text generation and open-domain question answering", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c006", "target": "Dataset:totto and nq", "key": 0}, {"edge_type": "compares_against", "source": "Claim:c006", "target": "Baseline:random sampling", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c006", "target": "Setting:retriever=sentence encoder", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c006", "target": "Setting:task_type=factual", "key": 0}, {"edge_type": "uses", "source": "Claim:c007", "target": "Method:fine-tuned sentence encoders", "key": 0}, {"edge_type": "evaluated_with", "source": "Claim:c007", "target": "Model:gpt-3", "key": 0}, {"edge_type": "targets", "source": "Claim:c007", "target": "Task:natural language understanding and generation", "key": 0}, {"edge_type": "compares_against", "source": "Claim:c007", "target": "Baseline:non-fine-tuned sentence encoders", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c007", "target": "Setting:retriever=fine-tuned sentence encoder", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4401198848", "target": "Claim:c008", "key": 0}, {"edge_type": "makes", "source": "Paper:openalex:W4401198848", "target": "Claim:c009", "key": 0}, {"edge_type": "uses", "source": "Claim:c008", "target": "Method:rag", "key": 0}, {"edge_type": "targets", "source": "Claim:c008", "target": "Task:medical question answering", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c008", "target": "Dataset:medexpqa", "key": 0}, {"edge_type": "measured_by", "source": "Claim:c008", "target": "Metric:accuracy", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c008", "target": "Setting:task_type=factual", "key": 0}, {"edge_type": "uses", "source": "Claim:c009", "target": "Method:rag", "key": 0}, {"edge_type": "targets", "source": "Claim:c009", "target": "Task:medical question answering", "key": 0}, {"edge_type": "evaluated_on", "source": "Claim:c009", "target": "Dataset:medexpqa", "key": 0}, {"edge_type": "conditioned_on", "source": "Claim:c009", "target": "Setting:task_type=factual", "key": 0}]}, "papers": [{"paper_id": "openalex:W4402670290", "title": "Benchmarking Retrieval-Augmented Generation for Medicine", "year": 2024, "venue": "unknown", "url": "https://openalex.org/W4402670290", "abstract": "", "text": "", "structured_hint": null}, {"paper_id": "openalex:W4387156782", "title": "Design and Evaluation of a Retrieval-Augmented Generation Architecture for OWASP Security Data", "year": 2023, "venue": "arXiv (Cornell University)", "url": "https://openalex.org/W4387156782", "abstract": "", "text": "", "structured_hint": null}, {"paper_id": "openalex:W4308900200", "title": "What Makes Good In-Context Examples for GPT-$3$?", "year": 2021, "venue": "arXiv (Cornell University)", "url": "https://openalex.org/W4308900200", "abstract": "", "text": "", "structured_hint": null}, {"paper_id": "openalex:W4403560390", "title": "CRUD-RAG: A Comprehensive Chinese Benchmark for Retrieval-Augmented Generation of Large Language Models", "year": 2024, "venue": "ACM Transactions on Information Systems", "url": "https://openalex.org/W4403560390", "abstract": "", "text": "", "structured_hint": null}, {"paper_id": "openalex:W4401198848", "title": "MedExpQA: Multilingual benchmarking of Large Language Models for Medical Question Answering", "year": 2024, "venue": "Artificial Intelligence in Medicine", "url": "https://openalex.org/W4401198848", "abstract": "", "text": "", "structured_hint": null}], "claims": [{"claim_id": "c001", "paper_id": "openalex:W4402670290", "claim_text": "MEDRAG improves the accuracy of six different LLMs by up to 18% over chain-of-thought prompting", "claim_type": "performance_improvement", "method": "MEDRAG", "model": "GPT-3.5, Mixtral, and other LLMs", "task": "medical QA", "dataset": "MIRAGE", "metric": "accuracy", "baseline": "chain-of-thought prompting", "result": "up to 18%", "direction": "positive", "setting": {"retriever": null, "top_k": null, "context_length": null, "task_type": null}, "evidence_span": "Overall, MEDRAG improves the accuracy of six different LLMs by up to 18% over chain-of-thought prompting, elevating the performance of GPT-3.5 and Mixtral to GPT-4level.", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c002", "paper_id": "openalex:W4402670290", "claim_text": "Combination of various medical corpora and retrievers achieves the best performance", "claim_type": "setting_effect", "method": "combination of various medical corpora and retrievers", "model": null, "task": "medical QA", "dataset": null, "metric": null, "baseline": null, "result": "best performance", "direction": "positive", "setting": {"retriever": "various", "top_k": null, "context_length": null, "task_type": null}, "evidence_span": "Our results show that the combination of various medical corpora and retrievers achieves the best performance.", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c003", "paper_id": "openalex:W4402670290", "claim_text": "Medical RAG exhibits log-linear scaling property and lost-in-the-middle effects", "claim_type": "mechanism", "method": "medical RAG", "model": null, "task": "medical QA", "dataset": null, "metric": null, "baseline": null, "result": null, "direction": "mixed", "setting": {"retriever": null, "top_k": null, "context_length": null, "task_type": null}, "evidence_span": "In addition, we discovered a log-linear scaling property and the \"lostin-the-middle\" effects in medical RAG.", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c004", "paper_id": "openalex:W4387156782", "claim_text": "RAG system enables security-focused question answering with reduced risk of hallucinated responses", "claim_type": "performance_improvement", "method": "RAG", "model": null, "task": "security-focused question answering", "dataset": "OWASP Cheat Sheet Series", "metric": null, "baseline": null, "result": null, "direction": "positive", "setting": {"retriever": "semantic retrieval", "top_k": null, "context_length": null, "task_type": "factual"}, "evidence_span": "enabling security-focused question answering with reduced risk of hallucinated responses", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c005", "paper_id": "openalex:W4387156782", "claim_text": "RAG pipeline grounds large language model outputs in authoritative security documentation", "claim_type": "mechanism", "method": "RAG", "model": null, "task": "security-focused question answering", "dataset": "OWASP Cheat Sheet Series", "metric": null, "baseline": null, "result": null, "direction": "positive", "setting": {"retriever": null, "top_k": null, "context_length": null, "task_type": "factual"}, "evidence_span": "designed to ground large language model outputs in authoritative security documentation", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c006", "paper_id": "openalex:W4308900200", "claim_text": "Retrieval-based prompt selection using semantically-similar examples outperforms random sampling for GPT-3 few-shot learning", "claim_type": "performance_improvement", "method": "retrieval-based prompt selection", "model": "GPT-3", "task": "table-to-text generation and open-domain question answering", "dataset": "ToTTo and NQ", "metric": null, "baseline": "random sampling", "result": "41.9% and 45.5%", "direction": "positive", "setting": {"retriever": "sentence encoder", "top_k": null, "context_length": null, "task_type": "factual"}, "evidence_span": "significant gains are observed on tasks such as table-to-text generation (41.9% on the ToTTo dataset) and open-domain question answering (45.5% on the NQ dataset)", "canonical_method": "prompting", "canonical_task": "factual-QA"}, {"claim_id": "c007", "paper_id": "openalex:W4308900200", "claim_text": "Sentence encoders fine-tuned on task-related datasets yield more helpful retrieval results for in-context example selection", "claim_type": "performance_improvement", "method": "fine-tuned sentence encoders", "model": "GPT-3", "task": "natural language understanding and generation", "dataset": null, "metric": null, "baseline": "non-fine-tuned sentence encoders", "result": null, "direction": "positive", "setting": {"retriever": "fine-tuned sentence encoder", "top_k": null, "context_length": null, "task_type": null}, "evidence_span": "the sentence encoders fine-tuned on task-related datasets yield even more helpful retrieval results", "canonical_method": "fine-tuning", "canonical_task": "other"}, {"claim_id": "c008", "paper_id": "openalex:W4401198848", "claim_text": "LLMs achieve best results around 75% accuracy for English medical QA, with accuracy dropping 10 points for languages other than English", "claim_type": "limitation", "method": "RAG", "model": null, "task": "Medical Question Answering", "dataset": "MedExpQA", "metric": "accuracy", "baseline": null, "result": "75% (English), -10 points (non-English)", "direction": "negative", "setting": {"retriever": null, "top_k": null, "context_length": null, "task_type": "factual"}, "evidence_span": "performance of LLMs, with best results around 75 accuracy for English, still has large room for improvement, especially for languages other than English, for which accuracy drops 10 points", "canonical_method": "RAG", "canonical_task": "domain-QA"}, {"claim_id": "c009", "paper_id": "openalex:W4401198848", "claim_text": "State-of-the-art RAG methods demonstrate difficulty in obtaining and integrating readily available medical knowledge to positively impact Medical Question Answering results", "claim_type": "limitation", "method": "RAG", "model": null, "task": "Medical Question Answering", "dataset": "MedExpQA", "metric": null, "baseline": null, "result": null, "direction": "negative", "setting": {"retriever": null, "top_k": null, "context_length": null, "task_type": "factual"}, "evidence_span": "despite using state-of-the-art RAG methods, our results also demonstrate the difficulty of obtaining and integrating readily available medical knowledge that may positively impact results on downstream evaluations for Medical Question Answering", "canonical_method": "RAG", "canonical_task": "domain-QA"}], "anomalies": [{"anomaly_id": "a001", "type": "benchmark_inconsistency", "central_question": "When does RAG help on domain-QA, and when does it fail?", "claim_ids": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "positive_claims": ["c001", "c002", "c004", "c005"], "negative_claims": ["c003", "c008", "c009"], "shared_entities": {"method": "RAG", "task": "domain-QA"}, "varying_settings": [], "local_graph_nodes": ["Baseline:chain-of-thought prompting", "Claim:c001", "Claim:c002", "Claim:c003", "Claim:c004", "Claim:c005", "Claim:c008", "Claim:c009", "Dataset:medexpqa", "Dataset:mirage", "Dataset:owasp cheat sheet series", "Method:combination of various medical corpora and retrievers", "Method:medical rag", "Method:medrag", "Method:rag", "Metric:accuracy", "Model:gpt-3.5, mixtral, and other llms", "Paper:openalex:W4387156782", "Paper:openalex:W4401198848", "Paper:openalex:W4402670290", "Setting:retriever=semantic retrieval", "Setting:retriever=various", "Setting:task_type=factual", "Task:medical qa", "Task:medical question answering", "Task:security-focused question answering"], "local_graph_edges": [{"source": "Paper:openalex:W4402670290", "target": "Claim:c001", "edge_type": "makes"}, {"source": "Paper:openalex:W4402670290", "target": "Claim:c002", "edge_type": "makes"}, {"source": "Paper:openalex:W4402670290", "target": "Claim:c003", "edge_type": "makes"}, {"source": "Claim:c001", "target": "Method:medrag", "edge_type": "uses"}, {"source": "Claim:c001", "target": "Model:gpt-3.5, mixtral, and other llms", "edge_type": "evaluated_with"}, {"source": "Claim:c001", "target": "Task:medical qa", "edge_type": "targets"}, {"source": "Claim:c001", "target": "Dataset:mirage", "edge_type": "evaluated_on"}, {"source": "Claim:c001", "target": "Metric:accuracy", "edge_type": "measured_by"}, {"source": "Claim:c001", "target": "Baseline:chain-of-thought prompting", "edge_type": "compares_against"}, {"source": "Claim:c002", "target": "Method:combination of various medical corpora and retrievers", "edge_type": "uses"}, {"source": "Claim:c002", "target": "Task:medical qa", "edge_type": "targets"}, {"source": "Claim:c002", "target": "Setting:retriever=various", "edge_type": "conditioned_on"}, {"source": "Claim:c003", "target": "Method:medical rag", "edge_type": "uses"}, {"source": "Claim:c003", "target": "Task:medical qa", "edge_type": "targets"}, {"source": "Paper:openalex:W4387156782", "target": "Claim:c004", "edge_type": "makes"}, {"source": "Paper:openalex:W4387156782", "target": "Claim:c005", "edge_type": "makes"}, {"source": "Claim:c004", "target": "Method:rag", "edge_type": "uses"}, {"source": "Claim:c004", "target": "Task:security-focused question answering", "edge_type": "targets"}, {"source": "Claim:c004", "target": "Dataset:owasp cheat sheet series", "edge_type": "evaluated_on"}, {"source": "Claim:c004", "target": "Setting:retriever=semantic retrieval", "edge_type": "conditioned_on"}, {"source": "Claim:c004", "target": "Setting:task_type=factual", "edge_type": "conditioned_on"}, {"source": "Claim:c005", "target": "Method:rag", "edge_type": "uses"}, {"source": "Claim:c005", "target": "Task:security-focused question answering", "edge_type": "targets"}, {"source": "Claim:c005", "target": "Dataset:owasp cheat sheet series", "edge_type": "evaluated_on"}, {"source": "Claim:c005", "target": "Setting:task_type=factual", "edge_type": "conditioned_on"}, {"source": "Paper:openalex:W4401198848", "target": "Claim:c008", "edge_type": "makes"}, {"source": "Paper:openalex:W4401198848", "target": "Claim:c009", "edge_type": "makes"}, {"source": "Claim:c008", "target": "Method:rag", "edge_type": "uses"}, {"source": "Claim:c008", "target": "Task:medical question answering", "edge_type": "targets"}, {"source": "Claim:c008", "target": "Dataset:medexpqa", "edge_type": "evaluated_on"}, {"source": "Claim:c008", "target": "Metric:accuracy", "edge_type": "measured_by"}, {"source": "Claim:c008", "target": "Setting:task_type=factual", "edge_type": "conditioned_on"}, {"source": "Claim:c009", "target": "Method:rag", "edge_type": "uses"}, {"source": "Claim:c009", "target": "Task:medical question answering", "edge_type": "targets"}, {"source": "Claim:c009", "target": "Dataset:medexpqa", "edge_type": "evaluated_on"}, {"source": "Claim:c009", "target": "Setting:task_type=factual", "edge_type": "conditioned_on"}]}], "hypotheses": [{"hypothesis_id": "h001", "anomaly_id": "a001", "hypothesis": "High top-k retrieval injects distractor passages that overwhelm the generator on domain-QA, flipping the effect of RAG from positive to negative.", "mechanism": "Distractor evidence competes for the generator's attention; the signal-to-noise ratio of the retrieved set, not retrieval recall, governs downstream accuracy.", "explains_claims": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "predictions": ["Holding the retriever fixed, increasing top_k from 3 to 20 monotonically degrades domain-QA accuracy.", "Entailment or reranker filtering improves accuracy without changing various and related retrieval settings."], "minimal_test": "Sweep top_k in {1, 3, 5, 10, 20} on MIRAGE and related benchmarks with a fixed generator and various and related retrieval settings; measure accuracy plus evidence support.", "scope_conditions": {"task_type": "factual", "retrieval_noise": "high"}, "evidence_gap": "Most RAG papers hold top_k constant or sweep it only on factual QA, rarely on multi-hop.", "graph_bridge": {"from": "RAG", "to": "domain-QA"}}, {"hypothesis_id": "h002", "anomaly_id": "a001", "hypothesis": "The marginal benefit of RAG on domain-QA decreases with generator scale, because stronger base models internalize the facts that retrieval would otherwise supply.", "mechanism": "Pretraining corpora increasingly cover benchmark facts, so larger models rely less on external evidence for common-entity questions, shrinking the RAG lift.", "explains_claims": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "predictions": ["Plotting RAG gain vs. base-model size yields a decreasing curve on domain-QA.", "The reported gap on MIRAGE and related benchmarks shrinks for stronger models than GPT-3.5, Mixtral, and other LLMs."], "minimal_test": "Evaluate RAG and the same non-retrieval baseline across three model sizes on MIRAGE and related benchmarks; report delta accuracy as a function of scale.", "scope_conditions": {"base_model_size": "7B-70B", "task_type": "factual"}, "evidence_gap": "Reported RAG numbers rarely hold base-model capacity constant across claims.", "graph_bridge": {"from": "RAG", "to": "domain-QA"}}, {"hypothesis_id": "h003", "anomaly_id": "a001", "hypothesis": "Partial test-set contamination in pretraining inflates closed-book baselines, which shrinks or reverses the apparent benefit of retrieval on standard benchmarks.", "mechanism": "Web-crawled pretraining data overlaps with benchmark test questions, letting larger models answer without retrieval and collapsing the measured RAG gain.", "explains_claims": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "predictions": ["On a held-out, date-filtered version of MIRAGE and related benchmarks, RAG gains move away from up to 18% and reported effects.", "chain-of-thought prompting performance correlates with membership-inference scores on the evaluation set."], "minimal_test": "Build a post-cutoff evaluation set matching MIRAGE and related benchmarks; evaluate RAG and chain-of-thought prompting; compare delta accuracy to the original benchmark.", "scope_conditions": {"task_type": "factual"}, "evidence_gap": "Few papers quantify pretraining overlap with MIRAGE and related benchmarks.", "graph_bridge": {"from": "RAG", "to": "domain-QA"}}, {"hypothesis_id": "h004", "anomaly_id": "a001", "hypothesis": "Gains attributed to RAG are inflated when compared against weak baselines; the sign of the effect depends primarily on baseline choice.", "mechanism": "Weak baselines (under-prompted closed-book LLMs, small models) leave more headroom, so any additional evidence appears to help even when retrieval is noisy.", "explains_claims": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "predictions": ["Replacing chain-of-thought prompting with a stronger matched baseline reduces the reported RAG gain.", "The correlation between baseline strength and RAG gain is negative across papers in this anomaly."], "minimal_test": "Re-run the positive claims on MIRAGE and related benchmarks against chain-of-thought prompting and a stronger matched baseline; report the baseline-conditioned delta in accuracy.", "scope_conditions": {"baseline_strength": "low_vs_high"}, "evidence_gap": "Baseline strength is rarely controlled across RAG reports.", "graph_bridge": {"from": "RAG", "to": "domain-QA"}}, {"hypothesis_id": "h005", "anomaly_id": "a001", "hypothesis": "An unreported moderator variable drives the conflicting results around RAG on domain-QA.", "mechanism": "A confound in data preprocessing, prompt formatting, or decoding parameters correlates with outcome direction and is not held constant across the claims.", "explains_claims": ["c001", "c002", "c004", "c005", "c003", "c008", "c009"], "predictions": ["Holding prompt template and decoding fixed shrinks the between-claim variance by >50%.", "A covariate analysis reveals prompt/decoding parameters account for the sign flip."], "minimal_test": "Replay all claims on MIRAGE and related benchmarks in a common harness with identical prompts and decoding settings; recompute accuracy deltas.", "scope_conditions": {}, "evidence_gap": "Prompt and decoding configurations are inconsistently reported across the claims.", "graph_bridge": {"from": "RAG", "to": "domain-QA"}}]}</script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>
+    const DATA = JSON.parse(document.getElementById('aigraph-data').textContent);
+    const papersById = Object.fromEntries(DATA.papers.map(d => [d.paper_id, d]));
+    const claimsById = Object.fromEntries(DATA.claims.map(d => [d.claim_id, d]));
+    const anomaliesById = Object.fromEntries(DATA.anomalies.map(d => [d.anomaly_id, d]));
+
+    const typeColor = {
+      Paper: '#6b7280',
+      Claim: '#2563eb',
+      Method: '#059669',
+      Model: '#16a34a',
+      Task: '#d97706',
+      Dataset: '#7c3aed',
+      Metric: '#dc2626',
+      Baseline: '#9333ea',
+      Setting: '#0891b2'
+    };
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    function paperFromNode(node) {
+      return papersById[node.paper_id] || papersById[String(node.id || '').replace(/^Paper:/, '')] || null;
+    }
+
+    function paperLink(paper, fallbackId = '') {
+      if (!paper) return esc(fallbackId);
+      const title = paper.title || fallbackId || paper.paper_id || 'paper';
+      const year = paper.year ? ` (${paper.year})` : '';
+      const label = `${title}${year}`;
+      const url = paper.url || paper.doi_url;
+      if (!url) return esc(label);
+      return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
+    }
+
+    function shortTitle(title, maxLen = 38) {
+      const text = String(title || '').trim();
+      if (!text) return '';
+      return text.length > maxLen ? `${text.slice(0, maxLen - 3)}...` : text;
+    }
+
+    function nodeLabel(node) {
+      if (node.node_type === 'Paper') {
+        const paper = paperFromNode(node);
+        if (paper && paper.title) return shortTitle(paper.title);
+      }
+      if (node.node_type === 'Claim') return node.claim_id || node.id;
+      if (node.name) return node.name;
+      if (node.value) return `${node.field}=${node.value}`;
+      return String(node.id).split(':').slice(1).join(':') || node.id;
+    }
+
+    function field(label, value) {
+      if (value === undefined || value === null || value === '') return '';
+      return `<div class="field"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`;
+    }
+
+    function fieldHtml(label, html) {
+      if (!html) return '';
+      return `<div class="field"><div class="label">${esc(label)}</div><div class="value">${html}</div></div>`;
+    }
+
+    function pills(obj) {
+      if (!obj || !Object.keys(obj).length) return '';
+      return Object.entries(obj).map(([k, v]) => `<span class="pill">${esc(k)}=${esc(v)}</span>`).join('');
+    }
+
+    function showDetail(html) {
+      document.getElementById('detail').className = '';
+      document.getElementById('detail').innerHTML = html;
+    }
+
+    function renderSummary() {
+      const s = DATA.summary;
+      const items = [
+        ['Papers', s.papers], ['Claims', s.claims], ['Nodes', s.nodes],
+        ['Edges', s.edges], ['Anomalies', s.anomalies], ['Hypotheses', s.hypotheses]
+      ];
+      document.getElementById('summary').innerHTML = items.map(([label, value]) =>
+        `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`
+      ).join('');
+    }
+
+    function renderLists() {
+      const anomalyList = document.getElementById('anomaly-list');
+      anomalyList.innerHTML = DATA.anomalies.length ? DATA.anomalies.map(a => `
+        <button class="item" data-kind="anomaly" data-id="${esc(a.anomaly_id)}">
+          <div class="item-title">${esc(a.anomaly_id)} · ${esc(a.type)}</div>
+          <div class="item-meta">${esc(a.central_question)}</div>
+          <div class="item-meta">${a.claim_ids.length} claims · +${a.positive_claims.length} / -${a.negative_claims.length}</div>
+        </button>
+      `).join('') : '<div class="empty">No anomalies found.</div>';
+
+      const hypothesisList = document.getElementById('hypothesis-list');
+      hypothesisList.innerHTML = DATA.hypotheses.length ? DATA.hypotheses.map(h => `
+        <button class="item" data-kind="hypothesis" data-id="${esc(h.hypothesis_id)}">
+          <div class="item-title">${esc(h.hypothesis_id)} · ${esc(h.anomaly_id)}</div>
+          <div class="item-meta">${esc(h.hypothesis)}</div>
+        </button>
+      `).join('') : '<div class="empty">No hypotheses generated.</div>';
+
+      document.querySelectorAll('button.item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('button.item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          if (btn.dataset.kind === 'anomaly') selectAnomaly(btn.dataset.id);
+          if (btn.dataset.kind === 'hypothesis') selectHypothesis(btn.dataset.id);
+        });
+      });
+    }
+
+    function renderDetailNode(node) {
+      const id = node.id || '';
+      let html = `<h2>${esc(node.node_type || 'Node')}</h2>`;
+      if (node.node_type === 'Paper') {
+        const paper = paperFromNode(node) || {};
+        html += field('title', paper.title || id);
+        html += field('year', paper.year);
+        html += field('venue', paper.venue);
+        html += fieldHtml('paper link', paperLink(paper, id));
+        html += field('abstract', paper.abstract);
+      } else if (node.node_type === 'Claim') {
+        const claim = claimsById[node.claim_id] || {};
+        const paper = papersById[claim.paper_id] || {};
+        html += field('claim', claim.claim_text);
+        html += field('direction', claim.direction);
+        html += fieldHtml('paper', paperLink(paper, claim.paper_id));
+        html += field('method', claim.method);
+        html += field('task', claim.task || claim.canonical_task);
+        html += field('dataset', claim.dataset);
+        html += field('metric', claim.metric);
+        html += field('evidence', claim.evidence_span);
+      } else {
+        html += field('id', id);
+        html += field('label', nodeLabel(node));
+      }
+      showDetail(html);
+    }
+
+    function renderAnomaly(a) {
+      const claimRows = a.claim_ids.map(cid => claimsById[cid]).filter(Boolean).map(c => {
+        const p = papersById[c.paper_id] || {};
+        return `<div class="field"><div class="label">${esc(c.claim_id)} · ${esc(c.direction)}</div><div class="value">${paperLink(p, c.paper_id)}<br>${esc(c.claim_text)}</div></div>`;
+      }).join('');
+      showDetail(`
+        <h2>${esc(a.anomaly_id)} · ${esc(a.type)}</h2>
+        ${field('question', a.central_question)}
+        <div class="field"><div class="label">shared entities</div><div class="value">${pills(a.shared_entities)}</div></div>
+        ${a.varying_settings.length ? field('varying settings', a.varying_settings.join(', ')) : ''}
+        <h2>Evidence Claims</h2>
+        ${claimRows || '<div class="empty">No claim details.</div>'}
+      `);
+    }
+
+    function renderHypothesis(h) {
+      const a = anomaliesById[h.anomaly_id];
+      const claims = (h.explains_claims || []).map(cid => claimsById[cid]).filter(Boolean).map(c =>
+        `<div class="field"><div class="label">${esc(c.claim_id)} · ${esc(c.direction)}</div><div class="value">${esc(c.claim_text)}</div></div>`
+      ).join('');
+      const preds = (h.predictions || []).map(p => `<li>${esc(p)}</li>`).join('');
+      showDetail(`
+        <h2>${esc(h.hypothesis_id)} · Hypothesis</h2>
+        ${field('anomaly', a ? `${a.anomaly_id} · ${a.type}` : h.anomaly_id)}
+        ${field('hypothesis', h.hypothesis)}
+        ${field('mechanism', h.mechanism)}
+        <div class="field"><div class="label">predictions</div><div class="value"><ul>${preds}</ul></div></div>
+        ${field('minimal test', h.minimal_test)}
+        ${field('evidence gap', h.evidence_gap)}
+        <h2>Explained Claims</h2>
+        ${claims || '<div class="empty">No linked claims.</div>'}
+      `);
+    }
+
+    let svg, nodeSel, linkSel, labelSel;
+
+    function edgeKey(e) {
+      const s = typeof e.source === 'object' ? e.source.id : e.source;
+      const t = typeof e.target === 'object' ? e.target.id : e.target;
+      return `${s}|${t}|${e.edge_type || ''}`;
+    }
+
+    function clearHighlight() {
+      nodeSel.classed('highlight', false).classed('dim', false);
+      linkSel.classed('highlight', false).classed('dim', false);
+    }
+
+    function highlight(nodeIds, edgeKeys = new Set()) {
+      const ids = new Set(nodeIds);
+      nodeSel.classed('highlight', d => ids.has(d.id)).classed('dim', d => ids.size && !ids.has(d.id));
+      linkSel.classed('highlight', d => edgeKeys.has(edgeKey(d)))
+        .classed('dim', d => ids.size && !(ids.has(typeof d.source === 'object' ? d.source.id : d.source) && ids.has(typeof d.target === 'object' ? d.target.id : d.target)));
+    }
+
+    function selectAnomaly(id) {
+      const a = anomaliesById[id];
+      if (!a) return;
+      const edgeKeys = new Set((a.local_graph_edges || []).map(e => `${e.source}|${e.target}|${e.edge_type || ''}`));
+      highlight(a.local_graph_nodes || [], edgeKeys);
+      renderAnomaly(a);
+    }
+
+    function selectHypothesis(id) {
+      const h = DATA.hypotheses.find(x => x.hypothesis_id === id);
+      if (!h) return;
+      highlight((h.explains_claims || []).map(cid => `Claim:${cid}`));
+      renderHypothesis(h);
+    }
+
+    function drawGraph() {
+      const wrap = document.getElementById('graph-wrap');
+      const width = Math.max(420, wrap.clientWidth);
+      const height = Math.max(560, wrap.clientHeight);
+      const nodes = (DATA.graph.nodes || []).map(d => ({...d}));
+      const links = (DATA.graph.edges || []).map(d => ({...d}));
+
+      svg = d3.select('#graph').attr('viewBox', [0, 0, width, height]);
+      svg.selectAll('*').remove();
+
+      linkSel = svg.append('g')
+        .selectAll('line')
+        .data(links)
+        .join('line')
+        .attr('class', 'link')
+        .attr('stroke-width', d => d.edge_type === 'contradicts' ? 2.2 : 1.2);
+
+      linkSel.append('title').text(d => `${d.source} → ${d.target} · ${d.edge_type || 'related'}`);
+
+      const node = svg.append('g')
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'node')
+        .call(d3.drag()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended));
+
+      node.append('circle')
+        .attr('r', d => d.node_type === 'Claim' ? 7 : 5.5)
+        .attr('fill', d => typeColor[d.node_type] || '#404040')
+        .on('click', (event, d) => {
+          clearHighlight();
+          d3.select(event.currentTarget.parentNode).classed('highlight', true);
+          renderDetailNode(d);
+        });
+
+      node.append('title').text(d => `${d.node_type || 'Node'} · ${nodeLabel(d)}`);
+      node.append('text')
+        .attr('x', 8)
+        .attr('y', 3)
+        .text(d => nodeLabel(d).slice(0, 30));
+
+      nodeSel = node;
+      labelSel = node.selectAll('text');
+
+      const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(d => d.edge_type === 'makes' ? 42 : 72))
+        .force('charge', d3.forceManyBody().strength(-230))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(24));
+
+      simulation.on('tick', () => {
+        linkSel
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+        nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
+
+      function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+      function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+    }
+
+    function renderLegend() {
+      const types = ['Paper', 'Claim', 'Method', 'Task', 'Dataset', 'Metric', 'Baseline', 'Setting'];
+      document.getElementById('legend').innerHTML = types.map(t =>
+        `<span><i class="dot" style="background:${typeColor[t]}"></i>${t}</span>`
+      ).join('');
+    }
+
+    renderSummary();
+    renderLists();
+    renderLegend();
+    drawGraph();
+    window.addEventListener('resize', () => drawGraph());
+    if (DATA.anomalies.length) selectAnomaly(DATA.anomalies[0].anomaly_id);
+  </script>
+</body>
+</html>

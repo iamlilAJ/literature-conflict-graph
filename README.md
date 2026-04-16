@@ -10,7 +10,7 @@ which evidence supports each side, and what checks might be worth running next.
 This is an alpha research prototype. It is not a claim that the system can
 automatically determine scientific truth.
 
-![RAG conflict explorer demo](docs/assets/rag-demo.png)
+![Animated RAG conflict explorer demo](docs/assets/rag-demo.gif)
 
 **Demo:** open `examples/rag_demo/index.html` locally, or use the GitHub Pages
 deployment after the Pages workflow finishes:

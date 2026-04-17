@@ -8,21 +8,26 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import re
 from typing import Any, Optional
 
 from pydantic import ValidationError
 
 from .extract import ClaimExtractor
+from .llm_client import (
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_MODEL,
+    DEFAULT_TIMEOUT_SECONDS,
+    build_openai_client,
+    call_llm_text,
+    configured_api_key,
+    configured_base_url,
+    configured_model,
+)
 from .models import Claim, Paper, Setting
 
 
 logger = logging.getLogger(__name__)
-
-DEFAULT_MODEL = "gpt-5.4-mini"
-DEFAULT_TIMEOUT_SECONDS = 45.0
-DEFAULT_MAX_TOKENS = 4000
 
 _ALLOWED_CLAIM_TYPES = {
     "performance_improvement",
@@ -105,6 +110,14 @@ SYSTEM_PROMPT = (
     "(each string or null). task_type must be one of factual, multi-hop, "
     "long-context, agentic, reasoning, evaluation, or null.\n"
     "- evidence_span: short quote copied verbatim from the abstract/text\n"
+    "- domain: string or null (e.g., finance, medicine, time series, robotics)\n"
+    "- data_modality: string or null (e.g., text, time series, text + time series)\n"
+    "- mechanism: string or null (explicit mechanism, e.g., event grounding, preference optimization)\n"
+    "- failure_mode: string or null (explicit failure, e.g., temporal leakage, reward hacking)\n"
+    "- evaluation_protocol: string or null (e.g., backtesting, rolling-window evaluation)\n"
+    "- assumption: string or null (explicit assumption behind the claim)\n"
+    "- risk_type: string or null (e.g., safety risk, financial risk, privacy risk)\n"
+    "- temporal_property: string or null (e.g., non-stationarity, forecast horizon, regime shift)\n"
     'Output STRICT JSON only, no prose, no markdown fences. Example: {"claims": []} '
     "when no explicit claim is present."
 )
@@ -120,28 +133,15 @@ class LLMClaimExtractor(ClaimExtractor):
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
     ):
-        self.model = model or os.environ.get("AIGRAPH_MODEL") or DEFAULT_MODEL
+        self.model = configured_model(model)
         self._client = client
-        self._api_key = api_key or os.environ.get("OPENAI_API_KEY")
-        self._base_url = base_url or os.environ.get("AIGRAPH_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
+        self._api_key = configured_api_key(api_key)
+        self._base_url = configured_base_url(base_url)
 
     def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
-        try:
-            from openai import OpenAI  # lazy import
-        except ImportError as e:  # pragma: no cover - exercised in real runs
-            raise RuntimeError(
-                "openai package is required for LLMClaimExtractor. "
-                "Install with `pip install -e '.[real]'`."
-            ) from e
-        kwargs: dict[str, Any] = {}
-        if self._api_key:
-            kwargs["api_key"] = self._api_key
-        if self._base_url:
-            kwargs["base_url"] = self._base_url
-        kwargs["timeout"] = float(os.environ.get("AIGRAPH_LLM_TIMEOUT", DEFAULT_TIMEOUT_SECONDS))
-        self._client = OpenAI(**kwargs)
+        self._client = build_openai_client(api_key=self._api_key, base_url=self._base_url)
         return self._client
 
     def extract(self, paper: Paper, start_index: int = 0) -> list[Claim]:
@@ -157,16 +157,16 @@ class LLMClaimExtractor(ClaimExtractor):
 
     def _call_llm(self, content: str) -> str:
         client = self._get_client()
-        resp = client.chat.completions.create(
+        import os
+
+        return call_llm_text(
+            client,
             model=self.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": content},
-            ],
+            system=SYSTEM_PROMPT,
+            user=content,
             temperature=0.0,
             max_tokens=int(os.environ.get("AIGRAPH_LLM_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
         )
-        return resp.choices[0].message.content or ""
 
     def _parse_response(self, raw: str, paper: Paper, start_index: int) -> list[Claim]:
         payload = _load_json(raw)
@@ -270,6 +270,14 @@ def _normalize_claim_dict(item: dict, paper: Paper) -> Optional[dict]:
             task_type=task_type,
         ),
         "evidence_span": evidence_span,
+        "domain": _clean_str(item.get("domain")),
+        "data_modality": _clean_str(item.get("data_modality")),
+        "mechanism": _clean_str(item.get("mechanism")),
+        "failure_mode": _clean_str(item.get("failure_mode")),
+        "evaluation_protocol": _clean_str(item.get("evaluation_protocol")),
+        "assumption": _clean_str(item.get("assumption")),
+        "risk_type": _clean_str(item.get("risk_type")),
+        "temporal_property": _clean_str(item.get("temporal_property")),
     }
 
 

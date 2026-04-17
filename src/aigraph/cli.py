@@ -13,7 +13,7 @@ from .extract import RuleBasedExtractor, extract_claims
 from .graph import build_graph, load_graph, save_graph
 from .hypotheses import generate_hypotheses
 from .io import read_jsonl, write_jsonl
-from .models import Anomaly, Claim, Hypothesis, Paper
+from .models import Anomaly, Claim, Hypothesis, Insight, Paper
 from .report import render_report
 from .sample_data import build_sample_papers
 from .scoring import score_all, select_mmr
@@ -126,11 +126,13 @@ def _extract_claims_incremental(papers: list[Paper], extractor_impl, output: Pat
 @app.command("build-graph")
 def build_graph_cmd(
     claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    papers: Optional[Path] = typer.Option(None, "--papers", help="Optional papers.jsonl for citation metadata"),
     output: Path = typer.Option(DEFAULT_GRAPH, "--output"),
 ) -> None:
     """Build the typed claim graph and save as node-link JSON."""
     claim_records = read_jsonl(claims, Claim)
-    g = build_graph(claim_records)
+    paper_records = read_jsonl(papers, Paper) if papers is not None and papers.exists() else None
+    g = build_graph(claim_records, papers=paper_records)
     save_graph(g, output)
     console.print(
         f"[green]Built graph with {g.number_of_nodes()} nodes, "
@@ -172,6 +174,42 @@ def generate_hypotheses_cmd(
     console.print(f"[green]Generated {len(hyps)} hypotheses to[/] {output} [dim](generator={generator})[/]")
 
 
+@app.command("generate-insights")
+def generate_insights_cmd(
+    graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    papers: Path = typer.Option(DEFAULT_PAPERS, "--papers"),
+    anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
+    output: Path = typer.Option(Path("outputs/insights.jsonl"), "--output"),
+    generator: str = typer.Option("template", "--generator", help="template|llm"),
+    model: Optional[str] = typer.Option(None, "--model", help="LLM model id when --generator llm"),
+) -> None:
+    """Generate community-level topology/citation insights."""
+    from .insights import generate_insights
+
+    g = load_graph(graph)
+    claim_records = read_jsonl(claims, Claim)
+    paper_records = read_jsonl(papers, Paper) if papers.exists() else []
+    anom_records = read_jsonl(anomalies, Anomaly) if anomalies.exists() else []
+    generator_impl = _build_insight_generator(generator, model)
+    insights = generate_insights(g, claim_records, paper_records, anom_records, generator=generator_impl)
+    write_jsonl(output, insights)
+    console.print(f"[green]Generated {len(insights)} insights to[/] {output} [dim](generator={generator})[/]")
+
+
+def _build_insight_generator(kind: str, model: Optional[str]):
+    kind = (kind or "template").lower()
+    if kind == "template":
+        from .insights import TemplateInsightGenerator
+
+        return TemplateInsightGenerator()
+    if kind == "llm":
+        from .insights import LLMInsightGenerator
+
+        return LLMInsightGenerator(model=model)
+    raise typer.BadParameter(f"Unknown generator '{kind}'. Use 'template' or 'llm'.")
+
+
 def _build_hypothesis_generator(kind: str, model: Optional[str]):
     kind = (kind or "template").lower()
     if kind == "template":
@@ -194,6 +232,7 @@ def select_cmd(
     lambda_: float = typer.Option(0.7, "--lambda"),
     min_anomalies: int = typer.Option(2, "--min-anomalies"),
     papers: Optional[Path] = typer.Option(None, "--papers", help="Optional papers.jsonl for title/year in report"),
+    insights: Optional[Path] = typer.Option(None, "--insights", help="Optional insights.jsonl for community insight report"),
     output: Path = typer.Option(DEFAULT_REPORT, "--output"),
 ) -> None:
     """Score and select a diverse set of hypotheses; render Markdown report."""
@@ -203,10 +242,18 @@ def select_cmd(
     paper_lookup = None
     if papers is not None and papers.exists():
         paper_lookup = {p.paper_id: p for p in read_jsonl(papers, Paper)}
+    insight_records = read_jsonl(insights, Insight) if insights is not None and insights.exists() else []
 
     scores = score_all(hyp_records, anom_records, claim_records)
     selected = select_mmr(hyp_records, scores, k=k, lambda_=lambda_, min_anomalies=min_anomalies)
-    md = render_report(selected, anom_records, claim_records, scores, paper_lookup=paper_lookup)
+    md = render_report(
+        selected,
+        anom_records,
+        claim_records,
+        scores,
+        paper_lookup=paper_lookup,
+        insights=insight_records,
+    )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(md, encoding="utf-8")
@@ -219,14 +266,65 @@ def fetch_openalex_cmd(
     from_year: int = typer.Option(2020, "--from-year"),
     to_year: int = typer.Option(2026, "--to-year"),
     limit: int = typer.Option(50, "--limit"),
+    strategy: str = typer.Option("balanced", "--strategy", help="balanced|high-impact|recent"),
+    citation_weight: Optional[float] = typer.Option(
+        None,
+        "--citation-weight",
+        help="Optional 0..0.85 impact weight for OpenAlex reranking",
+    ),
+    min_relevance: Optional[float] = typer.Option(
+        None,
+        "--min-relevance",
+        help="Optional 0..1 relevance gate before citation reranking",
+    ),
     output: Path = typer.Option(Path("data/openalex_papers.jsonl"), "--output"),
     mailto: Optional[str] = typer.Option(None, "--mailto", help="Contact email for OpenAlex polite pool"),
 ) -> None:
     """Fetch abstract-level AI papers from OpenAlex and save as papers.jsonl."""
     from .fetch_openalex import fetch_openalex_papers
 
-    console.print(f"[cyan]Fetching OpenAlex works for:[/] {query}  ({from_year}-{to_year}, limit={limit})")
-    papers = fetch_openalex_papers(query=query, from_year=from_year, to_year=to_year, limit=limit, mailto=mailto)
+    console.print(
+        f"[cyan]Fetching OpenAlex works for:[/] {query}  "
+        f"({from_year}-{to_year}, limit={limit}, strategy={strategy}, "
+        f"citation_weight={citation_weight}, min_relevance={min_relevance})"
+    )
+    papers = fetch_openalex_papers(
+        query=query,
+        from_year=from_year,
+        to_year=to_year,
+        limit=limit,
+        mailto=mailto,
+        strategy=strategy,
+        citation_weight=citation_weight,
+        min_relevance=min_relevance,
+    )
+    write_jsonl(output, papers)
+    console.print(f"[green]Saved {len(papers)} papers to[/] {output}")
+
+
+@app.command("fetch-arxiv")
+def fetch_arxiv_cmd(
+    query: str = typer.Option(..., "--query"),
+    from_year: int = typer.Option(2020, "--from-year"),
+    to_year: int = typer.Option(2026, "--to-year"),
+    limit: int = typer.Option(50, "--limit"),
+    strategy: str = typer.Option("balanced", "--strategy", help="balanced|recent"),
+    output: Path = typer.Option(Path("data/arxiv_papers.jsonl"), "--output"),
+) -> None:
+    """Fetch abstract-level papers from arXiv and save as papers.jsonl."""
+    from .fetch_arxiv import fetch_arxiv_papers
+
+    console.print(
+        f"[cyan]Fetching arXiv papers for:[/] {query}  "
+        f"({from_year}-{to_year}, limit={limit}, strategy={strategy})"
+    )
+    papers = fetch_arxiv_papers(
+        query=query,
+        from_year=from_year,
+        to_year=to_year,
+        limit=limit,
+        strategy=strategy,
+    )
     write_jsonl(output, papers)
     console.print(f"[green]Saved {len(papers)} papers to[/] {output}")
 
@@ -248,6 +346,9 @@ def run_real_demo(
     from_year: int = typer.Option(2020, "--from-year"),
     to_year: int = typer.Option(2026, "--to-year"),
     limit: int = typer.Option(50, "--limit"),
+    strategy: str = typer.Option("balanced", "--strategy", help="balanced|high-impact|recent"),
+    citation_weight: Optional[float] = typer.Option(None, "--citation-weight"),
+    min_relevance: Optional[float] = typer.Option(None, "--min-relevance"),
     model: Optional[str] = typer.Option(None, "--model"),
     mailto: Optional[str] = typer.Option(None, "--mailto"),
     k: int = typer.Option(4, "--k"),
@@ -260,20 +361,31 @@ def run_real_demo(
     graph_path = output_dir / "graph.json"
     anomalies_path = output_dir / "anomalies.jsonl"
     hyps_path = output_dir / "hypotheses.jsonl"
+    insights_path = output_dir / "insights.jsonl"
     report_path = output_dir / "selected_hypotheses.md"
 
     console.rule("[bold]aigraph real demo[/bold]")
     fetch_openalex_cmd(
         query=query, from_year=from_year, to_year=to_year, limit=limit,
+        strategy=strategy, citation_weight=citation_weight, min_relevance=min_relevance,
         output=papers_path, mailto=mailto,
     )
     extract_cmd(input=papers_path, output=claims_path, extractor="llm", model=model, resume=False)
-    build_graph_cmd(claims=claims_path, output=graph_path)
+    build_graph_cmd(claims=claims_path, papers=papers_path, output=graph_path)
     detect_anomalies_cmd(graph=graph_path, claims=claims_path, output=anomalies_path)
     generate_hypotheses_cmd(
         anomalies=anomalies_path,
         claims=claims_path,
         output=hyps_path,
+        generator="template",
+        model=None,
+    )
+    generate_insights_cmd(
+        graph=graph_path,
+        claims=claims_path,
+        papers=papers_path,
+        anomalies=anomalies_path,
+        output=insights_path,
         generator="template",
         model=None,
     )
@@ -285,9 +397,76 @@ def run_real_demo(
         lambda_=0.7,
         min_anomalies=2,
         papers=papers_path,
+        insights=insights_path,
         output=report_path,
     )
     console.rule(f"[bold green]Done[/] -> {report_path}")
+
+
+@app.command("run-arxiv-demo")
+def run_arxiv_demo(
+    query: str = typer.Option('all:"large language models" AND (all:finance OR all:"time series" OR all:forecasting)', "--query"),
+    from_year: int = typer.Option(2020, "--from-year"),
+    to_year: int = typer.Option(2026, "--to-year"),
+    limit: int = typer.Option(30, "--limit"),
+    strategy: str = typer.Option("balanced", "--strategy", help="balanced|recent"),
+    model: Optional[str] = typer.Option(None, "--model"),
+    k: int = typer.Option(8, "--k"),
+    output_dir: Path = typer.Option(Path("outputs/arxiv_finance_timeseries"), "--output-dir"),
+    insight_generator: str = typer.Option("template", "--insight-generator", help="template|llm"),
+) -> None:
+    """Fetch arXiv -> LLM-extract -> graph -> anomalies -> insights -> report."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    papers_path = output_dir / "papers.jsonl"
+    claims_path = output_dir / "claims.jsonl"
+    graph_path = output_dir / "graph.json"
+    anomalies_path = output_dir / "anomalies.jsonl"
+    hyps_path = output_dir / "hypotheses.jsonl"
+    insights_path = output_dir / "insights.jsonl"
+    report_path = output_dir / "selected_hypotheses.md"
+    html_path = output_dir / "index.html"
+
+    console.rule("[bold]aigraph arXiv demo[/bold]")
+    fetch_arxiv_cmd(
+        query=query,
+        from_year=from_year,
+        to_year=to_year,
+        limit=limit,
+        strategy=strategy,
+        output=papers_path,
+    )
+    extract_cmd(input=papers_path, output=claims_path, extractor="llm", model=model, resume=False)
+    build_graph_cmd(claims=claims_path, papers=papers_path, output=graph_path)
+    detect_anomalies_cmd(graph=graph_path, claims=claims_path, output=anomalies_path)
+    generate_hypotheses_cmd(
+        anomalies=anomalies_path,
+        claims=claims_path,
+        output=hyps_path,
+        generator="template",
+        model=None,
+    )
+    generate_insights_cmd(
+        graph=graph_path,
+        claims=claims_path,
+        papers=papers_path,
+        anomalies=anomalies_path,
+        output=insights_path,
+        generator=insight_generator,
+        model=model,
+    )
+    select_cmd(
+        hypotheses=hyps_path,
+        claims=claims_path,
+        anomalies=anomalies_path,
+        k=k,
+        lambda_=0.7,
+        min_anomalies=2,
+        papers=papers_path,
+        insights=insights_path,
+        output=report_path,
+    )
+    visualize_cmd(input_dir=output_dir, output=html_path)
+    console.rule(f"[bold green]Done[/] -> {html_path}")
 
 
 @app.command("run-demo")
@@ -296,7 +475,7 @@ def run_demo() -> None:
     console.rule("[bold]aigraph demo[/bold]")
     init_sample(output=DEFAULT_PAPERS)
     extract_cmd(input=DEFAULT_PAPERS, output=DEFAULT_CLAIMS, extractor="rule", model=None, resume=False)
-    build_graph_cmd(claims=DEFAULT_CLAIMS, output=DEFAULT_GRAPH)
+    build_graph_cmd(claims=DEFAULT_CLAIMS, papers=DEFAULT_PAPERS, output=DEFAULT_GRAPH)
     detect_anomalies_cmd(graph=DEFAULT_GRAPH, claims=DEFAULT_CLAIMS, output=DEFAULT_ANOMALIES)
     generate_hypotheses_cmd(
         anomalies=DEFAULT_ANOMALIES,
@@ -313,9 +492,37 @@ def run_demo() -> None:
         lambda_=0.7,
         min_anomalies=2,
         papers=DEFAULT_PAPERS,
+        insights=None,
         output=DEFAULT_REPORT,
     )
     console.rule(f"[bold green]Done[/] -> {DEFAULT_REPORT}")
+
+
+@app.command("serve")
+def serve_cmd(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(7860, "--port"),
+    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
+) -> None:
+    """Run the local Baidu-style literature search web server."""
+    from .server import serve
+
+    serve(host=host, port=port, runs_dir=runs_dir)
+
+
+@app.command("rebuild-community")
+def rebuild_community_cmd(
+    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
+) -> None:
+    """Rebuild the living community graph from completed runs."""
+    from .community import rebuild_community
+
+    status = rebuild_community(runs_dir)
+    console.print(
+        "[green]Rebuilt living graph:[/] "
+        f"{status.get('runs', 0)} runs · {status.get('papers', 0)} papers · "
+        f"{status.get('claims', 0)} claims -> {runs_dir / '_community' / 'index.html'}"
+    )
 
 
 if __name__ == "__main__":

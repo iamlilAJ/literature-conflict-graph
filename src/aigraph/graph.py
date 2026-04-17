@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+import math
+from collections import defaultdict
+from datetime import date
 from itertools import combinations
 from pathlib import Path
 
 import networkx as nx
 
-from .models import Claim
+from .models import Claim, Paper
 
 # Map entity fields on Claim -> (node type, edge type)
 ENTITY_EDGES: dict[str, tuple[str, str]] = {
@@ -18,6 +21,17 @@ ENTITY_EDGES: dict[str, tuple[str, str]] = {
     "dataset": ("Dataset", "evaluated_on"),
     "metric": ("Metric", "measured_by"),
     "baseline": ("Baseline", "compares_against"),
+}
+
+SEMANTIC_EDGES: dict[str, tuple[str, str]] = {
+    "domain": ("Domain", "situated_in"),
+    "data_modality": ("DataModality", "uses_modality"),
+    "mechanism": ("Mechanism", "explains_by"),
+    "failure_mode": ("FailureMode", "fails_by"),
+    "evaluation_protocol": ("EvaluationProtocol", "evaluated_with_protocol"),
+    "assumption": ("Assumption", "assumes"),
+    "risk_type": ("RiskType", "has_risk"),
+    "temporal_property": ("TemporalProperty", "has_temporal_property"),
 }
 
 SETTING_FIELDS: tuple[str, ...] = ("retriever", "top_k", "context_length", "task_type")
@@ -38,15 +52,29 @@ def _norm(value: str | None) -> str | None:
     return v or None
 
 
-def build_graph(claims: list[Claim]) -> nx.MultiDiGraph:
+def build_graph(
+    claims: list[Claim],
+    papers: list[Paper] | None = None,
+    current_year: int | None = None,
+) -> nx.MultiDiGraph:
     g: nx.MultiDiGraph = nx.MultiDiGraph()
 
+    current_year = current_year or date.today().year
+    papers_by_id = {p.paper_id: p for p in (papers or [])}
     seen_papers: set[str] = set()
+    for paper in papers_by_id.values():
+        _add_paper_node(g, paper, current_year)
+        seen_papers.add(paper.paper_id)
+
     for claim in claims:
         paper_node = f"Paper:{claim.paper_id}"
         claim_node = f"Claim:{claim.claim_id}"
         if claim.paper_id not in seen_papers:
-            g.add_node(paper_node, node_type="Paper", paper_id=claim.paper_id)
+            paper = papers_by_id.get(claim.paper_id)
+            if paper is not None:
+                _add_paper_node(g, paper, current_year)
+            else:
+                g.add_node(paper_node, node_type="Paper", paper_id=claim.paper_id)
             seen_papers.add(claim.paper_id)
 
         g.add_node(
@@ -59,10 +87,18 @@ def build_graph(claims: list[Claim]) -> nx.MultiDiGraph:
             task=claim.task,
             dataset=claim.dataset,
             metric=claim.metric,
+            domain=claim.domain,
+            data_modality=claim.data_modality,
+            mechanism=claim.mechanism,
+            failure_mode=claim.failure_mode,
+            evaluation_protocol=claim.evaluation_protocol,
+            assumption=claim.assumption,
+            risk_type=claim.risk_type,
+            temporal_property=claim.temporal_property,
         )
         g.add_edge(paper_node, claim_node, edge_type="makes")
 
-        for field, (node_type, edge_type) in ENTITY_EDGES.items():
+        for field, (node_type, edge_type) in {**ENTITY_EDGES, **SEMANTIC_EDGES}.items():
             value = getattr(claim, field)
             if not value:
                 continue
@@ -81,26 +117,99 @@ def build_graph(claims: list[Claim]) -> nx.MultiDiGraph:
                 g.add_node(nid, node_type="Setting", field=field, value=value)
             g.add_edge(claim_node, nid, edge_type="conditioned_on")
 
+    _add_citation_edges(g, papers_by_id)
     _add_claim_claim_edges(g, claims)
     return g
 
 
+def citation_metrics(paper: Paper, current_year: int | None = None) -> dict[str, float | int]:
+    current_year = current_year or date.today().year
+    age = max(1, current_year - int(paper.year or current_year) + 1)
+    impact_score = math.log1p(max(0, int(paper.cited_by_count or 0)))
+    recent_cutoff = current_year - 2
+    recent = 0
+    for item in paper.counts_by_year or []:
+        try:
+            year = int(item.get("year") or 0)
+            count = int(item.get("cited_by_count") or 0)
+        except (TypeError, ValueError, AttributeError):
+            continue
+        if year >= recent_cutoff:
+            recent += max(0, count)
+    velocity = recent / age
+    return {
+        "cited_by_count": max(0, int(paper.cited_by_count or 0)),
+        "recent_citations": recent,
+        "citation_velocity": velocity,
+        "impact_score": impact_score,
+        "age_normalized_impact": impact_score / math.sqrt(age),
+    }
+
+
+def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None:
+    metrics = citation_metrics(paper, current_year=current_year)
+    g.add_node(
+        f"Paper:{paper.paper_id}",
+        node_type="Paper",
+        paper_id=paper.paper_id,
+        title=paper.title,
+        year=paper.year,
+        venue=paper.venue,
+        url=paper.url,
+        doi=paper.doi,
+        referenced_works=list(paper.referenced_works or []),
+        **metrics,
+    )
+
+
+def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> None:
+    paper_ids = set(papers_by_id)
+    for paper in papers_by_id.values():
+        source = f"Paper:{paper.paper_id}"
+        for ref in paper.referenced_works or []:
+            if ref not in paper_ids:
+                continue
+            target = f"Paper:{ref}"
+            if source in g and target in g:
+                g.add_edge(source, target, edge_type="cites")
+
+
+
 def _add_claim_claim_edges(g: nx.MultiDiGraph, claims: list[Claim]) -> None:
-    for a, b in combinations(claims, 2):
-        ma, mb = _norm(a.method), _norm(b.method)
-        ta, tb = _norm(a.task), _norm(b.task)
-        if ma and mb and ta and tb and ma == mb and ta == tb:
-            da, db = a.direction, b.direction
-            if _opposite(da, db):
-                na, nb = f"Claim:{a.claim_id}", f"Claim:{b.claim_id}"
-                g.add_edge(na, nb, edge_type="contradicts")
+    clusters: dict[tuple[str, str], list[tuple[Claim, str | None, str | None, str]]] = defaultdict(list)
+    for claim in claims:
+        method = _norm(claim.method)
+        task = _norm(claim.task)
+        if not method or not task:
+            continue
+        clusters[(method, task)].append(
+            (
+                claim,
+                _norm(claim.dataset),
+                _norm(claim.metric),
+                f"Claim:{claim.claim_id}",
+            )
+        )
+
+    for cluster in clusters.values():
+        for (a, dataset_a, metric_a, node_a), (b, dataset_b, metric_b, node_b) in combinations(cluster, 2):
+            if _opposite(a.direction, b.direction):
+                g.add_edge(node_a, node_b, edge_type="contradicts")
                 if _settings_differ(a, b):
-                    g.add_edge(na, nb, edge_type="setting_mismatch")
-            if (
-                _norm(a.dataset) and _norm(a.dataset) == _norm(b.dataset)
-                and _norm(a.metric) and _norm(a.metric) == _norm(b.metric)
-            ):
-                g.add_edge(f"Claim:{a.claim_id}", f"Claim:{b.claim_id}", edge_type="overlap")
+                    g.add_edge(node_a, node_b, edge_type="setting_mismatch")
+            if dataset_a and dataset_a == dataset_b and metric_a and metric_a == metric_b:
+                g.add_edge(node_a, node_b, edge_type="overlap")
+
+
+def build_citation_graph(g: nx.MultiDiGraph) -> nx.Graph:
+    cites = nx.Graph()
+    for node, data in g.nodes(data=True):
+        if data.get("node_type") == "Paper":
+            cites.add_node(node)
+    for u, v, data in g.edges(data=True):
+        if data.get("edge_type") == "cites":
+            cites.add_edge(u, v)
+    return cites
 
 
 def _opposite(a: str, b: str) -> bool:

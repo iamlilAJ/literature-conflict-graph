@@ -17,6 +17,15 @@ AnomalyType = Literal[
     "benchmark_inconsistency",
     "setting_mismatch",
     "bridge_opportunity",
+    "metric_mismatch",
+    "evidence_gap",
+    "community_disconnect",
+    "impact_conflict",
+]
+InsightType = Literal[
+    "unifying_theory",
+    "transfer_opportunity",
+    "community_disconnect",
 ]
 
 
@@ -31,6 +40,12 @@ class Paper(LooseModel):
     venue: str
     url: Optional[str] = None
     doi: Optional[str] = None
+    cited_by_count: int = 0
+    referenced_works: list[str] = Field(default_factory=list)
+    counts_by_year: list[dict] = Field(default_factory=list)
+    selection_score: float = 0.0
+    selection_reason: Optional[str] = None
+    retrieval_channel: Optional[str] = None
     abstract: str = ""
     text: str = ""
     # Optional list of claim dicts to make rule extraction deterministic.
@@ -62,6 +77,15 @@ class Claim(LooseModel):
     # Canonicalized cluster keys (filled by LLM extractor; optional for rule-based).
     canonical_method: Optional[str] = None
     canonical_task: Optional[str] = None
+    # Lightweight semantic fields used for topology/insight detection.
+    domain: Optional[str] = None
+    data_modality: Optional[str] = None
+    mechanism: Optional[str] = None
+    failure_mode: Optional[str] = None
+    evaluation_protocol: Optional[str] = None
+    assumption: Optional[str] = None
+    risk_type: Optional[str] = None
+    temporal_property: Optional[str] = None
 
 
 class Anomaly(LooseModel):
@@ -75,6 +99,29 @@ class Anomaly(LooseModel):
     varying_settings: list[str] = Field(default_factory=list)
     local_graph_nodes: list[str] = Field(default_factory=list)
     local_graph_edges: list[dict] = Field(default_factory=list)
+    evidence_impact: float = 0.0
+    recent_activity: float = 0.0
+    impact_balance: float = 0.0
+    citation_bridge_score: float = 0.0
+    topology_score: float = 0.0
+
+
+class Insight(LooseModel):
+    insight_id: str
+    type: InsightType
+    title: str
+    insight: str
+    communities: list[str] = Field(default_factory=list)
+    shared_concepts: list[str] = Field(default_factory=list)
+    evidence_claims: list[str] = Field(default_factory=list)
+    evidence_papers: list[str] = Field(default_factory=list)
+    citation_gap: str = ""
+    unifying_frame: str = ""
+    transfer_suggestions: list[str] = Field(default_factory=list)
+    impact_score: float = 0.0
+    topology_score: float = 0.0
+    confidence_score: float = 0.0
+    quality_score: float = 0.0
 
 
 class GraphBridge(LooseModel):
@@ -105,4 +152,6 @@ class ScoreBreakdown(LooseModel):
     novelty: float = 0.0
     cost: float = 0.0
     discriminability: float = 0.0
+    impact: float = 0.0
+    topology: float = 0.0
     utility: float = 0.0

@@ -10,7 +10,15 @@ from typing import Any, Optional
 from pydantic import ValidationError
 
 from .hypotheses import HypothesisGenerator, TemplateGenerator, _bridge
-from .llm_extract import DEFAULT_MAX_TOKENS, DEFAULT_MODEL, DEFAULT_TIMEOUT_SECONDS, _load_json
+from .llm_client import (
+    DEFAULT_MAX_TOKENS,
+    build_openai_client,
+    call_llm_text,
+    configured_api_key,
+    configured_base_url,
+    configured_model,
+)
+from .llm_extract import _load_json
 from .models import Anomaly, Claim, GraphBridge, Hypothesis
 
 
@@ -61,29 +69,16 @@ class LLMHypothesisGenerator(HypothesisGenerator):
         base_url: Optional[str] = None,
         fallback: HypothesisGenerator | None = None,
     ):
-        self.model = model or os.environ.get("AIGRAPH_MODEL") or DEFAULT_MODEL
+        self.model = configured_model(model)
         self._client = client
-        self._api_key = api_key or os.environ.get("OPENAI_API_KEY")
-        self._base_url = base_url or os.environ.get("AIGRAPH_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
+        self._api_key = configured_api_key(api_key)
+        self._base_url = configured_base_url(base_url)
         self.fallback = fallback if fallback is not None else TemplateGenerator()
 
     def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
-        try:
-            from openai import OpenAI
-        except ImportError as e:  # pragma: no cover - exercised in real runs
-            raise RuntimeError(
-                "openai package is required for LLMHypothesisGenerator. "
-                "Install with `pip install -e '.[real]'`."
-            ) from e
-        kwargs: dict[str, Any] = {}
-        if self._api_key:
-            kwargs["api_key"] = self._api_key
-        if self._base_url:
-            kwargs["base_url"] = self._base_url
-        kwargs["timeout"] = float(os.environ.get("AIGRAPH_LLM_TIMEOUT", DEFAULT_TIMEOUT_SECONDS))
-        self._client = OpenAI(**kwargs)
+        self._client = build_openai_client(api_key=self._api_key, base_url=self._base_url)
         return self._client
 
     def generate(
@@ -107,16 +102,14 @@ class LLMHypothesisGenerator(HypothesisGenerator):
 
     def _call_llm(self, anomaly: Anomaly, claims: list[Claim]) -> str:
         client = self._get_client()
-        resp = client.chat.completions.create(
+        return call_llm_text(
+            client,
             model=self.model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": _prompt_payload(anomaly, claims)},
-            ],
+            system=SYSTEM_PROMPT,
+            user=_prompt_payload(anomaly, claims),
             temperature=float(os.environ.get("AIGRAPH_HYPOTHESIS_TEMPERATURE", "0.2")),
             max_tokens=int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
         )
-        return resp.choices[0].message.content or ""
 
     def _parse_response(
         self,

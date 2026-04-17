@@ -268,6 +268,28 @@ def _retriever_generator_misalignment(a: Anomaly, claims_by_id: dict[str, Claim]
 
 
 def _benchmark_contamination(a: Anomaly, claims_by_id: dict[str, Claim]) -> Optional[dict]:
+    anomaly_text = " ".join(
+        [
+            a.central_question or "",
+            _method(a),
+            _task(a),
+            _dataset(a, claims_by_id),
+            _baseline(a, claims_by_id),
+        ]
+    ).lower()
+    claim_text = " ".join((c.claim_text or "") for c in _anomaly_claims(a, claims_by_id)).lower()
+    contamination_markers = (
+        "pretrain",
+        "contamin",
+        "closed-book",
+        "benchmark",
+        "retrieval",
+        "rag",
+        "date-filter",
+        "test-set",
+    )
+    if not any(marker in anomaly_text or marker in claim_text for marker in contamination_markers):
+        return None
     dataset = _dataset(a, claims_by_id)
     metric = _metric(a, claims_by_id)
     result = _result(a, claims_by_id)

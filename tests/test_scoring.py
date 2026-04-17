@@ -108,3 +108,18 @@ def test_select_mmr_can_enforce_anomaly_coverage():
     scores = _score_all(hyps, [a1, a2], claims)
     selected = _select_mmr(hyps, scores, k=2, lambda_=0.7, min_anomalies=2)
     assert {h.anomaly_id for h in selected} == {"a001", "a002"}
+
+
+def test_utility_rewards_impact_and_topology():
+    claims = [_claim("c001", "positive", "RAG improves NQ."), _claim("c002", "negative", "RAG hurts NQ.")]
+    h = _hyp("h001", "Concrete predictive hypothesis.", ["p1", "p2"])
+    low = _anomaly(["c001", "c002"], ["c001"], ["c002"])
+    high = _anomaly(["c001", "c002"], ["c001"], ["c002"])
+    high.evidence_impact = 8.0
+    high.topology_score = 1.0
+    claims_by_id = {c.claim_id: c for c in claims}
+    low_score = _score_hypothesis(h, low, claims_by_id, [h])
+    high_score = _score_hypothesis(h, high, claims_by_id, [h])
+    assert high_score.impact == 1.0
+    assert high_score.topology == 1.0
+    assert high_score.utility > low_score.utility

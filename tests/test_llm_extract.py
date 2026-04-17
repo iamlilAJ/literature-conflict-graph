@@ -39,6 +39,27 @@ class _FakeClient:
         self.chat = _FakeChat(content)
 
 
+class _FakeResponseObject:
+    def __init__(self, content: str):
+        self.output_text = content
+
+
+class _FakeResponses:
+    def __init__(self, content: str):
+        self._content = content
+        self.calls: list[dict] = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        return _FakeResponseObject(self._content)
+
+
+class _FakeResponsesClient(_FakeClient):
+    def __init__(self, content: str):
+        super().__init__(content)
+        self.responses = _FakeResponses(content)
+
+
 def _paper_with_abstract(text: str) -> Paper:
     return Paper(
         paper_id="openalex:W1",
@@ -72,6 +93,14 @@ def test_parses_strict_json_response_into_claim():
                     "task_type": "factual",
                 },
                 "evidence_span": abstract,
+                "domain": "finance",
+                "data_modality": "text + time series",
+                "mechanism": "event grounding",
+                "failure_mode": "temporal leakage",
+                "evaluation_protocol": "backtesting",
+                "assumption": "market regimes shift",
+                "risk_type": "financial risk",
+                "temporal_property": "non-stationarity",
             }
         ]
     }
@@ -83,6 +112,27 @@ def test_parses_strict_json_response_into_claim():
     assert claims[0].method == "RAG"
     assert claims[0].setting.task_type == "factual"
     assert claims[0].evidence_span == abstract
+    assert claims[0].domain == "finance"
+    assert claims[0].data_modality == "text + time series"
+    assert claims[0].mechanism == "event grounding"
+    assert claims[0].failure_mode == "temporal leakage"
+    assert claims[0].evaluation_protocol == "backtesting"
+    assert claims[0].temporal_property == "non-stationarity"
+
+
+def test_uses_responses_endpoint_when_available(monkeypatch):
+    abstract = "RAG improves factual QA on NaturalQuestions."
+    payload = {"claims": [{"claim_text": "RAG helps factual QA.", "method": "RAG", "direction": "positive", "evidence_span": abstract}]}
+    client = _FakeResponsesClient(json.dumps(payload))
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "responses")
+    monkeypatch.setenv("AIGRAPH_REASONING_EFFORT", "high")
+    extractor = LLMClaimExtractor(model="stub", client=client, api_key="test-key")
+    claims = extractor.extract(_paper_with_abstract(abstract))
+    assert len(claims) == 1
+    call = client.responses.calls[0]
+    assert call["model"] == "stub"
+    assert call["reasoning"] == {"effort": "high"}
+    assert "max_output_tokens" in call
 
 
 def test_strips_markdown_fences():

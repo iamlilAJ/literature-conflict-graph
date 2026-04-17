@@ -8,11 +8,13 @@ from .models import Anomaly, Claim, Hypothesis, ScoreBreakdown
 
 
 # Utility weights (tweak here).
-W_EXPLAIN = 0.35
-W_GROUNDING = 0.15
-W_TESTABILITY = 0.20
-W_NOVELTY = 0.15
-W_DISCRIMINABILITY = 0.15
+W_EXPLAIN = 0.28
+W_GROUNDING = 0.14
+W_TESTABILITY = 0.18
+W_NOVELTY = 0.12
+W_DISCRIMINABILITY = 0.12
+W_IMPACT = 0.10
+W_TOPOLOGY = 0.06
 W_COST = 0.15
 
 
@@ -95,6 +97,14 @@ def discriminability_score(h: Hypothesis, peers: list[Hypothesis]) -> float:
     return 1.0 - mean_sim
 
 
+def impact_score(anomaly: Anomaly) -> float:
+    return min(1.0, max(0.0, anomaly.evidence_impact / 8.0))
+
+
+def topology_score(anomaly: Anomaly) -> float:
+    return min(1.0, max(0.0, anomaly.topology_score))
+
+
 def score_hypothesis(
     h: Hypothesis,
     anomaly: Anomaly,
@@ -107,12 +117,16 @@ def score_hypothesis(
     novelty = novelty_score(h, claims_by_id)
     cost = cost_penalty(h)
     discrim = discriminability_score(h, peers)
+    impact = impact_score(anomaly)
+    topology = topology_score(anomaly)
     utility = (
         W_EXPLAIN * explain
         + W_GROUNDING * grounding
         + W_TESTABILITY * testability
         + W_NOVELTY * novelty
         + W_DISCRIMINABILITY * discrim
+        + W_IMPACT * impact
+        + W_TOPOLOGY * topology
         - W_COST * cost
     )
     return ScoreBreakdown(
@@ -123,6 +137,8 @@ def score_hypothesis(
         novelty=novelty,
         cost=cost,
         discriminability=discrim,
+        impact=impact,
+        topology=topology,
         utility=utility,
     )
 

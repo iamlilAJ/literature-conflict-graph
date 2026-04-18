@@ -56,7 +56,7 @@ def build_search_overview(
     top_papers = _top_papers(papers)
     reading_path = _reading_path(papers, insights)
     best_lines = _curated_best_lines(anomalies, insights, selected, scores or {})
-    why_this_matters = _why_this_matters(top_conflicts, hidden_bridges, selected, reading_path)
+    why_this_matters = _why_this_matters(top_conflicts, hidden_bridges, selected, reading_path, papers)
     return {
         "headline": _headline(topic, top_conflicts, hidden_bridges, papers, claims),
         "hero_line": best_lines["hero_line"],
@@ -80,7 +80,13 @@ def build_search_overview(
     }
 
 
+def _no_papers_next_step() -> str:
+    return "Try a shorter or broader topic query, then rerun the search."
+
+
 def _headline(topic: str, conflicts: list[dict], bridges: list[dict], papers: list[Paper], claims: list[Claim]) -> str:
+    if not papers:
+        return f"For '{topic}', no papers were retrieved, so the run could not build a literature map."
     if conflicts and bridges:
         return (
             f"For '{topic}', we found {len(conflicts)} visible conflict/gap region(s) "
@@ -445,7 +451,13 @@ def _why_this_matters(
     hidden_bridges: list[dict],
     selected: list[Hypothesis],
     reading_path: list[dict],
+    papers: list[Paper] | None = None,
 ) -> dict:
+    if not (papers or []):
+        return {
+            "line": "No papers were retrieved for this topic, so there is no evidence to summarize yet.",
+            "next_step": _no_papers_next_step(),
+        }
     if top_conflicts:
         conflict = top_conflicts[0]
         conflict_type = str(conflict.get("type") or "")

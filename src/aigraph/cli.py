@@ -255,6 +255,7 @@ def select_cmd(
         scores,
         paper_lookup=paper_lookup,
         insights=insight_records,
+        paper_count=len(paper_lookup or {}),
     )
 
     output.parent.mkdir(parents=True, exist_ok=True)

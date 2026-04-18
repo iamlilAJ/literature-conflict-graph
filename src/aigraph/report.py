@@ -16,6 +16,8 @@ def render_report(
     scores: dict[str, ScoreBreakdown],
     paper_lookup: Optional[dict[str, Paper]] = None,
     insights: Optional[list[Insight]] = None,
+    topic: Optional[str] = None,
+    paper_count: Optional[int] = None,
 ) -> str:
     anom_by_id = {a.anomaly_id: a for a in anomalies}
     claims_by_id = {c.claim_id: c for c in claims}
@@ -26,6 +28,14 @@ def render_report(
         grouped[h.anomaly_id].append(h)
 
     lines: list[str] = ["# Selected Hypotheses", ""]
+    if paper_count == 0:
+        topic_label = f" for '{topic}'" if topic else ""
+        lines.append(f"No papers were retrieved{topic_label}, so there are no hypotheses or evidence claims to report yet.")
+        lines.append("")
+        lines.append("Next step: try a shorter or broader topic query, then rerun the search.")
+        lines.append("")
+        return "\n".join(lines)
+
     lines.append(f"Selected **{len(selected)}** hypotheses across **{len(grouped)}** anomalies.")
     lines.append("")
 

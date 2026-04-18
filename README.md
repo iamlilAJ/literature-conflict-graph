@@ -260,6 +260,12 @@ aigraph visualize --input-dir outputs --output outputs/index.html
 - LLM-generated explanations are candidate interpretations, not verified conclusions.
 - Scoring weights are hand-set, not learned from human feedback.
 
+## Automation Loop
+
+- Cron harvests topics and runs fresh report batches during the day.
+- The critic turns completed runs into structured issues and a fix bundle.
+- The nightly fixer uses Codex plus `gh` auth to push branches and open draft PRs.
+
 ## Development
 
 ```bash

@@ -210,3 +210,50 @@ def test_rewrite_explanation_line_preserves_core_claim():
     line = _rewrite_explanation_line(hypothesis, anomaly)
     assert "distractor" in line.lower()
     assert "retrieval" in line.lower() or "multi-hop" in line.lower()
+
+
+def test_overview_marks_hypothesis_only_runs_as_exploratory_and_hides_bridge_conflicts():
+    papers = [
+        Paper(
+            paper_id="p1",
+            title="VBMO for Path Planning",
+            year=2024,
+            venue="arXiv",
+            selection_score=0.7,
+            selection_reason="topical",
+            retrieval_channel="arxiv-balanced",
+        )
+    ]
+    anomalies = [
+        Anomaly(
+            anomaly_id="a001",
+            type="bridge_opportunity",
+            central_question="Could the effect on UAV path planning with BPMO-UAVPP transfer to multi-objective path planning with VBMO?",
+            claim_ids=["c001", "c002"],
+            positive_claims=["c001"],
+            negative_claims=["c002"],
+            shared_entities={"method_from": "BPMO-UAVPP", "method_to": "VBMO"},
+            topology_score=0.8,
+        )
+    ]
+    selected = [
+        Hypothesis(
+            hypothesis_id="h001",
+            anomaly_id="a001",
+            hypothesis="An unreported moderator variable drives the conflicting results around BPMO-UAVPP on path planning.",
+            minimal_test="Replay both path planning methods in a common harness.",
+        )
+    ]
+    overview = build_search_overview(
+        "path planning",
+        papers,
+        claims=[],
+        anomalies=anomalies,
+        insights=[],
+        selected=selected,
+        scores={"h001": ScoreBreakdown(hypothesis_id="h001", utility=0.8)},
+    )
+    assert overview["hero_line"] is None
+    assert overview["top_conflicts"] == []
+    assert "exploratory" in overview["why_this_matters"]["line"].lower()
+    assert overview["best_explanation_lines"][0]["supporting_text"].startswith("2 claims")

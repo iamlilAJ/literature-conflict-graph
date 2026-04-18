@@ -484,7 +484,7 @@ def render_crontab(
         "# aigraph 24/7 automation schedule",
         f"# repo: {repo_root}",
         f"# generated: {_now_iso()}",
-        "SHELL=/bin/zsh",
+        "SHELL=/bin/bash",
         "PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
         "",
     ]

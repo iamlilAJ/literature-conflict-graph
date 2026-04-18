@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 REPO_DIR="${1:-$(cd "$(dirname "$0")/../.." && pwd)}"

@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 REPO_DIR="${1:-$(cd "$(dirname "$0")/../.." && pwd)}"
@@ -17,4 +17,3 @@ cd "$REPO_DIR"
   --automation-dir "$AUTOMATION_DIR" \
   --runs-dir "$RUNS_DIR" \
   --max-issues 3
-

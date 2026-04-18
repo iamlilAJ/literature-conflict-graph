@@ -16,6 +16,8 @@ def render_report(
     scores: dict[str, ScoreBreakdown],
     paper_lookup: Optional[dict[str, Paper]] = None,
     insights: Optional[list[Insight]] = None,
+    topic: Optional[str] = None,
+    paper_count: Optional[int] = None,
 ) -> str:
     anom_by_id = {a.anomaly_id: a for a in anomalies}
     claims_by_id = {c.claim_id: c for c in claims}
@@ -24,19 +26,54 @@ def render_report(
     grouped: dict[str, list[Hypothesis]] = defaultdict(list)
     for h in selected:
         grouped[h.anomaly_id].append(h)
+    ordered_anomaly_ids = list(dict.fromkeys(h.anomaly_id for h in selected))
 
     lines: list[str] = ["# Selected Hypotheses", ""]
+    if paper_count == 0:
+        topic_label = f" for '{topic}'" if topic else ""
+        lines.append(f"No papers were retrieved{topic_label}, so there are no hypotheses or evidence claims to report yet.")
+        lines.append("")
+        lines.append("Next step: try a shorter or broader topic query, then rerun the search.")
+        lines.append("")
+        return "\n".join(lines)
+
     lines.append(f"Selected **{len(selected)}** hypotheses across **{len(grouped)}** anomalies.")
     lines.append("")
+    if not insights:
+        lines.append(
+            "Exploratory report: no synthesized insights were supported yet, so the sections below show claim-level "
+            "evidence and candidate explanations rather than a settled takeaway."
+        )
+        lines.append("")
 
     if insights:
         lines.extend(_render_insights(insights, paper_lookup))
 
-    for anomaly_id, hyps in grouped.items():
+    conflict_sections: list[tuple[Anomaly, list[Hypothesis]]] = []
+    bridge_sections: list[tuple[Anomaly, list[Hypothesis]]] = []
+    for anomaly_id in ordered_anomaly_ids:
         anomaly = anom_by_id.get(anomaly_id)
-        if anomaly is None:
+        hyps = grouped.get(anomaly_id) or []
+        if anomaly is None or not hyps:
             continue
-        lines.extend(_render_anomaly(anomaly, hyps, claims_by_id, scores, paper_lookup))
+        if anomaly.type == "bridge_opportunity":
+            bridge_sections.append((anomaly, hyps))
+        else:
+            conflict_sections.append((anomaly, hyps))
+
+    if conflict_sections:
+        lines.append("## Conflict Hypotheses")
+        lines.append("")
+        for anomaly, hyps in conflict_sections:
+            lines.extend(_render_anomaly(anomaly, hyps, claims_by_id, scores, paper_lookup, heading_level=3))
+
+    if bridge_sections:
+        lines.append("## Bridge Opportunities")
+        lines.append("")
+        lines.append("These transfer questions are listed separately from conflicts because they do not imply opposing evidence.")
+        lines.append("")
+        for anomaly, hyps in bridge_sections:
+            lines.extend(_render_anomaly(anomaly, hyps, claims_by_id, scores, paper_lookup, heading_level=3))
 
     lines.append("## Evidence claims")
     lines.append("")
@@ -126,11 +163,16 @@ def _render_anomaly(
     claims_by_id: dict[str, Claim],
     scores: dict[str, ScoreBreakdown],
     paper_lookup: dict[str, Paper],
+    *,
+    heading_level: int = 2,
 ) -> list[str]:
     lines: list[str] = []
-    lines.append(f"## Anomaly {anomaly.anomaly_id} — {anomaly.type}")
+    heading = "#" * max(1, heading_level)
+    section_label = "Bridge opportunity" if anomaly.type == "bridge_opportunity" else "Anomaly"
+    lines.append(f"{heading} {section_label} {anomaly.anomaly_id} — {anomaly.type}")
     lines.append("")
-    lines.append(f"**Central question:** {anomaly.central_question}")
+    question_label = "Transfer question" if anomaly.type == "bridge_opportunity" else "Central question"
+    lines.append(f"**{question_label}:** {anomaly.central_question}")
     lines.append("")
     if anomaly.shared_entities:
         items = ", ".join(f"{k}={v}" for k, v in anomaly.shared_entities.items())

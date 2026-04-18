@@ -481,6 +481,11 @@ def render_crontab(
         "# aigraph 24/7 automation schedule",
         f"# repo: {repo_root}",
         f"# generated: {_now_iso()}",
+        f"# set {codex_command_env} before running automation-fix-run",
+        (
+            f"# manual fix command: {base} automation-fix-run --automation-dir {shlex.quote(str(automation_root))} "
+            f"--runs-dir {shlex.quote(str(runs_root))}"
+        ),
         "SHELL=/bin/bash",
         "PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
         "",

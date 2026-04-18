@@ -56,7 +56,9 @@ def grounding_score(h: Hypothesis, anomaly: Anomaly, claims_by_id: dict[str, Cla
         return 0.0
     exists = sum(1 for c in h.explains_claims if c in claims_by_id)
     in_anomaly = sum(1 for c in h.explains_claims if c in anomaly.claim_ids)
-    return 0.5 * (exists / len(h.explains_claims)) + 0.5 * (in_anomaly / len(h.explains_claims))
+    base = 0.5 * (exists / len(h.explains_claims)) + 0.5 * (in_anomaly / len(h.explains_claims))
+    coherence = topical_coherence_score(h, anomaly, claims_by_id)
+    return base * (0.35 + 0.65 * coherence)
 
 
 def testability_score(h: Hypothesis) -> float:
@@ -81,6 +83,64 @@ def cost_penalty(h: Hypothesis) -> float:
     text = f"{h.hypothesis} {h.mechanism}".lower()
     hits = sum(1 for phrase in _VAGUE_PHRASES if phrase in text)
     return min(1.0, hits / 4.0)
+
+
+def _claim_context_text(claim: Claim) -> str:
+    parts = [
+        claim.claim_text,
+        claim.method,
+        claim.task,
+        claim.dataset,
+        claim.metric,
+        claim.baseline,
+        claim.result,
+        claim.canonical_method,
+        claim.canonical_task,
+        claim.domain,
+        claim.mechanism,
+        claim.failure_mode,
+        claim.evaluation_protocol,
+    ]
+    if claim.setting:
+        parts.extend(
+            [
+                claim.setting.retriever,
+                claim.setting.top_k,
+                claim.setting.context_length,
+                claim.setting.task_type,
+            ]
+        )
+    return " ".join(str(part or "") for part in parts if part)
+
+
+def _anomaly_context_tokens(anomaly: Anomaly, claims_by_id: dict[str, Claim]) -> set[str]:
+    parts = [anomaly.central_question]
+    parts.extend(str(value or "") for value in (anomaly.shared_entities or {}).values())
+    parts.extend(anomaly.varying_settings or [])
+    for claim_id in anomaly.claim_ids:
+        claim = claims_by_id.get(claim_id)
+        if claim is not None:
+            parts.append(_claim_context_text(claim))
+    return tokenize(" ".join(parts))
+
+
+def topical_coherence_score(h: Hypothesis, anomaly: Anomaly, claims_by_id: dict[str, Claim]) -> float:
+    evidence_tokens = _anomaly_context_tokens(anomaly, claims_by_id)
+    if not evidence_tokens:
+        return 1.0
+    hypothesis_tokens = tokenize(" ".join(filter(None, [h.hypothesis, h.mechanism])))
+    if not hypothesis_tokens:
+        return 0.0
+    overlap = hypothesis_tokens & evidence_tokens
+    overlap_ratio = len(overlap) / max(1, len(hypothesis_tokens))
+    entity_tokens = tokenize(" ".join(str(value or "") for value in (anomaly.shared_entities or {}).values()))
+    entity_overlap = len(hypothesis_tokens & entity_tokens) / max(1, len(entity_tokens)) if entity_tokens else 0.0
+    score = min(1.0, overlap_ratio * 2.2 + entity_overlap * 0.6)
+    if not overlap:
+        return 0.0
+    if overlap_ratio < 0.12 and entity_overlap == 0.0:
+        score *= 0.5
+    return score
 
 
 def _hypothesis_tokens(h: Hypothesis) -> set[str]:

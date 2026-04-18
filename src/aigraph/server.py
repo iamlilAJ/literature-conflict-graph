@@ -446,7 +446,16 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     paper_lookup = {p.paper_id: p for p in papers}
     overview = build_search_overview(request.topic, papers, claims, anomalies, insights, selected, scores)
     overview_path.write_text(json.dumps(overview, indent=2, ensure_ascii=False), encoding="utf-8")
-    report = render_report(selected, anomalies, claims, scores, paper_lookup=paper_lookup, insights=insights)
+    report = render_report(
+        selected,
+        anomalies,
+        claims,
+        scores,
+        paper_lookup=paper_lookup,
+        insights=insights,
+        topic=request.topic,
+        paper_count=len(papers),
+    )
     report_path.write_text(report, encoding="utf-8")
     render_visualization(run_dir, html_path)
 

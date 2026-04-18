@@ -8,6 +8,13 @@ PYTHON_BIN="${PYTHON_BIN:-$REPO_DIR/.venv/bin/python}"
 
 cd "$REPO_DIR"
 
+if [ -f "$REPO_DIR/.env" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . "$REPO_DIR/.env"
+  set +a
+fi
+
 "$PYTHON_BIN" -m aigraph.cli automation-critic \
   --automation-dir "$AUTOMATION_DIR" \
   --runs-dir "$RUNS_DIR" \

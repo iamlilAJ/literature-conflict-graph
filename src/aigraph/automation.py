@@ -472,11 +472,8 @@ def render_crontab(
         ),
         (
             "10 3 * * *",
-            f"cd {shlex.quote(str(repo_root))} && if [ -n \"${codex_command_env}\" ]; then "
-            f"{shlex.quote(python_ref)} -m aigraph.cli automation-fix-run --automation-dir {shlex.quote(str(automation_root))} "
-            f"--runs-dir {shlex.quote(str(runs_root))} --repo-dir {shlex.quote(str(repo_root))} --max-issues {max_fix_issues} --push --open-pr; "
-            f"else echo 'Skipping automation-fix-run: {codex_command_env} is not set'; fi",
-            log_dir / "fix_run.log",
+            f"cd {shlex.quote(str(repo_root))} && ./automation/bin/nightly_fix.sh",
+            log_dir / "nightly_fix.log",
         ),
     ]
 

@@ -1,0 +1,11 @@
+# aigraph 24/7 automation schedule
+# repo: /Users/liuanjie/PycharmProjects/hypothesis_generation
+# generated: 2026-04-18T07:36:39
+SHELL=/bin/zsh
+PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+15 * * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./.venv/bin/python -m aigraph.cli automation-harvest --automation-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/automation --runs-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/outputs/runs >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/topic_harvest.log 2>&1
+25 * * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./.venv/bin/python -m aigraph.cli automation-run-batch --automation-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/automation --runs-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/outputs/runs --batch-size 3 >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/run_batch.log 2>&1
+40 */2 * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./.venv/bin/python -m aigraph.cli automation-critic --automation-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/automation --runs-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/outputs/runs --limit 8 >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/critic_batch.log 2>&1
+50 2 * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./.venv/bin/python -m aigraph.cli automation-fix-bundle --automation-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/automation --runs-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/outputs/runs --max-issues 3 >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/fix_bundle.log 2>&1
+10 3 * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && if [ -n "$AIGRAPH_CODEX_FIX_COMMAND" ]; then ./.venv/bin/python -m aigraph.cli automation-fix-run --automation-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/automation --runs-dir /Users/liuanjie/PycharmProjects/hypothesis_generation/outputs/runs --repo-dir /Users/liuanjie/PycharmProjects/hypothesis_generation --max-issues 3 --push --open-pr; else echo 'Skipping automation-fix-run: AIGRAPH_CODEX_FIX_COMMAND is not set'; fi >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/fix_run.log 2>&1

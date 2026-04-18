@@ -1,0 +1,14 @@
+# Install with:
+#   crontab automation/cron/crontab.example
+#
+# Before enabling nightly fixes, make sure:
+# - AIGRAPH_CODEX_FIX_COMMAND is exported in the cron environment
+# - git push works from this machine
+# - gh auth status is already logged in
+
+SHELL=/bin/zsh
+PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+15 * * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./automation/bin/hourly_loop.sh >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/hourly_loop.log 2>&1
+40 */2 * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && ./automation/bin/critic_loop.sh >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/critic_loop.log 2>&1
+10 3 * * * cd /Users/liuanjie/PycharmProjects/hypothesis_generation && if [ -n "$AIGRAPH_CODEX_FIX_COMMAND" ]; then ./automation/bin/nightly_fix.sh >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/nightly_fix.log 2>&1; else echo "Skipping nightly_fix: AIGRAPH_CODEX_FIX_COMMAND is not set" >> /Users/liuanjie/PycharmProjects/hypothesis_generation/automation/logs/nightly_fix.log 2>&1; fi

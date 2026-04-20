@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .paper_select import paper_role_explanation, paper_role_label
+
 
 def render_visualization(input_dir: str | Path, output: str | Path) -> Path:
     """Render a self-contained HTML graph explorer.
@@ -86,6 +88,10 @@ def _augment_paper_links(paper: dict[str, Any]) -> dict[str, Any]:
     if not out.get("doi_url") and out.get("doi"):
         doi = str(out["doi"]).removeprefix("https://doi.org/")
         out["doi_url"] = f"https://doi.org/{doi}"
+    role = str(out.get("paper_role") or "other")
+    out["paper_role"] = role
+    out["paper_role_label"] = paper_role_label(role)
+    out["paper_role_explanation"] = paper_role_explanation(role)
     return out
 
 
@@ -235,6 +241,14 @@ def _render_html(payload: dict[str, Any]) -> str:
       font: inherit;
       cursor: pointer;
     }}
+    .mini-nav-btn[disabled], .fold-toggle[disabled] {{
+      cursor: not-allowed;
+      opacity: 0.52;
+      border-color: rgba(120, 152, 171, 0.16);
+      color: #79909e;
+      background: rgba(8, 14, 22, 0.62);
+      box-shadow: none;
+    }}
     .mini-nav-btn {{
       padding: 7px 9px;
       font-size: 12px;
@@ -246,6 +260,11 @@ def _render_html(payload: dict[str, Any]) -> str:
       margin: 10px 0;
       background: rgba(9, 16, 24, 0.62);
       overflow: hidden;
+    }}
+    .fold-section.disabled {{
+      opacity: 0.82;
+      border-color: rgba(120, 152, 171, 0.14);
+      background: rgba(8, 14, 22, 0.52);
     }}
     .fold-toggle {{
       width: 100%;
@@ -263,12 +282,28 @@ def _render_html(payload: dict[str, Any]) -> str:
       font-size: 12px;
       font-weight: 500;
     }}
+    .fold-disabled-note {{
+      display: none;
+      padding: 0 11px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }}
+    .fold-section.disabled .fold-disabled-note {{
+      display: block;
+    }}
     .fold-body {{
       display: none;
       padding: 8px 10px 10px;
     }}
     .fold-section.open .fold-body {{
       display: block;
+    }}
+    .fold-note {{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+      line-height: 1.45;
     }}
     button.item {{
       display: block;
@@ -318,6 +353,17 @@ def _render_html(payload: dict[str, Any]) -> str:
       background: rgba(7, 12, 18, 0.88);
       backdrop-filter: blur(16px);
       z-index: 2;
+    }}
+    .tool-group {{
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }}
+    .tool-divider {{
+      width: 1px;
+      align-self: stretch;
+      background: rgba(255,255,255,.08);
+      margin: 0 2px;
     }}
     .graph-tools button {{
       border: 1px solid var(--line);
@@ -443,6 +489,8 @@ def _render_html(payload: dict[str, Any]) -> str:
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 3px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
     }}
     .value {{
       font-size: 13px;
@@ -484,12 +532,119 @@ def _render_html(payload: dict[str, Any]) -> str:
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px solid rgba(255,255,255,.07);
+      display: grid;
+      gap: 10px;
+    }}
+    .chat-header {{
+      display: grid;
+      gap: 8px;
+    }}
+    .chat-toolbar {{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }}
+    .chat-toolbar-actions {{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }}
+    .chat-selection {{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      min-height: 18px;
+      max-width: 260px;
+    }}
+    .chat-limit {{
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: right;
+    }}
+    .chat-reset {{
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 8px;
+      background: rgba(10, 18, 28, 0.88);
+      color: var(--ink);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      padding: 6px 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }}
+    .chat-reset[disabled] {{
+      cursor: not-allowed;
+      opacity: 0.52;
+      color: #79909e;
+    }}
+    .chat-thread {{
+      display: grid;
+      gap: 10px;
+      min-height: 240px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 12px;
+      border: 1px solid rgba(103,217,255,.14);
+      border-radius: 8px;
+      background: rgba(103,217,255,.04);
+    }}
+    .chat-message {{
+      display: flex;
+      gap: 10px;
+    }}
+    .chat-message.user {{
+      justify-content: flex-end;
+    }}
+    .chat-message.assistant,
+    .chat-message.system {{
+      justify-content: flex-start;
+    }}
+    .chat-bubble {{
+      max-width: 92%;
+      border-radius: 8px;
+      padding: 10px 12px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }}
+    .chat-message.user .chat-bubble {{
+      background: rgba(103,217,255,.16);
+      border: 1px solid rgba(103,217,255,.22);
+      color: var(--ink);
+    }}
+    .chat-message.assistant .chat-bubble {{
+      background: rgba(15, 24, 36, 0.96);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--ink);
+    }}
+    .chat-message.system .chat-bubble {{
+      background: rgba(103,217,255,.07);
+      border: 1px dashed rgba(103,217,255,.22);
+      color: var(--muted);
+      font-size: 12px;
+    }}
+    .chat-bubble p {{
+      margin: 0;
+    }}
+    .chat-meta {{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }}
+    .chat-citations {{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: #cfe0ea;
+      font-size: 12px;
     }}
     .chat-starters {{
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin: 10px 0;
     }}
     .chat-chip {{
       border: 1px solid rgba(103,217,255,.2);
@@ -504,18 +659,28 @@ def _render_html(payload: dict[str, Any]) -> str:
     .chat-form {{
       display: grid;
       gap: 8px;
-      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px;
+      background: rgba(10, 18, 28, 0.94);
     }}
     .chat-form textarea {{
       width: 100%;
-      resize: vertical;
-      min-height: 92px;
+      resize: none;
+      min-height: 50px;
+      max-height: 160px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(10, 18, 28, 0.88);
+      background: rgba(5, 10, 18, 0.96);
       color: var(--ink);
       font: inherit;
       padding: 10px;
+    }}
+    .chat-form-footer {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }}
     .chat-form button {{
       justify-self: start;
@@ -528,15 +693,9 @@ def _render_html(payload: dict[str, Any]) -> str:
       padding: 8px 12px;
       cursor: pointer;
     }}
-    .chat-answer {{
-      border: 1px solid rgba(103,217,255,.14);
-      border-radius: 8px;
-      padding: 10px;
-      background: rgba(103,217,255,.05);
-      line-height: 1.5;
-    }}
-    .chat-answer p {{
-      margin: 0;
+    .chat-form button[disabled] {{
+      opacity: 0.6;
+      cursor: progress;
     }}
     @media (max-width: 980px) {{
       main {{
@@ -564,44 +723,55 @@ def _render_html(payload: dict[str, Any]) -> str:
       <div class="side-intro">
         <div class="side-mini-nav">
           <button type="button" class="mini-nav-btn" data-target="anomalies-section">Conflicts</button>
-          <button type="button" class="mini-nav-btn" data-target="hypotheses-section">Explanations</button>
+          <button type="button" class="mini-nav-btn" data-target="hypotheses-section">Hypotheses</button>
           <button type="button" class="mini-nav-btn" data-target="insights-section">Insights</button>
         </div>
-        <p class="empty compact">Start with the graph, then open only the section you need.</p>
+        <p class="empty compact">Start with the graph. When hypotheses or insights are available, they will open below.</p>
       </div>
       <div class="fold-section" id="anomalies-section">
         <button type="button" class="fold-toggle" data-section="anomaly-list">
-          <span>Conflicts & Gaps</span>
+          <span>Conflicts</span>
           <span class="fold-meta" id="anomaly-count"></span>
         </button>
+        <div class="fold-disabled-note" id="anomaly-disabled-note"></div>
         <div class="fold-body" id="anomaly-list"></div>
       </div>
       <div class="fold-section" id="hypotheses-section">
         <button type="button" class="fold-toggle" data-section="hypothesis-list">
-          <span>Possible Explanations</span>
+          <span>Hypotheses</span>
           <span class="fold-meta" id="hypothesis-count"></span>
         </button>
+        <div class="fold-disabled-note" id="hypothesis-disabled-note"></div>
         <div class="fold-body" id="hypothesis-list"></div>
       </div>
       <div class="fold-section" id="insights-section">
         <button type="button" class="fold-toggle" data-section="insight-list">
-          <span>Community Insights</span>
+          <span>Insights</span>
           <span class="fold-meta" id="insight-count"></span>
         </button>
+        <div class="fold-disabled-note" id="insight-disabled-note"></div>
         <div class="fold-body" id="insight-list"></div>
       </div>
     </aside>
     <section id="graph-wrap" aria-label="Graph visualization">
       <div class="graph-tools" aria-label="Graph controls">
-        <button type="button" id="zoom-out">−</button>
-        <button type="button" id="zoom-in">+</button>
-        <button type="button" id="zoom-fit">Fit</button>
-        <button type="button" id="zoom-reset">Reset</button>
-        <button type="button" id="detail-cluster">Clusters</button>
-        <button type="button" id="detail-claims">Claims</button>
-        <button type="button" id="detail-full">Full</button>
-        <button type="button" id="view-hierarchy">Hierarchy</button>
-        <button type="button" id="view-free">Free</button>
+        <div class="tool-group" aria-label="Zoom controls">
+          <button type="button" id="zoom-out">−</button>
+          <button type="button" id="zoom-in">+</button>
+          <button type="button" id="zoom-fit">Fit</button>
+          <button type="button" id="zoom-reset">Reset</button>
+        </div>
+        <div class="tool-divider" aria-hidden="true"></div>
+        <div class="tool-group" aria-label="Evidence detail controls">
+          <button type="button" id="detail-cluster">Clusters</button>
+          <button type="button" id="detail-claims">Claims</button>
+          <button type="button" id="detail-full">Full</button>
+        </div>
+        <div class="tool-divider" aria-hidden="true"></div>
+        <div class="tool-group" aria-label="Layout controls">
+          <button type="button" id="view-hierarchy">Hierarchy</button>
+          <button type="button" id="view-free">Free</button>
+        </div>
       </div>
       <div class="zoom-hint">Scroll to zoom · drag background to pan · start with Clusters, then open Claims and Full when you want more evidence detail</div>
       <svg id="graph"></svg>
@@ -611,18 +781,34 @@ def _render_html(payload: dict[str, Any]) -> str:
       <h2>Details</h2>
       <div id="detail" class="empty">Click a node, anomaly, hypothesis, or insight.</div>
       <div class="chat-panel" id="chat-panel">
-        <h2>Ask This Graph</h2>
-        <p class="empty compact" id="chat-context">Ask about the whole run, or click a node first for selection-aware analysis.</p>
+        <div class="chat-header">
+          <h2>Ask This Graph</h2>
+          <p class="empty compact" id="chat-context">Ask about the whole run, or click a node first to make the answer selection-aware.</p>
+          <div class="chat-toolbar">
+            <div class="chat-selection" id="chat-selection-state">Currently asking about the whole run.</div>
+            <div class="chat-toolbar-actions">
+              <div class="chat-limit" id="chat-limit-note">Recent context only · latest 6 messages stay in scope.</div>
+              <button type="button" class="chat-reset" id="graph-chat-clear" disabled>Ask about the whole run</button>
+            </div>
+          </div>
+        </div>
+        <div id="graph-chat-thread" class="chat-thread">
+          <div class="chat-message system">
+            <div class="chat-bubble">I only use this run's graph evidence and the most recent conversation turns, so the answers stay tight and grounded.</div>
+          </div>
+        </div>
         <div class="chat-starters" id="chat-starters">
           <button type="button" class="chat-chip">Why is this a conflict?</button>
           <button type="button" class="chat-chip">Which papers support this keyword?</button>
           <button type="button" class="chat-chip">What would resolve this disagreement?</button>
         </div>
         <form id="graph-chat-form" class="chat-form">
-          <textarea id="graph-chat-input" rows="3" placeholder="Ask a question about this graph..." {"" if payload.get("run_id") else "disabled"}></textarea>
-          <button type="submit" id="graph-chat-send" {"" if payload.get("run_id") else "disabled"}>Ask</button>
+          <textarea id="graph-chat-input" rows="2" placeholder="Message this graph..." {"" if payload.get("run_id") else "disabled"}></textarea>
+          <div class="chat-form-footer">
+            <div class="empty compact" id="graph-chat-status">{'Graph chat is available for completed runs.' if payload.get("run_id") else 'Graph chat is disabled for the community-wide aggregate map.'}</div>
+            <button type="submit" id="graph-chat-send" {"" if payload.get("run_id") else "disabled"}>Send</button>
+          </div>
         </form>
-        <div id="graph-chat-response" class="empty compact">{'Graph chat is available for completed runs.' if payload.get("run_id") else 'Graph chat is disabled for the community-wide aggregate map.'}</div>
       </div>
     </div>
   </main>
@@ -637,10 +823,14 @@ def _render_html(payload: dict[str, Any]) -> str:
     const anomaliesById = Object.fromEntries(DATA.anomalies.map(d => [d.anomaly_id, d]));
     const insightsById = Object.fromEntries((DATA.insights || []).map(d => [d.insight_id, d]));
     let selectedContext = null;
+    let chatMessages = [];
+    let chatPending = false;
+    const CHAT_CONTEXT_WINDOW = 6;
 
     const typeColor = {{
       Paper: '#6b7280',
       Claim: '#2563eb',
+      Role: '#f97316',
       Method: '#059669',
       Model: '#16a34a',
       Task: '#d97706',
@@ -684,6 +874,47 @@ def _render_html(payload: dict[str, Any]) -> str:
       return text.length > maxLen ? `${{text.slice(0, maxLen - 3)}}...` : text;
     }}
 
+    function humanizeNodeType(type) {{
+      return ({{
+        Task: 'Research task',
+        Method: 'Method family',
+        Model: 'Model family',
+        Mechanism: 'Mechanism',
+        TemporalProperty: 'Temporal property',
+        Domain: 'Research domain',
+        DataModality: 'Data modality',
+        RiskType: 'Risk or failure theme',
+        EvaluationProtocol: 'Evaluation protocol',
+        Dataset: 'Dataset or resource',
+        Role: 'Paper role'
+      }})[type] || 'Concept';
+    }}
+
+    function nodeGloss(node) {{
+      const glosses = {{
+        Task: 'A problem setting or task that papers evaluate.',
+        Method: 'A method family used to solve the task.',
+        Model: 'A model family or concrete model class.',
+        Mechanism: 'A proposed reason for why results improve or break.',
+        TemporalProperty: 'A temporal condition such as drift, non-stationarity, or horizon effects.',
+        Domain: 'An application or research domain that grounds the evidence.',
+        DataModality: 'The input modality or evidence type used in this area.',
+        RiskType: 'A risk, safety issue, or failure theme linked to the claims.',
+        EvaluationProtocol: 'An evaluation setup or testing protocol that shapes the reported result.',
+        Dataset: 'A dataset or benchmark resource used by linked papers.',
+        Role: node.description || 'A role used to group papers by their job in the literature.'
+      }};
+      return glosses[node.node_type] || 'A concept node connected to claims and papers in this run.';
+    }}
+
+    function paperRoleMeta(paper) {{
+      if (!paper) return '';
+      const label = paper.paper_role_label || (paper.paper_role ? paper.paper_role.replace(/^./, c => c.toUpperCase()) : '');
+      if (!label) return '';
+      const why = paper.paper_role_explanation || '';
+      return why ? `${{label}} · ${{why}}` : label;
+    }}
+
     function nodeLabel(node) {{
       if (node.node_type === 'Paper') {{
         const paper = paperFromNode(node);
@@ -705,6 +936,21 @@ def _render_html(payload: dict[str, Any]) -> str:
       return `<div class="field"><div class="label">${{esc(label)}}</div><div class="value">${{html}}</div></div>`;
     }}
 
+    function linkedClaimsForNode(nodeId) {{
+      const claimIds = new Set();
+      for (const edge of (DATA.graph.edges || [])) {{
+        const sourceId = endpointId(edge.source);
+        const targetId = endpointId(edge.target);
+        if (targetId === nodeId && String(sourceId).startsWith('Claim:')) {{
+          claimIds.add(String(sourceId).replace(/^Claim:/, ''));
+        }}
+        if (sourceId === nodeId && String(targetId).startsWith('Claim:')) {{
+          claimIds.add(String(targetId).replace(/^Claim:/, ''));
+        }}
+      }}
+      return Array.from(claimIds).map(cid => claimsById[cid]).filter(Boolean);
+    }}
+
     function pills(obj) {{
       if (!obj || !Object.keys(obj).length) return '';
       return Object.entries(obj).map(([k, v]) => `<span class="pill">${{esc(k)}}=${{esc(v)}}</span>`).join('');
@@ -715,46 +961,250 @@ def _render_html(payload: dict[str, Any]) -> str:
       document.getElementById('detail').innerHTML = html;
     }}
 
+    function trimChatHistory() {{
+      return chatMessages
+        .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+        .slice(-CHAT_CONTEXT_WINDOW)
+        .map(msg => ({{
+          role: msg.role,
+          content: msg.content
+        }}));
+    }}
+
+    function renderChatThread() {{
+      const threadEl = document.getElementById('graph-chat-thread');
+      if (!threadEl) return;
+      const welcome = `<div class="chat-message system"><div class="chat-bubble">I only use this run's graph evidence and the most recent conversation turns, so the answers stay tight and grounded.</div></div>`;
+      const body = chatMessages.map(msg => {{
+        const refs = (msg.citations || []).map(ref => {{
+          const label = ref.title || ref.claim_id || ref.paper_id || ref.id || 'reference';
+          return `<li>${{esc(label)}}</li>`;
+        }}).join('');
+        const meta = msg.meta ? `<div class="chat-meta">${{esc(msg.meta)}}</div>` : '';
+        const citations = refs ? `<ul class="chat-citations">${{refs}}</ul>` : '';
+        return `<div class="chat-message ${{esc(msg.role)}}"><div class="chat-bubble"><p>${{esc(msg.content)}}</p>${{meta}}${{citations}}</div></div>`;
+      }}).join('');
+      threadEl.innerHTML = welcome + body;
+      threadEl.scrollTop = threadEl.scrollHeight;
+    }}
+
+    function pushChatMessage(role, content, options = {{}}) {{
+      chatMessages.push({{
+        role,
+        content,
+        citations: options.citations || [],
+        meta: options.meta || ''
+      }});
+      if (chatMessages.length > 18) {{
+        chatMessages = chatMessages.slice(-18);
+      }}
+      renderChatThread();
+    }}
+
+    function updatePendingState(pending) {{
+      chatPending = pending;
+      const sendBtn = document.getElementById('graph-chat-send');
+      const input = document.getElementById('graph-chat-input');
+      const statusEl = document.getElementById('graph-chat-status');
+      if (sendBtn) {{
+        sendBtn.disabled = pending || !RUN_ID;
+        sendBtn.textContent = pending ? 'Thinking…' : 'Send';
+      }}
+      if (input) input.disabled = pending || !RUN_ID;
+      if (statusEl) {{
+        statusEl.textContent = pending
+          ? 'Reading only the selected evidence and recent chat turns...'
+          : (RUN_ID ? 'Graph chat is available for completed runs.' : 'Graph chat is disabled for the community-wide aggregate map.');
+      }}
+    }}
+
+    function syncChatContext() {{
+      const contextEl = document.getElementById('chat-context');
+      const selectionEl = document.getElementById('chat-selection-state');
+      const clearBtn = document.getElementById('graph-chat-clear');
+      const limitNote = document.getElementById('chat-limit-note');
+      if (contextEl) {{
+        contextEl.textContent = selectedContext?.label
+          ? `Selection-aware mode is on for ${{selectedContext.label}}.`
+          : 'Ask about the whole run, or click a node first to make the answer selection-aware.';
+      }}
+      if (selectionEl) {{
+        selectionEl.textContent = selectedContext?.label
+          ? `Currently asking about ${{selectedContext.label}}.`
+          : 'Currently asking about the whole run.';
+      }}
+      if (clearBtn) {{
+        clearBtn.disabled = !selectedContext;
+      }}
+      if (limitNote) {{
+        limitNote.textContent = selectedContext?.label
+          ? `Recent context only · latest ${{CHAT_CONTEXT_WINDOW}} messages + selected evidence.`
+          : `Recent context only · latest ${{CHAT_CONTEXT_WINDOW}} messages stay in scope.`;
+      }}
+    }}
+
+    function setSelectedContext(context) {{
+      selectedContext = context || null;
+      syncChatContext();
+    }}
+
+    function clearSelectedContext() {{
+      selectedContext = null;
+      document.querySelectorAll('button.item').forEach(btn => btn.classList.remove('active'));
+      clearHighlight();
+      syncChatContext();
+    }}
+
+    function titleCase(text) {{
+      return String(text || '')
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\\b\\w/g, char => char.toUpperCase());
+    }}
+
+    function indexLabel(prefix, id, fallbackIndex) {{
+      const match = String(id || '').match(/(\\d+)/);
+      const number = match ? Number(match[1]) : fallbackIndex;
+      return `${{prefix}} #${{number}}`;
+    }}
+
+    function humanizeAnomalyLabel(anomaly) {{
+      return `${{indexLabel('Conflict', anomaly.anomaly_id, 1)}} · ${{titleCase(anomaly.type || 'Conflict')}}`;
+    }}
+
+    function humanizeHypothesisLabel(hypothesis) {{
+      return `${{indexLabel('Hypothesis', hypothesis.hypothesis_id, 1)}}`;
+    }}
+
+    function humanizeInsightLabel(insight) {{
+      return `${{indexLabel('Insight', insight.insight_id, 1)}} · ${{titleCase(insight.type || 'Insight')}}`;
+    }}
+
     function renderSummary() {{
       const s = DATA.summary;
       const items = [
-        ['Papers', s.papers], ['Claims', s.claims], ['Nodes', s.nodes],
-        ['Edges', s.edges], ['Anomalies', s.anomalies], ['Hypotheses', s.hypotheses],
-        ['Insights', s.insights || 0]
-      ];
+        ['Papers', s.papers, true],
+        ['Claims', s.claims, true],
+        ['Nodes', s.nodes, true],
+        ['Edges', s.edges, true],
+        ['Conflicts', s.anomalies, (s.anomalies || 0) > 0],
+        ['Hypotheses', s.hypotheses, (s.hypotheses || 0) > 0],
+        ['Insights', s.insights || 0, (s.insights || 0) > 0]
+      ].filter(([, , visible]) => visible);
       document.getElementById('summary').innerHTML = items.map(([label, value]) =>
         `<div class="stat"><strong>${{value}}</strong><span>${{label}}</span></div>`
       ).join('');
     }}
 
     function renderLists() {{
+      const sectionState = {{
+        anomalies: {{
+          count: DATA.anomalies.length,
+          emptyMessage: 'No anomalies found.',
+          disabledMessage: 'No conflicts were detected in this run.'
+        }},
+        hypotheses: {{
+          count: DATA.hypotheses.length,
+          emptyMessage: 'No hypotheses generated.',
+          disabledMessage: 'No hypotheses generated yet for this run.'
+        }},
+        insights: {{
+          count: (DATA.insights || []).length,
+          emptyMessage: 'No community insights generated.',
+          disabledMessage: 'No community insights generated yet for this run.'
+        }}
+      }};
       const anomalyList = document.getElementById('anomaly-list');
       anomalyList.innerHTML = DATA.anomalies.length ? DATA.anomalies.map(a => `
         <button class="item" data-kind="anomaly" data-id="${{esc(a.anomaly_id)}}">
-          <div class="item-title">${{esc(a.anomaly_id)}} · ${{esc(a.type)}}</div>
+          <div class="item-title">${{esc(humanizeAnomalyLabel(a))}}</div>
           <div class="item-meta">${{esc(a.central_question)}}</div>
           <div class="item-meta">${{a.claim_ids.length}} claims · +${{a.positive_claims.length}} / -${{a.negative_claims.length}}</div>
         </button>
-      `).join('') : '<div class="empty">No anomalies found.</div>';
+      `).join('') : `<div class="empty">${{sectionState.anomalies.emptyMessage}}</div>`;
 
       const hypothesisList = document.getElementById('hypothesis-list');
       const shownHypotheses = DATA.hypotheses.slice(0, Math.min(DATA.hypotheses.length, 10));
       const hiddenHypothesisCount = Math.max(0, DATA.hypotheses.length - shownHypotheses.length);
       hypothesisList.innerHTML = DATA.hypotheses.length ? shownHypotheses.map(h => `
         <button class="item" data-kind="hypothesis" data-id="${{esc(h.hypothesis_id)}}">
-          <div class="item-title">${{esc(h.hypothesis_id)}} · ${{esc(h.anomaly_id)}}</div>
+          <div class="item-title">${{esc(humanizeHypothesisLabel(h))}}</div>
           <div class="item-meta">${{esc(h.hypothesis)}}</div>
         </button>
-      `).join('') + (hiddenHypothesisCount ? `<div class="empty">Showing ${{shownHypotheses.length}} of ${{DATA.hypotheses.length}} hypotheses to keep the map readable.</div>` : '') : '<div class="empty">No hypotheses generated.</div>';
+      `).join('') + (hiddenHypothesisCount ? `<div class="empty">Showing ${{shownHypotheses.length}} of ${{DATA.hypotheses.length}} hypotheses to keep the map readable.</div>` : '') : `<div class="empty">${{sectionState.hypotheses.emptyMessage}}</div>`;
 
       const insightList = document.getElementById('insight-list');
       insightList.innerHTML = (DATA.insights || []).length ? DATA.insights.map(i => `
         <button class="item" data-kind="insight" data-id="${{esc(i.insight_id)}}">
-          <div class="item-title">${{esc(i.insight_id)}} · ${{esc(i.type)}}</div>
+          <div class="item-title">${{esc(humanizeInsightLabel(i))}}</div>
           <div class="item-meta">${{esc(i.title)}}</div>
           <div class="item-meta">${{(i.communities || []).map(esc).join(' ↔ ')}}</div>
         </button>
-      `).join('') : '<div class="empty">No community insights generated.</div>';
+      `).join('') : `<div class="empty">${{sectionState.insights.emptyMessage}}</div>`;
+
+      const sections = [
+        {{
+          key: 'anomalies',
+          sectionId: 'anomalies-section',
+          sectionLabel: 'Conflicts',
+          countId: 'anomaly-count',
+          noteId: 'anomaly-disabled-note',
+          miniNavTarget: 'anomalies-section',
+          disabledMessage: sectionState.anomalies.disabledMessage
+        }},
+        {{
+          key: 'hypotheses',
+          sectionId: 'hypotheses-section',
+          sectionLabel: 'Hypotheses',
+          countId: 'hypothesis-count',
+          noteId: 'hypothesis-disabled-note',
+          miniNavTarget: 'hypotheses-section',
+          disabledMessage: sectionState.hypotheses.disabledMessage
+        }},
+        {{
+          key: 'insights',
+          sectionId: 'insights-section',
+          sectionLabel: 'Insights',
+          countId: 'insight-count',
+          noteId: 'insight-disabled-note',
+          miniNavTarget: 'insights-section',
+          disabledMessage: sectionState.insights.disabledMessage
+        }}
+      ];
+
+      sections.forEach(section => {{
+        const meta = sectionState[section.key];
+        const sectionEl = document.getElementById(section.sectionId);
+        const countEl = document.getElementById(section.countId);
+        const noteEl = document.getElementById(section.noteId);
+        const toggleEl = sectionEl?.querySelector('.fold-toggle');
+        const bodyEl = sectionEl?.querySelector('.fold-body');
+        const miniNavEl = document.querySelector(`.mini-nav-btn[data-target="${{section.miniNavTarget}}"]`);
+        const hasData = meta.count > 0;
+        if (countEl) countEl.textContent = hasData ? `${{meta.count}} ready` : 'Not available yet';
+        if (noteEl) noteEl.textContent = hasData ? '' : section.disabledMessage;
+        if (sectionEl) {{
+          sectionEl.classList.toggle('open', hasData && section.key === 'anomalies');
+          sectionEl.classList.toggle('disabled', !hasData);
+        }}
+        if (toggleEl) {{
+          toggleEl.disabled = !hasData;
+          toggleEl.title = hasData ? `Open ${{section.sectionLabel}}` : section.disabledMessage;
+          toggleEl.setAttribute('aria-disabled', String(!hasData));
+          toggleEl.onclick = hasData ? () => {{
+            sectionEl.classList.toggle('open');
+          }} : null;
+        }}
+        if (miniNavEl) {{
+          miniNavEl.disabled = !hasData;
+          miniNavEl.title = hasData ? `Jump to ${{section.sectionLabel}}` : section.disabledMessage;
+          miniNavEl.setAttribute('aria-disabled', String(!hasData));
+          miniNavEl.onclick = hasData ? () => {{
+            sectionEl.classList.add('open');
+            sectionEl.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+          }} : null;
+        }}
+      }});
 
       document.querySelectorAll('button.item').forEach(btn => {{
         btn.addEventListener('click', () => {{
@@ -768,11 +1218,18 @@ def _render_html(payload: dict[str, Any]) -> str:
     }}
 
     function renderDetailNode(node) {{
+      setSelectedContext({{
+        kind: 'node',
+        id: node.id,
+        label: nodeLabel(node)
+      }});
       const id = node.id || '';
       let html = `<h2>${{esc(node.node_type || 'Node')}}</h2>`;
       if (node.node_type === 'Paper') {{
         const paper = paperFromNode(node) || {{}};
         html += field('title', paper.title || id);
+        html += field('paper role', paper.paper_role_label || '');
+        html += field('role context', paper.paper_role_explanation || '');
         html += field('year', paper.year);
         html += field('venue', paper.venue);
         html += field('citations', paper.cited_by_count ?? node.cited_by_count);
@@ -801,59 +1258,105 @@ def _render_html(payload: dict[str, Any]) -> str:
         html += field('temporal property', claim.temporal_property);
         html += field('evidence', claim.evidence_span);
       }} else {{
-        html += field('id', id);
+        const linkedClaims = linkedClaimsForNode(id);
+        const linkedPapers = Array.from(new Map(
+          linkedClaims
+            .map(c => papersById[c.paper_id])
+            .filter(Boolean)
+            .map(p => [p.paper_id, p])
+        ).values());
+        const claimRows = linkedClaims.map(c => {{
+          const p = papersById[c.paper_id] || {{}};
+          const meta = paperRoleMeta(p);
+          return `<div class="field"><div class="label">${{esc(c.claim_id)}} · ${{esc(c.direction)}}</div><div class="value">${{esc(c.claim_text)}}<br><span class="muted-inline">${{paperLink(p, c.paper_id)}}${{meta ? ' · ' + esc(meta) : ''}}</span></div></div>`;
+        }}).join('');
+        const paperRows = linkedPapers.map(p => {{
+          const meta = [paperRoleMeta(p), p.retrieval_channel || '', p.selection_score ? `score ${{Number(p.selection_score).toFixed(2)}}` : ''].filter(Boolean).join(' · ');
+          return `<div class="field"><div class="label">${{esc(p.paper_id)}}</div><div class="value">${{paperLink(p, p.paper_id)}}${{meta ? '<br><span class="muted-inline">' + esc(meta) + '</span>' : ''}}</div></div>`;
+        }}).join('');
         html += field('label', nodeLabel(node));
+        html += field('what this means', nodeGloss(node));
+        html += field('node type', humanizeNodeType(node.node_type));
+        html += field('raw id', id);
+        html += `<h2>Connected Claims</h2>${{claimRows || '<div class="empty">No connected claims found.</div>'}}`;
+        html += `<h2>Source Papers</h2>${{paperRows || '<div class="empty">No linked papers found.</div>'}}`;
       }}
       showDetail(html);
     }}
 
     function renderAnomaly(a) {{
-      const claimRows = a.claim_ids.map(cid => claimsById[cid]).filter(Boolean).map(c => {{
-        const p = papersById[c.paper_id] || {{}};
-        return `<div class="field"><div class="label">${{esc(c.claim_id)}} · ${{esc(c.direction)}}</div><div class="value">${{paperLink(p, c.paper_id)}}<br>${{esc(c.claim_text)}}</div></div>`;
+      setSelectedContext({{
+        kind: 'conflict',
+        id: a.anomaly_id,
+        label: humanizeAnomalyLabel(a)
+      }});
+      const groupedByPaper = new Map();
+      a.claim_ids.map(cid => claimsById[cid]).filter(Boolean).forEach(c => {{
+        const key = c.paper_id || 'unknown-paper';
+        if (!groupedByPaper.has(key)) groupedByPaper.set(key, []);
+        groupedByPaper.get(key).push(c);
+      }});
+      const claimRows = Array.from(groupedByPaper.entries()).map(([paperId, groupedClaims]) => {{
+        const p = papersById[paperId] || {{}};
+        const claimList = groupedClaims.map(c =>
+          `<li><strong>${{esc(c.direction || 'claim')}}</strong> · ${{esc(c.claim_text)}}${{c.evidence_span ? `<br><span class="muted-inline">${{esc(c.evidence_span)}}</span>` : ''}}</li>`
+        ).join('');
+        return `<div class="field"><div class="label">${{paperLink(p, paperId)}}${{groupedClaims.length > 1 ? ` · ${{groupedClaims.length}} claims` : ' · 1 claim'}}</div><div class="value"><ul>${{claimList}}</ul></div></div>`;
       }}).join('');
       showDetail(`
-        <h2>${{esc(a.anomaly_id)}} · ${{esc(a.type)}}</h2>
+        <h2>${{esc(humanizeAnomalyLabel(a))}}</h2>
         ${{field('question', a.central_question)}}
         <div class="field"><div class="label">shared entities</div><div class="value">${{pills(a.shared_entities)}}</div></div>
         ${{a.varying_settings.length ? field('varying settings', a.varying_settings.join(', ')) : ''}}
         ${{field('evidence impact', a.evidence_impact ? Number(a.evidence_impact).toFixed(2) : '')}}
         ${{field('recent activity', a.recent_activity ? Number(a.recent_activity).toFixed(2) : '')}}
         ${{field('topology score', a.topology_score ? Number(a.topology_score).toFixed(2) : '')}}
-        <h2>Evidence Claims</h2>
+        ${{field('raw id', a.anomaly_id)}}
+        <h2>Claims</h2>
         ${{claimRows || '<div class="empty">No claim details.</div>'}}
       `);
     }}
 
     function renderHypothesis(h) {{
+      setSelectedContext({{
+        kind: 'hypothesis',
+        id: h.hypothesis_id,
+        label: humanizeHypothesisLabel(h)
+      }});
       const a = anomaliesById[h.anomaly_id];
       const claims = (h.explains_claims || []).map(cid => claimsById[cid]).filter(Boolean).map(c =>
         `<div class="field"><div class="label">${{esc(c.claim_id)}} · ${{esc(c.direction)}}</div><div class="value">${{esc(c.claim_text)}}</div></div>`
       ).join('');
       const preds = (h.predictions || []).map(p => `<li>${{esc(p)}}</li>`).join('');
       showDetail(`
-        <h2>${{esc(h.hypothesis_id)}} · Hypothesis</h2>
-        ${{field('anomaly', a ? `${{a.anomaly_id}} · ${{a.type}}` : h.anomaly_id)}}
+        <h2>${{esc(humanizeHypothesisLabel(h))}}</h2>
+        ${{field('conflict', a ? humanizeAnomalyLabel(a) : h.anomaly_id)}}
         ${{field('hypothesis', h.hypothesis)}}
         ${{field('mechanism', h.mechanism)}}
         <div class="field"><div class="label">predictions</div><div class="value"><ul>${{preds}}</ul></div></div>
         ${{field('minimal test', h.minimal_test)}}
         ${{field('evidence gap', h.evidence_gap)}}
-        <h2>Explained Claims</h2>
+        ${{field('raw id', h.hypothesis_id)}}
+        <h2>Claims</h2>
         ${{claims || '<div class="empty">No linked claims.</div>'}}
       `);
     }}
 
     function renderInsight(i) {{
+      setSelectedContext({{
+        kind: 'insight',
+        id: i.insight_id,
+        label: humanizeInsightLabel(i)
+      }});
       const concepts = (i.shared_concepts || []).map(c => `<span class="pill">${{esc(c)}}</span>`).join('');
       const papers = (i.evidence_papers || []).map(pid => {{
         const p = papersById[pid] || {{}};
-        const meta = [p.retrieval_channel, p.selection_score ? `score ${{Number(p.selection_score).toFixed(2)}}` : '', p.selection_reason].filter(Boolean).join(' · ');
+        const meta = [paperRoleMeta(p), p.retrieval_channel, p.selection_score ? `score ${{Number(p.selection_score).toFixed(2)}}` : '', p.selection_reason].filter(Boolean).join(' · ');
         return `<div class="field"><div class="label">${{esc(pid)}}</div><div class="value">${{paperLink(p, pid)}}${{meta ? '<br><span class="muted">' + esc(meta) + '</span>' : ''}}</div></div>`;
       }}).join('');
       const suggestions = (i.transfer_suggestions || []).map(s => `<li>${{esc(s)}}</li>`).join('');
       showDetail(`
-        <h2>${{esc(i.insight_id)}} · ${{esc(i.type)}}</h2>
+        <h2>${{esc(humanizeInsightLabel(i))}}</h2>
         ${{field('title', i.title)}}
         ${{field('communities', (i.communities || []).join(' ↔ '))}}
         <div class="field"><div class="label">shared concepts</div><div class="value">${{concepts}}</div></div>
@@ -862,9 +1365,97 @@ def _render_html(payload: dict[str, Any]) -> str:
         ${{field('citation gap', i.citation_gap)}}
         <div class="field"><div class="label">transfer suggestions</div><div class="value"><ul>${{suggestions}}</ul></div></div>
         ${{field('scores', `impact=${{Number(i.impact_score || 0).toFixed(2)}}, topology=${{Number(i.topology_score || 0).toFixed(2)}}, confidence=${{Number(i.confidence_score || 0).toFixed(2)}}`)}}
+        ${{field('raw id', i.insight_id)}}
         <h2>Evidence Papers</h2>
         ${{papers || '<div class="empty">No linked papers.</div>'}}
       `);
+    }}
+
+    async function submitGraphChat(question) {{
+      if (!RUN_ID) return;
+      pushChatMessage('user', question, {{
+        meta: selectedContext?.label ? `Context: ${{selectedContext.label}}` : 'Context: whole run'
+      }});
+      updatePendingState(true);
+      try {{
+        const resp = await fetch('/api/graph-chat', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{
+            run_id: RUN_ID,
+            question,
+            selection: selectedContext || {{}},
+            history: trimChatHistory()
+          }})
+        }});
+        const data = await resp.json();
+        updatePendingState(false);
+        if (!resp.ok) {{
+          pushChatMessage('assistant', data.error || 'Graph chat failed.', {{
+            meta: 'The graph context stayed unchanged.'
+          }});
+          return;
+        }}
+        pushChatMessage('assistant', data.answer || 'No answer available.', {{
+          citations: data.citations || data.references || [],
+          meta: selectedContext?.label ? `Grounded in ${{selectedContext.label}}` : 'Grounded in the whole run'
+        }});
+        syncChatContext();
+      }} catch (error) {{
+        updatePendingState(false);
+        pushChatMessage('assistant', 'Graph chat failed.', {{
+          meta: 'The graph context stayed unchanged.'
+        }});
+      }}
+    }}
+
+    function wireGraphChat() {{
+      const form = document.getElementById('graph-chat-form');
+      const input = document.getElementById('graph-chat-input');
+      const clearBtn = document.getElementById('graph-chat-clear');
+      if (!form || !input || !RUN_ID) return;
+      syncChatContext();
+      renderChatThread();
+      updatePendingState(false);
+      input.addEventListener('input', () => {{
+        input.style.height = 'auto';
+        input.style.height = `${{Math.min(input.scrollHeight, 160)}}px`;
+      }});
+      input.addEventListener('keydown', async event => {{
+        if (event.key === 'Enter' && !event.shiftKey) {{
+          event.preventDefault();
+          if (chatPending) return;
+          const question = input.value.trim();
+          if (!question) return;
+          input.value = '';
+          input.style.height = 'auto';
+          await submitGraphChat(question);
+        }}
+      }});
+      form.addEventListener('submit', async event => {{
+        event.preventDefault();
+        if (chatPending) return;
+        const question = input.value.trim();
+        if (!question) return;
+        input.value = '';
+        input.style.height = 'auto';
+        await submitGraphChat(question);
+      }});
+      document.querySelectorAll('.chat-chip').forEach(btn => {{
+        btn.addEventListener('click', async () => {{
+          if (chatPending) return;
+          const question = btn.textContent.trim();
+          input.value = '';
+          input.style.height = 'auto';
+          await submitGraphChat(question);
+        }});
+      }});
+      if (clearBtn) {{
+        clearBtn.addEventListener('click', () => {{
+          clearSelectedContext();
+          input.focus();
+        }});
+      }}
     }}
 
     let svg, viewport, zoomBehavior, nodeSel, linkSel, labelSel, currentWidth = 0, currentHeight = 0;
@@ -874,12 +1465,13 @@ def _render_html(payload: dict[str, Any]) -> str:
     const hierarchyLanes = IS_COMMUNITY_GRAPH
       ? [
           {{ key: 'keyword', label: 'Keyword', types: ['Domain', 'Task', 'TemporalProperty', 'DataModality', 'RiskType', 'Method', 'Model', 'Mechanism'] }},
+          {{ key: 'role', label: 'Role', types: ['Role'] }},
           {{ key: 'claim', label: 'Claims', types: ['Claim'] }},
           {{ key: 'paper', label: 'Papers', types: ['Paper'] }},
         ]
       : [
           {{ key: 'topic', label: 'Topic', types: ['Domain', 'Task', 'TemporalProperty', 'DataModality', 'RiskType'] }},
-          {{ key: 'method', label: 'Method', types: ['Method', 'Model', 'Mechanism', 'Baseline', 'Setting'] }},
+          {{ key: 'method', label: 'Method', types: ['Method', 'Model', 'Mechanism', 'Baseline', 'Setting', 'Role'] }},
           {{ key: 'evidence', label: 'Evidence', types: ['Paper', 'Claim'] }},
           {{ key: 'evaluation', label: 'Evaluation', types: ['Dataset', 'Metric', 'FailureMode', 'EvaluationProtocol', 'Assumption'] }},
         ];
@@ -889,6 +1481,7 @@ def _render_html(payload: dict[str, Any]) -> str:
     const clusterNodeTypes = new Set([
       'Method',
       'Model',
+      'Role',
       'Task',
       'Domain',
       'Mechanism',
@@ -902,6 +1495,7 @@ def _render_html(payload: dict[str, Any]) -> str:
           'Claim',
           'Method',
           'Model',
+          'Role',
           'Task',
           'Domain',
           'Mechanism',
@@ -913,6 +1507,7 @@ def _render_html(payload: dict[str, Any]) -> str:
           'Paper',
           'Claim',
           'Method',
+          'Role',
           'Task',
           'Domain',
           'Mechanism',
@@ -1208,6 +1803,11 @@ def _render_html(payload: dict[str, Any]) -> str:
           updateLabelVisibility(event.transform);
         }});
       svg.call(zoomBehavior);
+      svg.on('click', event => {{
+        const target = event.target;
+        if (target?.closest?.('.node')) return;
+        clearSelectedContext();
+      }});
 
       linkSel = viewport.append('g')
         .selectAll('line')
@@ -1336,6 +1936,8 @@ def _render_html(payload: dict[str, Any]) -> str:
     renderLists();
     renderLegend();
     updateViewButtons();
+    wireGraphChat();
+    syncChatContext();
     drawGraph();
     window.addEventListener('resize', () => drawGraph());
     if (DATA.anomalies.length) selectAnomaly(DATA.anomalies[0].anomaly_id);

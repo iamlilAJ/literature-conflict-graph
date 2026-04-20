@@ -185,6 +185,8 @@ def test_fetch_openalex_balanced_uses_multi_channel_pool_and_reranks():
     assert len(papers) == 3
     assert all(p.selection_score > 0 for p in papers)
     assert {p.retrieval_channel for p in papers} <= {"relevance", "impact", "recent", "survey", "critical"}
+    assert any(p.paper_role in {"survey", "benchmark"} for p in papers)
+    assert any(p.paper_role == "failure" for p in papers)
 
 
 def test_fetch_openalex_accepts_custom_citation_weight():

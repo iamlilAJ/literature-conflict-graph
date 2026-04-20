@@ -48,8 +48,32 @@ class Paper(LooseModel):
     retrieval_channel: Optional[str] = None
     abstract: str = ""
     text: str = ""
+    paper_role: Optional[str] = None
+    paper_role_score: float = 0.0
+    paper_role_signals: list[str] = Field(default_factory=list)
     # Optional list of claim dicts to make rule extraction deterministic.
     structured_hint: Optional[list[dict]] = None
+
+
+class PaperReadCandidate(LooseModel):
+    sentence: str
+    evidence_span: str
+    evidence_source_field: Optional[Literal["text", "abstract"]] = None
+    evidence_sentence_index: Optional[int] = None
+    evidence_char_start: Optional[int] = None
+    evidence_char_end: Optional[int] = None
+    subject_raw: Optional[str] = None
+    predicate: Optional[str] = None
+    object_raw: Optional[str] = None
+    dataset_raw: Optional[str] = None
+    metric_raw: Optional[str] = None
+    baseline_raw: Optional[str] = None
+    direction: Optional[Direction] = None
+    magnitude_text: Optional[str] = None
+    conditions: list[str] = Field(default_factory=list)
+    scope: list[str] = Field(default_factory=list)
+    candidate_score: float = 0.0
+    selection_reason: Optional[str] = None
 
 
 class Setting(LooseModel):
@@ -74,6 +98,26 @@ class Claim(LooseModel):
     direction: Direction = "positive"
     setting: Setting = Field(default_factory=Setting)
     evidence_span: str = ""
+    subject_raw: Optional[str] = None
+    subject_canonical: Optional[str] = None
+    predicate: Optional[str] = None
+    object_raw: Optional[str] = None
+    object_canonical: Optional[str] = None
+    dataset_raw: Optional[str] = None
+    dataset_canonical: Optional[str] = None
+    metric_raw: Optional[str] = None
+    metric_canonical: Optional[str] = None
+    baseline_raw: Optional[str] = None
+    baseline_canonical: Optional[str] = None
+    magnitude_text: Optional[str] = None
+    magnitude_value: Optional[float] = None
+    magnitude_unit: Optional[str] = None
+    conditions: list[str] = Field(default_factory=list)
+    scope: list[str] = Field(default_factory=list)
+    evidence_source_field: Optional[Literal["text", "abstract"]] = None
+    evidence_sentence_index: Optional[int] = None
+    evidence_char_start: Optional[int] = None
+    evidence_char_end: Optional[int] = None
     # Canonicalized cluster keys (filled by LLM extractor; optional for rule-based).
     canonical_method: Optional[str] = None
     canonical_task: Optional[str] = None

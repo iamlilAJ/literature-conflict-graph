@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 from pydantic import ValidationError
 
+from .claim_schema import normalize_structured_claim_payload
 from .extract import ClaimExtractor
 from .llm_client import (
     DEFAULT_MAX_TOKENS,
@@ -24,7 +25,7 @@ from .llm_client import (
     configured_base_url,
     configured_model,
 )
-from .models import Claim, Paper, Setting
+from .models import Claim, Paper, PaperReadCandidate, Setting
 
 
 logger = logging.getLogger(__name__)
@@ -85,10 +86,19 @@ SYSTEM_PROMPT = (
     "You are a careful scientific claim extractor. Given an AI paper's title and "
     "abstract/text, extract 0 to 3 structured claims. Never invent details: if a "
     "field is not explicitly stated, set it to null. Copy evidence_span verbatim "
-    "from the provided title or abstract (no paraphrasing). Return a JSON object "
+    "from the provided text body (no paraphrasing). Return a JSON object "
     "directly. Do not explain your reasoning. Do not include analysis. "
     'with one key "claims" whose value is a list. Each claim has these fields:\n'
     "- claim_text: string, a concise restatement of the claim\n"
+    "- subject_raw: string or null\n"
+    "- predicate: string or null\n"
+    "- object_raw: string or null\n"
+    "- dataset_raw: string or null\n"
+    "- metric_raw: string or null\n"
+    "- baseline_raw: string or null\n"
+    "- magnitude_text: string or null (e.g. +8.2 EM, -3pp)\n"
+    "- conditions: list of strings\n"
+    "- scope: list of strings\n"
     "- claim_type: one of performance_improvement, limitation, comparison, "
     "setting_effect, mechanism\n"
     "- method: string or null (free-text, e.g., RAG, DPR, chain-of-thought)\n"
@@ -110,6 +120,10 @@ SYSTEM_PROMPT = (
     "(each string or null). task_type must be one of factual, multi-hop, "
     "long-context, agentic, reasoning, evaluation, or null.\n"
     "- evidence_span: short quote copied verbatim from the abstract/text\n"
+    "- evidence_source_field: text or abstract or null\n"
+    "- evidence_sentence_index: integer or null\n"
+    "- evidence_char_start: integer or null\n"
+    "- evidence_char_end: integer or null\n"
     "- domain: string or null (e.g., finance, medicine, time series, robotics)\n"
     "- data_modality: string or null (e.g., text, time series, text + time series)\n"
     "- mechanism: string or null (explicit mechanism, e.g., event grounding, preference optimization)\n"
@@ -144,8 +158,14 @@ class LLMClaimExtractor(ClaimExtractor):
         self._client = build_openai_client(api_key=self._api_key, base_url=self._base_url)
         return self._client
 
-    def extract(self, paper: Paper, start_index: int = 0) -> list[Claim]:
-        content = _paper_context(paper)
+    def extract(
+        self,
+        paper: Paper,
+        start_index: int = 0,
+        *,
+        candidates: list[PaperReadCandidate] | None = None,
+    ) -> list[Claim]:
+        content = _paper_context(paper, candidates=candidates)
         if not content.strip():
             return []
         try:
@@ -196,7 +216,41 @@ class LLMClaimExtractor(ClaimExtractor):
         return claims
 
 
-def _paper_context(paper: Paper) -> str:
+def _paper_context(paper: Paper, *, candidates: list[PaperReadCandidate] | None = None) -> str:
+    if candidates:
+        abstract_prefix = (paper.abstract or "").strip()
+        if len(abstract_prefix) > 600:
+            abstract_prefix = abstract_prefix[:600].rsplit(" ", 1)[0] + "..."
+        candidate_lines = []
+        for idx, candidate in enumerate(candidates):
+            candidate_lines.append(
+                json.dumps(
+                    {
+                        "candidate_index": idx,
+                        "sentence": candidate.sentence,
+                        "evidence_span": candidate.evidence_span,
+                        "subject_raw": candidate.subject_raw,
+                        "predicate": candidate.predicate,
+                        "object_raw": candidate.object_raw,
+                        "dataset_raw": candidate.dataset_raw,
+                        "metric_raw": candidate.metric_raw,
+                        "baseline_raw": candidate.baseline_raw,
+                        "direction": candidate.direction,
+                        "magnitude_text": candidate.magnitude_text,
+                        "conditions": candidate.conditions,
+                        "scope": candidate.scope,
+                        "candidate_score": candidate.candidate_score,
+                        "selection_reason": candidate.selection_reason,
+                    },
+                    ensure_ascii=False,
+                )
+            )
+        return (
+            f"Title: {paper.title}\n\n"
+            f"Abstract prefix:\n{abstract_prefix}\n\n"
+            "Claim candidate pool (use only these grounded spans as evidence):\n"
+            + "\n".join(candidate_lines)
+        ).strip()
     body = paper.abstract or paper.text or ""
     return f"Title: {paper.title}\n\nAbstract/Text:\n{body}".strip()
 
@@ -237,31 +291,18 @@ def _normalize_claim_dict(item: dict, paper: Paper) -> Optional[dict]:
     if task_type is not None and task_type not in _ALLOWED_TASK_TYPES:
         task_type = None
 
-    evidence_span = (item.get("evidence_span") or "").strip()
-    # Guard against hallucinated quotes: require the span to appear in the paper.
-    haystack = f"{paper.title}\n{paper.abstract}\n{paper.text}"
-    if evidence_span and evidence_span not in haystack:
-        # Accept as long as a sufficiently long prefix appears; else drop it.
-        prefix = evidence_span[:60]
-        if prefix and prefix not in haystack:
-            evidence_span = ""
-
-    claim_text = (item.get("claim_text") or "").strip()
-    if not claim_text:
+    normalized = normalize_structured_claim_payload(item, paper, trust_evidence_if_no_body=False)
+    if normalized is None:
         return None
 
     return {
-        "claim_text": claim_text,
+        **normalized,
         "claim_type": claim_type,
-        "method": _clean_str(item.get("method")),
+        "method": normalized.get("method") or _clean_str(item.get("method")),
         "canonical_method": _canonicalize(item.get("canonical_method"), _CANONICAL_METHODS_LOWER),
         "model": _clean_str(item.get("model")),
-        "task": _clean_str(item.get("task")),
+        "task": normalized.get("task") or _clean_str(item.get("task")),
         "canonical_task": _canonicalize(item.get("canonical_task"), _CANONICAL_TASKS_LOWER),
-        "dataset": _clean_str(item.get("dataset")),
-        "metric": _clean_str(item.get("metric")),
-        "baseline": _clean_str(item.get("baseline")),
-        "result": _clean_str(item.get("result")),
         "direction": direction,
         "setting": Setting(
             retriever=_clean_str(setting_raw.get("retriever")),
@@ -269,7 +310,6 @@ def _normalize_claim_dict(item: dict, paper: Paper) -> Optional[dict]:
             context_length=_clean_str(setting_raw.get("context_length")),
             task_type=task_type,
         ),
-        "evidence_span": evidence_span,
         "domain": _clean_str(item.get("domain")),
         "data_modality": _clean_str(item.get("data_modality")),
         "mechanism": _clean_str(item.get("mechanism")),

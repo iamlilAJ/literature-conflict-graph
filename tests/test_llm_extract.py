@@ -1,7 +1,7 @@
 import json
 
 from aigraph.llm_extract import LLMClaimExtractor
-from aigraph.models import Paper
+from aigraph.models import Paper, PaperReadCandidate
 
 
 class _FakeMessage:
@@ -77,6 +77,15 @@ def test_parses_strict_json_response_into_claim():
         "claims": [
             {
                 "claim_text": "RAG improves factual QA by +8.2 EM.",
+                "subject_raw": "RAG",
+                "predicate": "improves",
+                "object_raw": "factual QA",
+                "dataset_raw": "NaturalQuestions",
+                "metric_raw": "Exact Match",
+                "baseline_raw": "closed-book LLM",
+                "magnitude_text": "+8.2 EM",
+                "conditions": ["top_k = 5"],
+                "scope": ["factual QA"],
                 "claim_type": "performance_improvement",
                 "method": "RAG",
                 "model": "GPT-3.5",
@@ -112,6 +121,18 @@ def test_parses_strict_json_response_into_claim():
     assert claims[0].method == "RAG"
     assert claims[0].setting.task_type == "factual"
     assert claims[0].evidence_span == abstract
+    assert claims[0].subject_raw == "RAG"
+    assert claims[0].predicate == "improves"
+    assert claims[0].dataset_canonical == "naturalquestions"
+    assert claims[0].metric_canonical == "exact-match"
+    assert claims[0].baseline_canonical == "closed-book llm"
+    assert claims[0].magnitude_value == 8.2
+    assert claims[0].magnitude_unit == "em"
+    assert claims[0].conditions == ["top_k = 5"]
+    assert claims[0].scope == ["factual QA"]
+    assert claims[0].evidence_source_field == "text"
+    assert claims[0].evidence_char_start is not None
+    assert claims[0].evidence_char_end is not None
     assert claims[0].domain == "finance"
     assert claims[0].data_modality == "text + time series"
     assert claims[0].mechanism == "event grounding"
@@ -176,6 +197,7 @@ def test_rejects_hallucinated_evidence_span():
     # Claim is still produced, but the bogus span is dropped.
     assert len(claims) == 1
     assert claims[0].evidence_span == ""
+    assert claims[0].evidence_char_start is None
 
 
 def test_malformed_json_returns_empty_list():
@@ -183,6 +205,47 @@ def test_malformed_json_returns_empty_list():
     extractor = LLMClaimExtractor(model="stub", client=client, api_key="test-key")
     claims = extractor.extract(_paper_with_abstract("something"))
     assert claims == []
+
+
+def test_candidate_pool_context_is_used_when_reader_candidates_are_present():
+    abstract = "Background text that should not be the only thing the model sees."
+    payload = {
+        "claims": [
+            {
+                "claim_text": "RAG improves factual QA by +8.2 EM.",
+                "method": "RAG",
+                "direction": "positive",
+                "evidence_span": "RAG improves factual QA on NaturalQuestions by +8.2 EM over a closed-book LLM.",
+            }
+        ]
+    }
+    client = _FakeClient(json.dumps(payload))
+    extractor = LLMClaimExtractor(model="stub-model", client=client, api_key="test-key")
+    candidates = [
+        PaperReadCandidate(
+            sentence="RAG improves factual QA on NaturalQuestions by +8.2 EM over a closed-book LLM.",
+            evidence_span="RAG improves factual QA on NaturalQuestions by +8.2 EM over a closed-book LLM.",
+            evidence_source_field="text",
+            evidence_sentence_index=0,
+            evidence_char_start=0,
+            evidence_char_end=74,
+            subject_raw="RAG",
+            predicate="improves",
+            object_raw="factual QA",
+            dataset_raw="NaturalQuestions",
+            metric_raw="Exact Match",
+            baseline_raw="closed-book LLM",
+            direction="positive",
+            magnitude_text="+8.2 EM",
+            candidate_score=0.9,
+            selection_reason="metric + delta",
+        )
+    ]
+    claims = extractor.extract(_paper_with_abstract(abstract), candidates=candidates)
+    assert len(claims) == 1
+    call = client.chat.completions.calls[0]
+    assert "Claim candidate pool" in call["messages"][1]["content"]
+    assert "NaturalQuestions" in call["messages"][1]["content"]
 
 
 def test_invalid_enum_values_are_normalized():
@@ -238,3 +301,28 @@ def test_canonical_method_and_task_are_validated():
     assert claims[0].canonical_task == "domain-QA"
     assert claims[1].canonical_method is None
     assert claims[1].canonical_task == "factual-QA"
+
+
+def test_llm_payload_with_normalized_span_keeps_grounding_but_no_exact_offsets():
+    abstract = "RAG improves factual QA on\nNaturalQuestions by +8.2 EM."
+    payload = {
+        "claims": [
+            {
+                "claim_text": "RAG improves factual QA by +8.2 EM.",
+                "subject_raw": "RAG",
+                "predicate": "improves",
+                "object_raw": "factual QA",
+                "dataset_raw": "NaturalQuestions",
+                "metric_raw": "EM",
+                "direction": "positive",
+                "evidence_span": "RAG improves factual QA on NaturalQuestions by +8.2 EM.",
+            }
+        ]
+    }
+    client = _FakeClient(json.dumps(payload))
+    extractor = LLMClaimExtractor(model="stub", client=client, api_key="test-key")
+    claims = extractor.extract(_paper_with_abstract(abstract))
+    assert len(claims) == 1
+    assert claims[0].evidence_span
+    assert claims[0].evidence_char_start is None
+    assert claims[0].evidence_char_end is None

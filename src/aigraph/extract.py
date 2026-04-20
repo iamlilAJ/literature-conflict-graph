@@ -2,140 +2,137 @@
 
 from __future__ import annotations
 
-import re
 from abc import ABC, abstractmethod
 from typing import Iterable
 
-from .models import Claim, Paper, Setting
+from .claim_schema import (
+    normalize_structured_claim_payload,
+)
+from .models import Claim, Paper, PaperReadCandidate, Setting
+from .paper_reader import (
+    HeuristicPaperReader,
+    read_paper_candidates,
+)
 
 
 class ClaimExtractor(ABC):
     @abstractmethod
-    def extract(self, paper: Paper, start_index: int = 0) -> list[Claim]:
+    def extract(
+        self,
+        paper: Paper,
+        start_index: int = 0,
+        *,
+        candidates: list[PaperReadCandidate] | None = None,
+    ) -> list[Claim]:
         """Return claims for a single paper. `start_index` lets the caller allocate global IDs."""
-
-
-_DIRECTION_CUES = {
-    "positive": ("improve", "improves", "boost", "boosts", "gains", "helps", "outperform"),
-    "negative": ("hurts", "degrades", "reduces", "drops", "fails", "worse"),
-    "mixed": ("mixed", "uneven", "noisy", "inconsistent", "introduces irrelevant"),
-}
-
-_DELTA_RE = re.compile(r"([+\-−])\s*(\d+(?:\.\d+)?)")
 
 
 class RuleBasedExtractor(ClaimExtractor):
     """Prefer `paper.structured_hint` if present; fall back to regex heuristics."""
 
-    def extract(self, paper: Paper, start_index: int = 0) -> list[Claim]:
+    def extract(
+        self,
+        paper: Paper,
+        start_index: int = 0,
+        *,
+        candidates: list[PaperReadCandidate] | None = None,
+    ) -> list[Claim]:
         if paper.structured_hint:
             claims: list[Claim] = []
             for i, hint in enumerate(paper.structured_hint):
                 claim_id = f"c{start_index + i + 1:03d}"
+                normalized = normalize_structured_claim_payload(
+                    hint,
+                    paper,
+                    trust_evidence_if_no_body=True,
+                )
+                if normalized is None:
+                    continue
                 data = {
                     "claim_id": claim_id,
                     "paper_id": paper.paper_id,
-                    "claim_text": hint.get("claim_text", ""),
                     "claim_type": hint.get("claim_type", "performance_improvement"),
-                    "method": hint.get("method"),
-                    "model": hint.get("model"),
-                    "task": hint.get("task"),
-                    "dataset": hint.get("dataset"),
-                    "metric": hint.get("metric"),
-                    "baseline": hint.get("baseline"),
-                    "result": hint.get("result"),
-                    "direction": hint.get("direction", "positive"),
+                    "direction": normalized.get("direction") or hint.get("direction", "positive"),
                     "setting": Setting.model_validate(hint.get("setting", {})),
-                    "evidence_span": hint.get("evidence_span", ""),
+                    **normalized,
                 }
                 claims.append(Claim.model_validate(data))
             return claims
 
+        if candidates:
+            return self._claims_from_candidates(paper, candidates, start_index)
+
         return self._heuristic_extract(paper, start_index)
 
     def _heuristic_extract(self, paper: Paper, start_index: int) -> list[Claim]:
-        text = f"{paper.abstract}\n{paper.text}".strip()
-        if not text:
-            return []
+        candidates = HeuristicPaperReader(max_prefilter_sentences=1000).read(paper).candidates
+        return self._claims_from_candidates(paper, candidates, start_index)
 
+    def _claims_from_candidates(
+        self,
+        paper: Paper,
+        candidates: list[PaperReadCandidate],
+        start_index: int,
+    ) -> list[Claim]:
         claims: list[Claim] = []
-        for i, sentence in enumerate(_split_sentences(text)):
-            direction = _guess_direction(sentence)
-            delta = _DELTA_RE.search(sentence)
-            if not (direction or delta):
-                continue
+        for candidate in candidates:
             claim_id = f"c{start_index + len(claims) + 1:03d}"
+            normalized = normalize_structured_claim_payload(
+                {
+                    "claim_text": candidate.sentence.strip(),
+                    "method": candidate.subject_raw,
+                    "task": candidate.object_raw,
+                    "dataset": candidate.dataset_raw,
+                    "metric": candidate.metric_raw,
+                    "baseline": candidate.baseline_raw,
+                    "direction": candidate.direction or "positive",
+                    "subject_raw": candidate.subject_raw,
+                    "predicate": candidate.predicate,
+                    "object_raw": candidate.object_raw,
+                    "magnitude_text": candidate.magnitude_text,
+                    "conditions": candidate.conditions,
+                    "scope": candidate.scope,
+                    "evidence_span": candidate.evidence_span,
+                },
+                paper,
+            )
+            if normalized is None:
+                continue
+            normalized["evidence_source_field"] = candidate.evidence_source_field
+            normalized["evidence_sentence_index"] = candidate.evidence_sentence_index
+            normalized["evidence_char_start"] = candidate.evidence_char_start
+            normalized["evidence_char_end"] = candidate.evidence_char_end
             claims.append(
-                Claim(
-                    claim_id=claim_id,
-                    paper_id=paper.paper_id,
-                    claim_text=sentence.strip(),
-                    claim_type="performance_improvement" if direction == "positive" else "limitation",
-                    method=_guess_method(sentence),
-                    task=_guess_task(sentence),
-                    direction=direction or "positive",
-                    result=(delta.group(0) if delta else None),
-                    evidence_span=sentence.strip(),
+                Claim.model_validate(
+                    {
+                        "claim_id": claim_id,
+                        "paper_id": paper.paper_id,
+                        "claim_type": "performance_improvement" if candidate.direction == "positive" else "limitation",
+                        "direction": candidate.direction or "positive",
+                        **normalized,
+                    }
                 )
             )
         return claims
 
 
-def _split_sentences(text: str) -> list[str]:
-    return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
-
-
-def _guess_direction(sentence: str) -> str | None:
-    low = sentence.lower()
-    for direction, cues in _DIRECTION_CUES.items():
-        if any(cue in low for cue in cues):
-            return direction
-    return None
-
-
-_METHOD_KEYWORDS = [
-    "RAG",
-    "DPR",
-    "BM25",
-    "retrieval-augmented",
-    "chain-of-thought",
-    "reranking",
-]
-
-
-def _guess_method(sentence: str) -> str | None:
-    low = sentence.lower()
-    for kw in _METHOD_KEYWORDS:
-        if kw.lower() in low:
-            return kw
-    return None
-
-
-_TASK_KEYWORDS = [
-    ("multi-hop", "multi-hop QA"),
-    ("hotpotqa", "multi-hop QA"),
-    ("naturalquestions", "factual QA"),
-    ("factual", "factual QA"),
-    ("long-context", "long-context QA"),
-    ("agentic", "agentic QA"),
-]
-
-
-def _guess_task(sentence: str) -> str | None:
-    low = sentence.lower()
-    for needle, canonical in _TASK_KEYWORDS:
-        if needle in low:
-            return canonical
-    return None
-
-
 def extract_claims(
     papers: Iterable[Paper],
     extractor: ClaimExtractor | None = None,
+    *,
+    reader_mode: str | None = None,
+    reader_model: str | None = None,
+    reader_max_candidates: int | None = None,
 ) -> list[Claim]:
     extractor = extractor or RuleBasedExtractor()
     all_claims: list[Claim] = []
     for paper in papers:
-        new_claims = extractor.extract(paper, start_index=len(all_claims))
+        candidates = read_paper_candidates(
+            paper,
+            mode=reader_mode,
+            model=reader_model,
+            max_candidates=reader_max_candidates,
+        ).candidates
+        new_claims = extractor.extract(paper, start_index=len(all_claims), candidates=candidates)
         all_claims.extend(new_claims)
     return all_claims

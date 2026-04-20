@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import json
 import math
+import os
 import re
 from datetime import datetime
 from typing import Any, Literal
 
+from .llm_client import build_openai_client, call_llm_text, configured_api_key, configured_model
 from .models import Paper
 
 
@@ -101,6 +104,87 @@ GENERIC_RESEARCH_TERMS = {
     "method",
     "methods",
 }
+PAPER_ROLES: tuple[str, ...] = ("survey", "benchmark", "dataset", "method", "industry", "failure", "other")
+ROLE_LABELS = {
+    "survey": "Survey paper",
+    "benchmark": "Benchmark paper",
+    "dataset": "Dataset/resource paper",
+    "method": "Method paper",
+    "industry": "Industry/system paper",
+    "failure": "Failure-analysis paper",
+    "other": "Other paper",
+}
+ROLE_EXPLANATIONS = {
+    "survey": "Maps the field, taxonomy, or prior landscape.",
+    "benchmark": "Defines an evaluation protocol, benchmark, or systematic comparison.",
+    "dataset": "Introduces a dataset, corpus, benchmark resource, or data card.",
+    "method": "Primarily proposes or improves a model, method, or framework.",
+    "industry": "Focuses on deployment, systems, serving, or real-world operation.",
+    "failure": "Revisits claims, highlights limitations, or analyzes failure modes.",
+    "other": "Included as supporting context when no clear role signal wins.",
+}
+ROLE_KEYWORDS: dict[str, tuple[tuple[str, float], ...]] = {
+    "survey": (
+        ("survey", 3.4),
+        ("review", 3.0),
+        ("overview", 2.8),
+        ("taxonomy", 3.0),
+        ("tutorial", 2.6),
+        ("systematic review", 3.4),
+    ),
+    "benchmark": (
+        ("benchmark", 3.4),
+        ("benchmarking", 3.2),
+        ("evaluation", 2.8),
+        ("leaderboard", 2.8),
+        ("challenge", 2.4),
+        ("empirical study", 2.2),
+    ),
+    "dataset": (
+        ("dataset", 3.2),
+        ("corpus", 2.8),
+        ("resource", 2.4),
+        ("data card", 2.8),
+        ("benchmark dataset", 3.2),
+    ),
+    "failure": (
+        ("revisiting", 2.8),
+        ("revisit", 2.4),
+        ("rethinking", 2.8),
+        ("re-evaluating", 2.8),
+        ("reassessing", 2.8),
+        ("understanding", 2.0),
+        ("demystifying", 2.6),
+        ("limitations", 2.8),
+        ("limitation", 2.6),
+        ("fails", 2.6),
+        ("failure", 2.4),
+        ("robustness", 2.4),
+        ("bias", 2.2),
+        ("risk", 2.0),
+    ),
+    "industry": (
+        ("system", 2.0),
+        ("deployment", 3.0),
+        ("production", 3.0),
+        ("practical", 2.4),
+        ("serving", 2.6),
+        ("real-world", 2.8),
+    ),
+    "method": (
+        ("framework", 1.8),
+        ("method", 1.6),
+        ("model", 1.4),
+        ("architecture", 1.8),
+        ("approach", 1.6),
+        ("improving", 1.6),
+        ("scalable", 1.4),
+        ("efficient", 1.4),
+    ),
+}
+REVISION_CUES = ("revisiting", "revisit", "rethinking", "re-evaluating", "reassessing", "understanding", "demystifying")
+DATA_CENTRIC_TERMS = {"dataset", "datasets", "corpus", "resource", "data", "benchmark"}
+INDUSTRY_TERMS = {"production", "deployment", "serving", "system", "systems", "practical"}
 
 
 def normalized_title(title: str) -> str:
@@ -174,6 +258,16 @@ def decompose_topic_query(query: str) -> dict[str, Any]:
         retrieval_variants.append(" ".join(dict.fromkeys(core_terms)))
     if core_terms and modifiers:
         retrieval_variants.append(" ".join(dict.fromkeys(core_terms[:4] + modifiers[:3])))
+    if len(meaningful_raw := [token for token in re.findall(r"[a-z0-9+.-]+", lower) if len(token) > 2 and token not in STOPWORDS]) >= 4:
+        base = " ".join(dict.fromkeys(core_terms[:4] + modifiers[:3])) or normalized or original
+        retrieval_variants.extend(
+            [
+                f"{base} survey review".strip(),
+                f"{base} benchmark evaluation".strip(),
+                f"{base} limitation failure robustness".strip(),
+                f"{base} dataset corpus resource".strip(),
+            ]
+        )
 
     unique_variants: list[str] = []
     seen: set[str] = set()
@@ -183,8 +277,6 @@ def decompose_topic_query(query: str) -> dict[str, Any]:
             seen.add(compact)
             unique_variants.append(compact)
 
-    raw_tokens = re.findall(r"[a-z0-9+.-]+", lower)
-    meaningful_raw = [token for token in raw_tokens if len(token) > 2 and token not in STOPWORDS]
     needs_llm_fallback = (
         len(meaningful_raw) >= 6
         and (
@@ -198,8 +290,69 @@ def decompose_topic_query(query: str) -> dict[str, Any]:
         "normalized_topic": normalized or original,
         "core_terms": list(dict.fromkeys(core_terms))[:8],
         "modifiers": list(dict.fromkeys(modifiers))[:8],
-        "retrieval_variants": unique_variants[:3],
+        "retrieval_variants": unique_variants[:6],
         "needs_llm_fallback": needs_llm_fallback,
+    }
+
+
+def paper_role_label(role: str | None) -> str:
+    return ROLE_LABELS.get(str(role or "other"), ROLE_LABELS["other"])
+
+
+def paper_role_explanation(role: str | None) -> str:
+    return ROLE_EXPLANATIONS.get(str(role or "other"), ROLE_EXPLANATIONS["other"])
+
+
+def infer_paper_role(
+    title: str,
+    abstract: str,
+    venue: str | None = None,
+    retrieval_channel: str | None = None,
+    *,
+    allow_llm_fallback: bool = False,
+) -> dict[str, Any]:
+    deterministic = _infer_paper_role_deterministic(title, abstract, venue=venue, retrieval_channel=retrieval_channel)
+    if not allow_llm_fallback or not _paper_role_is_ambiguous(deterministic) or not configured_api_key():
+        return deterministic
+    try:
+        client = build_openai_client()
+        raw = call_llm_text(
+            client,
+            model=configured_model(),
+            system=(
+                "Classify an academic paper into exactly one role from "
+                "[survey, benchmark, dataset, method, industry, failure, other]. "
+                "Return strict JSON with keys paper_role, paper_role_score, paper_role_rationale."
+            ),
+            user=json.dumps(
+                {
+                    "title": title,
+                    "abstract": abstract[:2500],
+                    "venue": venue or "",
+                    "retrieval_channel": retrieval_channel or "",
+                    "deterministic_guess": deterministic,
+                },
+                ensure_ascii=False,
+            ),
+            temperature=0.0,
+            max_tokens=220,
+        )
+        parsed = json.loads(raw)
+    except Exception:
+        return deterministic
+    role = str(parsed.get("paper_role") or deterministic["role"]).strip().lower()
+    if role not in PAPER_ROLES:
+        return deterministic
+    score = _clamp(float(parsed.get("paper_role_score") or deterministic["score"]), 0.0, 1.0)
+    rationale = str(parsed.get("paper_role_rationale") or "").strip()
+    signals = list(deterministic.get("signals") or [])
+    if rationale:
+        signals.append(f"llm:{rationale}")
+    return {
+        "role": role,
+        "score": max(score, float(deterministic["score"])),
+        "signals": signals[:6],
+        "scores": deterministic.get("scores", {}),
     }
 
 
@@ -307,6 +460,7 @@ def select_representative_papers(
     citation_weight: float | None = None,
     min_relevance: float | None = None,
     require_core_match: bool = True,
+    allow_role_llm_fallback: bool | None = None,
 ) -> list[Paper]:
     """Select a representative, annotated paper subset from a candidate pool."""
     if limit <= 0:
@@ -314,7 +468,12 @@ def select_representative_papers(
     strategy = strategy if strategy in {"balanced", "high-impact", "recent"} else "balanced"
     current_year = current_year or datetime.now().year
     query = normalize_topic_query(query)
-    candidates = dedupe_papers(papers)
+    if allow_role_llm_fallback is None:
+        allow_role_llm_fallback = os.environ.get("AIGRAPH_ROLE_LLM_FALLBACK", "0") == "1"
+    candidates = [
+        annotate_paper_role(paper, allow_llm_fallback=allow_role_llm_fallback)
+        for paper in dedupe_papers(papers)
+    ]
     scored: list[tuple[Paper, dict[str, float | str]]] = [
         (
             paper,
@@ -350,8 +509,7 @@ def select_representative_papers(
             )[:limit]
         ]
 
-    selected: list[tuple[Paper, dict[str, float | str]]] = []
-    remaining = scored[:]
+    selected, remaining = _role_seed_selection(scored, query=query, limit=limit)
     while remaining and len(selected) < limit:
         best_idx = 0
         best_score = -1.0
@@ -363,6 +521,25 @@ def select_representative_papers(
                 best_idx = idx
         selected.append(remaining.pop(best_idx))
     return [_annotate_paper(paper, metrics, strategy) for paper, metrics in selected]
+
+
+def annotate_paper_role(paper: Paper, *, allow_llm_fallback: bool = False) -> Paper:
+    if paper.paper_role and paper.paper_role in PAPER_ROLES and paper.paper_role_score > 0:
+        return paper
+    info = infer_paper_role(
+        paper.title,
+        paper.abstract,
+        venue=paper.venue,
+        retrieval_channel=paper.retrieval_channel,
+        allow_llm_fallback=allow_llm_fallback,
+    )
+    return paper.model_copy(
+        update={
+            "paper_role": info["role"],
+            "paper_role_score": float(info["score"]),
+            "paper_role_signals": list(info.get("signals") or []),
+        }
+    )
 
 
 def _dedupe_aliases(paper: Paper) -> list[tuple[str, str]]:
@@ -404,7 +581,7 @@ def _filter_relevant_candidates(
     filtered = [
         (paper, metrics)
         for paper, metrics in scored
-        if float(metrics["title_relevance_score"]) >= threshold
+        if float(metrics["title_relevance_score"]) >= _role_adjusted_threshold(paper, threshold)
         and (not require_core_match or _has_core_overlap(paper, query_core))
     ]
     if len(filtered) >= 1:
@@ -423,6 +600,8 @@ def _has_core_overlap(paper: Paper, query_core: set[str]) -> bool:
         return True
     text_tokens = _tokenize(f"{paper.title} {paper.abstract[:1200]}")
     overlap = query_core & text_tokens
+    if (paper.paper_role or "") in {"survey", "benchmark", "dataset", "method", "failure", "industry"} and overlap:
+        return True
     if len(query_core) <= 2:
         return bool(overlap)
     return len(overlap) >= 2
@@ -460,6 +639,12 @@ def _second_stage_topic_cleanup(
     return scored
 
 
+def _role_adjusted_threshold(paper: Paper, threshold: float) -> float:
+    if (paper.paper_role or "") in {"survey", "benchmark", "dataset", "failure", "industry", "method"}:
+        return max(0.18, threshold - 0.10)
+    return threshold
+
+
 def _score_weights(strategy: str, citation_weight: float | None) -> tuple[float, float, float, float, float]:
     """Return impact, relevance, recency, signal, channel weights."""
     if strategy == "high-impact":
@@ -493,6 +678,8 @@ def _topic_signal_score(paper: Paper) -> float:
         ("limitation", "challenge", "failure", "robustness", "bias", "risk"),
     ]
     hits = sum(1 for group in groups if any(term in text for term in group))
+    if paper.paper_role in {"survey", "benchmark", "dataset", "failure", "industry"}:
+        hits += 1
     return min(1.0, hits / 2.0)
 
 
@@ -513,6 +700,8 @@ def _selection_reason(
     signal_score: float,
 ) -> str:
     reasons: list[str] = []
+    if paper.paper_role and paper.paper_role != "other":
+        reasons.append(f"{paper_role_label(paper.paper_role).lower()} anchor")
     if relevance_score >= 0.35:
         reasons.append("high title/abstract relevance")
     if impact_score >= 0.20:
@@ -537,6 +726,9 @@ def _annotate_paper(paper: Paper, metrics: dict[str, float | str], strategy: str
             "selection_score": float(metrics["selection_score"]),
             "selection_reason": reason,
             "retrieval_channel": paper.retrieval_channel or strategy,
+            "paper_role": paper.paper_role,
+            "paper_role_score": paper.paper_role_score,
+            "paper_role_signals": list(paper.paper_role_signals or []),
         }
     )
 
@@ -562,3 +754,165 @@ def _diversity_score(paper: Paper, selected: list[Paper]) -> float:
             continue
         max_sim = max(max_sim, len(tokens & other_tokens) / max(1, len(tokens | other_tokens)))
     return 1.0 - max_sim
+
+
+def _infer_paper_role_deterministic(
+    title: str,
+    abstract: str,
+    *,
+    venue: str | None = None,
+    retrieval_channel: str | None = None,
+) -> dict[str, Any]:
+    title_lower = " ".join(str(title or "").lower().split())
+    abstract_lower = " ".join(str(abstract or "").lower().split())
+    venue_lower = str(venue or "").lower()
+    scores = {role: 0.0 for role in PAPER_ROLES}
+    signals: list[str] = []
+    for role, phrases in ROLE_KEYWORDS.items():
+        for phrase, weight in phrases:
+            if phrase in title_lower:
+                scores[role] += weight
+                signals.append(f"title:{phrase}")
+            elif phrase in abstract_lower:
+                scores[role] += weight * 0.55
+                signals.append(f"abstract:{phrase}")
+    if retrieval_channel:
+        channel = retrieval_channel.lower()
+        if "survey" in channel:
+            scores["survey"] += 1.8
+            signals.append("channel:survey")
+        if any(key in channel for key in ("critical", "failure")):
+            scores["failure"] += 1.6
+            signals.append("channel:critical")
+        if "impact" in channel:
+            scores["benchmark"] += 0.25
+        if "recent" in channel:
+            scores["failure"] += 0.2
+    if "system" in venue_lower:
+        scores["industry"] += 0.6
+        signals.append("venue:system")
+
+    has_revision = any(term in title_lower or term in abstract_lower for term in REVISION_CUES)
+    has_benchmark = any(term in title_lower or term in abstract_lower for term in ("benchmark", "benchmarking", "evaluation", "leaderboard", "challenge"))
+    has_dataset = any(term in title_lower or term in abstract_lower for term in ("dataset", "datasets", "corpus", "resource", "data card"))
+    if has_revision and has_benchmark:
+        scores["benchmark"] += 2.2
+        scores["failure"] += 0.6
+        signals.append("composite:revision+benchmark")
+    elif has_revision and has_dataset:
+        scores["dataset"] += 1.6
+        scores["failure"] += 0.6
+        signals.append("composite:revision+dataset")
+    elif has_revision:
+        scores["failure"] += 1.8
+        signals.append("composite:revision")
+
+    if any(term in title_lower or term in abstract_lower for term in INDUSTRY_TERMS):
+        scores["industry"] += 0.8
+        signals.append("composite:industry")
+    if any(term in title_lower or term in abstract_lower for term in DATA_CENTRIC_TERMS):
+        scores["dataset"] += 0.2
+
+    top_role, top_score = max(scores.items(), key=lambda item: item[1])
+    ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+    second_score = ranked[1][1] if len(ranked) > 1 else 0.0
+    if top_score < 1.15:
+        method_boost = _method_fallback_score(title_lower, abstract_lower)
+        if method_boost >= 1.2:
+            scores["method"] += method_boost
+            top_role, top_score = "method", scores["method"]
+            signals.append("fallback:method")
+        else:
+            top_role = "other"
+            top_score = 0.2
+    elif top_role == "other":
+        method_boost = _method_fallback_score(title_lower, abstract_lower)
+        if method_boost >= 1.2:
+            scores["method"] += method_boost
+            top_role, top_score = "method", scores["method"]
+            signals.append("fallback:method")
+    score = min(1.0, top_score / 5.0)
+    if top_role == "other":
+        score = min(score, 0.35)
+    return {
+        "role": top_role,
+        "score": round(score, 3),
+        "signals": list(dict.fromkeys(signals))[:6],
+        "scores": {role: round(value, 3) for role, value in scores.items() if value > 0},
+        "margin": round(max(0.0, top_score - second_score), 3),
+    }
+
+
+def _method_fallback_score(title_lower: str, abstract_lower: str) -> float:
+    score = 0.0
+    method_like = ("framework", "architecture", "approach", "model", "method", "improving", "efficient", "scalable", "forecasting", "prediction")
+    for phrase in method_like:
+        if phrase in title_lower:
+            score += 0.7
+        elif phrase in abstract_lower:
+            score += 0.25
+    return score
+
+
+def _paper_role_is_ambiguous(info: dict[str, Any]) -> bool:
+    role = str(info.get("role") or "other")
+    margin = float(info.get("margin") or 0.0)
+    score = float(info.get("score") or 0.0)
+    return role == "other" or score < 0.45 or margin < 0.7
+
+
+def _role_seed_selection(
+    scored: list[tuple[Paper, dict[str, float | str]]],
+    *,
+    query: str,
+    limit: int,
+) -> tuple[list[tuple[Paper, dict[str, float | str]]], list[tuple[Paper, dict[str, float | str]]]]:
+    if not scored or limit <= 0:
+        return [], []
+    roleful = [item for item in scored if (item[0].paper_role or "other") != "other"]
+    if limit <= 1 or len(scored) <= 2 or len({item[0].paper_role for item in roleful}) <= 1:
+        return [], list(scored)
+    selected: list[tuple[Paper, dict[str, float | str]]] = []
+    remaining = list(scored)
+
+    def pick_best(role_group: set[str]) -> None:
+        nonlocal remaining
+        matches = [item for item in remaining if (item[0].paper_role or "other") in role_group]
+        if not matches:
+            return
+        best = max(
+            matches,
+            key=lambda item: (
+                float(item[1]["selection_score"]),
+                float(item[0].paper_role_score or 0.0),
+                int(item[0].cited_by_count or 0),
+                int(item[0].year or 0),
+            ),
+        )
+        selected.append(best)
+        remaining = [item for item in remaining if item[0].paper_id != best[0].paper_id]
+
+    pick_best({"survey", "benchmark"})
+    if len(selected) < limit:
+        pick_best({"failure"})
+    if len(selected) < limit and _query_prefers_dataset(query):
+        pick_best({"dataset"})
+    if len(selected) < limit and _query_prefers_industry(query):
+        pick_best({"industry"})
+    if len(selected) < limit:
+        pick_best({"method"})
+    if len(selected) < limit and limit >= 8:
+        pick_best({"survey", "benchmark"})
+    if len(selected) < limit and limit >= 6:
+        pick_best({"failure"})
+    return selected, remaining
+
+
+def _query_prefers_dataset(query: str) -> bool:
+    tokens = _tokenize(query)
+    return bool(tokens & {"dataset", "datasets", "corpus", "resource", "resources", "benchmark", "evaluation", "medical", "scientific"})
+
+
+def _query_prefers_industry(query: str) -> bool:
+    tokens = _tokenize(query)
+    return bool(tokens & {"deployment", "production", "system", "systems", "serving", "practical", "real", "industry"})

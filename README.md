@@ -98,6 +98,9 @@ AIGRAPH_BASE_URL=https://your-openai-compatible-host/v1
 AIGRAPH_MODEL=gpt-5.4
 AIGRAPH_LLM_ENDPOINT=responses
 AIGRAPH_REASONING_EFFORT=high
+AIGRAPH_READER_MODE=mini
+AIGRAPH_READER_MODEL=gpt-5.4-mini
+AIGRAPH_READER_MAX_CANDIDATES=6
 AIGRAPH_MAILTO=you@example.com
 ```
 
@@ -116,8 +119,10 @@ aigraph visualize \
   --output outputs/openalex_rag/index.html
 ```
 
-LLM extraction calls the model once per paper. Start with `--limit 5` or
-`--limit 10` before scaling up.
+LLM extraction calls the model once per paper. With the mini reader enabled,
+the system first selects grounded candidate sentences, then sends only that
+smaller pool to the strong extractor. Start with `--limit 5` or `--limit 10`
+before scaling up.
 
 ## arXiv Demo
 
@@ -226,127 +231,12 @@ docker compose up -d --build
 The included `docker-compose.yml` maps port `7860`, loads `.env`, and persists
 `./outputs` into the container.
 
-## 24/7 Automation Loop
-
-The repo now includes a lightweight automation scaffold under `automation/` for
-continuous topic harvesting, run generation, quality critique, and Codex-ready
-fix bundles.
-
-Create/update the automation queue:
-
-```bash
-aigraph automation-harvest --automation-dir automation --runs-dir outputs/runs
-```
-
-Run a small batch of pending topics:
-
-```bash
-aigraph automation-run-batch --automation-dir automation --runs-dir outputs/runs --batch-size 3
-```
-
-Critique finished runs into structured issues:
-
-```bash
-aigraph automation-critic --automation-dir automation --runs-dir outputs/runs
-```
-
-Build a nightly fixer bundle for Codex:
-
-```bash
-aigraph automation-fix-bundle --automation-dir automation --runs-dir outputs/runs --max-issues 3
-```
-
-Run the Codex repo-fixer loop in dry-run mode:
-
-```bash
-aigraph automation-fix-run --automation-dir automation --runs-dir outputs/runs --repo-dir . --dry-run
-```
-
-Run the fixer for real, using a configured Codex shell command:
-
-```bash
-export AIGRAPH_CODEX_FIX_COMMAND='codex exec --cwd {repo_dir} "$(cat {prompt_path})"'
-aigraph automation-fix-run --automation-dir automation --runs-dir outputs/runs --repo-dir . --push --open-pr
-```
-
-The fixer command receives these placeholders:
-
-- `{repo_dir}`
-- `{bundle_path}`
-- `{prompt_path}`
-- `{pr_body_path}`
-- `{branch}`
-- `{test_command}`
-
-The fixer flow is intentionally guarded:
-
-- no-op when the fix bundle is empty
-- blocks on dirty working trees
-- runs tests before commit
-- opens draft PRs only when `--open-pr` is enabled
-- never auto-merges
-
-Render a ready-to-install crontab:
-
-```bash
-aigraph automation-crontab --repo-dir . --output automation/cron/generated.crontab
-```
-
-There are also runnable shell wrappers in:
-
-- `automation/bin/hourly_loop.sh`
-- `automation/bin/critic_loop.sh`
-- `automation/bin/nightly_fix.sh`
-- `automation/bin/install_cron.sh`
-
-and a starter cron file in:
-
-- `automation/cron/crontab.example`
-
-Check whether the machine is ready for nightly draft PRs:
-
-```bash
-aigraph automation-preflight --repo-dir .
-```
-
-Install the generated crontab in one shot:
-
-```bash
-./automation/bin/install_cron.sh
-```
-
-For a fully unattended nightly PR loop, the machine should report:
-
-- `AIGRAPH_CODEX_FIX_COMMAND` is set
-- `gh auth status` succeeds
-- `git remote -v` is configured
-- the working tree is clean before cron starts
-
-Recommended cron cadence:
-
-- hourly: `automation-harvest`
-- hourly: `automation-run-batch`
-- every 2 hours: `automation-critic`
-- nightly: `automation-fix-bundle`
-- nightly: `automation-fix-run --dry-run` or a real Codex command once GitHub auth is configured
-
-Artifacts are stored in:
-
-- `automation/topics/`
-- `automation/issues/`
-- `automation/runs/`
-- `automation/state/`
-
-Fixer sessions are stored under:
-
-- `automation/issues/sessions/`
-
 ## CLI
 
 ```bash
 aigraph fetch-openalex --query "retrieval augmented generation" --limit 20 --strategy balanced --citation-weight 0.45 --output data/papers.jsonl
 aigraph fetch-arxiv --query 'all:"large language models" AND all:finance' --limit 20 --strategy balanced --output data/arxiv_papers.jsonl
-aigraph extract --input data/papers.jsonl --output outputs/claims.jsonl --extractor llm
+aigraph extract --input data/papers.jsonl --output outputs/claims.jsonl --extractor llm --reader mini --reader-model gpt-5.4-mini --reader-max-candidates 6
 aigraph build-graph --claims outputs/claims.jsonl --papers data/papers.jsonl --output outputs/graph.json
 aigraph detect-anomalies --graph outputs/graph.json --claims outputs/claims.jsonl --output outputs/anomalies.jsonl
 aigraph generate-hypotheses --anomalies outputs/anomalies.jsonl --claims outputs/claims.jsonl --output outputs/hypotheses.jsonl --generator llm
@@ -359,6 +249,7 @@ aigraph visualize --input-dir outputs --output outputs/index.html
 
 - `papers.jsonl`: input paper metadata.
 - `claims.jsonl`: extracted typed claims with evidence spans.
+- `reader_candidates.jsonl`: optional debug artifact with grounded reader candidates per paper.
 - `graph.json`: NetworkX node-link graph.
 - `anomalies.jsonl`: detected conflict/gap regions.
 - `hypotheses.jsonl`: possible explanations and follow-up checks.

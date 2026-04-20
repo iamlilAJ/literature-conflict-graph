@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 
 from .models import Anomaly, Claim, Hypothesis, Insight, Paper, ScoreBreakdown
-from .paper_select import select_representative_papers
+from .paper_select import paper_role_explanation, paper_role_label, select_representative_papers
 
 MIN_OVERVIEW_COMMUNITY_DISCONNECT = 0.25
 MIN_OVERVIEW_INSIGHT_CONFIDENCE = 0.25
@@ -51,26 +51,12 @@ def build_search_overview(
 ) -> dict:
     """Create a compact, screenshot-friendly overview for the web result page."""
     papers = _hydrate_selection_scores(papers, topic)
-    supported_insights = _supported_insights(insights)
     top_conflicts = _top_conflicts(anomalies)
     hidden_bridges = _hidden_bridges(insights)
     top_papers = _top_papers(papers)
     reading_path = _reading_path(papers, insights)
-    best_lines = _curated_best_lines(
-        anomalies,
-        insights,
-        selected,
-        scores or {},
-        allow_hypothesis_hero=bool(supported_insights),
-    )
-    why_this_matters = _why_this_matters(
-        top_conflicts,
-        hidden_bridges,
-        selected,
-        reading_path,
-        papers,
-        supported_insight_count=len(supported_insights),
-    )
+    best_lines = _curated_best_lines(anomalies, insights, selected, scores or {})
+    why_this_matters = _why_this_matters(top_conflicts, hidden_bridges, selected, reading_path)
     return {
         "headline": _headline(topic, top_conflicts, hidden_bridges, papers, claims),
         "hero_line": best_lines["hero_line"],
@@ -94,13 +80,7 @@ def build_search_overview(
     }
 
 
-def _no_papers_next_step() -> str:
-    return "Try a shorter or broader topic query, then rerun the search."
-
-
 def _headline(topic: str, conflicts: list[dict], bridges: list[dict], papers: list[Paper], claims: list[Claim]) -> str:
-    if not papers:
-        return f"For '{topic}', no papers were retrieved, so the run could not build a literature map."
     if conflicts and bridges:
         return (
             f"For '{topic}', we found {len(conflicts)} visible conflict/gap region(s) "
@@ -118,8 +98,6 @@ def _curated_best_lines(
     insights: list[Insight],
     selected: list[Hypothesis],
     scores: dict[str, ScoreBreakdown],
-    *,
-    allow_hypothesis_hero: bool,
 ) -> dict:
     anomaly_by_id = {a.anomaly_id: a for a in anomalies}
     conflict_lines = _rank_line_candidates(
@@ -137,7 +115,7 @@ def _curated_best_lines(
     hero_line = conflict_lines[0] if conflict_lines else None
     if hero_line is None and bridge_lines:
         hero_line = bridge_lines[0]
-    if hero_line is None and explanation_lines and allow_hypothesis_hero:
+    if hero_line is None and explanation_lines:
         hero_line = explanation_lines[0]
     return {
         "hero_line": hero_line,
@@ -223,21 +201,11 @@ def _explanation_line_candidates(
                 "source_type": "hypothesis",
                 "source_id": hypothesis.hypothesis_id,
                 "quality": round(quality, 3),
-                "supporting_text": _hypothesis_supporting_text(anomaly, utility),
+                "supporting_text": f"utility {round(utility, 3)}",
                 "anomaly_id": hypothesis.anomaly_id,
             }
         )
     return candidates
-
-
-def _hypothesis_supporting_text(anomaly: Anomaly | None, utility: float) -> str:
-    bits: list[str] = []
-    if anomaly is not None and anomaly.claim_ids:
-        bits.append(f"{len(anomaly.claim_ids)} claims")
-        if anomaly.positive_claims or anomaly.negative_claims:
-            bits.append(f"+{len(anomaly.positive_claims)} / -{len(anomaly.negative_claims)}")
-    bits.append(f"utility {round(utility, 3)}")
-    return " · ".join(bits)
 
 
 def _rank_line_candidates(candidates: list[dict], limit: int) -> list[dict]:
@@ -408,16 +376,15 @@ def _is_specific_value(value: str | None) -> bool:
 
 
 def _top_conflicts(anomalies: list[Anomaly]) -> list[dict]:
-    primary = [
+    anomalies = [
         a
         for a in anomalies
-        if a.type != "bridge_opportunity"
-        and (a.type != "community_disconnect" or a.topology_score >= MIN_OVERVIEW_COMMUNITY_DISCONNECT)
-        and a.positive_claims
-        and a.negative_claims
+        if a.type != "community_disconnect" or a.topology_score >= MIN_OVERVIEW_COMMUNITY_DISCONNECT
     ]
+    primary = [a for a in anomalies if a.type != "bridge_opportunity"]
+    secondary = [a for a in anomalies if a.type == "bridge_opportunity"]
     ranked = sorted(
-        primary,
+        primary or secondary,
         key=lambda a: (
             float(a.topology_score or 0.0),
             float(a.evidence_impact or 0.0),
@@ -478,29 +445,8 @@ def _why_this_matters(
     hidden_bridges: list[dict],
     selected: list[Hypothesis],
     reading_path: list[dict],
-    papers: list[Paper] | None = None,
-    *,
-    supported_insight_count: int = 0,
 ) -> dict:
-    if not (papers or []):
-        return {
-            "line": "No papers were retrieved for this topic, so there is no evidence to summarize yet.",
-            "next_step": _no_papers_next_step(),
-        }
-    if supported_insight_count <= 0:
-        if top_conflicts:
-            line = (
-                "This run is exploratory: it surfaced claim-level disagreement, but no synthesized insight is "
-                "supported strongly enough yet to treat the takeaway as settled."
-            )
-        elif selected:
-            line = (
-                "This run is exploratory: it found candidate explanations, but no synthesized insight is supported "
-                "yet, so treat the output as hypotheses to test rather than a conclusion."
-            )
-        else:
-            line = "This run is still a starter map, so the next gain will come from adding sharper evidence rather than reading the graph literally."
-    elif top_conflicts:
+    if top_conflicts:
         conflict = top_conflicts[0]
         conflict_type = str(conflict.get("type") or "")
         if conflict_type in {"benchmark_inconsistency", "impact_conflict"}:
@@ -531,18 +477,6 @@ def _why_this_matters(
     }
 
 
-def _supported_insights(insights: list[Insight]) -> list[Insight]:
-    return [
-        insight
-        for insight in insights
-        if insight.evidence_claims
-        and (
-            insight.confidence_score >= MIN_OVERVIEW_INSIGHT_CONFIDENCE
-            or insight.topology_score >= MIN_OVERVIEW_INSIGHT_CONFIDENCE
-        )
-    ]
-
-
 def _top_papers(papers: list[Paper]) -> list[dict]:
     ranked = sorted(
         papers,
@@ -558,13 +492,20 @@ def _top_papers(papers: list[Paper]) -> list[dict]:
 
 def _reading_path(papers: list[Paper], insights: list[Insight]) -> list[dict]:
     picks: list[tuple[str, str, Paper]] = []
-    survey = _find_paper(papers, ("survey", "review", "benchmark", "evaluation"))
+    survey = _find_role_paper(papers, {"survey", "benchmark", "dataset"}) or _find_paper(
+        papers,
+        ("survey", "review", "benchmark", "evaluation", "dataset", "resource"),
+    )
     if survey:
         picks.append(("Start with the landscape", "Survey, benchmark, or evaluation signal.", survey))
     cited = max(papers, key=lambda p: int(p.cited_by_count or 0), default=None)
     if cited:
         picks.append(("Anchor on the most-cited evidence", "High-impact paper in the selected pool.", cited))
-    recent_critical = _find_paper(papers, ("limitation", "challenge", "failure", "robustness", "bias"), newest=True)
+    recent_critical = _find_role_paper(papers, {"failure"}, newest=True) or _find_paper(
+        papers,
+        ("limitation", "challenge", "failure", "robustness", "bias"),
+        newest=True,
+    )
     if recent_critical:
         picks.append(("Check the failure edge", "Recent critical or robustness signal.", recent_critical))
     bridge_paper = _bridge_paper(papers, insights)
@@ -603,6 +544,20 @@ def _find_paper(papers: list[Paper], keywords: tuple[str, ...], newest: bool = F
     )
 
 
+def _find_role_paper(papers: list[Paper], roles: set[str], newest: bool = False) -> Paper | None:
+    matches = [p for p in papers if (p.paper_role or "") in roles]
+    if not matches:
+        return None
+    return max(
+        matches,
+        key=lambda p: (
+            int(p.year or 0) if newest else float(p.selection_score or 0.0),
+            float(p.paper_role_score or 0.0),
+            int(p.cited_by_count or 0),
+        ),
+    )
+
+
 def _bridge_paper(papers: list[Paper], insights: list[Insight]) -> Paper | None:
     by_id = {p.paper_id: p for p in papers}
     for insight in insights:
@@ -614,6 +569,7 @@ def _bridge_paper(papers: list[Paper], insights: list[Insight]) -> Paper | None:
 
 def _paper_card(paper: Paper) -> dict:
     citation_available = not paper.paper_id.startswith("arxiv:")
+    role = paper.paper_role or "other"
     return {
         "paper_id": paper.paper_id,
         "title": paper.title,
@@ -625,6 +581,11 @@ def _paper_card(paper: Paper) -> dict:
         "selection_score": round(float(paper.selection_score or 0.0), 3),
         "selection_reason": paper.selection_reason or "",
         "retrieval_channel": paper.retrieval_channel or "",
+        "paper_role": role,
+        "paper_role_label": paper_role_label(role),
+        "paper_role_explanation": paper_role_explanation(role),
+        "paper_role_score": round(float(paper.paper_role_score or 0.0), 3),
+        "paper_role_signals": list(paper.paper_role_signals or []),
     }
 
 

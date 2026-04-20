@@ -20,6 +20,9 @@ def test_render_visualization_creates_graph_html(tmp_path):
             "selection_score": 0.74,
             "selection_reason": "high title/abstract relevance",
             "retrieval_channel": "survey",
+            "paper_role": "survey",
+            "paper_role_score": 0.92,
+            "paper_role_signals": ["title:survey"],
         }
     ])
     _write_jsonl(input_dir / "claims.jsonl", [
@@ -77,11 +80,15 @@ def test_render_visualization_creates_graph_html(tmp_path):
         "multigraph": True,
         "graph": {},
         "nodes": [
-            {"id": "Paper:openalex:W1", "node_type": "Paper", "paper_id": "openalex:W1", "cited_by_count": 12, "age_normalized_impact": 1.2},
+            {"id": "Paper:openalex:W1", "node_type": "Paper", "paper_id": "openalex:W1", "cited_by_count": 12, "age_normalized_impact": 1.2, "paper_role": "survey"},
             {"id": "Claim:c001", "node_type": "Claim", "claim_id": "c001", "claim_text": "RAG improves factual QA."},
             {"id": "TemporalProperty:non-stationarity", "node_type": "TemporalProperty", "name": "non-stationarity"},
+            {"id": "Role:survey", "node_type": "Role", "name": "Survey paper", "description": "Maps the field, taxonomy, or prior landscape."},
         ],
-        "edges": [{"source": "Paper:openalex:W1", "target": "Claim:c001", "edge_type": "makes", "key": 0}],
+        "edges": [
+            {"source": "Paper:openalex:W1", "target": "Claim:c001", "edge_type": "makes", "key": 0},
+            {"source": "Paper:openalex:W1", "target": "Role:survey", "edge_type": "has_role", "key": 0},
+        ],
     }), encoding="utf-8")
 
     output = render_visualization(input_dir, input_dir / "index.html")
@@ -92,9 +99,14 @@ def test_render_visualization_creates_graph_html(tmp_path):
     assert "Retrieval quality moderates" in html
     assert "https://openalex.org/W1" in html
     assert "paperLink" in html
+    assert "Survey paper" in html
+    assert "what this means" in html
     assert "selection reason" in html
     assert "high title/abstract relevance" in html
-    assert "Community Insights" in html
+    assert "tool-divider" in html
+    assert 'aria-label="Zoom controls"' in html
+    assert 'aria-label="Evidence detail controls"' in html
+    assert 'aria-label="Layout controls"' in html
     assert "zoom-fit" in html
     assert "Scroll to zoom" in html
     assert "view-hierarchy" in html
@@ -108,6 +120,27 @@ def test_render_visualization_creates_graph_html(tmp_path):
     assert "Topic" in html
     assert "Finance and time-series share temporal reasoning" in html
     assert "non-stationarity" in html
+    assert "scrollIntoView" in html
+    assert 'data-target="anomalies-section"' in html
+    assert 'data-target="hypotheses-section"' in html
+    assert 'data-target="insights-section"' in html
+    assert ">Hypotheses</button>" in html
+    assert ">Insights</span>" in html
+    assert "miniNavEl.onclick = hasData ? () => {" in html
+    assert "sectionEl.classList.add('open');" in html
+    assert "submitGraphChat" in html
+    assert "wireGraphChat();" in html
+    assert "graph-chat-thread" in html
+    assert "Recent context only" in html
+    assert "trimChatHistory" in html
+    assert "history: trimChatHistory()" in html
+    assert "graph-chat-clear" in html
+    assert "Ask about the whole run" in html
+    assert "setSelectedContext({" in html
+    assert "clearSelectedContext();" in html
+    assert "syncChatContext();" in html
+    assert "humanizeAnomalyLabel" in html
+    assert "Claims</h2>" in html
 
 
 def test_render_visualization_handles_empty_hypotheses(tmp_path):
@@ -124,6 +157,16 @@ def test_render_visualization_handles_empty_hypotheses(tmp_path):
     assert "No hypotheses generated." in html
     assert "No community insights generated." in html
     assert '"hypotheses": 0' in html
+    assert "No hypotheses generated yet for this run." in html
+    assert "No community insights generated yet for this run." in html
+    assert "Not available yet" in html
+    assert "fold-disabled-note" in html
+    assert "miniNavEl.disabled = !hasData" in html
+    assert "toggleEl.disabled = !hasData" in html
+    assert "['Conflicts', s.anomalies, (s.anomalies || 0) > 0]" in html
+    assert "['Hypotheses', s.hypotheses, (s.hypotheses || 0) > 0]" in html
+    assert "['Insights', s.insights || 0, (s.insights || 0) > 0]" in html
+    assert "Currently asking about the whole run." in html
 
 
 def test_render_visualization_community_mode_uses_keyword_claim_paper_overview(tmp_path):

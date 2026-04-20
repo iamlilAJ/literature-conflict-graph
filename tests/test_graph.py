@@ -86,8 +86,11 @@ def test_build_graph_adds_citation_edges_and_semantic_nodes():
             cited_by_count=9,
             referenced_works=["openalex:W2"],
             counts_by_year=[{"year": 2026, "cited_by_count": 3}],
+            paper_role="survey",
+            paper_role_score=0.92,
+            paper_role_signals=["title:survey"],
         ),
-        Paper(paper_id="openalex:W2", title="Time Series LLMs", year=2024, venue="NeurIPS"),
+        Paper(paper_id="openalex:W2", title="Time Series LLMs", year=2024, venue="NeurIPS", paper_role="method"),
     ]
     g = build_graph(claims, papers=papers, current_year=2026)
     assert g.has_edge("Paper:openalex:W1", "Paper:openalex:W2")
@@ -97,5 +100,8 @@ def test_build_graph_adds_citation_edges_and_semantic_nodes():
     assert g.has_node("Mechanism:event grounding")
     assert g.has_node("FailureMode:temporal leakage")
     assert g.has_node("TemporalProperty:non-stationarity")
+    assert g.has_node("Role:survey")
+    assert g.has_edge("Paper:openalex:W1", "Role:survey")
+    assert g.nodes["Paper:openalex:W1"]["paper_role"] == "survey"
     assert g.nodes["Paper:openalex:W1"]["cited_by_count"] == 9
     assert g.nodes["Paper:openalex:W1"]["recent_citations"] == 3

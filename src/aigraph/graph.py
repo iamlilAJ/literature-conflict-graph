@@ -12,6 +12,7 @@ from pathlib import Path
 import networkx as nx
 
 from .models import Claim, Paper
+from .paper_select import paper_role_explanation, paper_role_label
 
 # Map entity fields on Claim -> (node type, edge type)
 ENTITY_EDGES: dict[str, tuple[str, str]] = {
@@ -148,8 +149,9 @@ def citation_metrics(paper: Paper, current_year: int | None = None) -> dict[str,
 
 def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None:
     metrics = citation_metrics(paper, current_year=current_year)
+    paper_node = f"Paper:{paper.paper_id}"
     g.add_node(
-        f"Paper:{paper.paper_id}",
+        paper_node,
         node_type="Paper",
         paper_id=paper.paper_id,
         title=paper.title,
@@ -158,8 +160,22 @@ def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None
         url=paper.url,
         doi=paper.doi,
         referenced_works=list(paper.referenced_works or []),
+        paper_role=paper.paper_role,
+        paper_role_score=float(paper.paper_role_score or 0.0),
+        paper_role_signals=list(paper.paper_role_signals or []),
         **metrics,
     )
+    if paper.paper_role:
+        role_node = f"Role:{paper.paper_role}"
+        if role_node not in g:
+            g.add_node(
+                role_node,
+                node_type="Role",
+                role=paper.paper_role,
+                name=paper_role_label(paper.paper_role),
+                description=paper_role_explanation(paper.paper_role),
+            )
+        g.add_edge(paper_node, role_node, edge_type="has_role")
 
 
 def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> None:
@@ -176,28 +192,51 @@ def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> N
 
 
 def _add_claim_claim_edges(g: nx.MultiDiGraph, claims: list[Claim]) -> None:
-    clusters: dict[tuple[str, str], list[tuple[Claim, str | None, str | None, str]]] = defaultdict(list)
-    for claim in claims:
+    clusters: dict[
+        tuple[str, str],
+        dict[str, object],
+    ] = defaultdict(
+        lambda: {
+            "positive": [],
+            "non_positive": [],
+            "overlap_groups": defaultdict(list),
+        }
+    )
+    for index, claim in enumerate(claims):
         method = _norm(claim.method)
         task = _norm(claim.task)
         if not method or not task:
             continue
-        clusters[(method, task)].append(
-            (
-                claim,
-                _norm(claim.dataset),
-                _norm(claim.metric),
-                f"Claim:{claim.claim_id}",
-            )
-        )
+        cluster = clusters[(method, task)]
+        node_id = f"Claim:{claim.claim_id}"
+        entry = (index, claim, node_id)
+        if claim.direction == "positive":
+            cluster["positive"].append(entry)
+        elif claim.direction in ("negative", "mixed"):
+            cluster["non_positive"].append(entry)
+
+        dataset = _norm(claim.dataset)
+        metric = _norm(claim.metric)
+        if dataset and metric:
+            cluster["overlap_groups"][(dataset, metric)].append((index, node_id))
 
     for cluster in clusters.values():
-        for (a, dataset_a, metric_a, node_a), (b, dataset_b, metric_b, node_b) in combinations(cluster, 2):
-            if _opposite(a.direction, b.direction):
-                g.add_edge(node_a, node_b, edge_type="contradicts")
-                if _settings_differ(a, b):
-                    g.add_edge(node_a, node_b, edge_type="setting_mismatch")
-            if dataset_a and dataset_a == dataset_b and metric_a and metric_a == metric_b:
+        positives = cluster["positive"]
+        non_positives = cluster["non_positive"]
+        overlap_groups = cluster["overlap_groups"]
+
+        for pos_index, pos_claim, pos_node in positives:
+            for other_index, other_claim, other_node in non_positives:
+                if pos_index < other_index:
+                    source, target = pos_node, other_node
+                else:
+                    source, target = other_node, pos_node
+                g.add_edge(source, target, edge_type="contradicts")
+                if _settings_differ(pos_claim, other_claim):
+                    g.add_edge(source, target, edge_type="setting_mismatch")
+
+        for group in overlap_groups.values():
+            for (_, node_a), (_, node_b) in combinations(group, 2):
                 g.add_edge(node_a, node_b, edge_type="overlap")
 
 

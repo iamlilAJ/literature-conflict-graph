@@ -9,7 +9,6 @@ import typer
 from rich.console import Console
 
 from .anomalies import detect_anomalies
-from .automation import build_fix_bundle, critique_runs, harvest_topics, render_crontab, run_fix_session, run_preflight_checks, run_topic_batch
 from .extract import RuleBasedExtractor, extract_claims
 from .graph import build_graph, load_graph, save_graph
 from .hypotheses import generate_hypotheses
@@ -42,7 +41,6 @@ DEFAULT_GRAPH = Path("outputs/graph.json")
 DEFAULT_ANOMALIES = Path("outputs/anomalies.jsonl")
 DEFAULT_HYPOTHESES = Path("outputs/hypotheses.jsonl")
 DEFAULT_REPORT = Path("outputs/selected_hypotheses.md")
-DEFAULT_AUTOMATION = Path("automation")
 
 
 @app.command("init-sample")
@@ -59,19 +57,36 @@ def extract_cmd(
     output: Path = typer.Option(DEFAULT_CLAIMS, "--output"),
     extractor: str = typer.Option("rule", "--extractor", help="rule|llm"),
     model: Optional[str] = typer.Option(None, "--model", help="LLM model id (overrides AIGRAPH_MODEL)"),
+    reader: str = typer.Option(None, "--reader", help="off|heuristic|mini"),
+    reader_model: Optional[str] = typer.Option(None, "--reader-model", help="Mini paper-reader model id"),
+    reader_max_candidates: Optional[int] = typer.Option(None, "--reader-max-candidates", help="Max candidate sentences per paper"),
     resume: bool = typer.Option(False, "--resume/--no-resume", help="Append only missing papers when output exists"),
 ) -> None:
     """Extract typed claims from papers."""
     papers = read_jsonl(input, Paper)
     extractor_impl = _build_extractor(extractor, model)
     if (extractor or "rule").lower() == "llm":
-        claims = _extract_claims_incremental(papers, extractor_impl, output, resume=resume)
+        claims = _extract_claims_incremental(
+            papers,
+            extractor_impl,
+            output,
+            resume=resume,
+            reader_mode=reader,
+            reader_model=reader_model,
+            reader_max_candidates=reader_max_candidates,
+        )
     else:
-        claims = extract_claims(papers, extractor=extractor_impl)
+        claims = extract_claims(
+            papers,
+            extractor=extractor_impl,
+            reader_mode=reader,
+            reader_model=reader_model,
+            reader_max_candidates=reader_max_candidates,
+        )
         write_jsonl(output, claims)
     console.print(
         f"[green]Extracted {len(claims)} claims to[/] {output} "
-        f"[dim](extractor={extractor})[/]"
+        f"[dim](extractor={extractor}, reader={reader or 'env/default'})[/]"
     )
 
 
@@ -86,7 +101,16 @@ def _build_extractor(kind: str, model: Optional[str]):
     raise typer.BadParameter(f"Unknown extractor '{kind}'. Use 'rule' or 'llm'.")
 
 
-def _extract_claims_incremental(papers: list[Paper], extractor_impl, output: Path, resume: bool = False) -> list[Claim]:
+def _extract_claims_incremental(
+    papers: list[Paper],
+    extractor_impl,
+    output: Path,
+    resume: bool = False,
+    *,
+    reader_mode: str | None = None,
+    reader_model: str | None = None,
+    reader_max_candidates: int | None = None,
+) -> list[Claim]:
     output.parent.mkdir(parents=True, exist_ok=True)
     claims: list[Claim] = []
     completed_papers: set[str] = set()
@@ -110,7 +134,15 @@ def _extract_claims_incremental(papers: list[Paper], extractor_impl, output: Pat
             title = paper.title[:80] + ("..." if len(paper.title) > 80 else "")
             console.print(f"[cyan]Extracting {i}/{len(papers)}[/] {paper.paper_id} — {title}")
             try:
-                new_claims = extractor_impl.extract(paper, start_index=len(claims))
+                from .paper_reader import read_paper_candidates
+
+                candidates = read_paper_candidates(
+                    paper,
+                    mode=reader_mode,
+                    model=reader_model,
+                    max_candidates=reader_max_candidates,
+                ).candidates
+                new_claims = extractor_impl.extract(paper, start_index=len(claims), candidates=candidates)
             except Exception as e:  # pragma: no cover - defensive; LLM extractor normally catches network errors
                 console.print(f"[yellow]  warning:[/] extraction failed for {paper.paper_id}: {e}")
                 new_claims = []
@@ -255,7 +287,6 @@ def select_cmd(
         scores,
         paper_lookup=paper_lookup,
         insights=insight_records,
-        paper_count=len(paper_lookup or {}),
     )
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -526,139 +557,6 @@ def rebuild_community_cmd(
         f"{status.get('runs', 0)} runs · {status.get('papers', 0)} papers · "
         f"{status.get('claims', 0)} claims -> {runs_dir / '_community' / 'index.html'}"
     )
-
-
-@app.command("automation-harvest")
-def automation_harvest_cmd(
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    limit: int = typer.Option(12, "--limit"),
-    cooldown_hours: int = typer.Option(12, "--cooldown-hours"),
-) -> None:
-    """Harvest seed topics and recent searches into a pending automation queue."""
-    topics = harvest_topics(automation_dir, runs_dir, limit=limit, cooldown_hours=cooldown_hours)
-    console.print(f"[green]Queued {len(topics)} topic(s) for automation[/] -> {automation_dir / 'topics' / 'generated_topics.jsonl'}")
-
-
-@app.command("automation-run-batch")
-def automation_run_batch_cmd(
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    batch_size: int = typer.Option(3, "--batch-size"),
-) -> None:
-    """Run a small batch of pending automation topics through the existing pipeline."""
-    results = run_topic_batch(automation_dir, runs_dir, batch_size=batch_size)
-    console.print(f"[green]Processed {len(results)} automated run(s)[/] -> {automation_dir / 'runs' / 'runs_index.jsonl'}")
-
-
-@app.command("automation-critic")
-def automation_critic_cmd(
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    limit: int = typer.Option(8, "--limit"),
-) -> None:
-    """Critique completed runs and emit normalized product/code issues."""
-    issues = critique_runs(automation_dir, runs_dir, limit=limit)
-    console.print(f"[green]Generated {len(issues)} issue(s)[/] -> {automation_dir / 'issues' / 'issues.jsonl'}")
-
-
-@app.command("automation-fix-bundle")
-def automation_fix_bundle_cmd(
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    max_issues: int = typer.Option(3, "--max-issues"),
-) -> None:
-    """Build a Codex-ready bundle of top issues for repo fixing."""
-    bundle = build_fix_bundle(automation_dir, runs_dir, max_issues=max_issues)
-    console.print(
-        f"[green]Built fix bundle with {bundle.get('issue_count', 0)} issue(s)[/] "
-        f"-> {automation_dir / 'issues' / 'fix_bundle.json'}"
-    )
-
-
-@app.command("automation-fix-run")
-def automation_fix_run_cmd(
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    repo_dir: Path = typer.Option(Path("."), "--repo-dir"),
-    max_issues: int = typer.Option(3, "--max-issues"),
-    codex_command: Optional[str] = typer.Option(
-        None,
-        "--codex-command",
-        help="Shell command template used to invoke Codex. Supports {repo_dir} {bundle_path} {prompt_path} {pr_body_path} {branch} {test_command}.",
-    ),
-    branch_prefix: str = typer.Option("codex/automation-fix", "--branch-prefix"),
-    test_command: str = typer.Option("./.venv/bin/pytest -q", "--test-command"),
-    push: bool = typer.Option(False, "--push/--no-push"),
-    open_pr: bool = typer.Option(False, "--open-pr/--no-open-pr"),
-    dry_run: bool = typer.Option(False, "--dry-run/--no-dry-run"),
-) -> None:
-    """Run the nightly repo-fixer flow and optionally push a draft PR."""
-    result = run_fix_session(
-        automation_dir,
-        runs_dir,
-        repo_dir=repo_dir,
-        max_issues=max_issues,
-        codex_command=codex_command,
-        branch_prefix=branch_prefix,
-        test_command=test_command,
-        push=push,
-        open_pr=open_pr,
-        dry_run=dry_run,
-    )
-    console.print(f"[green]Fix session status:[/] {result.get('status', 'unknown')}")
-    console.print(f"[cyan]Bundle:[/] {result.get('bundle_path')}")
-    console.print(f"[cyan]Prompt:[/] {result.get('prompt_path')}")
-    if result.get("branch"):
-        console.print(f"[cyan]Branch:[/] {result.get('branch')}")
-    if result.get("commit"):
-        console.print(f"[cyan]Commit:[/] {result.get('commit')}")
-    if result.get("pr_url"):
-        console.print(f"[cyan]Draft PR:[/] {result.get('pr_url')}")
-    if result.get("error"):
-        console.print(f"[yellow]Note:[/] {result.get('error')}")
-
-
-@app.command("automation-crontab")
-def automation_crontab_cmd(
-    repo_dir: Path = typer.Option(Path("."), "--repo-dir"),
-    python_bin: str = typer.Option("./.venv/bin/python", "--python-bin"),
-    automation_dir: Path = typer.Option(DEFAULT_AUTOMATION, "--automation-dir"),
-    runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),
-    batch_size: int = typer.Option(3, "--batch-size"),
-    critic_limit: int = typer.Option(8, "--critic-limit"),
-    max_fix_issues: int = typer.Option(3, "--max-fix-issues"),
-    output: Optional[Path] = typer.Option(None, "--output"),
-) -> None:
-    """Render a ready-to-install crontab for the aigraph automation loop."""
-    payload = render_crontab(
-        repo_dir=repo_dir,
-        python_bin=python_bin,
-        automation_dir=automation_dir,
-        runs_dir=runs_dir,
-        batch_size=batch_size,
-        critic_limit=critic_limit,
-        max_fix_issues=max_fix_issues,
-    )
-    if output is not None:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(payload, encoding="utf-8")
-        console.print(f"[green]Wrote crontab template to[/] {output}")
-        return
-    console.print(payload, soft_wrap=True)
-
-
-@app.command("automation-preflight")
-def automation_preflight_cmd(
-    repo_dir: Path = typer.Option(Path("."), "--repo-dir"),
-    python_bin: str = typer.Option("./.venv/bin/python", "--python-bin"),
-) -> None:
-    """Check whether nightly automated draft PRs are ready to run."""
-    report = run_preflight_checks(repo_dir=repo_dir, python_bin=python_bin)
-    console.print(f"[green]Automation ready:[/] {report.get('ready')}")
-    for item in report.get("checks", []):
-        marker = "[green]OK[/]" if item.get("ok") else "[yellow]WARN[/]"
-        console.print(f"{marker} {item.get('name')}: {item.get('detail')}")
 
 
 if __name__ == "__main__":

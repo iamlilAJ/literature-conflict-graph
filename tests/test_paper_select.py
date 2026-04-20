@@ -1,5 +1,11 @@
 from aigraph.models import Paper
-from aigraph.paper_select import dedupe_papers, normalize_topic_query, normalized_title, select_representative_papers
+from aigraph.paper_select import (
+    dedupe_papers,
+    infer_paper_role,
+    normalize_topic_query,
+    normalized_title,
+    select_representative_papers,
+)
 
 
 def _paper(paper_id: str, title: str, year: int, cited_by_count: int = 0, abstract: str = "") -> Paper:
@@ -123,6 +129,51 @@ def test_normalize_topic_query_expands_broad_research_phrases():
     assert "retrieval augmented generation" in normalized
     assert "finance" in normalized
     assert "time series" in normalized
+
+
+def test_infer_paper_role_handles_survey_benchmark_dataset_failure_and_industry():
+    assert infer_paper_role("A Survey of Finance LLMs", "")["role"] == "survey"
+    assert infer_paper_role("Benchmarking Medical RAG Faithfulness", "")["role"] == "benchmark"
+    assert infer_paper_role("MedQA-Shift: A Dataset for Clinical QA", "")["role"] == "dataset"
+    assert infer_paper_role("Revisiting RAG Hallucination in Medical QA", "")["role"] == "failure"
+    assert infer_paper_role("Production Deployment of Retrieval-Augmented Agents", "")["role"] == "industry"
+
+
+def test_infer_paper_role_prefers_benchmark_for_rethinking_benchmark_titles():
+    info = infer_paper_role("Rethinking Benchmarking for Scientific Claim Verification", "")
+    assert info["role"] == "benchmark"
+
+
+def test_balanced_selection_prefers_role_diversity_when_candidates_exist():
+    papers = [
+        _paper("survey", "A Survey of Medical RAG Evaluation", 2024, 80, "survey review benchmark"),
+        _paper("benchmark", "Benchmarking Faithfulness in Medical RAG", 2025, 30, "evaluation benchmark"),
+        _paper("failure", "Revisiting RAG Hallucination in Medical QA", 2026, 18, "limitations robustness"),
+        _paper("dataset", "MedFaith: A Dataset for Medical Faithfulness", 2025, 10, "dataset resource"),
+        _paper("method", "A New Medical RAG Framework", 2026, 8, "framework improves retrieval"),
+    ]
+    selected = select_representative_papers(
+        papers,
+        "hallucination detection and faithfulness evaluation in rag for medical qa",
+        limit=4,
+        strategy="balanced",
+        current_year=2026,
+    )
+    roles = {p.paper_role for p in selected}
+    assert "method" in roles
+    assert "failure" in roles
+    assert roles & {"survey", "benchmark"}
+
+
+def test_decompose_query_adds_role_seeking_variants_for_harder_topics():
+    from aigraph.paper_select import decompose_topic_query
+
+    plan = decompose_topic_query("hallucination detection and faithfulness evaluation in rag for medical qa")
+    variants = " | ".join(plan["retrieval_variants"])
+    assert "survey review" in variants
+    assert "benchmark evaluation" in variants
+    assert "limitation failure robustness" in variants
+    assert "dataset corpus resource" in variants
 
 
 def test_second_stage_cleanup_filters_broad_but_off_topic_candidates():

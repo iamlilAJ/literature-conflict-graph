@@ -1,5 +1,6 @@
 import json
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 from aigraph.automation import build_fix_bundle, critique_runs, harvest_topics, render_crontab, run_fix_session, run_preflight_checks, run_topic_batch
@@ -36,7 +37,7 @@ def test_harvest_topics_dedupes_and_respects_recent_cooldown(tmp_path):
             "last_critic_at": None,
             "last_fix_bundle_at": None,
             "pending_topics": [],
-            "recent_topic_runs": {"rag hallucination medical qa": "2026-04-18T00:10:00"},
+            "recent_topic_runs": {"rag hallucination medical qa": datetime.now().isoformat(timespec="seconds")},
             "critiqued_runs": [],
         },
     )

@@ -171,7 +171,7 @@ def _channel_specs(query: str, strategy: str, *, query_variants: list[str]) -> l
         (f"variant-{index + 1}", variant, None)
         for index, variant in enumerate(query_variants)
         if variant and variant != query
-    ][:2]
+    ][:4]
     if strategy == "high-impact":
         return [impact, relevance, *extra, survey]
     if strategy == "recent":

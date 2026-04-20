@@ -34,6 +34,11 @@ from .llm_client import build_openai_client, call_llm_text, configured_api_key, 
 from .models import Anomaly, Claim, Hypothesis, Insight, Paper, ScoreBreakdown
 from .overview import build_search_overview
 from .paper_select import decompose_topic_query
+from .paper_reader import (
+    configured_reader_max_candidates,
+    configured_reader_mode,
+    read_paper_candidates,
+)
 from .report import render_report
 from .scoring import score_all, select_mmr
 from .visualize import render_visualization
@@ -446,16 +451,7 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     paper_lookup = {p.paper_id: p for p in papers}
     overview = build_search_overview(request.topic, papers, claims, anomalies, insights, selected, scores)
     overview_path.write_text(json.dumps(overview, indent=2, ensure_ascii=False), encoding="utf-8")
-    report = render_report(
-        selected,
-        anomalies,
-        claims,
-        scores,
-        paper_lookup=paper_lookup,
-        insights=insights,
-        topic=request.topic,
-        paper_count=len(papers),
-    )
+    report = render_report(selected, anomalies, claims, scores, paper_lookup=paper_lookup, insights=insights)
     report_path.write_text(report, encoding="utf-8")
     render_visualization(run_dir, html_path)
 
@@ -492,19 +488,52 @@ def extract_claims_with_status(
     extractor = LLMClaimExtractor()
     concurrency = max(1, min(4, int(os.environ.get("AIGRAPH_EXTRACT_CONCURRENCY", "2"))))
     claims: list[Claim] = []
+    reader_rows: list[dict[str, Any]] = []
+    reader_debug_rows: list[dict[str, Any]] = []
+    reader_mode = configured_reader_mode()
+    reader_max_candidates = configured_reader_max_candidates()
 
-    def run_one(index: int, paper: Paper) -> tuple[int, Paper, list[Claim]]:
-        local_claims = extractor.extract(paper, start_index=index * 1000)
-        return index, paper, local_claims
+    def run_one(index: int, paper: Paper) -> tuple[int, Paper, list[Claim], dict[str, Any], list[dict[str, Any]]]:
+        read_result = read_paper_candidates(
+            paper,
+            mode=reader_mode,
+            max_candidates=reader_max_candidates,
+        )
+        local_claims = extractor.extract(paper, start_index=index * 1000, candidates=read_result.candidates)
+        metrics = {
+            "event": "paper_reader",
+            "run_id": base_status.get("run_id"),
+            "paper_id": paper.paper_id,
+            "reader_mode": read_result.mode_used,
+            "reader_latency_sec": float(read_result.latency_sec or 0.0),
+            "reader_candidate_count": len(read_result.candidates),
+            "reader_verified_claim_count": len(local_claims),
+            "reader_fallback_used": bool(read_result.fallback_used),
+            "reader_prefilter_count": int(read_result.prefilter_count or 0),
+        }
+        debug_rows = [
+            {
+                "run_id": base_status.get("run_id"),
+                "paper_id": paper.paper_id,
+                "paper_title": paper.title,
+                "reader_mode": read_result.mode_used,
+                "reader_fallback_used": bool(read_result.fallback_used),
+                **candidate.model_dump(),
+            }
+            for candidate in read_result.candidates
+        ]
+        return index, paper, local_claims, metrics, debug_rows
 
     completed = 0
-    results: dict[int, tuple[Paper, list[Claim]]] = {}
+    results: dict[int, tuple[Paper, list[Claim], dict[str, Any], list[dict[str, Any]]]] = {}
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
         futures = {pool.submit(run_one, i, paper): i for i, paper in enumerate(papers)}
         for future in as_completed(futures):
-            index, paper, local_claims = future.result()
+            index, paper, local_claims, reader_metrics, debug_rows = future.result()
             completed += 1
-            results[index] = (paper, local_claims)
+            results[index] = (paper, local_claims, reader_metrics, debug_rows)
+            reader_rows.append(reader_metrics)
+            reader_debug_rows.extend(debug_rows)
             progress = 0.18 + 0.48 * completed / max(1, len(papers))
             status(
                 status="running",
@@ -518,13 +547,18 @@ def extract_claims_with_status(
 
     with output.open("w", encoding="utf-8") as f:
         for index in sorted(results):
-            _, local_claims = results[index]
+            _, local_claims, _, _ = results[index]
             for claim in local_claims:
                 claim = claim.model_copy(update={"claim_id": f"c{len(claims) + 1:03d}"})
                 f.write(claim.model_dump_json(by_alias=True))
                 f.write("\n")
                 claims.append(claim)
         f.flush()
+    if reader_debug_rows:
+        _write_jsonl_dicts(output.parent / "reader_candidates.jsonl", reader_debug_rows)
+    if reader_rows:
+        for row in reader_rows:
+            _append_analytics_row(output.parent.parent, "reader_metrics.jsonl", row)
     status(
         status="running",
         stage="extracting",
@@ -532,6 +566,10 @@ def extract_claims_with_status(
         message=f"Extracted {len(claims)} claims from {len(papers)} papers.",
         papers=len(papers),
         claims=len(claims),
+        reader_mode=reader_mode,
+        reader_candidate_count=sum(int(row.get("reader_candidate_count") or 0) for row in reader_rows),
+        reader_verified_claim_count=len(claims),
+        reader_fallback_count=sum(1 for row in reader_rows if row.get("reader_fallback_used")),
         **base_status,
     )
     return claims
@@ -606,6 +644,7 @@ def make_handler(service: SearchService) -> type[BaseHTTPRequestHandler]:
                         run_id=str(payload.get("run_id") or ""),
                         question=str(payload.get("question") or ""),
                         selection=payload.get("selection") or {},
+                        history=payload.get("history") or [],
                     )
                     self._send_json(answer, HTTPStatus.OK)
                 except ValueError as e:
@@ -791,7 +830,7 @@ def decompose_search_topic(topic: str) -> dict[str, Any]:
         "normalized_topic": normalized_topic,
         "core_terms": core_terms[:8],
         "modifiers": modifiers[:8],
-        "retrieval_variants": list(dict.fromkeys(([normalized_topic] if normalized_topic else []) + retrieval_variants))[:3],
+        "retrieval_variants": list(dict.fromkeys(([normalized_topic] if normalized_topic else []) + retrieval_variants))[:6],
         "needs_llm_fallback": True,
     }
     return merged
@@ -839,6 +878,7 @@ def answer_graph_chat(
     run_id: str,
     question: str,
     selection: dict[str, Any] | None = None,
+    history: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     question = " ".join(str(question or "").split())
     if not run_id:
@@ -847,10 +887,12 @@ def answer_graph_chat(
         raise ValueError("Please ask a question about this graph.")
     run_dir = safe_run_dir(runs_dir, run_id)
     context = _graph_chat_context(run_dir, selection or {})
+    trimmed_history = _trim_graph_chat_history(history or [])
     if not configured_api_key():
         return {
             "answer": "Graph chat is not configured on this server yet.",
             "citations": context.get("references", [])[:6],
+            "references": context.get("references", [])[:6],
         }
     client = build_openai_client()
     raw = call_llm_text(
@@ -864,6 +906,7 @@ def answer_graph_chat(
         user=json.dumps(
             {
                 "question": question,
+                "history": trimmed_history,
                 "context": context,
                 "answer_style": "short, helpful, evidence-grounded",
             },
@@ -888,7 +931,12 @@ def answer_graph_chat(
             citations.append(allowed_refs[key])
     if not citations:
         citations = context.get("references", [])[:6]
-    return {"answer": answer, "citations": citations[:6]}
+    return {
+        "answer": answer,
+        "citations": citations[:6],
+        "references": citations[:6],
+        "history_limit": GRAPH_CHAT_HISTORY_LIMIT,
+    }
 
 
 def _graph_chat_context(run_dir: Path, selection: dict[str, Any]) -> dict[str, Any]:
@@ -922,10 +970,10 @@ def _graph_chat_context(run_dir: Path, selection: dict[str, Any]) -> dict[str, A
             "next_step": (overview.get("why_this_matters") or {}).get("next_step", ""),
         },
         "selection": selection_context,
-        "top_conflicts": overview.get("top_conflicts", [])[:3],
-        "hidden_bridges": overview.get("hidden_bridges", [])[:3],
-        "key_explanations": overview.get("best_explanation_lines", [])[:4],
-        "references": references[:8],
+        "top_conflicts": overview.get("top_conflicts", [])[:2],
+        "hidden_bridges": overview.get("hidden_bridges", [])[:2],
+        "key_explanations": overview.get("best_explanation_lines", [])[:3],
+        "references": references[:6],
     }
 
 
@@ -941,7 +989,7 @@ def _selection_context(
 ) -> tuple[dict[str, Any], list[dict[str, str]]]:
     kind = str(selection.get("kind") or "").strip().lower()
     item_id = str(selection.get("id") or "").strip()
-    if kind == "anomaly" and item_id in anomalies_by_id:
+    if kind in {"anomaly", "conflict"} and item_id in anomalies_by_id:
         anomaly = anomalies_by_id[item_id]
         refs = _reference_rows(
             claim_ids=anomaly.claim_ids,
@@ -996,6 +1044,30 @@ def _selection_context(
         papers_by_id=papers_by_id,
     )
     return {"kind": "graph", "id": "graph", "title": "Current run graph"}, refs
+
+
+GRAPH_CHAT_HISTORY_LIMIT = 6
+GRAPH_CHAT_HISTORY_CHAR_LIMIT = 600
+
+
+def _trim_graph_chat_history(history: list[dict[str, Any]]) -> list[dict[str, str]]:
+    trimmed: list[dict[str, str]] = []
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        role = str(item.get("role") or "").strip().lower()
+        if role not in {"user", "assistant"}:
+            continue
+        content = " ".join(str(item.get("content") or "").split()).strip()
+        if not content:
+            continue
+        trimmed.append(
+            {
+                "role": role,
+                "content": content[:GRAPH_CHAT_HISTORY_CHAR_LIMIT],
+            }
+        )
+    return trimmed[-GRAPH_CHAT_HISTORY_LIMIT:]
 
 
 def _node_selection_context(
@@ -1135,6 +1207,23 @@ def read_jsonl_dicts(path: Path, limit: int | None = None) -> list[dict[str, Any
         if limit is not None and len(rows) >= limit:
             break
     return rows
+
+
+def _write_jsonl_dicts(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, ensure_ascii=False))
+            f.write("\n")
+
+
+def _append_analytics_row(root: Path, filename: str, row: dict[str, Any]) -> None:
+    analytics_dir = root / "_analytics"
+    analytics_dir.mkdir(parents=True, exist_ok=True)
+    path = analytics_dir / filename
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(row, ensure_ascii=False))
+        f.write("\n")
 
 
 def ensure_overview(run_dir: Path, status: dict[str, Any]) -> dict[str, Any] | None:
@@ -1305,7 +1394,9 @@ def render_home_page(recent_runs: list[dict[str, Any]], community_data: dict[str
         for index, (title, copy) in enumerate(homepage_help_steps())
     )
     community_data = community_data or {}
-    living_html = render_living_graph_card(community_data.get("status") or {})
+    community_status = community_data.get("status") or {}
+    living_html = render_living_graph_card(community_status)
+    community_hero_html = render_community_hero(community_status)
     pulse_html = render_community_pulse(community_data)
     library_html = render_library_cards(recent_runs)
     return page_shell(
@@ -1359,10 +1450,10 @@ def render_home_page(recent_runs: list[dict[str, Any]], community_data: dict[str
           </details>
           <div class="examples">{examples_html}</div>
           <div class="trust-row">
-            <span>Impact-aware retrieval</span>
-            <span>Claim graph</span>
-            <span>Conflict radar</span>
-            <span>Bridge finder</span>
+            <a href="#search-form">Impact-aware retrieval</a>
+            <a href="#community-graph">Claim graph</a>
+            <a href="#featured-demos">Conflict radar</a>
+            <a href="#network-pulse">Bridge finder</a>
           </div>
           <div class="help-banner">
             <div class="help-label">HELP</div>
@@ -1372,7 +1463,12 @@ def render_home_page(recent_runs: list[dict[str, Any]], community_data: dict[str
             </div>
           </div>
         </section>
-        <section>
+        <section id="community-graph">
+          <h2>Community Graph</h2>
+          <p class="muted">This is what you get: one living workspace where the big clusters, conflict regions, and evidence trails stay in view at the same time.</p>
+          {community_hero_html}
+        </section>
+        <section id="how-it-works">
           <h2>How It Works</h2>
           <div class="help-grid">{help_cards}</div>
         </section>
@@ -1384,25 +1480,25 @@ def render_home_page(recent_runs: list[dict[str, Any]], community_data: dict[str
             <p>That is the kind of line we want: short, concrete, and tied to a real conflict in the literature.</p>
           </div>
         </section>
-        <section>
+        <section id="living-graph">
           <h2>Living Graph</h2>
           <div class="runs">{living_html}</div>
         </section>
-        <section>
+        <section id="network-pulse">
           <h2>Network Pulse</h2>
           <div class="runs">{pulse_html}</div>
         </section>
-        <section>
+        <section id="quick-starts">
           <h2>Quick Starts</h2>
           <p class="muted">Optional seeded topics for a fast jump-in. If a seed is thin, the system fetches fresh papers.</p>
           <div class="runs">{library_html}</div>
         </section>
-        <section>
+        <section id="featured-demos">
           <h2>Featured demos</h2>
           <p class="muted">Open a polished example first. Every card below lands on a finished result page, not a new search.</p>
           <div class="runs">{curated_html}</div>
         </section>
-        <section>
+        <section id="recent-maps">
           <h2>Recent maps</h2>
           <p class="muted">Fresh completed runs still show up here, but they no longer define the homepage experience.</p>
           <div class="runs">{recent_html}</div>
@@ -1463,6 +1559,75 @@ def render_living_graph_card(status: dict[str, Any]) -> str:
       <strong>Open the living community graph</strong>
       <span>{int(status.get('runs') or 0)} runs · {int(status.get('papers') or 0)} papers · {int(status.get('claims') or 0)} claims · {int(status.get('nodes') or 0)} nodes · {int(status.get('edges') or 0)} edges</span>
     </a>
+    """
+
+
+def render_community_hero(status: dict[str, Any]) -> str:
+    graph_url = str(status.get("graph_url") or "/community/index.html")
+    runs = int(status.get("runs") or 0)
+    papers = int(status.get("papers") or 0)
+    claims = int(status.get("claims") or 0)
+    nodes = int(status.get("nodes") or 0)
+    edges = int(status.get("edges") or 0)
+    has_graph = bool(status and status.get("graph_url"))
+    preview = (
+        f"""
+        <iframe
+          class="community-preview-frame"
+          src="{esc(graph_url)}"
+          title="Community graph preview"
+          loading="lazy"
+          tabindex="-1"
+          aria-hidden="true"></iframe>
+        """
+        if has_graph
+        else """
+        <div class="community-preview-fallback">
+          <div class="community-preview-grid"></div>
+          <div class="community-preview-node node-one"></div>
+          <div class="community-preview-node node-two"></div>
+          <div class="community-preview-node node-three"></div>
+          <div class="community-preview-link link-one"></div>
+          <div class="community-preview-link link-two"></div>
+          <div class="community-preview-caption">As searches accumulate, this panel turns into the full living graph.</div>
+        </div>
+        """
+    )
+    return f"""
+    <div class="community-hero-card">
+      <div class="community-hero-copy">
+        <div class="eyebrow">community graph</div>
+        <h3>This is what you get.</h3>
+        <p class="section-lead">A real map of the field, not just a search result. Start from the cluster view, trace the strongest conflict, then drill down into the paper evidence underneath it.</p>
+        <div class="community-meta">
+          <span>{runs} runs</span>
+          <span>{papers} papers</span>
+          <span>{claims} claims</span>
+          <span>{nodes} nodes</span>
+          <span>{edges} edges</span>
+        </div>
+        <div class="community-actions">
+          <a class="primary" href="{esc(graph_url)}">Open Community Graph</a>
+          <a href="#featured-demos">Open a finished demo first</a>
+        </div>
+      </div>
+      <div class="community-preview-shell">
+        {preview}
+        <div class="community-preview-scrim"></div>
+        <div class="community-callout callout-top">
+          <strong>Cluster view first</strong>
+          <span>The first screen is the map, not a raw dump of papers.</span>
+        </div>
+        <div class="community-callout callout-right">
+          <strong>Conflict + bridge layer</strong>
+          <span>Big tensions and cross-community bridges stay visible together.</span>
+        </div>
+        <div class="community-callout callout-bottom">
+          <strong>Evidence drill-down</strong>
+          <span>Every region can open into claims, papers, and the underlying report.</span>
+        </div>
+      </div>
+    </div>
     """
 
 
@@ -1676,8 +1841,14 @@ def render_result_page(status: dict[str, Any], recent_runs: list[dict[str, Any]]
             document.getElementById('loader-progress').style.width = `${{pct}}%`;
             document.getElementById('progress-label').textContent = `${{pct}}%`;
             document.getElementById('status-line').textContent = `${{data.stage || data.status}} · ${{data.message || ''}}`;
-            document.getElementById('stats').innerHTML = ['papers','claims','anomalies','hypotheses','insights'].map(k =>
-              `<div class="stat"><strong>${{data[k] || 0}}</strong><span>${{k}}</span></div>`
+            document.getElementById('stats').innerHTML = [
+              ['papers', data.papers || 0, true],
+              ['claims', data.claims || 0, true],
+              ['conflicts', data.anomalies || 0, (data.anomalies || 0) > 0],
+              ['hypotheses', data.hypotheses || 0, (data.hypotheses || 0) > 0],
+              ['insights', data.insights || 0, (data.insights || 0) > 0],
+            ].filter(([, , visible]) => visible).map(([label, value]) =>
+              `<div class="stat"><strong>${{value}}</strong><span>${{label}}</span></div>`
             ).join('');
             if (data.status === 'done') {{
               document.getElementById('actions').innerHTML = `
@@ -1740,9 +1911,10 @@ def render_result_page(status: dict[str, Any], recent_runs: list[dict[str, Any]]
             `).join('');
             const papers = (ov.top_papers || []).map(p => `
               <article class="paper-card">
-                <div class="tag">${{escapeHtml(p.retrieval_channel || 'paper')}}</div>
+                <div class="tag">${{escapeHtml(p.paper_role_label || p.retrieval_channel || 'paper')}}</div>
                 <h3>${{p.url ? `<a href="${{escapeHtml(p.url)}}" target="_blank" rel="noopener">${{escapeHtml(p.title || p.paper_id)}}</a>` : escapeHtml(p.title || p.paper_id)}}</h3>
                 <p>${{escapeHtml([p.venue, p.year].filter(Boolean).join(' · '))}} · ${{p.citation_available ? `${{p.citations || 0}} citations` : 'citations unavailable'}} · score ${{p.selection_score || 0}}</p>
+                <p>${{escapeHtml(p.paper_role_explanation || '')}}</p>
                 <p>${{escapeHtml(p.selection_reason || 'Selected as a representative paper.')}}</p>
               </article>
             `).join('');
@@ -1890,7 +2062,8 @@ def page_shell(title: str, body: str) -> str:
     .examples {{ display:flex; flex-wrap:wrap; gap:8px; margin:18px 0; }}
     .example {{ border:1px solid var(--line); background:rgba(9,16,24,.78); color:var(--ink); padding:10px 12px; font:inherit; font-size:15px; cursor:pointer; box-shadow:inset 0 0 0 1px rgba(103,217,255,.03); }}
     .trust-row {{ display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 4px; }}
-    .trust-row span {{ border:1px solid rgba(36,209,182,.28); background:rgba(36,209,182,.08); color:#89f4e5; border-radius:8px; padding:9px 11px; font-size:14px; font-weight:700; }}
+    .trust-row a {{ border:1px solid rgba(36,209,182,.28); background:rgba(36,209,182,.08); color:#89f4e5; border-radius:8px; padding:9px 11px; font-size:14px; font-weight:700; text-decoration:none; transition:transform .16s ease, border-color .16s ease, background .16s ease; }}
+    .trust-row a:hover {{ transform:translateY(-1px); border-color:rgba(103,217,255,.34); background:rgba(103,217,255,.10); }}
     .help-banner {{ display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start; margin:18px 0 8px; padding:16px 18px; border:1px solid rgba(103,217,255,.24); border-radius:8px; background:linear-gradient(135deg, rgba(36,209,182,.08), rgba(86,156,255,.08)); box-shadow:0 10px 30px rgba(36,209,182,.08); }}
     .help-label {{ display:inline-flex; align-items:center; justify-content:center; min-width:58px; height:30px; border-radius:8px; background:rgba(103,217,255,.16); color:#9de8ff; font-size:12px; font-weight:800; letter-spacing:.08em; }}
     .help-banner strong {{ display:block; font-size:18px; margin-bottom:4px; }}
@@ -1904,6 +2077,41 @@ def page_shell(title: str, body: str) -> str:
     .example-callout blockquote {{ margin:10px 0 8px; font-size:24px; line-height:1.48; color:#eef8ff; }}
     .example-callout p {{ margin:0; color:var(--muted); font-size:15px; line-height:1.5; }}
     .muted {{ color:var(--muted); line-height:1.6; font-size:15px; }}
+    .section-lead {{ color:#d7e7ef; font-size:18px; line-height:1.55; margin:0; max-width:42ch; }}
+    .community-hero-card {{ display:grid; grid-template-columns:minmax(260px, 340px) minmax(0, 1fr); gap:18px; align-items:stretch; }}
+    .community-hero-copy {{ display:flex; flex-direction:column; gap:14px; }}
+    .community-hero-copy h3 {{ margin:0; font-size:34px; line-height:1.05; }}
+    .community-meta {{ display:flex; flex-wrap:wrap; gap:8px; }}
+    .community-meta span {{ border:1px solid rgba(103,217,255,.18); background:rgba(103,217,255,.06); border-radius:8px; padding:8px 10px; color:#d6e6ef; font-size:14px; font-weight:650; }}
+    .community-actions {{ display:flex; flex-wrap:wrap; gap:10px; margin-top:auto; }}
+    .community-actions a {{ border:1px solid var(--line); background:rgba(9,16,24,.82); color:var(--ink); padding:12px 14px; text-decoration:none; font-weight:700; }}
+    .community-actions .primary {{ border-color:transparent; }}
+    .community-preview-shell {{ position:relative; min-height:340px; border:1px solid rgba(103,217,255,.22); border-radius:8px; overflow:hidden; background:linear-gradient(180deg, rgba(10,18,28,.96), rgba(7,13,21,.98)); box-shadow:inset 0 0 0 1px rgba(103,217,255,.04), 0 18px 40px rgba(0,0,0,.22); }}
+    .community-preview-frame {{ position:absolute; inset:0; width:170%; height:170%; border:0; transform:scale(.59); transform-origin:top left; pointer-events:none; filter:saturate(.82) contrast(.98); opacity:.96; }}
+    .community-preview-scrim {{ position:absolute; inset:0; background:
+      linear-gradient(180deg, rgba(7,12,18,.08), rgba(7,12,18,.26)),
+      linear-gradient(90deg, rgba(7,12,18,.12), transparent 25%, transparent 76%, rgba(7,12,18,.20)); pointer-events:none; }}
+    .community-preview-fallback {{ position:absolute; inset:0; background:
+      radial-gradient(circle at 18% 24%, rgba(103,217,255,.14), transparent 20%),
+      radial-gradient(circle at 70% 30%, rgba(36,209,182,.12), transparent 18%),
+      linear-gradient(180deg, rgba(10,18,28,.96), rgba(7,13,21,.98)); overflow:hidden; }}
+    .community-preview-grid {{ position:absolute; inset:0; background:
+      linear-gradient(90deg, rgba(103,217,255,.05) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(36,209,182,.05) 1px, transparent 1px); background-size:28px 28px; opacity:.45; }}
+    .community-preview-node {{ position:absolute; border-radius:999px; background:radial-gradient(circle, rgba(103,217,255,.92), rgba(103,217,255,.18)); box-shadow:0 0 24px rgba(103,217,255,.18); }}
+    .community-preview-node.node-one {{ width:120px; height:120px; left:64px; top:82px; }}
+    .community-preview-node.node-two {{ width:84px; height:84px; left:248px; top:126px; background:radial-gradient(circle, rgba(36,209,182,.9), rgba(36,209,182,.18)); }}
+    .community-preview-node.node-three {{ width:104px; height:104px; right:70px; top:96px; background:radial-gradient(circle, rgba(255,214,108,.88), rgba(255,214,108,.16)); }}
+    .community-preview-link {{ position:absolute; height:2px; background:linear-gradient(90deg, rgba(103,217,255,.14), rgba(255,255,255,.44), rgba(36,209,182,.14)); transform-origin:left center; }}
+    .community-preview-link.link-one {{ left:170px; top:148px; width:126px; transform:rotate(12deg); }}
+    .community-preview-link.link-two {{ left:316px; top:158px; width:160px; transform:rotate(-8deg); }}
+    .community-preview-caption {{ position:absolute; left:18px; bottom:16px; color:#c9d9e2; font-size:14px; max-width:32ch; line-height:1.45; }}
+    .community-callout {{ position:absolute; max-width:220px; padding:10px 12px; border:1px solid rgba(103,217,255,.24); border-radius:8px; background:rgba(8,14,22,.82); box-shadow:0 12px 30px rgba(0,0,0,.28); backdrop-filter:blur(10px); }}
+    .community-callout strong {{ display:block; font-size:14px; margin-bottom:4px; }}
+    .community-callout span {{ display:block; color:var(--muted); font-size:13px; line-height:1.45; }}
+    .community-callout.callout-top {{ left:18px; top:18px; }}
+    .community-callout.callout-right {{ right:18px; top:86px; }}
+    .community-callout.callout-bottom {{ left:56px; bottom:18px; max-width:250px; }}
     .runs {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px; }}
     .run {{ display:block; border:1px solid var(--line); background:linear-gradient(180deg, rgba(13,20,31,.92), rgba(10,17,25,.92)); border-radius:8px; padding:14px; color:var(--ink); text-decoration:none; transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease; box-shadow:inset 0 0 0 1px rgba(103,217,255,.03); }}
     .run:hover {{ transform:translateY(-2px); border-color:rgba(103,217,255,.36); box-shadow:0 16px 34px rgba(0,0,0,.28), 0 0 0 1px rgba(103,217,255,.08); }}
@@ -1996,7 +2204,8 @@ def page_shell(title: str, body: str) -> str:
     @keyframes astroFloat {{ 0%,100% {{ transform:translateX(-8%) translateY(0) rotate(-3deg); }} 50% {{ transform:translateX(-8%) translateY(-9px) rotate(2deg); }} }}
     @keyframes starDrift {{ from {{ transform:translateX(0); }} to {{ transform:translateX(-36px); }} }}
     @keyframes signalPulse {{ 0% {{ transform:scale(.82); opacity:.72; }} 100% {{ transform:scale(1.45); opacity:0; }} }}
-    @media (max-width: 720px) {{ h1 {{ font-size:38px; }} .hero {{ padding:24px; }} .search-box {{ flex-direction:column; }} .help-banner {{ grid-template-columns:1fr; }} .example-callout blockquote {{ font-size:20px; }} .run strong {{ font-size:20px; }} .run span {{ font-size:15px; }} .space-loader {{ height:196px; }} .space-loader-meta {{ left:18px; bottom:16px; flex-direction:column; align-items:flex-start; gap:6px; }} .space-loader-destination {{ right:16px; top:22px; font-size:11px; }} .astronaut-wrap {{ width:100px; height:100px; top:40px; left:calc(14px + (100% - 118px) * var(--progress)); }} .space-loader-orbit, .space-loader-progress {{ left:18px; right:18px; top:116px; }} .space-loader-planet {{ width:92px; height:92px; left:10px; bottom:30px; }} }}
+    @media (max-width: 860px) {{ .community-hero-card {{ grid-template-columns:1fr; }} .community-preview-shell {{ min-height:300px; }} .community-preview-frame {{ width:188%; height:188%; transform:scale(.53); }} }}
+    @media (max-width: 720px) {{ h1 {{ font-size:38px; }} .hero {{ padding:24px; }} .search-box {{ flex-direction:column; }} .help-banner {{ grid-template-columns:1fr; }} .example-callout blockquote {{ font-size:20px; }} .run strong {{ font-size:20px; }} .run span {{ font-size:15px; }} .community-hero-copy h3 {{ font-size:28px; }} .section-lead {{ font-size:17px; }} .community-actions {{ flex-direction:column; align-items:stretch; }} .community-callout {{ position:static; max-width:none; margin:10px 12px 0; }} .community-preview-shell {{ min-height:260px; padding-bottom:12px; }} .community-preview-frame {{ width:220%; height:220%; transform:scale(.45); }} .space-loader {{ height:196px; }} .space-loader-meta {{ left:18px; bottom:16px; flex-direction:column; align-items:flex-start; gap:6px; }} .space-loader-destination {{ right:16px; top:22px; font-size:11px; }} .astronaut-wrap {{ width:100px; height:100px; top:40px; left:calc(14px + (100% - 118px) * var(--progress)); }} .space-loader-orbit, .space-loader-progress {{ left:18px; right:18px; top:116px; }} .space-loader-planet {{ width:92px; height:92px; left:10px; bottom:30px; }} }}
   </style>
 </head>
 <body><main>{body}</main></body>

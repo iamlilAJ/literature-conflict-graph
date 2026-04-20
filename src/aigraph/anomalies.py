@@ -19,19 +19,26 @@ _PLACEHOLDER_LABELS = {"other", "unknown", "misc", "n/a", "na", "none", "null"}
 
 def detect_anomalies(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
     citation_graph = build_citation_graph(g)
+    method_task_groups = _group_by_method_task(claims)
     anomalies: list[Anomaly] = []
-    anomalies.extend(_detect_benchmark_inconsistency(g, claims))
-    anomalies.extend(_detect_setting_mismatch(claims))
-    anomalies.extend(_detect_metric_mismatch(claims))
-    anomalies.extend(_detect_evidence_gap(g, claims))
+    anomalies.extend(_detect_benchmark_inconsistency(g, method_task_groups))
+    anomalies.extend(_detect_setting_mismatch(method_task_groups))
+    anomalies.extend(_detect_metric_mismatch(method_task_groups))
+    anomalies.extend(_detect_evidence_gap(g, method_task_groups))
     anomalies.extend(_detect_community_disconnect(citation_graph, claims))
-    anomalies.extend(_detect_bridge_opportunity(g, claims))
+    anomalies.extend(_detect_bridge_opportunity(g, method_task_groups))
 
     claims_by_id = {c.claim_id: c for c in claims}
+    local_graph_cache: dict[tuple[str, ...], tuple[list[str], list[dict]]] = {}
+    claim_local_context, paper_citation_context = _build_local_subgraph_caches(g)
     for i, a in enumerate(anomalies, start=1):
         a.anomaly_id = f"a{i:03d}"
         _annotate_topology_scores(g, a, claims_by_id)
-        nodes, edges = _local_subgraph(g, a.claim_ids)
+        cache_key = tuple(sorted(set(a.claim_ids)))
+        nodes, edges = local_graph_cache.setdefault(
+            cache_key,
+            _local_subgraph(cache_key, claim_local_context, paper_citation_context),
+        )
         a.local_graph_nodes = nodes
         a.local_graph_edges = edges
     anomalies = [
@@ -91,9 +98,12 @@ def _display_task_label(claim: Claim) -> str:
     return label or "this task"
 
 
-def _detect_benchmark_inconsistency(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
+def _detect_benchmark_inconsistency(
+    g: nx.MultiDiGraph,
+    groups: dict[tuple[str, str], list[Claim]],
+) -> list[Anomaly]:
     out: list[Anomaly] = []
-    for (method, task), group in _group_by_method_task(claims).items():
+    for (method, task), group in groups.items():
         positives = [c for c in group if c.direction == "positive"]
         non_positives = [c for c in group if c.direction in ("negative", "mixed")]
         if not positives or not non_positives:
@@ -123,9 +133,9 @@ def _detect_benchmark_inconsistency(g: nx.MultiDiGraph, claims: list[Claim]) -> 
     return out
 
 
-def _detect_metric_mismatch(claims: list[Claim]) -> list[Anomaly]:
+def _detect_metric_mismatch(groups: dict[tuple[str, str], list[Claim]]) -> list[Anomaly]:
     out: list[Anomaly] = []
-    for (_, _), group in _group_by_method_task(claims).items():
+    for (_, _), group in groups.items():
         by_metric: dict[str, list[Claim]] = defaultdict(list)
         for claim in group:
             metric = _norm(claim.metric)
@@ -164,9 +174,12 @@ def _detect_metric_mismatch(claims: list[Claim]) -> list[Anomaly]:
     return out
 
 
-def _detect_evidence_gap(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
+def _detect_evidence_gap(
+    g: nx.MultiDiGraph,
+    groups: dict[tuple[str, str], list[Claim]],
+) -> list[Anomaly]:
     out: list[Anomaly] = []
-    for (_, _), group in _group_by_method_task(claims).items():
+    for (_, _), group in groups.items():
         if len(group) < 2:
             continue
         positives = [c for c in group if c.direction == "positive"]
@@ -242,9 +255,9 @@ def _detect_community_disconnect(citation_graph: nx.Graph, claims: list[Claim]) 
     return out
 
 
-def _detect_setting_mismatch(claims: list[Claim]) -> list[Anomaly]:
+def _detect_setting_mismatch(groups: dict[tuple[str, str], list[Claim]]) -> list[Anomaly]:
     out: list[Anomaly] = []
-    for (_, _), group in _group_by_method_task(claims).items():
+    for (_, _), group in groups.items():
         positives = [c for c in group if c.direction == "positive"]
         non_positives = [c for c in group if c.direction in ("negative", "mixed")]
         if not positives or not non_positives:
@@ -283,8 +296,16 @@ def _varying_setting_fields(pos: list[Claim], neg: list[Claim]) -> list[str]:
     return varying
 
 
-def _detect_bridge_opportunity(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
-    groups = _group_by_method_task(claims)
+def _detect_bridge_opportunity(
+    g: nx.MultiDiGraph,
+    groups: dict[tuple[str, str], list[Claim]],
+) -> list[Anomaly]:
+    cluster_nodes = {
+        key: {f"Claim:{claim.claim_id}" for claim in group}
+        for key, group in groups.items()
+    }
+    token_cache = {key: _concept_tokens(key) for key in groups}
+    claim_neighbors = _claim_edge_neighbors(g)
     out: list[Anomaly] = []
     seen: set[tuple[str, str]] = set()
 
@@ -292,15 +313,15 @@ def _detect_bridge_opportunity(g: nx.MultiDiGraph, claims: list[Claim]) -> list[
         # Skip pairs that share a method (already handled by other detectors on the same cluster).
         if ka[0] == kb[0] and ka[1] == kb[1]:
             continue
-        tokens_a = _concept_tokens(ka)
-        tokens_b = _concept_tokens(kb)
+        tokens_a = token_cache[ka]
+        tokens_b = token_cache[kb]
         overlap = tokens_a & tokens_b
         if not overlap:
             continue
         jaccard = len(overlap) / max(1, len(tokens_a | tokens_b))
         if jaccard < 0.15:
             continue
-        if _clusters_already_connected(g, group_a, group_b):
+        if _clusters_already_connected(cluster_nodes[ka], cluster_nodes[kb], claim_neighbors):
             continue
 
         pair_key = tuple(sorted([f"{ka[0]}|{ka[1]}", f"{kb[0]}|{kb[1]}"]))
@@ -331,13 +352,28 @@ def _detect_bridge_opportunity(g: nx.MultiDiGraph, claims: list[Claim]) -> list[
     return out
 
 
-def _clusters_already_connected(g: nx.MultiDiGraph, a: list[Claim], b: list[Claim]) -> bool:
-    for ca in a:
-        for cb in b:
-            na, nb = f"Claim:{ca.claim_id}", f"Claim:{cb.claim_id}"
-            if g.has_edge(na, nb) or g.has_edge(nb, na):
-                return True
-    return False
+def _claim_edge_neighbors(g: nx.MultiDiGraph) -> dict[str, set[str]]:
+    neighbors: dict[str, set[str]] = {}
+    for node, data in g.nodes(data=True):
+        if data.get("node_type") != "Claim":
+            continue
+        node_neighbors: set[str] = set()
+        for target in g.succ.get(node, {}):
+            if str(target).startswith("Claim:"):
+                node_neighbors.add(target)
+        for source in g.pred.get(node, {}):
+            if str(source).startswith("Claim:"):
+                node_neighbors.add(source)
+        neighbors[node] = node_neighbors
+    return neighbors
+
+
+def _clusters_already_connected(
+    a_nodes: set[str],
+    b_nodes: set[str],
+    claim_neighbors: dict[str, set[str]],
+) -> bool:
+    return any(claim_neighbors.get(node, set()) & b_nodes for node in a_nodes)
 
 
 def _concept_tokens(key: tuple[str, str]) -> set[str]:
@@ -486,36 +522,108 @@ def _annotate_topology_scores(
     )
 
 
-def _local_subgraph(g: nx.MultiDiGraph, claim_ids: list[str]) -> tuple[list[str], list[dict]]:
-    seed_nodes = {f"Claim:{cid}" for cid in claim_ids if f"Claim:{cid}" in g}
-    neighbors: set[str] = set(seed_nodes)
-    for node in seed_nodes:
-        neighbors.update(g.predecessors(node))
-        neighbors.update(g.successors(node))
-    paper_neighbors = {n for n in neighbors if str(n).startswith("Paper:")}
-    for node in paper_neighbors:
-        for _, target, data in g.out_edges(node, data=True):
-            if data.get("edge_type") == "cites":
-                neighbors.add(target)
-        for source, _, data in g.in_edges(node, data=True):
-            if data.get("edge_type") == "cites":
-                neighbors.add(source)
-    neighbor_set = neighbors
+def _local_subgraph(
+    claim_ids: list[str],
+    claim_context: dict[str, tuple[set[str], set[str], list[dict]]],
+    paper_context: dict[str, tuple[set[str], list[dict], list[tuple[str, dict]]]],
+) -> tuple[list[str], list[dict]]:
+    seed_nodes = {f"Claim:{cid}" for cid in claim_ids}
     edges: list[dict] = []
-    append_edge = edges.append
-    for source in neighbor_set:
-        for target, keyed_edges in g.succ.get(source, {}).items():
-            if target not in neighbor_set:
+    neighbors: set[str] = set(seed_nodes)
+    paper_neighbors: set[str] = set()
+
+    for claim_node in seed_nodes:
+        if claim_node not in claim_context:
+            continue
+        claim_neighbors, claim_papers, claim_edges = claim_context[claim_node]
+        neighbors.update(claim_neighbors)
+        paper_neighbors.update(claim_papers)
+        edges.extend(claim_edges)
+
+    for paper_node in paper_neighbors:
+        if paper_node not in paper_context:
+            continue
+        out_neighbors, out_edges, incoming_edges = paper_context[paper_node]
+        neighbors.update(out_neighbors)
+        edges.extend(out_edges)
+        for source, edge in incoming_edges:
+            if source in paper_neighbors:
                 continue
-            for data in keyed_edges.values():
-                append_edge(
+            neighbors.add(source)
+            edges.append(edge)
+
+    return sorted(neighbors), edges
+
+
+def _build_local_subgraph_caches(
+    g: nx.MultiDiGraph,
+) -> tuple[
+    dict[str, tuple[set[str], set[str], list[dict]]],
+    dict[str, tuple[set[str], list[dict], list[tuple[str, dict]]]],
+]:
+    claim_context: dict[str, tuple[set[str], set[str], list[dict]]] = {}
+    paper_context: dict[str, tuple[set[str], list[dict], list[tuple[str, dict]]]] = {}
+
+    for node, data in g.nodes(data=True):
+        node_type = data.get("node_type")
+        if node_type == "Claim":
+            neighbors: set[str] = set()
+            paper_neighbors: set[str] = set()
+            edges: list[dict] = []
+            for source, _, edge_data in g.in_edges(node, data=True):
+                neighbors.add(source)
+                if str(source).startswith("Paper:"):
+                    paper_neighbors.add(source)
+                edges.append(
                     {
                         "source": source,
-                        "target": target,
-                        "edge_type": data.get("edge_type", "related"),
+                        "target": node,
+                        "edge_type": edge_data.get("edge_type", "related"),
                     }
                 )
-    return sorted(neighbor_set), edges
+            for _, target, edge_data in g.out_edges(node, data=True):
+                neighbors.add(target)
+                if str(target).startswith("Paper:"):
+                    paper_neighbors.add(target)
+                edges.append(
+                    {
+                        "source": node,
+                        "target": target,
+                        "edge_type": edge_data.get("edge_type", "related"),
+                    }
+                )
+            claim_context[node] = (neighbors, paper_neighbors, edges)
+        elif node_type == "Paper":
+            out_neighbors: set[str] = set()
+            out_edges: list[dict] = []
+            incoming_edges: list[tuple[str, dict]] = []
+            for _, target, edge_data in g.out_edges(node, data=True):
+                if edge_data.get("edge_type") != "cites":
+                    continue
+                out_neighbors.add(target)
+                out_edges.append(
+                    {
+                        "source": node,
+                        "target": target,
+                        "edge_type": "cites",
+                    }
+                )
+            for source, _, edge_data in g.in_edges(node, data=True):
+                if edge_data.get("edge_type") != "cites":
+                    continue
+                incoming_edges.append(
+                    (
+                        source,
+                        {
+                            "source": source,
+                            "target": node,
+                            "edge_type": "cites",
+                        },
+                    )
+                )
+            paper_context[node] = (out_neighbors, out_edges, incoming_edges)
+
+    return claim_context, paper_context
 
 
 def _reachable_within_distance(

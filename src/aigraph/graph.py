@@ -35,6 +35,7 @@ SEMANTIC_EDGES: dict[str, tuple[str, str]] = {
     "temporal_property": ("TemporalProperty", "has_temporal_property"),
 }
 
+CLAIM_ENTITY_FIELDS: dict[str, tuple[str, str]] = {**ENTITY_EDGES, **SEMANTIC_EDGES}
 SETTING_FIELDS: tuple[str, ...] = ("retriever", "top_k", "context_length", "task_type")
 
 
@@ -99,7 +100,7 @@ def build_graph(
         )
         g.add_edge(paper_node, claim_node, edge_type="makes")
 
-        for field, (node_type, edge_type) in {**ENTITY_EDGES, **SEMANTIC_EDGES}.items():
+        for field, (node_type, edge_type) in CLAIM_ENTITY_FIELDS.items():
             value = getattr(claim, field)
             if not value:
                 continue
@@ -209,7 +210,7 @@ def _add_claim_claim_edges(g: nx.MultiDiGraph, claims: list[Claim]) -> None:
             continue
         cluster = clusters[(method, task)]
         node_id = f"Claim:{claim.claim_id}"
-        entry = (index, claim, node_id)
+        entry = (index, node_id, _setting_signature(claim))
         if claim.direction == "positive":
             cluster["positive"].append(entry)
         elif claim.direction in ("negative", "mixed"):
@@ -218,25 +219,25 @@ def _add_claim_claim_edges(g: nx.MultiDiGraph, claims: list[Claim]) -> None:
         dataset = _norm(claim.dataset)
         metric = _norm(claim.metric)
         if dataset and metric:
-            cluster["overlap_groups"][(dataset, metric)].append((index, node_id))
+            cluster["overlap_groups"][(dataset, metric)].append(node_id)
 
     for cluster in clusters.values():
         positives = cluster["positive"]
         non_positives = cluster["non_positive"]
         overlap_groups = cluster["overlap_groups"]
 
-        for pos_index, pos_claim, pos_node in positives:
-            for other_index, other_claim, other_node in non_positives:
+        for pos_index, pos_node, pos_setting in positives:
+            for other_index, other_node, other_setting in non_positives:
                 if pos_index < other_index:
                     source, target = pos_node, other_node
                 else:
                     source, target = other_node, pos_node
                 g.add_edge(source, target, edge_type="contradicts")
-                if _settings_differ(pos_claim, other_claim):
+                if _setting_signatures_differ(pos_setting, other_setting):
                     g.add_edge(source, target, edge_type="setting_mismatch")
 
         for group in overlap_groups.values():
-            for (_, node_a), (_, node_b) in combinations(group, 2):
+            for node_a, node_b in combinations(group, 2):
                 g.add_edge(node_a, node_b, edge_type="overlap")
 
 
@@ -260,8 +261,18 @@ def _opposite(a: str, b: str) -> bool:
 
 
 def _settings_differ(a: Claim, b: Claim) -> bool:
-    for field in SETTING_FIELDS:
-        va, vb = _norm(getattr(a.setting, field)), _norm(getattr(b.setting, field))
+    return _setting_signatures_differ(_setting_signature(a), _setting_signature(b))
+
+
+def _setting_signature(claim: Claim) -> tuple[str | None, ...]:
+    return tuple(_norm(getattr(claim.setting, field)) for field in SETTING_FIELDS)
+
+
+def _setting_signatures_differ(
+    a: tuple[str | None, ...],
+    b: tuple[str | None, ...],
+) -> bool:
+    for va, vb in zip(a, b):
         if va and vb and va != vb:
             return True
     return False

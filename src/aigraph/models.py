@@ -6,6 +6,17 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 Direction = Literal["positive", "negative", "mixed"]
+CorpusSyncStatus = Literal["queued", "complete", "failed"]
+SectionCanonicalType = Literal[
+    "abstract",
+    "introduction",
+    "method",
+    "results",
+    "discussion",
+    "limitations",
+    "conclusion",
+    "other",
+]
 ClaimType = Literal[
     "performance_improvement",
     "limitation",
@@ -51,6 +62,22 @@ class Paper(LooseModel):
     paper_role: Optional[str] = None
     paper_role_score: float = 0.0
     paper_role_signals: list[str] = Field(default_factory=list)
+    openalex_id: Optional[str] = None
+    arxiv_id_full: Optional[str] = None
+    arxiv_id_base: Optional[str] = None
+    corpus_tag: Optional[str] = None
+    seed_reason: Optional[str] = None
+    academic_impact: float = 0.0
+    recency_score: float = 0.0
+    reasoning_relevance: float = 0.0
+    role_weight: float = 0.0
+    priority_score: float = 0.0
+    sync_status: Optional[CorpusSyncStatus] = None
+    sync_attempt_count: int = 0
+    first_seen_at: Optional[str] = None
+    last_seen_at: Optional[str] = None
+    last_attempted_at: Optional[str] = None
+    completed_at: Optional[str] = None
     # Optional list of claim dicts to make rule extraction deterministic.
     structured_hint: Optional[list[dict]] = None
 
@@ -72,8 +99,53 @@ class PaperReadCandidate(LooseModel):
     magnitude_text: Optional[str] = None
     conditions: list[str] = Field(default_factory=list)
     scope: list[str] = Field(default_factory=list)
+    section_id: Optional[str] = None
+    section_title: Optional[str] = None
+    section_kind: Optional[str] = None
     candidate_score: float = 0.0
     selection_reason: Optional[str] = None
+
+
+class PaperArtifactStatus(LooseModel):
+    paper_id: str
+    source_fetched: bool = False
+    html_fetched: bool = False
+    pdf_fetched: bool = False
+    canonical_source: Optional[Literal["tex", "html", "pdf"]] = None
+    parse_status: Literal["complete", "partial", "failed", "missing"] = "missing"
+    parser_version: str = "corpus-v1"
+    warnings: list[str] = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+    text_length: int = 0
+    section_count: int = 0
+    sentence_count: int = 0
+    source_url: Optional[str] = None
+    html_url: Optional[str] = None
+    pdf_url: Optional[str] = None
+
+
+class PaperSection(LooseModel):
+    section_id: str
+    title: str
+    kind: Literal["abstract", "section", "subsection", "appendix", "other"]
+    level: int = 0
+    parent_id: Optional[str] = None
+    char_start: int = 0
+    char_end: int = 0
+    source: Literal["tex", "html", "pdf"] = "tex"
+    canonical_type: SectionCanonicalType = "other"
+    canonical_confidence: float = 0.0
+    canonical_matched_by: str = "fallback_other"
+
+
+class PaperSentence(LooseModel):
+    sentence_id: str
+    section_id: Optional[str] = None
+    text: str
+    char_start: int = 0
+    char_end: int = 0
+    sentence_index: int = 0
+    section_sentence_index: int = 0
 
 
 class Setting(LooseModel):

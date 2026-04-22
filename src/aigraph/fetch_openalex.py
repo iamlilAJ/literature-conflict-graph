@@ -7,6 +7,7 @@ sidestep redistribution rules; we reconstruct running text locally.
 from __future__ import annotations
 
 import os
+import re
 from math import ceil
 from typing import Any, Iterator, Optional
 
@@ -15,6 +16,9 @@ from .paper_select import normalize_topic_query, select_representative_papers
 
 
 OPENALEX_WORKS_URL = "https://api.openalex.org/works"
+_ARXIV_URL_RE = re.compile(r"arxiv\.org/(?:abs|pdf|html|e-print)/([^?#]+)", re.IGNORECASE)
+_ARXIV_PREFIX_RE = re.compile(r"^arxiv:\s*", re.IGNORECASE)
+_ARXIV_ID_RE = re.compile(r"^(?:\d{4}\.\d{4,5}|[a-z\-]+(?:\.[A-Z]{2})?/\d{7})(?:v\d+)?$", re.IGNORECASE)
 
 
 def reconstruct_abstract(inverted_index: Optional[dict[str, list[int]]]) -> str:
@@ -53,6 +57,52 @@ def normalize_openalex_work_id(work_id: str | None) -> str | None:
     return f"openalex:{suffix}"
 
 
+def _normalize_arxiv_identifier(value: str | None) -> str | None:
+    if not value:
+        return None
+    raw = str(value).strip()
+    if not raw:
+        return None
+    raw = _ARXIV_PREFIX_RE.sub("", raw)
+    match = _ARXIV_URL_RE.search(raw)
+    if match:
+        raw = match.group(1)
+    if raw.lower().endswith(".pdf"):
+        raw = raw[:-4]
+    raw = raw.strip().strip("/")
+    if not raw or not _ARXIV_ID_RE.fullmatch(raw):
+        return None
+    return raw
+
+
+def _arxiv_id_base(arxiv_id: str | None) -> str | None:
+    if not arxiv_id:
+        return None
+    return re.sub(r"v\d+$", "", arxiv_id)
+
+
+def _extract_arxiv_id(work: dict[str, Any]) -> str | None:
+    ids = work.get("ids") or {}
+    for candidate in (
+        ids.get("arxiv"),
+        ids.get("ArXiv"),
+        (work.get("primary_location") or {}).get("landing_page_url"),
+        (work.get("primary_location") or {}).get("pdf_url"),
+        (work.get("best_oa_location") or {}).get("landing_page_url"),
+        (work.get("best_oa_location") or {}).get("pdf_url"),
+    ):
+        normalized = _normalize_arxiv_identifier(candidate)
+        if normalized:
+            return normalized
+
+    for location in work.get("locations") or []:
+        for candidate in (location.get("landing_page_url"), location.get("pdf_url")):
+            normalized = _normalize_arxiv_identifier(candidate)
+            if normalized:
+                return normalized
+    return None
+
+
 def _venue_name(work: dict[str, Any]) -> str:
     primary = work.get("primary_location") or {}
     source = primary.get("source") or {}
@@ -71,6 +121,7 @@ def work_to_paper(work: dict[str, Any], retrieval_channel: str | None = None) ->
     abstract = reconstruct_abstract(work.get("abstract_inverted_index"))
     year = int(work.get("publication_year") or 0)
     openalex_url = work.get("id") if isinstance(work.get("id"), str) else None
+    arxiv_id_full = _extract_arxiv_id(work)
     doi = work.get("doi") if isinstance(work.get("doi"), str) else None
     referenced = [
         rid
@@ -90,6 +141,9 @@ def work_to_paper(work: dict[str, Any], retrieval_channel: str | None = None) ->
         retrieval_channel=retrieval_channel,
         abstract=abstract,
         text=(f"{title}\n\n{abstract}" if abstract else title).strip(),
+        openalex_id=normalize_openalex_work_id(openalex_url),
+        arxiv_id_full=arxiv_id_full,
+        arxiv_id_base=_arxiv_id_base(arxiv_id_full),
         structured_hint=None,
     )
 
@@ -105,6 +159,7 @@ def fetch_openalex_papers(
     candidate_multiplier: int = 4,
     citation_weight: float | None = None,
     min_relevance: float | None = None,
+    require_core_match: bool = True,
     query_variants: list[str] | None = None,
 ) -> list[Paper]:
     """Fetch representative works from OpenAlex, mapped to :class:`Paper`.
@@ -157,7 +212,7 @@ def fetch_openalex_papers(
         strategy=strategy,
         citation_weight=citation_weight,
         min_relevance=min_relevance,
-        require_core_match=True,
+        require_core_match=require_core_match,
     )
 
 
@@ -179,11 +234,45 @@ def _channel_specs(query: str, strategy: str, *, query_variants: list[str]) -> l
     return [relevance, impact, recent, *extra, survey, critical]
 
 
-def _iter_works(client: Any, params: dict[str, Any], limit: int) -> Iterator[dict[str, Any]]:
-    fetched = 0
+_OPENALEX_MIN_INTERVAL = 0.15
+_OPENALEX_MAX_RETRIES = 2
+_OPENALEX_DEFAULT_BACKOFF = 10.0
+_OPENALEX_MAX_BACKOFF = 60.0
+
+
+def _openalex_get(client: Any, params: dict[str, Any]) -> Any:
+    import time
+
+    attempt = 0
     while True:
         response = client.get(OPENALEX_WORKS_URL, params=params)
+        status = getattr(response, "status_code", 200)
+        if status == 429 or status >= 500:
+            if attempt >= _OPENALEX_MAX_RETRIES:
+                response.raise_for_status()
+                return response
+            retry_after_raw = ""
+            headers = getattr(response, "headers", None)
+            if headers is not None:
+                retry_after_raw = str(headers.get("Retry-After") or headers.get("retry-after") or "")
+            try:
+                backoff = float(retry_after_raw) if retry_after_raw else _OPENALEX_DEFAULT_BACKOFF * (2 ** attempt)
+            except ValueError:
+                backoff = _OPENALEX_DEFAULT_BACKOFF * (2 ** attempt)
+            backoff = min(max(backoff, 1.0), _OPENALEX_MAX_BACKOFF)
+            time.sleep(backoff)
+            attempt += 1
+            continue
         response.raise_for_status()
+        return response
+
+
+def _iter_works(client: Any, params: dict[str, Any], limit: int) -> Iterator[dict[str, Any]]:
+    import time
+
+    fetched = 0
+    while True:
+        response = _openalex_get(client, params)
         payload = response.json()
         results = payload.get("results") or []
         if not results:
@@ -197,3 +286,4 @@ def _iter_works(client: Any, params: dict[str, Any], limit: int) -> Iterator[dic
         if not next_cursor:
             return
         params = {**params, "cursor": next_cursor}
+        time.sleep(_OPENALEX_MIN_INTERVAL)

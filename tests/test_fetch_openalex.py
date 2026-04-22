@@ -27,6 +27,7 @@ def test_reconstruct_abstract_none_returns_empty():
 def test_work_to_paper_basic_mapping():
     work = {
         "id": "https://openalex.org/W123",
+        "ids": {"arxiv": "https://arxiv.org/abs/2401.12345v2"},
         "doi": "https://doi.org/10.123/example",
         "title": "RAG: a study",
         "publication_year": 2023,
@@ -38,6 +39,9 @@ def test_work_to_paper_basic_mapping():
     }
     paper = work_to_paper(work)
     assert paper.paper_id == "openalex:W123"
+    assert paper.openalex_id == "openalex:W123"
+    assert paper.arxiv_id_full == "2401.12345v2"
+    assert paper.arxiv_id_base == "2401.12345"
     assert paper.title == "RAG: a study"
     assert paper.year == 2023
     assert paper.venue == "NeurIPS"
@@ -48,6 +52,26 @@ def test_work_to_paper_basic_mapping():
     assert paper.counts_by_year == [{"year": 2025, "cited_by_count": 12}]
     assert paper.abstract == "Hello world"
     assert paper.text.startswith("RAG: a study\n\nHello world")
+
+
+def test_work_to_paper_ignores_non_arxiv_ids():
+    work = {
+        "id": "https://openalex.org/W999",
+        "ids": {"openalex": "https://openalex.org/W999"},
+        "doi": "https://doi.org/10.3390/app12188972",
+        "title": "Not actually on arXiv",
+        "publication_year": 2024,
+        "primary_location": {
+            "source": {"display_name": "Journal"},
+            "landing_page_url": "https://doi.org/10.3390/app12188972",
+            "pdf_url": "https://doi.org/10.3390/app12188972.pdf",
+        },
+        "abstract_inverted_index": {"Hello": [0]},
+        "cited_by_count": 12,
+    }
+    paper = work_to_paper(work)
+    assert paper.arxiv_id_full is None
+    assert paper.arxiv_id_base is None
 
 
 class _FakeResponse:

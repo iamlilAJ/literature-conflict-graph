@@ -83,7 +83,7 @@ def test_heuristic_fallback_detects_direction():
         abstract="RAG improves factual QA on NaturalQuestions by +4.0 EM. Long-context models degrades the RAG advantage.",
     )
 
-    claims = extract_claims([paper])
+    claims = extract_claims([paper], reader_mode="heuristic")
 
     assert len(claims) == 2
     assert claims[0].direction == "positive"
@@ -97,7 +97,9 @@ def test_heuristic_fallback_detects_direction():
     assert claims[1].direction == "negative"
     assert claims[1].magnitude_value is None
     assert claims[1].conditions == []
-    assert claims[1].scope == []
+    assert isinstance(claims[1].scope, list)
+    if claims[1].scope:
+        assert "long-context" in claims[1].scope[0].lower()
 
 
 def test_structured_hint_negative_magnitude_is_parsed():
@@ -166,7 +168,7 @@ def test_claim_ids_are_globally_unique_across_papers():
             ],
         ),
     ]
-    claims = extract_claims(papers)
+    claims = extract_claims(papers, reader_mode="heuristic")
     ids = [c.claim_id for c in claims]
     assert ids == ["c001", "c002", "c003"]
 

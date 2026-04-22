@@ -8,6 +8,7 @@ from typing import Iterable
 from .claim_schema import (
     normalize_structured_claim_payload,
 )
+from .corpus import hydrate_paper_from_corpus
 from .models import Claim, Paper, PaperReadCandidate, Setting
 from .paper_reader import (
     HeuristicPaperReader,
@@ -127,6 +128,7 @@ def extract_claims(
     extractor = extractor or RuleBasedExtractor()
     all_claims: list[Claim] = []
     for paper in papers:
+        paper = hydrate_paper_from_corpus(paper)
         candidates = read_paper_candidates(
             paper,
             mode=reader_mode,

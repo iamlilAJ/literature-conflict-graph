@@ -35,6 +35,8 @@ papers -> claims -> claim/citation graph -> conflicts/gaps -> hypotheses + insig
 - Fetches abstract-level paper metadata from OpenAlex.
 - Fetches abstract-level preprints from arXiv when OpenAlex is rate-limited or
   citation metadata is not needed.
+- Can build an optional local-first arXiv offline corpus with canonical text,
+  section trees, and sentence spans for better grounding.
 - Extracts structured claims with either deterministic rules or an LLM.
 - Builds a typed graph over papers, claims, methods, tasks, datasets, metrics,
   baselines, settings, citation links, and lightweight semantic concepts.
@@ -150,6 +152,62 @@ aigraph fetch-arxiv \
   --output data/arxiv_papers.jsonl
 ```
 
+## Offline arXiv Corpus
+
+You can build a reusable offline corpus for a core `LLM reasoning` slice from
+2022 through 2026. The corpus stores:
+
+- `papers.jsonl` metadata
+- canonical full text
+- `sections.json`
+- `sentences.json`
+- per-paper ingestion provenance
+
+Seed the corpus:
+
+```bash
+aigraph corpus-seed-reasoning \
+  --root data/corpus/arxiv_reasoning \
+  --from-year 2022 \
+  --to-year 2026 \
+  --per-query-limit 400
+```
+
+Fetch and parse artifacts:
+
+```bash
+aigraph corpus-sync-arxiv --root data/corpus/arxiv_reasoning
+```
+
+Validate coverage:
+
+```bash
+aigraph corpus-validate --root data/corpus/arxiv_reasoning
+```
+
+Inspect one paper:
+
+```bash
+aigraph corpus-export-paper \
+  --root data/corpus/arxiv_reasoning \
+  --paper-id arxiv:2401.12345v1
+```
+
+If the corpus exists, extraction will automatically prefer the offline
+canonical text over abstract-only text for matching papers.
+
+To keep the corpus ingest running continuously, use the daemon script:
+
+```bash
+./automation/bin/corpus_daemon.sh
+```
+
+For a single loop smoke test:
+
+```bash
+AIGRAPH_CORPUS_ONCE=1 ./automation/bin/corpus_daemon.sh
+```
+
 ## Local Search Server
 
 Run a Baidu-style local search page. Friends can enter a research topic and get
@@ -259,7 +317,9 @@ aigraph visualize --input-dir outputs --output outputs/index.html
 
 ## Current Limitations
 
-- Abstract-level only by default: no PDF parsing, tables, figures, or section-level grounding.
+- Online retrieval is still abstract-level by default. The offline arXiv corpus
+  adds canonical text and section trees, but it does not yet parse tables,
+  figures, or deeply normalize TeX macros.
 - LLM-extracted claims can be noisy and should be verified by humans.
 - Claim links currently resolve to source papers, not exact PDF paragraphs.
 - Canonicalization of methods/tasks is heuristic.
@@ -273,6 +333,15 @@ pytest -q
 ```
 
 Tests use fake clients for OpenAlex and LLM calls; they do not make network or API requests.
+
+For a real browser smoke test of the explorer UI:
+
+```bash
+python -m playwright install chromium
+PYTHONPATH=src pytest -q tests/test_browser_smoke.py
+```
+
+The browser smoke test drives the rendered explorer page, checks the conflict/hypothesis navigation, and verifies that graph chat requests are fired from the UI.
 
 ## License
 

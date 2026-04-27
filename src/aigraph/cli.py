@@ -22,7 +22,7 @@ from .extract import RuleBasedExtractor, extract_claims
 from .graph import build_graph, load_graph, save_graph
 from .hypotheses import generate_hypotheses
 from .io import read_jsonl, write_jsonl
-from .models import Anomaly, Claim, Hypothesis, Insight, Paper
+from .models import Anomaly, Claim, Hypothesis, Insight, OpenQuestion, Paper
 from .report import render_report
 from .sample_data import build_sample_papers
 from .scoring import score_all, select_mmr
@@ -70,6 +70,7 @@ def extract_cmd(
     reader_model: Optional[str] = typer.Option(None, "--reader-model", help="Mini paper-reader model id"),
     reader_max_candidates: Optional[int] = typer.Option(None, "--reader-max-candidates", help="Max candidate sentences per paper"),
     resume: bool = typer.Option(False, "--resume/--no-resume", help="Append only missing papers when output exists"),
+    workers: int = typer.Option(1, "--workers", help="Parallel paper workers for LLM extraction (1=serial)"),
 ) -> None:
     """Extract typed claims from papers."""
     papers = read_jsonl(input, Paper)
@@ -83,6 +84,7 @@ def extract_cmd(
             reader_mode=reader,
             reader_model=reader_model,
             reader_max_candidates=reader_max_candidates,
+            workers=workers,
         )
     else:
         claims = extract_claims(
@@ -119,7 +121,14 @@ def _extract_claims_incremental(
     reader_mode: str | None = None,
     reader_model: str | None = None,
     reader_max_candidates: int | None = None,
+    workers: int = 1,
 ) -> list[Claim]:
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    from .corpus import hydrate_paper_from_corpus
+    from .paper_reader import read_paper_candidates
+
     output.parent.mkdir(parents=True, exist_ok=True)
     claims: list[Claim] = []
     completed_papers: set[str] = set()
@@ -134,38 +143,58 @@ def _extract_claims_incremental(
             f"{len(claims)} claim(s) already in {output}"
         )
 
-    with output.open(mode, encoding="utf-8") as f:
-        for i, paper in enumerate(papers, start=1):
-            if paper.paper_id in completed_papers:
-                console.print(f"[dim]Skipping {i}/{len(papers)} {paper.paper_id} already extracted[/]")
-                continue
+    todo = [p for p in papers if p.paper_id not in completed_papers]
+    skipped = len(papers) - len(todo)
+    if skipped:
+        console.print(f"[dim]Skipping {skipped} already-extracted paper(s)[/]")
 
-            from .corpus import hydrate_paper_from_corpus
-
+    def process_one(paper: Paper) -> tuple[Paper, list[Claim], Exception | None]:
+        try:
             paper = hydrate_paper_from_corpus(paper)
+            candidates = read_paper_candidates(
+                paper,
+                mode=reader_mode,
+                model=reader_model,
+                max_candidates=reader_max_candidates,
+            ).candidates
+            new_claims = extractor_impl.extract(paper, start_index=0, candidates=candidates)
+            return paper, new_claims, None
+        except Exception as exc:  # pragma: no cover - defensive
+            return paper, [], exc
 
-            title = paper.title[:80] + ("..." if len(paper.title) > 80 else "")
-            console.print(f"[cyan]Extracting {i}/{len(papers)}[/] {paper.paper_id} — {title}")
-            try:
-                from .paper_reader import read_paper_candidates
+    write_lock = threading.Lock()
 
-                candidates = read_paper_candidates(
-                    paper,
-                    mode=reader_mode,
-                    model=reader_model,
-                    max_candidates=reader_max_candidates,
-                ).candidates
-                new_claims = extractor_impl.extract(paper, start_index=len(claims), candidates=candidates)
-            except Exception as e:  # pragma: no cover - defensive; LLM extractor normally catches network errors
-                console.print(f"[yellow]  warning:[/] extraction failed for {paper.paper_id}: {e}")
-                new_claims = []
-
+    def emit(paper: Paper, new_claims: list[Claim], err: Exception | None, position: int) -> None:
+        title = paper.title[:80] + ("..." if len(paper.title) > 80 else "")
+        if err is not None:
+            console.print(
+                f"[yellow]  warning:[/] extraction failed for {paper.paper_id}: {err}"
+            )
+        with write_lock:
             for claim in new_claims:
                 f.write(claim.model_dump_json(by_alias=True))
                 f.write("\n")
             f.flush()
             claims.extend(new_claims)
-            console.print(f"[green]  +{len(new_claims)} claim(s)[/] total={len(claims)}")
+            console.print(
+                f"[cyan]{position}/{len(todo)}[/] {paper.paper_id} — {title} "
+                f"[green]+{len(new_claims)} claim(s)[/] total={len(claims)}"
+            )
+
+    workers = max(1, int(workers))
+    with output.open(mode, encoding="utf-8") as f:
+        if workers == 1:
+            for i, paper in enumerate(todo, start=1):
+                paper, new_claims, err = process_one(paper)
+                emit(paper, new_claims, err, i)
+        else:
+            with ThreadPoolExecutor(max_workers=workers) as ex:
+                future_to_paper = {ex.submit(process_one, p): p for p in todo}
+                position = 0
+                for fut in as_completed(future_to_paper):
+                    position += 1
+                    paper, new_claims, err = fut.result()
+                    emit(paper, new_claims, err, position)
 
     return claims
 
@@ -219,6 +248,48 @@ def generate_hypotheses_cmd(
     hyps = generate_hypotheses(anom_records, claim_records, generator=generator_impl)
     write_jsonl(output, hyps)
     console.print(f"[green]Generated {len(hyps)} hypotheses to[/] {output} [dim](generator={generator})[/]")
+
+
+@app.command("extract-open-questions")
+def extract_open_questions_cmd(
+    input: Path = typer.Option(DEFAULT_PAPERS, "--input"),
+    output: Path = typer.Option(Path("outputs/open_questions.jsonl"), "--output"),
+    model: Optional[str] = typer.Option(None, "--model"),
+    max_papers: Optional[int] = typer.Option(None, "--max-papers"),
+) -> None:
+    """Extract acknowledged limitations / future-work / untested-extension records per paper."""
+    from .creator import extract_open_questions
+
+    papers = read_jsonl(input, Paper)
+    oqs = extract_open_questions(papers, model=model, max_papers=max_papers)
+    write_jsonl(output, oqs)
+    console.print(f"[green]Extracted {len(oqs)} open questions to[/] {output}")
+
+
+@app.command("generate-creator-hypotheses")
+def generate_creator_hypotheses_cmd(
+    anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    open_questions: Path = typer.Option(Path("outputs/open_questions.jsonl"), "--open-questions"),
+    output: Path = typer.Option(Path("outputs/creator_hypotheses.jsonl"), "--output"),
+    model: Optional[str] = typer.Option(None, "--model"),
+    max_anomalies: Optional[int] = typer.Option(None, "--max-anomalies"),
+) -> None:
+    """Synthesize new method ideas grounded in anomaly + author-stated open questions."""
+    from .creator import generate_creator_hypotheses
+
+    anom_records = read_jsonl(anomalies, Anomaly)
+    claim_records = read_jsonl(claims, Claim)
+    oq_records = read_jsonl(open_questions, OpenQuestion)
+    hyps = generate_creator_hypotheses(
+        anom_records,
+        claim_records,
+        oq_records,
+        model=model,
+        max_anomalies=max_anomalies,
+    )
+    write_jsonl(output, hyps)
+    console.print(f"[green]Generated {len(hyps)} creator hypotheses to[/] {output}")
 
 
 @app.command("generate-insights")

@@ -138,6 +138,26 @@ class PaperSection(LooseModel):
     canonical_matched_by: str = "fallback_other"
 
 
+OpenQuestionKind = Literal[
+    "acknowledged_limitation",
+    "future_work_suggestion",
+    "untested_extension",
+]
+
+
+class OpenQuestion(LooseModel):
+    open_question_id: str
+    paper_id: str
+    text: str
+    kind: OpenQuestionKind = "acknowledged_limitation"
+    section_id: Optional[str] = None
+    section_kind: Optional[str] = None
+    related_method: Optional[str] = None
+    related_task: Optional[str] = None
+    related_dataset: Optional[str] = None
+    evidence_span: str = ""
+
+
 class PaperSentence(LooseModel):
     sentence_id: str
     section_id: Optional[str] = None

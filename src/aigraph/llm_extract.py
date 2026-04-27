@@ -49,14 +49,34 @@ _ALLOWED_TASK_TYPES = {
 
 # Fixed vocabularies used to cluster claims across papers.
 CANONICAL_METHODS: tuple[str, ...] = (
+    # reasoning prompting strategies
+    "chain-of-thought",
+    "tree-of-thought",
+    "self-consistency",
+    "self-refine",
+    "verifier",
+    "program-aided",
+    # rl / alignment
+    "RLHF",
+    "DPO",
+    "PPO-or-GRPO",
+    "process-reward",
+    "outcome-reward",
+    # search / planning / scaling
+    "search-based",
+    "planning",
+    "test-time-scaling",
+    # tool / agent
+    "tool-use",
+    "agent",
+    # retrieval / context
     "RAG",
-    "reranking",
-    "query-rewriting",
     "long-context",
+    # generic training / inference
     "fine-tuning",
     "prompting",
-    "agent",
     "distillation",
+    # eval / safety / mm
     "evaluation-method",
     "safety-alignment",
     "multimodal",
@@ -64,17 +84,28 @@ CANONICAL_METHODS: tuple[str, ...] = (
 )
 
 CANONICAL_TASKS: tuple[str, ...] = (
+    # reasoning subtasks
+    "math-reasoning",
+    "logical-reasoning",
+    "commonsense-reasoning",
+    "scientific-reasoning",
+    "multi-step-reasoning",
+    "code-reasoning",
+    "agentic-reasoning",
+    "planning",
+    # legacy QA
     "factual-QA",
     "multi-hop-QA",
     "long-context-QA",
     "domain-QA",
-    "code",
+    # generic NLP
+    "code-generation",
     "summarization",
-    "reasoning",
+    "conversation",
+    # eval / safety / hallucination
     "hallucination-mitigation",
     "safety",
     "evaluation",
-    "conversation",
     "other",
 )
 
@@ -84,9 +115,12 @@ _CANONICAL_TASKS_LOWER = {t.lower(): t for t in CANONICAL_TASKS}
 
 SYSTEM_PROMPT = (
     "You are a careful scientific claim extractor. Given an AI paper's title and "
-    "abstract/text, extract 0 to 3 structured claims. Never invent details: if a "
+    "abstract/text, extract 0 to 6 structured claims. Never invent details: if a "
     "field is not explicitly stated, set it to null. Copy evidence_span verbatim "
-    "from the provided text body (no paraphrasing). Return a JSON object "
+    "from the provided text body (no paraphrasing). When the candidate pool "
+    "includes section_kind metadata, prefer claims grounded in `results`, "
+    "`discussion`, or `limitations` sections over `abstract` or `introduction` "
+    "sections, since those tend to overstate findings. Return a JSON object "
     "directly. Do not explain your reasoning. Do not include analysis. "
     'with one key "claims" whose value is a list. Each claim has these fields:\n'
     "- claim_text: string, a concise restatement of the claim\n"
@@ -199,13 +233,13 @@ class LLMClaimExtractor(ClaimExtractor):
             return []
 
         claims: list[Claim] = []
-        for i, item in enumerate(items[:3]):
+        for i, item in enumerate(items[:6]):
             if not isinstance(item, dict):
                 continue
             normalized = _normalize_claim_dict(item, paper)
             if normalized is None:
                 continue
-            claim_id = f"c{start_index + len(claims) + 1:03d}"
+            claim_id = f"{paper.paper_id}#c{len(claims) + 1:02d}"
             normalized["claim_id"] = claim_id
             normalized["paper_id"] = paper.paper_id
             try:

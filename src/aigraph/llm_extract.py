@@ -229,6 +229,9 @@ def _paper_context(paper: Paper, *, candidates: list[PaperReadCandidate] | None 
                         "candidate_index": idx,
                         "sentence": candidate.sentence,
                         "evidence_span": candidate.evidence_span,
+                        "section_id": candidate.section_id,
+                        "section_title": candidate.section_title,
+                        "section_kind": candidate.section_kind,
                         "subject_raw": candidate.subject_raw,
                         "predicate": candidate.predicate,
                         "object_raw": candidate.object_raw,
@@ -251,7 +254,7 @@ def _paper_context(paper: Paper, *, candidates: list[PaperReadCandidate] | None 
             "Claim candidate pool (use only these grounded spans as evidence):\n"
             + "\n".join(candidate_lines)
         ).strip()
-    body = paper.abstract or paper.text or ""
+    body = paper.text or paper.abstract or ""
     return f"Title: {paper.title}\n\nAbstract/Text:\n{body}".strip()
 
 

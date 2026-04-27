@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from .anomalies import detect_anomalies
 from .community import community_digest, ingest_run, read_community_status
+from .corpus import hydrate_papers_from_corpus
 from .fetch_arxiv import fetch_arxiv_papers
 from .fetch_openalex import fetch_openalex_papers
 from .graph import build_graph, save_graph
@@ -376,6 +377,7 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
             limit=request.limit,
             strategy=request.strategy,
         )
+    papers = hydrate_papers_from_corpus(papers)
     write_jsonl(papers_path, papers)
     status(
         status="running",

@@ -111,17 +111,34 @@ class HeuristicPaperReader(PaperReader):
             return PaperReadResult(candidates=[], mode_used="heuristic", latency_sec=0.0, prefilter_count=0)
 
         ranked: list[PaperReadCandidate] = []
-        for meta in sentence_spans(body):
-            candidate = _candidate_from_sentence(
-                meta["sentence"],
-                source_field=source_field,
-                sentence_index=meta["index"],
-                char_start=meta["start"],
-                char_end=meta["end"],
-            )
-            if candidate is None:
-                continue
-            ranked.append(candidate)
+        sentence_context = _sentence_context_from_corpus(paper)
+        if sentence_context:
+            for meta in sentence_context:
+                candidate = _candidate_from_sentence(
+                    meta["sentence"],
+                    source_field=source_field,
+                    sentence_index=meta["index"],
+                    char_start=meta["start"],
+                    char_end=meta["end"],
+                    section_id=meta.get("section_id"),
+                    section_title=meta.get("section_title"),
+                    section_kind=meta.get("section_kind"),
+                )
+                if candidate is None:
+                    continue
+                ranked.append(candidate)
+        else:
+            for meta in sentence_spans(body):
+                candidate = _candidate_from_sentence(
+                    meta["sentence"],
+                    source_field=source_field,
+                    sentence_index=meta["index"],
+                    char_start=meta["start"],
+                    char_end=meta["end"],
+                )
+                if candidate is None:
+                    continue
+                ranked.append(candidate)
 
         ranked.sort(key=lambda item: (-float(item.candidate_score or 0.0), int(item.evidence_sentence_index or 0)))
         limited = ranked[: self.max_prefilter_sentences]
@@ -312,6 +329,9 @@ def _candidate_from_sentence(
     sentence_index: int,
     char_start: int,
     char_end: int,
+    section_id: str | None = None,
+    section_title: str | None = None,
+    section_kind: str | None = None,
 ) -> PaperReadCandidate | None:
     direction = _guess_direction(sentence)
     magnitude_text, _, _ = parse_magnitude(sentence)
@@ -351,6 +371,9 @@ def _candidate_from_sentence(
         magnitude_text=magnitude_text,
         conditions=conditions,
         scope=scope,
+        section_id=section_id,
+        section_title=section_title,
+        section_kind=section_kind,
         candidate_score=round(score, 4),
         selection_reason=reason,
     )
@@ -413,6 +436,9 @@ def _mini_reader_prompt(paper: Paper, candidates: list[PaperReadCandidate], max_
                 {
                     "candidate_index": idx,
                     "sentence": candidate.sentence,
+                    "section_id": candidate.section_id,
+                    "section_title": candidate.section_title,
+                    "section_kind": candidate.section_kind,
                     "subject_raw": candidate.subject_raw,
                     "predicate": candidate.predicate,
                     "object_raw": candidate.object_raw,
@@ -486,9 +512,36 @@ def _candidate_from_llm_item(item: Any, pool: list[PaperReadCandidate]) -> Paper
         magnitude_text=magnitude_text,
         conditions=normalize_string_list(item.get("conditions")) or original.conditions,
         scope=normalize_string_list(item.get("scope")) or original.scope,
+        section_id=original.section_id,
+        section_title=original.section_title,
+        section_kind=original.section_kind,
         candidate_score=round(numeric_score, 4),
         selection_reason=_clean_str(item.get("selection_reason")) or "mini reader selection",
     )
+
+
+def _sentence_context_from_corpus(paper: Paper) -> list[dict[str, Any]]:
+    try:
+        from .corpus import load_corpus_sections, load_corpus_sentences
+    except Exception:
+        return []
+
+    sentences = load_corpus_sentences(paper)
+    if not sentences:
+        return []
+    section_lookup = {section.section_id: section for section in load_corpus_sections(paper)}
+    return [
+        {
+            "sentence": sentence.text,
+            "index": sentence.sentence_index,
+            "start": sentence.char_start,
+            "end": sentence.char_end,
+            "section_id": sentence.section_id,
+            "section_title": section_lookup[sentence.section_id].title if sentence.section_id in section_lookup else None,
+            "section_kind": section_lookup[sentence.section_id].kind if sentence.section_id in section_lookup else None,
+        }
+        for sentence in sentences
+    ]
 
 
 def _load_json(raw: str) -> Optional[dict]:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -9,6 +10,14 @@ import typer
 from rich.console import Console
 
 from .anomalies import detect_anomalies
+from .corpus import (
+    configured_corpus_root,
+    enrich_citations_from_semantic_scholar,
+    export_corpus_paper,
+    seed_reasoning_corpus,
+    sync_arxiv_corpus,
+    validate_corpus,
+)
 from .extract import RuleBasedExtractor, extract_claims
 from .graph import build_graph, load_graph, save_graph
 from .hypotheses import generate_hypotheses
@@ -130,6 +139,10 @@ def _extract_claims_incremental(
             if paper.paper_id in completed_papers:
                 console.print(f"[dim]Skipping {i}/{len(papers)} {paper.paper_id} already extracted[/]")
                 continue
+
+            from .corpus import hydrate_paper_from_corpus
+
+            paper = hydrate_paper_from_corpus(paper)
 
             title = paper.title[:80] + ("..." if len(paper.title) > 80 else "")
             console.print(f"[cyan]Extracting {i}/{len(papers)}[/] {paper.paper_id} — {title}")
@@ -361,6 +374,78 @@ def fetch_arxiv_cmd(
     )
     write_jsonl(output, papers)
     console.print(f"[green]Saved {len(papers)} papers to[/] {output}")
+
+
+@app.command("corpus-seed-reasoning")
+def corpus_seed_reasoning_cmd(
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+    from_year: int = typer.Option(2022, "--from-year"),
+    to_year: int = typer.Option(2026, "--to-year"),
+    per_query_limit: int = typer.Option(400, "--per-query-limit"),
+) -> None:
+    """Seed the core LLM reasoning corpus manifest from arXiv metadata."""
+    papers = seed_reasoning_corpus(
+        root,
+        from_year=from_year,
+        to_year=to_year,
+        per_query_limit=per_query_limit,
+    )
+    console.print(f"[green]Seeded {len(papers)} papers into[/] {root / 'papers.jsonl'}")
+
+
+@app.command("corpus-sync-arxiv")
+def corpus_sync_arxiv_cmd(
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+    refresh: bool = typer.Option(False, "--refresh/--no-refresh"),
+    batch_size: Optional[int] = typer.Option(
+        None,
+        "--batch-size",
+        "--limit",
+        help="Optional number of highest-priority unfinished papers to sync this round",
+    ),
+) -> None:
+    """Fetch arXiv artifacts and build canonical text, sections, and sentence spans."""
+    statuses = sync_arxiv_corpus(root, refresh=refresh, limit=batch_size)
+    complete = sum(1 for status in statuses if status.parse_status == "complete")
+    partial = sum(1 for status in statuses if status.parse_status == "partial")
+    failed = sum(1 for status in statuses if status.parse_status == "failed")
+    console.print(
+        f"[green]Synced {len(statuses)} papers[/] "
+        f"(complete={complete}, partial={partial}, failed={failed}) in {root}"
+    )
+
+
+@app.command("corpus-validate")
+def corpus_validate_cmd(
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+) -> None:
+    """Summarize corpus coverage and section quality."""
+    summary = validate_corpus(root)
+    console.print_json(json.dumps(summary, ensure_ascii=False, indent=2))
+
+
+@app.command("corpus-enrich-citations")
+def corpus_enrich_citations_cmd(
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+    batch_size: int = typer.Option(500, "--batch-size"),
+    api_key: Optional[str] = typer.Option(None, "--api-key", envvar="SEMANTIC_SCHOLAR_API_KEY"),
+) -> None:
+    """Hydrate manifest papers with Semantic Scholar citationCount and rerank priority."""
+    stats = enrich_citations_from_semantic_scholar(root, batch_size=batch_size, api_key=api_key)
+    console.print(
+        f"[green]Enriched {stats['updated']}/{stats['total']} papers[/] "
+        f"(missing={stats['missing']}, unique_arxiv={stats['unique_arxiv_ids']}) in {root}"
+    )
+
+
+@app.command("corpus-export-paper")
+def corpus_export_paper_cmd(
+    paper_id: str = typer.Option(..., "--paper-id"),
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+) -> None:
+    """Print one corpus paper's metadata, text provenance, sections, and sentences."""
+    exported = export_corpus_paper(root, paper_id)
+    console.print_json(json.dumps(exported, ensure_ascii=False, indent=2))
 
 
 @app.command("visualize")

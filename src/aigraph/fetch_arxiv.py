@@ -35,6 +35,8 @@ def entry_to_paper(entry: ET.Element) -> Paper:
         retrieval_channel="arxiv",
         abstract=abstract,
         text=(f"{title}\n\n{abstract}" if abstract else title).strip(),
+        arxiv_id_full=arxiv_id or None,
+        arxiv_id_base=_arxiv_base_id(arxiv_id) if arxiv_id else None,
         structured_hint=None,
     )
 
@@ -146,6 +148,10 @@ def _arxiv_id_from_url(url: str) -> str:
     if not url:
         return ""
     return url.rstrip("/").rsplit("/", 1)[-1]
+
+
+def _arxiv_base_id(arxiv_id: str) -> str:
+    return arxiv_id.rsplit("v", 1)[0] if "v" in arxiv_id else arxiv_id
 
 
 def _year_from_timestamp(value: str) -> int:

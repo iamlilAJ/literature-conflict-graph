@@ -276,3 +276,68 @@ curl http://127.0.0.1:7860
 ```
 
 Then add Cloudflare Tunnel only after the local app is confirmed working.
+
+
+## 11. Run 24/7 corpus ingest on the server
+
+If you want the server to keep building the offline arXiv reasoning corpus
+around the clock, run the corpus daemon on the host with the project virtualenv.
+
+### Prepare the host Python environment
+
+```bash
+cd /workspace/literature-conflict-graph
+python3 -m venv .venv
+.venv/bin/pip install -e '.[real]'
+```
+
+### Configure the corpus loop
+
+Add these to `.env` if you want to tune the ingest loop:
+
+```env
+AIGRAPH_CORPUS_ROOT=data/corpus/arxiv_reasoning
+AIGRAPH_CORPUS_FROM_YEAR=2022
+AIGRAPH_CORPUS_TO_YEAR=2026
+AIGRAPH_CORPUS_SEED_LIMIT=50
+AIGRAPH_CORPUS_BATCH_SIZE=5
+AIGRAPH_CORPUS_SLEEP_SECONDS=300
+AIGRAPH_CORPUS_SEED_EVERY=24
+AIGRAPH_CORPUS_VALIDATE_EVERY=12
+```
+
+Meaning:
+
+- `SEED_LIMIT`: how many metadata candidates to fetch per reasoning query
+- `BATCH_SIZE`: how many unfinished papers to sync each loop
+- `SLEEP_SECONDS`: how long to wait between loops
+- `SEED_EVERY`: reseed every N loops
+- `VALIDATE_EVERY`: write a fresh `summary.json` every N loops
+
+### Smoke test one loop
+
+```bash
+cd /workspace/literature-conflict-graph
+AIGRAPH_CORPUS_ONCE=1 ./automation/bin/corpus_daemon.sh
+```
+
+### Install as a systemd service
+
+```bash
+cd /workspace/literature-conflict-graph
+chmod +x automation/bin/corpus_daemon.sh automation/bin/install_corpus_service.sh
+./automation/bin/install_corpus_service.sh /workspace/literature-conflict-graph
+```
+
+### Watch the daemon
+
+```bash
+journalctl -u aigraph-corpus -f
+```
+
+### Check corpus outputs
+
+```bash
+ls /workspace/literature-conflict-graph/data/corpus/arxiv_reasoning
+cat /workspace/literature-conflict-graph/data/corpus/arxiv_reasoning/summary.json
+```

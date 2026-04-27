@@ -29,6 +29,32 @@ def test_contradiction_edge_is_added_for_opposite_directions():
     assert "overlap" in edge_types  # same dataset+metric
 
 
+def test_multi_claim_cluster_keeps_pairwise_claim_edges():
+    claims = [
+        _claim("c001", "positive", top_k="5"),
+        _claim("c002", "positive", top_k="5"),
+        _claim("c003", "negative", top_k="20"),
+        _claim("c004", "mixed", top_k="30"),
+    ]
+    g = build_graph(claims)
+
+    contradicts = 0
+    mismatches = 0
+    overlaps = 0
+    for _, _, edge_data in g.edges(data=True):
+        edge_type = edge_data.get("edge_type")
+        if edge_type == "contradicts":
+            contradicts += 1
+        elif edge_type == "setting_mismatch":
+            mismatches += 1
+        elif edge_type == "overlap":
+            overlaps += 1
+
+    assert contradicts == 4
+    assert mismatches == 4
+    assert overlaps == 6
+
+
 def test_method_and_task_nodes_are_shared():
     claims = [_claim("c001", "positive"), _claim("c002", "positive")]
     g = build_graph(claims)

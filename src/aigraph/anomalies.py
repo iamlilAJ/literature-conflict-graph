@@ -353,18 +353,20 @@ def _detect_bridge_opportunity(
 
 
 def _claim_edge_neighbors(g: nx.MultiDiGraph) -> dict[str, set[str]]:
-    neighbors: dict[str, set[str]] = {}
-    for node, data in g.nodes(data=True):
-        if data.get("node_type") != "Claim":
-            continue
-        node_neighbors: set[str] = set()
+    neighbors = {
+        node: set()
+        for node, data in g.nodes(data=True)
+        if data.get("node_type") == "Claim"
+    }
+    claim_nodes = set(neighbors)
+    for node in claim_nodes:
+        node_neighbors = neighbors[node]
         for target in g.succ.get(node, {}):
-            if str(target).startswith("Claim:"):
+            if target in claim_nodes:
                 node_neighbors.add(target)
         for source in g.pred.get(node, {}):
-            if str(source).startswith("Claim:"):
+            if source in claim_nodes:
                 node_neighbors.add(source)
-        neighbors[node] = node_neighbors
     return neighbors
 
 
@@ -561,68 +563,61 @@ def _build_local_subgraph_caches(
     dict[str, tuple[set[str], set[str], list[dict]]],
     dict[str, tuple[set[str], list[dict], list[tuple[str, dict]]]],
 ]:
-    claim_context: dict[str, tuple[set[str], set[str], list[dict]]] = {}
-    paper_context: dict[str, tuple[set[str], list[dict], list[tuple[str, dict]]]] = {}
+    claim_neighbors: dict[str, set[str]] = {}
+    claim_papers: dict[str, set[str]] = {}
+    claim_edges: dict[str, list[dict]] = {}
+    paper_out_neighbors: dict[str, set[str]] = {}
+    paper_out_edges: dict[str, list[dict]] = {}
+    paper_incoming_edges: dict[str, list[tuple[str, dict]]] = {}
 
     for node, data in g.nodes(data=True):
         node_type = data.get("node_type")
         if node_type == "Claim":
-            neighbors: set[str] = set()
-            paper_neighbors: set[str] = set()
-            edges: list[dict] = []
-            for source, _, edge_data in g.in_edges(node, data=True):
-                neighbors.add(source)
-                if str(source).startswith("Paper:"):
-                    paper_neighbors.add(source)
-                edges.append(
-                    {
-                        "source": source,
-                        "target": node,
-                        "edge_type": edge_data.get("edge_type", "related"),
-                    }
-                )
-            for _, target, edge_data in g.out_edges(node, data=True):
-                neighbors.add(target)
-                if str(target).startswith("Paper:"):
-                    paper_neighbors.add(target)
-                edges.append(
-                    {
-                        "source": node,
-                        "target": target,
-                        "edge_type": edge_data.get("edge_type", "related"),
-                    }
-                )
-            claim_context[node] = (neighbors, paper_neighbors, edges)
+            claim_neighbors[node] = set()
+            claim_papers[node] = set()
+            claim_edges[node] = []
         elif node_type == "Paper":
-            out_neighbors: set[str] = set()
-            out_edges: list[dict] = []
-            incoming_edges: list[tuple[str, dict]] = []
-            for _, target, edge_data in g.out_edges(node, data=True):
-                if edge_data.get("edge_type") != "cites":
-                    continue
-                out_neighbors.add(target)
-                out_edges.append(
-                    {
-                        "source": node,
-                        "target": target,
-                        "edge_type": "cites",
-                    }
-                )
-            for source, _, edge_data in g.in_edges(node, data=True):
-                if edge_data.get("edge_type") != "cites":
-                    continue
-                incoming_edges.append(
-                    (
-                        source,
-                        {
-                            "source": source,
-                            "target": node,
-                            "edge_type": "cites",
-                        },
-                    )
-                )
-            paper_context[node] = (out_neighbors, out_edges, incoming_edges)
+            paper_out_neighbors[node] = set()
+            paper_out_edges[node] = []
+            paper_incoming_edges[node] = []
 
+    for source, target, edge_data in g.edges(data=True):
+        edge_type = edge_data.get("edge_type", "related")
+        edge = {
+            "source": source,
+            "target": target,
+            "edge_type": edge_type,
+        }
+
+        if source in claim_neighbors:
+            claim_neighbors[source].add(target)
+            if target in paper_out_neighbors:
+                claim_papers[source].add(target)
+            claim_edges[source].append(edge)
+
+        if target in claim_neighbors:
+            claim_neighbors[target].add(source)
+            if source in paper_out_neighbors:
+                claim_papers[target].add(source)
+            claim_edges[target].append(edge)
+
+        if edge_type != "cites":
+            continue
+
+        if source in paper_out_neighbors:
+            paper_out_neighbors[source].add(target)
+            paper_out_edges[source].append(edge)
+        if target in paper_incoming_edges:
+            paper_incoming_edges[target].append((source, edge))
+
+    claim_context = {
+        node: (claim_neighbors[node], claim_papers[node], claim_edges[node])
+        for node in claim_neighbors
+    }
+    paper_context = {
+        node: (paper_out_neighbors[node], paper_out_edges[node], paper_incoming_edges[node])
+        for node in paper_out_neighbors
+    }
     return claim_context, paper_context
 
 

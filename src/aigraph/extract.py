@@ -41,7 +41,7 @@ class RuleBasedExtractor(ClaimExtractor):
         if paper.structured_hint:
             claims: list[Claim] = []
             for i, hint in enumerate(paper.structured_hint):
-                claim_id = f"c{start_index + i + 1:03d}"
+                claim_id = f"{paper.paper_id}#c{i + 1:02d}"
                 normalized = normalize_structured_claim_payload(
                     hint,
                     paper,
@@ -77,7 +77,7 @@ class RuleBasedExtractor(ClaimExtractor):
     ) -> list[Claim]:
         claims: list[Claim] = []
         for candidate in candidates:
-            claim_id = f"c{start_index + len(claims) + 1:03d}"
+            claim_id = f"{paper.paper_id}#c{len(claims) + 1:02d}"
             normalized = normalize_structured_claim_payload(
                 {
                     "claim_text": candidate.sentence.strip(),

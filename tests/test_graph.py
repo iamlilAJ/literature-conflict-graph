@@ -138,3 +138,171 @@ def test_build_graph_adds_citation_edges_and_paper_attributes():
     assert g.nodes["Paper:openalex:W1"]["paper_role"] == "survey"
     assert g.nodes["Paper:openalex:W1"]["cited_by_count"] == 9
     assert g.nodes["Paper:openalex:W1"]["recent_citations"] == 3
+
+
+def test_method_canonicalization_collapses_aliases_into_one_node():
+    # Three papers using different surface forms of chain-of-thought should
+    # collapse to a single canonical Method node, with the surface forms
+    # captured in `aliases`.
+    surface_forms = ["Chain Of Thought", "chain-of-thought", "CoT"]
+    claims = []
+    for i, surface in enumerate(surface_forms):
+        c = Claim(
+            claim_id=f"c{i:03d}",
+            paper_id=f"p{i:03d}",
+            claim_text=f"{surface} on math",
+            method=surface,
+            task="math reasoning",
+            direction="positive",
+        )
+        c.canonical_method = "chain-of-thought"
+        claims.append(c)
+    g = build_graph(claims)
+    method_nodes = [n for n, d in g.nodes(data=True) if d.get("node_type") == "Method"]
+    assert method_nodes == ["Method:chain-of-thought"]
+    node_data = g.nodes["Method:chain-of-thought"]
+    # Aliases capture surface forms that DIFFER from the canonical only.
+    assert set(node_data.get("aliases") or []) == {"Chain Of Thought", "CoT"}
+    # All three claims hang off the same Method node.
+    assert g.in_degree("Method:chain-of-thought") == 3
+
+
+def test_dataset_canonicalization_uses_dataset_canonical_field():
+    c = Claim(
+        claim_id="c001",
+        paper_id="p001",
+        claim_text="x",
+        method="LLM",
+        task="QA",
+        dataset="Natural Questions",
+        direction="positive",
+    )
+    c.dataset_canonical = "naturalquestions"
+    g = build_graph([c])
+    assert g.has_node("Dataset:naturalquestions")
+    assert not g.has_node("Dataset:natural questions")
+    assert "Natural Questions" in (g.nodes["Dataset:naturalquestions"].get("aliases") or [])
+
+
+def test_canonicalization_falls_back_to_raw_when_canonical_missing():
+    c = Claim(
+        claim_id="c001",
+        paper_id="p001",
+        claim_text="x",
+        method="RAG",
+        task="factual QA",
+        direction="positive",
+    )
+    # No canonical_* fields set — graph must use the raw value.
+    g = build_graph([c])
+    assert g.has_node("Method:rag")
+    assert g.has_node("Task:factual qa")
+
+
+def test_canonicalization_ignores_placeholder_canonical_values():
+    c = Claim(
+        claim_id="c001",
+        paper_id="p001",
+        claim_text="x",
+        method="self-consistency prompting",
+        task="reasoning",
+        direction="positive",
+    )
+    c.canonical_method = "other"  # placeholder, must not become the node id
+    c.canonical_task = "reasoning"
+    g = build_graph([c])
+    assert g.has_node("Method:self-consistency prompting")
+    assert not g.has_node("Method:other")
+
+
+def test_bibliographic_coupling_edge_added_for_two_shared_refs():
+    # P1 and P2 both cite R1 and R2 → coupling weight 2 → edge added.
+    claims = [
+        Claim(claim_id="c001", paper_id="P1", claim_text="x", method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="P2", claim_text="x", method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1", "R2"]),
+        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1", "R2"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    edge_data = g.get_edge_data("Paper:P1", "Paper:P2") or {}
+    co_cites = [d for d in edge_data.values() if d.get("edge_type") == "co_cites"]
+    assert len(co_cites) == 1
+    assert co_cites[0]["weight"] == 2
+
+
+def test_bibliographic_coupling_skipped_below_threshold():
+    # Only 1 shared ref → below _MIN_COUPLING_WEIGHT=2 → no edge.
+    claims = [
+        Claim(claim_id="c001", paper_id="P1", claim_text="x", method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="P2", claim_text="x", method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1"]),
+        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    edge_data = g.get_edge_data("Paper:P1", "Paper:P2") or {}
+    assert not any(d.get("edge_type") == "co_cites" for d in edge_data.values())
+
+
+def test_contradicts_edge_carries_impact_and_magnitude_weight():
+    c_a = Claim(
+        claim_id="c001",
+        paper_id="P_high_impact",
+        claim_text="x",
+        method="m",
+        task="t",
+        direction="positive",
+        magnitude_value=8.0,
+    )
+    c_b = Claim(
+        claim_id="c002",
+        paper_id="P_low_impact",
+        claim_text="x",
+        method="m",
+        task="t",
+        direction="negative",
+        magnitude_value=-3.0,
+    )
+    papers = [
+        Paper(paper_id="P_high_impact", title="A", year=2024, venue="ACL", cited_by_count=100),
+        Paper(paper_id="P_low_impact", title="B", year=2024, venue="ACL", cited_by_count=2),
+    ]
+    g = build_graph([c_a, c_b], papers=papers)
+    edge_data = g.get_edge_data("Claim:c001", "Claim:c002") or {}
+    contradicts = [d for d in edge_data.values() if d.get("edge_type") == "contradicts"]
+    assert len(contradicts) == 1
+    weight = contradicts[0]["weight"]
+    # log1p(100) * log1p(2) * |8 - 3| = ~4.62 * ~1.10 * 5 ≈ 25.4
+    assert weight > 20.0
+
+
+def test_canonical_clustering_links_aliases_with_contradicts():
+    # Two claims with different surface methods but same canonical_method must
+    # be linked by a contradicts edge (cluster key uses canonical).
+    c_a = Claim(
+        claim_id="c001",
+        paper_id="p001",
+        claim_text="x",
+        method="Chain Of Thought",
+        task="math",
+        direction="positive",
+    )
+    c_a.canonical_method = "chain-of-thought"
+    c_a.canonical_task = "math"
+    c_b = Claim(
+        claim_id="c002",
+        paper_id="p002",
+        claim_text="x",
+        method="CoT",
+        task="math",
+        direction="negative",
+    )
+    c_b.canonical_method = "chain-of-thought"
+    c_b.canonical_task = "math"
+    g = build_graph([c_a, c_b])
+    edge_data = g.get_edge_data("Claim:c001", "Claim:c002") or {}
+    edge_types = {d.get("edge_type") for d in edge_data.values()}
+    assert "contradicts" in edge_types

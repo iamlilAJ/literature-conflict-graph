@@ -237,6 +237,12 @@ class SearchService:
         path = run_dir / "status.json"
         if not path.exists():
             raise FileNotFoundError(run_id)
+        # Lazily realign persisted run artifacts (graph.json, anomalies.jsonl,
+        # index.html) when the on-disk schema_version is older than the running
+        # code's. realign_run_safe swallows and logs exceptions so one stale run
+        # cannot 500 the request path.
+        from .realign import realign_run_safe
+        realign_run_safe(run_dir)
         data = json.loads(path.read_text(encoding="utf-8"))
         if data.get("status") == "done" and not data.get("overview"):
             overview = ensure_overview(run_dir, data)
@@ -457,10 +463,12 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     report_path.write_text(report, encoding="utf-8")
     render_visualization(run_dir, html_path)
 
+    from .realign import SCHEMA_VERSION
     status(
         status="done",
         stage="complete",
         progress=1.0,
+        schema_version=SCHEMA_VERSION,
         message=f"Generated {len(insights)} insight(s), {len(anomalies)} conflict/gap region(s), and {len(selected)} selected hypothesis entries.",
         papers=len(papers),
         claims=len(claims),
@@ -723,6 +731,11 @@ def make_handler(service: SearchService) -> type[BaseHTTPRequestHandler]:
             except ValueError:
                 self._send_error(HTTPStatus.BAD_REQUEST, "Invalid path.")
                 return
+            # Direct hits to /runs/<id>/<file> bypass /search/<id>, so fold the
+            # same lazy realignment in here. Only fires when the stamped
+            # schema_version is older than the running code's.
+            from .realign import realign_run_safe
+            realign_run_safe(run_dir)
             if target.is_dir():
                 target = target / "index.html"
             if not target.exists() or not target.is_file():

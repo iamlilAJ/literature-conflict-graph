@@ -830,22 +830,10 @@ def _render_html(payload: dict[str, Any]) -> str:
     const typeColor = {{
       Paper: '#6b7280',
       Claim: '#2563eb',
-      Role: '#f97316',
       Method: '#059669',
-      Model: '#16a34a',
       Task: '#d97706',
       Dataset: '#7c3aed',
-      Metric: '#dc2626',
-      Baseline: '#9333ea',
-      Setting: '#0891b2',
-      Domain: '#0f766e',
-      DataModality: '#64748b',
-      Mechanism: '#be123c',
-      FailureMode: '#b91c1c',
-      EvaluationProtocol: '#4f46e5',
-      Assumption: '#525252',
-      RiskType: '#ea580c',
-      TemporalProperty: '#0369a1'
+      Metric: '#dc2626'
     }};
 
     function esc(value) {{
@@ -878,15 +866,8 @@ def _render_html(payload: dict[str, Any]) -> str:
       return ({{
         Task: 'Research task',
         Method: 'Method family',
-        Model: 'Model family',
-        Mechanism: 'Mechanism',
-        TemporalProperty: 'Temporal property',
-        Domain: 'Research domain',
-        DataModality: 'Data modality',
-        RiskType: 'Risk or failure theme',
-        EvaluationProtocol: 'Evaluation protocol',
         Dataset: 'Dataset or resource',
-        Role: 'Paper role'
+        Metric: 'Evaluation metric'
       }})[type] || 'Concept';
     }}
 
@@ -894,15 +875,8 @@ def _render_html(payload: dict[str, Any]) -> str:
       const glosses = {{
         Task: 'A problem setting or task that papers evaluate.',
         Method: 'A method family used to solve the task.',
-        Model: 'A model family or concrete model class.',
-        Mechanism: 'A proposed reason for why results improve or break.',
-        TemporalProperty: 'A temporal condition such as drift, non-stationarity, or horizon effects.',
-        Domain: 'An application or research domain that grounds the evidence.',
-        DataModality: 'The input modality or evidence type used in this area.',
-        RiskType: 'A risk, safety issue, or failure theme linked to the claims.',
-        EvaluationProtocol: 'An evaluation setup or testing protocol that shapes the reported result.',
         Dataset: 'A dataset or benchmark resource used by linked papers.',
-        Role: node.description || 'A role used to group papers by their job in the literature.'
+        Metric: 'A metric used to score results across linked claims.'
       }};
       return glosses[node.node_type] || 'A concept node connected to claims and papers in this run.';
     }}
@@ -1490,57 +1464,21 @@ def _render_html(payload: dict[str, Any]) -> str:
 
     const hierarchyLanes = IS_COMMUNITY_GRAPH
       ? [
-          {{ key: 'keyword', label: 'Keyword', types: ['Domain', 'Task', 'TemporalProperty', 'DataModality', 'RiskType', 'Method', 'Model', 'Mechanism'] }},
-          {{ key: 'role', label: 'Role', types: ['Role'] }},
+          {{ key: 'keyword', label: 'Keyword', types: ['Task', 'Method'] }},
           {{ key: 'claim', label: 'Claims', types: ['Claim'] }},
           {{ key: 'paper', label: 'Papers', types: ['Paper'] }},
         ]
       : [
-          {{ key: 'topic', label: 'Topic', types: ['Domain', 'Task', 'TemporalProperty', 'DataModality', 'RiskType'] }},
-          {{ key: 'method', label: 'Method', types: ['Method', 'Model', 'Mechanism', 'Baseline', 'Setting', 'Role'] }},
+          {{ key: 'topic', label: 'Topic', types: ['Task'] }},
+          {{ key: 'method', label: 'Method', types: ['Method'] }},
           {{ key: 'evidence', label: 'Evidence', types: ['Paper', 'Claim'] }},
-          {{ key: 'evaluation', label: 'Evaluation', types: ['Dataset', 'Metric', 'FailureMode', 'EvaluationProtocol', 'Assumption'] }},
+          {{ key: 'evaluation', label: 'Evaluation', types: ['Dataset', 'Metric'] }},
         ];
     const hierarchyTypeToLane = Object.fromEntries(
       hierarchyLanes.flatMap((lane, index) => lane.types.map(type => [type, index]))
     );
-    const clusterNodeTypes = new Set([
-      'Method',
-      'Model',
-      'Role',
-      'Task',
-      'Domain',
-      'Mechanism',
-      'TemporalProperty',
-      'DataModality',
-      'RiskType'
-    ]);
-    const claimsNodeTypes = IS_COMMUNITY_GRAPH
-      ? new Set([
-          'Paper',
-          'Claim',
-          'Method',
-          'Model',
-          'Role',
-          'Task',
-          'Domain',
-          'Mechanism',
-          'TemporalProperty',
-          'DataModality',
-          'RiskType'
-        ])
-      : new Set([
-          'Paper',
-          'Claim',
-          'Method',
-          'Role',
-          'Task',
-          'Domain',
-          'Mechanism',
-          'TemporalProperty',
-          'DataModality',
-          'RiskType'
-        ]);
+    const clusterNodeTypes = new Set(['Method', 'Task']);
+    const claimsNodeTypes = new Set(['Paper', 'Claim', 'Method', 'Task']);
 
     function edgeKey(e) {{
       const s = typeof e.source === 'object' ? e.source.id : e.source;
@@ -1960,7 +1898,7 @@ def _render_html(payload: dict[str, Any]) -> str:
     }}
 
     function renderLegend() {{
-      const types = ['Paper', 'Claim', 'Method', 'Task', 'Metric', 'Domain', 'Mechanism', 'FailureMode', 'TemporalProperty'];
+      const types = ['Paper', 'Claim', 'Method', 'Task', 'Dataset', 'Metric'];
       document.getElementById('legend').innerHTML = types.map(t =>
         `<span><i class="dot" style="background:${{typeColor[t]}}"></i>${{t}}</span>`
       ).join('') + '<span>-- citation edge</span>';

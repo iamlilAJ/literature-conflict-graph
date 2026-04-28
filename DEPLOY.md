@@ -315,6 +315,46 @@ docker compose exec literature-conflict-graph \
              print('aigraph upgrade OK')"
 ```
 
+### Realign existing runs after a schema change
+
+When upstream changes node types, edge types, or anomaly rules (i.e.
+`build-graph` / `detect-anomalies` / `visualize` would now produce a
+different shape on the same `claims.jsonl`), every existing run dir under
+`outputs/runs/` is now displaying a **stale graph** + **stale anomalies**.
+Re-rendering the HTML alone is not enough — the underlying `graph.json`
+and `anomalies.jsonl` still carry the pre-upgrade schema, and the new
+JS palette will not have colors for the leftover node types, so the
+visualization shows untyped grey nodes.
+
+Run the full rebuild over every run on the deploy host. This is **purely
+deterministic and costs $0** (no LLM calls — only the graph builder,
+anomaly detector, and HTML renderer):
+
+```bash
+cd /workspace/literature-conflict-graph
+for d in outputs/runs/*/; do
+  bn=$(basename "$d")
+  # Skip non-run dirs and any run that is missing the inputs we need.
+  [ -f "$d/claims.jsonl" ] && [ -f "$d/papers.jsonl" ] || continue
+  echo "=== rebuilding $bn ==="
+  docker compose exec -T aigraph python -m aigraph.cli build-graph \
+    --claims "/app/$d/claims.jsonl" --papers "/app/$d/papers.jsonl" \
+    --output "/app/$d/graph.json"
+  docker compose exec -T aigraph python -m aigraph.cli detect-anomalies \
+    --graph "/app/$d/graph.json" --claims "/app/$d/claims.jsonl" \
+    --output "/app/$d/anomalies.jsonl"
+  docker compose exec -T aigraph python -m aigraph.cli visualize \
+    --input-dir "/app/$d" --output "/app/$d/index.html"
+done
+```
+
+Each run takes ~30 s for graph + ~10 min for anomalies + ~5 s for
+visualize, so a fleet of ~15 runs is roughly 2-3 hours of cheap CPU.
+
+After this completes, every run on the deploy host is on the current
+schema, and `https://app.paper-universe.uk/runs/<any>/index.html`
+matches what a developer sees locally.
+
 ### Update the served data
 
 The container reads pipeline outputs from a host-mounted directory (typically

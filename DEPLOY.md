@@ -278,7 +278,77 @@ curl http://127.0.0.1:7860
 Then add Cloudflare Tunnel only after the local app is confirmed working.
 
 
-## 11. Run 24/7 corpus ingest on the server
+## 11. Realign an existing deploy with upstream changes
+
+When the upstream `main` branch has been updated (new schema, new anomaly
+rules, new visualization, etc.) and you need the live `graph.paper-universe.uk`
+to reflect them, run on the deploy host:
+
+```bash
+cd /workspace/literature-conflict-graph
+
+# 1. Pull the new code.
+git pull origin main
+
+# 2. Rebuild the image and restart the container.
+#    `--build` is what picks up the new code; `-d` keeps it detached.
+docker compose up -d --build
+
+# 3. Wait for the container to be healthy.
+docker compose ps
+docker compose logs --tail=40
+
+# 4. Smoke test the local app.
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:7860/    # expect 200
+
+# 5. Smoke test the public URL (Cloudflare Tunnel auto-reconnects).
+curl -s -o /dev/null -w "%{http_code}\n" https://graph.paper-universe.uk/  # expect 200
+```
+
+If the new code adds Python modules / symbols, verify they import inside the
+container:
+
+```bash
+docker compose exec literature-conflict-graph \
+  python -c "from aigraph.anomalies import _detect_replication_conflict; \
+             from aigraph.graph import _resolve_entity_value, _add_bibliographic_coupling_edges; \
+             print('aigraph upgrade OK')"
+```
+
+### Update the served data
+
+The container reads pipeline outputs from a host-mounted directory (typically
+`outputs/runs/`). To serve a fresh full-corpus run produced on a separate
+ingest box, copy the run dir into the deploy host first:
+
+```bash
+# from the ingest box (replace <deploy-host>):
+rsync -av --partial /tmp/fullrun_v2/ <deploy-host>:/workspace/literature-conflict-graph/outputs/runs/<YYYYMMDD-HHMMSS-XXXXXX>/
+
+# the run dir name MUST match YYYYMMDD-HHMMSS-XXXXXX (6 hex) — the server
+# regex rejects others. Edit status.json so `status: "done"` and the run
+# shows up in the home page.
+```
+
+The container picks up new run dirs without restart (the home page lists them
+on every request).
+
+### Common issues
+
+- **`docker compose up --build` fails with hatch error** — the
+  `pyproject.toml` may pin a git URL extra; ensure `[tool.hatch.metadata]
+  allow-direct-references = true` is set (already in the repo, but worth
+  double-checking after merges).
+- **HTTP 530 on `graph.paper-universe.uk`** — Cloudflare can't reach the
+  origin; the tunnel daemon (`cloudflared`) on the deploy host is down or
+  the local app stopped. Check `systemctl status cloudflared` and
+  `docker compose ps`.
+- **New run shows "404 Not found" on `/search/<run_id>`** — the dir name
+  doesn't match `RUN_ID_RE` regex (`^[0-9]{8}-[0-9]{6}-[a-f0-9]{6}$`).
+  Rename the dir + update `status.json`'s `run_id` field accordingly.
+
+
+## 12. Run 24/7 corpus ingest on the server
 
 If you want the server to keep building the offline arXiv reasoning corpus
 around the clock, run the corpus daemon on the host with the project virtualenv.

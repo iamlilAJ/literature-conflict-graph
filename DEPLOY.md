@@ -328,14 +328,33 @@ visualization shows untyped grey nodes.
 
 Run the full rebuild over every run on the deploy host. This is **purely
 deterministic and costs $0** (no LLM calls — only the graph builder,
-anomaly detector, and HTML renderer):
+anomaly detector, and HTML renderer). The repo ships a wrapper script
+that handles pull, rebuild, container-code verification, the loop, and
+a public-URL smoke test:
 
 ```bash
 cd /workspace/literature-conflict-graph
+bash automation/bin/realign_all_runs.sh
+```
+
+Optional toggles via env (each step is independently skippable so you
+can re-run a partial flow without burning time):
+
+```bash
+SKIP_PULL=1   bash automation/bin/realign_all_runs.sh   # source already current
+SKIP_BUILD=1  bash automation/bin/realign_all_runs.sh   # image already current
+SKIP_REALIGN=1 bash automation/bin/realign_all_runs.sh  # only verify, do not loop
+```
+
+If you prefer the equivalent inline loop (no script):
+
+```bash
+cd /workspace/literature-conflict-graph
+git pull origin main
+docker compose up -d --build
 for d in outputs/runs/*/; do
   bn=$(basename "$d")
-  # Skip non-run dirs and any run that is missing the inputs we need.
-  [ -f "$d/claims.jsonl" ] && [ -f "$d/papers.jsonl" ] || continue
+  [ -f "$d/claims.jsonl" ] && [ -s "$d/claims.jsonl" ] && [ -f "$d/papers.jsonl" ] || continue
   echo "=== rebuilding $bn ==="
   docker compose exec -T aigraph python -m aigraph.cli build-graph \
     --claims "/app/$d/claims.jsonl" --papers "/app/$d/papers.jsonl" \
@@ -350,6 +369,7 @@ done
 
 Each run takes ~30 s for graph + ~10 min for anomalies + ~5 s for
 visualize, so a fleet of ~15 runs is roughly 2-3 hours of cheap CPU.
+Empty runs (no claims) are skipped.
 
 After this completes, every run on the deploy host is on the current
 schema, and `https://app.paper-universe.uk/runs/<any>/index.html`

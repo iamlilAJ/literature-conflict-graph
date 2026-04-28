@@ -164,6 +164,8 @@ def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None
         paper_role=paper.paper_role,
         paper_role_score=float(paper.paper_role_score or 0.0),
         paper_role_signals=list(paper.paper_role_signals or []),
+        arxiv_id_base=paper.arxiv_id_base,
+        arxiv_id_full=paper.arxiv_id_full,
         **metrics,
     )
     if paper.paper_role:

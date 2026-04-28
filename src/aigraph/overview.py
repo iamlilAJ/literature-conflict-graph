@@ -451,6 +451,8 @@ def _why_this_matters(
         conflict_type = str(conflict.get("type") or "")
         if conflict_type in {"benchmark_inconsistency", "impact_conflict"}:
             line = "This disagreement changes which benchmarks and baselines you should trust when reading the literature."
+        elif conflict_type == "replication_conflict":
+            line = "A direct replication is reporting the opposite result, so the original method may be more setting-sensitive than its paper claimed."
         elif conflict_type in {"setting_mismatch", "metric_mismatch"}:
             line = "Small evaluation changes may be flipping the reported conclusion, so implementation decisions here are not plug-and-play."
         elif conflict_type == "evidence_gap":

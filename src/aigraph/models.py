@@ -32,6 +32,7 @@ AnomalyType = Literal[
     "evidence_gap",
     "community_disconnect",
     "impact_conflict",
+    "replication_conflict",
 ]
 InsightType = Literal[
     "unifying_theory",
@@ -239,6 +240,7 @@ class Anomaly(LooseModel):
     recent_activity: float = 0.0
     impact_balance: float = 0.0
     citation_bridge_score: float = 0.0
+    replication_score: float = 0.0
     topology_score: float = 0.0
 
 

@@ -47,15 +47,206 @@ def test_no_anomaly_when_all_positive():
     assert all(a.type != "benchmark_inconsistency" for a in anomalies)
 
 
+def _bridge_cluster_claims(prefix: str, method: str, task: str, n: int, *, direction: str = "positive") -> list[Claim]:
+    claims: list[Claim] = []
+    for i in range(n):
+        cid = f"{prefix}{i:03d}"
+        c = Claim(
+            claim_id=cid,
+            paper_id=f"{prefix}p{i:03d}",
+            claim_text=f"{method} on {task}",
+            method=method,
+            task=task,
+            direction=direction,
+        )
+        claims.append(c)
+    return claims
+
+
 def test_bridge_opportunity_between_related_clusters():
-    claims = [
-        _claim("c001", "RAG", "factual QA", "positive"),
-        _claim("c002", "entailment-filtered retrieval", "factual QA evaluation", "positive"),
-    ]
-    g = build_graph(claims)
-    anomalies = detect_anomalies(g, claims)
+    # Cluster A: 5 papers on "noisy retrieval pipeline tuning" for "scientific document grounding".
+    # Cluster B: 5 papers on "noisy retrieval calibration" for "scientific paper grounding".
+    # After stripping generic tokens, the meaningful shared tokens are:
+    #   {noisy, retrieval, scientific, grounding} (>=3 required, no citation overlap).
+    cluster_a = _bridge_cluster_claims("a", "noisy retrieval pipeline tuning", "scientific document grounding", 5)
+    cluster_b = _bridge_cluster_claims("b", "noisy retrieval calibration", "scientific paper grounding", 5)
+    g = build_graph(cluster_a + cluster_b)
+    anomalies = detect_anomalies(g, cluster_a + cluster_b)
     bridges = [a for a in anomalies if a.type == "bridge_opportunity"]
     assert bridges, "Expected at least one bridge_opportunity anomaly"
+    # Confirm shared tokens are domain-meaningful, not generic content words.
+    shared = bridges[0].shared_entities["shared_tokens"]
+    for generic in ("model", "models", "reasoning", "task", "method", "approach", "framework"):
+        assert generic not in shared.split(", "), f"Generic token {generic!r} leaked into shared_tokens"
+
+
+def test_bridge_filtered_by_generic_tokens():
+    # Three of the four overlapping tokens are generic content words; only "calibration"
+    # is meaningful, which is below the >=3 threshold.
+    cluster_a = _bridge_cluster_claims("a", "calibration model", "reasoning task evaluation", 5)
+    cluster_b = _bridge_cluster_claims("b", "calibration approach", "reasoning task evaluation", 5)
+    g = build_graph(cluster_a + cluster_b)
+    anomalies = detect_anomalies(g, cluster_a + cluster_b)
+    assert not any(a.type == "bridge_opportunity" for a in anomalies)
+
+
+def test_bridge_filtered_by_small_community():
+    # Plenty of meaningful overlap but cluster A has only 3 unique papers.
+    cluster_a = _bridge_cluster_claims("a", "noisy retrieval pipeline tuning", "scientific document grounding", 3)
+    cluster_b = _bridge_cluster_claims("b", "noisy retrieval calibration", "scientific paper grounding", 5)
+    g = build_graph(cluster_a + cluster_b)
+    anomalies = detect_anomalies(g, cluster_a + cluster_b)
+    assert not any(a.type == "bridge_opportunity" for a in anomalies)
+
+
+def test_bridge_filtered_by_citation_path():
+    # Token + size gates pass but every paper in A cites every paper in B, so
+    # the communities are heavily citation-connected and not bridge candidates.
+    cluster_a = _bridge_cluster_claims("a", "noisy retrieval pipeline tuning", "scientific document grounding", 5)
+    cluster_b = _bridge_cluster_claims("b", "noisy retrieval calibration", "scientific paper grounding", 5)
+    papers: list[Paper] = []
+    b_ids = [c.paper_id for c in cluster_b]
+    a_ids = [c.paper_id for c in cluster_a]
+    for c in cluster_a:
+        papers.append(Paper(
+            paper_id=c.paper_id, title=c.paper_id, year=2024, venue="ACL",
+            cited_by_count=5, referenced_works=b_ids,
+        ))
+    for c in cluster_b:
+        papers.append(Paper(
+            paper_id=c.paper_id, title=c.paper_id, year=2024, venue="ACL",
+            cited_by_count=5, referenced_works=a_ids,
+        ))
+    g = build_graph(cluster_a + cluster_b, papers=papers)
+    anomalies = detect_anomalies(g, cluster_a + cluster_b)
+    assert not any(a.type == "bridge_opportunity" for a in anomalies)
+
+
+def _replication_pair(
+    *,
+    method: str = "chain-of-thought",
+    task: str = "math reasoning",
+    original_paper: str = "p_orig",
+    replicating_paper: str = "p_rep",
+    original_arxiv: str | None = None,
+    original_title: str = "",
+    baseline_raw: str = "",
+    evidence_span: str = "",
+) -> tuple[list[Claim], list[Paper]]:
+    c_orig = Claim(
+        claim_id="c_orig",
+        paper_id=original_paper,
+        claim_text=f"{method} helps {task}",
+        method=method,
+        task=task,
+        direction="positive",
+    )
+    c_orig.canonical_method = method
+    c_orig.canonical_task = task
+    c_rep = Claim(
+        claim_id="c_rep",
+        paper_id=replicating_paper,
+        claim_text=f"replicating {method} on {task} fails",
+        method=method,
+        task=task,
+        direction="negative",
+        baseline_raw=baseline_raw,
+        evidence_span=evidence_span,
+    )
+    c_rep.canonical_method = method
+    c_rep.canonical_task = task
+    papers = [
+        Paper(
+            paper_id=original_paper,
+            title=original_title or original_paper,
+            year=2023,
+            venue="ACL",
+            cited_by_count=50,
+            arxiv_id_base=original_arxiv,
+        ),
+        Paper(
+            paper_id=replicating_paper,
+            title=replicating_paper,
+            year=2024,
+            venue="ACL",
+            cited_by_count=10,
+        ),
+    ]
+    return [c_orig, c_rep], papers
+
+
+def test_replication_arxiv_id_signal():
+    claims, papers = _replication_pair(
+        original_arxiv="2201.11903",
+        baseline_raw="follows 2201.11903 chain-of-thought baseline",
+    )
+    g = build_graph(claims, papers=papers)
+    anomalies = detect_anomalies(g, claims)
+    reps = [a for a in anomalies if a.type == "replication_conflict"]
+    assert len(reps) == 1
+    assert reps[0].shared_entities["replication_signal"] == "baseline_arxiv"
+    assert reps[0].shared_entities["original_paper"] == "p_orig"
+    assert reps[0].shared_entities["replicating_paper"] == "p_rep"
+    assert reps[0].replication_score == 1.0
+
+
+def test_replication_follow_verb_signal():
+    claims, papers = _replication_pair(
+        evidence_span="we follow the chain-of-thought prompting approach to baseline our method",
+    )
+    g = build_graph(claims, papers=papers)
+    anomalies = detect_anomalies(g, claims)
+    reps = [a for a in anomalies if a.type == "replication_conflict"]
+    assert len(reps) == 1
+    assert reps[0].shared_entities["replication_signal"] == "follow_verb"
+
+
+def test_replication_title_substring_signal():
+    claims, papers = _replication_pair(
+        original_title="Self-Consistency Improves Chain Of Thought Reasoning",
+        baseline_raw="self-consistency chain thought sampling pipeline",
+    )
+    g = build_graph(claims, papers=papers)
+    anomalies = detect_anomalies(g, claims)
+    reps = [a for a in anomalies if a.type == "replication_conflict"]
+    assert len(reps) == 1
+    assert reps[0].shared_entities["replication_signal"] == "title_substring"
+
+
+def test_replication_same_paper_excluded():
+    # Same paper, opposing directions on same method/task — intra-paper, not a replication.
+    claims, papers = _replication_pair(
+        original_paper="p_x",
+        replicating_paper="p_x",
+        original_arxiv="2201.11903",
+        baseline_raw="follows 2201.11903",
+    )
+    g = build_graph(claims, papers=papers[:1])
+    anomalies = detect_anomalies(g, claims)
+    assert not any(a.type == "replication_conflict" for a in anomalies)
+
+
+def test_replication_same_direction_excluded():
+    claims, papers = _replication_pair(
+        original_arxiv="2201.11903",
+        baseline_raw="follows 2201.11903",
+    )
+    claims[1].direction = "positive"  # both positive
+    g = build_graph(claims, papers=papers)
+    anomalies = detect_anomalies(g, claims)
+    assert not any(a.type == "replication_conflict" for a in anomalies)
+
+
+def test_replication_generic_follow_verb_excluded():
+    # "follow" verb fires but canonical_method does not appear in evidence_span
+    # → not a replication of this method specifically.
+    claims, papers = _replication_pair(
+        method="chain-of-thought",
+        evidence_span="we follow the standard evaluation protocol described elsewhere",
+    )
+    g = build_graph(claims, papers=papers)
+    anomalies = detect_anomalies(g, claims)
+    assert not any(a.type == "replication_conflict" for a in anomalies)
 
 
 def test_detects_metric_mismatch():

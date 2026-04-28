@@ -168,10 +168,20 @@ def _render_anomaly(
 ) -> list[str]:
     lines: list[str] = []
     heading = "#" * max(1, heading_level)
-    section_label = "Bridge opportunity" if anomaly.type == "bridge_opportunity" else "Anomaly"
+    if anomaly.type == "bridge_opportunity":
+        section_label = "Bridge opportunity"
+    elif anomaly.type == "replication_conflict":
+        section_label = "Replication conflict"
+    else:
+        section_label = "Anomaly"
     lines.append(f"{heading} {section_label} {anomaly.anomaly_id} — {anomaly.type}")
     lines.append("")
-    question_label = "Transfer question" if anomaly.type == "bridge_opportunity" else "Central question"
+    if anomaly.type == "bridge_opportunity":
+        question_label = "Transfer question"
+    elif anomaly.type == "replication_conflict":
+        question_label = "Replication question"
+    else:
+        question_label = "Central question"
     lines.append(f"**{question_label}:** {anomaly.central_question}")
     lines.append("")
     if anomaly.shared_entities:

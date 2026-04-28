@@ -15,6 +15,20 @@ from .models import Anomaly, Claim
 _STOPWORDS = {"the", "a", "an", "of", "on", "in", "for", "and", "to", "qa", "llm"}
 MIN_COMMUNITY_DISCONNECT_TOPOLOGY = 0.25
 _PLACEHOLDER_LABELS = {"other", "unknown", "misc", "n/a", "na", "none", "null"}
+_GENERIC_CONCEPT_TOKENS = frozenset({
+    "reasoning", "text", "model", "models", "approach", "approaches",
+    "task", "tasks", "method", "methods", "learning", "training",
+    "inference", "language", "neural", "system", "systems",
+    "evaluation", "performance", "framework", "use", "uses", "using",
+    "based", "general", "generic",
+})
+_BRIDGE_MIN_MEANINGFUL_TOKENS = 3
+_BRIDGE_MIN_CLUSTER_PAPERS = 5
+_BRIDGE_REFERENCED_WORKS_COVERAGE = 0.5
+_FOLLOW_VERB_RE = re.compile(
+    r"\bwe\s+(?:follow|reproduce|replicate|reimplement|adopt)\b",
+    re.IGNORECASE,
+)
 
 
 def detect_anomalies(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
@@ -26,7 +40,9 @@ def detect_anomalies(g: nx.MultiDiGraph, claims: list[Claim]) -> list[Anomaly]:
     anomalies.extend(_detect_metric_mismatch(method_task_groups))
     anomalies.extend(_detect_evidence_gap(g, method_task_groups))
     anomalies.extend(_detect_community_disconnect(citation_graph, claims))
-    anomalies.extend(_detect_bridge_opportunity(g, method_task_groups))
+    anomalies.extend(_detect_bridge_opportunity(g, citation_graph, method_task_groups))
+    anomalies.extend(_detect_replication_conflict(g, method_task_groups))
+    anomalies = _dedup_replication_shadowed(anomalies)
 
     claims_by_id = {c.claim_id: c for c in claims}
     local_graph_cache: dict[tuple[str, ...], tuple[list[str], list[dict]]] = {}
@@ -298,13 +314,22 @@ def _varying_setting_fields(pos: list[Claim], neg: list[Claim]) -> list[str]:
 
 def _detect_bridge_opportunity(
     g: nx.MultiDiGraph,
+    citation_graph: nx.Graph,
     groups: dict[tuple[str, str], list[Claim]],
 ) -> list[Anomaly]:
     cluster_nodes = {
         key: {f"Claim:{claim.claim_id}" for claim in group}
         for key, group in groups.items()
     }
-    token_cache = {key: _concept_tokens(key) for key in groups}
+    # Token caches: full tokens (for Jaccard denominator), and meaningful tokens
+    # (with generic-content words stripped) for the overlap requirement.
+    full_token_cache = {key: _concept_tokens(key) for key in groups}
+    meaningful_token_cache = {
+        key: tokens - _GENERIC_CONCEPT_TOKENS for key, tokens in full_token_cache.items()
+    }
+    paper_set_cache = {
+        key: {claim.paper_id for claim in group} for key, group in groups.items()
+    }
     claim_neighbors = _claim_edge_neighbors(g)
     out: list[Anomaly] = []
     seen: set[tuple[str, str]] = set()
@@ -313,16 +338,26 @@ def _detect_bridge_opportunity(
         # Skip pairs that share a method (already handled by other detectors on the same cluster).
         if ka[0] == kb[0] and ka[1] == kb[1]:
             continue
-        tokens_a = token_cache[ka]
-        tokens_b = token_cache[kb]
-        overlap = tokens_a & tokens_b
-        if not overlap:
+        meaningful_overlap = meaningful_token_cache[ka] & meaningful_token_cache[kb]
+        if len(meaningful_overlap) < _BRIDGE_MIN_MEANINGFUL_TOKENS:
             continue
-        jaccard = len(overlap) / max(1, len(tokens_a | tokens_b))
+        union = meaningful_token_cache[ka] | meaningful_token_cache[kb]
+        jaccard = len(meaningful_overlap) / max(1, len(union))
         if jaccard < 0.15:
+            continue
+        papers_a = paper_set_cache[ka]
+        papers_b = paper_set_cache[kb]
+        if len(papers_a) < _BRIDGE_MIN_CLUSTER_PAPERS or len(papers_b) < _BRIDGE_MIN_CLUSTER_PAPERS:
             continue
         if _clusters_already_connected(cluster_nodes[ka], cluster_nodes[kb], claim_neighbors):
             continue
+        # Citation gate: drop pairs whose papers are within 2 citation hops of each
+        # other. Only enforce when at least half the papers on each side carry
+        # non-empty referenced_works — otherwise OpenAlex sparsity makes the gate
+        # spuriously permissive.
+        if _has_citation_metadata(g, papers_a) and _has_citation_metadata(g, papers_b):
+            if _citation_connected_paper_ids(citation_graph, papers_a, papers_b, max_distance=2):
+                continue
 
         pair_key = tuple(sorted([f"{ka[0]}|{ka[1]}", f"{kb[0]}|{kb[1]}"]))
         if pair_key in seen:
@@ -345,11 +380,162 @@ def _detect_bridge_opportunity(
                     "task_from": _display_task_label(group_a[0]),
                     "method_to": _display_method_label(group_b[0]),
                     "task_to": _display_task_label(group_b[0]),
-                    "shared_tokens": ", ".join(sorted(overlap)),
+                    "shared_tokens": ", ".join(sorted(meaningful_overlap)),
                 },
             )
         )
     return out
+
+
+def _has_citation_metadata(g: nx.MultiDiGraph, paper_ids: set[str]) -> bool:
+    if not paper_ids:
+        return False
+    with_refs = 0
+    for pid in paper_ids:
+        node = f"Paper:{pid}"
+        if node in g and g.nodes[node].get("referenced_works"):
+            with_refs += 1
+    return with_refs / len(paper_ids) >= _BRIDGE_REFERENCED_WORKS_COVERAGE
+
+
+def _citation_connected_paper_ids(
+    citation_graph: nx.Graph,
+    a: set[str],
+    b: set[str],
+    max_distance: int,
+) -> bool:
+    sources = {f"Paper:{pid}" for pid in a if f"Paper:{pid}" in citation_graph}
+    targets = {f"Paper:{pid}" for pid in b if f"Paper:{pid}" in citation_graph}
+    if not sources or not targets:
+        return False
+    if sources & targets:
+        return True
+    return _reachable_within_distance(citation_graph, sources, targets, max_distance)
+
+
+_TITLE_CONTENT_MIN_LEN = 5
+
+
+def _title_content_words(title: str) -> list[str]:
+    if not title:
+        return []
+    tokens = re.findall(r"[A-Za-z][A-Za-z\-']+", title)
+    out: list[str] = []
+    for tok in tokens:
+        norm = tok.lower()
+        if len(norm) < _TITLE_CONTENT_MIN_LEN:
+            continue
+        if norm in _STOPWORDS or norm in _PLACEHOLDER_LABELS or norm in _GENERIC_CONCEPT_TOKENS:
+            continue
+        out.append(norm)
+        if len(out) >= 4:
+            break
+    return out
+
+
+def _detect_replication_conflict(
+    g: nx.MultiDiGraph,
+    groups: dict[tuple[str, str], list[Claim]],
+) -> list[Anomaly]:
+    out: list[Anomaly] = []
+    seen_pairs: set[tuple[str, str]] = set()
+    for (method_label, task_label), group in groups.items():
+        if len(group) < 2:
+            continue
+        for c_a, c_b in combinations(group, 2):
+            if c_a.paper_id == c_b.paper_id:
+                continue
+            if not _opposing_directions(c_a.direction, c_b.direction):
+                continue
+            # Try both orderings; replication asymmetry is "B replicates A".
+            for original, replicating in ((c_a, c_b), (c_b, c_a)):
+                if original.direction != "positive":
+                    continue
+                pair_key = tuple(sorted((original.claim_id, replicating.claim_id)))
+                if pair_key in seen_pairs:
+                    continue
+                signal = _replication_signal(g, original, replicating)
+                if signal is None:
+                    continue
+                seen_pairs.add(pair_key)
+                anomaly = Anomaly(
+                    anomaly_id="pending",
+                    type="replication_conflict",
+                    central_question=(
+                        f"Why does {replicating.paper_id} fail to reproduce {original.paper_id}'s "
+                        f"result for {method_label} on {task_label}?"
+                    ),
+                    claim_ids=[original.claim_id, replicating.claim_id],
+                    positive_claims=[original.claim_id],
+                    negative_claims=[replicating.claim_id],
+                    shared_entities={
+                        "original_paper": original.paper_id,
+                        "replicating_paper": replicating.paper_id,
+                        "method": method_label,
+                        "task": task_label,
+                        "replication_signal": signal,
+                    },
+                )
+                anomaly.replication_score = 1.0
+                out.append(anomaly)
+                break
+    return out
+
+
+def _opposing_directions(d_a: str, d_b: str) -> bool:
+    return (d_a == "positive" and d_b in ("negative", "mixed")) or (
+        d_b == "positive" and d_a in ("negative", "mixed")
+    )
+
+
+def _replication_signal(
+    g: nx.MultiDiGraph,
+    original: Claim,
+    replicating: Claim,
+) -> str | None:
+    paper_node = f"Paper:{original.paper_id}"
+    paper_data = g.nodes.get(paper_node, {}) if paper_node in g else {}
+    arxiv_id = (paper_data.get("arxiv_id_base") or "").strip().lower()
+    title = paper_data.get("title") or ""
+    baseline_raw = (replicating.baseline_raw or "").lower()
+    evidence = (replicating.evidence_span or "").lower()
+    method_norm = _norm(replicating.canonical_method) or ""
+
+    if arxiv_id and arxiv_id in baseline_raw:
+        return "baseline_arxiv"
+    if _FOLLOW_VERB_RE.search(replicating.evidence_span or "") and method_norm and method_norm in evidence:
+        return "follow_verb"
+    if title:
+        content_words = _title_content_words(title)
+        if content_words:
+            matches = sum(1 for w in content_words if w in baseline_raw)
+            if matches >= 2:
+                return "title_substring"
+    return None
+
+
+def _dedup_replication_shadowed(anomalies: list[Anomaly]) -> list[Anomaly]:
+    """Drop a benchmark_inconsistency anomaly when a replication_conflict already
+    covers the same exact pair of claims. The replication framing is strictly
+    more diagnostic so the benchmark version becomes redundant. Larger benchmark
+    inconsistencies (with extra non-replication claims) are kept."""
+    replication_claim_sets = [
+        frozenset(a.claim_ids)
+        for a in anomalies
+        if a.type == "replication_conflict"
+    ]
+    if not replication_claim_sets:
+        return anomalies
+    survivors: list[Anomaly] = []
+    for a in anomalies:
+        if a.type != "benchmark_inconsistency":
+            survivors.append(a)
+            continue
+        a_claims = frozenset(a.claim_ids)
+        if any(a_claims <= rep for rep in replication_claim_sets):
+            continue
+        survivors.append(a)
+    return survivors
 
 
 def _claim_edge_neighbors(g: nx.MultiDiGraph) -> dict[str, set[str]]:
@@ -519,7 +705,14 @@ def _annotate_topology_scores(
     impact_norm = min(1.0, evidence_impact / 8.0)
     activity_norm = min(1.0, recent_activity / 4.0)
     anomaly.topology_score = round(
-        min(1.0, 0.45 * impact_norm + 0.25 * activity_norm + 0.2 * balance + 0.1 * anomaly.citation_bridge_score),
+        min(
+            1.0,
+            0.45 * impact_norm
+            + 0.20 * activity_norm
+            + 0.20 * balance
+            + 0.05 * anomaly.citation_bridge_score
+            + 0.10 * anomaly.replication_score,
+        ),
         4,
     )
 

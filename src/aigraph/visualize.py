@@ -818,9 +818,9 @@ def _render_html(payload: dict[str, Any]) -> str:
     const DATA = JSON.parse(document.getElementById('aigraph-data').textContent);
     const IS_COMMUNITY_GRAPH = DATA.graph_mode === 'community';
     const RUN_ID = DATA.run_id || '';
-    const papersById = Object.fromEntries(DATA.papers.map(d => [d.paper_id, d]));
-    const claimsById = Object.fromEntries(DATA.claims.map(d => [d.claim_id, d]));
-    const anomaliesById = Object.fromEntries(DATA.anomalies.map(d => [d.anomaly_id, d]));
+    const papersById = Object.fromEntries((DATA.papers || []).map(d => [d.paper_id, d]));
+    const claimsById = Object.fromEntries((DATA.claims || []).map(d => [d.claim_id, d]));
+    const anomaliesById = Object.fromEntries((DATA.anomalies || []).map(d => [d.anomaly_id, d]));
     const insightsById = Object.fromEntries((DATA.insights || []).map(d => [d.insight_id, d]));
     let selectedContext = null;
     let chatMessages = [];
@@ -1388,10 +1388,23 @@ def _render_html(payload: dict[str, Any]) -> str:
             history: trimChatHistory()
           }})
         }});
-        const data = await resp.json();
+        let data = null;
+        let parseError = null;
+        try {{
+          data = await resp.json();
+        }} catch (err) {{
+          parseError = err;
+        }}
         updatePendingState(false);
         if (!resp.ok) {{
-          pushChatMessage('assistant', data.error || 'Graph chat failed.', {{
+          const serverMsg = (data && data.error) || `Graph chat failed (HTTP ${{resp.status}}).`;
+          pushChatMessage('assistant', serverMsg, {{
+            meta: 'The graph context stayed unchanged.'
+          }});
+          return;
+        }}
+        if (parseError || !data) {{
+          pushChatMessage('assistant', 'Graph chat returned an unreadable response.', {{
             meta: 'The graph context stayed unchanged.'
           }});
           return;
@@ -1851,17 +1864,25 @@ def _render_html(payload: dict[str, Any]) -> str:
       nodeSel = node;
       labelSel = node.selectAll('text');
 
+      // Scale force parameters with graph size so large graphs (>100 nodes)
+      // get enough repulsion + collision padding to actually converge.
+      const sizeScale = Math.max(1, Math.sqrt(Math.max(1, nodes.length) / 50));
+      const baseCharge = currentDetail === 'cluster' ? -280 : (currentDetail === 'claims' ? -240 : -320);
+      const collisionPad = Math.min(18, Math.round((sizeScale - 1) * 6));
       const simulation = d3.forceSimulation(nodes)
         .force('link', d3.forceLink(links).id(d => d.id).distance(d => d.edge_type === 'makes' ? 54 : (d.edge_type === 'cites' ? 96 : 82)))
-        .force('charge', d3.forceManyBody().strength(currentDetail === 'cluster' ? -280 : (currentDetail === 'claims' ? -240 : -320)))
+        .force('charge', d3.forceManyBody().strength(baseCharge * sizeScale))
         .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('collision', d3.forceCollide().radius(d => d.node_type === 'Paper' ? 34 : 26))
+        .force('collision', d3.forceCollide().radius(d => (d.node_type === 'Paper' ? 34 : 26) + collisionPad))
         .force('x', d3.forceX(d => currentLayout === 'hierarchy' ? hierarchyTargetX(d, width) : width / 2)
           .strength(currentLayout === 'hierarchy' ? 0.34 : 0.05))
         .force('y', d3.forceY(d => currentLayout === 'hierarchy' ? hierarchyTargetY(d, height) : height / 2)
           .strength(currentLayout === 'hierarchy' ? 0.12 : 0.05));
-      simulation.alphaDecay(currentDetail === 'full' ? 0.06 : 0.09);
-      simulation.velocityDecay(currentDetail === 'full' ? 0.34 : 0.42);
+      // Bigger graphs need a slightly faster cool-down so the layout actually
+      // settles within the user's attention span.
+      const decayBoost = Math.min(0.04, (sizeScale - 1) * 0.02);
+      simulation.alphaDecay((currentDetail === 'full' ? 0.06 : 0.09) + decayBoost);
+      simulation.velocityDecay((currentDetail === 'full' ? 0.34 : 0.42) + Math.min(0.1, (sizeScale - 1) * 0.04));
 
       let didFit = false;
       simulation.on('tick', () => {{

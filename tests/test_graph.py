@@ -76,7 +76,10 @@ def test_node_link_json_roundtrips():
     assert g.number_of_edges() == g2.number_of_edges()
 
 
-def test_build_graph_adds_citation_edges_and_semantic_nodes():
+def test_build_graph_adds_citation_edges_and_paper_attributes():
+    """Semantic fields (domain, mechanism, ...) live as Claim attributes only —
+    they no longer spawn per-value graph nodes. paper_role likewise stays as a
+    Paper attribute, not a separate Role node."""
     claims = [
         Claim(
             claim_id="c001",
@@ -122,12 +125,16 @@ def test_build_graph_adds_citation_edges_and_semantic_nodes():
     assert g.has_edge("Paper:openalex:W1", "Paper:openalex:W2")
     edge_types = {d.get("edge_type") for d in (g.get_edge_data("Paper:openalex:W1", "Paper:openalex:W2") or {}).values()}
     assert "cites" in edge_types
-    assert g.has_node("Domain:finance")
-    assert g.has_node("Mechanism:event grounding")
-    assert g.has_node("FailureMode:temporal leakage")
-    assert g.has_node("TemporalProperty:non-stationarity")
-    assert g.has_node("Role:survey")
-    assert g.has_edge("Paper:openalex:W1", "Role:survey")
+    # Semantic and Role nodes no longer exist in the graph.
+    for absent in (
+        "Domain:finance",
+        "Mechanism:event grounding",
+        "FailureMode:temporal leakage",
+        "TemporalProperty:non-stationarity",
+        "Role:survey",
+    ):
+        assert not g.has_node(absent), f"{absent} should not be in the simplified graph"
+    # paper_role still travels as a Paper node attribute.
     assert g.nodes["Paper:openalex:W1"]["paper_role"] == "survey"
     assert g.nodes["Paper:openalex:W1"]["cited_by_count"] == 9
     assert g.nodes["Paper:openalex:W1"]["recent_citations"] == 3

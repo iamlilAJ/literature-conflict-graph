@@ -12,39 +12,24 @@ from pathlib import Path
 import networkx as nx
 
 from .models import Claim, Paper
-from .paper_select import paper_role_explanation, paper_role_label
 
-# Map entity fields on Claim -> (node type, edge type)
+# Core entity fields on Claim -> (node type, edge type). The graph keeps only
+# the entities used by anomaly detection and hypothesis templates; semantic
+# fields (domain, mechanism, failure_mode, ...) live as Claim attributes and
+# are read directly without spawning per-value nodes.
 ENTITY_EDGES: dict[str, tuple[str, str]] = {
     "method": ("Method", "uses"),
-    "model": ("Model", "evaluated_with"),
     "task": ("Task", "targets"),
     "dataset": ("Dataset", "evaluated_on"),
     "metric": ("Metric", "measured_by"),
-    "baseline": ("Baseline", "compares_against"),
 }
 
-SEMANTIC_EDGES: dict[str, tuple[str, str]] = {
-    "domain": ("Domain", "situated_in"),
-    "data_modality": ("DataModality", "uses_modality"),
-    "mechanism": ("Mechanism", "explains_by"),
-    "failure_mode": ("FailureMode", "fails_by"),
-    "evaluation_protocol": ("EvaluationProtocol", "evaluated_with_protocol"),
-    "assumption": ("Assumption", "assumes"),
-    "risk_type": ("RiskType", "has_risk"),
-    "temporal_property": ("TemporalProperty", "has_temporal_property"),
-}
-
-CLAIM_ENTITY_FIELDS: dict[str, tuple[str, str]] = {**ENTITY_EDGES, **SEMANTIC_EDGES}
+CLAIM_ENTITY_FIELDS: dict[str, tuple[str, str]] = ENTITY_EDGES
 SETTING_FIELDS: tuple[str, ...] = ("retriever", "top_k", "context_length", "task_type")
 
 
 def _entity_node_id(node_type: str, value: str) -> str:
     return f"{node_type}:{value.strip().lower()}"
-
-
-def _setting_node_id(field: str, value: str) -> str:
-    return f"Setting:{field}={value.strip().lower()}"
 
 
 def _norm(value: str | None) -> str | None:
@@ -109,16 +94,6 @@ def build_graph(
                 g.add_node(nid, node_type=node_type, name=value)
             g.add_edge(claim_node, nid, edge_type=edge_type)
 
-        setting = claim.setting
-        for field in SETTING_FIELDS:
-            value = getattr(setting, field)
-            if not value:
-                continue
-            nid = _setting_node_id(field, value)
-            if nid not in g:
-                g.add_node(nid, node_type="Setting", field=field, value=value)
-            g.add_edge(claim_node, nid, edge_type="conditioned_on")
-
     _add_citation_edges(g, papers_by_id)
     _add_claim_claim_edges(g, claims)
     return g
@@ -168,17 +143,6 @@ def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None
         arxiv_id_full=paper.arxiv_id_full,
         **metrics,
     )
-    if paper.paper_role:
-        role_node = f"Role:{paper.paper_role}"
-        if role_node not in g:
-            g.add_node(
-                role_node,
-                node_type="Role",
-                role=paper.paper_role,
-                name=paper_role_label(paper.paper_role),
-                description=paper_role_explanation(paper.paper_role),
-            )
-        g.add_edge(paper_node, role_node, edge_type="has_role")
 
 
 def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> None:

@@ -583,7 +583,7 @@ def _heuristic_issues(
     nodes = graph.get("nodes") or []
     long_labels = []
     for node in nodes:
-        if str(node.get("node_type") or "") in {"Task", "Method", "Mechanism", "TemporalProperty"}:
+        if str(node.get("node_type") or "") in {"Task", "Method"}:
             label = str(node.get("name") or node.get("value") or "")
             if len(label) > 34 or ":" in label or "(" in label:
                 long_labels.append(label)

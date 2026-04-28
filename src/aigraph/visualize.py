@@ -1426,6 +1426,18 @@ def _render_html(payload: dict[str, Any]) -> str:
       const form = document.getElementById('graph-chat-form');
       const input = document.getElementById('graph-chat-input');
       const clearBtn = document.getElementById('graph-chat-clear');
+      // Always normalize chip state, even when chat is disabled: in community
+      // mode the textarea is statically `disabled`, but the chip buttons would
+      // otherwise stay clickable and fire a request that always fails.
+      document.querySelectorAll('.chat-chip').forEach(btn => {{
+        const label = btn.textContent.trim();
+        if (label) btn.setAttribute('aria-label', `Ask: ${{label}}`);
+        if (!RUN_ID) {{
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+          btn.title = 'Graph chat is disabled for the community-wide aggregate map.';
+        }}
+      }});
       if (!form || !input || !RUN_ID) return;
       syncChatContext();
       renderChatThread();
@@ -1456,8 +1468,9 @@ def _render_html(payload: dict[str, Any]) -> str:
       }});
       document.querySelectorAll('.chat-chip').forEach(btn => {{
         btn.addEventListener('click', async () => {{
-          if (chatPending) return;
+          if (btn.disabled || chatPending) return;
           const question = btn.textContent.trim();
+          if (!question) return;
           input.value = '';
           input.style.height = 'auto';
           await submitGraphChat(question);

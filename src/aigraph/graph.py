@@ -163,6 +163,13 @@ def build_graph(
             client=stance_client,
             model=stance_model,
         )
+    # Validate contradicts edges against any stance attributes already
+    # present on cites edges (whether written by the optional
+    # classify_cites_edges call above or by a prior `aigraph
+    # classify-stance` CLI run on a loaded graph). No-op when no stance
+    # attributes exist anywhere in the graph.
+    from .citation_stance_validation import validate_contradicts_via_stance
+    validate_contradicts_via_stance(g)
     return g
 
 

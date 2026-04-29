@@ -466,6 +466,67 @@ def test_canonical_clustering_links_aliases_with_contradicts():
     assert "contradicts" in edge_types
 
 
+def test_alias_merge_consolidates_method_fragments():
+    """Two claims with the same raw method='CoT' but only one of them
+    carries canonical_method='chain-of-thought'. _resolve_entity_value
+    creates Method:chain-of-thought (aliases=['CoT']) for the first
+    claim and Method:cot for the second. The post-build alias merge
+    must consolidate them: the surviving node is
+    Method:chain-of-thought, both claims point at it, and 'CoT' is
+    in its aliases list."""
+    c_a = Claim(
+        claim_id="c001", paper_id="p001", claim_text="x",
+        method="CoT", task="math",
+        direction="positive",
+    )
+    c_a.canonical_method = "chain-of-thought"
+    c_a.canonical_task = "math"
+    c_b = Claim(
+        claim_id="c002", paper_id="p002", claim_text="y",
+        method="CoT", task="math",
+        direction="positive",
+    )
+    # No canonical_method on c_b — it would otherwise spawn Method:cot.
+    g = build_graph([c_a, c_b])
+
+    method_nodes = [
+        n for n, d in g.nodes(data=True) if d.get("node_type") == "Method"
+    ]
+    assert method_nodes == ["Method:chain-of-thought"]
+    assert not g.has_node("Method:cot")
+    # Both claims point at the canonical via 'uses'.
+    assert g.in_degree("Method:chain-of-thought") == 2
+    aliases = set(g.nodes["Method:chain-of-thought"].get("aliases") or [])
+    assert "CoT" in aliases
+
+
+def test_alias_merge_skips_when_no_alias_match():
+    """Two claims with totally different methods (no overlap, both have
+    canonical fields populated). Both Method nodes survive."""
+    c_a = Claim(
+        claim_id="c001", paper_id="p001", claim_text="x",
+        method="RAG", task="QA",
+        direction="positive",
+    )
+    c_a.canonical_method = "RAG"
+    c_a.canonical_task = "QA"
+    c_b = Claim(
+        claim_id="c002", paper_id="p002", claim_text="y",
+        method="DPR", task="QA",
+        direction="positive",
+    )
+    c_b.canonical_method = "DPR"
+    c_b.canonical_task = "QA"
+    g = build_graph([c_a, c_b])
+
+    method_nodes = sorted(
+        n for n, d in g.nodes(data=True) if d.get("node_type") == "Method"
+    )
+    # Node ids are lowercased by _entity_node_id; what matters is that
+    # neither was merged away.
+    assert method_nodes == ["Method:dpr", "Method:rag"]
+
+
 def test_build_graph_does_not_classify_stance_by_default():
     """Locks the default — build_graph must NOT make any LLM calls unless the
     caller explicitly opts in via classify_stance=True. Catches regressions

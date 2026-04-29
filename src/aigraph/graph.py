@@ -146,6 +146,10 @@ def build_graph(
     _add_citation_edges(g, papers_by_id)
     _add_bibliographic_coupling_edges(g, papers_by_id)
     _add_claim_claim_edges(g, claims, papers_by_id)
+    # Post-build pass: consolidate Method/Task/Dataset/Metric nodes that
+    # are duplicates of each other (e.g. Method:cot and Method:chain-of-
+    # thought, where a sibling claim's aliases array shows the merge).
+    _merge_aliased_entity_nodes(g)
 
     # Optional LLM-driven stance classification on the cites edges. Off by
     # default — the call costs network + tokens and most tests / pipelines
@@ -436,6 +440,104 @@ def _add_claim_claim_edges(
         for group in overlap_groups.values():
             for node_a, node_b in combinations(group, 2):
                 g.add_edge(node_a, node_b, edge_type="overlap")
+
+
+def _merge_aliased_entity_nodes(g: nx.MultiDiGraph) -> dict[str, object]:
+    """For each Method/Task/Dataset/Metric node, if its ``name`` matches
+    another same-type node's ``aliases`` entry, redirect edges to the
+    canonical node and remove the duplicate. Idempotent. Cascade-safe
+    via chain resolution.
+
+    Why this is needed: ``_resolve_entity_value`` only collapses raw
+    surface forms into a canonical node when the LLM extractor fills the
+    ``canonical_*`` field. A sibling claim with the same raw value but
+    no canonical_* still spawns a parallel node. This pass closes the
+    gap by walking each entity-type cohort and merging anything whose
+    ``name`` was already recorded as an alias on a sibling.
+
+    Returns counters for testing/logging. Best-effort: never raises on
+    a malformed graph; simply skips the offending node.
+    """
+    counters: dict[str, object] = {"merged": 0}
+    by_type_counts: dict[str, int] = defaultdict(int)
+    for node_type in ("Method", "Task", "Dataset", "Metric"):
+        nodes_of_type = [
+            (nid, dict(data))
+            for nid, data in g.nodes(data=True)
+            if data.get("node_type") == node_type
+        ]
+        # alias_lower -> canonical_node_id
+        alias_to_canonical: dict[str, str] = {}
+        for nid, data in nodes_of_type:
+            for alias in (data.get("aliases") or []):
+                key = (alias or "").strip().lower()
+                if key:
+                    alias_to_canonical[key] = nid
+
+        # Find duplicates: a node whose own name appears in some other
+        # same-type node's aliases.
+        raw_dup_to_canonical: dict[str, str] = {}
+        for nid, data in nodes_of_type:
+            name_key = (data.get("name") or "").strip().lower()
+            if not name_key:
+                continue
+            canonical = alias_to_canonical.get(name_key)
+            if canonical and canonical != nid:
+                raw_dup_to_canonical[nid] = canonical
+
+        if not raw_dup_to_canonical:
+            continue
+
+        # Resolve cascading chains so A -> B -> C redirects A's edges
+        # straight to C, not to B (which itself will be removed later
+        # in this same pass). Cycle protection prevents infinite loops
+        # on pathological aliases-of-each-other inputs.
+        def _resolve(start: str) -> str:
+            visited = {start}
+            cur = start
+            while cur in raw_dup_to_canonical:
+                nxt = raw_dup_to_canonical[cur]
+                if nxt in visited:
+                    return cur  # cycle — treat current as terminal
+                visited.add(nxt)
+                cur = nxt
+            return cur
+
+        dup_to_final = {dup: _resolve(dup) for dup in raw_dup_to_canonical}
+
+        for dup, final_canonical in dup_to_final.items():
+            if dup == final_canonical:
+                continue
+            if dup not in g or final_canonical not in g:
+                continue  # already removed in a prior chain step
+            # Redirect incoming edges (Claim -> dup) to (Claim -> canonical).
+            # Pass the original edge data via **; MultiDiGraph auto-assigns
+            # a fresh key, which is fine for our edge semantics.
+            for pred, _, _key, edge_data in list(
+                g.in_edges(dup, keys=True, data=True)
+            ):
+                g.add_edge(pred, final_canonical, **edge_data)
+            # Defensively handle any out-edges (entity nodes don't
+            # usually have them, but if some future code path adds one
+            # we want it preserved).
+            for _, succ, _key, edge_data in list(
+                g.out_edges(dup, keys=True, data=True)
+            ):
+                if succ == final_canonical:
+                    continue
+                g.add_edge(final_canonical, succ, **edge_data)
+            # Append dup's name to canonical's aliases for provenance.
+            existing = list(g.nodes[final_canonical].get("aliases") or [])
+            dup_name = g.nodes[dup].get("name")
+            if dup_name and dup_name not in existing:
+                existing.append(dup_name)
+                g.nodes[final_canonical]["aliases"] = existing
+            g.remove_node(dup)
+            counters["merged"] = int(counters.get("merged", 0)) + 1
+            by_type_counts[node_type] += 1
+
+    counters["by_type"] = dict(by_type_counts)
+    return counters
 
 
 def build_citation_graph(g: nx.MultiDiGraph) -> nx.Graph:

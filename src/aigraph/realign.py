@@ -1,14 +1,35 @@
 """Lazy on-access realignment of persisted run artifacts.
 
-Each run on disk carries a `schema_version` stamp on its `status.json`. When the
-running code's `SCHEMA_VERSION` is higher than what was persisted, the run's
-deterministic outputs (graph.json, anomalies.jsonl, index.html) are rebuilt
-in-process the next time the server touches the run.
+Each run on disk carries a ``schema_version`` stamp on its ``status.json``.
+When the running code's ``SCHEMA_VERSION`` is higher than what was persisted,
+the run's deterministic outputs are rebuilt in-process the next time the
+server touches the run.
 
-Bumping `SCHEMA_VERSION` is the contract that says "a deploy of this commit
-should re-derive these artifacts on every persisted run before serving them".
-Bump it whenever the output shape of `build_graph`, `detect_anomalies`, or the
-visualize HTML changes in a way the legacy on-disk version would not handle.
+**Scope — what gets rebuilt and what does NOT.**
+
+Lazy realign only re-derives the three artifacts that are pure functions of
+``claims.jsonl`` + ``papers.jsonl``:
+
+* ``graph.json``      (from ``build_graph``)
+* ``anomalies.jsonl`` (from ``detect_anomalies``)
+* ``index.html``      (from ``render_visualization``)
+
+It does **not** touch the LLM-derived or scoring-derived artifacts:
+
+* ``hypotheses.jsonl``  (template + LLM)
+* ``creator_hypotheses.jsonl``  (LLM)
+* ``open_questions.jsonl``  (LLM)
+* ``insights.jsonl``  (community + LLM)
+* ``selected_hypotheses.md``  (scoring weights + MMR)
+* ``overview.json``  (a summary of the above)
+
+If you bump ``SCHEMA_VERSION`` because of a change to ``scoring.py`` weights,
+``hypotheses.py`` templates, the MMR selector, or the report renderer, lazy
+realign will leave the listed LLM/scoring artifacts stale. Those need an
+explicit batch re-run (typically via ``aigraph generate-hypotheses`` /
+``aigraph select`` or a fresh ``run_pipeline``). Only bump
+``SCHEMA_VERSION`` for changes whose effect is captured by build_graph /
+detect_anomalies / visualize alone.
 """
 
 from __future__ import annotations
@@ -16,6 +37,7 @@ from __future__ import annotations
 import json
 import logging
 import threading
+from collections import OrderedDict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -34,7 +56,14 @@ from .visualize import render_visualization
 SCHEMA_VERSION = 2
 
 
-_run_locks: dict[str, threading.Lock] = {}
+# Cap the per-run lock cache so a long-running server does not accumulate one
+# Lock object per ever-touched run_dir. Real concurrent rebuilds are rare (a
+# run rebuilds at most once then is permanently fresh), so eviction is safe:
+# the worst case is two threads both grab a freshly-allocated lock and the
+# second one's double-check inside realign_run sees the rebuilt
+# schema_version and exits without redoing work.
+_RUN_LOCK_CACHE_MAX = 128
+_run_locks: "OrderedDict[str, threading.Lock]" = OrderedDict()
 _master_lock = threading.Lock()
 
 
@@ -42,9 +71,13 @@ def _lock_for(run_dir: Path) -> threading.Lock:
     key = str(run_dir.resolve())
     with _master_lock:
         lock = _run_locks.get(key)
-        if lock is None:
-            lock = threading.Lock()
-            _run_locks[key] = lock
+        if lock is not None:
+            _run_locks.move_to_end(key)
+            return lock
+        lock = threading.Lock()
+        _run_locks[key] = lock
+        if len(_run_locks) > _RUN_LOCK_CACHE_MAX:
+            _run_locks.popitem(last=False)
         return lock
 
 

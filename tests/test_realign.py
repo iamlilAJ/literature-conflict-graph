@@ -107,3 +107,44 @@ def test_realign_run_safe_swallows_corrupt_inputs(tmp_path):
     result = realign_run_safe(run_dir)
     # Either rebuilt (True) or skipped due to empty claims input — never raises.
     assert isinstance(result, bool)
+
+
+def test_run_lock_cache_evicts_oldest_when_full(tmp_path, monkeypatch):
+    """Touching more than _RUN_LOCK_CACHE_MAX distinct run_dirs evicts the
+    least-recently-used entry rather than growing unboundedly."""
+    from aigraph import realign as realign_mod
+
+    monkeypatch.setattr(realign_mod, "_RUN_LOCK_CACHE_MAX", 4)
+    realign_mod._run_locks.clear()
+    for i in range(10):
+        d = tmp_path / f"run-{i:02d}"
+        d.mkdir()
+        realign_mod._lock_for(d)
+    assert len(realign_mod._run_locks) == 4
+    # Only the four most recently touched should remain.
+    expected = {str((tmp_path / f"run-{i:02d}").resolve()) for i in range(6, 10)}
+    assert set(realign_mod._run_locks.keys()) == expected
+
+
+def test_run_lock_cache_keeps_recently_used(tmp_path, monkeypatch):
+    """Re-accessing a key promotes it to most-recently-used so it survives the
+    next eviction."""
+    from aigraph import realign as realign_mod
+
+    monkeypatch.setattr(realign_mod, "_RUN_LOCK_CACHE_MAX", 3)
+    realign_mod._run_locks.clear()
+    dirs = [tmp_path / f"run-{i}" for i in range(3)]
+    for d in dirs:
+        d.mkdir()
+        realign_mod._lock_for(d)
+    # Touch the oldest — it becomes most-recently-used.
+    realign_mod._lock_for(dirs[0])
+    # Add a fourth — eviction now drops what was previously second-oldest.
+    new_dir = tmp_path / "run-new"
+    new_dir.mkdir()
+    realign_mod._lock_for(new_dir)
+    keys = set(realign_mod._run_locks.keys())
+    assert str(dirs[0].resolve()) in keys      # touched, kept
+    assert str(dirs[1].resolve()) not in keys  # now LRU, evicted
+    assert str(dirs[2].resolve()) in keys
+    assert str(new_dir.resolve()) in keys

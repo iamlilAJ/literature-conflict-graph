@@ -11,6 +11,7 @@ from rich.console import Console
 
 from .anomalies import detect_anomalies
 from .corpus import (
+    _sync_metadata_from_manifest,
     configured_corpus_root,
     enrich_citations_from_semantic_scholar,
     export_corpus_paper,
@@ -555,7 +556,33 @@ def corpus_enrich_citations_cmd(
         f"(missing={stats['missing']}, unique_arxiv={stats['unique_arxiv_ids']}, "
         f"papers_with_refs={stats['papers_with_refs']}, "
         f"total_refs={stats['total_refs']}, "
-        f"avg_refs/paper={stats['avg_refs_per_paper_with_refs']:.1f}) in {root}"
+        f"avg_refs/paper={stats['avg_refs_per_paper_with_refs']:.1f}, "
+        f"metadata_synced={stats['metadata_synced']}, "
+        f"metadata_skipped_no_artifact={stats['metadata_skipped_no_artifact']}) in {root}"
+    )
+
+
+@app.command("corpus-resync-metadata")
+def corpus_resync_metadata_cmd(
+    root: Path = typer.Option(configured_corpus_root(), "--root"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Print counters without writing"),
+) -> None:
+    """Re-sync artifacts/<id>/metadata.json from the live papers.jsonl manifest.
+
+    Use after S2 re-enrichment when existing artifact metadata files were
+    written before the corpus.py fix that auto-syncs them. Idempotent —
+    safe to run multiple times. Tolerant — missing artifact dirs and
+    malformed metadata.json are logged and skipped, never raise.
+    """
+    paper_records = read_jsonl(root / "papers.jsonl", Paper)
+    counters = _sync_metadata_from_manifest(root, paper_records, dry_run=dry_run)
+    verb = "would update" if dry_run else "updated"
+    console.print(
+        f"[green]corpus-resync-metadata: {verb} {counters['updated']} files[/] "
+        f"(seen={counters['total_seen']}, "
+        f"no_artifact={counters['skipped_no_artifact']}, "
+        f"no_paper_key={counters['skipped_no_paper_key']}, "
+        f"malformed={counters['skipped_malformed']}) in {root}"
     )
 
 

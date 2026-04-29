@@ -3,6 +3,8 @@ import tarfile
 
 from aigraph.corpus import (
     _parse_s2_references,
+    _sync_metadata_from_manifest,
+    artifact_dir,
     enrich_citations_from_semantic_scholar,
     export_corpus_paper,
     seed_reasoning_corpus,
@@ -513,3 +515,217 @@ def test_enrich_marks_papers_missing_from_s2_response(monkeypatch, tmp_path):
     assert stats["missing"] == 1
     assert stats["papers_with_refs"] == 1
     assert stats["total_refs"] == 1
+
+
+# ---------------------------------------------------------------------------
+# metadata.json sync tests
+# ---------------------------------------------------------------------------
+
+
+def _seed_artifact_metadata(root, paper_id: str, payload: dict) -> "Path":
+    """Write a stub artifacts/<dir>/metadata.json with the given payload."""
+    import json as _json
+    art = artifact_dir(root, paper_id)
+    art.mkdir(parents=True, exist_ok=True)
+    path = art / "metadata.json"
+    path.write_text(_json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def test_metadata_sync_updates_paper_subobject(tmp_path):
+    """The happy path: artifact metadata.json carries an old cite count
+    and empty refs; after sync, it reflects the manifest values plus a
+    fresh _last_enriched_at timestamp."""
+    import json as _json
+
+    paper_id = "arxiv:2303.17651v2"
+    metadata_path = _seed_artifact_metadata(
+        tmp_path,
+        paper_id,
+        {
+            "paper": {
+                "paper_id": paper_id,
+                "title": "Self-Refine",
+                "year": 2023,
+                "cited_by_count": 99,
+                "referenced_works": [],
+            },
+            "parser_version": "v1",
+            "artifact_status": {"parse_status": "complete"},
+        },
+    )
+
+    paper = Paper(
+        paper_id=paper_id,
+        title="Self-Refine",
+        year=2023,
+        venue="arXiv",
+        cited_by_count=3269,
+        referenced_works=["arxiv:2201.11903", "doi:10.1000/foo"],
+    )
+
+    counters = _sync_metadata_from_manifest(tmp_path, [paper])
+
+    assert counters == {
+        "total_seen": 1,
+        "updated": 1,
+        "skipped_no_artifact": 0,
+        "skipped_no_paper_key": 0,
+        "skipped_malformed": 0,
+    }
+
+    after = _json.loads(metadata_path.read_text(encoding="utf-8"))
+    assert after["paper"]["cited_by_count"] == 3269
+    assert after["paper"]["referenced_works"] == ["arxiv:2201.11903", "doi:10.1000/foo"]
+    assert "_last_enriched_at" in after["paper"]
+    # Untouched fields preserved.
+    assert after["paper"]["title"] == "Self-Refine"
+    assert after["paper"]["year"] == 2023
+    assert after["parser_version"] == "v1"
+    assert after["artifact_status"]["parse_status"] == "complete"
+
+
+def test_metadata_sync_skips_missing_artifact(tmp_path):
+    """No artifact dir → skipped_no_artifact, no exception."""
+    paper = Paper(
+        paper_id="arxiv:9999.99999v1",
+        title="Nope",
+        year=2024,
+        venue="arXiv",
+        cited_by_count=0,
+        referenced_works=[],
+    )
+    counters = _sync_metadata_from_manifest(tmp_path, [paper])
+    assert counters["skipped_no_artifact"] == 1
+    assert counters["updated"] == 0
+
+
+def test_metadata_sync_skips_malformed_metadata(tmp_path):
+    """Artifact dir exists but metadata.json is invalid JSON — logs warning,
+    counters['skipped_malformed'] increments, file is not modified."""
+    paper_id = "arxiv:2303.17651v2"
+    art = artifact_dir(tmp_path, paper_id)
+    art.mkdir(parents=True, exist_ok=True)
+    metadata_path = art / "metadata.json"
+    original = "{not json"
+    metadata_path.write_text(original, encoding="utf-8")
+
+    paper = Paper(
+        paper_id=paper_id,
+        title="x",
+        year=2023,
+        venue="arXiv",
+        cited_by_count=42,
+        referenced_works=[],
+    )
+    counters = _sync_metadata_from_manifest(tmp_path, [paper])
+
+    assert counters["skipped_malformed"] == 1
+    assert counters["updated"] == 0
+    # File untouched.
+    assert metadata_path.read_text(encoding="utf-8") == original
+
+
+def test_metadata_sync_skips_metadata_without_paper_key(tmp_path):
+    """metadata.json with no `paper` subobject is not our schema — skip,
+    don't try to repair (sync_arxiv_corpus owns that schema)."""
+    import json as _json
+
+    paper_id = "arxiv:2303.17651v2"
+    metadata_path = _seed_artifact_metadata(
+        tmp_path,
+        paper_id,
+        {"version": 1, "note": "old format, no paper subobject"},
+    )
+
+    paper = Paper(
+        paper_id=paper_id,
+        title="x",
+        year=2023,
+        venue="arXiv",
+        cited_by_count=42,
+        referenced_works=[],
+    )
+    counters = _sync_metadata_from_manifest(tmp_path, [paper])
+
+    assert counters["skipped_no_paper_key"] == 1
+    assert counters["updated"] == 0
+    # File untouched.
+    after = _json.loads(metadata_path.read_text(encoding="utf-8"))
+    assert "paper" not in after
+    assert after["version"] == 1
+
+
+def test_metadata_sync_dry_run_does_not_write(tmp_path):
+    """dry_run=True still increments the updated counter so the user knows
+    how many WOULD be touched, but doesn't actually rewrite the file."""
+    import json as _json
+
+    paper_id = "arxiv:2303.17651v2"
+    metadata_path = _seed_artifact_metadata(
+        tmp_path,
+        paper_id,
+        {"paper": {"paper_id": paper_id, "cited_by_count": 99, "referenced_works": []}},
+    )
+    original = metadata_path.read_text(encoding="utf-8")
+
+    paper = Paper(
+        paper_id=paper_id,
+        title="x",
+        year=2023,
+        venue="arXiv",
+        cited_by_count=3269,
+        referenced_works=[],
+    )
+    counters = _sync_metadata_from_manifest(tmp_path, [paper], dry_run=True)
+
+    assert counters["updated"] == 1
+    # File is unchanged.
+    assert metadata_path.read_text(encoding="utf-8") == original
+    after = _json.loads(metadata_path.read_text(encoding="utf-8"))
+    assert after["paper"]["cited_by_count"] == 99
+
+
+def test_enrich_calls_metadata_sync(monkeypatch, tmp_path):
+    """End-to-end: enrich pulls live values from S2 mock and the metadata
+    sync downstream picks up those values for papers with an artifact dir;
+    papers without an artifact dir are counted as skipped, not failed."""
+    import json as _json
+
+    # Two papers: P1 has an artifact metadata.json, P2 does not.
+    _seed_manifest(tmp_path, ["arxiv:2401.12345v1", "arxiv:2402.00001v2"])
+    _seed_artifact_metadata(
+        tmp_path,
+        "arxiv:2401.12345v1",
+        {"paper": {"paper_id": "arxiv:2401.12345v1", "cited_by_count": 1, "referenced_works": []}},
+    )
+
+    payload = [
+        {
+            "citationCount": 50,
+            "references": [{"paperId": "r1", "externalIds": {"ArXiv": "2301.99999"}}],
+        },
+        {"citationCount": 7, "references": []},
+    ]
+    fake_client = _FakeS2Client(payload)
+
+    import sys, aigraph.corpus as corpus_mod
+    fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
+    monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
+    sys.modules["httpx"] = fake_httpx
+
+    stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
+
+    # The manifest update path runs as before.
+    assert stats["updated"] == 2
+    # The metadata sync step ran on top of it.
+    assert stats["metadata_synced"] == 1
+    assert stats["metadata_skipped_no_artifact"] == 1
+    assert stats["metadata_skipped_malformed"] == 0
+
+    # The artifact metadata for P1 reflects the new values.
+    metadata_path = artifact_dir(tmp_path, "arxiv:2401.12345v1") / "metadata.json"
+    after = _json.loads(metadata_path.read_text(encoding="utf-8"))
+    assert after["paper"]["cited_by_count"] == 50
+    assert after["paper"]["referenced_works"] == ["arxiv:2301.99999"]
+    assert "_last_enriched_at" in after["paper"]

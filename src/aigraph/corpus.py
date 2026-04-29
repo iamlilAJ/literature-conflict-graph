@@ -260,6 +260,77 @@ def artifact_dir(root: str | Path, paper_id: str) -> Path:
     return Path(root) / "artifacts" / safe_id
 
 
+def _sync_metadata_from_manifest(
+    root: Path,
+    papers: list[Paper],
+    *,
+    dry_run: bool = False,
+) -> dict[str, int]:
+    """Update each paper's artifacts/<id>/metadata.json with the fresh
+    cited_by_count and referenced_works from the manifest.
+
+    `enrich_citations_from_semantic_scholar` writes the latest values into
+    `papers.jsonl`, but `artifacts/<id>/metadata.json` was originally written
+    by `sync_arxiv_corpus` from OpenAlex's per-paper response and is never
+    refreshed otherwise. The only consumer that reads metadata.json today
+    is the `corpus-export-paper` CLI, which would otherwise show stale
+    counts. Calling this helper after the manifest write keeps the two
+    sources of truth aligned.
+
+    Idempotent: running multiple times produces identical files (modulo
+    `_last_enriched_at`). Tolerant: missing artifact dir, missing
+    metadata.json, malformed JSON, or unexpected schema shape — log and
+    skip, never raise. Atomic write (tmp + replace) so a crash mid-loop
+    cannot leave a half-written metadata.json.
+
+    Returns counters: total_seen, updated, skipped_no_artifact,
+    skipped_no_paper_key, skipped_malformed.
+    """
+    counters = {
+        "total_seen": 0,
+        "updated": 0,
+        "skipped_no_artifact": 0,
+        "skipped_no_paper_key": 0,
+        "skipped_malformed": 0,
+    }
+    now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+    for paper in papers:
+        counters["total_seen"] += 1
+        metadata_path = artifact_dir(root, paper.paper_id) / METADATA_FILE
+        if not metadata_path.exists():
+            counters["skipped_no_artifact"] += 1
+            continue
+        try:
+            meta = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning("metadata sync: malformed %s: %s", metadata_path, exc)
+            counters["skipped_malformed"] += 1
+            continue
+        if not (isinstance(meta, dict) and isinstance(meta.get("paper"), dict)):
+            counters["skipped_no_paper_key"] += 1
+            continue
+        # Only the three fields below — leave title/year/parser_version/
+        # artifact_status/etc. alone. They are owned by sync_arxiv_corpus
+        # and we don't have authoritative replacements.
+        meta["paper"]["cited_by_count"] = int(paper.cited_by_count or 0)
+        meta["paper"]["referenced_works"] = list(paper.referenced_works or [])
+        meta["paper"]["_last_enriched_at"] = now_iso
+        if dry_run:
+            counters["updated"] += 1
+            continue
+        try:
+            tmp = metadata_path.with_suffix(metadata_path.suffix + ".tmp")
+            tmp.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+            tmp.replace(metadata_path)
+        except OSError as exc:
+            logger.warning("metadata sync: write failed %s: %s", metadata_path, exc)
+            counters["skipped_malformed"] += 1
+            continue
+        counters["updated"] += 1
+    return counters
+
+
 def seed_reasoning_corpus(
     root: str | Path,
     *,
@@ -530,6 +601,12 @@ def enrich_citations_from_semantic_scholar(
 
     ordered = _order_manifest(papers)
     write_jsonl(manifest, ordered)
+    # Mirror the fresh manifest values back into artifacts/<id>/metadata.json
+    # so corpus-export-paper and any other artifact-level reader sees the
+    # same numbers as the manifest. Without this, metadata.json stays at
+    # whatever sync_arxiv_corpus wrote on first ingest (typically OpenAlex
+    # values that diverge from S2 after enrich).
+    metadata_stats = _sync_metadata_from_manifest(root_path, ordered)
     avg_refs = (total_refs / papers_with_refs) if papers_with_refs else 0.0
     return {
         "updated": updated,
@@ -539,6 +616,9 @@ def enrich_citations_from_semantic_scholar(
         "papers_with_refs": papers_with_refs,
         "total_refs": total_refs,
         "avg_refs_per_paper_with_refs": round(avg_refs, 2),
+        "metadata_synced": metadata_stats["updated"],
+        "metadata_skipped_no_artifact": metadata_stats["skipped_no_artifact"],
+        "metadata_skipped_malformed": metadata_stats["skipped_malformed"],
     }
 
 

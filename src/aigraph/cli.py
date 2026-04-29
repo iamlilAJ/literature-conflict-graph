@@ -545,14 +545,17 @@ def corpus_validate_cmd(
 @app.command("corpus-enrich-citations")
 def corpus_enrich_citations_cmd(
     root: Path = typer.Option(configured_corpus_root(), "--root"),
-    batch_size: int = typer.Option(500, "--batch-size"),
+    batch_size: int = typer.Option(200, "--batch-size"),
     api_key: Optional[str] = typer.Option(None, "--api-key", envvar="SEMANTIC_SCHOLAR_API_KEY"),
 ) -> None:
-    """Hydrate manifest papers with Semantic Scholar citationCount and rerank priority."""
+    """Hydrate manifest papers with Semantic Scholar citationCount + references and rerank priority."""
     stats = enrich_citations_from_semantic_scholar(root, batch_size=batch_size, api_key=api_key)
     console.print(
         f"[green]Enriched {stats['updated']}/{stats['total']} papers[/] "
-        f"(missing={stats['missing']}, unique_arxiv={stats['unique_arxiv_ids']}) in {root}"
+        f"(missing={stats['missing']}, unique_arxiv={stats['unique_arxiv_ids']}, "
+        f"papers_with_refs={stats['papers_with_refs']}, "
+        f"total_refs={stats['total_refs']}, "
+        f"avg_refs/paper={stats['avg_refs_per_paper_with_refs']:.1f}) in {root}"
     )
 
 

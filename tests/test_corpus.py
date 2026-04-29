@@ -2,6 +2,8 @@ import io
 import tarfile
 
 from aigraph.corpus import (
+    _parse_s2_references,
+    enrich_citations_from_semantic_scholar,
     export_corpus_paper,
     seed_reasoning_corpus,
     sync_arxiv_corpus,
@@ -300,3 +302,214 @@ def test_extract_claims_and_reader_can_use_offline_corpus(tmp_path, monkeypatch)
     assert candidates.candidates[0].section_title == "Results"
     assert claims[0].claim_text.startswith("RAG improves factual QA")
     assert summary["pct_with_sections"] == 1.0
+
+
+# ---------------------------------------------------------------------------
+# Semantic Scholar enrichment tests
+# ---------------------------------------------------------------------------
+
+
+def test_parse_s2_references_prefers_arxiv_over_doi_over_s2_id():
+    raw = [
+        {"paperId": "abc1", "externalIds": {"ArXiv": "2401.12345"}},
+        {"paperId": "abc2", "externalIds": {"DOI": "10.1000/xyz"}},
+        {"paperId": "abc3", "externalIds": {}},
+        {"paperId": "abc4"},  # no externalIds key at all
+        {"paperId": None, "externalIds": {}},  # unidentifiable, dropped
+    ]
+    out = _parse_s2_references(raw)
+    assert out == [
+        "arxiv:2401.12345",
+        "doi:10.1000/xyz",
+        "s2:abc3",
+        "s2:abc4",
+    ]
+
+
+def test_parse_s2_references_deduplicates():
+    raw = [
+        {"paperId": "abc1", "externalIds": {"ArXiv": "2401.12345"}},
+        # Same arxiv id reached via a different paperId — must dedup.
+        {"paperId": "abc2", "externalIds": {"ArXiv": "2401.12345"}},
+    ]
+    assert _parse_s2_references(raw) == ["arxiv:2401.12345"]
+
+
+def test_parse_s2_references_lowercases_doi():
+    raw = [{"paperId": "x", "externalIds": {"DOI": "10.1000/MixedCaseDOI"}}]
+    assert _parse_s2_references(raw) == ["doi:10.1000/mixedcasedoi"]
+
+
+def test_parse_s2_references_handles_non_dict_entries():
+    """Defensive: S2 once in a while returns null entries — don't crash."""
+    raw = [
+        None,
+        "not a dict",
+        {"paperId": "abc1", "externalIds": {"ArXiv": "2401.12345"}},
+    ]
+    assert _parse_s2_references(raw) == ["arxiv:2401.12345"]
+
+
+# --- Mock S2 batch endpoint -------------------------------------------------
+
+
+class _FakeS2Response:
+    def __init__(self, payload, status_code: int = 200):
+        self._payload = payload
+        self.status_code = status_code
+
+    def json(self):
+        return self._payload
+
+    def raise_for_status(self) -> None:
+        if self.status_code >= 400:
+            raise RuntimeError(f"http {self.status_code}")
+
+
+class _FakeS2Client:
+    def __init__(self, payload):
+        self._payload = payload
+        self.calls: list[dict] = []
+
+    def post(self, url, params=None, json=None):
+        self.calls.append({"url": url, "params": params, "json": json})
+        return _FakeS2Response(self._payload)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def _seed_manifest(tmp_path, paper_ids: list[str]):
+    """Write a minimal papers.jsonl with the given arxiv-style ids."""
+    papers = []
+    for pid in paper_ids:
+        # arxiv:<base>v<version> — strip "arxiv:" + "v..." for the base.
+        body = pid.removeprefix("arxiv:").split("v")[0]
+        papers.append(
+            Paper(
+                paper_id=pid,
+                title=f"Paper {pid}",
+                year=2024,
+                venue="ACL",
+                arxiv_id_full=pid.removeprefix("arxiv:"),
+                arxiv_id_base=body,
+            )
+        )
+    write_jsonl(tmp_path / "papers.jsonl", papers)
+    return papers
+
+
+def test_enrich_populates_references_alongside_count(monkeypatch, tmp_path):
+    """The happy path: S2 returns both citationCount and a references list,
+    and enrich must persist both onto the manifest."""
+    _seed_manifest(tmp_path, ["arxiv:2401.12345v1", "arxiv:2402.00001v2"])
+
+    # Mock payload — S2 returns one entry per requested id, in order.
+    payload = [
+        {
+            "citationCount": 42,
+            "references": [
+                {"paperId": "ref1", "externalIds": {"ArXiv": "2301.99999"}},
+                {"paperId": "ref2", "externalIds": {"DOI": "10.1000/foo"}},
+                {"paperId": "ref3"},  # no external id, falls back to s2:
+            ],
+        },
+        {
+            "citationCount": 7,
+            "references": [
+                {"paperId": "ref4", "externalIds": {"ArXiv": "2305.11111"}},
+            ],
+        },
+    ]
+
+    fake_client = _FakeS2Client(payload)
+
+    import aigraph.corpus as corpus_mod
+    fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
+    monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
+
+    # The function imports httpx inside its body; patch the import system.
+    import sys
+    sys.modules["httpx"] = fake_httpx
+
+    stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
+
+    assert stats["updated"] == 2
+    assert stats["missing"] == 0
+    assert stats["papers_with_refs"] == 2
+    assert stats["total_refs"] == 4
+    assert stats["avg_refs_per_paper_with_refs"] == 2.0
+
+    # Confirm persistence on disk.
+    after = list(read_jsonl(tmp_path / "papers.jsonl", Paper))
+    by_id = {p.paper_id: p for p in after}
+    p1 = by_id["arxiv:2401.12345v1"]
+    p2 = by_id["arxiv:2402.00001v2"]
+    assert p1.cited_by_count == 42
+    assert p1.referenced_works == ["arxiv:2301.99999", "doi:10.1000/foo", "s2:ref3"]
+    assert p2.cited_by_count == 7
+    assert p2.referenced_works == ["arxiv:2305.11111"]
+
+    # Confirm the request asked for references fields, not just counts.
+    sent_fields = fake_client.calls[0]["params"]["fields"]
+    assert "references.externalIds" in sent_fields
+    assert "references.paperId" in sent_fields
+
+
+def test_enrich_handles_empty_or_missing_references_field(monkeypatch, tmp_path):
+    """S2 returning references=None / missing key / [] must produce empty
+    referenced_works (not None, not a crash). cited_by_count still updates."""
+    _seed_manifest(tmp_path, ["arxiv:2401.00001v1", "arxiv:2401.00002v1", "arxiv:2401.00003v1"])
+    payload = [
+        {"citationCount": 5, "references": None},     # explicit null
+        {"citationCount": 10},                          # missing key
+        {"citationCount": 3, "references": []},        # empty list
+    ]
+    fake_client = _FakeS2Client(payload)
+
+    import sys, aigraph.corpus as corpus_mod
+    fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
+    monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
+    sys.modules["httpx"] = fake_httpx
+
+    stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
+
+    assert stats["updated"] == 3
+    assert stats["papers_with_refs"] == 0
+    assert stats["total_refs"] == 0
+    assert stats["avg_refs_per_paper_with_refs"] == 0.0
+
+    after = list(read_jsonl(tmp_path / "papers.jsonl", Paper))
+    for p in after:
+        assert p.referenced_works == []  # empty list, never None
+        assert isinstance(p.cited_by_count, int)
+
+
+def test_enrich_marks_papers_missing_from_s2_response(monkeypatch, tmp_path):
+    """When S2 returns null for one id (paper not indexed), that paper's
+    counters bump 'missing' and its existing referenced_works stays empty."""
+    _seed_manifest(tmp_path, ["arxiv:2401.00001v1", "arxiv:2401.00002v1"])
+    # First paper present, second is None (not in S2's index).
+    payload = [
+        {
+            "citationCount": 4,
+            "references": [{"paperId": "r1", "externalIds": {"ArXiv": "2301.00001"}}],
+        },
+        None,
+    ]
+    fake_client = _FakeS2Client(payload)
+
+    import sys, aigraph.corpus as corpus_mod
+    fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
+    monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
+    sys.modules["httpx"] = fake_httpx
+
+    stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
+
+    assert stats["updated"] == 1
+    assert stats["missing"] == 1
+    assert stats["papers_with_refs"] == 1
+    assert stats["total_refs"] == 1

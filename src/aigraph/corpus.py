@@ -4,6 +4,7 @@ import gzip
 import html as html_lib
 import io
 import json
+import logging
 import math
 import os
 import re
@@ -21,12 +22,61 @@ from .models import Paper, PaperArtifactStatus, PaperSection, PaperSentence
 from .paper_select import score_paper
 
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_CORPUS_ROOT = Path("data/corpus/arxiv_reasoning")
 PARSER_VERSION = "corpus-v1"
 TEXT_FILE = "text.json"
 SECTIONS_FILE = "sections.json"
 SENTENCES_FILE = "sentences.json"
 METADATA_FILE = "metadata.json"
+
+
+def _parse_s2_references(raw_refs: list[dict]) -> list[str]:
+    """Convert Semantic Scholar reference objects to aigraph paper-id strings.
+
+    Priority order matches the rest of aigraph's ID conventions:
+      ArXiv  -> "arxiv:{id}"  (S2 returns the unversioned form, e.g. "2401.12345")
+      DOI    -> "doi:{lowercased_doi}"
+      S2 ID  -> "s2:{paperId}"
+    Refs with none of those identifiers are dropped (rare; usually broken
+    upstream records).
+
+    Deduplicates while preserving insertion order — graph code expects no
+    duplicate cites edges between the same (source, target) pair.
+
+    Known partial-loss: corpus paper_ids are versioned ("arxiv:2401.12345v1")
+    but S2 returns the unversioned ArXiv externalId ("2401.12345"). The
+    string-equality match in graph._add_citation_edges therefore won't
+    link unversioned refs to versioned in-corpus papers. Out of scope of
+    this helper — a downstream normalization step (canonicalize both to
+    the unversioned form) belongs in graph.py.
+
+    Note: S2 returns up to 100 references per paper on the batch endpoint.
+    For >100-ref papers (surveys), the rest are silently dropped; fetching
+    them requires the per-paper /references endpoint.
+    """
+    out: list[str] = []
+    seen: set[str] = set()
+    for r in raw_refs:
+        if not isinstance(r, dict):
+            continue
+        ext = r.get("externalIds") or {}
+        arxiv_id = ext.get("ArXiv")
+        doi = ext.get("DOI")
+        s2_pid = r.get("paperId")
+        if arxiv_id and isinstance(arxiv_id, str) and arxiv_id.strip():
+            norm = f"arxiv:{arxiv_id.strip()}"
+        elif doi and isinstance(doi, str) and doi.strip():
+            norm = f"doi:{doi.strip().lower()}"
+        elif s2_pid and isinstance(s2_pid, str) and s2_pid.strip():
+            norm = f"s2:{s2_pid.strip()}"
+        else:
+            continue
+        if norm not in seen:
+            seen.add(norm)
+            out.append(norm)
+    return out
 
 _SOURCE_TIMEOUT = 45.0
 _INPUT_RE = re.compile(r"\\(?:input|include)\{([^}]+)\}")
@@ -355,18 +405,35 @@ def validate_corpus(root: str | Path) -> dict[str, Any]:
 def enrich_citations_from_semantic_scholar(
     root: str | Path,
     *,
-    batch_size: int = 500,
-    timeout: float = 30.0,
+    batch_size: int = 200,
+    timeout: float = 60.0,
     api_key: str | None = None,
 ) -> dict[str, Any]:
-    """Hydrate manifest papers with Semantic Scholar citation counts and rerank."""
+    """Hydrate manifest papers with Semantic Scholar citation counts AND
+    references, then rerank by priority.
+
+    Saves both ``cited_by_count`` (from S2 ``citationCount``) and
+    ``referenced_works`` (from S2 ``references[].externalIds``) onto each
+    Paper.
+
+    Defaults for ``batch_size`` and ``timeout`` were tightened (500 -> 200,
+    30s -> 60s) when the response payload grew to include up to 100
+    references per paper — large batches were timing out.
+    """
     import time as _time
     import httpx
 
     root_path = configured_corpus_root(root)
     manifest = root_path / "papers.jsonl"
     if not manifest.exists():
-        return {"updated": 0, "missing": 0, "total": 0}
+        return {
+            "updated": 0,
+            "missing": 0,
+            "total": 0,
+            "papers_with_refs": 0,
+            "total_refs": 0,
+            "avg_refs_per_paper_with_refs": 0.0,
+        }
 
     papers = list(read_jsonl(manifest, Paper))
     id_to_indices: dict[str, list[int]] = {}
@@ -383,6 +450,8 @@ def enrich_citations_from_semantic_scholar(
     headers = {"x-api-key": api_key} if api_key else {}
     updated = 0
     missing = 0
+    papers_with_refs = 0
+    total_refs = 0
 
     with httpx.Client(timeout=timeout, headers=headers) as client:
         for start in range(0, len(unique_ids), batch_size):
@@ -391,7 +460,12 @@ def enrich_citations_from_semantic_scholar(
             while True:
                 response = client.post(
                     "https://api.semanticscholar.org/graph/v1/paper/batch",
-                    params={"fields": "citationCount,influentialCitationCount,referenceCount"},
+                    params={
+                        "fields": (
+                            "citationCount,influentialCitationCount,referenceCount,"
+                            "references.paperId,references.title,references.externalIds"
+                        )
+                    },
                     json={"ids": chunk},
                 )
                 if response.status_code == 429 and attempt < 3:
@@ -401,14 +475,40 @@ def enrich_citations_from_semantic_scholar(
                 response.raise_for_status()
                 break
             payload = response.json()
-            for s2_id, entry in zip(chunk, payload):
+            batch_cc_count = 0
+            batch_refs_count = 0
+            for batch_id, entry in zip(chunk, payload):
                 if not entry:
-                    missing += len(id_to_indices.get(s2_id, []))
+                    missing += len(id_to_indices.get(batch_id, []))
                     continue
                 cc = int(entry.get("citationCount") or 0)
-                for idx in id_to_indices[s2_id]:
-                    papers[idx] = papers[idx].model_copy(update={"cited_by_count": cc})
+                refs = _parse_s2_references(entry.get("references") or [])
+                for idx in id_to_indices[batch_id]:
+                    papers[idx] = papers[idx].model_copy(
+                        update={
+                            "cited_by_count": cc,
+                            "referenced_works": refs,
+                        }
+                    )
                     updated += 1
+                    batch_cc_count += 1
+                    if refs:
+                        papers_with_refs += 1
+                        total_refs += len(refs)
+                        batch_refs_count += 1
+            done = min(start + batch_size, len(unique_ids))
+            logger.info(
+                "S2 enrich: %d/%d unique ids | this batch cc=%d refs_populated=%d "
+                "(running: updated=%d missing=%d papers_with_refs=%d total_refs=%d)",
+                done,
+                len(unique_ids),
+                batch_cc_count,
+                batch_refs_count,
+                updated,
+                missing,
+                papers_with_refs,
+                total_refs,
+            )
             _time.sleep(1.0)
 
     for idx, paper in enumerate(papers):
@@ -430,7 +530,16 @@ def enrich_citations_from_semantic_scholar(
 
     ordered = _order_manifest(papers)
     write_jsonl(manifest, ordered)
-    return {"updated": updated, "missing": missing, "total": len(papers), "unique_arxiv_ids": len(unique_ids)}
+    avg_refs = (total_refs / papers_with_refs) if papers_with_refs else 0.0
+    return {
+        "updated": updated,
+        "missing": missing,
+        "total": len(papers),
+        "unique_arxiv_ids": len(unique_ids),
+        "papers_with_refs": papers_with_refs,
+        "total_refs": total_refs,
+        "avg_refs_per_paper_with_refs": round(avg_refs, 2),
+    }
 
 
 def export_corpus_paper(root: str | Path, paper_id: str) -> dict[str, Any]:

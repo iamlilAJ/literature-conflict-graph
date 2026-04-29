@@ -117,7 +117,7 @@ def test_parses_strict_json_response_into_claim():
     extractor = LLMClaimExtractor(model="stub-model", client=client, api_key="test-key")
     claims = extractor.extract(_paper_with_abstract(abstract))
     assert len(claims) == 1
-    assert claims[0].claim_id == "c001"
+    assert claims[0].claim_id == "openalex:W1#c01"
     assert claims[0].method == "RAG"
     assert claims[0].setting.task_type == "factual"
     assert claims[0].evidence_span == abstract

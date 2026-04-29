@@ -33,7 +33,7 @@ def test_structured_hint_extraction():
     claims = RuleBasedExtractor().extract(paper)
 
     assert len(claims) == 2
-    assert claims[0].claim_id == "c001"
+    assert claims[0].claim_id == "p001#c01"
     assert claims[0].method == "RAG"
     assert claims[0].setting.top_k == "5"
     assert claims[0].subject_raw == "RAG"
@@ -170,7 +170,9 @@ def test_claim_ids_are_globally_unique_across_papers():
     ]
     claims = extract_claims(papers, reader_mode="heuristic")
     ids = [c.claim_id for c in claims]
-    assert ids == ["c001", "c002", "c003"]
+    # Paper-local format: each paper has its own counter starting at 01.
+    # Globally unique by construction since paper_id is the prefix.
+    assert ids == ["p001#c01", "p002#c01", "p002#c02"]
 
 
 def test_cli_extract_defaults_to_rule_based():
@@ -190,10 +192,14 @@ class _FakeExtractor:
         self.calls: list[str] = []
 
     def extract(self, paper: Paper, start_index: int = 0, *, candidates=None) -> list[Claim]:
+        # Mirror the paper-local claim_id format produced by the real
+        # extractors in extract.py / llm_extract.py: f"{paper_id}#c{i+1:02d}".
+        # `start_index` is part of the API but production extractors ignore
+        # it for id formatting (per-paper counter), so this fake matches.
         self.calls.append(paper.paper_id)
         return [
             Claim(
-                claim_id=f"c{start_index + 1:03d}",
+                claim_id=f"{paper.paper_id}#c01",
                 paper_id=paper.paper_id,
                 claim_text=f"{paper.title} claim",
                 method="RAG",
@@ -212,12 +218,12 @@ def test_incremental_extraction_writes_and_resumes(tmp_path):
 
     first = _FakeExtractor()
     claims = _extract_claims_incremental(papers, first, output, resume=False)
-    assert [c.claim_id for c in claims] == ["c001", "c002"]
+    assert [c.claim_id for c in claims] == ["p001#c01", "p002#c01"]
     assert output.read_text(encoding="utf-8").count("\n") == 2
 
     second = _FakeExtractor()
     resumed = _extract_claims_incremental(papers, second, output, resume=True)
-    assert [c.claim_id for c in resumed] == ["c001", "c002"]
+    assert [c.claim_id for c in resumed] == ["p001#c01", "p002#c01"]
     assert second.calls == []
 
 

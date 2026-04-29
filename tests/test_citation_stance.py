@@ -249,19 +249,26 @@ def test_classify_handles_invalid_stance_gracefully():
 
 
 def test_classify_skips_self_citation():
-    """An edge where u == v (paper cites itself, possible from a data quirk)
-    is dropped before any LLM call."""
+    """An edge where u == v (paper cites itself) is dropped before any
+    LLM call. _add_citation_edges already filters self-loops at graph-build
+    time, but classify_cites_edges keeps a defensive guard for any other
+    pathway that might inject one — so we add the edge manually here to
+    exercise the guard."""
     papers = [
         Paper(
             paper_id="A",
             title="Foo Method",
             year=2023,
             venue="ACL",
-            referenced_works=["A"],  # self-reference
+            referenced_works=[],
             text="Foo Method describes itself.",
         ),
     ]
     g = build_graph(_claims_for(papers), papers=papers)
+    # Manually inject the self-loop edge that _add_citation_edges otherwise
+    # filters. The defensive guard inside classify_cites_edges should still
+    # skip it.
+    g.add_edge("Paper:A", "Paper:A", edge_type="cites")
     fake = _FakeClient(_stance_payload())
 
     counters = classify_cites_edges(g, papers, client=fake, model="stub")

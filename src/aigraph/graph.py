@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from collections import defaultdict
 from datetime import date
 from itertools import combinations
@@ -43,8 +44,12 @@ _PLACEHOLDER_LABELS = frozenset(
 )
 # Bibliographic coupling: papers A and B that share at least this many cited
 # works are linked by a co_cites edge with weight = number of shared refs.
-# Threshold of 2 keeps single-ref coincidences from cluttering the graph.
-_MIN_COUPLING_WEIGHT = 2
+# Threshold of 4 keeps moderate-density corpora (e.g. 4895 papers averaging
+# ~36 refs each) from producing 1M+ edges while preserving the
+# strong-similarity signal. Weight 2-3 pairs are dominated by
+# single-coincidence noise from heavily-cited foundational refs (Transformer,
+# BERT, etc.) being cited by many corpus papers, not real topical kinship.
+_MIN_COUPLING_WEIGHT = 4
 
 
 def _entity_node_id(node_type: str, value: str) -> str:
@@ -203,14 +208,68 @@ def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None
     )
 
 
+_ARXIV_VERSION_RE = re.compile(r"v(\d+)$")
+
+
+def _arxiv_version_num(paper_id: str) -> int:
+    """Extract integer N from an "arxiv:<base>vN" id. Returns 0 when there is
+    no trailing version (we treat unversioned as v0 < v1 so the latest
+    versioned form always wins in the index)."""
+    m = _ARXIV_VERSION_RE.search(paper_id)
+    return int(m.group(1)) if m else 0
+
+
+def _build_arxiv_base_index(paper_ids: set[str]) -> dict[str, str]:
+    """Map "arxiv:<base>" (no version) to the latest versioned paper_id we
+    have for that base. Used by _add_citation_edges to resolve refs that
+    Semantic Scholar returns unversioned (e.g. "arxiv:2303.17651") against
+    a corpus that stores them versioned (e.g. "arxiv:2303.17651v2").
+
+    We only index pids that actually carry a version suffix — we don't want
+    to overwrite an entry for a paper that is genuinely stored unversioned
+    in the corpus."""
+    index: dict[str, str] = {}
+    for pid in paper_ids:
+        if not pid.startswith("arxiv:"):
+            continue
+        suffix = pid[len("arxiv:"):]
+        base = _ARXIV_VERSION_RE.sub("", suffix)
+        if not base or base == suffix:
+            continue
+        base_key = f"arxiv:{base}"
+        current = index.get(base_key)
+        if current is None or _arxiv_version_num(pid) > _arxiv_version_num(current):
+            index[base_key] = pid
+    return index
+
+
 def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> None:
     paper_ids = set(papers_by_id)
+    # S2 enrich returns ArXiv externalIds without a version suffix
+    # ("arxiv:2303.17651"); the corpus stores paper_ids with version
+    # ("arxiv:2303.17651v2"). Build a base->versioned index so we can
+    # resolve unversioned refs against versioned corpus papers.
+    base_to_paper_id = _build_arxiv_base_index(paper_ids)
+
     for paper in papers_by_id.values():
         source = f"Paper:{paper.paper_id}"
         for ref in paper.referenced_works or []:
-            if ref not in paper_ids:
+            if ref in paper_ids:
+                target_pid = ref
+            elif ref.startswith("arxiv:"):
+                target_pid = base_to_paper_id.get(ref)
+                if target_pid is None:
+                    continue
+            else:
+                # Non-arxiv refs (doi:, s2:, ...) are not in the corpus —
+                # version normalization does not apply.
                 continue
-            target = f"Paper:{ref}"
+            if target_pid == paper.paper_id:
+                # Self-citation guard: a paper's own unversioned id
+                # resolving to itself via the index must not produce a
+                # self-loop edge.
+                continue
+            target = f"Paper:{target_pid}"
             if source in g and target in g:
                 g.add_edge(source, target, edge_type="cites")
 

@@ -215,36 +215,130 @@ def test_canonicalization_ignores_placeholder_canonical_values():
     assert not g.has_node("Method:other")
 
 
-def test_bibliographic_coupling_edge_added_for_two_shared_refs():
-    # P1 and P2 both cite R1 and R2 → coupling weight 2 → edge added.
+def test_bibliographic_coupling_edge_added_for_four_shared_refs():
+    # _MIN_COUPLING_WEIGHT == 4: P1 and P2 must share ≥4 refs to be coupled.
+    # Below the threshold, weight-2-or-3 coincidences are noise dominated by
+    # heavily-cited foundational refs (Transformer, BERT) being co-cited
+    # across many corpus papers without real topical kinship.
     claims = [
         Claim(claim_id="c001", paper_id="P1", claim_text="x", method="m", task="t", direction="positive"),
         Claim(claim_id="c002", paper_id="P2", claim_text="x", method="m", task="t", direction="positive"),
     ]
     papers = [
-        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1", "R2"]),
-        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1", "R2"]),
+        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1", "R2", "R3", "R4"]),
+        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1", "R2", "R3", "R4"]),
     ]
     g = build_graph(claims, papers=papers)
     edge_data = g.get_edge_data("Paper:P1", "Paper:P2") or {}
     co_cites = [d for d in edge_data.values() if d.get("edge_type") == "co_cites"]
     assert len(co_cites) == 1
-    assert co_cites[0]["weight"] == 2
+    assert co_cites[0]["weight"] == 4
 
 
 def test_bibliographic_coupling_skipped_below_threshold():
-    # Only 1 shared ref → below _MIN_COUPLING_WEIGHT=2 → no edge.
+    # 3 shared refs → below _MIN_COUPLING_WEIGHT=4 → no edge.
     claims = [
         Claim(claim_id="c001", paper_id="P1", claim_text="x", method="m", task="t", direction="positive"),
         Claim(claim_id="c002", paper_id="P2", claim_text="x", method="m", task="t", direction="positive"),
     ]
     papers = [
-        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1"]),
-        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1"]),
+        Paper(paper_id="P1", title="P1", year=2024, venue="ACL", referenced_works=["R1", "R2", "R3"]),
+        Paper(paper_id="P2", title="P2", year=2024, venue="ACL", referenced_works=["R1", "R2", "R3"]),
     ]
     g = build_graph(claims, papers=papers)
     edge_data = g.get_edge_data("Paper:P1", "Paper:P2") or {}
     assert not any(d.get("edge_type") == "co_cites" for d in edge_data.values())
+
+
+def test_cites_edges_match_versioned_to_unversioned_refs():
+    """S2 returns ArXiv externalIds unversioned (`arxiv:2201.11903`) while
+    corpus paper_ids carry version suffix (`arxiv:2201.11903v3`). The graph
+    must resolve the unversioned ref to the versioned in-corpus paper."""
+    claims = [
+        Claim(claim_id="c001", paper_id="arxiv:2303.17651v2", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="arxiv:2201.11903v3", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="arxiv:2303.17651v2", title="Self-Refine", year=2023,
+              venue="arXiv",
+              referenced_works=["arxiv:2201.11903"]),  # unversioned, mirrors S2
+        Paper(paper_id="arxiv:2201.11903v3", title="CoT", year=2022, venue="NeurIPS"),
+    ]
+    g = build_graph(claims, papers=papers)
+    edge_data = g.get_edge_data("Paper:arxiv:2303.17651v2", "Paper:arxiv:2201.11903v3") or {}
+    cites = [d for d in edge_data.values() if d.get("edge_type") == "cites"]
+    assert len(cites) == 1
+
+
+def test_cites_edge_prefers_latest_version():
+    """When the corpus has both v1 and v2 of the same arxiv id and another
+    paper references it unversioned, the cites edge must point to the
+    LATEST version, not an arbitrary one."""
+    claims = [
+        Claim(claim_id="c001", paper_id="arxiv:2303.17651v1", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="arxiv:2303.17651v2", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c003", paper_id="arxiv:2201.11903v3", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="arxiv:2303.17651v1", title="Self-Refine v1", year=2023, venue="arXiv"),
+        Paper(paper_id="arxiv:2303.17651v2", title="Self-Refine v2", year=2023, venue="arXiv"),
+        Paper(paper_id="arxiv:2201.11903v3", title="CoT", year=2022, venue="NeurIPS",
+              referenced_works=["arxiv:2303.17651"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    # Edge to v2 must exist.
+    v2_edges = g.get_edge_data("Paper:arxiv:2201.11903v3", "Paper:arxiv:2303.17651v2") or {}
+    assert any(d.get("edge_type") == "cites" for d in v2_edges.values())
+    # No edge to v1.
+    v1_edges = g.get_edge_data("Paper:arxiv:2201.11903v3", "Paper:arxiv:2303.17651v1") or {}
+    assert not any(d.get("edge_type") == "cites" for d in v1_edges.values())
+
+
+def test_cites_edge_does_not_create_self_loop():
+    """A paper's own unversioned id appearing in its referenced_works (e.g.
+    a v2 paper referencing 'arxiv:2303.17651' which the index resolves to
+    itself) must NOT produce a self-loop cites edge."""
+    claims = [
+        Claim(claim_id="c001", paper_id="arxiv:2303.17651v2", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="arxiv:2303.17651v2", title="Self-Refine", year=2023,
+              venue="arXiv",
+              referenced_works=["arxiv:2303.17651"]),  # would otherwise self-loop
+    ]
+    g = build_graph(claims, papers=papers)
+    self_edges = g.get_edge_data("Paper:arxiv:2303.17651v2", "Paper:arxiv:2303.17651v2") or {}
+    assert not any(d.get("edge_type") == "cites" for d in self_edges.values())
+
+
+def test_cites_edge_keeps_double_digit_version_ordering():
+    """Lexicographic ordering would put 'v9' > 'v10' — the index must use
+    integer comparison so v10 wins over v9."""
+    claims = [
+        Claim(claim_id="c001", paper_id="arxiv:2303.17651v9", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="arxiv:2303.17651v10", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c003", paper_id="arxiv:2201.11903v3", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="arxiv:2303.17651v9", title="v9", year=2023, venue="arXiv"),
+        Paper(paper_id="arxiv:2303.17651v10", title="v10", year=2023, venue="arXiv"),
+        Paper(paper_id="arxiv:2201.11903v3", title="CoT", year=2022, venue="NeurIPS",
+              referenced_works=["arxiv:2303.17651"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    v10_edges = g.get_edge_data("Paper:arxiv:2201.11903v3", "Paper:arxiv:2303.17651v10") or {}
+    assert any(d.get("edge_type") == "cites" for d in v10_edges.values())
+    v9_edges = g.get_edge_data("Paper:arxiv:2201.11903v3", "Paper:arxiv:2303.17651v9") or {}
+    assert not any(d.get("edge_type") == "cites" for d in v9_edges.values())
 
 
 def test_contradicts_edge_carries_impact_and_magnitude_weight():

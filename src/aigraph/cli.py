@@ -216,6 +216,53 @@ def build_graph_cmd(
     )
 
 
+@app.command("classify-stance")
+def classify_stance_cmd(
+    graph: Path = typer.Option(..., "--graph"),
+    papers: Path = typer.Option(..., "--papers"),
+    output: Optional[Path] = typer.Option(
+        None,
+        "--output",
+        help="Defaults to atomic in-place rewrite of --graph (write tmp + rename).",
+    ),
+    max_edges: Optional[int] = typer.Option(
+        None,
+        "--max-edges",
+        help="Cap the number of LLM calls. Useful as a cost guard on large graphs.",
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Report counters without making any LLM calls. No graph write either.",
+    ),
+) -> None:
+    """Classify stance (extends/contradicts/contrasts/builds_on/mentions) on the
+    cites edges of an existing graph.json. Idempotent — re-runs only on edges
+    without an existing stance attribute."""
+    import os
+    from .citation_stance import classify_cites_edges
+
+    g = load_graph(graph)
+    paper_records = read_jsonl(papers, Paper)
+    counters = classify_cites_edges(
+        g,
+        paper_records,
+        max_edges=max_edges,
+        dry_run=dry_run,
+    )
+    console.print(f"[green]classify-stance counters:[/] {counters}")
+    if dry_run:
+        return
+    target = output or graph
+    # Atomic write: serialize to a sibling temp file then rename, so a
+    # crash mid-write doesn't leave a corrupt graph.json on disk.
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_suffix(target.suffix + ".tmp")
+    save_graph(g, tmp)
+    os.replace(tmp, target)
+    console.print(f"[green]wrote graph -> [/]{target}")
+
+
 @app.command("detect-anomalies")
 def detect_anomalies_cmd(
     graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),

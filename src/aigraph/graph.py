@@ -79,6 +79,9 @@ def build_graph(
     claims: list[Claim],
     papers: list[Paper] | None = None,
     current_year: int | None = None,
+    classify_stance: bool = False,
+    stance_client: object | None = None,
+    stance_model: str | None = None,
 ) -> nx.MultiDiGraph:
     g: nx.MultiDiGraph = nx.MultiDiGraph()
 
@@ -138,6 +141,19 @@ def build_graph(
     _add_citation_edges(g, papers_by_id)
     _add_bibliographic_coupling_edges(g, papers_by_id)
     _add_claim_claim_edges(g, claims, papers_by_id)
+
+    # Optional LLM-driven stance classification on the cites edges. Off by
+    # default — the call costs network + tokens and most tests / pipelines
+    # do not want it. Opt in via the kwarg or the `aigraph classify-stance`
+    # CLI for backfill on existing graphs.
+    if classify_stance:
+        from .citation_stance import classify_cites_edges
+        classify_cites_edges(
+            g,
+            list(papers_by_id.values()),
+            client=stance_client,
+            model=stance_model,
+        )
     return g
 
 

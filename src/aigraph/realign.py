@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Any
 
 from .anomalies import detect_anomalies
-from .graph import build_graph, save_graph
+from .graph import build_graph, load_graph, save_graph
 from .models import Claim, Paper
 from .visualize import render_visualization
 
@@ -138,6 +138,7 @@ def realign_run(run_dir: Path) -> bool:
         claims = _read_jsonl(run_dir / "claims.jsonl", Claim)
         papers = _read_jsonl(run_dir / "papers.jsonl", Paper)
         g = build_graph(claims, papers=papers)
+        _preserve_cites_stance(run_dir / "graph.json", g)
         save_graph(g, run_dir / "graph.json")
         anomalies = detect_anomalies(g, claims)
         with (run_dir / "anomalies.jsonl").open("w", encoding="utf-8") as f:
@@ -150,6 +151,44 @@ def realign_run(run_dir: Path) -> bool:
         status["realigned_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
         status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
         return True
+
+
+def _preserve_cites_stance(old_graph_path: Path, new_graph: "object") -> None:
+    """Copy stance / stance_confidence / stance_rationale from the prior on-disk
+    graph onto the freshly-rebuilt one. Without this, a SCHEMA_VERSION bump
+    would silently erase any stance work done by `classify_cites_edges` —
+    `build_graph` is called here with `classify_stance=False`, so stance is
+    not regenerated.
+
+    Wrapped so a corrupt prior graph never blocks the rebuild from
+    completing — stance is best-effort persistence, not a correctness gate.
+    """
+    if not old_graph_path.exists():
+        return
+    try:
+        old_graph = load_graph(old_graph_path)
+    except Exception as exc:  # pragma: no cover - defensive on corrupt JSON
+        logging.getLogger("aigraph.realign").warning(
+            "stance preservation skipped (could not load prior graph at %s): %s",
+            old_graph_path,
+            exc,
+        )
+        return
+    for u, v, _key, data in old_graph.edges(keys=True, data=True):
+        if data.get("edge_type") != "cites":
+            continue
+        stance = data.get("stance")
+        if stance is None:
+            continue
+        new_edge_data = new_graph.get_edge_data(u, v) or {}
+        for new_key, nd in new_edge_data.items():
+            if nd.get("edge_type") == "cites":
+                nd["stance"] = stance
+                if data.get("stance_confidence") is not None:
+                    nd["stance_confidence"] = data["stance_confidence"]
+                if data.get("stance_rationale") is not None:
+                    nd["stance_rationale"] = data["stance_rationale"]
+                break
 
 
 def realign_run_safe(run_dir: Path) -> bool:

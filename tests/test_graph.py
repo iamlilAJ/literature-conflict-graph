@@ -306,3 +306,61 @@ def test_canonical_clustering_links_aliases_with_contradicts():
     edge_data = g.get_edge_data("Claim:c001", "Claim:c002") or {}
     edge_types = {d.get("edge_type") for d in edge_data.values()}
     assert "contradicts" in edge_types
+
+
+def test_build_graph_does_not_classify_stance_by_default():
+    """Locks the default — build_graph must NOT make any LLM calls unless the
+    caller explicitly opts in via classify_stance=True. Catches regressions
+    where stance classification gets accidentally turned on as a default
+    (which would crash every existing test that doesn't mock an LLM client)."""
+
+    class _BoomClient:
+        """Any attribute access blows up. If build_graph touches the LLM
+        layer at all, we'll see it here."""
+
+        def __getattr__(self, name):  # pragma: no cover - test guard
+            raise AssertionError(
+                f"build_graph attempted to use the LLM client (.{name}) "
+                "with classify_stance defaulting to False"
+            )
+
+    papers = [
+        Paper(
+            paper_id="A",
+            title="Foo Method",
+            year=2023,
+            venue="ACL",
+            cited_by_count=10,
+        ),
+        Paper(
+            paper_id="B",
+            title="A study",
+            year=2024,
+            venue="EMNLP",
+            cited_by_count=5,
+            referenced_works=["A"],
+            text="We extend Foo Method to a new domain.",
+        ),
+    ]
+    claims = [
+        Claim(
+            claim_id="cA", paper_id="A", claim_text="x",
+            method="m", task="t", direction="positive",
+        ),
+        Claim(
+            claim_id="cB", paper_id="B", claim_text="y",
+            method="m", task="t", direction="positive",
+        ),
+    ]
+
+    # Pass a client that would crash if used. Default classify_stance=False
+    # must mean it is never invoked.
+    g = build_graph(claims, papers=papers, stance_client=_BoomClient())
+
+    # Cites edge exists but has NO stance attribute.
+    edge_data = g.get_edge_data("Paper:B", "Paper:A") or {}
+    cites_attrs = [d for d in edge_data.values() if d.get("edge_type") == "cites"]
+    assert cites_attrs, "expected a cites edge between B and A"
+    for nd in cites_attrs:
+        assert "stance" not in nd
+        assert "stance_confidence" not in nd

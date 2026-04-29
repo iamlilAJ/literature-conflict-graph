@@ -39,6 +39,17 @@ _SHARED_RULES = """SHARED RULES — apply to every response:
 - graph_bridge.from / graph_bridge.to should reference shared_entities or
   claim metadata from the user payload, not invented terms
 
+The anomaly.signals object provides numeric context: evidence_impact
+(cumulative log-citation impact of the involved papers), recent_activity
+(recent citations / age — high means the conflict is still being argued),
+impact_balance (0 = lopsided sides, 1 = balanced), citation_bridge_score,
+replication_score (0 = no replication signal, 1 = replication-conflict
+framing), topology_score (combined). Use these to calibrate hypothesis
+emphasis — e.g. high recent_activity warrants a hypothesis about active
+disagreement; low impact_balance suggests one side may be a minority view;
+high replication_score is the strongest signal that reproduction-failure
+framings are appropriate.
+
 JSON schema:
 {
   "hypotheses": [
@@ -315,10 +326,28 @@ def _prompt_payload(anomaly: Anomaly, claims: list[Claim]) -> str:
             "negative_or_mixed_claims": anomaly.negative_claims,
             "shared_entities": anomaly.shared_entities,
             "varying_settings": anomaly.varying_settings,
+            "signals": _anomaly_signals(anomaly),
         },
         "claims": [_claim_summary(c) for c in claims],
     }
     return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+def _anomaly_signals(anomaly: Anomaly) -> dict[str, float]:
+    """Pack the numeric metadata fields _annotate_topology_scores writes onto
+    each Anomaly. Uses getattr with 0.0 default so legacy fixtures or
+    partially-constructed Anomalies (e.g. Anomaly.model_construct in tests)
+    serialize cleanly. Rounds to 3 decimals — these are 0..~10 range floats
+    and 3 decimals is enough resolution for the LLM to differentiate impact
+    levels without burning tokens on noise digits."""
+    return {
+        "evidence_impact": round(float(getattr(anomaly, "evidence_impact", 0.0) or 0.0), 3),
+        "recent_activity": round(float(getattr(anomaly, "recent_activity", 0.0) or 0.0), 3),
+        "impact_balance": round(float(getattr(anomaly, "impact_balance", 0.0) or 0.0), 3),
+        "citation_bridge_score": round(float(getattr(anomaly, "citation_bridge_score", 0.0) or 0.0), 3),
+        "replication_score": round(float(getattr(anomaly, "replication_score", 0.0) or 0.0), 3),
+        "topology_score": round(float(getattr(anomaly, "topology_score", 0.0) or 0.0), 3),
+    }
 
 
 def _claim_summary(c: Claim) -> dict[str, Any]:

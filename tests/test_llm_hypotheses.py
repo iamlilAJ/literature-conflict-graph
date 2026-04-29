@@ -191,3 +191,75 @@ def test_unknown_anomaly_type_falls_back_to_default_and_logs(monkeypatch, caplog
         "Second call with same unknown type should be deduped"
     )
 
+
+def test_payload_includes_signals_block(monkeypatch):
+    """The user-side JSON payload must carry the anomaly's numeric signals
+    (evidence_impact / recent_activity / replication_score / etc.) so the LLM
+    can calibrate hypothesis emphasis based on impact and activity levels."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    fake = _FakeClient(json.dumps({"hypotheses": []}))
+    gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
+
+    anomaly = Anomaly(
+        anomaly_id="a042",
+        type="replication_conflict",
+        central_question="Why does B fail to reproduce A?",
+        claim_ids=["c001"],
+        positive_claims=["c001"],
+        negative_claims=[],
+        shared_entities={"method": "RAG", "task": "QA"},
+        evidence_impact=4.5,
+        recent_activity=2.1,
+        impact_balance=0.3,
+        citation_bridge_score=0.0,
+        replication_score=1.0,
+        topology_score=3.7,
+    )
+    gen.generate(anomaly, {"c001": _claim("c001")})
+
+    user_msg = fake.chat.completions.calls[0]["messages"][1]["content"]
+    payload = json.loads(user_msg)
+    signals = payload["anomaly"]["signals"]
+
+    assert signals["evidence_impact"] == 4.5
+    assert signals["recent_activity"] == 2.1
+    assert signals["impact_balance"] == 0.3
+    assert signals["replication_score"] == 1.0
+    assert signals["topology_score"] == 3.7
+    # Output schema is unchanged — anomaly block still has all the legacy keys.
+    for k in ("anomaly_id", "type", "central_question", "positive_claims",
+              "negative_or_mixed_claims", "shared_entities", "varying_settings"):
+        assert k in payload["anomaly"], f"missing legacy key: {k}"
+
+
+def test_signals_block_is_robust_to_legacy_anomaly(monkeypatch):
+    """A legacy Anomaly missing the numeric signal fields entirely (built via
+    model_construct without them, or constructed before those fields existed)
+    must still serialize cleanly and produce 0.0 in every signal slot — the
+    getattr safety net in _anomaly_signals does the work."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    fake = _FakeClient(json.dumps({"hypotheses": []}))
+    gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
+
+    a = _make_anomaly("aL", "benchmark_inconsistency")
+    # Strip the signal attrs from the model_construct'd instance so the
+    # getattr fallback path is exercised even on pydantic v2 versions that
+    # populate defaults during model_construct.
+    for field in (
+        "evidence_impact", "recent_activity", "impact_balance",
+        "citation_bridge_score", "replication_score", "topology_score",
+    ):
+        a.__dict__.pop(field, None)
+
+    gen.generate(a, {"c001": _claim("c001")})
+
+    user_msg = fake.chat.completions.calls[0]["messages"][1]["content"]
+    payload = json.loads(user_msg)
+    signals = payload["anomaly"]["signals"]
+    assert signals["evidence_impact"] == 0.0
+    assert signals["recent_activity"] == 0.0
+    assert signals["impact_balance"] == 0.0
+    assert signals["citation_bridge_score"] == 0.0
+    assert signals["replication_score"] == 0.0
+    assert signals["topology_score"] == 0.0
+

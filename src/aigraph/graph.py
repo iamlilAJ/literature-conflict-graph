@@ -210,6 +210,55 @@ def _add_paper_node(g: nx.MultiDiGraph, paper: Paper, current_year: int) -> None
 
 _ARXIV_VERSION_RE = re.compile(r"v(\d+)$")
 
+_DOI_URL_PREFIXES = (
+    "https://doi.org/",
+    "http://doi.org/",
+    "https://dx.doi.org/",
+    "http://dx.doi.org/",
+    "doi:",
+)
+
+
+def _normalize_doi(raw: str | None) -> str | None:
+    """Strip URL/'doi:' prefix variants, lowercase, return clean
+    "doi:10.xxxx/yyyy" form. Returns None when input is empty or
+    doesn't look like a DOI (must start with '10.' after normalization).
+
+    OpenAlex returns ``doi`` as a URL like ``https://doi.org/10.xxxx``;
+    Semantic Scholar's batch enrich emits ``doi:10.xxxx`` already lower-
+    cased. This helper produces the bare ``doi:10.xxxx`` form so both
+    sides of the lookup index agree.
+    """
+    if not raw:
+        return None
+    s = raw.strip().lower()
+    while True:
+        changed = False
+        for prefix in _DOI_URL_PREFIXES:
+            if s.startswith(prefix):
+                s = s[len(prefix):]
+                changed = True
+                break
+        if not changed:
+            break
+    s = s.strip("/")
+    return f"doi:{s}" if s.startswith("10.") else None
+
+
+def _build_doi_index(papers_by_id: dict[str, "Paper"]) -> dict[str, str]:
+    """Map normalized "doi:10.xxxx" -> paper_id for in-corpus papers
+    that have a DOI populated. Used by _add_citation_edges to resolve
+    refs of the form ``doi:10.xxxx/yyyy`` that S2 emits when the
+    ArXiv externalId is absent."""
+    index: dict[str, str] = {}
+    for pid, paper in papers_by_id.items():
+        norm = _normalize_doi(getattr(paper, "doi", None))
+        if norm:
+            # First-paper-wins on rare DOI collisions (preprint and
+            # conference version sharing a DOI is the typical case).
+            index.setdefault(norm, pid)
+    return index
+
 
 def _arxiv_version_num(paper_id: str) -> int:
     """Extract integer N from an "arxiv:<base>vN" id. Returns 0 when there is
@@ -250,6 +299,12 @@ def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> N
     # ("arxiv:2303.17651v2"). Build a base->versioned index so we can
     # resolve unversioned refs against versioned corpus papers.
     base_to_paper_id = _build_arxiv_base_index(paper_ids)
+    # S2 also emits "doi:10.xxxx" refs when the ArXiv externalId is
+    # missing. Build a DOI->paper_id index so those refs resolve
+    # against in-corpus papers whose Paper.doi is populated. Today
+    # only ~2% of papers carry a DOI, but the framework is sound for
+    # when coverage improves.
+    doi_to_paper_id = _build_doi_index(papers_by_id)
 
     for paper in papers_by_id.values():
         source = f"Paper:{paper.paper_id}"
@@ -260,14 +315,20 @@ def _add_citation_edges(g: nx.MultiDiGraph, papers_by_id: dict[str, Paper]) -> N
                 target_pid = base_to_paper_id.get(ref)
                 if target_pid is None:
                     continue
+            elif ref.startswith("doi:"):
+                # Refs from corpus._parse_s2_references are already
+                # lowercased; normalize once more to be defensive.
+                target_pid = doi_to_paper_id.get(ref.lower())
+                if target_pid is None:
+                    continue
             else:
-                # Non-arxiv refs (doi:, s2:, ...) are not in the corpus —
-                # version normalization does not apply.
+                # s2:, openalex:, ... — out of scope (Paper doesn't
+                # store these alternative ids today).
                 continue
             if target_pid == paper.paper_id:
-                # Self-citation guard: a paper's own unversioned id
-                # resolving to itself via the index must not produce a
-                # self-loop edge.
+                # Self-citation guard: a paper's own unversioned id /
+                # own DOI resolving to itself via either index must not
+                # produce a self-loop edge.
                 continue
             target = f"Paper:{target_pid}"
             if source in g and target in g:

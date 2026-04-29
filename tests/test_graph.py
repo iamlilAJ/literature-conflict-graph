@@ -317,6 +317,70 @@ def test_cites_edge_does_not_create_self_loop():
     assert not any(d.get("edge_type") == "cites" for d in self_edges.values())
 
 
+def test_cites_resolves_doi_ref():
+    """S2 emits refs prefixed `doi:` when the ArXiv externalId is missing.
+    The graph must resolve them against an in-corpus paper whose own
+    `doi` field (URL form, OpenAlex's convention) points at the same
+    DOI."""
+    claims = [
+        Claim(claim_id="c001", paper_id="P_A", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="P_B", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="P_A", title="A", year=2024, venue="ACL",
+              doi="https://doi.org/10.1000/xyz"),
+        Paper(paper_id="P_B", title="B", year=2024, venue="ACL",
+              referenced_works=["doi:10.1000/xyz"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    edge_data = g.get_edge_data("Paper:P_B", "Paper:P_A") or {}
+    cites = [d for d in edge_data.values() if d.get("edge_type") == "cites"]
+    assert len(cites) == 1
+
+
+def test_cites_resolves_doi_case_insensitive():
+    """DOI matching must be case-insensitive on the bare DOI."""
+    claims = [
+        Claim(claim_id="c001", paper_id="P_A", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="P_B", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="P_A", title="A", year=2024, venue="ACL",
+              doi="10.1000/MIXEDcaseDOI"),
+        Paper(paper_id="P_B", title="B", year=2024, venue="ACL",
+              referenced_works=["doi:10.1000/mixedcasedoi"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    edge_data = g.get_edge_data("Paper:P_B", "Paper:P_A") or {}
+    cites = [d for d in edge_data.values() if d.get("edge_type") == "cites"]
+    assert len(cites) == 1
+
+
+def test_cites_ignores_unsupported_ref_prefix():
+    """`s2:` and `openalex:` refs are ignored — Paper doesn't store
+    those alternative ids today. No edge, no crash."""
+    claims = [
+        Claim(claim_id="c001", paper_id="P_A", claim_text="x",
+              method="m", task="t", direction="positive"),
+        Claim(claim_id="c002", paper_id="P_B", claim_text="x",
+              method="m", task="t", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="P_A", title="A", year=2024, venue="ACL"),
+        Paper(paper_id="P_B", title="B", year=2024, venue="ACL",
+              referenced_works=["s2:abc123def456", "openalex:W42"]),
+    ]
+    g = build_graph(claims, papers=papers)
+    # No cites edge from B to A in either direction.
+    for u, v in [("Paper:P_B", "Paper:P_A"), ("Paper:P_A", "Paper:P_B")]:
+        ed = g.get_edge_data(u, v) or {}
+        assert not any(d.get("edge_type") == "cites" for d in ed.values())
+
+
 def test_cites_edge_keeps_double_digit_version_ordering():
     """Lexicographic ordering would put 'v9' > 'v10' — the index must use
     integer comparison so v10 wins over v9."""

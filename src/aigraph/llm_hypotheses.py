@@ -25,7 +25,147 @@ from .models import Anomaly, Claim, GraphBridge, Hypothesis
 logger = logging.getLogger(__name__)
 
 
-SYSTEM_PROMPT = """You generate possible explanations for conflicts in AI literature.
+# Shared structural rules — these apply to every anomaly-type prompt and define
+# the JSON contract + epistemic guardrails. Kept in one place so the schema,
+# evidence-citation discipline, and "do not assert truth" rule live ONCE.
+_SHARED_RULES = """SHARED RULES — apply to every response:
+- Output STRICT JSON, schema { "hypotheses": [ ... ] }; no markdown, no fences, no prose
+- Generate EXACTLY 3 hypotheses, each distinct from the others
+- Each hypothesis must include all of: hypothesis, mechanism, explains_claims,
+  predictions (exactly 2 short concrete strings), minimal_test, scope_conditions,
+  evidence_gap, graph_bridge
+- explains_claims must reference real claim_ids from the user payload (≥1 id)
+- Do not assert any hypothesis as true — these are candidates for human review
+- graph_bridge.from / graph_bridge.to should reference shared_entities or
+  claim metadata from the user payload, not invented terms
+
+JSON schema:
+{
+  "hypotheses": [
+    {
+      "hypothesis": "one-sentence statement",
+      "mechanism": "causal mechanism or moderator",
+      "explains_claims": ["c001", "c002"],
+      "predictions": ["prediction 1", "prediction 2"],
+      "minimal_test": "specific experiment or analysis",
+      "scope_conditions": {"method": "...", "task": "..."},
+      "evidence_gap": "what evidence is still missing",
+      "graph_bridge": {"from": "source concept", "to": "target concept"}
+    }
+  ]
+}"""
+
+
+# Per-type framing strings. Each describes the cognitive task for THIS anomaly
+# type. Concatenated with _SHARED_RULES at module-import time so the model
+# anchors on the type-specific framing first, then the shared output rules act
+# as the closing constraint block (recency-bias-friendly).
+
+_FRAMING_BENCHMARK = """You generate competing explanations for a benchmark inconsistency.
+
+Two or more papers report contradictory results for the same method on the
+same task. Generate exactly 3 competing, testable explanations focused on
+**moderator variables that could flip the sign** of the effect — dataset
+composition, distribution shift, prompt format, retrieval recall, model
+scale, decoding strategy, or evaluation protocol differences. Each
+hypothesis is a back-explanation of why the contradiction exists; each
+minimal_test is an experiment that holds the alleged moderator fixed and
+checks whether the contradiction disappears."""
+
+_FRAMING_REPLICATION = """You generate root-cause hypotheses for a replication failure.
+
+Paper B explicitly attempts to reproduce Paper A's method on the same task
+but reports the opposite direction. Generate exactly 3 candidate root
+causes drawn from: implementation differences, hyperparameter choices,
+data preprocessing or version drift, leakage or test-set contamination,
+metric definition mismatch, seed variance, hardware/precision (fp16 vs
+fp32 / bf16), or under-specified algorithm details. Each prediction must
+be **distinguishable by re-running B's code on A's exact dataset, seed,
+and hardware** — that is the empirical bar. minimal_test must describe
+the controlled re-run that would isolate the responsible factor."""
+
+_FRAMING_BRIDGE = """You generate forward-looking transfer hypotheses for a bridge opportunity.
+
+Two clusters of work share underlying concepts but have no citation path
+between them. Generate exactly 3 **forward-looking** hypotheses: what
+would happen if methods/findings from one cluster were applied to the
+other cluster's task? Each hypothesis is a research direction that has
+NOT yet been tried, not a retrospective explanation of past results.
+minimal_test must specify a concrete, runnable transfer experiment:
+which method, which dataset, which baseline, which metric — phrased so a
+researcher could start it tomorrow."""
+
+_FRAMING_COMMUNITY = """You generate hypotheses about a community disconnect.
+
+Two research communities address overlapping problems with shared
+mechanisms or failure modes, yet do not cite each other. Generate
+exactly 3 hypotheses split between (a) **why the disconnect persists**
+(terminology drift, venue separation, language barrier, methodological
+priors, generational lag) and (b) **what cross-pollination would look
+like** (which technique from community A would be most useful in
+community B, and vice versa). predictions should be testable via a
+focused literature comparison or a small replication study that imports
+one community's tooling into the other's benchmark."""
+
+_FRAMING_EVIDENCE_GAP = """You generate hypotheses about an evidence gap.
+
+All available claims point in one direction (positive or negative) but
+the evidence base is thin or one-sided. Generate exactly 3 hypotheses
+covering (a) **whether the effect is real and robust** vs an artifact of
+selective reporting, file-drawer bias, or under-tested settings, and
+(b) **what specific missing evidence** would confirm or refute it.
+minimal_test must specify the exact data that would close the gap —
+which experimental conditions are missing, which negative controls have
+not been run, which adversarial settings have not been probed."""
+
+_FRAMING_SETTING_MISMATCH = """You generate hypotheses for a setting mismatch.
+
+The same method on the same task produces conflicting outcomes across
+papers, and the runs differ along at least one Setting field
+(retriever / top_k / context_length / task_type / etc). Generate
+exactly 3 hypotheses about **which setting variable is responsible for
+the divergence**. Each prediction must hold all other settings fixed and
+vary only the candidate variable; minimal_test must be a parameter sweep
+over that single setting on at least one of the original benchmarks."""
+
+_FRAMING_METRIC_MISMATCH = """You generate hypotheses for a metric mismatch.
+
+Same method, same task, different metrics, conflicting outcomes.
+Generate exactly 3 hypotheses about **which metric is measuring what**
+and how the metrics' definitional gap drives the divergence — e.g. one
+metric rewards calibration where the other rewards rank, or one is
+sensitive to surface form where the other is not. Each prediction must
+involve **cross-scoring the same model outputs with both metrics** on a
+shared eval set; minimal_test must specify how to obtain or generate
+that paired prediction set."""
+
+
+def _build_prompt(framing: str) -> str:
+    """Concatenate per-type framing then shared rules. Format chosen so the
+    output-shaping constraints are last (recency bias)."""
+    return f"{framing.strip()}\n\n{_SHARED_RULES.strip()}\n"
+
+
+# Map every AnomalyType value to its specialized prompt. The
+# test_system_prompts_covers_every_anomaly_type test asserts this dict's keys
+# match `typing.get_args(AnomalyType)` — adding a new anomaly type without a
+# prompt will fail CI rather than silently fall through to the default.
+SYSTEM_PROMPTS: dict[str, str] = {
+    "benchmark_inconsistency": _build_prompt(_FRAMING_BENCHMARK),
+    "impact_conflict": _build_prompt(_FRAMING_BENCHMARK),
+    "replication_conflict": _build_prompt(_FRAMING_REPLICATION),
+    "bridge_opportunity": _build_prompt(_FRAMING_BRIDGE),
+    "community_disconnect": _build_prompt(_FRAMING_COMMUNITY),
+    "evidence_gap": _build_prompt(_FRAMING_EVIDENCE_GAP),
+    "setting_mismatch": _build_prompt(_FRAMING_SETTING_MISMATCH),
+    "metric_mismatch": _build_prompt(_FRAMING_METRIC_MISMATCH),
+}
+
+
+# Fallback prompt — kept as the original generic text for safety. A new
+# AnomalyType value not covered by SYSTEM_PROMPTS will route here and log
+# once. See _select_prompt below.
+_DEFAULT_PROMPT = """You generate possible explanations for conflicts in AI literature.
 
 You will receive one detected anomaly and the evidence claims that define it.
 Return STRICT JSON only, no markdown, no analysis prose.
@@ -56,6 +196,29 @@ JSON schema:
   ]
 }
 """
+
+
+# Module-level dedup so a corpus with N anomalies of an unknown type produces
+# one INFO line per type per process, not N. Module-level (not instance-level)
+# so a pipeline that constructs many LLMHypothesisGenerator objects still
+# benefits from the dedup.
+_warned_unknown_types: set[str] = set()
+
+
+def _select_prompt(anomaly_type: str) -> str:
+    """Look up the prompt for an anomaly type; fall back to _DEFAULT_PROMPT
+    on unknown types and log a single INFO line per unknown type per process."""
+    prompt = SYSTEM_PROMPTS.get(anomaly_type)
+    if prompt is not None:
+        return prompt
+    if anomaly_type not in _warned_unknown_types:
+        _warned_unknown_types.add(anomaly_type)
+        logger.info(
+            "llm_hypotheses: no specialized prompt for anomaly type %r; "
+            "falling back to _DEFAULT_PROMPT",
+            anomaly_type,
+        )
+    return _DEFAULT_PROMPT
 
 
 class LLMHypothesisGenerator(HypothesisGenerator):
@@ -105,7 +268,7 @@ class LLMHypothesisGenerator(HypothesisGenerator):
         return call_llm_text(
             client,
             model=self.model,
-            system=SYSTEM_PROMPT,
+            system=_select_prompt(anomaly.type),
             user=_prompt_payload(anomaly, claims),
             temperature=float(os.environ.get("AIGRAPH_HYPOTHESIS_TEMPERATURE", "0.2")),
             max_tokens=int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", DEFAULT_MAX_TOKENS)),

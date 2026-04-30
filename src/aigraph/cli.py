@@ -320,6 +320,32 @@ def extract_open_questions_cmd(
     console.print(f"[green]Extracted {len(oqs)} open questions to[/] {output}")
 
 
+@app.command("build-hierarchy")
+def build_hierarchy_cmd(
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    papers: Path = typer.Option(..., "--papers"),
+    anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
+    graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),
+    output: Path = typer.Option(Path("outputs/hierarchy.json"), "--output"),
+) -> None:
+    """Compute domain/community/cluster aggregations from claims, papers,
+    anomalies, and the typed graph. Produces hierarchy.json consumed by
+    multi-grain creator generation. Pure statistics — no LLM calls."""
+    from .hierarchy import build_hierarchy, save_hierarchy
+
+    g = load_graph(graph)
+    claim_records = read_jsonl(claims, Claim)
+    paper_records = read_jsonl(papers, Paper)
+    anom_records = read_jsonl(anomalies, Anomaly)
+    h = build_hierarchy(claim_records, paper_records, anom_records, g)
+    save_hierarchy(h, output)
+    console.print(
+        f"[green]hierarchy:[/] {len(h['domains'])} domains, "
+        f"{len(h['communities'])} communities, "
+        f"{len(h['clusters'])} clusters -> {output}"
+    )
+
+
 @app.command("generate-creator-hypotheses")
 def generate_creator_hypotheses_cmd(
     anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
@@ -373,6 +399,62 @@ def check_novelty_cmd(
             f.write("\n")
             f.flush()  # incremental visibility
     console.print(f"[green]Annotated {len(records)} hypotheses[/] -> {output}")
+
+
+@app.command("generate-creator-multi-grain")
+def generate_creator_multi_grain_cmd(
+    anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    open_questions: Path = typer.Option(Path("outputs/open_questions.jsonl"), "--open-questions"),
+    hierarchy: Path = typer.Option(Path("outputs/hierarchy.json"), "--hierarchy"),
+    output: Path = typer.Option(Path("outputs/creator_multi_grain.jsonl"), "--output"),
+    model: Optional[str] = typer.Option(None, "--model"),
+    max_anomalies: int = typer.Option(50, "--max-anomalies"),
+    existing_hypotheses: Optional[Path] = typer.Option(
+        None,
+        "--existing-hypotheses",
+        help="Optional creator_hypotheses.jsonl path; when supplied the fine "
+             "LLM call is skipped for any anomaly with a matching record "
+             "(the existing hypothesis becomes the synthesis fine anchor).",
+    ),
+) -> None:
+    """Generate fine/coarse/synthesized creator hypotheses for top-N anomalies
+    by topology_score. Each output line is the synthesized Hypothesis (same
+    schema as `generate-creator-hypotheses`) PLUS a `multi_grain` key carrying
+    the fine + coarse intermediates plus a `fine_source` audit field
+    ('existing' or 'generated')."""
+    from .creator import generate_creator_hypotheses_multi_grain
+    from .hierarchy import load_hierarchy
+
+    anom_records = read_jsonl(anomalies, Anomaly)
+    claim_records = read_jsonl(claims, Claim)
+    oq_records = read_jsonl(open_questions, OpenQuestion)
+    hier = load_hierarchy(hierarchy)
+    existing_records: Optional[list[Hypothesis]] = None
+    if existing_hypotheses is not None and existing_hypotheses.exists():
+        existing_records = read_jsonl(existing_hypotheses, Hypothesis)
+        console.print(
+            f"[yellow]Loaded {len(existing_records)} existing hypotheses[/] "
+            f"as fine anchor from {existing_hypotheses}"
+        )
+    records = generate_creator_hypotheses_multi_grain(
+        anom_records,
+        claim_records,
+        oq_records,
+        hier,
+        model=model,
+        max_anomalies=max_anomalies,
+        existing_hypotheses=existing_records,
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False))
+            f.write("\n")
+            f.flush()
+    console.print(
+        f"[green]Generated {len(records)} multi-grain hypotheses to[/] {output}"
+    )
 
 
 @app.command("generate-insights")

@@ -340,6 +340,35 @@ def generate_creator_hypotheses_cmd(
     console.print(f"[green]Generated {len(hyps)} creator hypotheses to[/] {output}")
 
 
+@app.command("check-novelty")
+def check_novelty_cmd(
+    hypotheses: Path = typer.Option(..., "--hypotheses"),
+    output: Path = typer.Option(..., "--output"),
+    max_candidates: int = typer.Option(5, "--max-candidates"),
+    model: Optional[str] = typer.Option(None, "--model"),
+) -> None:
+    """For each hypothesis in --hypotheses, query arxiv and ask the LLM
+    whether it is substantively novel. Output is the same hypotheses
+    JSONL with a `novelty_check` field appended (LooseModel extras get
+    dropped on Hypothesis.model_validate_json — read raw JSON for the
+    extra field)."""
+    from .novelty_check import annotate_hypotheses_with_novelty
+
+    hyp_records = read_jsonl(hypotheses, Hypothesis)
+    records = annotate_hypotheses_with_novelty(
+        hyp_records,
+        model=model,
+        max_candidates=max_candidates,
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False))
+            f.write("\n")
+            f.flush()  # incremental visibility
+    console.print(f"[green]Annotated {len(records)} hypotheses[/] -> {output}")
+
+
 @app.command("generate-insights")
 def generate_insights_cmd(
     graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),

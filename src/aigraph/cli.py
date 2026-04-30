@@ -236,6 +236,11 @@ def classify_stance_cmd(
         "--dry-run",
         help="Report counters without making any LLM calls. No graph write either.",
     ),
+    corpus_root: Optional[Path] = typer.Option(
+        None,
+        "--corpus-root",
+        help="Optional path to corpus root for full-text lookup; falls back to paper.text when artifact missing",
+    ),
 ) -> None:
     """Classify stance (extends/contradicts/contrasts/builds_on/mentions) on the
     cites edges of an existing graph.json. Idempotent — re-runs only on edges
@@ -250,6 +255,7 @@ def classify_stance_cmd(
         paper_records,
         max_edges=max_edges,
         dry_run=dry_run,
+        corpus_root=corpus_root,
     )
     console.print(f"[green]classify-stance counters:[/] {counters}")
     if dry_run:

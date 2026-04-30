@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import socket
 import threading
@@ -7,6 +8,24 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 import pytest
+
+# Browser smoke is opt-in. CI does not run `playwright install chromium`,
+# but GitHub-hosted Ubuntu runners DO ship a system Chrome at
+# `/usr/bin/google-chrome` which Playwright picks up via
+# `pw.chromium.launch(channel="chrome")`. That made this test run on CI
+# even though it was silently skipped on developer machines without a
+# managed Chromium binary, producing inconsistent green/red signals.
+#
+# Gate the entire module behind AIGRAPH_RUN_BROWSER_TESTS=1 so the test
+# only runs when explicitly requested. README documents the same setup:
+#   python -m playwright install chromium
+#   AIGRAPH_RUN_BROWSER_TESTS=1 PYTHONPATH=src pytest -q tests/test_browser_smoke.py
+if not os.environ.get("AIGRAPH_RUN_BROWSER_TESTS"):
+    pytest.skip(
+        "Browser smoke is opt-in. Set AIGRAPH_RUN_BROWSER_TESTS=1 and run "
+        "`python -m playwright install chromium` first.",
+        allow_module_level=True,
+    )
 
 playwright = pytest.importorskip("playwright.sync_api")
 

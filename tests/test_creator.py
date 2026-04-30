@@ -13,9 +13,10 @@ from aigraph.creator import (
     CREATOR_SYSTEM_PROMPT,
     SYSTEM_PROMPT_COARSE,
     SYSTEM_PROMPT_SYNTHESIZE,
+    _hypothesis_to_creator_dict,
     generate_creator_hypotheses_multi_grain,
 )
-from aigraph.models import Anomaly, Claim, OpenQuestion
+from aigraph.models import Anomaly, Claim, Hypothesis, OpenQuestion
 
 
 # --- Fake LLM client (chat fallback path) ----------------------------------
@@ -275,6 +276,98 @@ def test_multi_grain_synthesized_carries_grounding_from_fine(monkeypatch):
     # Both intermediates round-trip as raw dicts.
     assert rec["multi_grain"]["fine"]["proposed_method"] == "Multilingual Medical RAG"
     assert rec["multi_grain"]["coarse"]["proposed_method"] == "Cross-Domain Retrieval Atlas"
+
+
+def _existing_hypothesis(anomaly_id: str) -> Hypothesis:
+    """Build a Hypothesis matching the shape that generate_creator_hypotheses
+    emits — includes scope_conditions with comma-joined inspired_by + a
+    distinguishes_from line, and evidence_gap as the anomaly_resolution."""
+    return Hypothesis(
+        hypothesis_id=f"{anomaly_id}#cr01",
+        anomaly_id=anomaly_id,
+        hypothesis="Existing-Anchor RAG Method",
+        mechanism="A baseline retrieval-augmented method that the existing creator already produced.",
+        explains_claims=["c001", "c002"],
+        predictions=["existing prediction A", "existing prediction B"],
+        minimal_test="Compare against vanilla RAG on MedQA.",
+        scope_conditions={
+            "distinguishes_from": "Differs from naive RAG by a calibrated retriever.",
+            "inspired_by": "c001, c002, p1#oq01",
+        },
+        evidence_gap="Existing single-grain anomaly resolution sentence.",
+        graph_bridge={"from": "open_questions", "to": "creator_hypothesis"},
+    )
+
+
+def test_multi_grain_ablate_fine_when_existing_provided(monkeypatch):
+    """When an existing Hypothesis covers the anomaly, fine LLM call is
+    skipped — only 2 calls fire (coarse + synthesize) — and the synthesis
+    user prompt carries the existing hypothesis as the fine anchor.
+    multi_grain.fine_source must be 'existing'."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    fake = _FakeClient([_payload_coarse(), _payload_synth()])
+
+    out = generate_creator_hypotheses_multi_grain(
+        [_anomaly()],
+        _claims(),
+        _open_questions(),
+        _hierarchy(),
+        model="stub",
+        api_key="test-key",
+        client=fake,
+        existing_hypotheses=[_existing_hypothesis("a001")],
+    )
+
+    calls = fake.chat.completions.calls
+    assert len(calls) == 2, f"expected 2 LLM calls, got {len(calls)}"
+    systems = [c["messages"][0]["content"] for c in calls]
+    assert systems[0] == SYSTEM_PROMPT_COARSE
+    assert systems[1] == SYSTEM_PROMPT_SYNTHESIZE
+    # Synthesize user prompt must carry the existing hypothesis content as fine.
+    synth_user_msg = json.loads(calls[1]["messages"][1]["content"])
+    assert synth_user_msg["fine"]["proposed_method"] == "Existing-Anchor RAG Method"
+    assert synth_user_msg["fine"]["mechanism"].startswith("A baseline retrieval-augmented")
+    assert "c001" in synth_user_msg["fine"]["inspired_by"]
+    rec = out[0]
+    assert rec["multi_grain"]["fine_source"] == "existing"
+    assert rec["multi_grain"]["fine"]["proposed_method"] == "Existing-Anchor RAG Method"
+
+
+def test_multi_grain_falls_back_to_3_calls_when_existing_missing(monkeypatch):
+    """When existing_hypotheses is None or doesn't cover the anomaly, all 3
+    LLM calls fire and multi_grain.fine_source == 'generated'."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    fake = _FakeClient([_payload_fine(), _payload_coarse(), _payload_synth()])
+
+    # existing_hypotheses provided but for a DIFFERENT anomaly_id
+    out = generate_creator_hypotheses_multi_grain(
+        [_anomaly()],
+        _claims(),
+        _open_questions(),
+        _hierarchy(),
+        model="stub",
+        api_key="test-key",
+        client=fake,
+        existing_hypotheses=[_existing_hypothesis("a999")],
+    )
+
+    assert len(fake.chat.completions.calls) == 3
+    rec = out[0]
+    assert rec["multi_grain"]["fine_source"] == "generated"
+
+
+def test_hypothesis_to_creator_dict_field_mapping():
+    """Spot-check the exact field mapping between Hypothesis (single-grain
+    output) and the creator-payload dict that the synthesize prompt expects.
+    Important because the existing creator stores `inspired_by` as a
+    comma-joined STRING in scope_conditions, not as a list."""
+    h = _existing_hypothesis("a042")
+    d = _hypothesis_to_creator_dict(h)
+    assert d["proposed_method"] == "Existing-Anchor RAG Method"
+    assert d["mechanism"].startswith("A baseline")
+    assert d["inspired_by"] == ["c001", "c002", "p1#oq01"]  # split from string
+    assert d["distinguishes_from"].startswith("Differs from naive RAG")
+    assert d["anomaly_resolution"] == "Existing single-grain anomaly resolution sentence."
 
 
 def test_multi_grain_falls_back_when_hierarchy_empty(monkeypatch):

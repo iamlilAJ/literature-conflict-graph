@@ -360,6 +360,7 @@ def generate_creator_hypotheses_multi_grain(
     base_url: Optional[str] = None,
     max_anomalies: Optional[int] = None,
     client: Any = None,
+    existing_hypotheses: Optional[list[Hypothesis]] = None,
 ) -> list[dict]:
     """Multi-grain creator: for each (top-N by topology_score) anomaly, run
     fine -> coarse -> synthesize and return the SYNTHESIZED hypothesis as a
@@ -367,9 +368,15 @@ def generate_creator_hypotheses_multi_grain(
 
     Returns a list of dicts (NOT Hypothesis objects). Each dict has the same
     keys as a Hypothesis serialized via ``model_dump(by_alias=True)`` PLUS a
-    ``multi_grain`` key carrying the raw fine + coarse LLM outputs:
+    ``multi_grain`` key carrying the raw fine + coarse LLM outputs and a
+    ``fine_source`` audit field:
 
-        {..hypothesis fields.., "multi_grain": {"fine": {...}, "coarse": {...}}}
+        {..hypothesis fields..,
+         "multi_grain": {"fine": {...}, "coarse": {...}, "fine_source": "..."}}
+
+    ``fine_source`` is one of:
+    - ``"existing"`` — reused from ``existing_hypotheses`` (no fine LLM call)
+    - ``"generated"`` — fine pass made a fresh LLM call
 
     Production callers can ``json.dumps`` each record directly to JSONL or
     pass it through ``Hypothesis.model_validate`` — the latter silently
@@ -383,13 +390,24 @@ def generate_creator_hypotheses_multi_grain(
     single-grain one. Sorting + ``max_anomalies`` truncation happen INSIDE
     the function so callers don't need to pre-sort.
 
-    Cost-wise this is 3 LLM calls per accepted anomaly. With AIGRAPH_REASONING_EFFORT=
-    minimal that's ~5-20s/call; budget accordingly.
+    When ``existing_hypotheses`` is supplied, fine pass is ablated for any
+    anomaly_id covered by an existing record — the existing hypothesis is
+    converted back to creator-payload shape and used as the synthesis fine
+    anchor. This drops the per-anomaly LLM cost from 3 calls to 2 (~33%
+    cheaper) and anchors fine quality to known-good production output.
     """
     claims_by_id = {c.claim_id: c for c in claims}
     oq_by_paper: dict[str, list[OpenQuestion]] = {}
     for oq in open_questions:
         oq_by_paper.setdefault(oq.paper_id, []).append(oq)
+
+    existing_by_anomaly: dict[str, Hypothesis] = {}
+    if existing_hypotheses:
+        for h in existing_hypotheses:
+            # First record per anomaly wins; the existing creator emits up to
+            # 3 hypotheses per anomaly in score order, so the first is the
+            # strongest variant.
+            existing_by_anomaly.setdefault(h.anomaly_id, h)
 
     resolved_model = configured_model(model)
     if client is None:
@@ -398,8 +416,6 @@ def generate_creator_hypotheses_multi_grain(
             base_url=configured_base_url(base_url),
         )
 
-    # Sort by topology_score desc INSIDE the function. Callers can pass the
-    # raw anomalies.jsonl in any order.
     sorted_anomalies = sorted(
         list(anomalies),
         key=lambda a: float(getattr(a, "topology_score", 0.0) or 0.0),
@@ -415,13 +431,21 @@ def generate_creator_hypotheses_multi_grain(
             continue
         paper_ids = {c.paper_id for c in anomaly_claims}
         paper_oqs = [oq for pid in paper_ids for oq in oq_by_paper.get(pid, [])]
-        if not paper_oqs:
+        existing = existing_by_anomaly.get(anomaly.anomaly_id)
+        # Skip when there's no fine anchor available: no existing hypothesis
+        # AND no paper-OQ overlap to seed a fresh fine generation.
+        if existing is None and not paper_oqs:
             continue
 
-        fine_user = _creator_user_prompt(anomaly, anomaly_claims, paper_oqs)
-        fine_item = _call_creator_pass(client, resolved_model, CREATOR_SYSTEM_PROMPT, fine_user, anomaly)
-        if fine_item is None:
-            continue
+        if existing is not None:
+            fine_item = _hypothesis_to_creator_dict(existing)
+            fine_source = "existing"
+        else:
+            fine_user = _creator_user_prompt(anomaly, anomaly_claims, paper_oqs)
+            fine_item = _call_creator_pass(client, resolved_model, CREATOR_SYSTEM_PROMPT, fine_user, anomaly)
+            if fine_item is None:
+                continue
+            fine_source = "generated"
 
         coarse_user = _prompt_payload_coarse(anomaly, claims_by_id, hierarchy)
         coarse_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_COARSE, coarse_user, anomaly)
@@ -444,6 +468,10 @@ def generate_creator_hypotheses_multi_grain(
         inspired = synth_item.get("inspired_by")
         if not isinstance(inspired, list):
             inspired = []
+        # The grounding allowlist is the union of paper OpenQuestions (when
+        # any exist) and the anomaly's own claim_ids. With the existing path
+        # paper_oqs may be empty; that's fine — we still validate against
+        # the claim_ids that the existing hypothesis was built on.
         allowed_grounding = {oq.open_question_id for oq in paper_oqs} | {
             c.claim_id for c in anomaly_claims
         }
@@ -475,10 +503,53 @@ def generate_creator_hypotheses_multi_grain(
         )
         record = {
             **hyp.model_dump(by_alias=True),
-            "multi_grain": {"fine": fine_item, "coarse": coarse_item},
+            "multi_grain": {
+                "fine": fine_item,
+                "coarse": coarse_item,
+                "fine_source": fine_source,
+            },
         }
         out.append(record)
     return out
+
+
+def _hypothesis_to_creator_dict(h: Hypothesis) -> dict:
+    """Convert a single-grain ``Hypothesis`` record (as emitted by
+    ``generate_creator_hypotheses``) back to the dict shape that the
+    synthesize prompt expects for ``fine``.
+
+    Field-mapping notes — verified against ``creator_hypotheses.jsonl`` from
+    the 1000-paper run, NOT a guess:
+
+    - ``proposed_method`` <- ``hypothesis``
+    - ``mechanism`` <- ``mechanism``
+    - ``predictions`` <- ``predictions``
+    - ``minimal_test`` <- ``minimal_test``
+    - ``inspired_by`` <- parsed from ``scope_conditions["inspired_by"]``
+      which the existing creator stores as a comma-joined string
+      (creator.py:293). The new dict carries it as a list to match the
+      shape that ``SYSTEM_PROMPT_COARSE`` and ``SYSTEM_PROMPT_SYNTHESIZE``
+      already expect.
+    - ``distinguishes_from`` <- ``scope_conditions["distinguishes_from"]``
+    - ``anomaly_resolution`` <- ``evidence_gap``
+    """
+    scope = h.scope_conditions or {}
+    inspired_raw = scope.get("inspired_by", "")
+    if isinstance(inspired_raw, list):
+        inspired = [str(x).strip() for x in inspired_raw if str(x).strip()]
+    elif isinstance(inspired_raw, str):
+        inspired = [x.strip() for x in inspired_raw.split(",") if x.strip()]
+    else:
+        inspired = []
+    return {
+        "proposed_method": h.hypothesis or "",
+        "mechanism": h.mechanism or "",
+        "predictions": list(h.predictions or []),
+        "minimal_test": h.minimal_test or "",
+        "inspired_by": inspired,
+        "distinguishes_from": scope.get("distinguishes_from", ""),
+        "anomaly_resolution": h.evidence_gap or "",
+    }
 
 
 def _call_creator_pass(

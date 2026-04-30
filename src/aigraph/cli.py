@@ -375,11 +375,19 @@ def generate_creator_multi_grain_cmd(
     output: Path = typer.Option(Path("outputs/creator_multi_grain.jsonl"), "--output"),
     model: Optional[str] = typer.Option(None, "--model"),
     max_anomalies: int = typer.Option(50, "--max-anomalies"),
+    existing_hypotheses: Optional[Path] = typer.Option(
+        None,
+        "--existing-hypotheses",
+        help="Optional creator_hypotheses.jsonl path; when supplied the fine "
+             "LLM call is skipped for any anomaly with a matching record "
+             "(the existing hypothesis becomes the synthesis fine anchor).",
+    ),
 ) -> None:
     """Generate fine/coarse/synthesized creator hypotheses for top-N anomalies
     by topology_score. Each output line is the synthesized Hypothesis (same
     schema as `generate-creator-hypotheses`) PLUS a `multi_grain` key carrying
-    the fine + coarse intermediates for inspection."""
+    the fine + coarse intermediates plus a `fine_source` audit field
+    ('existing' or 'generated')."""
     from .creator import generate_creator_hypotheses_multi_grain
     from .hierarchy import load_hierarchy
 
@@ -387,6 +395,13 @@ def generate_creator_multi_grain_cmd(
     claim_records = read_jsonl(claims, Claim)
     oq_records = read_jsonl(open_questions, OpenQuestion)
     hier = load_hierarchy(hierarchy)
+    existing_records: Optional[list[Hypothesis]] = None
+    if existing_hypotheses is not None and existing_hypotheses.exists():
+        existing_records = read_jsonl(existing_hypotheses, Hypothesis)
+        console.print(
+            f"[yellow]Loaded {len(existing_records)} existing hypotheses[/] "
+            f"as fine anchor from {existing_hypotheses}"
+        )
     records = generate_creator_hypotheses_multi_grain(
         anom_records,
         claim_records,
@@ -394,6 +409,7 @@ def generate_creator_multi_grain_cmd(
         hier,
         model=model,
         max_anomalies=max_anomalies,
+        existing_hypotheses=existing_records,
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", encoding="utf-8") as f:

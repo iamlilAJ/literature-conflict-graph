@@ -7,6 +7,7 @@ from aigraph.corpus import (
     artifact_dir,
     enrich_citations_from_semantic_scholar,
     export_corpus_paper,
+    hydrate_papers_from_corpus,
     seed_reasoning_corpus,
     sync_arxiv_corpus,
     validate_corpus,
@@ -729,3 +730,92 @@ def test_enrich_calls_metadata_sync(monkeypatch, tmp_path):
     assert after["paper"]["cited_by_count"] == 50
     assert after["paper"]["referenced_works"] == ["arxiv:2301.99999"]
     assert "_last_enriched_at" in after["paper"]
+
+
+def test_hydrate_papers_copies_citation_fields_from_corpus_manifest(tmp_path):
+    """Server-mode arxiv fetch returns cited_by_count=0 / referenced_works=[].
+    The corpus papers.jsonl manifest carries the real values from S2 enrich.
+    hydrate_papers_from_corpus must batch-load the manifest and merge those
+    fields onto the fetched paper."""
+    corpus_root = tmp_path / "corpus"
+    corpus_root.mkdir()
+    corpus_paper = Paper(
+        paper_id="arxiv:2401.12345v1",
+        title="Reasoning Paper",
+        year=2024,
+        venue="arXiv",
+        cited_by_count=500,
+        referenced_works=["arxiv:2301.99999"],
+        counts_by_year=[{"year": 2024, "cited_by_count": 100}],
+    )
+    write_jsonl(corpus_root / "papers.jsonl", [corpus_paper])
+
+    fetched = Paper(
+        paper_id="arxiv:2401.12345v1",
+        title="Reasoning Paper",
+        year=2024,
+        venue="arXiv",
+        cited_by_count=0,
+        referenced_works=[],
+        counts_by_year=[],
+    )
+    out, counters = hydrate_papers_from_corpus([fetched], root=corpus_root)
+
+    assert len(out) == 1
+    assert out[0].cited_by_count == 500
+    assert out[0].referenced_works == ["arxiv:2301.99999"]
+    assert out[0].counts_by_year == [{"year": 2024, "cited_by_count": 100}]
+    assert counters["checked"] == 1
+    assert counters["citation_hydrated"] == 1
+    assert counters["unmatched_in_manifest"] == 0
+
+
+def test_hydrate_unmatched_papers_unchanged(tmp_path):
+    """A paper whose paper_id is absent from the manifest comes back
+    unchanged and bumps unmatched_in_manifest, not citation_hydrated."""
+    corpus_root = tmp_path / "corpus"
+    corpus_root.mkdir()
+    write_jsonl(
+        corpus_root / "papers.jsonl",
+        [Paper(paper_id="arxiv:9999.0v1", title="x", year=2024, venue="x")],
+    )
+
+    fetched = Paper(
+        paper_id="arxiv:0000.1v1",
+        title="Unrelated",
+        year=2024,
+        venue="arXiv",
+        cited_by_count=0,
+        referenced_works=[],
+    )
+    out, counters = hydrate_papers_from_corpus([fetched], root=corpus_root)
+
+    assert len(out) == 1
+    assert out[0].cited_by_count == 0
+    assert out[0].referenced_works == []
+    assert counters == {
+        "checked": 1,
+        "text_hydrated": 0,
+        "citation_hydrated": 0,
+        "unmatched_in_manifest": 1,
+    }
+
+
+def test_hydrate_returns_unchanged_when_manifest_missing(tmp_path):
+    """No manifest at corpus_root -> all papers count as unmatched, no merge,
+    no exception. Server-mode without a corpus mounted hits this path."""
+    corpus_root = tmp_path / "no_corpus"  # never created
+    fetched = Paper(
+        paper_id="arxiv:0000.1v1",
+        title="x",
+        year=2024,
+        venue="arXiv",
+        cited_by_count=7,
+        referenced_works=["arxiv:foo"],
+    )
+    out, counters = hydrate_papers_from_corpus([fetched], root=corpus_root)
+    assert len(out) == 1
+    assert out[0].cited_by_count == 7
+    assert out[0].referenced_works == ["arxiv:foo"]
+    assert counters["unmatched_in_manifest"] == 1
+    assert counters["citation_hydrated"] == 0

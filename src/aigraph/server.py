@@ -383,7 +383,14 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
             limit=request.limit,
             strategy=request.strategy,
         )
-    papers = hydrate_papers_from_corpus(papers)
+    papers, hydration_counters = hydrate_papers_from_corpus(papers)
+    print(
+        f"[aigraph-search] corpus hydration: "
+        f"text={hydration_counters['text_hydrated']} "
+        f"citation={hydration_counters['citation_hydrated']} "
+        f"unmatched={hydration_counters['unmatched_in_manifest']} "
+        f"(of {hydration_counters['checked']} total)"
+    )
     write_jsonl(papers_path, papers)
     status(
         status="running",

@@ -646,8 +646,90 @@ def hydrate_paper_from_corpus(paper: Paper, root: str | Path | None = None) -> P
     return paper.model_copy(update={"text": text})
 
 
-def hydrate_papers_from_corpus(papers: list[Paper], root: str | Path | None = None) -> list[Paper]:
-    return [hydrate_paper_from_corpus(paper, root=root) for paper in papers]
+def hydrate_papers_from_corpus(
+    papers: list[Paper], root: str | Path | None = None,
+) -> tuple[list[Paper], dict[str, int]]:
+    """Batch hydrate fetched papers with whatever the offline corpus has.
+
+    Two pieces of corpus data flow back onto each paper:
+
+    1. Full text body, per-paper, from ``artifacts/<id>/text.json``
+       (delegates to ``hydrate_paper_from_corpus``).
+    2. Citation metadata, batch-joined via the corpus ``papers.jsonl``
+       manifest: ``cited_by_count``, ``referenced_works``,
+       ``counts_by_year``. arxiv's Atom API returns 0 / [] for these
+       fields, so server-mode runs were silently producing degraded
+       graphs (no co_cites edges, no evidence_impact signal, broken
+       contradicts weighting). The manifest is built by
+       ``enrich_citations_from_semantic_scholar`` with ~79% / ~91%
+       coverage on the production corpus.
+
+    Manifest is read ONCE and indexed by paper_id. The merge is
+    selective and conservative: a corpus value only overrides the
+    fetched value when (a) the corpus value is non-empty AND (b) the
+    fetched value is empty/zero. Title/text/abstract/etc. are NEVER
+    overridden — those come fresh from the fetch.
+
+    Returns ``(hydrated_papers, counters)`` where counters carries:
+    - ``checked``: total papers processed
+    - ``text_hydrated``: how many got a non-empty text body from
+      artifacts (i.e. text changed during hydration)
+    - ``citation_hydrated``: how many had at least one citation field
+      filled in from the manifest
+    - ``unmatched_in_manifest``: how many had no manifest entry at all
+
+    Tolerant: missing corpus_root, missing manifest, malformed
+    manifest, empty papers list — all return without raising and
+    leave inputs unchanged. Suitable for server-mode runs where the
+    corpus may not be mounted.
+    """
+    counters: dict[str, int] = {
+        "checked": len(papers),
+        "text_hydrated": 0,
+        "citation_hydrated": 0,
+        "unmatched_in_manifest": 0,
+    }
+
+    text_hydrated: list[Paper] = []
+    for paper in papers:
+        h = hydrate_paper_from_corpus(paper, root=root)
+        if h is not paper and (h.text or "") != (paper.text or ""):
+            counters["text_hydrated"] += 1
+        text_hydrated.append(h)
+
+    corpus_root = configured_corpus_root(root)
+    manifest_path = corpus_root / "papers.jsonl"
+    by_id: dict[str, Paper] = {}
+    if manifest_path.exists():
+        try:
+            for cp in read_jsonl(manifest_path, Paper):
+                by_id[cp.paper_id] = cp
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning(
+                "hydrate_papers_from_corpus: ignoring malformed manifest %s (%s)",
+                manifest_path, exc,
+            )
+
+    out: list[Paper] = []
+    for paper in text_hydrated:
+        match = by_id.get(paper.paper_id)
+        if match is None:
+            counters["unmatched_in_manifest"] += 1
+            out.append(paper)
+            continue
+        updates: dict[str, Any] = {}
+        if match.cited_by_count and not paper.cited_by_count:
+            updates["cited_by_count"] = match.cited_by_count
+        if match.referenced_works and not paper.referenced_works:
+            updates["referenced_works"] = list(match.referenced_works)
+        if match.counts_by_year and not paper.counts_by_year:
+            updates["counts_by_year"] = list(match.counts_by_year)
+        if updates:
+            counters["citation_hydrated"] += 1
+            out.append(paper.model_copy(update=updates))
+        else:
+            out.append(paper)
+    return out, counters
 
 
 def load_corpus_sections(paper: Paper, root: str | Path | None = None) -> list[PaperSection]:

@@ -366,6 +366,46 @@ def generate_creator_hypotheses_cmd(
     console.print(f"[green]Generated {len(hyps)} creator hypotheses to[/] {output}")
 
 
+@app.command("generate-creator-multi-grain")
+def generate_creator_multi_grain_cmd(
+    anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    open_questions: Path = typer.Option(Path("outputs/open_questions.jsonl"), "--open-questions"),
+    hierarchy: Path = typer.Option(Path("outputs/hierarchy.json"), "--hierarchy"),
+    output: Path = typer.Option(Path("outputs/creator_multi_grain.jsonl"), "--output"),
+    model: Optional[str] = typer.Option(None, "--model"),
+    max_anomalies: int = typer.Option(50, "--max-anomalies"),
+) -> None:
+    """Generate fine/coarse/synthesized creator hypotheses for top-N anomalies
+    by topology_score. Each output line is the synthesized Hypothesis (same
+    schema as `generate-creator-hypotheses`) PLUS a `multi_grain` key carrying
+    the fine + coarse intermediates for inspection."""
+    from .creator import generate_creator_hypotheses_multi_grain
+    from .hierarchy import load_hierarchy
+
+    anom_records = read_jsonl(anomalies, Anomaly)
+    claim_records = read_jsonl(claims, Claim)
+    oq_records = read_jsonl(open_questions, OpenQuestion)
+    hier = load_hierarchy(hierarchy)
+    records = generate_creator_hypotheses_multi_grain(
+        anom_records,
+        claim_records,
+        oq_records,
+        hier,
+        model=model,
+        max_anomalies=max_anomalies,
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False))
+            f.write("\n")
+            f.flush()
+    console.print(
+        f"[green]Generated {len(records)} multi-grain hypotheses to[/] {output}"
+    )
+
+
 @app.command("generate-insights")
 def generate_insights_cmd(
     graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),

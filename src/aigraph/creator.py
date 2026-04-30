@@ -16,6 +16,7 @@ import json
 import logging
 import os
 import re
+from collections import Counter
 from typing import Any, Iterable, Optional
 
 from .corpus import (
@@ -85,6 +86,43 @@ CREATOR_SYSTEM_PROMPT = (
     "- inspired_by: list of open_question_id and/or claim_id strings\n"
     "- distinguishes_from: 1 sentence — how it differs from existing methods in the cluster\n"
     "- anomaly_resolution: 1 sentence — how it resolves the anomaly\n"
+    "Do not explain your reasoning. Output only the JSON object.\n"
+)
+
+
+# --- Multi-grain prompts (used by generate_creator_hypotheses_multi_grain) ---
+
+SYSTEM_PROMPT_COARSE = (
+    "You generate AMBITIOUS research direction proposals using LANDSCAPE "
+    "context — domain trends, community sibling clusters, and cross-cluster "
+    "patterns. The hypothesis can:\n"
+    "- propose a unifying framework across multiple sub-fields\n"
+    "- identify a missing piece across communities\n"
+    "- name a trend the field has not formalized yet\n\n"
+    "It must still:\n"
+    "- reference >=3 specific evidence pieces from the provided domain/community summary "
+    "(claim_ids, sibling cluster keys, or method/task names that appear in the payload)\n"
+    "- be falsifiable: include a minimal_test that distinguishes it from the status quo\n"
+    "- name a specific mechanism/protocol/dataset family — no slogans\n\n"
+    'Return JSON {"creator_hypotheses": [...]} with the same item schema as '
+    "the fine-grain prompt: proposed_method, mechanism, predictions, minimal_test, "
+    "inspired_by, distinguishes_from, anomaly_resolution.\n"
+    "Do not explain your reasoning. Output only the JSON object.\n"
+)
+
+
+SYSTEM_PROMPT_SYNTHESIZE = (
+    "You receive two hypothesis variants for the SAME anomaly:\n"
+    "- a FINE variant (rigorous, narrow, grounded in a specific cluster)\n"
+    "- a COARSE variant (ambitious, broad, drawing on domain/community patterns)\n\n"
+    "Synthesize ONE hypothesis that:\n"
+    "- inherits rigorous grounding from FINE (specific methods, real benchmarks, "
+    "concrete minimal_test)\n"
+    "- inherits ambition from COARSE (cross-community framing, unifying mechanism)\n"
+    "- in 1 sentence in `distinguishes_from`, names what is NEW vs existing work in "
+    "BOTH the cluster and the wider community\n\n"
+    'Return JSON {"creator_hypotheses": [<exactly one>]} with the same item schema '
+    "as the fine-grain prompt.\n"
     "Do not explain your reasoning. Output only the JSON object.\n"
 )
 
@@ -309,6 +347,280 @@ def generate_creator_hypotheses(
                 )
             )
     return out
+
+
+def generate_creator_hypotheses_multi_grain(
+    anomalies: Iterable[Anomaly],
+    claims: Iterable[Claim],
+    open_questions: Iterable[OpenQuestion],
+    hierarchy: dict,
+    *,
+    model: Optional[str] = None,
+    api_key: Optional[str] = None,
+    base_url: Optional[str] = None,
+    max_anomalies: Optional[int] = None,
+    client: Any = None,
+) -> list[dict]:
+    """Multi-grain creator: for each (top-N by topology_score) anomaly, run
+    fine -> coarse -> synthesize and return the SYNTHESIZED hypothesis as a
+    record dict that bundles the intermediates as ``multi_grain``.
+
+    Returns a list of dicts (NOT Hypothesis objects). Each dict has the same
+    keys as a Hypothesis serialized via ``model_dump(by_alias=True)`` PLUS a
+    ``multi_grain`` key carrying the raw fine + coarse LLM outputs:
+
+        {..hypothesis fields.., "multi_grain": {"fine": {...}, "coarse": {...}}}
+
+    Production callers can ``json.dumps`` each record directly to JSONL or
+    pass it through ``Hypothesis.model_validate`` — the latter silently
+    drops the extra ``multi_grain`` key (LooseModel is ``extra="ignore"``),
+    so downstream code reading the same file as plain ``Hypothesis`` records
+    works untouched.
+
+    Skips an anomaly when (a) none of its claim_ids resolve, OR (b) no paper-OQ
+    overlap (mirrors existing ``generate_creator_hypotheses`` at lines 249-250),
+    so the multi-grain output set is comparable apples-to-apples with the
+    single-grain one. Sorting + ``max_anomalies`` truncation happen INSIDE
+    the function so callers don't need to pre-sort.
+
+    Cost-wise this is 3 LLM calls per accepted anomaly. With AIGRAPH_REASONING_EFFORT=
+    minimal that's ~5-20s/call; budget accordingly.
+    """
+    claims_by_id = {c.claim_id: c for c in claims}
+    oq_by_paper: dict[str, list[OpenQuestion]] = {}
+    for oq in open_questions:
+        oq_by_paper.setdefault(oq.paper_id, []).append(oq)
+
+    resolved_model = configured_model(model)
+    if client is None:
+        client = build_openai_client(
+            api_key=configured_api_key(api_key),
+            base_url=configured_base_url(base_url),
+        )
+
+    # Sort by topology_score desc INSIDE the function. Callers can pass the
+    # raw anomalies.jsonl in any order.
+    sorted_anomalies = sorted(
+        list(anomalies),
+        key=lambda a: float(getattr(a, "topology_score", 0.0) or 0.0),
+        reverse=True,
+    )
+    if max_anomalies is not None:
+        sorted_anomalies = sorted_anomalies[:max_anomalies]
+
+    out: list[dict] = []
+    for anomaly in sorted_anomalies:
+        anomaly_claims = [claims_by_id[cid] for cid in anomaly.claim_ids if cid in claims_by_id]
+        if not anomaly_claims:
+            continue
+        paper_ids = {c.paper_id for c in anomaly_claims}
+        paper_oqs = [oq for pid in paper_ids for oq in oq_by_paper.get(pid, [])]
+        if not paper_oqs:
+            continue
+
+        fine_user = _creator_user_prompt(anomaly, anomaly_claims, paper_oqs)
+        fine_item = _call_creator_pass(client, resolved_model, CREATOR_SYSTEM_PROMPT, fine_user, anomaly)
+        if fine_item is None:
+            continue
+
+        coarse_user = _prompt_payload_coarse(anomaly, claims_by_id, hierarchy)
+        coarse_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_COARSE, coarse_user, anomaly)
+        if coarse_item is None:
+            continue
+
+        synth_user = json.dumps(
+            {"fine": fine_item, "coarse": coarse_item, "anomaly_id": anomaly.anomaly_id},
+            ensure_ascii=False,
+            indent=2,
+        )
+        synth_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_SYNTHESIZE, synth_user, anomaly)
+        if synth_item is None:
+            continue
+
+        method_text = (synth_item.get("proposed_method") or "").strip()
+        mechanism = (synth_item.get("mechanism") or "").strip()
+        if not method_text or not mechanism:
+            continue
+        inspired = synth_item.get("inspired_by")
+        if not isinstance(inspired, list):
+            inspired = []
+        allowed_grounding = {oq.open_question_id for oq in paper_oqs} | {
+            c.claim_id for c in anomaly_claims
+        }
+        inspired = [str(x) for x in inspired if str(x) in allowed_grounding]
+        preds = synth_item.get("predictions")
+        if not isinstance(preds, list):
+            preds = []
+        preds = [str(p).strip() for p in preds if str(p).strip()][:5]
+        hyp_id = f"{anomaly.anomaly_id}#mg01"
+        distinguishes = (synth_item.get("distinguishes_from") or "").strip()
+        anomaly_resolution = (synth_item.get("anomaly_resolution") or "").strip()
+        scope_dict: dict[str, str] = {}
+        if distinguishes:
+            scope_dict["distinguishes_from"] = distinguishes
+        if inspired:
+            scope_dict["inspired_by"] = ", ".join(inspired)
+
+        hyp = Hypothesis(
+            hypothesis_id=hyp_id,
+            anomaly_id=anomaly.anomaly_id,
+            hypothesis=method_text,
+            mechanism=mechanism,
+            explains_claims=[c.claim_id for c in anomaly_claims][:20],
+            predictions=preds,
+            minimal_test=(synth_item.get("minimal_test") or "").strip(),
+            scope_conditions=scope_dict,
+            evidence_gap=anomaly_resolution,
+            graph_bridge={"from": "open_questions", "to": "creator_hypothesis"},
+        )
+        record = {
+            **hyp.model_dump(by_alias=True),
+            "multi_grain": {"fine": fine_item, "coarse": coarse_item},
+        }
+        out.append(record)
+    return out
+
+
+def _call_creator_pass(
+    client: Any,
+    model: str,
+    system_prompt: str,
+    user_body: str,
+    anomaly: Anomaly,
+) -> Optional[dict]:
+    """One LLM call returning the FIRST creator_hypotheses item or None on
+    failure. Used by all three multi-grain passes."""
+    try:
+        raw = call_llm_text(
+            client,
+            model=model,
+            system=system_prompt,
+            user=user_body,
+            temperature=float(os.environ.get("AIGRAPH_CREATOR_TEMPERATURE", "0.3")),
+            max_tokens=int(os.environ.get("AIGRAPH_CREATOR_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
+        )
+    except Exception as exc:  # pragma: no cover
+        logger.warning("Multi-grain creator LLM failed for %s: %s", anomaly.anomaly_id, exc)
+        return None
+    payload = _load_json(raw)
+    items = payload.get("creator_hypotheses") if isinstance(payload, dict) else None
+    if not isinstance(items, list) or not items:
+        logger.warning("Multi-grain creator: empty/invalid items for %s", anomaly.anomaly_id)
+        return None
+    item = items[0]
+    if not isinstance(item, dict):
+        return None
+    return item
+
+
+def _prompt_payload_coarse(
+    anomaly: Anomaly,
+    claims_by_id: dict[str, Claim],
+    hierarchy: dict,
+) -> str:
+    """Build the coarse-grain user prompt — domain landscape + community
+    siblings + a small handful of anchor claims. Truncates lists to keep
+    payload around 5K tokens. Returns indented JSON string.
+
+    Falls back gracefully when ``hierarchy`` is empty (all dicts default
+    to {} / 0 / [] in the payload). For ``community_disconnect`` anomalies
+    the cluster path is skipped and ``community_from``/``community_to``
+    from ``shared_entities`` are surfaced directly so the LLM still has a
+    concrete cross-community frame.
+    """
+    clusters = hierarchy.get("clusters") or {}
+    cluster_to_community = hierarchy.get("cluster_to_community") or {}
+    anomaly_to_cluster = hierarchy.get("anomaly_to_cluster") or {}
+    domains = hierarchy.get("domains") or {}
+    communities = hierarchy.get("communities") or {}
+
+    cluster_key = anomaly_to_cluster.get(anomaly.anomaly_id)
+    cluster = clusters.get(cluster_key, {}) if cluster_key else {}
+
+    community_id = cluster_to_community.get(cluster_key) if cluster_key else None
+    community = communities.get(community_id, {}) if community_id else {}
+
+    siblings: list[dict] = []
+    if community_id:
+        for ck, cdata in clusters.items():
+            if ck == cluster_key:
+                continue
+            if cluster_to_community.get(ck) == community_id:
+                siblings.append({
+                    "key": ck,
+                    "anomaly_count": len(cdata.get("anomaly_ids", [])),
+                })
+            if len(siblings) >= 5:
+                break
+    if not siblings:
+        ranked = sorted(
+            (
+                (ck, len(cd.get("anomaly_ids", [])))
+                for ck, cd in clusters.items()
+                if ck != cluster_key
+            ),
+            key=lambda x: -x[1],
+        )[:3]
+        siblings = [{"key": ck, "anomaly_count": n} for ck, n in ranked]
+
+    domain_name = "uncategorized"
+    if cluster.get("claim_ids"):
+        votes: Counter = Counter()
+        for cid in cluster["claim_ids"]:
+            cl = claims_by_id.get(cid)
+            if cl is None:
+                continue
+            d = (cl.domain or "").strip().lower()
+            if d:
+                votes[d] += 1
+        if votes:
+            domain_name = votes.most_common(1)[0][0]
+    domain = domains.get(domain_name, {})
+
+    anchor_claims: list[dict] = []
+    for cid in (cluster.get("sample_claim_ids") or [])[:3]:
+        cl = claims_by_id.get(cid)
+        if cl is None:
+            continue
+        anchor_claims.append({
+            "claim_id": cl.claim_id,
+            "paper_id": cl.paper_id,
+            "method": cl.method or cl.subject_raw,
+            "task": cl.task or cl.object_raw,
+            "direction": cl.direction,
+            "evidence_span": cl.evidence_span,
+        })
+
+    anomaly_block: dict[str, Any] = {
+        "anomaly_id": anomaly.anomaly_id,
+        "type": anomaly.type,
+        "central_question": anomaly.central_question,
+        "shared_entities": anomaly.shared_entities,
+    }
+    if anomaly.type == "community_disconnect":
+        for k in ("community_from", "community_to", "shared_concepts"):
+            v = (anomaly.shared_entities or {}).get(k)
+            if v is not None:
+                anomaly_block[k] = v
+
+    payload = {
+        "anomaly": anomaly_block,
+        "domain": {
+            "name": domain_name,
+            "paper_count": domain.get("paper_count", 0),
+            "top_methods": (domain.get("top_methods") or [])[:10],
+            "top_tasks": (domain.get("top_tasks") or [])[:10],
+            "anomaly_type_counts": domain.get("anomaly_type_counts", {}),
+        },
+        "community": {
+            "id": community_id,
+            "paper_count": community.get("paper_count", 0),
+            "top_concepts": (community.get("top_concepts") or [])[:5],
+        },
+        "sibling_clusters": siblings,
+        "anchor_claims": anchor_claims,
+    }
+    return json.dumps(payload, ensure_ascii=False, indent=2)
 
 
 def _creator_user_prompt(

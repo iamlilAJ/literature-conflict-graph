@@ -457,6 +457,48 @@ def generate_creator_multi_grain_cmd(
     )
 
 
+@app.command("predict-influence")
+def predict_influence_cmd(
+    hypotheses: Path = typer.Option(..., "--hypotheses"),
+    claims: Path = typer.Option(..., "--claims"),
+    hierarchy: Path = typer.Option(..., "--hierarchy"),
+    output: Path = typer.Option(..., "--output"),
+) -> None:
+    """Compute Phase 1 (4-dim, non-LLM) influence prediction for each
+    hypothesis: community reach + novelty + grounding depth + scope
+    overreach risk. Output JSONL has the same Hypothesis fields PLUS
+    an `influence_score` extras key with the per-dimension breakdown.
+
+    Note: the input file is read with read_jsonl(..., Hypothesis) so
+    any extras keys (e.g. `novelty_check` from the check-novelty
+    pipeline) get silently dropped on load. To preserve novelty signal
+    end-to-end, run the check-novelty -> predict-influence pipeline
+    in-memory or load the JSONL as raw dicts when chaining; this CLI
+    is the simple "score these hypotheses" entry point."""
+    from .influence import _load_hierarchy_dict, predict_influence_batch
+
+    hyps = read_jsonl(hypotheses, Hypothesis)
+    cl = read_jsonl(claims, Claim)
+    hier = _load_hierarchy_dict(hierarchy)
+    claims_by_id = {c.claim_id: c for c in cl}
+
+    scores = predict_influence_batch(hyps, hier, claims_by_id)
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
+        for hyp, score in zip(hyps, scores):
+            record = {
+                **hyp.model_dump(by_alias=True),
+                "influence_score": dict(score._asdict()),
+            }
+            f.write(json.dumps(record, ensure_ascii=False))
+            f.write("\n")
+            f.flush()
+    console.print(
+        f"[green]predict-influence: {len(scores)} hypotheses scored -> [/]{output}"
+    )
+
+
 @app.command("generate-insights")
 def generate_insights_cmd(
     graph: Path = typer.Option(DEFAULT_GRAPH, "--graph"),

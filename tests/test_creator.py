@@ -14,6 +14,8 @@ from aigraph.creator import (
     SYSTEM_PROMPT_COARSE,
     SYSTEM_PROMPT_SYNTHESIZE,
     _hypothesis_to_creator_dict,
+    _prompt_payload_coarse,
+    _prompt_payload_coarse_community_disconnect,
     generate_creator_hypotheses_multi_grain,
 )
 from aigraph.models import Anomaly, Claim, Hypothesis, OpenQuestion
@@ -368,6 +370,86 @@ def test_hypothesis_to_creator_dict_field_mapping():
     assert d["inspired_by"] == ["c001", "c002", "p1#oq01"]  # split from string
     assert d["distinguishes_from"].startswith("Differs from naive RAG")
     assert d["anomaly_resolution"] == "Existing single-grain anomaly resolution sentence."
+
+
+def _community_disconnect_anomaly() -> Anomaly:
+    """A community_disconnect anomaly matching the real schema observed on
+    the 1000-paper run: shared_entities carries community_from/_to plus a
+    comma-joined shared_concepts string, NOT method/task."""
+    return Anomaly(
+        anomaly_id="a423",
+        type="community_disconnect",
+        central_question=(
+            "Why do AGI and LLM-serving communities both reason about "
+            "forecasting + text but rarely cite each other?"
+        ),
+        claim_ids=["c001", "c002"],
+        positive_claims=["c001"],
+        negative_claims=["c002"],
+        shared_entities={
+            "community_from": "artificial general intelligence",
+            "community_to": "generative large language model serving",
+            "shared_concepts": "forecasting, text",
+        },
+        topology_score=0.86,
+    )
+
+
+def test_multi_grain_community_disconnect_uses_coarse_directly(monkeypatch):
+    """For community_disconnect anomalies, only the coarse LLM call fires;
+    fine and synthesize are skipped. The coarse output is the final
+    hypothesis. multi_grain.fine_source must be 'skipped_community_disconnect'
+    and synthesize_source 'coarse_direct'. Critically, this works WITHOUT
+    paper_oqs — the existing skip-rule that filtered these anomalies out
+    in the v0.3 smoke run is bypassed."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    fake = _FakeClient([_payload_coarse()])
+
+    out = generate_creator_hypotheses_multi_grain(
+        [_community_disconnect_anomaly()],
+        _claims(),
+        # NO open questions — community_disconnect path must not require them.
+        [],
+        _hierarchy(),
+        model="stub",
+        api_key="test-key",
+        client=fake,
+    )
+
+    assert len(out) == 1
+    calls = fake.chat.completions.calls
+    assert len(calls) == 1, f"expected 1 LLM call (coarse only), got {len(calls)}"
+    assert calls[0]["messages"][0]["content"] == SYSTEM_PROMPT_COARSE
+    rec = out[0]
+    assert rec["multi_grain"]["fine_source"] == "skipped_community_disconnect"
+    assert rec["multi_grain"]["synthesize_source"] == "coarse_direct"
+    assert rec["multi_grain"]["fine"] is None
+    # Coarse output became the final hypothesis.
+    assert rec["hypothesis"].startswith("Cross-Domain Retrieval Atlas")
+
+
+def test_multi_grain_payload_community_disconnect_includes_shared_concepts():
+    """The coarse payload for a community_disconnect anomaly must contain
+    shared_concepts (parsed from comma string), community_from/_to, and a
+    framing_note that asks for a unifying mechanism. Other anomaly types
+    must NOT include the framing_note."""
+    cdis = _community_disconnect_anomaly()
+    payload_cdis = json.loads(
+        _prompt_payload_coarse_community_disconnect(cdis, {}, {})
+    )
+
+    assert payload_cdis["anomaly"]["community_from"] == "artificial general intelligence"
+    assert payload_cdis["anomaly"]["community_to"] == "generative large language model serving"
+    assert payload_cdis["shared_concepts"] == ["forecasting", "text"]
+    assert "framing_note" in payload_cdis
+    assert "unifying" in payload_cdis["framing_note"].lower()
+
+    # Sanity check: the regular path does NOT carry community_from / framing_note.
+    payload_regular = json.loads(
+        _prompt_payload_coarse(_anomaly(), {c.claim_id: c for c in _claims()}, _hierarchy())
+    )
+    assert "framing_note" not in payload_regular
+    assert "community_from" not in payload_regular["anomaly"]
 
 
 def test_multi_grain_falls_back_when_hierarchy_empty(monkeypatch):

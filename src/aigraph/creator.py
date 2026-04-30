@@ -432,57 +432,76 @@ def generate_creator_hypotheses_multi_grain(
         paper_ids = {c.paper_id for c in anomaly_claims}
         paper_oqs = [oq for pid in paper_ids for oq in oq_by_paper.get(pid, [])]
         existing = existing_by_anomaly.get(anomaly.anomaly_id)
-        # Skip when there's no fine anchor available: no existing hypothesis
-        # AND no paper-OQ overlap to seed a fresh fine generation.
-        if existing is None and not paper_oqs:
+
+        # Skip-rule: needs paper-OQ overlap only when we'd be generating a
+        # fresh fine pass. With an existing anchor, fine is reused.
+        # community_disconnect anomalies bypass fine entirely (cross-community
+        # anomalies have no single-cluster home and no aligned OQs by
+        # construction), so they never need paper_oqs either.
+        is_cdis = anomaly.type == "community_disconnect"
+        if existing is None and not is_cdis and not paper_oqs:
             continue
 
-        if existing is not None:
+        if is_cdis:
+            # community_disconnect path: no fine, no synthesize. The coarse
+            # prompt has its own framing_note that asks for a unifying
+            # mechanism across the two communities; its output IS the
+            # hypothesis.
+            fine_item = None
+            fine_source = "skipped_community_disconnect"
+            synthesize_source = "coarse_direct"
+        elif existing is not None:
             fine_item = _hypothesis_to_creator_dict(existing)
             fine_source = "existing"
+            synthesize_source = "synthesized"
         else:
             fine_user = _creator_user_prompt(anomaly, anomaly_claims, paper_oqs)
             fine_item = _call_creator_pass(client, resolved_model, CREATOR_SYSTEM_PROMPT, fine_user, anomaly)
             if fine_item is None:
                 continue
             fine_source = "generated"
+            synthesize_source = "synthesized"
 
         coarse_user = _prompt_payload_coarse(anomaly, claims_by_id, hierarchy)
         coarse_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_COARSE, coarse_user, anomaly)
         if coarse_item is None:
             continue
 
-        synth_user = json.dumps(
-            {"fine": fine_item, "coarse": coarse_item, "anomaly_id": anomaly.anomaly_id},
-            ensure_ascii=False,
-            indent=2,
-        )
-        synth_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_SYNTHESIZE, synth_user, anomaly)
-        if synth_item is None:
-            continue
+        if is_cdis:
+            final_item = coarse_item
+        else:
+            synth_user = json.dumps(
+                {"fine": fine_item, "coarse": coarse_item, "anomaly_id": anomaly.anomaly_id},
+                ensure_ascii=False,
+                indent=2,
+            )
+            synth_item = _call_creator_pass(client, resolved_model, SYSTEM_PROMPT_SYNTHESIZE, synth_user, anomaly)
+            if synth_item is None:
+                continue
+            final_item = synth_item
 
-        method_text = (synth_item.get("proposed_method") or "").strip()
-        mechanism = (synth_item.get("mechanism") or "").strip()
+        method_text = (final_item.get("proposed_method") or "").strip()
+        mechanism = (final_item.get("mechanism") or "").strip()
         if not method_text or not mechanism:
             continue
-        inspired = synth_item.get("inspired_by")
+        inspired = final_item.get("inspired_by")
         if not isinstance(inspired, list):
             inspired = []
         # The grounding allowlist is the union of paper OpenQuestions (when
-        # any exist) and the anomaly's own claim_ids. With the existing path
-        # paper_oqs may be empty; that's fine — we still validate against
-        # the claim_ids that the existing hypothesis was built on.
+        # any exist) and the anomaly's own claim_ids. paper_oqs may be empty
+        # for the existing-anchor or community_disconnect paths; that's fine
+        # — we still validate against the claim_ids the anomaly is built on.
         allowed_grounding = {oq.open_question_id for oq in paper_oqs} | {
             c.claim_id for c in anomaly_claims
         }
         inspired = [str(x) for x in inspired if str(x) in allowed_grounding]
-        preds = synth_item.get("predictions")
+        preds = final_item.get("predictions")
         if not isinstance(preds, list):
             preds = []
         preds = [str(p).strip() for p in preds if str(p).strip()][:5]
         hyp_id = f"{anomaly.anomaly_id}#mg01"
-        distinguishes = (synth_item.get("distinguishes_from") or "").strip()
-        anomaly_resolution = (synth_item.get("anomaly_resolution") or "").strip()
+        distinguishes = (final_item.get("distinguishes_from") or "").strip()
+        anomaly_resolution = (final_item.get("anomaly_resolution") or "").strip()
         scope_dict: dict[str, str] = {}
         if distinguishes:
             scope_dict["distinguishes_from"] = distinguishes
@@ -496,7 +515,7 @@ def generate_creator_hypotheses_multi_grain(
             mechanism=mechanism,
             explains_claims=[c.claim_id for c in anomaly_claims][:20],
             predictions=preds,
-            minimal_test=(synth_item.get("minimal_test") or "").strip(),
+            minimal_test=(final_item.get("minimal_test") or "").strip(),
             scope_conditions=scope_dict,
             evidence_gap=anomaly_resolution,
             graph_bridge={"from": "open_questions", "to": "creator_hypothesis"},
@@ -507,6 +526,7 @@ def generate_creator_hypotheses_multi_grain(
                 "fine": fine_item,
                 "coarse": coarse_item,
                 "fine_source": fine_source,
+                "synthesize_source": synthesize_source,
             },
         }
         out.append(record)
@@ -595,10 +615,17 @@ def _prompt_payload_coarse(
 
     Falls back gracefully when ``hierarchy`` is empty (all dicts default
     to {} / 0 / [] in the payload). For ``community_disconnect`` anomalies
-    the cluster path is skipped and ``community_from``/``community_to``
-    from ``shared_entities`` are surfaced directly so the LLM still has a
-    concrete cross-community frame.
+    a different payload shape is used (community_from/_to + shared_concepts
+    + framing_note that asks for a unifying mechanism across the two
+    communities) — see ``_prompt_payload_coarse_community_disconnect``.
+    The community_disconnect path is the FINAL hypothesis (no synthesize
+    pass after) so the framing_note matters more than for the other
+    anomaly types.
     """
+    if anomaly.type == "community_disconnect":
+        return _prompt_payload_coarse_community_disconnect(
+            anomaly, claims_by_id, hierarchy
+        )
     clusters = hierarchy.get("clusters") or {}
     cluster_to_community = hierarchy.get("cluster_to_community") or {}
     anomaly_to_cluster = hierarchy.get("anomaly_to_cluster") or {}
@@ -662,20 +689,13 @@ def _prompt_payload_coarse(
             "evidence_span": cl.evidence_span,
         })
 
-    anomaly_block: dict[str, Any] = {
-        "anomaly_id": anomaly.anomaly_id,
-        "type": anomaly.type,
-        "central_question": anomaly.central_question,
-        "shared_entities": anomaly.shared_entities,
-    }
-    if anomaly.type == "community_disconnect":
-        for k in ("community_from", "community_to", "shared_concepts"):
-            v = (anomaly.shared_entities or {}).get(k)
-            if v is not None:
-                anomaly_block[k] = v
-
     payload = {
-        "anomaly": anomaly_block,
+        "anomaly": {
+            "anomaly_id": anomaly.anomaly_id,
+            "type": anomaly.type,
+            "central_question": anomaly.central_question,
+            "shared_entities": anomaly.shared_entities,
+        },
         "domain": {
             "name": domain_name,
             "paper_count": domain.get("paper_count", 0),
@@ -690,6 +710,87 @@ def _prompt_payload_coarse(
         },
         "sibling_clusters": siblings,
         "anchor_claims": anchor_claims,
+    }
+    return json.dumps(payload, ensure_ascii=False, indent=2)
+
+
+def _prompt_payload_coarse_community_disconnect(
+    anomaly: Anomaly,
+    claims_by_id: dict[str, Claim],
+    hierarchy: dict,
+) -> str:
+    """Coarse payload for ``community_disconnect`` anomalies.
+
+    These anomalies don't have a single (method, task) cluster home — they
+    describe two communities that share concepts but rarely cite each
+    other. The payload surfaces the shared_concepts + community labels +
+    sample claims + a framing_note that asks the LLM to propose a unifying
+    mechanism. Because the orchestrator skips fine + synthesize for this
+    anomaly type, this prompt's output IS the final hypothesis; the
+    framing_note is what makes the cross-community ambition explicit.
+    """
+    shared = anomaly.shared_entities or {}
+    raw_concepts = shared.get("shared_concepts", "")
+    if isinstance(raw_concepts, str):
+        shared_concepts = [c.strip() for c in raw_concepts.split(",") if c.strip()]
+    elif isinstance(raw_concepts, (list, tuple, set)):
+        shared_concepts = [str(c).strip() for c in raw_concepts if str(c).strip()]
+    else:
+        shared_concepts = []
+
+    anchor_claims: list[dict] = []
+    for cid in (anomaly.claim_ids or [])[:5]:
+        cl = claims_by_id.get(cid)
+        if cl is None:
+            continue
+        anchor_claims.append({
+            "claim_id": cl.claim_id,
+            "paper_id": cl.paper_id,
+            "method": cl.method or cl.subject_raw,
+            "task": cl.task or cl.object_raw,
+            "direction": cl.direction,
+            "evidence_span": cl.evidence_span,
+        })
+
+    domain_votes: Counter = Counter()
+    for cid in anomaly.claim_ids or []:
+        cl = claims_by_id.get(cid)
+        if cl is None:
+            continue
+        d = (cl.domain or "").strip().lower()
+        if d:
+            domain_votes[d] += 1
+    domains_top = [d for d, _ in domain_votes.most_common(3)]
+
+    clusters = hierarchy.get("clusters") or {}
+    top_clusters = sorted(
+        clusters.items(),
+        key=lambda kv: -len(kv[1].get("anomaly_ids", [])),
+    )[:5]
+    sibling_clusters = [
+        {"key": k, "anomaly_count": len(v.get("anomaly_ids", []))}
+        for k, v in top_clusters
+    ]
+
+    payload = {
+        "anomaly": {
+            "anomaly_id": anomaly.anomaly_id,
+            "type": "community_disconnect",
+            "central_question": anomaly.central_question,
+            "community_from": shared.get("community_from", ""),
+            "community_to": shared.get("community_to", ""),
+        },
+        "shared_concepts": shared_concepts,
+        "anchor_claims": anchor_claims,
+        "domains": domains_top,
+        "sibling_clusters": sibling_clusters,
+        "framing_note": (
+            "This anomaly is a community_disconnect: two communities share "
+            "concepts (see shared_concepts) but rarely cite each other. "
+            "Propose a unifying mechanism, framework, or evaluation that "
+            "would bridge them. Reference shared_concepts and anchor_claims "
+            "as evidence in inspired_by."
+        ),
     }
     return json.dumps(payload, ensure_ascii=False, indent=2)
 

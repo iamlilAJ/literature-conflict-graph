@@ -10,6 +10,7 @@ import pytest
 from aigraph.citation_stance import (
     STANCE_LABELS,
     _extract_citation_context,
+    _get_paper_text,
     _strip_bibliography,
     classify_cites_edges,
 )
@@ -333,3 +334,58 @@ def test_returned_stance_is_in_stance_labels():
 
     edge = _cites_data(g, "Paper:B", "Paper:A")
     assert edge["stance"] in STANCE_LABELS
+
+
+# --- _get_paper_text ----------------------------------------------------
+
+
+def test_get_paper_text_prefers_artifact_full_text(tmp_path):
+    """When the corpus artifact exists, _get_paper_text returns its body
+    (long full text), not paper.text (short abstract)."""
+    artifact = tmp_path / "artifacts" / "arxiv__1234.5"
+    artifact.mkdir(parents=True)
+    full_body = "Full TeX-parsed body. " * 200  # ~4KB
+    (artifact / "text.json").write_text(
+        json.dumps({"text": full_body}), encoding="utf-8"
+    )
+    paper = Paper(
+        paper_id="arxiv:1234.5",
+        title="x",
+        year=2024,
+        venue="x",
+        text="Just the abstract.",
+    )
+
+    out = _get_paper_text(paper, corpus_root=tmp_path)
+    assert out == full_body.strip() or out == full_body  # either accepted
+    assert "abstract" not in out
+
+
+def test_get_paper_text_falls_back_when_artifact_missing(tmp_path):
+    """No artifact dir at all -> falls back to paper.text without error."""
+    paper = Paper(
+        paper_id="arxiv:9999.9",
+        title="x",
+        year=2024,
+        venue="x",
+        text="abstract only",
+    )
+    out = _get_paper_text(paper, corpus_root=tmp_path)
+    assert out == "abstract only"
+
+
+def test_get_paper_text_falls_back_on_malformed_artifact(tmp_path):
+    """Malformed text.json (invalid JSON) falls back gracefully — no
+    raise, returns paper.text."""
+    artifact = tmp_path / "artifacts" / "arxiv__7777.7"
+    artifact.mkdir(parents=True)
+    (artifact / "text.json").write_text("{not json", encoding="utf-8")
+    paper = Paper(
+        paper_id="arxiv:7777.7",
+        title="x",
+        year=2024,
+        venue="x",
+        text="fallback abstract",
+    )
+    out = _get_paper_text(paper, corpus_root=tmp_path)
+    assert out == "fallback abstract"

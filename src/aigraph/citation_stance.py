@@ -37,6 +37,7 @@ import logging
 import os
 import re
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 import networkx as nx
@@ -95,6 +96,34 @@ _BIBLIOGRAPHY_HEADER_RE = re.compile(
 _LEADING_ARTICLE_RE = re.compile(r"^(a|an|the)\s+", re.IGNORECASE)
 _WHITESPACE_RUN_RE = re.compile(r"\s+")
 _PUNCT_STRIP_RE = re.compile(r"[^\w\s\-]")
+
+
+def _get_paper_text(paper, *, corpus_root=None) -> str:
+    """Return the longest available text body for `paper`.
+
+    When `corpus_root` is provided, attempt to read the TeX-parsed full
+    body from `<corpus_root>/artifacts/<safe_id>/text.json` (the
+    artifact path produced by ``corpus.sync_arxiv_corpus`` and other
+    pipeline stages). Falls back to ``paper.text`` (which in production
+    is title+abstract, ~1.4KB) on any failure: missing artifact dir,
+    malformed JSON, missing/empty `text` field.
+
+    `safe_id` is the same path-safe form used by the rest of the corpus
+    code (colons -> double underscores, slashes -> single underscore);
+    we reuse ``corpus.artifact_dir`` rather than re-implement.
+    """
+    if corpus_root is not None:
+        try:
+            from .corpus import artifact_dir
+            text_path = artifact_dir(corpus_root, paper.paper_id) / "text.json"
+            with text_path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            body = (data.get("text") or "").strip()
+            if body:
+                return body
+        except (OSError, json.JSONDecodeError, KeyError, AttributeError):
+            pass
+    return paper.text or ""
 
 
 def _normalize_title(title: str) -> str:
@@ -257,6 +286,7 @@ def classify_cites_edges(
     skip_classified: bool = True,
     max_edges: int | None = None,
     dry_run: bool = False,
+    corpus_root: str | Path | None = None,
 ) -> dict[str, int]:
     """Classify all cites edges in g. Mutates g in place by adding stance,
     stance_confidence, and stance_rationale attributes to each cites edge.
@@ -339,11 +369,12 @@ def classify_cites_edges(
         if paper_b is None or paper_a is None:
             counters["skipped_no_text"] += 1
             continue
-        if not (paper_b.text or "").strip():
+        b_text = _get_paper_text(paper_b, corpus_root=corpus_root)
+        if not b_text.strip():
             counters["skipped_no_text"] += 1
             continue
         contexts = _extract_citation_context(
-            _strip_bibliography(paper_b.text),
+            _strip_bibliography(b_text),
             paper_a.title or "",
         )
         if not contexts:

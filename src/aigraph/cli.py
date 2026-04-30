@@ -236,6 +236,11 @@ def classify_stance_cmd(
         "--dry-run",
         help="Report counters without making any LLM calls. No graph write either.",
     ),
+    corpus_root: Optional[Path] = typer.Option(
+        None,
+        "--corpus-root",
+        help="Optional path to corpus root for full-text lookup; falls back to paper.text when artifact missing",
+    ),
 ) -> None:
     """Classify stance (extends/contradicts/contrasts/builds_on/mentions) on the
     cites edges of an existing graph.json. Idempotent — re-runs only on edges
@@ -250,6 +255,7 @@ def classify_stance_cmd(
         paper_records,
         max_edges=max_edges,
         dry_run=dry_run,
+        corpus_root=corpus_root,
     )
     console.print(f"[green]classify-stance counters:[/] {counters}")
     if dry_run:
@@ -364,6 +370,35 @@ def generate_creator_hypotheses_cmd(
     )
     write_jsonl(output, hyps)
     console.print(f"[green]Generated {len(hyps)} creator hypotheses to[/] {output}")
+
+
+@app.command("check-novelty")
+def check_novelty_cmd(
+    hypotheses: Path = typer.Option(..., "--hypotheses"),
+    output: Path = typer.Option(..., "--output"),
+    max_candidates: int = typer.Option(5, "--max-candidates"),
+    model: Optional[str] = typer.Option(None, "--model"),
+) -> None:
+    """For each hypothesis in --hypotheses, query arxiv and ask the LLM
+    whether it is substantively novel. Output is the same hypotheses
+    JSONL with a `novelty_check` field appended (LooseModel extras get
+    dropped on Hypothesis.model_validate_json — read raw JSON for the
+    extra field)."""
+    from .novelty_check import annotate_hypotheses_with_novelty
+
+    hyp_records = read_jsonl(hypotheses, Hypothesis)
+    records = annotate_hypotheses_with_novelty(
+        hyp_records,
+        model=model,
+        max_candidates=max_candidates,
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False))
+            f.write("\n")
+            f.flush()  # incremental visibility
+    console.print(f"[green]Annotated {len(records)} hypotheses[/] -> {output}")
 
 
 @app.command("generate-creator-multi-grain")

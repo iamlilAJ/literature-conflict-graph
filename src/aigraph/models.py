@@ -270,6 +270,11 @@ class GraphBridge(LooseModel):
 
 
 class Hypothesis(LooseModel):
+    # Override LooseModel's extra="ignore" to preserve extras like
+    # novelty_check (written by check-novelty CLI, read by predict-influence).
+    # Trade-off: typos in kwargs at construction will be silently accepted.
+    model_config = ConfigDict(extra="allow")
+
     hypothesis_id: str
     anomaly_id: str
     hypothesis: str

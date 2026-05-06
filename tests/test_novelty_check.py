@@ -9,9 +9,20 @@ import pytest
 
 from aigraph.models import Hypothesis
 from aigraph.novelty_check import (
+    ARXIV_QUERY_URL,
     check_hypothesis_novelty,
     query_arxiv,
 )
+
+
+def test_arxiv_query_url_uses_https():
+    """Regression: arxiv 301-redirects http -> https. httpx defaults
+    follow_redirects=False, so an http URL silently 0s out the
+    candidate list and downstream is_novel becomes null. Pin to https."""
+    assert ARXIV_QUERY_URL.startswith("https://"), (
+        f"ARXIV_QUERY_URL must be https to avoid 301-redirect data loss "
+        f"(got {ARXIV_QUERY_URL!r})"
+    )
 
 
 # --- LLM mock template (mirrors tests/test_llm_hypotheses.py:8-40) ---

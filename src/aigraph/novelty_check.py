@@ -41,7 +41,7 @@ from .models import Hypothesis
 logger = logging.getLogger(__name__)
 
 
-ARXIV_QUERY_URL = "http://export.arxiv.org/api/query"
+ARXIV_QUERY_URL = "https://export.arxiv.org/api/query"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
 ARXIV_RATE_LIMIT_SECONDS = 3.0
 
@@ -185,7 +185,7 @@ def _http_get_text(url: str, params: dict, *, http_client: Any | None = None) ->
         full_url = f"{url}?{urlencode(params)}"
         with urlopen(full_url, timeout=45.0) as resp:
             return resp.read().decode("utf-8", errors="replace")
-    response = httpx.get(url, params=params, timeout=45.0)
+    response = httpx.get(url, params=params, timeout=45.0, follow_redirects=True)
     response.raise_for_status()
     return response.text
 

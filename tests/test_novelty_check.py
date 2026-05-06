@@ -180,10 +180,14 @@ def test_check_hypothesis_classifies_as_novel():
     assert llm_client.chat.completions.calls[0]["model"] == "stub"
 
 
-def test_check_hypothesis_handles_arxiv_unavailable():
+def test_check_hypothesis_handles_arxiv_unavailable(monkeypatch):
     """Arxiv transport failure must not propagate; the function returns a
     result dict with ``is_novel=None``, no similar papers, and a rationale
     string mentioning the failure."""
+    # Elide retry sleeps — the connection error is treated as transient
+    # by the new retry path, so the client is hit 4 times before giving up.
+    monkeypatch.setattr("aigraph.novelty_check.time.sleep", lambda *a, **k: None)
+
     arxiv_client = _BrokenArxivClient()
     # The LLM client is a sentinel that would explode if the function
     # mistakenly tried to call it after an arxiv failure — none of its
@@ -207,5 +211,38 @@ def test_check_hypothesis_handles_arxiv_unavailable():
         or "failed" in rationale_lower
         or "no candidates" in rationale_lower
     ), f"rationale should mention the failure: {result['rationale']!r}"
-    # The arxiv client was contacted (so we know we hit the failure path).
-    assert arxiv_client.calls, "expected at least one arxiv call attempt"
+    # All retries exhausted — initial + 3 retries = 4 attempts.
+    assert len(arxiv_client.calls) == 4, (
+        f"expected 4 attempts (initial + 3 retries), got {len(arxiv_client.calls)}"
+    )
+
+
+class _FlakyArxivClient:
+    """Fails with httpx.TimeoutException for the first ``fail_first``
+    calls, then returns the canned Atom response. Used to verify the
+    retry-then-success path."""
+
+    def __init__(self, atom_xml: str, fail_first: int = 1) -> None:
+        self._atom_xml = atom_xml
+        self._fail_first = fail_first
+        self.calls: list[dict] = []
+
+    def get(self, url: str, params: dict) -> _FakeArxivResponse:
+        self.calls.append({"url": url, "params": params})
+        if len(self.calls) <= self._fail_first:
+            import httpx
+            raise httpx.TimeoutException("simulated read timeout")
+        return _FakeArxivResponse(self._atom_xml)
+
+
+def test_query_arxiv_retries_on_timeout(monkeypatch):
+    """Transient timeout on attempt 1 should trigger retry; attempt 2
+    succeeds and the parsed candidates flow through."""
+    monkeypatch.setattr("aigraph.novelty_check.time.sleep", lambda *a, **k: None)
+
+    flaky = _FlakyArxivClient(_ATOM_TWO_ENTRIES, fail_first=1)
+    candidates = query_arxiv("ti:foo OR abs:foo", max_results=5, http_client=flaky)
+
+    assert len(candidates) == 2
+    assert candidates[0]["arxiv_id"] == "2401.11111v1"
+    assert len(flaky.calls) == 2, "expected exactly 1 retry then success"

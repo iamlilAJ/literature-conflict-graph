@@ -45,6 +45,13 @@ ARXIV_QUERY_URL = "https://export.arxiv.org/api/query"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
 ARXIV_RATE_LIMIT_SECONDS = 3.0
 
+# Retry settings for transient arxiv failures (timeouts / 429 / 5xx).
+# Backoff list = delay before each retry; len = max retry count.
+# 17% of records lost is_novel signal to one-shot timeouts on a 90-hyp
+# run; with these retries that should drop below 5%.
+_ARXIV_RETRY_BACKOFF_SECONDS = (0.5, 1.5, 4.5)
+_ARXIV_RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
+
 _FENCE_RE = re.compile(r"^```(?:json)?\s*|\s*```$", re.IGNORECASE | re.MULTILINE)
 
 # Lightweight English stopword list — we intentionally avoid pulling in
@@ -163,6 +170,36 @@ def _parse_atom_feed(text: str) -> list[dict]:
     return out
 
 
+def _is_transient_arxiv_error(exc: BaseException) -> bool:
+    """True if exc is a network timeout / connection error / 5xx / 429,
+    i.e. worth retrying. Anything else (4xx other than 429, parse
+    errors) is non-transient and propagates.
+
+    Resolves httpx exception types via getattr to stay robust against
+    test setups that replace ``sys.modules['httpx']`` with a partial stub.
+    """
+    try:
+        import httpx
+    except ImportError:
+        httpx = None  # type: ignore[assignment]
+    if httpx is not None:
+        for attr in ("TimeoutException", "ConnectError", "RemoteProtocolError"):
+            cls = getattr(httpx, attr, None)
+            if isinstance(cls, type) and isinstance(exc, cls):
+                return True
+        status_cls = getattr(httpx, "HTTPStatusError", None)
+        if isinstance(status_cls, type) and isinstance(exc, status_cls):
+            response = getattr(exc, "response", None)
+            status = getattr(response, "status_code", None)
+            if status in _ARXIV_RETRY_STATUS_CODES:
+                return True
+    import socket
+    import urllib.error
+    if isinstance(exc, (socket.timeout, TimeoutError, urllib.error.URLError)):
+        return True
+    return False
+
+
 def _http_get_text(url: str, params: dict, *, http_client: Any | None = None) -> str:
     """Fetch a URL and return the response body as text. Uses ``httpx``
     when available; falls back to ``urllib.request`` so the module stays
@@ -170,24 +207,47 @@ def _http_get_text(url: str, params: dict, *, http_client: Any | None = None) ->
 
     A caller-supplied ``http_client`` short-circuits both branches and is
     used as-is (must expose ``client.get(url, params=...)`` returning an
-    object with ``.text`` and ``.raise_for_status()``)."""
-    if http_client is not None:
-        response = http_client.get(url, params=params)
-        if hasattr(response, "raise_for_status"):
-            response.raise_for_status()
-        return response.text
-    try:
-        import httpx
-    except ImportError:
-        from urllib.parse import urlencode
-        from urllib.request import urlopen
+    object with ``.text`` and ``.raise_for_status()``).
 
-        full_url = f"{url}?{urlencode(params)}"
-        with urlopen(full_url, timeout=45.0) as resp:
-            return resp.read().decode("utf-8", errors="replace")
-    response = httpx.get(url, params=params, timeout=45.0, follow_redirects=True)
-    response.raise_for_status()
-    return response.text
+    Transient failures (timeouts, connection errors, 5xx, 429) are
+    retried with exponential backoff per ``_ARXIV_RETRY_BACKOFF_SECONDS``.
+    Non-transient errors raise immediately. The caller (``query_arxiv``)
+    catches anything that escapes."""
+
+    def _do_get() -> str:
+        if http_client is not None:
+            response = http_client.get(url, params=params)
+            if hasattr(response, "raise_for_status"):
+                response.raise_for_status()
+            return response.text
+        try:
+            import httpx
+        except ImportError:
+            from urllib.parse import urlencode
+            from urllib.request import urlopen
+
+            full_url = f"{url}?{urlencode(params)}"
+            with urlopen(full_url, timeout=45.0) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        response = httpx.get(url, params=params, timeout=45.0, follow_redirects=True)
+        response.raise_for_status()
+        return response.text
+
+    backoffs = _ARXIV_RETRY_BACKOFF_SECONDS
+    for attempt in range(len(backoffs) + 1):  # initial + N retries
+        try:
+            return _do_get()
+        except Exception as exc:
+            is_last = attempt == len(backoffs)
+            if is_last or not _is_transient_arxiv_error(exc):
+                raise
+            delay = backoffs[attempt]
+            logger.info(
+                "arxiv transient error (attempt %d/%d): %s; retrying in %.1fs",
+                attempt + 1, len(backoffs) + 1, exc, delay,
+            )
+            time.sleep(delay)
+    raise RuntimeError("unreachable")  # pragma: no cover
 
 
 def query_arxiv(

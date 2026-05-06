@@ -436,7 +436,7 @@ def test_enrich_populates_references_alongside_count(monkeypatch, tmp_path):
 
     # The function imports httpx inside its body; patch the import system.
     import sys
-    sys.modules["httpx"] = fake_httpx
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
 
     stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
 
@@ -476,7 +476,7 @@ def test_enrich_handles_empty_or_missing_references_field(monkeypatch, tmp_path)
     import sys, aigraph.corpus as corpus_mod
     fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
     monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
-    sys.modules["httpx"] = fake_httpx
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
 
     stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
 
@@ -508,7 +508,7 @@ def test_enrich_marks_papers_missing_from_s2_response(monkeypatch, tmp_path):
     import sys, aigraph.corpus as corpus_mod
     fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
     monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
-    sys.modules["httpx"] = fake_httpx
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
 
     stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
 
@@ -713,7 +713,7 @@ def test_enrich_calls_metadata_sync(monkeypatch, tmp_path):
     import sys, aigraph.corpus as corpus_mod
     fake_httpx = type("M", (), {"Client": lambda *a, **kw: fake_client})()
     monkeypatch.setattr(corpus_mod, "httpx", fake_httpx, raising=False)
-    sys.modules["httpx"] = fake_httpx
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
 
     stats = enrich_citations_from_semantic_scholar(tmp_path, batch_size=10)
 

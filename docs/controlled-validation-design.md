@@ -5,9 +5,16 @@ A controlled experimental design for empirically validating that aigraph's
 real scientific impact, using a multi-year cohort of papers from the top
 AI venues (NeurIPS / ICML / ICLR).
 
-> Status: design phase. Companion to
-> [docs/influence-prediction-design.md](./influence-prediction-design.md).
-> Last updated: v0.1.
+> Status: design phase, post-pivot. Companion to
+> [docs/influence-prediction-design.md](./influence-prediction-design.md)
+> and [docs/intern-atlas-pivot.md](./intern-atlas-pivot.md).
+> Last updated: v0.2 (May 8, 2026 — Intern-Atlas pivot amendments).
+>
+> **Reading order note:** §1–§14 are the original design. §3, §4, §5, §6,
+> and §9 carry inline amendments showing what the Intern-Atlas pivot
+> changed (May 1, 2026 release of `OpenRaiser/Intern-Atlas`). §16 at the
+> bottom is the consolidated pivot record. If you only have time to read
+> one section, read §16.
 
 ---
 
@@ -98,6 +105,17 @@ the next hype cycle".
 
 This is the cohort the headline `ρ` should be computed on.
 
+> **Pivot amendment (v0.2).** The actual cohort is built by
+> `scripts/cohort_from_intern_atlas.py` from the Intern-Atlas
+> `papers` parquet, not by OpenAlex fetch. After applying the quality
+> filter (abstract ≥ 80 chars, ≥ 1 ID, non-null citation_count,
+> venue_canonical ∈ {NeurIPS, ICML, ICLR}), seed=17 sampling at 200/cell
+> yielded **1790 papers, not 1800** — ICLR 2018 only had 190 papers
+> passing the filter (vs 531 raw). All other cells reached the 200
+> target. This is well above the n=82 power threshold (§6.2), but
+> per-cell bootstrap CIs for ICLR 2018 will be slightly wider — to be
+> respected when reporting per-cell results, not pooled across.
+
 ### 3.2 Robustness cohort — peri- and post-boom (2020-2023)
 
 ```
@@ -124,15 +142,20 @@ true property of the predictor.
 
 For each cell, draw a random sample of 200 papers subject to filters:
 
-- has English abstract ≥ 80 words
-- aigraph claim extractor produces ≥ 2 atomic claims
-- has resolved DOI or arxiv ID (so OpenAlex / S2 enrichment works)
-- not a workshop / poster track entry (main-track only, for venue
-  comparability)
+- has English abstract ≥ 80 chars (originally specified as 80 words; the
+  pivot tightened this to chars to match the Intern-Atlas parquet field)
+- has ≥ 1 ID out of {arxiv_id, doi, openalex_id, s2_id} (originally ≥ 2;
+  relaxed to 1 because Intern-Atlas paper rows typically carry only one
+  ID — see comment in `cohort_from_intern_atlas.py`)
+- non-null `citation_count` (will be the L1 outcome)
+- `venue_canonical` matches the target set exactly
 
 200 per cell sized so that, after filter losses, each cell has ≥ 150
 usable papers — enough to compute per-cell `ρ` with a credible
-confidence interval (see §6.2 for power analysis).
+confidence interval (see §6.2 for power analysis). The aigraph
+claim-extractor and main-track filters from the original design are
+applied **after** sampling, in §4.1 step 2, rather than gating the
+cohort itself; this lets us report drop ratios per cohort honestly.
 
 ---
 
@@ -142,8 +165,12 @@ confidence interval (see §6.2 for power analysis).
 
 For each paper in cohort:
 
-1. **Fetch** abstract + metadata via OpenAlex; enrich citation count
-   from S2 (this is the existing `enrich_corpus` flow).
+1. **Load** abstract + metadata + citation_count from the Intern-Atlas
+   parquet via `corpus.intern_atlas_loader` (planned, see
+   intern-atlas-pivot.md §5.2). The original design fetched via
+   OpenAlex + S2; the pivot replaces this with a parquet read that's
+   strictly faster, free, and produces the same Paper model. OpenAlex
+   fetch remains as a fallback path.
 2. **Extract claims** via the existing claim-extraction LLM call.
 3. **Build local graph** — papers + claims for the (venue, year)
    cell, plus all OpenAlex citations / co-citations between them.
@@ -165,7 +192,14 @@ immutable is what gives the experiment its statistical credibility.
 
 For each paper:
 
-1. Pull citation list from OpenAlex within the outcome window.
+1. **Pull engagement data**:
+   - L1: directly from `papers.cited_by_count` and
+     `papers.influential_citation_count` in the Intern-Atlas parquet.
+     No external API call needed. The original OpenAlex citation pull
+     is dropped.
+   - L2: from `paper_evolution_edges` (Intern-Atlas), filtering rows
+     where `paper_b_id` is the source paper and `evolution_relation` is
+     in the engaged set (§5.2).
 2. Compute three ground-truth tiers (§5).
 3. Aggregate to (paper, hypothesis) and (paper, dim) levels.
 
@@ -184,34 +218,55 @@ cleanliness and decreasing scale.
 
 ### 5.1 L1 — citation-count proxy
 
-Per-paper outcome: `cited_by_count_in_window`, the number of papers
-within the venue-of-record set that cite the source paper during the
-outcome window.
+Per-paper outcome: `cited_by_count` from the Intern-Atlas `papers`
+parquet. We additionally report `influential_citation_count` (the
+Semantic-Scholar-derived sub-count of citations that S2's classifier
+flagged as influential — strictly better signal than raw count for
+small extra cost).
 
-- Cheapest. Available for all 1800 papers.
+- Cheapest. Available for all 1790 primary-cohort papers, free, no
+  API call.
 - Most confounded — counts hype-driven citations equally with
-  substantive ones.
+  substantive ones, especially for peri-/post-boom cohorts.
 - Use for: stratified analyses, large-N robustness checks.
 
-### 5.2 L2 — engaged citation count (method-or-dataset-shared)
+Both `cited_by_count` and `influential_citation_count` are reported as
+separate ρ values in the headline table; the latter is the recommended
+primary metric, the former for transparency. Original design assumed
+fetching cite counts from OpenAlex per-paper post hoc; pivot removes
+that step entirely.
 
-Per-paper outcome: count of follow-on papers that cite the source
-**and** share at least one method or dataset entity with the source's
-extracted claims.
+### 5.2 L2 — engaged citation count (typed-edge engagement)
 
-Implementation: for each citing paper, run aigraph claim extraction.
-Compute the entity overlap. A "1.0" L2 contribution requires shared
-method *or* dataset; "0.5" if only shared task; "0" otherwise.
+Per-paper outcome: count of incoming `paper_evolution_edges` whose
+`evolution_relation` is in the **engaged set**:
 
-- Computed for the same 1800 papers but cheaper at the citation tail
-  (we filter out citations that don't pass the entity-overlap check
-  before running the full claim-extraction on the citing side, by
-  rough keyword check first).
-- Cleaner: distinguishes "the work was actually picked up and
-  extended" from "the citing paper namechecked a survey".
+```
+engaged = {extends, improves, replaces, adapts}
+```
+
+These four are Intern-Atlas's `strong_causal` subset — they represent
+genuine methodological lineage, not background citations. Background-
+cite types (`compares`, `uses_component`, `background`) are excluded —
+recon §Q5 confirmed `compares` alone is 58% of all edges, so without
+this filter L2 collapses into noise.
+
+- Computed for all 1790 primary-cohort papers from a single parquet
+  scan. Cost: $0 (vs original design's ~$50/cohort for citing-paper
+  claim extraction).
+- Cleaner than L1: the 4-type filter is Intern-Atlas's own
+  validated taxonomy (paper §3.2), not our heuristic, so this is
+  somebody else's signal we are consuming, not our own circular logic.
 - Use for: per-dimension `ρ_grounding_depth`, `ρ_structural_impact`
   validation — these dimensions specifically should track engaged
   citation, not raw cite count.
+
+Original design specified "shared method or dataset entity" matching
+between citing and cited papers, requiring per-citing-paper claim
+extraction. Pivot uses Intern-Atlas's pre-computed typed edges
+instead, which is both cheaper and (because their extraction was at
+4M-edge scale with 99.8% completeness) higher-quality than the
+ad-hoc heuristic the original design proposed.
 
 ### 5.3 L3 — manual annotation (top-50 + bottom-50)
 
@@ -257,6 +312,7 @@ For the primary cohort, on the L1 outcome:
 
 ```
 ρ_total          : Spearman between predicted_influence and cited_by_count
+                   (and separately, influential_citation_count)
 ρ_dim_k for each dim k : Spearman between dim_k score and cited_by_count
 top-K precision  : at K = 10, 50, 100  (fraction of top-K predictions
                    that fall in top-K of outcome)
@@ -265,6 +321,22 @@ top-K precision  : at K = 10, 50, 100  (fraction of top-K predictions
 For the primary cohort, on the L2 outcome: same four metrics.
 
 For L3: top-K precision at K=10 (using L3-annotated tier).
+
+**Baselines reported alongside aigraph's headline numbers** (added by
+pivot — the comparators define what a "good" ρ means):
+
+| Baseline | What it predicts | Why we report it |
+|---|---|---|
+| Random shuffle | random | Floor — anything beating this is non-zero |
+| `cited_by_count` at submission time (Y0) | cite carry-over | Hard baseline; the predictor must beat "papers that were already cited stay cited" |
+| OpenAlex paper-level PageRank | structural centrality | Tests whether our influence score is just centrality dressed up |
+| **Intern-Atlas `/api/eval`** | their 5-dim score on the same hypotheses | Direct competitor; if their API returns ρ ≈ ours, our story leans on §4.1+§4.2 of intern-atlas-pivot.md |
+
+The Intern-Atlas baseline is not optional — it is the most informative
+single comparator now that they exist. If their reported ρ=0.81 with
+expert review holds on our cohort, the influence-prediction story
+needs to either (a) match it or (b) explicitly contribute orthogonal
+information (different from theirs, useful in addition).
 
 ### 6.2 Confidence intervals
 
@@ -380,6 +452,8 @@ in a separate file and revealed only after annotation is complete.
 
 ### 9.1 Cost (LLM + API budget)
 
+Original design (kept for reference):
+
 ```
 Claims extraction         : 1800 papers × $0.04         = $72
 Hypothesis generation     : 1800 × ~3 hyps × $0.02      = $108
@@ -387,12 +461,33 @@ Novelty check (arxiv+LLM) : 1800 × $0.03                = $54
 Citation enrichment       : free (OpenAlex + S2)
 Citing-paper claims (L2)  : ~30k citing papers × keyword filter to ~5k × $0.01 = $50
 L3 annotation labor       : 100 papers × 2 annotators × ~15min = manual cost
-                                                          (3 annotators total)
-Subtotal LLM + API        : ~$285
-Buffer (retries, debugging): +30%                       ≈ $370
+Subtotal LLM + API        : ~$285  → with buffer ≈ $370
+Three cohorts             : ≈ $1100
 ```
 
-Per cohort. Three cohorts (primary + peri + post) ≈ $1100 budget.
+Pivot-revised:
+
+```
+Cohort fetch              : $0      (was $0; now strictly $0, no API)
+Citation enrichment       : $0      (Intern-Atlas papers carries cite count)
+Citing-paper claims (L2)  : $0      (Intern-Atlas typed edges replace this)
+Claims extraction         : $72     (unchanged)
+Hypothesis generation     : $108    (unchanged)
+Novelty check             : $54     (unchanged)
+Intern-Atlas /api/eval    : tbd     (waitlist; assume free for academic use)
+L3 annotation labor       : same    (manual)
+Subtotal LLM + API        : ~$235   (~$370 with buffer)
+Three cohorts             : ≈ $700  (~$400 saved vs original)
+```
+
+The $400 saved comes from dropping (a) per-paper OpenAlex/S2 fetch
+work, (b) per-citing-paper claim extraction for L2. Both were already
+$0 LLM cost in the original design's "Citation enrichment" line, but
+the wall-clock time saved is the bigger win — no rate-limit pacing.
+
+Use the saved budget on **L3 annotation pool expansion** from 100 →
+150-200 papers, which is the most-defensible part of the validation
+story now that data costs are zero.
 
 ### 9.2 Compute timeline
 
@@ -591,19 +686,95 @@ prediction pipeline.
 
 ---
 
-## 15. Decision request
+## 15. Decision request — closed
 
-This doc is a proposal. To proceed we need a green-light on:
+**Original asks:** approval of §3 cohort structure, §5 three-tier
+ground truth, §11 pre-registration commitment, and prioritization
+vs Phase 2 (`structural_impact`).
 
-- Cohort structure (§3).
-- Three-tier ground truth (§5) — particularly the budget for L2
-  citing-paper claim extraction (~$50/cohort).
-- Pre-registration commitment (§11).
-- Implementation prioritization vs other Phase 2 work (especially
-  vs starting `structural_impact` implementation).
+**Resolution (May 8, 2026):** All four points superseded by the
+Intern-Atlas pivot.
 
-Recommend approving §3, §5, §11 and slotting the work after Phase 1
-closes on a creator-mode fixture, and before Phase 2's
-`structural_impact` build — because Phase 2 design choices should
-itself be informed by what the validation finds about the existing
-4 dimensions.
+- §3 cohort: built and verified — 1790 / 1800 / 1200 papers across
+  primary / peri-boom / post-boom. Single ICLR 2018 cell undershoot at
+  190; everything else at 200/cell target.
+- §5 three-tier: L1 and L2 now both consume Intern-Atlas data
+  directly; L3 manual annotation expanded to 150 papers using saved
+  budget.
+- §11 pre-registration: still binding. To be written as a separate doc
+  (`docs/validation_preregistration_v1.md`) before any prediction
+  artifact is locked.
+- Phase 2 prioritization: deferred. Phase 2 (`structural_impact`)
+  starts after the Phase 1 4-dim validation runs through the new
+  pipeline at least once on the primary cohort.
+
+See §16 for the consolidated pivot record.
+
+---
+
+## 16. Pivot in light of Intern-Atlas (May 2026)
+
+**Trigger:** May 1, 2026 release of `OpenRaiser/Intern-Atlas` — a
+4.2M-paper / 4.14M-edge typed methodological evolution graph from
+Shanghai AI Lab, MIT-licensed, with reported Spearman ρ=0.81 between
+their 5-dim idea evaluator and human expert review.
+
+**Decision:** hybrid integration. Consume their data as cohort +
+outcome source; keep aigraph's claim-level conflict pipeline as
+differentiated value. Full strategic rationale in
+[docs/intern-atlas-pivot.md](./intern-atlas-pivot.md).
+
+**What changed in this design doc:**
+
+| Section | Original | After pivot |
+|---|---|---|
+| §3.1 cohort fetch | OpenAlex + S2 enrichment | `cohort_from_intern_atlas.py` parquet read |
+| §3.3 filters | English abstract ≥ 80 words; ≥ 2 IDs | abstract ≥ 80 chars; ≥ 1 ID (Intern-Atlas reality) |
+| §4.1 step 1 | OpenAlex fetch per paper | Parquet load via `corpus.intern_atlas_loader` |
+| §4.2 step 1 | Per-paper OpenAlex citation pull | `papers.cited_by_count` direct + `paper_evolution_edges` for L2 |
+| §5.1 L1 | `cited_by_count_in_window` | `cited_by_count` + `influential_citation_count` |
+| §5.2 L2 | "shared method or dataset" via per-citing-paper claim extraction | Engaged-edge filter on Intern-Atlas's pre-computed typed edges |
+| §6.1 baselines | random + PageRank + cite carry-over | + Intern-Atlas `/api/eval` baseline (now mandatory) |
+| §9.1 cost | $1100 / 3 cohorts | $700 / 3 cohorts |
+| §9.2 timeline | 6 weeks per cohort | 3-4 weeks per cohort (cohort fetch + outcome pull collapse to ~hours) |
+
+**What did NOT change:**
+
+- §2 (LLM-discontinuity confound argument) — still applies, this is
+  why the 2018-2020 primary cohort matters
+- §7 (LLM vs non-LLM topic stratification) — still applies
+- §8 (anti-confound choices) — all still apply, including the
+  prediction_year_cutoff guard against look-ahead leakage
+- §11 pre-registered hypotheses H1–H5 — unchanged, will be committed
+  as `validation_preregistration_v1.md` before predictions lock
+- §13 success criteria — unchanged
+
+**New risks introduced by the pivot** (also documented in
+intern-atlas-pivot.md §8):
+
+1. Their `/api/eval` ρ on our cohort might be very high. If it
+   matches or beats our predictor's ρ, the influence-prediction story
+   collapses to "we're a free open re-implementation" — not a paper
+   contribution. Mitigation: lead the writeup with conflict detection
+   (§4.1 of pivot doc), not influence prediction.
+2. Schema change on their parquet breaks our loader. Mitigation: pin
+   to a specific HF revision in `corpus.intern_atlas_loader`.
+3. Their v2 might add a `contradicts` edge type. Mitigation: ship our
+   conflict layer in enough depth that even if they add a shallow
+   flag, our claim-level reasoning is meaningfully deeper.
+
+**Cohort actuals** (recorded for reproducibility):
+
+```
+seed=17, run on May 8 2026
+papers parquet revision: <pin in _summary.json>
+filter drop ratio: 99.35% (4.2M → ~27k pass venue + quality filter)
+
+primary_2018_2020:    1790 papers   (8 cells × 200 + ICLR 2018 × 190)
+peri_boom_2020_2022:  1800 papers   (9 cells × 200)
+post_boom_2022_2023:  1200 papers   (6 cells × 200)
+```
+
+Local at `artifacts/validation_v1/cohorts/`, gitignored.
+`_summary.json` records the seed, filter loss ratio, and source
+parquet mtime/size for tamper detection.

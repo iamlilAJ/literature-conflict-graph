@@ -1,5 +1,12 @@
 # aigraph × Intern-Atlas — Pivot Decision Doc
 
+> **STATUS: DEFERRED (2026-05-08).** This document records our
+> exploratory analysis of integrating Intern-Atlas as a downstream
+> data layer. After empirical investigation (atlas_conflict_finder
+> sanity ratio 5-15%, cohort substitution unproven), the
+> integration is parked. Pipeline development continues on local
+> corpora until a clear use case for Atlas data emerges.
+
 A decision record for repositioning aigraph after the public release of
 [Intern-Atlas](https://huggingface.co/datasets/OpenRaiser/Intern-Atlas)
 on May 1, 2026 (paper [arxiv:2604.28158](https://arxiv.org/abs/2604.28158)).

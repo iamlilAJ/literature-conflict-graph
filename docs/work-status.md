@@ -22,28 +22,25 @@ Legend: ▶ active, ⊗ blocked, ✓ done, ⏸ parked, ◯ next-up
 
 ---
 
-## S1. Intern-Atlas integration
+## S1. Intern-Atlas integration (DEFERRED)
 
-This is the dominant active stream this week. Reposition aigraph as a
-specialist on top of Intern-Atlas's open paper graph.
+> **Pause rationale:** empirical sanity test on `atlas_conflict_finder`
+> produced 5-15% real-conflict ratio (cartesian-explosion at popular
+> paper_b hubs like BERT/DDPM/U-Net dominates the 9.6M raw count),
+> which doesn't support the §4.1 differentiation framing. No clear
+> use case for Atlas data until then. Critical path moves to local
+> corpus runs.
 
 | Item | Status | Notes |
 |---|---|---|
 | HF dataset recon (#11) | ✓ | 99.8% typed extraction, 7-class edges, ICLR/ICML/NeurIPS coverage confirmed |
-| `intern-atlas-pivot.md` written + merged (#12) | ✓ | dd972d8 |
-| `cohort_from_intern_atlas.py` script + run (#16) | ✓ | dd972d8; cohorts at `artifacts/validation_v1/cohorts/`, gitignored |
-| `controlled-validation-design.md` amendments (#15) | ✓ | uncommitted, to commit as next push |
-| `corpus.intern_atlas_loader` (#14) | ◯ | Half-day refactor. Adds env switch `AIGRAPH_USE_INTERN_ATLAS=1`. Replaces S2/OpenAlex per-paper fetch with parquet load. Needs new module + unit tests + Paper schema adapter |
-| POC `/api/eval` baseline (#13) | ⊗ | **Blocked on Intern-Atlas API key** (waitlist application). Without API access we can't measure ρ_aigraph vs ρ_intern_atlas head-to-head |
-| `validate_influence_backtest --baseline-eval intern-atlas` flag | ⏸ | Depends on #13 unblocking |
-| OMC talent README sync to IA dep | ⏸ | In other repo, lower priority |
-
-**Unblock paths:**
-- For #13: apply for API key at https://intern-atlas.opendatalab.org.cn
-  /api waitlist. Manual step, takes 1-3 days typically.
-- If API access denied: fall back to consuming their static evaluation
-  scores from `papers.cited_by_count` correlation only — degraded but
-  workable.
+| `intern-atlas-pivot.md` written + merged (#12) | ✓ | dd972d8 — banner added marking doc DEFERRED |
+| `cohort_from_intern_atlas.py` script + run (#16) | ✓ | dd972d8; cohorts at `artifacts/validation_v1/cohorts/`, gitignored, parked |
+| `controlled-validation-design.md` amendments (#15) | ✓ | 0f5c42a — §16 banner added marking amendments DEFERRED |
+| `corpus.intern_atlas_loader` (#14) | ⏸ | Parked. Half-day work but no current critical-path use case |
+| POC `/api/eval` baseline (#13) | ⏸ | Parked. We chose not to depend on their API |
+| `validate_influence_backtest --baseline-eval intern-atlas` flag | ⏸ | Parked. Depends on #13 |
+| OMC talent README sync to IA dep | ⏸ | Parked. Other repo |
 
 ---
 

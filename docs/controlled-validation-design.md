@@ -714,6 +714,11 @@ See §16 for the consolidated pivot record.
 
 ## 16. Pivot in light of Intern-Atlas (May 2026)
 
+> **STATUS: AMENDMENT DEFERRED.** §3.1 cohort fetch is currently
+> using local arxiv_reasoning corpus, not Intern-Atlas. The Atlas-
+> based amendments in this section remain valid as a future plan
+> but are not the current implementation.
+
 **Trigger:** May 1, 2026 release of `OpenRaiser/Intern-Atlas` — a
 4.2M-paper / 4.14M-edge typed methodological evolution graph from
 Shanghai AI Lab, MIT-licensed, with reported Spearman ρ=0.81 between

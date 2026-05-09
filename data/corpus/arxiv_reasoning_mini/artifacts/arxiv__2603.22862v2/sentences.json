@@ -1,0 +1,4250 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Tool use enables large language models (LLMs) to access external information, invoke software systems, and act in digital environments beyond what can be solved from model parameters alone.",
+    "char_start": 0,
+    "char_end": 189,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Early research mainly studied whether a model could select and execute a correct single tool call.",
+    "char_start": 190,
+    "char_end": 288,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "As agent systems evolve, however, the central problem has shifted from isolated invocation to multi-tool orchestration over long trajectories with intermediate state, execution feedback, changing environments, and practical constraints such as safety, cost, and verifiability.",
+    "char_start": 289,
+    "char_end": 565,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "We comprehensively review recent progress in multi-tool LLM agents and analyze the state of the art in this rapidly developing area.",
+    "char_start": 566,
+    "char_end": 698,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "First, we unify task formulations and distinguish single-call tool use from long-horizon orchestration.",
+    "char_start": 699,
+    "char_end": 802,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Then, we organize the literature around six core dimensions: inference-time planning and execution, training and trajectory construction, safety and control, efficiency under resource constraints, capability completeness in open environments, and benchmark design and evaluation.",
+    "char_start": 803,
+    "char_end": 1082,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "We further summarize representative applications in software engineering, enterprise workflows, graphical user interfaces, and mobile systems.",
+    "char_start": 1083,
+    "char_end": 1225,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Finally, we discuss major challenges and outline future directions for building reliable, scalable, and verifiable multi-tool agents.",
+    "char_start": 1226,
+    "char_end": 1359,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "While Large Language Models (LLMs) have demonstrated exceptional reasoning and generation capabilities in natural language processing , their ability to solve complex real-world problems remains constrained by static parametric knowledge, potential hallucination risks, and a lack of interaction with physical or digital environments.",
+    "char_start": 1361,
+    "char_end": 1695,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Tool learning addresses these limitations by enabling models to invoke external APIs (e.g., search engines, code interpreters), establishing a perception-action loop.",
+    "char_start": 1696,
+    "char_end": 1862,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Early works such as TALM , MRKL , Toolformer , and ReAct laid the foundation for this field by teaching models to recognize single intents and correctly format API requests, effectively internalizing tool usage as an extended language capability.",
+    "char_start": 1863,
+    "char_end": 2109,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "As task complexity escalates, the linear application of single tools becomes insufficient for real-world challenges.",
+    "char_start": 2111,
+    "char_end": 2227,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Multi-tool utilization represents an independent research problem that intersects with combinatorial optimization , programmatic semantic constraints, and system scheduling .",
+    "char_start": 2228,
+    "char_end": 2402,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "The decision space for an autonomous agent undergoes a qualitative shift from simple binary tool selection to solving a series of coupled decisions within a single task.",
+    "char_start": 2403,
+    "char_end": 2572,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "This process includes dynamic tool subset selection, cross-tool dependency modeling, sequential and parallel scheduling, failure recovery, and re-planning.",
+    "char_start": 2573,
+    "char_end": 2728,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "When tool usage extends to long-horizon chains involving state-mutating write operations, maintaining state consistency and managing race conditions under parallel execution emerge as core bottlenecks for system stability.",
+    "char_start": 2729,
+    "char_end": 2951,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "The primary research objective in this domain has thus transitioned from the correctness of single-point calls to the end-to-end executability and robustness of multi-tool chains in complex environments.",
+    "char_start": 2953,
+    "char_end": 3156,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "We begin by reviewing inference-time reasoning paradigms and architectures, highlighting the transition from serial chain reasoning to structured graph-based execution, alongside dual-system architectures designed to balance long-horizon planning complexity with execution efficiency.",
+    "char_start": 3157,
+    "char_end": 3441,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "We then explore data synthesis and training paradigms, focusing on trajectory synthesis and closed-loop verification methods that address the combinatorial space of multi-tool usage and long-tail dependencies.",
+    "char_start": 3442,
+    "char_end": 3651,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Furthermore, we analyze safety and robustness, particularly concerning state safety under parallel execution, context drift in extended chains , and mitigation strategies for privacy risks.",
+    "char_start": 3652,
+    "char_end": 3841,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "The discussion also encompasses operational efficiency, evaluating end-to-end agent latency, tool invocation costs, and inference budgets .",
+    "char_start": 3842,
+    "char_end": 3981,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "To address system completeness, we review adaptive strategies for incomplete environments where tools or information may be missing.",
+    "char_start": 3982,
+    "char_end": 4114,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Finally, we trace the evolution of benchmark evaluation standards from single-point functional verification to system-level topological orchestration and interactive closed-loops.",
+    "char_start": 4115,
+    "char_end": 4294,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Based on these existing challenges, we propose a future research agenda to provide theoretical references and technical pathways for building reliable, efficient, and scalable multi-tool agent systems.",
+    "char_start": 4295,
+    "char_end": 4496,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec003",
+    "text": "Research on tool-augmented LLMs began with a relatively simple question: can a model select an appropriate tool and produce a valid call?",
+    "char_start": 4498,
+    "char_end": 4635,
+    "sentence_index": 24,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec003",
+    "text": "That abstraction is no longer sufficient for agent systems.",
+    "char_start": 4636,
+    "char_end": 4695,
+    "sentence_index": 25,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec003",
+    "text": "Many practical tasks require an agent to coordinate multiple tools over long trajectories, preserve intermediate state, recover from failures, and operate under constraints on latency, cost, and safety.",
+    "char_start": 4696,
+    "char_end": 4898,
+    "sentence_index": 26,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec003",
+    "text": "In these settings, a key challenge lies not only in tool access, but also in orchestration.",
+    "char_start": 4899,
+    "char_end": 4990,
+    "sentence_index": 27,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec003",
+    "text": "This survey is motivated by two gaps in the current literature.",
+    "char_start": 4992,
+    "char_end": 5055,
+    "sentence_index": 28,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec003",
+    "text": "The first is conceptual: terms such as tool use, tool calling, tool retrieval, workflow execution, and orchestration are often used loosely, even though they refer to different capability levels.",
+    "char_start": 5056,
+    "char_end": 5251,
+    "sentence_index": 29,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec003",
+    "text": "The second is structural: planning, training, safety, efficiency, benchmarking, and open-environment adaptation are often studied separately, while deployed agent systems depend on their interaction.",
+    "char_start": 5252,
+    "char_end": 5451,
+    "sentence_index": 30,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "A growing body of survey work has examined tool use in large language models and related agent topics, yet long-horizon multi-tool orchestration has less often been treated as a primary problem in its own right.",
+    "char_start": 5453,
+    "char_end": 5664,
+    "sentence_index": 31,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "Wang et al.",
+    "char_start": 5665,
+    "char_end": 5676,
+    "sentence_index": 32,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "considered what should count as a tool from the perspective of language models and offered a unified view of external tools.",
+    "char_start": 5677,
+    "char_end": 5801,
+    "sentence_index": 33,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec004",
+    "text": "Qu et al.",
+    "char_start": 5802,
+    "char_end": 5811,
+    "sentence_index": 34,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "surveyed tool learning in LLMs, covering planning, tool selection, tool calling, and response generation.",
+    "char_start": 5812,
+    "char_end": 5917,
+    "sentence_index": 35,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec004",
+    "text": "Shen reviewed LLM tool use with attention to tool integration, training methods, and the shift from tool use to tool creation.",
+    "char_start": 5918,
+    "char_end": 6044,
+    "sentence_index": 36,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec004",
+    "text": "Li summarized major paradigms of LLM-based agents, including tool use, planning, and feedback learning.",
+    "char_start": 6045,
+    "char_end": 6148,
+    "sentence_index": 37,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "Luo et al.",
+    "char_start": 6149,
+    "char_end": 6159,
+    "sentence_index": 38,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "provided a broader review of LLM agents spanning methodology, applications, and challenges.",
+    "char_start": 6160,
+    "char_end": 6251,
+    "sentence_index": 39,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "Chen et al.",
+    "char_start": 6252,
+    "char_end": 6263,
+    "sentence_index": 40,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "focused on LLM-based multi-agent systems rather than multi-tool orchestration within a single agent.",
+    "char_start": 6264,
+    "char_end": 6364,
+    "sentence_index": 41,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "He et al.",
+    "char_start": 6365,
+    "char_end": 6374,
+    "sentence_index": 42,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "surveyed security and privacy risks in LLM agents.",
+    "char_start": 6375,
+    "char_end": 6425,
+    "sentence_index": 43,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "Mohammadi et al.",
+    "char_start": 6426,
+    "char_end": 6442,
+    "sentence_index": 44,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "reviewed the evaluation and benchmarking of LLM agents.",
+    "char_start": 6443,
+    "char_end": 6498,
+    "sentence_index": 45,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "Our survey differs from this literature in several ways.",
+    "char_start": 6500,
+    "char_end": 6556,
+    "sentence_index": 46,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "It takes multi-tool orchestration, rather than tool use in general or agent systems more broadly, as the main unit of analysis.",
+    "char_start": 6557,
+    "char_end": 6684,
+    "sentence_index": 47,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "It also organizes the field around six connected dimensions: inference, training and trajectory construction, safety and control, efficiency, capability completeness, and evaluation.",
+    "char_start": 6685,
+    "char_end": 6867,
+    "sentence_index": 48,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "In addition, it draws clearer boundaries among concepts that are often conflated in prior work, including tool invocation, tool retrieval, orchestration, and toolset expansion.",
+    "char_start": 6868,
+    "char_end": 7044,
+    "sentence_index": 49,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "Finally, it relates methodological progress to the recent shift from call-level correctness to system-level reliability in both benchmarks and applications.",
+    "char_start": 7045,
+    "char_end": 7201,
+    "sentence_index": 50,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "[ht]\n\n[c]\nfigures/mainstruct.pdf\n\nParadigm Shift in LLM Tool Use: From Single-Tool Call to Multi-Tool Orchestration\n\n[ht]\n\nconnect-line RGB 0,0,0\nmiddle-color RGB 255,255,255\nleaf-color RGB 255,255,255\nblack RGB 0,0,0\n\nc-inf RGB 25,25,112\nc-tune RGB 25,112,25\nc-safe RGB 112,25,25\nc-eff RGB 112,65,25\nc-ben RGB 65,25,112\nc-com RGB 20,110,120\n\ninf-middle =[draw=c-inf, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\ninf-leaf =[draw=c-inf, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\ntune-middle =[draw=c-tune, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\ntune-leaf =[draw=c-tune, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\nsafe-middle =[draw=c-safe, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\nsafe-leaf =[draw=c-safe, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\neff-middle =[draw=c-eff, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\neff-leaf =[draw=c-eff, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\nben-middle =[draw=c-ben, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\nben-leaf =[draw=c-ben, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\ncom-middle =[draw=c-com, rounded corners, minimum height=1em, fill=middle-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\ncom-leaf =[draw=c-com, rounded corners, minimum height=1em, fill=leaf-color!40, text opacity=1, align=left, fill opacity=.5, text=black, font= , inner xsep=3pt, inner ysep=1pt]\n\n!",
+    "char_start": 7203,
+    "char_end": 9709,
+    "sentence_index": 51,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "for tree=\nforked edges,\ngrow=east,\nreversed=true,\nanchor=base west,\nparent anchor=east,\nchild anchor=west,\nbase=middle,\nfont= ,\nrectangle,\nline width=0.9pt,\ndraw=connect-line,\nrounded corners,\nalign=left,\nminimum width=2em,\ns sep=5pt,\ninner xsep=3pt,\ninner ysep=1pt,\n,\nwhere level=1 text width=8.5em ,\nwhere level=2 text width=9.5em ,\nwhere level=3 text width=20.5em ,\n[The Evolution\\ Tool Use\\ LLM Agents, black, rotate=90, anchor=north, align=center, edge=connect-line\n\n[ Inference-Time Paradigms\n( \\, sec:inference ) , inf-middle, edge=c-inf\n[ Topological Planning\n( \\, subsec:topological ) , inf-middle, edge=c-inf\n[ ReAct , GAP , ToolNet ,\nSmurfs , AgentPro , inf-leaf, edge=c-inf]\n]\n[ Long-Horizon Orchestration\n( \\, subsec:long_horizon ) , inf-middle, edge=c-inf\n[ MARS , CodeTool , HuggingGPT ,\nCOMPASS , MIRIX , inf-leaf, edge=c-inf]\n]\n[ Agent Self-Improvement\n( \\, subsec:improvement ) , inf-middle, edge=c-inf\n[ Reflexion , SPIRAL , SAGE ,\nMetaAgent , DRAFT , inf-leaf, edge=c-inf]\n]\n]\n\n[ Tuning Paradigms\n( \\, sec:tuning ) , tune-middle, edge=c-tune\n[ Training-free Methods\n( \\, subsec:tuningfree ) , tune-middle, edge=c-tune\n[ Toolformer , ToolLLM , MCP-Zero ,\nPre-Act , PLAY2PROMPT , tune-leaf, edge=c-tune]\n]\n[ Trajectory Data Synthesis\n( \\, subsec:trajectory ) , tune-middle, edge=c-tune\n[ Seal-Tools , BUTTON , APIGen ,\nStableToolBench , ToolACE-R , tune-leaf, edge=c-tune]\n]\n[ Supervised Fine-Tuning\n( \\, subsec:sft ) , tune-middle, edge=c-tune\n[ Gorilla , ToolLLM , Hammer ,\nChain-of-Abstraction , ToolGen , tune-leaf, edge=c-tune]\n]\n[ Reinforcement Learning\n( \\, subsec:rl ) , tune-middle, edge=c-tune\n[ PORTool , ToolRL , DeepAgent ,\nRAGEN , Agent-R1 , tune-leaf, edge=c-tune]\n]\n]\n\n[ Safety\n( \\, sec:safety ) , safe-middle, edge=c-safe\n[ Safety issues in\nparallel execution\n( \\, subsec:safety_parallel ) , safe-middle, edge=c-safe\n[ AARM , SagaLLM , Atomix ,\nCRITIC , DVR , safe-leaf, edge=c-safe]\n]\n[ Safety issues in\nchain execution\n( \\, subsec:safety_chain ) , safe-middle, edge=c-safe\n[ MINJA , Butterfly Effects , LATS ,\nAgentDoG , TRICE , safe-leaf, edge=c-safe]\n]\n]\n\n[ Efficiency of\nMulti-Tool Agents\n( \\, sec:efficiency ) , eff-middle, edge=c-eff\n[ Latency in multi-tool\nchains\n( \\, ssec: Latency in multi-tool chains ) , eff-middle, edge=c-eff\n[ SoT , LLMCompiler , MACI ,\nReWoo , DSPy , eff-leaf, edge=c-eff]\n]\n[ Tool call cost and\ninference budget\n( \\, ssec: Tool call cost and inference budget ) , eff-middle, edge=c-eff\n[ ToolLLM , AnyTool , ToolkenGPT ,\nFrugalGPT , MemGPT , eff-leaf, edge=c-eff]\n]\n]\n\n[ Completeness\n( \\, sec:completeness ) , com-middle, edge=c-com\n[ Capability boundary\nperception\n( \\, ssec: Capability boundary perception ) , com-middle, edge=c-com\n[ FAIL-TALMS , ToolHaystack , AskToAct , com-leaf, edge=c-com]\n]\n[ Autonomous tool\nexpansion\n( \\, ssec: Autonomous tool expansion ) , com-middle, edge=c-com\n[ LATM , CREATOR , RestGPT ,\nToolMaker , com-leaf, edge=c-com]\n]\n[ Open environment\nadaptation\n( \\, ssec: Open environment adaptation ) , com-middle, edge=c-com\n[ Voyager , ExpeL , ToolkenGPT ,\nAppAgent , com-leaf, edge=c-com]\n]\n]\n\n[ Benchmarks\n( \\, sec:benchmarks ) , ben-middle, edge=c-ben\n[ Topological Complexity\n( \\, subsec:topo_complexity ) , ben-middle, edge=c-ben\n[ NESTFUL , ToolHop , Seal-Tools ,\nTaskBench , M$^3$-Bench , ben-leaf, edge=c-ben]\n]\n[ Temporal Scale\n( \\, subsec:temporal_scale ) , ben-middle, edge=c-ben\n[ Tool Decathlon , AgentLongBench , UltraHorizon ,\nTRIP-Bench , DeepPlanning , ben-leaf, edge=c-ben]\n]\n[ Dynamic Environments\n( \\, subsec:dynamic_env ) , ben-middle, edge=c-ben\n[ ToolSandbox , AppWorld , OSWorld ,\n$ $-bench , Windows Agent Arena , ben-leaf, edge=c-ben]\n]\n[ State Persistence and\nSelf-Correction\n( \\, subsec:state_persistence ) , ben-middle, edge=c-ben\n[ OdysseyBench , MemAgentBench , CRITICTOOL ,\nRoTBench , ToolSword , ben-leaf, edge=c-ben]\n]\n]\n]\n\n0.15in\nThe main structure of this paper.",
+    "char_start": 9711,
+    "char_end": 13606,
+    "sentence_index": 52,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "0.2in\n\nNotation.",
+    "char_start": 13607,
+    "char_end": 13623,
+    "sentence_index": 53,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "A multi-tool learning instance contains:\n(i) a query/task $q Q $;\n(ii) an interactive environment with latent state $s_t S $ and observation $o_t O $ at step $t$;\n(iii) a tool inventory $ D =\\ d_i\\ _ i=1 ^ N $, where each tool $d$ is described by a schema/signature $ _d$\n(e.g., name, description, constraints, return format).",
+    "char_start": 13624,
+    "char_end": 13950,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "A tool execution interface is\n\\[\nExec (d,u; s) (f,s'),\n\\]\nwhere $u U _d$ is a valid argument/parameter object for tool $d$,\n$f F $ is tool feedback (e.g., JSON/text/error code),\nand $s' S $ is the post-call environment state .",
+    "char_start": 13951,
+    "char_end": 14177,
+    "sentence_index": 55,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "Let $ _ $ denote the model/policy with parameters $ $.",
+    "char_start": 14178,
+    "char_end": 14232,
+    "sentence_index": 56,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Let $ $ denote a tool-use trajectory (defined below), and $ Cost ( )$ any cost functional\n(number of calls, latency, API fees, risk, etc.).",
+    "char_start": 14233,
+    "char_end": 14372,
+    "sentence_index": 57,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "We define the interaction history up to time $t$ as\n\\[\nh_t := (q, o_0, a_0, f_0, o_1, a_1, f_1, , o_t),\n\\]\nwhere $a_k$ is the action taken at step $k$ and $f_k$ is the feedback returned by $ Exec $.",
+    "char_start": 14374,
+    "char_end": 14572,
+    "sentence_index": 58,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Let $m_t$ denote the model's internal memory/state at step $t$ (e.g., a scratchpad summary or retrieved records),\nwhich can be updated as a function of $(m_ t-1 ,h_t)$.",
+    "char_start": 14573,
+    "char_end": 14741,
+    "sentence_index": 59,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Multi-tool orchestration.",
+    "char_start": 14743,
+    "char_end": 14768,
+    "sentence_index": 60,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "At each step $t$, the model selects an action\n\\[\na_t A := ( D U )\\ \\ \\ Finish (y)\\ ,\n\\]\nwhere a tool-call action is $a_t=(d_t,u_t)$ with $d_t D $ and $u_t U _ d_t $,\nand $ Finish (y)$ terminates with final answer $y Y $.",
+    "char_start": 14769,
+    "char_end": 14989,
+    "sentence_index": 61,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "The policy acts conditioned on history and memory:\n\\[\na_t _ ( h_t, m_t).",
+    "char_start": 14990,
+    "char_end": 15062,
+    "sentence_index": 62,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "\\]\nIf $a_t=(d_t,u_t)$, the environment returns feedback and transitions:\n\\[\n(f_t,s_ t+1 ) Exec (d_t,u_t;s_t),\n\nh_ t+1 = h_t (a_t,f_t,o_ t+1 ),\n\\]\nwhere $ $ appends new interaction records and $o_ t+1 $ is the next observation derived from $s_ t+1 $.",
+    "char_start": 15063,
+    "char_end": 15312,
+    "sentence_index": 63,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "A trajectory is\n\\[\n:= ((a_0,f_0),(a_1,f_1), ,(a_ T-1 ,f_ T-1 ), Finish (y) ),\n\\]\nwith variable horizon $T$.",
+    "char_start": 15313,
+    "char_end": 15420,
+    "sentence_index": 64,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "A generic cost-aware objective is\n\\[\n_ \\; E ,\n\\]\nwhere $ 0$ trades off success vs cost.",
+    "char_start": 15421,
+    "char_end": 15508,
+    "sentence_index": 65,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "This captures long-horizon scheduling, failure recovery, and re-planning under tool/environment feedback.",
+    "char_start": 15509,
+    "char_end": 15614,
+    "sentence_index": 66,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "Multi-tool calling constitutes a fundamental shift in agent planning and reasoning.",
+    "char_start": 15616,
+    "char_end": 15699,
+    "sentence_index": 67,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "As the tool space expands to encompass thousands of APIs and non-linear dependencies, traditional autoregressive generation models struggle with context limits and cascading errors.",
+    "char_start": 15700,
+    "char_end": 15881,
+    "sentence_index": 68,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "This shift motivates a substantial rethinking of agent inference-time paradigms.",
+    "char_start": 15882,
+    "char_end": 15962,
+    "sentence_index": 69,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Recent research focuses on task topological planning, explicit search algorithms, reflection and self-improvement, and system-level orchestration with persistent memory.",
+    "char_start": 15963,
+    "char_end": 16132,
+    "sentence_index": 70,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "This section systematically reviews representative works along these key areas.",
+    "char_start": 16133,
+    "char_end": 16212,
+    "sentence_index": 71,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "Traditional paradigms such as ReAct organize tool usage into sequential traces.",
+    "char_start": 16214,
+    "char_end": 16293,
+    "sentence_index": 72,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "This structure implicitly assumes that tasks are linearly decomposable.",
+    "char_start": 16294,
+    "char_end": 16365,
+    "sentence_index": 73,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "While highly effective for simple single-step retrievals, this linear approach exhibits severe structural mismatches when applied to nested calls, parallel I/O operations, or long-horizon goals.",
+    "char_start": 16366,
+    "char_end": 16560,
+    "sentence_index": 74,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "Linear constraints inherently limit the representation of data flow dependencies, preclude the parallel execution of independent operations, and force early decision errors to accumulate throughout the trajectory.",
+    "char_start": 16561,
+    "char_end": 16774,
+    "sentence_index": 75,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "Consequently, the field has rapidly moved toward topology-aware planning that utilizes structures with significantly higher expressive power.",
+    "char_start": 16775,
+    "char_end": 16916,
+    "sentence_index": 76,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "As tool spaces expand into the tens of thousands, the primary challenge shifts from binary selection to dependence-aware combinatorial decision-making.",
+    "char_start": 16918,
+    "char_end": 17069,
+    "sentence_index": 77,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "One line of work represents tool use as an explicit dependency structure, allowing the agent to reason over asynchronous or partially parallelizable subproblems .",
+    "char_start": 17070,
+    "char_end": 17232,
+    "sentence_index": 78,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Related systems such as ToolNet and StructuredAgent encode reusable transition structure through directed graphs or AND/OR decompositions, reducing the effective search space while preserving non-linear task dependencies .",
+    "char_start": 17233,
+    "char_end": 17455,
+    "sentence_index": 79,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "AutoTool further shows that historical regularities in tool transitions can be used to bypass unnecessary inference for predictable parts of the workflow .",
+    "char_start": 17456,
+    "char_end": 17611,
+    "sentence_index": 80,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "Taken together, these approaches treat tool use as graph-structured execution rather than a flat token sequence.",
+    "char_start": 17612,
+    "char_end": 17724,
+    "sentence_index": 81,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "To address goal drift in long-horizon tasks, monolithic planning algorithms are increasingly being replaced by hierarchical delegation.",
+    "char_start": 17726,
+    "char_end": 17861,
+    "sentence_index": 82,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "HIPLAN proposes a bi-level architecture where an upper-level planner generates a macroscopic milestone space, leaving a lower-level executor to resolve specific state gaps .",
+    "char_start": 17862,
+    "char_end": 18035,
+    "sentence_index": 83,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "ADaPT introduces a recursive representation that defaults to flat execution, invoking high-level graph decomposition only upon encountering localized failures .",
+    "char_start": 18036,
+    "char_end": 18196,
+    "sentence_index": 84,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "Pushing abstraction further, AFlow represents the reasoning process as executable node configurations and control flow edges .",
+    "char_start": 18197,
+    "char_end": 18323,
+    "sentence_index": 85,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "Dynamic planners like D-PoT , DyFlow , and ReCAP further allow real-time subgoal reorganization.",
+    "char_start": 18324,
+    "char_end": 18420,
+    "sentence_index": 86,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "As autoregressive decoding is inherently short-sighted, recent methods cast multi-step tool execution as a state-space search problem.",
+    "char_start": 18422,
+    "char_end": 18556,
+    "sentence_index": 87,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "Traditional tree search often suffers from context contamination in language domains.",
+    "char_start": 18557,
+    "char_end": 18642,
+    "sentence_index": 88,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "Smurfs introduces context-efficient rollback and branch isolation, reducing contamination from failed trajectories .",
+    "char_start": 18643,
+    "char_end": 18759,
+    "sentence_index": 89,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "AB-MCTS explores adaptive branching under external feedback, while ARTIS separates exploration from commitment through an internal simulator for high-risk actions .",
+    "char_start": 18760,
+    "char_end": 18924,
+    "sentence_index": 90,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec007",
+    "text": "Closely related approaches, including Plan-and-Act, MPO, and AgentPro, also separate abstract planning from execution or use learned evaluators to prune low-quality branches during inference .",
+    "char_start": 18925,
+    "char_end": 19117,
+    "sentence_index": 91,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec007",
+    "text": "These methods reflect a broader shift from \"generate once and execute\" to \"search, verify, and then commit\".",
+    "char_start": 19118,
+    "char_end": 19226,
+    "sentence_index": 92,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "When task complexity exceeds the cognitive limitations of a single model, reasoning shifts to system-level architecture.",
+    "char_start": 19228,
+    "char_end": 19348,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "This axis emphasizes cognitive division of labor, standardized semantic routing, and long-term dynamic memory to ensure robust performance across open-ended environments.",
+    "char_start": 19349,
+    "char_end": 19519,
+    "sentence_index": 94,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "Inspired by dual-process reasoning, MARS separates fast parsing of large tool outputs from slower deliberative reasoning .",
+    "char_start": 19521,
+    "char_end": 19643,
+    "sentence_index": 95,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "In domains with strict execution requirements, CodeTool introduces structured intermediate representations that make progress easier to verify .",
+    "char_start": 19644,
+    "char_end": 19788,
+    "sentence_index": 96,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "Other systems externalize durable skills or workflows into procedural memory.",
+    "char_start": 19789,
+    "char_end": 19866,
+    "sentence_index": 97,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "DeepAgent integrates tool discovery into a continuous reasoning stream , while MACLA and HiAgent explicitly maintain reusable procedural abstractions across long tasks and repeated sessions .",
+    "char_start": 19867,
+    "char_end": 20058,
+    "sentence_index": 98,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "The common goal is to avoid placing the full burden of orchestration inside a single transient context window.",
+    "char_start": 20059,
+    "char_end": 20169,
+    "sentence_index": 99,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "A related challenge is dynamic scheduling over large tool ecosystems.",
+    "char_start": 20171,
+    "char_end": 20240,
+    "sentence_index": 100,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "Early frameworks such as HuggingGPT illustrated the value of centralized planning and semantic routing across heterogeneous expert models .",
+    "char_start": 20241,
+    "char_end": 20380,
+    "sentence_index": 101,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "Subsequent work showed that decomposing the workflow into planner, caller, and summarizer roles can allow smaller models to compete effectively with larger monolithic agents .",
+    "char_start": 20381,
+    "char_end": 20556,
+    "sentence_index": 102,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "As tool access becomes more standardized, schedulers such as Gradientsys coordinate multiple specialized executors under capacity and observability constraints .",
+    "char_start": 20557,
+    "char_end": 20718,
+    "sentence_index": 103,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "Tool-to-Agent Retrieval extends this idea by jointly indexing tools and their parent agents, preserving both invocation granularity and execution context during retrieval .",
+    "char_start": 20719,
+    "char_end": 20891,
+    "sentence_index": 104,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "These systems suggest that long-horizon competence depends not only on reasoning quality, but also on how execution responsibilities are routed and monitored.",
+    "char_start": 20892,
+    "char_end": 21050,
+    "sentence_index": 105,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "Memory is the third core component of long-horizon orchestration.",
+    "char_start": 21052,
+    "char_end": 21117,
+    "sentence_index": 106,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "Raw trajectories are too large and noisy to remain fully useful over extended interaction, so practical systems compress, structure, or externalize execution history.",
+    "char_start": 21118,
+    "char_end": 21284,
+    "sentence_index": 107,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "COMPASS and Acon summarize completed subtasks into compact progress representations to maintain alignment with the global objective .",
+    "char_start": 21285,
+    "char_end": 21418,
+    "sentence_index": 108,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec008",
+    "text": "Other approaches use graph-structured or typed memory to support retrieval and update over longer timescales.",
+    "char_start": 21419,
+    "char_end": 21528,
+    "sentence_index": 109,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec008",
+    "text": "A-Mem builds semantic links among historical states , MIRIX decomposes memory into multiple specialized stores for persistent multimodal interaction , and SEDM treats memory as a shared resource for multi-agent collaboration .",
+    "char_start": 21529,
+    "char_end": 21755,
+    "sentence_index": 110,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec008",
+    "text": "Across these systems, the main design question is not whether to store more history, but how to retain the parts that remain relevant for decisions while suppressing noise and outdated branches.",
+    "char_start": 21756,
+    "char_end": 21950,
+    "sentence_index": 111,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec009",
+    "text": "Inference-time capability is increasingly shaped not only by planning and memory, but also by mechanisms for self-improvement.",
+    "char_start": 21952,
+    "char_end": 22078,
+    "sentence_index": 112,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec009",
+    "text": "In multi-tool settings, errors often arise from misbound parameters, invalid assumptions, or ineffective recovery strategies.",
+    "char_start": 22079,
+    "char_end": 22204,
+    "sentence_index": 113,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec009",
+    "text": "As a result, many recent systems explicitly learn to diagnose and revise their own trajectories during or after execution.",
+    "char_start": 22205,
+    "char_end": 22327,
+    "sentence_index": 114,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec009",
+    "text": "A first family of methods focuses on self-correction.",
+    "char_start": 22329,
+    "char_end": 22382,
+    "sentence_index": 115,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec009",
+    "text": "Reflexion stores verbalized lessons from prior failures and uses them to guide later attempts .",
+    "char_start": 22383,
+    "char_end": 22478,
+    "sentence_index": 116,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec009",
+    "text": "The Failure Makes the Agent Stronger framework turns diagnosis and repair into explicit actions trained with reward-based optimization over perturbed trajectories .",
+    "char_start": 22479,
+    "char_end": 22643,
+    "sentence_index": 117,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec009",
+    "text": "SPIRAL and PreFlect further constrain or anticipate reflective behavior to reduce unproductive loops and catch likely failures before execution .",
+    "char_start": 22644,
+    "char_end": 22789,
+    "sentence_index": 118,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec009",
+    "text": "SAGE and Plan2Evolve extend this idea toward continual improvement by combining reflection with memory and planning repair .",
+    "char_start": 22790,
+    "char_end": 22914,
+    "sentence_index": 119,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec009",
+    "text": "A second family of methods treats improvement as capability evolution rather than isolated correction.",
+    "char_start": 22916,
+    "char_end": 23018,
+    "sentence_index": 120,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec009",
+    "text": "MetaAgent distills accumulated experience into reusable tools and internal knowledge, enabling the agent to improve its future reasoning and tool-use strategies without additional model training .",
+    "char_start": 23019,
+    "char_end": 23215,
+    "sentence_index": 121,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec009",
+    "text": "Test-Time Tool Evolution pushes this direction further by synthesizing and validating new executable tools during inference .",
+    "char_start": 23216,
+    "char_end": 23341,
+    "sentence_index": 122,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec009",
+    "text": "DRAFT and SWE-Adept similarly revise tool descriptions or tool-memory interfaces in response to execution feedback .",
+    "char_start": 23342,
+    "char_end": 23458,
+    "sentence_index": 123,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec009",
+    "text": "This line of work suggests that inference is increasingly becoming an adaptive loop in which the agent not only uses a tool ecosystem, but also reorganizes and improves that ecosystem while solving tasks.",
+    "char_start": 23459,
+    "char_end": 23663,
+    "sentence_index": 124,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "Despite the remarkable generalization capabilities exhibited by LLMs across broad natural language tasks, deploying them as reliable agents in multi-tool orchestration scenarios remains a formidable challenge.",
+    "char_start": 23665,
+    "char_end": 23874,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "Vanilla pre-trained models or general-purpose models frequently exhibit deficiencies in schema compliance, parameter precision, and long-horizon planning, which can easily lead to execution failures or hallucinations in complex multi-tool tasks.",
+    "char_start": 23875,
+    "char_end": 24120,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "To bridge the gap between general-purpose models and specialized multi-tool agents, various adaptation strategies have been proposed to bolster the model\u2019s proficiency in tool perception, selection, and precise execution.",
+    "char_start": 24121,
+    "char_end": 24342,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "As shown in Figure , this chapter provides a systematic taxonomy of methodologies for Multi-tool Agent Tuning, organized in an ascending order of computational overhead and data dependency: we first investigate Training-free Methods that activate tool-calling capabilities without parameter updates; then introduce multi-tool trajectory data synthesis as the essential data foundation; followed by supervised fine-tuning (SFT) to align models with specific tool-calling syntaxes and planning patterns; and finally discuss reinforcement learning (RL) frameworks that exploit environmental feedback to improve agent self-evolution and decision-making robustness.",
+    "char_start": 24343,
+    "char_end": 25003,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigures/tune.pdf\nTaxonomy of Methodologies for Multi-tool Agent Tuning Paradigms\n\nTraining-free methods enhance multi-tool agents without updating LLM parameters, offering low deployment overhead and strong adaptability to newly introduced tools.",
+    "char_start": 25005,
+    "char_end": 25256,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec011",
+    "text": "Rather than altering the agent's internal reasoning mechanism, these methods improve tool use through external augmentation, primarily along three directions: tool retrieval and discovery, prompt engineering, and non-parametric memory augmentation.",
+    "char_start": 25257,
+    "char_end": 25505,
+    "sentence_index": 130,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec011",
+    "text": "A major line of work studies tool retrieval and discovery.",
+    "char_start": 25507,
+    "char_end": 25565,
+    "sentence_index": 131,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec011",
+    "text": "As the number of available APIs grows, exhaustively including tool documentation in the prompt becomes impractical.",
+    "char_start": 25566,
+    "char_end": 25681,
+    "sentence_index": 132,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec011",
+    "text": "To address this issue, ToolLLM and AnyTool employ retrieval-based mechanisms to dynamically select relevant tool descriptions from large tool repositories.",
+    "char_start": 25682,
+    "char_end": 25837,
+    "sentence_index": 133,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "ToolDreamer further improves retrieval quality by generating idealized tool descriptions as search queries, thereby better aligning user intents with real-world APIs.",
+    "char_start": 25838,
+    "char_end": 26004,
+    "sentence_index": 134,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "MCP-Zero extends passive retrieval to active discovery, enabling agents to request tool schemas on demand and thus reducing context redundancy.",
+    "char_start": 26005,
+    "char_end": 26148,
+    "sentence_index": 135,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "Re-Invoke similarly improves zero-shot tool selection through multi-perspective query rewriting.",
+    "char_start": 26149,
+    "char_end": 26245,
+    "sentence_index": 136,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "Another line of work focuses on prompt and exemplar construction for tool use.",
+    "char_start": 26246,
+    "char_end": 26324,
+    "sentence_index": 137,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "PLAY2PROMPT allows agents to autonomously explore tool behavior and synthesize usage instructions together with few-shot exemplars, thereby improving tool invocation without SFT.",
+    "char_start": 26325,
+    "char_end": 26503,
+    "sentence_index": 138,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "Finally, some methods enhance robustness through non-parametric memory augmentation.",
+    "char_start": 26504,
+    "char_end": 26588,
+    "sentence_index": 139,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "Memento equips agents with episodic memory by retrieving successful historical trajectories to support current decision-making.",
+    "char_start": 26589,
+    "char_end": 26716,
+    "sentence_index": 140,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec011",
+    "text": "GenTool improves robustness through simulation under diverse conditions, such as missing or updated tools, thereby helping agents generalize to dynamic tool environments.",
+    "char_start": 26717,
+    "char_end": 26887,
+    "sentence_index": 141,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "High-quality training data serves as the cornerstone for constructing robust multi-tool agents.",
+    "char_start": 26889,
+    "char_end": 26984,
+    "sentence_index": 142,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "However, the acquisition of real-world tool execution logs is constrained by privacy regulations, access permissions, and the scarcity of diverse scenarios, making large-scale manual annotation impractical.",
+    "char_start": 26985,
+    "char_end": 27191,
+    "sentence_index": 143,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "Consequently, synthetic data generation has emerged as the dominant paradigm.",
+    "char_start": 27192,
+    "char_end": 27269,
+    "sentence_index": 144,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "Recent literature reveals a systematic evolution toward a \"Synthesis-Validation-Expansion\" framework, marking a strategic shift in research focus from basic data usability to the comprehensive coverage of the multi-tool composition space.",
+    "char_start": 27270,
+    "char_end": 27508,
+    "sentence_index": 145,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "This paradigm aims to synthesize training trajectories that encompass long-horizon interactions, cross-tool dependencies, and error recovery mechanisms in complex scenarios, thereby bolstering the agent's capability to navigate intricate tasks.",
+    "char_start": 27509,
+    "char_end": 27753,
+    "sentence_index": 146,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "Regarding data synthesis mechanisms, Early self-bootstrapping methods such as Seal-Tools and Luo et al.",
+    "char_start": 27755,
+    "char_end": 27858,
+    "sentence_index": 147,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "show that LLMs can generate large amounts of tool-use data without expert demonstrations.",
+    "char_start": 27859,
+    "char_end": 27948,
+    "sentence_index": 148,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "More recent approaches improve structure and compositionality rather than scale alone.",
+    "char_start": 27949,
+    "char_end": 28035,
+    "sentence_index": 149,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": "BUTTON combines bottom-up instruction construction with top-down trajectory generation to synthesize compositional interaction traces, while ASTRA uses tool-call graph topology to generate structurally grounded trajectories in rule-verifiable environments.",
+    "char_start": 28036,
+    "char_end": 28292,
+    "sentence_index": 150,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "In terms of data validation and quality control, recent advancements focus on execution-based iterative verification.",
+    "char_start": 28294,
+    "char_end": 28411,
+    "sentence_index": 151,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": "As synthetic data grows in size, filtering by format alone becomes insufficient.",
+    "char_start": 28412,
+    "char_end": 28492,
+    "sentence_index": 152,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "APIGen therefore verifies data through staged checking that includes syntax, actual execution, and semantic validation.",
+    "char_start": 28493,
+    "char_end": 28612,
+    "sentence_index": 153,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec012",
+    "text": "StableToolBench reduces instability from volatile APIs through simulators and caching.",
+    "char_start": 28613,
+    "char_end": 28699,
+    "sentence_index": 154,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec012",
+    "text": "ToolACE-DEV and ToolACE-R move further toward iterative repair, using self-improvement and model-aware refinement to adapt synthetic data to the learner's evolving capability.",
+    "char_start": 28700,
+    "char_end": 28875,
+    "sentence_index": 155,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec012",
+    "text": "Concerning coverage and generalization expansion, numerous approaches aim to push the boundaries of the tool compositional space to tackle real-world complexity.",
+    "char_start": 28877,
+    "char_end": 29038,
+    "sentence_index": 156,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec012",
+    "text": "ToolMind advances data engineering for compositional space coverage by constructing large-scale, reasoning-intensive datasets.",
+    "char_start": 29039,
+    "char_end": 29165,
+    "sentence_index": 157,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec012",
+    "text": "To enhance robustness against execution errors, LoopTool institutionalizes failure-driven synthesis, creating a data closed-loop that mirrors real-world failure distributions.",
+    "char_start": 29166,
+    "char_end": 29341,
+    "sentence_index": 158,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec012",
+    "text": "For complex orchestration, OrchDAG models tool execution as Directed Acyclic Graphs (DAGs) with controllable complexity, providing structured benchmarks for multi-turn interactions.",
+    "char_start": 29342,
+    "char_end": 29523,
+    "sentence_index": 159,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec012",
+    "text": "Collectively, these advancements reflect a new consensus: the critical metric for synthetic data is no longer mere quantity, but the systematic coverage of long-tail effects, complex interaction effects, and multi-step error patterns.",
+    "char_start": 29524,
+    "char_end": 29758,
+    "sentence_index": 160,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec013",
+    "text": "Supervised Fine-Tuning (SFT) represents the foundational alignment phase for endowing Large Language Models with tool-use capabilities.",
+    "char_start": 29760,
+    "char_end": 29895,
+    "sentence_index": 161,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec013",
+    "text": "Amidst the paradigm shift from atomic tool invocation to multi-tool orchestration, the objectives of SFT have undergone a fundamental transformation.",
+    "char_start": 29896,
+    "char_end": 30045,
+    "sentence_index": 162,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec013",
+    "text": "Early methodologies primarily emphasized syntax alignment\u2014ensuring the structural integrity of outputs (e.g., JSON schema compliance).",
+    "char_start": 30046,
+    "char_end": 30180,
+    "sentence_index": 163,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec013",
+    "text": "Pioneering works such as Gorilla and GPT4Tools demonstrated that fine-tuning on high-quality (Instruction, API Call) pairs enables models to effectively acquire API semantic matching and parameter filling skills.",
+    "char_start": 30181,
+    "char_end": 30393,
+    "sentence_index": 164,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec013",
+    "text": "However, mere data accumulation is no longer sufficient to address complex orchestration tasks.",
+    "char_start": 30394,
+    "char_end": 30489,
+    "sentence_index": 165,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec013",
+    "text": "Consequently, recent advancements have pivoted toward more specialized objectives, such as tool selection from massive repositories and inter-tool dependency planning.",
+    "char_start": 30490,
+    "char_end": 30657,
+    "sentence_index": 166,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec013",
+    "text": "To address large-scale and noisy tool selection, ToolLLM extends SFT to massive toolsets by training on Depth-First Search decision trajectories, enabling the model to internalize exploration and trial-and-error strategies for unresolvable scenarios.",
+    "char_start": 30659,
+    "char_end": 30909,
+    "sentence_index": 167,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec013",
+    "text": "Hammer introduces Function Masking during fine-tuning to penalize hallucinations and heighten sensitivity to irrelevant tools, establishing a new benchmark for robust on-device function calling.",
+    "char_start": 30910,
+    "char_end": 31104,
+    "sentence_index": 168,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec013",
+    "text": "To optimize the interplay between reasoning and action, Chain-of-Abstraction proposes a dual-stage decoding strategy; it trains the model to first generate abstract reasoning chains with placeholders and subsequently populate them with concrete tool outputs, effectively decoupling general reasoning from domain-specific knowledge retrieval.",
+    "char_start": 31105,
+    "char_end": 31446,
+    "sentence_index": 169,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec013",
+    "text": "ToolGen unifies tool retrieval and parameter generation into a sequence of generative virtual tokens, restructuring the SFT objective to allow the simultaneous learning of tool semantics and parameter structures in a single autoregressive pass, which significantly mitigates cascading errors.",
+    "char_start": 31447,
+    "char_end": 31739,
+    "sentence_index": 170,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec013",
+    "text": "Finally, addressing task granularity, the Granite-Function Calling Model adopts a multi-task learning framework that decomposes tool usage into fine-grained subtasks\u2014such as tool detection, parameter generation, and response formatting\u2014thereby achieving precise control over the entire execution lifecycle.",
+    "char_start": 31740,
+    "char_end": 32046,
+    "sentence_index": 171,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec013",
+    "text": "Collectively, these developments signify that SFT has evolved beyond simple pattern imitation toward the construction of autonomous systems capable of high-level decision-making and rigorous execution.",
+    "char_start": 32047,
+    "char_end": 32248,
+    "sentence_index": 172,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec014",
+    "text": "Although SFT effectively aligns models with fundamental tool-use syntax, it remains inherently constrained by the Behavioral Cloning paradigm.",
+    "char_start": 32250,
+    "char_end": 32392,
+    "sentence_index": 173,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec014",
+    "text": "Models trained via SFT are often limited to myopic imitation of training trajectories, struggling to self-correct during long-horizon tasks or to explore novel paths within open-ended tool spaces.",
+    "char_start": 32393,
+    "char_end": 32589,
+    "sentence_index": 174,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec014",
+    "text": "Consequently, the research focus is shifting toward Reinforcement Learning and environmental feedback to optimize high-level decision-making.",
+    "char_start": 32590,
+    "char_end": 32731,
+    "sentence_index": 175,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec014",
+    "text": "As the field transitions from single-tool triggering to multi-tool orchestration, RL encounters formidable challenges: sparse reward signals, difficult credit assignment, and training instability.",
+    "char_start": 32732,
+    "char_end": 32928,
+    "sentence_index": 176,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec014",
+    "text": "Thus, recent advances have transcended standard algorithms like PPO or GRPO, developing specialized paradigms centered on process reward design, turn-level policy optimization, and end-to-end agent frameworks.",
+    "char_start": 32929,
+    "char_end": 33138,
+    "sentence_index": 177,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec014",
+    "text": "These innovations aim to evolve agents from passive executors into adaptive planners capable of robust error recovery and strategic exploration.",
+    "char_start": 33139,
+    "char_end": 33283,
+    "sentence_index": 178,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec014",
+    "text": "Regarding Reward Modeling and Credit Assignment, to bridge the gap between sparse outcome rewards and complex multi-step reasoning, the community has established a comprehensive reward-optimization closed loop.",
+    "char_start": 33285,
+    "char_end": 33495,
+    "sentence_index": 179,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec014",
+    "text": "Addressing the sparsity of success signals in long chains, PORTool integrates quality signals generated by tree search into policy gradient updates, while Tool-Star designs hierarchical reward mechanisms to resolve credit assignment issues in multi-step reasoning.",
+    "char_start": 33496,
+    "char_end": 33760,
+    "sentence_index": 180,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec014",
+    "text": "Moving toward systematic reward engineering, ToolRL conducts a comprehensive study on reward granularity, proposing principled reward designs that surpass simple pass/fail metrics to stabilize training.",
+    "char_start": 33761,
+    "char_end": 33963,
+    "sentence_index": 181,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec014",
+    "text": "Similarly, ToolRM trains a dedicated Outcome Reward Model to evaluate tool-based reasoning, outperforming general-purpose verifiers in complex scenarios.",
+    "char_start": 33964,
+    "char_end": 34117,
+    "sentence_index": 182,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec014",
+    "text": "To reinforce intermediate steps,\nWei et al.",
+    "char_start": 34118,
+    "char_end": 34161,
+    "sentence_index": 183,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec014",
+    "text": "introduce verifiable turn-level rewards, extending RL algorithms to handle fine-grained credit assignment in multi-turn search tasks.",
+    "char_start": 34162,
+    "char_end": 34295,
+    "sentence_index": 184,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec014",
+    "text": "In terms of Policy Optimization and Algorithm Adaptation, standard RL algorithms often struggle to adapt to drastic dynamic shifts in agent tasks.",
+    "char_start": 34297,
+    "char_end": 34443,
+    "sentence_index": 185,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec014",
+    "text": "DeepAgent explores ToolPO (Tool Policy Optimization), which addresses the high cost and instability of training with real APIs by utilizing an LLM-simulated API environment for low-cost exploration.",
+    "char_start": 34444,
+    "char_end": 34642,
+    "sentence_index": 186,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec014",
+    "text": "It simultaneously introduces Fine-grained Advantage Attribution, precisely allocating reward signals to the specific tokens triggering tool invocations, thereby significantly enhancing stability in open-set tool retrieval.",
+    "char_start": 34643,
+    "char_end": 34865,
+    "sentence_index": 187,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec014",
+    "text": "Addressing the limitations of trajectory-level rewards in GRPO, GTPO innovatively adopts turn-level reward distribution and return-based advantage estimation, effectively preventing training stagnation during iterative reasoning.",
+    "char_start": 34866,
+    "char_end": 35095,
+    "sentence_index": 188,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec014",
+    "text": "Furthermore, to mitigate Entropy Spikes following tool interactions, ARPO incorporates an entropy-based adaptive rollback mechanism to dynamically balance global exploration and local exploitation.",
+    "char_start": 35096,
+    "char_end": 35293,
+    "sentence_index": 189,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec014",
+    "text": "RAGEN identifies the Echo Trap phenomenon specific to agent training and proposes the StarPO algorithm to stabilize the learning process through trajectory-level optimization.",
+    "char_start": 35294,
+    "char_end": 35469,
+    "sentence_index": 190,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec014",
+    "text": "Concerning End-to-End Frameworks, ToRL demonstrates that RL can directly extend tool-use capabilities from a Base Model without a prerequisite SFT phase, unlocking emergent behaviors such as self-regulation.",
+    "char_start": 35471,
+    "char_end": 35678,
+    "sentence_index": 191,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec014",
+    "text": "Finally, Agent-R1 comprehensively defines LLM Agents by extending the Markov Decision Process (MDP) framework, providing a modular and scalable system for end-to-end reinforcement learning.",
+    "char_start": 35679,
+    "char_end": 35868,
+    "sentence_index": 192,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec015",
+    "text": "The security landscape of tool-augmented agents has shifted from mere malicious text generation to the execution of harmful actions within digital or physical environments.",
+    "char_start": 35870,
+    "char_end": 36042,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec015",
+    "text": "While single-tool vulnerabilities\u2014such as indirect prompt injection , unauthorized execution and privilege escalation , privacy leakage, and tool-assisted attacks \u2014are well-documented, the transition to multi-tool orchestration significantly expands the system\u2019s attack surface.",
+    "char_start": 36043,
+    "char_end": 36321,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec015",
+    "text": "In multi-tool systems, security is no longer determined by the legitimacy of isolated API calls but by complex, cross-tool, and cross-timestep execution structures.",
+    "char_start": 36322,
+    "char_end": 36486,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec015",
+    "text": "These interactions breach traditional trust boundaries, where localized malicious inputs or model hallucinations are rarely isolated incidents.",
+    "char_start": 36487,
+    "char_end": 36630,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec015",
+    "text": "Instead, they often induce \"state pollution\" through the tool-chain context, leading to cascading propagation of attacks.",
+    "char_start": 36631,
+    "char_end": 36752,
+    "sentence_index": 197,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec015",
+    "text": "This chapter investigates the novel security challenges and defense mechanisms inherent in multi-tool orchestration.",
+    "char_start": 36753,
+    "char_end": 36869,
+    "sentence_index": 198,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec015",
+    "text": "Based on the topological execution logic of tool chains, we categorize multi-tool security risks into two distinct yet interrelated dimensions: (1) security risks in parallel execution, and (2) security risks in long-horizon tool chains.",
+    "char_start": 36870,
+    "char_end": 37107,
+    "sentence_index": 199,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec016",
+    "text": "In multi-tool orchestration architectures, parallel execution significantly enhances agent efficiency in complex task processing; however, it introduces latent security vulnerabilities.",
+    "char_start": 37109,
+    "char_end": 37294,
+    "sentence_index": 200,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec016",
+    "text": "While parallelization is relatively safe for side-effect-free read operations (e.g., web retrieval, information queries), the integration of write operations (e.g., database updates, transaction commits) within tool chains risks race conditions, leading to system state inconsistencies.",
+    "char_start": 37295,
+    "char_end": 37581,
+    "sentence_index": 201,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec016",
+    "text": "Consequently, the central challenge of multi-tool parallelization lies in maintaining state integrity within concurrent environments.",
+    "char_start": 37582,
+    "char_end": 37715,
+    "sentence_index": 202,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec016",
+    "text": "Recent work shows that this risk is not merely an implementation detail.",
+    "char_start": 37717,
+    "char_end": 37789,
+    "sentence_index": 203,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec016",
+    "text": "Les Dissonances demonstrates that when LLMs invoke interdependent tools concurrently, malicious payloads can propagate across tool boundaries and contaminate later execution .",
+    "char_start": 37790,
+    "char_end": 37965,
+    "sentence_index": 204,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec016",
+    "text": "Related analysis of stateful tool use in multi-turn dialogue finds that reliability failures often follow a recognizable path from parameter drift to state contamination and then to irrecoverable downstream calls .",
+    "char_start": 37966,
+    "char_end": 38180,
+    "sentence_index": 205,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec016",
+    "text": "SagaLLM makes this issue explicit by modeling tool use as bounded workflows with transactional semantics and rollback logic .",
+    "char_start": 38181,
+    "char_end": 38306,
+    "sentence_index": 206,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec016",
+    "text": "Taken together, these studies suggest that safe parallelism requires more than better prompting; it requires explicit control over side effects and execution scope.",
+    "char_start": 38307,
+    "char_end": 38471,
+    "sentence_index": 207,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec016",
+    "text": "To address these challenges, recent studies have begun to introduce transaction management paradigms from distributed systems and software engineering into LLM orchestration frameworks.",
+    "char_start": 38473,
+    "char_end": 38658,
+    "sentence_index": 208,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec016",
+    "text": "Current solutions demonstrate an evolutionary trajectory from \"pre-execution static constraints\" to \"in-execution transaction management\", and ultimately to \"post-execution dynamic verification\":\n\nPre-execution Static Constraints:\nIntercepting potentially conflicting actions before tools are concurrently triggered serves as the first line of defense.",
+    "char_start": 38659,
+    "char_end": 39011,
+    "sentence_index": 209,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec016",
+    "text": "At the system implementation level, the AARM specification and AgentSpec propose interception-based runtime enforcement mechanisms.",
+    "char_start": 39012,
+    "char_end": 39143,
+    "sentence_index": 210,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec016",
+    "text": "These approaches block illegal concurrent requests by deeply injecting intent alignment and security policies prior to execution.",
+    "char_start": 39144,
+    "char_end": 39273,
+    "sentence_index": 211,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec016",
+    "text": "For complex environments, Self-Verification Sampling preemptively filters out high-risk write operations through pre-execution self-verification, thereby mitigating the catastrophic probability of irreversible post-write scenarios.",
+    "char_start": 39274,
+    "char_end": 39505,
+    "sentence_index": 212,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec016",
+    "text": "In-execution Transaction Management:\nSince concurrent errors are inherently difficult to eradicate entirely during execution, researchers have begun endowing agents with transaction semantics.",
+    "char_start": 39507,
+    "char_end": 39699,
+    "sentence_index": 213,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec016",
+    "text": "SagaLLM and the recent Atomix framework have made breakthroughs by treating tool invocations as bounded workflows.",
+    "char_start": 39700,
+    "char_end": 39814,
+    "sentence_index": 214,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec016",
+    "text": "Atomix introduces epoch-based concurrency isolation and resource frontier tracking , allowing harmless side effects to undergo a delayed commit while enabling secure rollbacks via compensation logic in the event of an abort.",
+    "char_start": 39815,
+    "char_end": 40039,
+    "sentence_index": 215,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec016",
+    "text": "This design mirrors the localized checkpoint mechanism in the Generator-Assistant framework , which strictly confines the impact of errors to localized scopes.",
+    "char_start": 40040,
+    "char_end": 40199,
+    "sentence_index": 216,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec016",
+    "text": "Post-execution Dynamic Verification:\nTo address anomalous scenarios beyond the reach of static constraints, post-execution verification logic must be integrated into the system to form a closed-loop feedback mechanism.",
+    "char_start": 40201,
+    "char_end": 40419,
+    "sentence_index": 217,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec016",
+    "text": "CRITIC achieves self-correction through interactive critiquing; VerifiAgent engineers verification logic into a collaborative Verifier-Executor component architecture; meanwhile, DVR approaches the issue from a graph-structured scheduling perspective, seamlessly embedding verification subgraphs into the primary execution graph.",
+    "char_start": 40420,
+    "char_end": 40749,
+    "sentence_index": 218,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec016",
+    "text": "This provides a universal template for the security auditing of parallel execution.",
+    "char_start": 40750,
+    "char_end": 40833,
+    "sentence_index": 219,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec016",
+    "text": "[t]\n\nRepresentative safety risks and defense mechanisms for multi-tool agents.",
+    "char_start": 40835,
+    "char_end": 40913,
+    "sentence_index": 220,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec016",
+    "text": "4.5pt\n1.05\n\n@ > p 2.3cm > p 3.7cm > X@\n\nRisk & Failure Mode & Defense\n\nConcurrent Conflict\n& Race conditions, write interference, and corrupted shared states.",
+    "char_start": 40915,
+    "char_end": 41073,
+    "sentence_index": 221,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec016",
+    "text": "& Dependency-aware scheduling, policy gating, and pre-dispatch verification\n.",
+    "char_start": 41074,
+    "char_end": 41151,
+    "sentence_index": 222,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec016",
+    "text": "Partial Commit\n& Irreversible side effects leave globally inconsistent states.",
+    "char_start": 41153,
+    "char_end": 41231,
+    "sentence_index": 223,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec016",
+    "text": "& Transaction-style isolation, delayed commit, compensation, and rollback\n.",
+    "char_start": 41232,
+    "char_end": 41307,
+    "sentence_index": 224,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec016",
+    "text": "Post-Execution Anomaly\n& Safety violations emerge only after tool execution.",
+    "char_start": 41309,
+    "char_end": 41385,
+    "sentence_index": 225,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec016",
+    "text": "& Critic/verifier-based auditing and execution-time checking\n.",
+    "char_start": 41386,
+    "char_end": 41448,
+    "sentence_index": 226,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec016",
+    "text": "Memory/Plan Poisoning\n& Malicious context persists across steps and reactivates later.",
+    "char_start": 41450,
+    "char_end": 41536,
+    "sentence_index": 227,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec016",
+    "text": "& Trajectory-level verification, meta-verification, and evidence-based rejection\n.",
+    "char_start": 41537,
+    "char_end": 41619,
+    "sentence_index": 228,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec016",
+    "text": "Long-Horizon Drift\n& Error accumulation, state pollution, and confused-deputy behavior.",
+    "char_start": 41621,
+    "char_end": 41708,
+    "sentence_index": 229,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec016",
+    "text": "& Lookahead search, rollback, and trace diagnosis\n.",
+    "char_start": 41709,
+    "char_end": 41760,
+    "sentence_index": 230,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec017",
+    "text": "In long-horizon tool chains, security threats manifest as stealthy propagation and cascading amplification across temporal dimensions.",
+    "char_start": 41762,
+    "char_end": 41896,
+    "sentence_index": 231,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec017",
+    "text": "As agents extend multi-step invocation sequences, the continuous introduction of intermediate variables and parameter bindings renders the system susceptible to Agent Drift .",
+    "char_start": 41897,
+    "char_end": 42071,
+    "sentence_index": 232,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec017",
+    "text": "Here, the pollution of the context window and the accumulation of autoregressive errors cause behavioral patterns to deviate from established safety baselines.",
+    "char_start": 42072,
+    "char_end": 42231,
+    "sentence_index": 233,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec017",
+    "text": "In adversarial settings, this \"contextual drift\" evolves into destructive Cross-Tool State Contamination.",
+    "char_start": 42232,
+    "char_end": 42337,
+    "sentence_index": 234,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec017",
+    "text": "Once malicious data are introduced into intermediate results, its indiscriminate reuse in subsequent steps triggers a cascading failure that eventually collapses the trust boundaries of the system.",
+    "char_start": 42338,
+    "char_end": 42535,
+    "sentence_index": 235,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec017",
+    "text": "Centering on this temporal vulnerability, recent literature identifies novel attack modes unique to long-horizon orchestration.",
+    "char_start": 42537,
+    "char_end": 42664,
+    "sentence_index": 236,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec017",
+    "text": "Attacks have evolved beyond single-step manipulation to sophisticated memory poisoning and plan injection.",
+    "char_start": 42665,
+    "char_end": 42771,
+    "sentence_index": 237,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec017",
+    "text": "For instance, MINJA-style attacks inject malicious content through apparently benign read operations and allow it to persist in memory until it influences later actions .",
+    "char_start": 42772,
+    "char_end": 42942,
+    "sentence_index": 238,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec017",
+    "text": "Plan Injection attacks instead manipulate the structure of multi-step reasoning itself, steering the agent around guardrails without requiring an obviously malicious final command .",
+    "char_start": 42943,
+    "char_end": 43124,
+    "sentence_index": 239,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec017",
+    "text": "Butterfly Effects in Toolchains further shows how small upstream deviations can be amplified through variable binding and parameter reuse, turning downstream tools into confused deputies whose unsafe behavior is rooted in much earlier steps .",
+    "char_start": 43125,
+    "char_end": 43367,
+    "sentence_index": 240,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec017",
+    "text": "To mitigate malicious accumulation and state hijacking during long-horizon execution, defense mechanisms are transitioning from single-step result filtering to trajectory-level dynamic intervention and closed-loop auditing.",
+    "char_start": 43369,
+    "char_end": 43592,
+    "sentence_index": 241,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec017",
+    "text": "Reflexion provides an early form of revision through verbal feedback memory, but later work places greater emphasis on execution-grounded verification .",
+    "char_start": 43593,
+    "char_end": 43745,
+    "sentence_index": 242,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec017",
+    "text": "TRICE, Tool-MVR, and ToolReflection use execution evidence, multi-agent verification, or structured returns to identify and correct errors over longer trajectories .",
+    "char_start": 43746,
+    "char_end": 43911,
+    "sentence_index": 243,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec017",
+    "text": "LATS combines search with rollback and circuit-breaking behavior when downstream risks become visible .",
+    "char_start": 43912,
+    "char_end": 44015,
+    "sentence_index": 244,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec017",
+    "text": "Other systems focus on diagnosis rather than rejection alone: AgentDoG emphasizes root-cause attribution across the full execution chain , while Thought-Aligner intervenes earlier by correcting risky internal reasoning before unsafe actions are produced .",
+    "char_start": 44016,
+    "char_end": 44271,
+    "sentence_index": 245,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec017",
+    "text": "The overall direction is toward making long-horizon execution inspectable, interruptible, and repairable.",
+    "char_start": 44272,
+    "char_end": 44377,
+    "sentence_index": 246,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec017",
+    "text": "In addition to introducing dynamic auditing during the inference phase, specialized training methodologies tailored for long-horizon multi-tool security are crucial for raising the upper bound of defense from the foundational model level.",
+    "char_start": 44379,
+    "char_end": 44617,
+    "sentence_index": 247,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec017",
+    "text": "Because traditional RLHF based on single-turn dialogues struggles to cover the complex state space of long-horizon tool chains, model alignment is evolving toward encompassing the entire multi-step invocation trajectory.",
+    "char_start": 44618,
+    "char_end": 44838,
+    "sentence_index": 248,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec017",
+    "text": "The latest agent security alignment frameworks introduce customized Sandbox environments for reinforcement learning , compelling models to execute a \"perform-reject-verify\" confirmation mechanism when confronted with ambiguous or malicious inputs.",
+    "char_start": 44839,
+    "char_end": 45086,
+    "sentence_index": 249,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec017",
+    "text": "Concurrently, to combat memory pollution induced by long-horizon interactions, Episodic Memory Consolidation mechanisms are being employed to periodically compress interaction histories and purge potential malicious payloads.",
+    "char_start": 45087,
+    "char_end": 45312,
+    "sentence_index": 250,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec017",
+    "text": "By integrating adversarial tool chains generated via automated red teaming as negative samples for alignment fine-tuning, the underlying LLMs' resilience against interference and the robustness of their parameter extraction\u2014especially when facing unreliable memories and malicious intermediate states\u2014are fundamentally enhanced.",
+    "char_start": 45313,
+    "char_end": 45641,
+    "sentence_index": 251,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec018",
+    "text": "The integration of external tools has substantially enhanced the capability of agents to address complex tasks.",
+    "char_start": 45643,
+    "char_end": 45754,
+    "sentence_index": 252,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec018",
+    "text": "Nevertheless, the reliance on multi-step inference and sequential tool invocation introduces significant efficiency bottlenecks.",
+    "char_start": 45755,
+    "char_end": 45883,
+    "sentence_index": 253,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec018",
+    "text": "This chapter reviews emerging optimization strategies from two primary perspectives: mitigating latency in multi-tool chains ( ) and managing tool call cost and inference budget ( ).",
+    "char_start": 45884,
+    "char_end": 46066,
+    "sentence_index": 254,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec019",
+    "text": "The strict dependency of LLM inference on the completion and return of previous tool results leads to a linear or even exponential accumulation of end-to-end system latency with the number of task steps .",
+    "char_start": 46068,
+    "char_end": 46272,
+    "sentence_index": 255,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec019",
+    "text": "To address this efficiency bottleneck, recent research has focused on refactoring the execution mechanism, evolving into three core optimization paradigms: parallel execution ( ), asynchronous decoupling ( ), and speculative reasoning ( ).",
+    "char_start": 46273,
+    "char_end": 46512,
+    "sentence_index": 256,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec020",
+    "text": "To address the cumulative delays and inefficiencies caused by sequential execution in long-chain multi-tool calls, parallel execution has become a key optimization direction.",
+    "char_start": 46514,
+    "char_end": 46688,
+    "sentence_index": 257,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec020",
+    "text": "Its core idea is to decompose tasks, identify subtasks with no interdependencies, and execute them simultaneously.",
+    "char_start": 46689,
+    "char_end": 46803,
+    "sentence_index": 258,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec020",
+    "text": "SoT accelerates inference by expanding multiple skeleton branches in parallel instead of following a fully sequential decoding pattern.",
+    "char_start": 46804,
+    "char_end": 46939,
+    "sentence_index": 259,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec020",
+    "text": "At the tool level, LLMCompiler explicitly plans task dependencies so that independent tool calls can run concurrently.",
+    "char_start": 46940,
+    "char_end": 47058,
+    "sentence_index": 260,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec020",
+    "text": "For longer workflows, M1-Parallel further decomposes sequential tasks into independent subtasks coordinated by multiple agents.",
+    "char_start": 47059,
+    "char_end": 47186,
+    "sentence_index": 261,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec020",
+    "text": "Parallelized planning-acting extend the same idea by overlapping planning and execution, allowing later steps to be prepared while current actions are still running.",
+    "char_start": 47187,
+    "char_end": 47352,
+    "sentence_index": 262,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec020",
+    "text": "Taken together, these approaches show that parallel execution is most effective when dependency structure is explicit and side effects are sufficiently controlled to avoid invalid concurrent actions.",
+    "char_start": 47353,
+    "char_end": 47552,
+    "sentence_index": 263,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec021",
+    "text": "Traditional agent architectures generally follow a synchronous observation-thinking-action loop.",
+    "char_start": 47554,
+    "char_end": 47650,
+    "sentence_index": 264,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec021",
+    "text": "LLMs must block and wait for I/O results after calling external tools.",
+    "char_start": 47651,
+    "char_end": 47721,
+    "sentence_index": 265,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec021",
+    "text": "This coupling of computation and execution leads to severe latency accumulation .",
+    "char_start": 47722,
+    "char_end": 47803,
+    "sentence_index": 266,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec021",
+    "text": "To break this serial bottleneck, recent studies have proposed asynchronously decoupling the planning and acting of agents.",
+    "char_start": 47804,
+    "char_end": 47926,
+    "sentence_index": 267,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec021",
+    "text": "To overcome the I/O blocking limitations and strict serial dependencies faced by traditional agents during long toolchain calls, asynchronous decoupling significantly improves concurrent throughput by separating computationally intensive inference planning from I/O-intensive tool execution at the system architecture level.",
+    "char_start": 47927,
+    "char_end": 48251,
+    "sentence_index": 268,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec021",
+    "text": "In recent years, as models have been increasingly applied in dynamic environments, this decoupling has gradually evolved into the core foundation for environment-aware task planning and multi-node decentralized inference.",
+    "char_start": 48252,
+    "char_end": 48473,
+    "sentence_index": 269,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec021",
+    "text": "For example, is proposed that completely decouples macro-level environment-aware planning from low-level action execution, and uses a centralized agent memory system for asynchronous state synchronization, thoroughly mitigating inference latency caused by dynamic environmental changes.",
+    "char_start": 48474,
+    "char_end": 48760,
+    "sentence_index": 270,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec021",
+    "text": "When dealing with complex constraint logic, MACI has demonstrated that separating task planning from external tool verification effectively prevents attention shift and constraint drift in large models during long-term calls.",
+    "char_start": 48761,
+    "char_end": 48986,
+    "sentence_index": 271,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec021",
+    "text": "This decoupling paradigm, also applied in cybersecurity attack and defense and GUI, Incalmo reveals that decoupling macro-level strategic intent from low-level shell script execution is key to preventing agents from getting stuck in local optima.",
+    "char_start": 48987,
+    "char_end": 49233,
+    "sentence_index": 272,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec021",
+    "text": "Temac specifically designed a Planner-Actor heterogeneous mechanism, using independent executors to asynchronously call interface probing tools.",
+    "char_start": 49234,
+    "char_end": 49378,
+    "sentence_index": 273,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec022",
+    "text": "Unlike asynchronous decoupling, which optimizes from the system architecture perspective, Speculative Execution borrows the branch prediction concept from computer architecture, aiming to mask waiting latency in long toolchains through algorithmic forward prediction.",
+    "char_start": 49380,
+    "char_end": 49647,
+    "sentence_index": 274,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec022",
+    "text": "This mechanism is underpinned by speculative decoding , which allows the model to speculatively generate subsequent action identifiers without waiting for a complete autoregressive loop.",
+    "char_start": 49648,
+    "char_end": 49834,
+    "sentence_index": 275,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec022",
+    "text": "In the tool invocation domain, ReWoo is a typical example of this approach.",
+    "char_start": 49835,
+    "char_end": 49910,
+    "sentence_index": 276,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "By decoupling inference from observation, it speculatively generates a complete execution graph containing expected tool outputs, committing execution only when the speculation is correct, thus significantly reducing redundant latency when interacting with external tool environments.",
+    "char_start": 49911,
+    "char_end": 50195,
+    "sentence_index": 277,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec022",
+    "text": "To improve the accuracy of speculation, LATS introduces a speculative simulation mechanism based on lookahead search.",
+    "char_start": 50196,
+    "char_end": 50313,
+    "sentence_index": 278,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec022",
+    "text": "Before actually invoking an irreversible API, the agent infers and evaluates multiple possible tool interaction trajectories.",
+    "char_start": 50314,
+    "char_end": 50439,
+    "sentence_index": 279,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec022",
+    "text": "Similarly, ToT utilizes speculative branch exploration to predict the final benefits of different tool combinations, significantly reducing the backtracking time cost caused by tool invocation failures in complex tasks.",
+    "char_start": 50440,
+    "char_end": 50659,
+    "sentence_index": 280,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec022",
+    "text": "For retrieval tools that suffer from particularly high latency, REST proposes a retrieval-based speculative decoding framework that can predict the subsequent generated content of a large model in advance based on cached results from an external knowledge base.",
+    "char_start": 50660,
+    "char_end": 50921,
+    "sentence_index": 281,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec022",
+    "text": "At the engineering implementation and pipeline optimization level, the DSPy framework uses a compile-level declarative pipeline to speculatively route and merge multiple tool call requests, minimizing runtime latency across multiple toolchains without sacrificing task success rate.",
+    "char_start": 50922,
+    "char_end": 51204,
+    "sentence_index": 282,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec023",
+    "text": "Besides time latency, multi-tool agent invocation also faces high inference costs and limited context budgets.",
+    "char_start": 51206,
+    "char_end": 51316,
+    "sentence_index": 283,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec023",
+    "text": "Frequent invocation of large-parameter models to process simple tools or filling massive tool descriptions into the context all at once leads to wasted resources and performance degradation .",
+    "char_start": 51317,
+    "char_end": 51508,
+    "sentence_index": 284,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec023",
+    "text": "To address these pain points, existing research mainly focuses on optimization along three core dimensions: dynamic tool retrieval ( ), adaptive model routing ( ), and intelligent caching and memory ( ).",
+    "char_start": 51509,
+    "char_end": 51712,
+    "sentence_index": 285,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec024",
+    "text": "Faced with hundreds or thousands of external tool libraries, hardcoding all API descriptions into prompts at once not only consumes a huge input token budget but also easily leads to the Lost in the Middle phenomenon caused by long texts .",
+    "char_start": 51714,
+    "char_end": 51953,
+    "sentence_index": 286,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec024",
+    "text": "To efficiently organize tools within a limited context window, the current mainstream paradigm has shifted to query-based dynamic retrieval and representation compression.",
+    "char_start": 51954,
+    "char_end": 52125,
+    "sentence_index": 287,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec024",
+    "text": "For example, the ToolLLM framework introduces a neural API retrieval engine.",
+    "char_start": 52126,
+    "char_end": 52202,
+    "sentence_index": 288,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec024",
+    "text": "Before executing a task, the agent retrieves the Top-K most relevant tool descriptions based on the user's instructions, thus avoiding irrelevant tools crowding out the context space.",
+    "char_start": 52203,
+    "char_end": 52386,
+    "sentence_index": 289,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec024",
+    "text": "For ultra-large API libraries with tens of thousands of entries, AnyTool further designs a hierarchical API retrieval mechanism, using a categorized directory tree for progressive filtering, significantly reducing the retrieval cost and context overhead of a single call.",
+    "char_start": 52387,
+    "char_end": 52658,
+    "sentence_index": 290,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec024",
+    "text": "Furthermore, at the representation compression level, ToolkenGPT proposes an innovative vocabulary expansion strategy that compresses and maps the lengthy tool invocation logic and its parameter descriptions into a single special term.",
+    "char_start": 52659,
+    "char_end": 52894,
+    "sentence_index": 291,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec024",
+    "text": "This method allows the agent to trigger the tool simply by predicting the corresponding Toolken at the output, fundamentally bypassing the rigid limitation of using lengthy descriptions as input prompts.",
+    "char_start": 52895,
+    "char_end": 53098,
+    "sentence_index": 292,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec025",
+    "text": "To control computational costs, multi-agent architectures have gradually abandoned the crude approach of a single giant model scheduling everything, shifting towards a computational allocation strategy that dynamically matches model size to task difficulty .",
+    "char_start": 53100,
+    "char_end": 53358,
+    "sentence_index": 293,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec025",
+    "text": "Model cascading mechanisms, exemplified by FrugalGPT , prioritize low-cost models, only routing to expensive large models when confidence is insufficient, significantly reducing budget without sacrificing accuracy.",
+    "char_start": 53359,
+    "char_end": 53573,
+    "sentence_index": 294,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec025",
+    "text": "With further refinement, RouteLLM trained a dedicated network that adaptively distributes requests among models of different sizes based on task complexity.",
+    "char_start": 53574,
+    "char_end": 53730,
+    "sentence_index": 295,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec025",
+    "text": "In multi-step tasks, SwiftSage borrows from the human dual-system approach, layering its architecture into lightweight edge modules handling routine operations and a central large model responsible for complex inference, achieving globally optimal allocation of computational resources.",
+    "char_start": 53731,
+    "char_end": 54017,
+    "sentence_index": 296,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec026",
+    "text": "In complex environments with high-frequency interactions, repeated erroneous attempts and highly similar API requests are the core factors consuming inference budgets, while building a structured Agent Memory and caching layer provides key support for breaking this bottleneck.",
+    "char_start": 54019,
+    "char_end": 54296,
+    "sentence_index": 297,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec026",
+    "text": "Firstly, regarding reducing trial-and-error costs, Reflexion framework proposes an efficient alternative that does not require updating model weights.",
+    "char_start": 54297,
+    "char_end": 54447,
+    "sentence_index": 298,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec026",
+    "text": "Through Verbal Reinforcement Learning, it allows the agent to reflect on its failures and persistently store the resulting improvement strategies in Episodic Memory.",
+    "char_start": 54448,
+    "char_end": 54613,
+    "sentence_index": 299,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec026",
+    "text": "In subsequent attempts, the agent can accurately avoid historical errors by calling this structured memory, significantly reducing the number of interaction rounds and total computational overhead required to reach a successful task state.",
+    "char_start": 54614,
+    "char_end": 54853,
+    "sentence_index": 300,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec026",
+    "text": "To address the memory capacity bottleneck in long-cycle tasks, MemGPT introduces the concept of virtual memory management from operating systems into large models.",
+    "char_start": 54854,
+    "char_end": 55017,
+    "sentence_index": 301,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec026",
+    "text": "By autonomously paging and swapping memory between the fast context and external database, the agent can maintain an infinite memory length with an extremely low token budget.",
+    "char_start": 55018,
+    "char_end": 55193,
+    "sentence_index": 302,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec026",
+    "text": "Furthermore, at the level of API call result reuse, semantic caching systems such as GPTCache perform vectorized comparison of input queries and tool parameters.",
+    "char_start": 55194,
+    "char_end": 55355,
+    "sentence_index": 303,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec026",
+    "text": "When semantically similar duplicate requests are detected, historical results are directly returned from the local machine, completely blocking redundant LLM inference and external network request billing.",
+    "char_start": 55356,
+    "char_end": 55561,
+    "sentence_index": 304,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec027",
+    "text": "In complex open-domain scenarios, multi-tool agents are gradually transitioning from closed, static API executions to dynamic interactions within real-world environments .",
+    "char_start": 55563,
+    "char_end": 55734,
+    "sentence_index": 305,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec027",
+    "text": "However, the inherent unpredictability of these environments frequently leads to functional incompleteness, wherein predefined toolkits fail to fully satisfy emerging task requirements .",
+    "char_start": 55735,
+    "char_end": 55921,
+    "sentence_index": 306,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec027",
+    "text": "This chapter systematically reviews the challenges and corresponding solutions regarding the tool completeness of multi-tool agents.",
+    "char_start": 55922,
+    "char_end": 56054,
+    "sentence_index": 307,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec027",
+    "text": "These solutions are conceptualized as a continuous cognitive loop comprising problem diagnosis, dynamic compensation, and long-term evolution.",
+    "char_start": 56055,
+    "char_end": 56197,
+    "sentence_index": 308,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec027",
+    "text": "Specifically, this loop progresses sequentially through three core phases.",
+    "char_start": 56198,
+    "char_end": 56272,
+    "sentence_index": 309,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec027",
+    "text": "The first phase is capability boundary perception ( ), designed to identify tool deficiencies and operational failures.",
+    "char_start": 56273,
+    "char_end": 56392,
+    "sentence_index": 310,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec027",
+    "text": "The second phase is autonomous tool expansion ( ) is achieved through code generation and tool synthesis.",
+    "char_start": 56393,
+    "char_end": 56498,
+    "sentence_index": 311,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec027",
+    "text": "Ultimately, the process culminates in open environment adaptation ( ), which leverages experience and memory mechanisms for sustained operation.",
+    "char_start": 56499,
+    "char_end": 56643,
+    "sentence_index": 312,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec027",
+    "text": "[t]\n\nfigures/Completeness.pdf\nOverview of the completeness evolution in multi-tool agents.",
+    "char_start": 56645,
+    "char_end": 56735,
+    "sentence_index": 313,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec027",
+    "text": "The framework characterizes functional completeness as a continual process with three sequential yet interrelated stages: capability boundary perception, which identifies missing tools, ambiguous intents, and parameter anomalies through clarification and safe termination; autonomous tool expansion, which compensates for capability gaps via tool creation, tool synthesis, API integration, and composite skill construction; and open environment adaptation, which consolidates successful tools and interaction traces into reusable experience memory to support dynamic updating and long-term evolution in changing environments.",
+    "char_start": 56736,
+    "char_end": 57361,
+    "sentence_index": 314,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec028",
+    "text": "The logical starting point for the completeness of a multi-tool agent lies in its ability to accurately identify intent denial and detect anomalies, that is, to perceive its own capability boundaries.",
+    "char_start": 57363,
+    "char_end": 57563,
+    "sentence_index": 315,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec028",
+    "text": "Traditional language models, when faced with tasks beyond the capabilities of the toolkit, are prone to hallucinate tools, creating fictitious API nodes or parameter formats.",
+    "char_start": 57564,
+    "char_end": 57738,
+    "sentence_index": 316,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec028",
+    "text": "Therefore, accurately identifying incomplete conditions is the core of ensuring system robustness.",
+    "char_start": 57739,
+    "char_end": 57837,
+    "sentence_index": 317,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec028",
+    "text": "Several studies have already quantified the limitations of models in terms of the boundaries of perception capabilities.",
+    "char_start": 57838,
+    "char_end": 57958,
+    "sentence_index": 318,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec028",
+    "text": "The FAIL-TALMS demonstrates that large language models frequently lack boundary awareness when dealing with ambiguous intentions or missing tools, rendering them prone to blind trial and error.",
+    "char_start": 57959,
+    "char_end": 58152,
+    "sentence_index": 319,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec028",
+    "text": "Furthermore, ToolHaystack reveals that during extended complex interactions involving critical information deficits, models are highly susceptible to parameter hallucinations induced by historical noise.",
+    "char_start": 58153,
+    "char_end": 58356,
+    "sentence_index": 320,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec028",
+    "text": "To compensate for these deficiencies, the design paradigm of multi-tool systems is shifting from passive execution toward active intervention through two primary approaches.",
+    "char_start": 58357,
+    "char_end": 58530,
+    "sentence_index": 321,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec028",
+    "text": "The first approach involves proactive clarification.",
+    "char_start": 58531,
+    "char_end": 58583,
+    "sentence_index": 322,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec028",
+    "text": "Frameworks such as AskToAct exemplify this by dynamically triggering multi-turn clarification mechanisms upon detecting missing parameters.",
+    "char_start": 58584,
+    "char_end": 58723,
+    "sentence_index": 323,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec028",
+    "text": "This strategy prevents error accumulation via self-correction and substantially improves both the accuracy and efficiency of tool invocations.",
+    "char_start": 58724,
+    "char_end": 58866,
+    "sentence_index": 324,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec028",
+    "text": "The second approach relies on proactive termination to counteract the inherent action compulsion observed in large models.",
+    "char_start": 58867,
+    "char_end": 58989,
+    "sentence_index": 325,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec028",
+    "text": "By equipping agents with safety mechanisms to identify uncertainty and autonomously abort execution in high-risk or highly ambiguous environments, systems can achieve substantial security improvements with minimal task completion overhead.",
+    "char_start": 58990,
+    "char_end": 59229,
+    "sentence_index": 326,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec029",
+    "text": "When an agent successfully perceives that the existing toolset cannot meet its current needs, the system needs to undergo a paradigm shift from tool user to tool creator.",
+    "char_start": 59231,
+    "char_end": 59401,
+    "sentence_index": 327,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec029",
+    "text": "Autonomous tool extension leverages the low-level code generation capabilities or multi-step planning capabilities of large language models to dynamically construct temporary tools or composite skills at runtime, thereby filling capability gaps.",
+    "char_start": 59402,
+    "char_end": 59647,
+    "sentence_index": 328,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec029",
+    "text": "A breakthrough in this field lies in decoupling abstract reasoning from concrete execution.",
+    "char_start": 59648,
+    "char_end": 59739,
+    "sentence_index": 329,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec029",
+    "text": "The LATM framework innovatively divides agents into tool creators and tool users.",
+    "char_start": 59740,
+    "char_end": 59821,
+    "sentence_index": 330,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec029",
+    "text": "Faced with new tasks, creators generate customized tools by writing Python functions and automatically generate test cases for verification.",
+    "char_start": 59822,
+    "char_end": 59962,
+    "sentence_index": 331,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec029",
+    "text": "Once verified, the tools are executed by the user, achieving zero-sample tool creation.",
+    "char_start": 59963,
+    "char_end": 60050,
+    "sentence_index": 332,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec029",
+    "text": "The CREATOR follows the same logic, transforming abstract problems such as mathematical reasoning and table processing into concrete Python scripts, enabling agents to bypass the limitations of static APIs and autonomously build dynamic computation tools.",
+    "char_start": 60051,
+    "char_end": 60306,
+    "sentence_index": 333,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec029",
+    "text": "Besides creating tools from scratch, assembling fine-grained basic tools into high-level composite skills is also an effective path for capability extension.",
+    "char_start": 60307,
+    "char_end": 60464,
+    "sentence_index": 334,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec029",
+    "text": "RestGPT explores how to use large models to plan and connect multiple real RESTful APIs to complete complex long-range tasks, combining isolated network interfaces into super tools with macroscopic semantics.",
+    "char_start": 60465,
+    "char_end": 60673,
+    "sentence_index": 335,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec029",
+    "text": "ToolMaker further enhances this process.",
+    "char_start": 60674,
+    "char_end": 60714,
+    "sentence_index": 336,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec029",
+    "text": "Agents can not only dynamically synthesize tool code to solve specific subtasks, but also reuse these newly created tools within the current context, greatly improving invocation efficiency in multi-round interactions.",
+    "char_start": 60715,
+    "char_end": 60933,
+    "sentence_index": 337,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec029",
+    "text": "By using the code interpreter as a Meta-tool, Agents break free from the constraints of predefined interfaces, enabling on-demand dynamic scaling of capabilities.",
+    "char_start": 60934,
+    "char_end": 61096,
+    "sentence_index": 338,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec030",
+    "text": "If boundary awareness and tool expansion address the lack of completeness in a single task, then open environment adaptation aims to solve the evolution problem of multi-tool agents over time.",
+    "char_start": 61098,
+    "char_end": 61290,
+    "sentence_index": 339,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec030",
+    "text": "With the iterative updates of external environment API versions, the continuous integration of new tools, and the obsolescence of older tools, agents must possess memory mechanisms and lifelong learning capabilities to accumulate temporarily generated tools or successful call traces into long-term experience .",
+    "char_start": 61291,
+    "char_end": 61602,
+    "sentence_index": 340,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec030",
+    "text": "In this field, deeply integrating the agent's memory architecture with tool calling has become a mainstream trend.",
+    "char_start": 61604,
+    "char_end": 61718,
+    "sentence_index": 341,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec030",
+    "text": "Voyager first demonstrated this in an open environment.",
+    "char_start": 61719,
+    "char_end": 61774,
+    "sentence_index": 342,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec030",
+    "text": "Through continuous exploration and feedback, the agent stores successfully executed code into an ever-expanding skill library, which functions as an external memory based on a vector database.",
+    "char_start": 61775,
+    "char_end": 61967,
+    "sentence_index": 343,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec030",
+    "text": "When faced with new challenges, the agent can retrieve and combine historical skills, achieving a leapfrog evolution in tool usage capabilities.",
+    "char_start": 61968,
+    "char_end": 62112,
+    "sentence_index": 344,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec030",
+    "text": "The ExpeL framework systematizes the experience learning process.",
+    "char_start": 62113,
+    "char_end": 62178,
+    "sentence_index": 345,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec030",
+    "text": "The agent autonomously collects successful or failed tool call traces during training tasks and extracts cross-task insights using natural language, solidifying them into experience memory to effectively avoid repeating mistakes in subsequent API pitfalls.",
+    "char_start": 62179,
+    "char_end": 62435,
+    "sentence_index": 346,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec030",
+    "text": "In the dynamic addition and deletion adaptation of massive tools, ToolkenGPT represents each newly added tool as a special tool token.",
+    "char_start": 62437,
+    "char_end": 62571,
+    "sentence_index": 347,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec030",
+    "text": "When facing a new environment, the model only needs to optimize the embedding of these tool tokens, without needing to fine-tune the huge base model, achieving plug-and-play and lightweight adaptation of the tool library.",
+    "char_start": 62572,
+    "char_end": 62793,
+    "sentence_index": 348,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec030",
+    "text": "AppAgent demonstrates how, in the highly dynamic graphical interaction environment of smartphones, the agent updates its interaction memory for different apps through continuous exploration and clicks to adapt to UI or application version updates.",
+    "char_start": 62794,
+    "char_end": 63041,
+    "sentence_index": 349,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec030",
+    "text": "In summary, by introducing long-term and short-term experience pools and dynamic skill memory, the agent can transform the instantaneous tool creation of an individual into the system's experience inheritance, ultimately maintaining true functional completeness in an ever-evolving external environment.",
+    "char_start": 63042,
+    "char_end": 63345,
+    "sentence_index": 350,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec031",
+    "text": "The evaluation paradigm for multi-tool agents has undergone a decisive shift: from measuring isolated API invocation correctness to assessing system-level intelligence in sustaining, adapting, and repairing extended tool-use trajectories under structural, temporal, and environmental constraints.",
+    "char_start": 63347,
+    "char_end": 63643,
+    "sentence_index": 351,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec031",
+    "text": "This evolution reflects a fundamental recognition\u2014long-horizon tool orchestration is not merely the linear accumulation of atomic calls, but a holistic capability demanding topological reasoning, persistent state management, and dynamic adaptation.",
+    "char_start": 63644,
+    "char_end": 63892,
+    "sentence_index": 352,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec031",
+    "text": "Early benchmarks like API-Bank , MetaTool and ToolBench established foundational capabilities in intent detection and tool retrieval; however, contemporary research prioritizes four interdependent dimensions that define long-horizon intelligence of agents: (1) topological complexity of tool dependencies, (2) temporal scale of execution trajectories, (3) environmental dynamism during interaction, and (4) state persistence with self-correction mechanisms.",
+    "char_start": 63893,
+    "char_end": 64350,
+    "sentence_index": 353,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec031",
+    "text": "[htbp]\n\n-2mm\nTaxonomy of Long-Horizon Multi-Tool Benchmarks (2023--2026).",
+    "char_start": 64352,
+    "char_end": 64425,
+    "sentence_index": 354,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec031",
+    "text": "Benchmarks are categorized by four core dimensions defining long-horizon intelligence.",
+    "char_start": 64426,
+    "char_end": 64512,
+    "sentence_index": 355,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec031",
+    "text": "Key metrics include tool space size (Number of Tools), evaluation scale (Number of Instances).",
+    "char_start": 64513,
+    "char_end": 64607,
+    "sentence_index": 356,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec031",
+    "text": "Env Type : S =Static Dataset, I =Interactive Simulator, H =Human/Dual-Control, R =Real-World OS/Web.",
+    "char_start": 64608,
+    "char_end": 64708,
+    "sentence_index": 357,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec031",
+    "text": "-2mm\n\n3pt\n0.78\n\nC > X\n\n@ l | C | C | C | C | C @\n\nBenchmark & \\# Tools & \\# Instances & Year & Link & Env Type\n\nNESTFUL & 900+ & 1,800+ & 2024 & https://huggingface.co/datasets/ibm-research/nestful & S\n\nToolHop & 3,912 & 995 & 2025 & https://huggingface.co/datasets/bytedance-research/ToolHop & S\n\nTRAJECT-Bench & 1,228 & 5,670 & 2025 & https://huggingface.co/datasets/bigboss24/TRAJECT-Bench & I\n\nELT-Bench & 200 & 100 & 2025 & https://github.com/uiuc-kang-lab/ELT-Bench & I\n\nToolcomp & 11 & 493 & 2025 & https://github.com/vaskar-nath/toolcomp & S\n\nComplexFuncBench & 43 & 1,000 & 2025 & https://huggingface.co/papers/2501.10132 & S\n\nToolBench & 3,451 & 126,486 & 2023 & https://github.com/OpenBMB/ToolBench & R/I\n\nTaskBench & 103 & 28,271 & 2023 & https://github.com/microsoft/JARVIS & S\n\nSeal-Tools & 4,076 & 14,076 & 2024 & https://github.com/fairyshine/Seal-Tools & S\n\nm\\&m's & 33 & 4,427 & 2024 & https://mnms-project.github.io/ & I\n\nFuncBenchGen & Varies & Varies & 2025 & https://github.com/megagonlabs/FuncBenchGen & S\n\nM$^3$-Bench & 231 & 208 & 2025 & https://github.com/EtaYang10th/Open-M3-Bench & I\n\nMSCoRe & Varies & 126k+ & 2025 & https://huggingface.co/datasets/032564yn/MSCoRe & S\n\nMMAU & Varies & 3k+ & 2024 & https://github.com/apple/axlearn/tree/main/docs/research/mmau & S\n\nDICE-BENCH & 124 & 1607 & 2025 & https://huggingface.co/datasets/OfficerChul/DICE-BENCH & S\n\nTool Decathlon & 604 & 108 & 2025 & https://github.com/hkust-nlp/Toolathlon & R\n\nTRIP-Bench & 18 & 40+ & 2026 & https://arxiv.org/pdf/2602.01675 & R\n\nUltraHorizon & 400+ & 168 & 2025 & https://github.com/StarDewXXX/UltraHorizon & I\n\nAgentLongBench & Varies & Varies & 2026 & https://github.com/euReKa025/AgentLongBench & I\n\nDeepPlanning & 24 & 240 & 2026 & https://qwenlm.github.io/Qwen-Agent/en/benchmarks/deepplanning/ & I\n\nShortcutsBench & 1,414 & 7,627 & 2024 & https://eachsheep.space/ShortcutsBench/ & R\n\nHammerBench & 1,063 & 6,531 & 2024 & https://github.com/MadeAgents/HammerBench & I\n\n$ $-bench & 28 & 165 & 2024 & https://github.com/sierra-research/tau-bench & H\n\n$ ^2$-bench & 68 & 279 & 2025 & https://github.com/sierra-research/tau2-bench & H\n\nToolSandbox & 34 & 1,032 & 2024 & https://github.com/apple/ToolSandbox & I\n\nToolGym & 5,571 & 1,170 & 2026 & https://huggingface.co/ToolGym & I\n\nVitaBench & 66 & 400 & 2025 & https://github.com/meituan-longcat/vitabench & I\n\nOSWorld & Varies & 369 & 2024 & https://os-world.github.io/ & R\n\nAppWorld & 457 & 750 & 2024 & https://appworld.dev/ & I\n\nGTA & 14 & 229 & 2024 & https://github.com/open-compass/GTA & R\n\nCOMPASS & 18 & 281 & 2025 & https://github.com/sunnytqin/compass.git & I\n\nT1 & 14 & 13,500 & 2025 & https://github.com/CapitalOne-Research/T1 & S\n\nMTU-Bench & 136 & 159k & 2024 & https://github.com/MTU-Bench-Team/MTU-Bench & S\n\nWildToolBench & 1,600 & 1,024 & 2026 & https://github.com/yupeijei1997/WildToolBench & S/H\n\nWindows Agent Arena & Varies & 150+ & 2024 & https://microsoft.github.io/WindowsAgentArena/ & R\n\nMobile-Bench & 103 & 832 & 2024 & https://github.com/XiaoMi/MobileBench & R\n\nRealWebAssist & Varies & 1,885 & 2025 & https://scai.cs.jhu.edu/projects/RealWebAssist/ & R\n\nStableToolBench & 16k+ & 126k+ & 2024 & https://zhichengg.github.io/stb.github.io & I\n\nCRITICTOOL & 87 & 2,740 & 2025 & https://shellorley0513.github.io/CriticTool & S\n\nOdysseyBench & Office & 602 & 2025 & https://github.com/microsoft/OdysseyBench & I\n\nMemAgentBench & 289 & 6,340 & 2025 & https://huggingface.co/datasets/ai-hyz/MemoryAgentBench & I\n\nColorBench & 21 & 175 & 2025 & https://github.com/MadeAgents/ColorBench & I\n\nASTRA & Varies & 2,413 & 2026 & https://arxiv.org/abs/2603.01357 & I\n\nRoTBench & 568 & 105 & 2024 & https://github.com/Junjie-Ye/RoTBench & I\n\nToolSword & 100 & 440 & 2024 & https://github.com/Junjie-Ye/ToolSword & I\n\n-2mm\n\nOne line of work examines whether agents can reason over non-linear tool dependencies rather than simply follow sequential scripts.",
+    "char_start": 64709,
+    "char_end": 68637,
+    "sentence_index": 358,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec032",
+    "text": "The main challenge is that the correct execution order is determined by latent causal structure: intermediate outputs must be produced, preserved, and passed to later calls under branching, nesting, or multi-hop dependencies.",
+    "char_start": 68638,
+    "char_end": 68863,
+    "sentence_index": 359,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec032",
+    "text": "In this setting, failure often arises not from choosing the wrong tool in isolation, but from constructing the wrong dependency graph.",
+    "char_start": 68864,
+    "char_end": 68998,
+    "sentence_index": 360,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec032",
+    "text": "Recent benchmarks expose this issue in several ways.",
+    "char_start": 69000,
+    "char_end": 69052,
+    "sentence_index": 361,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec032",
+    "text": "Some emphasize nested and compositional structure, where the output of one call must be embedded into another, sometimes under strict parameter constraints .",
+    "char_start": 69053,
+    "char_end": 69210,
+    "sentence_index": 362,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec032",
+    "text": "Others evaluate graph-shaped execution, including branching decisions and parallel paths, and require agents to determine which calls can proceed concurrently and which must remain causally ordered .",
+    "char_start": 69211,
+    "char_end": 69410,
+    "sentence_index": 363,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec032",
+    "text": "A further group focuses on distributed information dependencies, where the parameters required for correct execution are scattered across stages, modalities, or speakers .",
+    "char_start": 69411,
+    "char_end": 69582,
+    "sentence_index": 364,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec032",
+    "text": "Related benchmarks such as M$^3$-Bench, MMAU, and FuncBenchGen further isolate graph reasoning, multimodal dependency tracking, and robustness to structurally valid distractors .",
+    "char_start": 69583,
+    "char_end": 69761,
+    "sentence_index": 365,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec032",
+    "text": "Taken together, these benchmarks suggest that long-horizon tool use should be evaluated as graph-structured reasoning under execution constraints, rather than as a longer version of single-step tool selection.",
+    "char_start": 69763,
+    "char_end": 69972,
+    "sentence_index": 366,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec033",
+    "text": "A second dimension concerns how performance changes as trajectories grow longer.",
+    "char_start": 69974,
+    "char_end": 70054,
+    "sentence_index": 367,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec033",
+    "text": "Recent work has moved beyond vague references to long-horizon tasks and instead defines horizon length through approximate step counts, token budgets, or accumulated constraints.",
+    "char_start": 70055,
+    "char_end": 70233,
+    "sentence_index": 368,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec033",
+    "text": "These settings reveal a distinct class of failures, including memory decay, context saturation, and the way small local errors can accumulate into global task failure.",
+    "char_start": 70234,
+    "char_end": 70401,
+    "sentence_index": 369,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec033",
+    "text": "The Tool Decathlon establishes a baseline for long-horizon evaluation with tasks averaging 20 interactive rounds across diverse domains.",
+    "char_start": 70403,
+    "char_end": 70539,
+    "sentence_index": 370,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec033",
+    "text": "ShortcutsBench tests real-world sequences by mapping multi-stage OS workflows directly to complex parameter loops, bridging the gap between natural language prompts and executable low-code horizons.",
+    "char_start": 70540,
+    "char_end": 70738,
+    "sentence_index": 371,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec033",
+    "text": "HammerBench evaluates multi-turn conversation across 10,000 instances, while AgentLongBench scales the temporal horizon dramatically, executing dynamic environment rollouts up to 4 million tokens, demonstrating that models fail precipitously at dynamic information synthesis across extreme horizons.",
+    "char_start": 70739,
+    "char_end": 71038,
+    "sentence_index": 372,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec033",
+    "text": "UltraHorizon defines the ultra-long-horizon frontier with trajectories averaging 400+ tool calls and 200K+ tokens, rigorously testing context window saturation and memory decay.",
+    "char_start": 71040,
+    "char_end": 71217,
+    "sentence_index": 373,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec033",
+    "text": "TRIP-Bench constructs travel planning dialogues exceeding 150 tool invocations with hard constraints (budget, time), exposing planning fragility\u2014where single constraint violations cascade into total failure.",
+    "char_start": 71218,
+    "char_end": 71425,
+    "sentence_index": 374,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec033",
+    "text": "This is expanded upon by DeepPlanning , which forces verifiable global constraint optimization across multiple simulated days of execution, providing controlled evidence that modern agents degrade rapidly when localized reasoning conflicts with long-term budgeting.",
+    "char_start": 71426,
+    "char_end": 71691,
+    "sentence_index": 375,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec033",
+    "text": "Critically, these benchmarks show steep degradation as horizon length and global constraints increase, suggesting that temporal scale is a major bottleneck.",
+    "char_start": 71692,
+    "char_end": 71848,
+    "sentence_index": 376,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec034",
+    "text": "Real-world tool use occurs in environments that evolve independently of agent actions.",
+    "char_start": 71850,
+    "char_end": 71936,
+    "sentence_index": 377,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec034",
+    "text": "Contemporary benchmarks immerse agents in progressively dynamic settings\u2014from stateful simulators to human-in-the-loop systems\u2014testing adaptation to execution feedback, user corrections, and environmental perturbations.",
+    "char_start": 71937,
+    "char_end": 72156,
+    "sentence_index": 378,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec034",
+    "text": "Stateful Interactive Environments.",
+    "char_start": 72158,
+    "char_end": 72192,
+    "sentence_index": 379,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec034",
+    "text": "ToolSandbox provides a stateful conversational environment where intermediate tool outputs alter subsequent state space, requiring agents to track evolving context.",
+    "char_start": 72193,
+    "char_end": 72357,
+    "sentence_index": 380,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec034",
+    "text": "AppWorld fundamentally shifts the verification paradigm from matching syntactic trajectories to evaluating persistent database state changes across nine heavily interconnected applications, requiring complex interactive coding to mutate a persistent digital world.",
+    "char_start": 72358,
+    "char_end": 72622,
+    "sentence_index": 381,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec034",
+    "text": "ToolGym injects runtime interruptions to simulate real-world uncertainty, evaluating robustness to environmental volatility.",
+    "char_start": 72623,
+    "char_end": 72747,
+    "sentence_index": 382,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec034",
+    "text": "StableToolBench addresses evaluation reproducibility by virtualizing APIs with caching layers, isolating agent performance from external API instability.",
+    "char_start": 72748,
+    "char_end": 72901,
+    "sentence_index": 383,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec034",
+    "text": "Human-in-the-Loop Environments.",
+    "char_start": 72903,
+    "char_end": 72934,
+    "sentence_index": 384,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec034",
+    "text": "$ $-bench and $ ^2$-bench construct high-fidelity user simulators that issue constraint changes, ambiguity requests, and corrections during multi-turn interactions.",
+    "char_start": 72935,
+    "char_end": 73099,
+    "sentence_index": 385,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec034",
+    "text": "Critically, $ ^2$-bench formalizes a dual-control paradigm where agent and user jointly manipulate a shared world state through tools, requiring agents to negotiate action space and manage user expectations\u2014a capability where even advanced models exhibit >40\\% performance degradation versus single-agent settings.",
+    "char_start": 73100,
+    "char_end": 73414,
+    "sentence_index": 386,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec034",
+    "text": "MTU-Bench extends this to multi-turn user guidance scenarios with evolving task specifications.",
+    "char_start": 73415,
+    "char_end": 73510,
+    "sentence_index": 387,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec034",
+    "text": "T1 evaluates multi-turn conversational agents with a focus on inter-tool dependencies and replanning, utilizing an integrated caching mechanism for short and long-term memory.",
+    "char_start": 73511,
+    "char_end": 73686,
+    "sentence_index": 388,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec034",
+    "text": "COMPASS assesses strategic tool use and user preference optimization in multi-turn travel-planning interactions.",
+    "char_start": 73687,
+    "char_end": 73799,
+    "sentence_index": 389,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec034",
+    "text": "Crucially, WildToolBench grounds evaluation in the nature of human behavior, testing agents against implicit intent, instruction transitions, and messy conversational data.",
+    "char_start": 73800,
+    "char_end": 73972,
+    "sentence_index": 390,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec034",
+    "text": "Real-World OS and Web Environments.",
+    "char_start": 73974,
+    "char_end": 74009,
+    "sentence_index": 391,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec034",
+    "text": "OSWorld provides a state-of-the-art interactive computer environment supporting hundreds of open-domain tasks, revealing massive deficiencies in visual GUI grounding.",
+    "char_start": 74010,
+    "char_end": 74176,
+    "sentence_index": 392,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec034",
+    "text": "GTA deploys human-written queries requiring perception and logic tools across real-world multimodal contexts.",
+    "char_start": 74177,
+    "char_end": 74286,
+    "sentence_index": 393,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec034",
+    "text": "Windows Agent Arena and Mobile-Bench evaluate cross-application operations within native GUI environments, where visual noise and UI variability challenge perception-action loops.",
+    "char_start": 74287,
+    "char_end": 74466,
+    "sentence_index": 394,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec034",
+    "text": "RealWebAssist uses authentic human-recorded web navigation trajectories to assess agents' ability to interpret implicit user intent from sequential actions.",
+    "char_start": 74467,
+    "char_end": 74623,
+    "sentence_index": 395,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec034",
+    "text": "VitaBench targets diverse real-world applications with heterogeneous tool interfaces, emphasizing adaptation to domain-specific interaction patterns.",
+    "char_start": 74624,
+    "char_end": 74773,
+    "sentence_index": 396,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec035",
+    "text": "Sustaining extended trajectories demands not only planning but also mechanisms for state persistence and error recovery.",
+    "char_start": 74775,
+    "char_end": 74895,
+    "sentence_index": 397,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec035",
+    "text": "In many practical workflows, success depends on maintaining intermediate artifacts, remembering prior commitments, and detecting when the current trajectory has drifted away from task requirements.",
+    "char_start": 74896,
+    "char_end": 75093,
+    "sentence_index": 398,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec035",
+    "text": "Benchmarks along this axis therefore examine not only final success, but also whether the agent can recover from partial failure.",
+    "char_start": 75094,
+    "char_end": 75223,
+    "sentence_index": 399,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec035",
+    "text": "Some benchmarks focus on persistent state management, asking agents to maintain intermediate resources or task variables across extended execution traces .",
+    "char_start": 75225,
+    "char_end": 75380,
+    "sentence_index": 400,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec035",
+    "text": "Others explicitly target self-correction and recovery, where agents must identify inconsistencies, revise previous actions, and continue toward task completion rather than restart from scratch .",
+    "char_start": 75381,
+    "char_end": 75575,
+    "sentence_index": 401,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec035",
+    "text": "Closely related evaluations also treat process supervision as a first-class target, measuring whether the agent followed a valid path even when the final outcome appears acceptable .",
+    "char_start": 75576,
+    "char_end": 75758,
+    "sentence_index": 402,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec035",
+    "text": "This line of work highlights an important methodological point: long-horizon evaluation should not rely solely on endpoint success.",
+    "char_start": 75760,
+    "char_end": 75891,
+    "sentence_index": 403,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec035",
+    "text": "For multi-tool systems, the more informative question is often whether a benchmark isolates a specific failure mode, exposes the relevant intermediate signals, and distinguishes between accidental success and genuinely robust orchestration.",
+    "char_start": 75892,
+    "char_end": 76132,
+    "sentence_index": 404,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec036",
+    "text": "Following the analysis of reasoning, training, and core system properties, this chapter examines multi-tool LLM agent deployment in industrial settings.",
+    "char_start": 76134,
+    "char_end": 76286,
+    "sentence_index": 405,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec036",
+    "text": "The primary challenge extends beyond basic tool invocation to achieving end-to-end objectives under practical engineering constraints.",
+    "char_start": 76287,
+    "char_end": 76421,
+    "sentence_index": 406,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec036",
+    "text": "Since real-world workloads feature heterogeneous components and evolving states, execution strategies must seamlessly manage tool errors and distribution shifts.",
+    "char_start": 76422,
+    "char_end": 76583,
+    "sentence_index": 407,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec036",
+    "text": "Consequently, effective deployment demands closed-loop orchestration based on continuous iterative execution, coupled with strict verification of all intermediate and final outcomes.",
+    "char_start": 76584,
+    "char_end": 76766,
+    "sentence_index": 408,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec036",
+    "text": "This approach builds upon neuro-symbolic architectures that enhance language models with external knowledge and discrete reasoning.",
+    "char_start": 76768,
+    "char_end": 76899,
+    "sentence_index": 409,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec036",
+    "text": "Recent research integrating reasoning with actions highlights the necessity of interactive execution and systematic exception handling, while scalable tool-use learning has driven protocols that better reflect complex industrial realities.",
+    "char_start": 76900,
+    "char_end": 77139,
+    "sentence_index": 410,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec036",
+    "text": "Consequently, rather than providing a domain-centric inventory, this chapter analyzes diverse applications as concrete instances of multi-tool orchestration.",
+    "char_start": 77140,
+    "char_end": 77297,
+    "sentence_index": 411,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec036",
+    "text": "By characterizing specific tool ecosystems and abstracting their orchestration patterns, we examine methodologies for selecting, composing, and validating tool invocations.",
+    "char_start": 77298,
+    "char_end": 77470,
+    "sentence_index": 412,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec036",
+    "text": "This approach highlights trade-offs among reliability, safety, and cost, establishing a unified framework to compare industrial practices.",
+    "char_start": 77471,
+    "char_end": 77609,
+    "sentence_index": 413,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec037",
+    "text": "[t]\n\nfigures/application.pdf\nA unified abstraction of application-side multi-tool orchestration.",
+    "char_start": 77611,
+    "char_end": 77707,
+    "sentence_index": 414,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec037",
+    "text": "Real-world agent systems operate over heterogeneous environments, instantiate different orchestration topologies, and rely on iterative plan-act-observe-revise loops under verification, safety, and cost constraints.",
+    "char_start": 77708,
+    "char_end": 77923,
+    "sentence_index": 415,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec037",
+    "text": "A unified abstraction for multi-tool orchestration frames tasks as executable processes driving an external system toward a target state.",
+    "char_start": 77925,
+    "char_end": 78062,
+    "sentence_index": 416,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec037",
+    "text": "As summarized in Figure , this perspective organizes application-side orchestration into execution environments, topologies, closed-loop control, and operational constraints.",
+    "char_start": 78063,
+    "char_end": 78237,
+    "sentence_index": 417,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec037",
+    "text": "Within real operating systems and web environments, tool use and low-level interface operations are subsumed into a unified sequential decision-making problem.",
+    "char_start": 78238,
+    "char_end": 78397,
+    "sentence_index": 418,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec037",
+    "text": "Orchestrating these applications necessitates explicitly modeling the observation-action-state transition loop to capture the tight coupling of visual cues and actions in multimodal contexts .",
+    "char_start": 78398,
+    "char_end": 78590,
+    "sentence_index": 419,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec037",
+    "text": "Concurrently, growing evidence suggests that action grounding, rather than high-level planning, is the primary execution bottleneck.",
+    "char_start": 78591,
+    "char_end": 78723,
+    "sentence_index": 420,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec037",
+    "text": "Robust performance in vision-language models relies on accurately mapping natural language intents to actionable interface elements and pixel-level regions to maintain stable tool pipelines .",
+    "char_start": 78724,
+    "char_end": 78915,
+    "sentence_index": 421,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec037",
+    "text": "Advancing this direction, general-purpose visual grounding solutions such as UGround improve graphical user interface agent accuracy across varying resolutions and heterogeneous elements.",
+    "char_start": 78916,
+    "char_end": 79103,
+    "sentence_index": 422,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec037",
+    "text": "Beyond individual action grounding, orchestrating these operations into extended tool chains introduces strict systems-level engineering constraints.",
+    "char_start": 79105,
+    "char_end": 79254,
+    "sentence_index": 423,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec037",
+    "text": "As workflows scale, critical vulnerabilities emerge in state management, parameter binding, and variable passing across pipeline topologies .",
+    "char_start": 79255,
+    "char_end": 79396,
+    "sentence_index": 424,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec037",
+    "text": "Maintaining stable execution under these implicit constraints requires integrating rigorous process supervision, treating invocation path correctness as a primary objective rather than a mere byproduct of terminal success .",
+    "char_start": 79397,
+    "char_end": 79620,
+    "sentence_index": 425,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec037",
+    "text": "Furthermore, real-world deployments must manage highly heterogeneous ecosystems via standardized protocols to process continuous online feedback .",
+    "char_start": 79621,
+    "char_end": 79767,
+    "sentence_index": 426,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec037",
+    "text": "Crucially, as agents utilize powerful read and write primitives, security transitions into a foundational requirement; orchestration frameworks must proactively prevent unauthorized access and mitigate high-risk operations without compromising task completion .",
+    "char_start": 79768,
+    "char_end": 80029,
+    "sentence_index": 427,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec037",
+    "text": "Motivated by these dynamics, the remainder of this chapter analyzes representative domains by focusing on the sources of dominant operational constraints, such as state verification, rollback mechanisms, and access control.",
+    "char_start": 80031,
+    "char_end": 80254,
+    "sentence_index": 428,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec037",
+    "text": "Rather than re-evaluating previously established structural configurations, the subsequent analysis investigates how these strict operational boundaries directly dictate application-side orchestration strategies and necessitate robust engineering implementations across diverse industrial ecosystems.",
+    "char_start": 80255,
+    "char_end": 80555,
+    "sentence_index": 429,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec037",
+    "text": "Ultimately, this chapter conceptualizes application orchestration through two complementary abstractions: executable tasks within interactive environments and execution workflows governed by explicit control flow.",
+    "char_start": 80556,
+    "char_end": 80769,
+    "sentence_index": 430,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec037",
+    "text": "Building upon this framework, Section 9.2 categorizes application scenarios by their deployment environments to compare operational demands across tool sets, verification mechanisms, and stringent safety constraints, translating tool integration from a theoretical algorithmic capability into actionable workflow design.",
+    "char_start": 80770,
+    "char_end": 81090,
+    "sentence_index": 431,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec038",
+    "text": "This section analyzes multi-tool orchestration across diverse interactive environments, focusing on how stringent system constraints dictate execution policies.",
+    "char_start": 81092,
+    "char_end": 81252,
+    "sentence_index": 432,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec038",
+    "text": "In graphical environments, managing non-stationary interfaces and visual grounding poses a significantly greater bottleneck than high-level planning .",
+    "char_start": 81253,
+    "char_end": 81403,
+    "sentence_index": 433,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec038",
+    "text": "Orchestrating these multimodal loops requires prioritizing engineered representations and stable state transitions to handle user interface volatility and operational latency effectively .",
+    "char_start": 81404,
+    "char_end": 81592,
+    "sentence_index": 434,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec038",
+    "text": "Conversely, software engineering demands rigorous execution loops where success is strictly grounded in deterministic tests .",
+    "char_start": 81594,
+    "char_end": 81719,
+    "sentence_index": 435,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec038",
+    "text": "The primary deployment bottleneck shifts from isolated code synthesis to the complex coupling of context retrieval, patch generation, and computationally expensive test verification .",
+    "char_start": 81720,
+    "char_end": 81903,
+    "sentence_index": 436,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec038",
+    "text": "To mitigate these high verification costs, systems-level optimizations including tool parallelization, intelligent caching, and overlapping language model decoding with partial tool execution become critical for maximizing throughput and minimizing end-to-end latency .",
+    "char_start": 81904,
+    "char_end": 82173,
+    "sentence_index": 437,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec038",
+    "text": "Enterprise orchestration manifests as continuous transactional workflows encompassing retrieval, analysis, execution, and write-back operations across distributed systems .",
+    "char_start": 82175,
+    "char_end": 82347,
+    "sentence_index": 438,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec038",
+    "text": "The primary engineering bottlenecks are state maintenance and transactional consistency under long-context constraints .",
+    "char_start": 82348,
+    "char_end": 82468,
+    "sentence_index": 439,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec038",
+    "text": "Consequently, enterprise deployment necessitates rigorous constraint systematization, elevating auditing, permission boundaries, and cost budgets to primary design variables.",
+    "char_start": 82469,
+    "char_end": 82643,
+    "sentence_index": 440,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec038",
+    "text": "Agents must justify invocations, log execution trajectories for compliance, and utilize audit logs as verifiable completion signals .",
+    "char_start": 82644,
+    "char_end": 82777,
+    "sentence_index": 441,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec038",
+    "text": "Conversely, mobile environments represent extreme open ecosystems requiring complex cross-application coordination under severe physical and system-level interference .",
+    "char_start": 82779,
+    "char_end": 82947,
+    "sentence_index": 442,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec038",
+    "text": "Given the high risks of destructive misoperations in these dynamic multimodal settings, orchestration inherently demands explicit user confirmation points, continuous final state validation, and highly conservative recovery strategies rather than autonomous retries .",
+    "char_start": 82948,
+    "char_end": 83215,
+    "sentence_index": 443,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec038",
+    "text": "Across these diverse environments, domain distinctions arise primarily from unique operational bottlenecks rather than structural topologies.",
+    "char_start": 83217,
+    "char_end": 83358,
+    "sentence_index": 444,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec038",
+    "text": "Engineering challenges range from high verification costs in software development and interface drift in mobile ecosystems to strict regulatory compliance in enterprise workflows.",
+    "char_start": 83359,
+    "char_end": 83538,
+    "sentence_index": 445,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec038",
+    "text": "Grounded in this unified operational perspective, the subsequent section investigates essential industrial deployment factors including tool governance, continuous observability, and strict cost-latency budget management.",
+    "char_start": 83539,
+    "char_end": 83760,
+    "sentence_index": 446,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec039",
+    "text": "Industrial deployment necessitates rigorous tool ecosystem governance, as unstable API availability often causes irreproducible pipeline drift, making virtualization and regression validation architectural imperatives .",
+    "char_start": 83762,
+    "char_end": 83981,
+    "sentence_index": 447,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec039",
+    "text": "To manage heterogeneous access, standardized protocols mitigate integration costs , demanding fully auditable systems with strict semantic contracts and graceful degradation .",
+    "char_start": 83982,
+    "char_end": 84157,
+    "sentence_index": 448,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec039",
+    "text": "Concurrently, mitigating critical vulnerabilities like indirect prompt injections requires externalizing safety to dedicated policy layers that enforce input/output sanitization .",
+    "char_start": 84158,
+    "char_end": 84337,
+    "sentence_index": 449,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec039",
+    "text": "Aligning with standards such as the OWASP Top 10 and NIST guidelines , architectures must embed least-privilege access, environment partitioning, and comprehensive logging within the execution loop to guarantee non-repudiable auditability and secure invocations.",
+    "char_start": 84338,
+    "char_end": 84600,
+    "sentence_index": 450,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec039",
+    "text": "Beyond security, arresting error cascades during execution demands intermediate checkpoints for decidable verification and comprehensive observability that evaluates process-level constraint satisfaction rather than mere terminal completion .",
+    "char_start": 84602,
+    "char_end": 84844,
+    "sentence_index": 451,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec039",
+    "text": "Post-deployment, these pipelines must adhere to strict service level agreements and budgets.",
+    "char_start": 84845,
+    "char_end": 84937,
+    "sentence_index": 452,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec039",
+    "text": "Because end-to-end latency is heavily dominated by planning cycles , robust orchestration requires the joint optimization of quality, time, and cost.",
+    "char_start": 84938,
+    "char_end": 85087,
+    "sentence_index": 453,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec039",
+    "text": "Current research addresses this through interface compression to reduce token overhead , decoupling reasoning from execution , and budget-aware routing to dynamically allocate resources to high-uncertainty tasks .",
+    "char_start": 85088,
+    "char_end": 85301,
+    "sentence_index": 454,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec039",
+    "text": "Ultimately, industrial orchestration requires comprehensive systems-level remodeling rather than merely scaling research prototypes.",
+    "char_start": 85303,
+    "char_end": 85435,
+    "sentence_index": 455,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec039",
+    "text": "The fundamental challenge lies in directly embedding these operational constraints\u2014spanning governance, safety, verification, and efficiency\u2014into the underlying infrastructure.",
+    "char_start": 85436,
+    "char_end": 85612,
+    "sentence_index": 456,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec039",
+    "text": "Because industrial competitiveness heavily relies on capabilities like automated regression and executable acceptance testing, the subsequent section explores open research problems specifically targeting robust interface evolution, verifiability boundaries, and cost-effective long-horizon planning.",
+    "char_start": 85613,
+    "char_end": 85913,
+    "sentence_index": 457,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec040",
+    "text": "Although multi-tool LLM agents demonstrate encouraging generality, transitioning them from usable prototypes to trusted production systems requires addressing several critical application-side gaps: mitigating behavioral drift caused by continuous interface evolution via adaptive regression mechanisms; establishing process-level verifiability and replayable audits for long-horizon orchestration without prohibitive efficiency loss; developing systematic methodologies to jointly optimize cost, latency, and quality under strict budget constraints; and replacing heuristic failure recovery with composable, adversarial-resistant recovery frameworks.",
+    "char_start": 85915,
+    "char_end": 86566,
+    "sentence_index": 458,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec040",
+    "text": "Ultimately, addressing these challenges demands a unified research agenda centered on evolvable tool governance, verifiable closed-loop execution, and adaptive orchestration to ensure these agents can be safely and reliably deployed in demanding professional environments.",
+    "char_start": 86567,
+    "char_end": 86839,
+    "sentence_index": 459,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec041",
+    "text": "The development of tool use in LLM agents reflects a broader shift in the field, from isolated function invocation to sustained interaction with complex external systems.",
+    "char_start": 86841,
+    "char_end": 87011,
+    "sentence_index": 460,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec041",
+    "text": "Once agents must coordinate multiple tools over long horizons, the problem is no longer only about prompting or API formatting.",
+    "char_start": 87012,
+    "char_end": 87139,
+    "sentence_index": 461,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec041",
+    "text": "It also involves planning under dependencies, managing mutable state, controlling execution, and preserving correctness under uncertainty, latency, and safety constraints.",
+    "char_start": 87140,
+    "char_end": 87311,
+    "sentence_index": 462,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec041",
+    "text": "This is why progress depends not only on stronger base models, but also on advances in memory, orchestration, verification, and benchmark design.",
+    "char_start": 87312,
+    "char_end": 87457,
+    "sentence_index": 463,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec041",
+    "text": "This survey has reviewed work on multi-tool agents across inference-time planning, training, safety, efficiency, capability completeness, benchmarks, and applications.",
+    "char_start": 87458,
+    "char_end": 87625,
+    "sentence_index": 464,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec041",
+    "text": "A central observation is that these dimensions are tightly connected.",
+    "char_start": 87626,
+    "char_end": 87695,
+    "sentence_index": 465,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec041",
+    "text": "Planning interacts with state management and verifiability.",
+    "char_start": 87696,
+    "char_end": 87755,
+    "sentence_index": 466,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec041",
+    "text": "Safety depends on execution control and isolation.",
+    "char_start": 87756,
+    "char_end": 87806,
+    "sentence_index": 467,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec041",
+    "text": "Efficiency depends on decomposition, routing, and reuse.",
+    "char_start": 87807,
+    "char_end": 87863,
+    "sentence_index": 468,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec041",
+    "text": "Looking ahead, the field needs better abstractions for stateful orchestration, stronger evaluation protocols for dynamic and long-horizon settings, and closer integration between model-level reasoning and system-level guarantees.",
+    "char_start": 87864,
+    "char_end": 88093,
+    "sentence_index": 469,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec041",
+    "text": "Progress on these fronts will be necessary if multi-tool agents are to move from promising prototypes to dependable, auditable, and scalable systems for real-world use.",
+    "char_start": 88094,
+    "char_end": 88262,
+    "sentence_index": 470,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec041",
+    "text": "ACM-Reference-Format\ncustom",
+    "char_start": 88264,
+    "char_end": 88291,
+    "sentence_index": 471,
+    "section_sentence_index": 11
+  }
+]

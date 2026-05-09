@@ -1,0 +1,1253 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "This paper introduces FinMCP-Bench , a novel benchmark for evaluating large language models (LLMs) in solving real-world financial problems through tool invocation of financial model context protocols.",
+    "char_start": 0,
+    "char_end": 201,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "FinMCP-Bench contains 613 samples spanning 10 main scenarios and 33 sub-scenarios, featuring both real and synthetic user queries to ensure diversity and authenticity.",
+    "char_start": 202,
+    "char_end": 369,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "It incorporates 65 real financial MCPs and three types of samples, single tool, multi-tool, and multi-turn, allowing evaluation of models across different levels of task complexity.",
+    "char_start": 370,
+    "char_end": 551,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Using this benchmark, we systematically assess a range of mainstream LLMs and propose metrics that explicitly measure tool invocation accuracy and reasoning capabilities.",
+    "char_start": 552,
+    "char_end": 722,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "FinMCP-Bench provides a standardized, practical, and challenging testbed for advancing research on financial LLM agents.",
+    "char_start": 723,
+    "char_end": 843,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec002",
+    "text": "Large language models (LLMs) are increasingly being deployed as agents in financial applications, where they are expected to interpret user requests, call external tools, and carry out multi-step reasoning.",
+    "char_start": 845,
+    "char_end": 1051,
+    "sentence_index": 5,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "In practice, LLM agents must understand user intentions, access financial tools to retrieve information such as stock trends, fund holdings, and market analyses, and then apply financial concepts to generate useful responses.",
+    "char_start": 1052,
+    "char_end": 1277,
+    "sentence_index": 6,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "This often requires chaining multiple tool calls together, with each step depending on the results of the previous one.",
+    "char_start": 1278,
+    "char_end": 1397,
+    "sentence_index": 7,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Such implicit dependencies make it difficult to evaluate how well LLM agents handle realistic financial tasks.",
+    "char_start": 1398,
+    "char_end": 1508,
+    "sentence_index": 8,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "While recent work has explored the evaluation of LLMs on general tool use, existing evaluations in the financial domain remain limited to specific tasks and typically do not involve tool use .",
+    "char_start": 1510,
+    "char_end": 1702,
+    "sentence_index": 9,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "To address this gap, we present FinMCP-Bench , a benchmark designed to evaluate LLMs in realistic and challenging financial scenarios through interactions with real-world Model Context Protocol (MCP) , which offer a standardized schema for tool invocation across diverse servers.",
+    "char_start": 1703,
+    "char_end": 1982,
+    "sentence_index": 10,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Our dataset construction begins with 10K interaction records collected from production financial agents developed by domain experts and deployed in 33 real-world scenarios.",
+    "char_start": 1984,
+    "char_end": 2156,
+    "sentence_index": 11,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "These interactions involve 65 financial tools integrated through MCP, covering a wide range of genuine user needs.",
+    "char_start": 2157,
+    "char_end": 2271,
+    "sentence_index": 12,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Each record contains on average more than two tool calls with inherent dependencies.",
+    "char_start": 2272,
+    "char_end": 2356,
+    "sentence_index": 13,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "To further increase complexity, we synthesize high-difficulty cases with tool call chains exceeding five steps by leveraging LLM-based augmentation strategies.",
+    "char_start": 2357,
+    "char_end": 2516,
+    "sentence_index": 14,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "After expert annotation, we curate a final set of 10K high-quality interaction traces with long tool call chains and strong internal dependencies.",
+    "char_start": 2517,
+    "char_end": 2663,
+    "sentence_index": 15,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Our main contributions are described as follows:\n\nWe propose FinMCP-Bench, a comprehensive benchmark for evaluating LLMs\u2019 ability to invoke MCP tools in financial scenarios.",
+    "char_start": 2665,
+    "char_end": 2838,
+    "sentence_index": 16,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "It contains 613 samples across 10 main scenarios and 33 sub-scenarios, including real and synthetic user queries, with three sample types: single tool, multi-tool, and multi-turn, allowing evaluation across different levels of task complexity.",
+    "char_start": 2839,
+    "char_end": 3082,
+    "sentence_index": 17,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "We systematically evaluate a range of mainstream LLMs on FinMCP-Bench and introduce explicit metrics for tool invocation accuracy.",
+    "char_start": 3084,
+    "char_end": 3214,
+    "sentence_index": 18,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Results highlight both the strengths of current models and the challenges they face, particularly in handling complex multi-tool dependencies and multi-turn conversations.",
+    "char_start": 3215,
+    "char_end": 3386,
+    "sentence_index": 19,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "category.pdf\nThe 10 main scenarios and 33 sub-scenarios in FinMCP-Bench.",
+    "char_start": 3388,
+    "char_end": 3460,
+    "sentence_index": 20,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec003",
+    "text": "As illustrated in Figure , FinMCP-Bench contains 613 samples covering 10 main scenarios and 33 sub-scenarios.",
+    "char_start": 3462,
+    "char_end": 3571,
+    "sentence_index": 21,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec003",
+    "text": "The categories with the largest number of samples are Market Analysis and Research (MAR) with 141 samples and Investment Planning and Allocation (IPA) with 101 samples.",
+    "char_start": 3572,
+    "char_end": 3740,
+    "sentence_index": 22,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec003",
+    "text": "We categorize samples based on the complexity and structure of tool usage.",
+    "char_start": 3742,
+    "char_end": 3816,
+    "sentence_index": 23,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec003",
+    "text": "Each sample begins with a customer query, which may be addressed in one of three ways:\n\nSingle-tool : resolved with a single tool call in one conversational turn (145 samples).",
+    "char_start": 3817,
+    "char_end": 3993,
+    "sentence_index": 24,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec003",
+    "text": "Multi-tool : involves multiple tool calls within a single conversational turn, which may be sequential or parallel (249 samples).",
+    "char_start": 3994,
+    "char_end": 4123,
+    "sentence_index": 25,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec003",
+    "text": "Multi-turn : spans multiple conversational turns, each potentially invoking one or more tools (219 samples).",
+    "char_start": 4124,
+    "char_end": 4232,
+    "sentence_index": 26,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec004",
+    "text": "We collect high-quality data from 10,000 historical logs of the XiaoGu AI assistant in the Qieman APP operated by Yingmi Fund Yingmi Fund is a CSRC-approved fund management and sales company (https://qieman.com).",
+    "char_start": 4234,
+    "char_end": 4446,
+    "sentence_index": 27,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec004",
+    "text": ", where the assistant follows expert-defined SOPs and invokes tools via workflow-style processes.",
+    "char_start": 4447,
+    "char_end": 4544,
+    "sentence_index": 28,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec004",
+    "text": "All logs are processed through a strict anonymization and disclosure procedure.",
+    "char_start": 4545,
+    "char_end": 4624,
+    "sentence_index": 29,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "To ensure quality, logs are retained only if (i) the query reflects genuine financial needs, (ii) the problem is resolved through tool calls, and (iii) the final response provides a satisfactory solution.",
+    "char_start": 4625,
+    "char_end": 4829,
+    "sentence_index": 30,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "From this process, we obtain 1,484 single-tool samples and 183 multi-tool samples.",
+    "char_start": 4830,
+    "char_end": 4912,
+    "sentence_index": 31,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "The single-tool samples are then randomly divided into two subsets of 700 and 784.",
+    "char_start": 4913,
+    "char_end": 4995,
+    "sentence_index": 32,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "The first subset ($ S $) is reviewed by experts, and 145 high-quality samples are ultimately retained in FinMCP-Bench.",
+    "char_start": 4996,
+    "char_end": 5114,
+    "sentence_index": 33,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec004",
+    "text": "The second subset ($ S _ o $) is reserved for synthesizing more complex multi-tool samples (Section ) and multi-turn samples (Section ).",
+    "char_start": 5115,
+    "char_end": 5251,
+    "sentence_index": 34,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "MultiStep.pdf\nOverview of the chain-based method for synthesizing multi-tool samples.",
+    "char_start": 5253,
+    "char_end": 5338,
+    "sentence_index": 35,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "Figure illustrates our chain-based method for constructing multi-tool samples, which consists of three stages: (1) building a tool dependency graph, (2) generating user query, and (3) expanding the sampled chains into full trajectories.",
+    "char_start": 5340,
+    "char_end": 5576,
+    "sentence_index": 36,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec005",
+    "text": "Tool Dependency Graph Construction.",
+    "char_start": 5578,
+    "char_end": 5613,
+    "sentence_index": 37,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec005",
+    "text": "In this step, we construct the tool dependency graph from scratch by processing each sample in $ M $ through two sub-steps.",
+    "char_start": 5614,
+    "char_end": 5737,
+    "sentence_index": 38,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec005",
+    "text": "Initially, the graph contains $N$ tool nodes, $ T =\\ t_1, ,t_N\\ $, with no edges, where $ T $ denotes the complete tool set.",
+    "char_start": 5738,
+    "char_end": 5862,
+    "sentence_index": 39,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec005",
+    "text": "To illustrate the process, consider a multi-tool sample $M M $, where the tools in $M$ are organized into groups.",
+    "char_start": 5863,
+    "char_end": 5976,
+    "sentence_index": 40,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "In the first sub-step, we obtain pairs of tools that potentially have dependency relation in $M$.",
+    "char_start": 5978,
+    "char_end": 6075,
+    "sentence_index": 41,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "If a tool $t_j$ appears in a group that immediately follows a group containing tool $t_i$, we propose a dependency $t_i t_j$.",
+    "char_start": 6076,
+    "char_end": 6201,
+    "sentence_index": 42,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "As illustrated in the top of Figure (a), three tools are arranged into two groups: $(t_1, t_2)$ and $(t_3)$.",
+    "char_start": 6202,
+    "char_end": 6310,
+    "sentence_index": 43,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "This yields two candidate dependencies, $t_1 t_3$ and $t_2 t_3$.",
+    "char_start": 6311,
+    "char_end": 6375,
+    "sentence_index": 44,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Since $t_1$ and $t_2$ are invoked in parallel, no dependency is assumed between them.",
+    "char_start": 6376,
+    "char_end": 6461,
+    "sentence_index": 45,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "In the second sub-step, shown at the bottom of Figure (a), we verify the validity of each candidate pair $t_i t_j$ using an LLM (Qwen3-235B-2507).",
+    "char_start": 6462,
+    "char_end": 6608,
+    "sentence_index": 46,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "The model is prompted to judge whether it is reasonable for $t_j$ to depend on $t_i$.",
+    "char_start": 6609,
+    "char_end": 6694,
+    "sentence_index": 47,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "If validated, we add a directed edge from $t_i$ to $t_j$ in the dependency graph.",
+    "char_start": 6695,
+    "char_end": 6776,
+    "sentence_index": 48,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "The final tool dependency graph $ G $, as shown in the bottom of Figure (b) contains 65 nodes with 288 edges.",
+    "char_start": 6778,
+    "char_end": 6887,
+    "sentence_index": 49,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "User Query Generation.",
+    "char_start": 6889,
+    "char_end": 6911,
+    "sentence_index": 50,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "For each scenario, we begin by sampling tool pairs $(t_i, t_j)$ from the tool set $ T $, ensuring that both tools appear in samples from $ M $ associated with the same scenario.",
+    "char_start": 6912,
+    "char_end": 7089,
+    "sentence_index": 51,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "If multiple paths exist between $t_i$ and $t_j$ in the tool dependency graph $ G $, we randomly select one, which defines a tool chain from $t_i$ to $t_j$.",
+    "char_start": 7090,
+    "char_end": 7245,
+    "sentence_index": 52,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "Given a tool chain $ C = c_1, , c_n c_i T $ containing $n$ tools, we generate a user query that aligns with this chain.",
+    "char_start": 7247,
+    "char_end": 7366,
+    "sentence_index": 53,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "For each tool $c_i$ in $ C $, we randomly select a single-tool sample $s_i$ from $ S _o$ such that $s_i$ involves $c_i$.",
+    "char_start": 7367,
+    "char_end": 7487,
+    "sentence_index": 54,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "Using the set $\\ s_1, , s_n\\ $ as in-context examples, we prompt Qwen3-235B-2507 to generate a proper user query.",
+    "char_start": 7488,
+    "char_end": 7601,
+    "sentence_index": 55,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "Trajectory Generation.",
+    "char_start": 7603,
+    "char_end": 7625,
+    "sentence_index": 56,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "As shown in the top of Figure (c), Qwen3-235B-2507, connected to Qieman\u2019s MCP server, is then used to generate the corresponding trajectory for each user query.",
+    "char_start": 7626,
+    "char_end": 7786,
+    "sentence_index": 57,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "A query-trajectory pair is retained as a multi-tool sample if its trajectory (i) may include additional tools beyond those in $ C $, and (ii) correctly preserves the dependency relations specified in $ C $.",
+    "char_start": 7787,
+    "char_end": 7993,
+    "sentence_index": 58,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "In practice, we generate 1K query-trajectory pairs, from which 496 multi-tool samples are obtained.",
+    "char_start": 7995,
+    "char_end": 8094,
+    "sentence_index": 59,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "These, combined with the 183 multi-tool samples extracted from real logs, are then manually reviewed by experts.",
+    "char_start": 8095,
+    "char_end": 8207,
+    "sentence_index": 60,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "After this review process, 249 high-quality multi-tool samples are ultimately retained in FinMCP-Bench.",
+    "char_start": 8208,
+    "char_end": 8311,
+    "sentence_index": 61,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "multiturn.pdf\nOverview of the role-playing-based method for synthesizing multi-turn samples.",
+    "char_start": 8313,
+    "char_end": 8405,
+    "sentence_index": 62,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "Next, we construct multi-turn samples in which tools are invoked over several rounds of dialogue between a user and a service assistant.",
+    "char_start": 8407,
+    "char_end": 8543,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "To mimic realistic conversations, we design a dialogue framework where a planner agent specifies both the user persona and the user goal, as illustrated on the left side of Figure .",
+    "char_start": 8544,
+    "char_end": 8725,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Persona .",
+    "char_start": 8727,
+    "char_end": 8736,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "We sample user personas from the character profile pool introduced by , which provides a comprehensive template for financial customers.",
+    "char_start": 8737,
+    "char_end": 8873,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "The template includes attributes such as age, gender, and income level, all of which are highly relevant in real-world financial contexts.",
+    "char_start": 8874,
+    "char_end": 9012,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "User Goal .",
+    "char_start": 9013,
+    "char_end": 9024,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "The planner first selects a sub-scenario and, together with the chosen persona, prompts Qwen3-235B-2507 to generate a corresponding user goal.",
+    "char_start": 9025,
+    "char_end": 9167,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Once the user persona and task instruction are defined, we simulate the dialogue by assigning Qwen3-235B-2507 to play both the user and the assistant roles, as illustrated on the right side of Figure .",
+    "char_start": 9169,
+    "char_end": 9370,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "We generate 500 multi-turn dialogues as candidate samples.",
+    "char_start": 9372,
+    "char_end": 9430,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "To ensure quality, we first use Qwen3-235B-2507 to automatically check their validity, with a focus on whether all user queries in each dialogue are successfully addressed.",
+    "char_start": 9431,
+    "char_end": 9603,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "This filtering step reduces the set to 378 dialogues, which are then manually reviewed by financial experts.",
+    "char_start": 9604,
+    "char_end": 9712,
+    "sentence_index": 73,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "After this expert review, 219 high-quality multi-turn samples are retained in FinMCP-Bench.",
+    "char_start": 9713,
+    "char_end": 9804,
+    "sentence_index": 74,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "To ensure the quality of the benchmark, we invite six domain experts and experienced developers in the financial field to evaluate both real and synthetic samples.",
+    "char_start": 9806,
+    "char_end": 9969,
+    "sentence_index": 75,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "Specifically, we use a two-stage pipeline: automated validation and expert review.",
+    "char_start": 9970,
+    "char_end": 10052,
+    "sentence_index": 76,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "In the first stage, an automated validator checks whether all tools are executed successfully without errors.",
+    "char_start": 10053,
+    "char_end": 10162,
+    "sentence_index": 77,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "In the second stage, six financial experts serve as reviewers.",
+    "char_start": 10163,
+    "char_end": 10225,
+    "sentence_index": 78,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Each sample is independently evaluated by two randomly assigned experts, who score it on a 5-point Likert scale across five dimensions: question relevance, tool-chain completeness, tool-chain logical consistency, answer reliability and traceability, and data freshness.",
+    "char_start": 10226,
+    "char_end": 10495,
+    "sentence_index": 79,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "A sample is accepted only if both reviewers assign a score of at least four in all dimensions.",
+    "char_start": 10496,
+    "char_end": 10590,
+    "sentence_index": 80,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "When the two reviewers disagree, the sample is resolved through discussion.",
+    "char_start": 10591,
+    "char_end": 10666,
+    "sentence_index": 81,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "[t!]\n\nll\n\nType & Number\n\n2 c FinMCP-Bench dataset\n\nAll & 613\n\n- Easy/Medium/Hard & 343 / 245 / 25\n\nSingle-Tool & 145\n\nMulti-Tool & 249\n\n- MCP calls per instance (Median / Avg) & 8 / 7.32\n\n- Steps per instance (Median / Avg) & 5 / 5.72\n\n- \\#Samples having Parallel Calls & 73\n\nMulti-Turn & 219\n\n- MCP calls per instance (Median / Avg) & 4 / 5.00\n\n- Number of Turns (Median / Avg) & 6 / 5.95\n\n2 c Qieman MCP\n\nTool Number & 65\n\nArguments (Avg) & 2.6\n\nStatistics of FinMCP-Bench.",
+    "char_start": 10668,
+    "char_end": 11143,
+    "sentence_index": 82,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "Without loss of generality, the tools invoked in a sample can be represented as\n$\\ (t^1_1, , t^1_ n_1 ), , (t^M_1, , t^M_ n_M )\\ $,\nwhere there are $M$ groups of tools and the $i$-th group contains $n_i$ tools.",
+    "char_start": 11145,
+    "char_end": 11355,
+    "sentence_index": 83,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "Tools within the same group are executed in parallel, so their order is interchangeable.",
+    "char_start": 11356,
+    "char_end": 11444,
+    "sentence_index": 84,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "In particular, single-tool samples correspond to the special cases where $M=1$ and $n_1=1$.",
+    "char_start": 11445,
+    "char_end": 11536,
+    "sentence_index": 85,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "As shown in Table , FinMCP-Bench contains 613 samples that differ in difficulty based on the number of tool calls required.",
+    "char_start": 11537,
+    "char_end": 11660,
+    "sentence_index": 86,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "For simplicity, we categorize samples with up to 5 tool calls as easy , those with up to 10 tool calls as medium , and the remaining samples as hard .",
+    "char_start": 11661,
+    "char_end": 11811,
+    "sentence_index": 87,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "All 145 single-tool samples contain exactly one tool call in a single step.",
+    "char_start": 11813,
+    "char_end": 11888,
+    "sentence_index": 88,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "In contrast, multi-tool samples contain on average 7.32 tool calls across 5.72 steps.",
+    "char_start": 11889,
+    "char_end": 11974,
+    "sentence_index": 89,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "Among these, 73 out of 249 multi-tool samples include parallel calls, where multiple tools are invoked within a single step.",
+    "char_start": 11975,
+    "char_end": 12099,
+    "sentence_index": 90,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "Multi-turn samples, on average, contain span 5.95 conversational turns and invoke 5.00 tools.",
+    "char_start": 12100,
+    "char_end": 12193,
+    "sentence_index": 91,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "[t!]\n\n!",
+    "char_start": 12195,
+    "char_end": 12202,
+    "sentence_index": 92,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "l l l l l l l l l l l l l l l l l\n\nModel & 4 c Single-Tool & 4 c Multi-Tool & 4 c Multi-Turn & 4 c All\n\n(lr) 2-5 (lr) 6-9 (lr) 10-13 (lr) 14-17 & TP & TR & TF1 & EMR & TP & TR & TF1 & EMR & TP & TR & TF1 & EMR & TP & TR & TF1 & EMR\n\nDeepSeek-R1 & 59.87 & 65.28 & 62.46 & 49.31 & 65.95 & 43.42 & 52.36 & 4.85 & 46.15 & 5.15 & 9.27 & 0.00 & 64.79 & 40.55 & 49.88 & 18.08\n\nGPT-OSS-20B & 13.50 & 68.97 & 22.57 & 15.17 & 28.26 & 60.59 & 38.54 & 1.20 & 9.51 & 6.03 & 7.38 & 0.00 & 25.97 & 43.84 & 32.62 & 4.43\n\nSeed-OSS-36B & 35.59 & 72.41 & 47.73 & 35.17 & 58.21 & 28.13 & 37.93 & 3.61 & 39.26 & 45.49 & 42.15 & 2.17 & 50.36 & 32.28 & 39.34 & 13.86\n\nQwen3-4B-Thinking & 63.01 & 75.17 & 68.55 & 65.52 & 64.44 & 41.16 & 50.23 & 4.82 & 49.23 & 46.16 & 47.65 & 2.26 & 58.02 & 44.06 & 50.08 & 18.82\n\nQwen3-30B-A3B-Thinking & 40.96 & 70.34 & 51.78 & 55.17 & 67.92 & 54.92 & 60.73 & 7.47 & 53.17 & 41.17 & 46.40 & 4.10 & 61.75 & 50.53 & 55.58 & 18.24\n\nQwen3-235B-A22B-Thinking & 55.76 & 83.45 & 66.85 & 60.00 & 67.02 & 72.00 & 69.42 & 10.62 & 36.50 & 48.25 & 41.56 & 3.08 & 60.22 & 68.90 & 64.27 & 25.92\n\nResults (\\%) on FinMCP-Bench.",
+    "char_start": 12203,
+    "char_end": 13325,
+    "sentence_index": 93,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec010",
+    "text": "Models.",
+    "char_start": 13327,
+    "char_end": 13334,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec010",
+    "text": "We evaluate six large language models, including three from the Qwen3 family : Qwen3-4B-Thinking, Qwen3-30B-A3B-Thinking, and Qwen3-235B-A22B-Thinking, as well as three additional models: DeepSeek-R1 , GPT-OSS-20B , and Seed-OSS-36B .",
+    "char_start": 13335,
+    "char_end": 13569,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "Inference.",
+    "char_start": 13571,
+    "char_end": 13581,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "Single-tool and multi-tool samples can be treated as one-turn conversations, consisting of a user query and an agent reply, while multi-turn samples naturally represent multi-turn conversations.",
+    "char_start": 13582,
+    "char_end": 13776,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "Without loss of generality, we denote a conversation as $\\ (u_1, r_1), , (u_n, r_n)\\ $, where $n$ is the number of turns and each reply $r_i$ includes both tool calls and responses.",
+    "char_start": 13777,
+    "char_end": 13958,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "Following the task customer support conversation , we treat the LLM as the agent.",
+    "char_start": 13959,
+    "char_end": 14040,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "For each turn $i$, the model is prompted to generate a reply $r_i^ $ given the current user utterance $u_i$ and the gold conversation history $\\ (u_1, r_1), , (u_ i-1 , r_ i-1 )\\ $.",
+    "char_start": 14041,
+    "char_end": 14222,
+    "sentence_index": 100,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "From the generated replies $\\ r_1^ , , r_n^ \\ $, we can extract the tools invoked by the model.",
+    "char_start": 14223,
+    "char_end": 14318,
+    "sentence_index": 101,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec011",
+    "text": "Unlike previous work that focuses on the accuracy of the final answer , in this paper we evaluate LLM performance based on the tools invoked and propose the following metrics: In financial research and advisory scenarios, queries are inherently open-ended without standard answers; hence, evaluation focuses on tool-use capability.",
+    "char_start": 14320,
+    "char_end": 14651,
+    "sentence_index": 102,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec011",
+    "text": "Tool Recall (TR).",
+    "char_start": 14653,
+    "char_end": 14670,
+    "sentence_index": 103,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec011",
+    "text": "We construct a reference tool set and a predicted tool set by extracting tools from the reference and the prediction, while ignoring dependency relations.",
+    "char_start": 14671,
+    "char_end": 14825,
+    "sentence_index": 104,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec011",
+    "text": "Tool Recall is defined as the number of correctly predicted tools (i.e., those appearing in both sets) divided by the total number of tools in the reference set.",
+    "char_start": 14826,
+    "char_end": 14987,
+    "sentence_index": 105,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec011",
+    "text": "Tool Precision (TP).",
+    "char_start": 14989,
+    "char_end": 15009,
+    "sentence_index": 106,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec011",
+    "text": "Similarly, we define Tool Precision , as the number of correctly predicted tools (i.e., those appearing in both sets) divided by the total number of tools in the predicted set.",
+    "char_start": 15010,
+    "char_end": 15186,
+    "sentence_index": 107,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec011",
+    "text": "Tool F1 (TF1).",
+    "char_start": 15188,
+    "char_end": 15202,
+    "sentence_index": 108,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec011",
+    "text": "To balance Tool Precision (TP) and Tool Recall (TR), we define Tool F1 as their harmonic mean: $ TF _1= 2 TR TP TR + TP $.",
+    "char_start": 15203,
+    "char_end": 15325,
+    "sentence_index": 109,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec011",
+    "text": "Exact Match Rate (EMR).",
+    "char_start": 15327,
+    "char_end": 15350,
+    "sentence_index": 110,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec011",
+    "text": "Unlike the previous metrics, which compare tools without considering their grouping, the strictest way to evaluate prediction accuracy is to check whether the predicted tool organization exactly matches the reference.",
+    "char_start": 15351,
+    "char_end": 15568,
+    "sentence_index": 111,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec011",
+    "text": "Since tools within the same group can be invoked in parallel, their internal order is ignored.",
+    "char_start": 15569,
+    "char_end": 15663,
+    "sentence_index": 112,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec011",
+    "text": "The proportion of predictions that exactly match the reference organization is defined as the Exact Match Rate (EMR) .",
+    "char_start": 15664,
+    "char_end": 15782,
+    "sentence_index": 113,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "[t!]\n\n[t] 0.48\n\nscenery.pdf\nScenario-wise TF1 results on FinMCP-Bench.",
+    "char_start": 15784,
+    "char_end": 15854,
+    "sentence_index": 114,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec011",
+    "text": "Full scenario names are listed in Figure .",
+    "char_start": 15855,
+    "char_end": 15897,
+    "sentence_index": 115,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec011",
+    "text": "[t] 0.48\n\ndiff.pdf\nDifficulty-wise TF1 on FinMCP-Bench\n\nTable reports model performance across single-tool, multi-tool, and multi-turn samples.",
+    "char_start": 15899,
+    "char_end": 16042,
+    "sentence_index": 116,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "We make the following observations:\n\nOverall, the three Qwen3 models generally outperform the others on both TF1 and EMR.",
+    "char_start": 16043,
+    "char_end": 16164,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "However, model size does not consistently correlate with performance: Qwen3-4B-Thinking achieves a higher EMR score than Qwen3-30B-A3B-Thinking, while Qwen3-30B-A3B-Thinking attains a higher TF1 score than Qwen3-4B-Thinking.",
+    "char_start": 16165,
+    "char_end": 16389,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "Comparing single-tool and multi-tool samples, we find that Tool Recall (TR) is higher for single-tool samples, as each contains only one tool.",
+    "char_start": 16391,
+    "char_end": 16533,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "In contrast, Tool Precision (TP) is lower for single-tool samples, since models often over-predict by generating multiple tools even when only one is needed.",
+    "char_start": 16534,
+    "char_end": 16691,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec012",
+    "text": "Multi-turn samples tend to yield the lowest scores overall, especially in EMR, indicating that handling longer conversations with multiple tool calls remains challenging.",
+    "char_start": 16693,
+    "char_end": 16863,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "Scenario-wise Results The radar chart of Figure shows ther TF1 performance with respective to the ten main scenarios.",
+    "char_start": 16865,
+    "char_end": 16982,
+    "sentence_index": 122,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec013",
+    "text": "It shows that Qwen3-30B-A3B-Thinking and Qwen3-235B-A22B-Thinking form the leading group with the largest, most rounded profiles, indicating strong and balanced tool use across scenarios.",
+    "char_start": 16983,
+    "char_end": 17170,
+    "sentence_index": 123,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec013",
+    "text": "Qwen3-4B-Thinking is a solid second tier, while DeepSeek-R1 and Seed-OSS-36B are mid-range with noticeable dips.",
+    "char_start": 17171,
+    "char_end": 17283,
+    "sentence_index": 124,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "GPT-OSS-20B lags across all axes.",
+    "char_start": 17284,
+    "char_end": 17317,
+    "sentence_index": 125,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "Performance gaps widen in scenarios requiring multi-tool planning and cross-source synthesis, but narrow on simpler, single-operation queries.",
+    "char_start": 17318,
+    "char_end": 17460,
+    "sentence_index": 126,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "Overall, the top models lead by maintaining a better precision-recall balance across diverse scenarios rather than excelling in only a few.",
+    "char_start": 17461,
+    "char_end": 17600,
+    "sentence_index": 127,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "Difficulty-wise Results Across Easy, Medium, and Hard splits, TF1 does not monotonically decline with difficulty.",
+    "char_start": 17602,
+    "char_end": 17715,
+    "sentence_index": 128,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Stronger models (Qwen3-30B-A3B-Thinking and Qwen3-235B-A22B-Thinking) improve from Easy to Hard, suggesting they leverage richer constraints and multi-tool opportunities in harder queries.",
+    "char_start": 17716,
+    "char_end": 17904,
+    "sentence_index": 129,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "Qwen3-4B-Thinking shows a mild upward trend, while DeepSeek-R1 and Seed-OSS-36B rise modestly.",
+    "char_start": 17905,
+    "char_end": 17999,
+    "sentence_index": 130,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "GPT-OSS-20B exhibits a large jump from Easy to Medium/Hard but remains behind others.",
+    "char_start": 18000,
+    "char_end": 18085,
+    "sentence_index": 131,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "Overall, easy cases penalize over-calling (lower precision), whereas harder cases reward better recall and planning, yielding higher TF1 for models with balanced tool selection.",
+    "char_start": 18086,
+    "char_end": 18263,
+    "sentence_index": 132,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec014",
+    "text": "In this paper, we present FinMCP-Bench, a new benchmark for evaluating LLMs in real-world financial scenarios that require invoking MCP tools.",
+    "char_start": 18265,
+    "char_end": 18407,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec014",
+    "text": "The benchmark covers three categories of tasks, single-tool, multi-tool, and multi-turn, capturing different levels of complexity in tool usage and dialogue interaction.",
+    "char_start": 18408,
+    "char_end": 18577,
+    "sentence_index": 134,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec014",
+    "text": "We conduct extensive evaluations of several popular LLMs on FinMCP-Bench and analyze their performance across multiple dimensions.",
+    "char_start": 18578,
+    "char_end": 18708,
+    "sentence_index": 135,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "The results highlight both the strengths of current models and the challenges they face, particularly in handling complex multi-tool dependencies and multi-turn conversations.",
+    "char_start": 18709,
+    "char_end": 18884,
+    "sentence_index": 136,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "We hope FinMCP-Bench can serve as a standardized and challenging testbed for advancing research on tool-augmented LLMs in finance and inspire future work on improving reasoning, tool orchestration, and dialogue capabilities in this critical domain.",
+    "char_start": 18886,
+    "char_end": 19134,
+    "sentence_index": 137,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "colm2024_conference\ncolm2024_conference",
+    "char_start": 19136,
+    "char_end": 19175,
+    "sentence_index": 138,
+    "section_sentence_index": 5
+  }
+]

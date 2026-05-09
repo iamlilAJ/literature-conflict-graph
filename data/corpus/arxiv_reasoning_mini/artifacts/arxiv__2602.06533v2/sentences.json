@@ -1,0 +1,2369 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language models perform well on many logical reasoning benchmarks, but it remains unclear which core logical skills they truly master.",
+    "char_start": 0,
+    "char_end": 140,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "To address this, we introduce LogicSkills , a benchmark that isolates three fundamental logical skills: (i) formal symbolization translating premises into first-order logic; (ii) countermodel construction showing that an argument is logically invalid by constructing a finite countermodel; and (iii) validity assessment determining whether a conclusion follows from a set of premises.",
+    "char_start": 141,
+    "char_end": 525,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Items are drawn from the two-variable fragment of first-order logic without identity and are presented in both English and a Carrollian nonce-word language.",
+    "char_start": 526,
+    "char_end": 682,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "All instances are solver-verified with Z3 for correctness and non-triviality.",
+    "char_start": 683,
+    "char_end": 760,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Across conventional instruction-tuned LLMs, performance is high on validity assessment but substantially lower on formal symbolization and countermodel construction , highlighting that high task-level accuracy can mask weaknesses in core logical skills.",
+    "char_start": 761,
+    "char_end": 1014,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "In contrast, recent reasoning-tuned models perform strongly across all three tasks, suggesting a more systematic logical skill profile.",
+    "char_start": 1015,
+    "char_end": 1150,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Reasoning in large language models (LLMs) is often evaluated behaviorally by whether systems succeed on tasks that humans would solve through explicit reasoning without presupposing any particular internal method huang-chang-2023-towards, mondorf2024beyond, chen2025towards .",
+    "char_start": 1152,
+    "char_end": 1427,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "In this setting, logical problems serve as external proxies for deductive competence: success should reflect sensitivity to logical structure rather than reliance on superficial cues or world knowledge.",
+    "char_start": 1428,
+    "char_end": 1630,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "However, common benchmarks of logical competence yang2023logical often conflate distinct logical subskills, making it difficult to determine which skills LLMs genuinely master.",
+    "char_start": 1631,
+    "char_end": 1807,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "For instance, a model might correctly carry out a formal proof when given symbolic premises (as tested in ProofWriter tafjord-etal-2021-proofwriter or LogicBench parmar-etal-2024-logicbench ), yet struggle to translate natural-language sentences into symbolic form.",
+    "char_start": 1808,
+    "char_end": 2073,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Likewise, a model might apply modus ponens or other inference rules correctly but falter when asked to find a countermodel that demonstrates the invalidity of an argument, revealing weaknesses in its model-theoretic understanding.",
+    "char_start": 2074,
+    "char_end": 2304,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "[!t]\nfigs/intro-figure.pdf\nAccuracy of standard instruction-tuned LLMs.",
+    "char_start": 2306,
+    "char_end": 2377,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "To address this issue, we introduce LogicSkills , a benchmark for formal reasoning that disentangles fundamental logical skills and exposes failure modes that composite tasks may hide.",
+    "char_start": 2379,
+    "char_end": 2563,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Drawing on formal logic pedagogy, LogicSkills isolates three core logical skills: (i) formal symbolization (mapping sentences to logical form), (ii) countermodel construction (demonstrating invalidity via model-theoretic falsification), and (iii) validity assessment (judging whether a conclusion follows from a set of premises).",
+    "char_start": 2564,
+    "char_end": 2893,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "These skills are closely related: assessing validity typically requires mapping sentences to logical form and checking whether a countermodel exists in which the premises are true and the conclusion is false.",
+    "char_start": 2894,
+    "char_end": 3102,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "LogicSkills is solver-verified (via Z3 10.1007/978-3-540-78800-3_24 ) and includes a bilingual task design (English and Carrollian), with the Carrollian nonce-word condition isolating reasoning from prior semantic knowledge.",
+    "char_start": 3103,
+    "char_end": 3327,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Systematic evaluations on LogicSkills across frontier open-weight and closed-weight LLMs reveal a notable pattern: conventional instruction-tuned LLMs perform strongly on validity assessment but show substantial weaknesses in formal symbolization and countermodel construction (see Figure ).",
+    "char_start": 3329,
+    "char_end": 3620,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This pattern is surprising, since validity assessment would be expected to depend on these two skills, suggesting that such models may often reach correct validity judgments without robustly symbolizing the premises or explicitly constructing countermodels.",
+    "char_start": 3621,
+    "char_end": 3878,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "By contrast, reasoning-tuned LLMs perform strongly across all three skills, indicating a shift toward a more systematic logical skill profile.",
+    "char_start": 3879,
+    "char_end": 4021,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Together, our results call for more nuanced evaluations of logical reasoning in LLMs.",
+    "char_start": 4022,
+    "char_end": 4107,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec003",
+    "text": "Prior evaluations of logical reasoning in LLMs divide broadly into two traditions.",
+    "char_start": 4109,
+    "char_end": 4191,
+    "sentence_index": 20,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec003",
+    "text": "Puzzle-based benchmarks (e.g., knights-and-knaves, logic-grid, and minesweeper tasks) probe combinatorial reasoning often revealing brittleness under search or minor perturbations mondorf-plank-2024-liar,lin2025zebralogic,giadikiaroglou-etal-2024-puzzle,Li_2024 .",
+    "char_start": 4192,
+    "char_end": 4455,
+    "sentence_index": 21,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec003",
+    "text": "Rule- or proof-oriented suites such as ProofWriter , LogicBench , and LogicAsker assess inference templates across propositional and first-order logic tafjord-etal-2021-proofwriter,parmar-etal-2024-logicbench,han-etal-2024-folio,wan-etal-2024-logicasker , but do not disentangle the subskills they presuppose.",
+    "char_start": 4456,
+    "char_end": 4765,
+    "sentence_index": 22,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec003",
+    "text": "LogicSkills complements both traditions by offering a structured, skill-level evaluation framework rather than a single composite reasoning task.",
+    "char_start": 4767,
+    "char_end": 4912,
+    "sentence_index": 23,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec004",
+    "text": "We build a compositional generator that produces grammatical natural-language sentences paired with formulas in the two-variable fragment of first-order logic (FO$^2$, without identity).",
+    "char_start": 4914,
+    "char_end": 5100,
+    "sentence_index": 24,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec004",
+    "text": "We choose FO$^2$ since this logic retains decidability and supports finite satisfiability while being expressive enough to capture nontrivial reasoning scott1962decision,mortimer1975 .",
+    "char_start": 5101,
+    "char_end": 5285,
+    "sentence_index": 25,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec004",
+    "text": "Every formula is realized twice: (i) in controlled English and (ii) in a Carroll-style nonsense lexicon carroll1871lookingglass .",
+    "char_start": 5286,
+    "char_end": 5415,
+    "sentence_index": 26,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec004",
+    "text": "The latter provides a structurally identical surface form that removes real-world associations and isolates pure logical competence.",
+    "char_start": 5416,
+    "char_end": 5548,
+    "sentence_index": 27,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec004",
+    "text": "For example, the sentences ``A human chased a donkey that chased it'' and ``A borogove snicker-snacked a tove that snicker-snacked it'' both map to the formula:\n\nx y ((Nx My) (Rxy Ryx) )\n\nBy varying quantifier structure, predicate choice, name assignments, connectives, and recursive clausal patterns, the generator can produce a wide range of sentences in both English and Carrollian.",
+    "char_start": 5549,
+    "char_end": 5934,
+    "sentence_index": 28,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec004",
+    "text": "Because every sentence is paired with an FO$^2$ formula, we leverage SMT solvers DavisPutnam1960 in particular the state-of-the-art theorem prover Z3 10.1007/978-3-540-78800-3_24 to compute core semantic properties: (i) whether two formulas are equivalent, (ii) whether a set of formulas is jointly satisfiable, (iii) whether one formula follows from others, and (iv) whether a proposed finite model satisfies (or falsifies) a given argument.",
+    "char_start": 5936,
+    "char_end": 6378,
+    "sentence_index": 29,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "This enables large-scale, correctness-guaranteed construction and verification of all deductive instances in the benchmark.",
+    "char_start": 6379,
+    "char_end": 6502,
+    "sentence_index": 30,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "To construct arguments, we sample sets of 3--5 jointly satisfiable premises and use Z3 to search for semantically relevant, non-trivial conclusions that logically follow (valid).",
+    "char_start": 6504,
+    "char_end": 6682,
+    "sentence_index": 31,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "For each valid conclusion, we additionally generate 5 structurally similar distractor conclusions that do not follow (invalid).",
+    "char_start": 6683,
+    "char_end": 6810,
+    "sentence_index": 32,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "Appendix provides further details about the dataset and problem construction pipeline.",
+    "char_start": 6811,
+    "char_end": 6897,
+    "sentence_index": 33,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec005",
+    "text": "We instantiate three task types, each aligned with a canonical logical skill .",
+    "char_start": 6899,
+    "char_end": 6977,
+    "sentence_index": 34,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec005",
+    "text": "Exact prompts can be found in Appendix .",
+    "char_start": 6978,
+    "char_end": 7018,
+    "sentence_index": 35,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "Formal symbolization Given a sentence in English/Carroll and a fixed symbol key, models must output a single well-formed formula capturing the sentence using only the provided predicates, constants, and standard logical operators (i.e., $ ,\\ ,\\ ,\\ ,\\ ,\\ ,\\ $\n).",
+    "char_start": 7020,
+    "char_end": 7281,
+    "sentence_index": 36,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec005",
+    "text": "Input:\n[2pt]\n1em Sentence: ``All raths are uffish.''\n\n1em Key: $F$: ``$x$ is a rath'', $G$: ``$x$ is uffish''.",
+    "char_start": 7283,
+    "char_end": 7393,
+    "sentence_index": 37,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec005",
+    "text": "[2pt]\n\n4pt\n\nOutput: $ x\\,(Fx Gx)$\n\nCountermodel construction For an invalid argument, models must provide a finite structure (on a fixed small domain) that makes all premises true and the conclusion false.",
+    "char_start": 7394,
+    "char_end": 7599,
+    "sentence_index": 38,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec005",
+    "text": "Input:\n[2pt]\n1em Invalid Argument: $ x\\,(Fx Gx),\\; Ga Fa$.",
+    "char_start": 7601,
+    "char_end": 7659,
+    "sentence_index": 39,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec005",
+    "text": "1em Domain: $\\ 0,1\\ $\n[2pt]\n\n4pt\n\nOutput: $F=\\ 0\\ , G=\\ 0,1\\ , a=1$.",
+    "char_start": 7661,
+    "char_end": 7729,
+    "sentence_index": 40,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "Validity assessment Given premises and six candidate conclusions in English/Carroll, models must decide which conclusion(s), if any, must follow.",
+    "char_start": 7731,
+    "char_end": 7876,
+    "sentence_index": 41,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "Input:\n[2pt]\n1em Premises: ``All raths are uffish'';\\; ``Zindle is a rath.''\n\n1em Candidate Conclusions:\n\n1.5em 1.\\; Zindle is not uffish.",
+    "char_start": 7878,
+    "char_end": 8016,
+    "sentence_index": 42,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "1.5em 2.\\; If Zindle is uffish, then Zindle is a rath.",
+    "char_start": 8018,
+    "char_end": 8072,
+    "sentence_index": 43,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "1.5em 3.\\; Zindle is uffish.",
+    "char_start": 8074,
+    "char_end": 8102,
+    "sentence_index": 44,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "[2pt]\n\n4pt\n\nOutput: 3\n\nWhile the compositional generator described in Section enables the creation of a large number of unique problem instances for each task type, we use a fixed evaluation set of $1 , 500$ instances to manage evaluation costs.",
+    "char_start": 8103,
+    "char_end": 8348,
+    "sentence_index": 45,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec006",
+    "text": "Specifically, the set comprises $600$ problems from formal symbolization , $600$ problems from validity assessment , and $300$ problems from countermodel construction .",
+    "char_start": 8349,
+    "char_end": 8517,
+    "sentence_index": 46,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec006",
+    "text": "Symbolization and validity are evaluated bilingually ($300$ problems in English and $300$ in Carroll), whereas countermodel construction is language-neutral.",
+    "char_start": 8518,
+    "char_end": 8675,
+    "sentence_index": 47,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "We evaluate a range of open- and closed-weight LLMs: Llama-3.1-8B , Llama-3.1-70B , Qwen2.5-Math-72B , Claude-3.7-Sonnet , GPT-4o , Gemini-2.5-Flash , DeepSeek-Chat , and Phi-4 .",
+    "char_start": 8677,
+    "char_end": 8855,
+    "sentence_index": 48,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "We further assess two reasoning-tuned models: Qwen3-32B and OpenAI-o3 .",
+    "char_start": 8856,
+    "char_end": 8927,
+    "sentence_index": 49,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "Responses are processed in two stages.",
+    "char_start": 8928,
+    "char_end": 8966,
+    "sentence_index": 50,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "First, an extractor LLM (GPT-4o) cleans and normalizes raw completions.",
+    "char_start": 8967,
+    "char_end": 9038,
+    "sentence_index": 51,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "A meta-evaluation shows 98\u201399\\% extraction accuracy; see Appendix for more details.",
+    "char_start": 9039,
+    "char_end": 9122,
+    "sentence_index": 52,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "Second, task-specific verification procedures check correctness.",
+    "char_start": 9123,
+    "char_end": 9187,
+    "sentence_index": 53,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "Symbolization Normalized formulas are first checked for an exact match; if necessary, they are parsed and repaired.",
+    "char_start": 9189,
+    "char_end": 9304,
+    "sentence_index": 54,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "Cosmetic variants (e.g., $ $ as \\& , $ $ as $ $, $ $ as $ $, or $R(x,y)$ vs.\\ $Rxy$) are handled via the extractor LLM.",
+    "char_start": 9305,
+    "char_end": 9424,
+    "sentence_index": 55,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "Final parses are validated for logical equivalence using Z3.",
+    "char_start": 9425,
+    "char_end": 9485,
+    "sentence_index": 56,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "Countermodels Candidate models are normalized into domain, constants, and predicate extensions.",
+    "char_start": 9487,
+    "char_end": 9582,
+    "sentence_index": 57,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "The system enforces symbol completeness and validates type/domain consistency (integer domains, correct arities).",
+    "char_start": 9583,
+    "char_end": 9696,
+    "sentence_index": 58,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "Candidate models are then translated into SMT-LIB, merged with the negated argument, and checked for satisfiability with Z3.",
+    "char_start": 9697,
+    "char_end": 9821,
+    "sentence_index": 59,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "Validity Extracted labels are compared directly against the gold annotations (see Appendix ).",
+    "char_start": 9823,
+    "char_end": 9916,
+    "sentence_index": 60,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "Notably, the evaluation for symbolization and countermodels is semantic (via Z3) rather than string-based: symbolizations are judged by logical equivalence, and countermodels by whether they satisfy the premises and falsify the conclusion.",
+    "char_start": 9918,
+    "char_end": 10157,
+    "sentence_index": 61,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "[t]\n\nfigs/fig_skill_profile.pdf\nSkill profile across models (accuracy \\%; $n = 300$ per task/language).",
+    "char_start": 10159,
+    "char_end": 10262,
+    "sentence_index": 62,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "Grouped bars show Validity , Symbolization , and Countermodel .",
+    "char_start": 10263,
+    "char_end": 10326,
+    "sentence_index": 63,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "Most models score highly on validity but lag on subskills, especially countermodels.",
+    "char_start": 10327,
+    "char_end": 10411,
+    "sentence_index": 64,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "Figure illustrates model accuracy across the three task types described in Section .",
+    "char_start": 10413,
+    "char_end": 10497,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "A clear pattern emerges among instruction-tuned models: performance on validity assessment is high, whereas performance on formal symbolization and especially countermodel construction remains substantially weaker.",
+    "char_start": 10498,
+    "char_end": 10712,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "For example, GPT-4o achieves $87.0\\%$ on validity assessment but only $10.0\\%$ on countermodel construction ; Gemini-2.5-Flash reaches $96.0\\%$ versus $13.0\\%$, respectively.",
+    "char_start": 10713,
+    "char_end": 10887,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "While accuracy on validity assessment clusters near ceiling, suggesting that premise--conclusion classification is largely mastered under the given conditions, formal symbolization remains a consistent bottleneck, reflecting persistent difficulty in mapping natural-language statements to formal representations.",
+    "char_start": 10888,
+    "char_end": 11200,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "The countermodel construction task is the most discriminative, revealing substantial gaps in model-theoretic reasoning, with almost all conventional LLMs failing to generate consistent falsifying structures.",
+    "char_start": 11201,
+    "char_end": 11408,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "Taken together, these results suggest deficits in fundamental logical subskills that prior high-level composite tasks may have obscured.",
+    "char_start": 11409,
+    "char_end": 11545,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "In contrast, reasoning-tuned models such as Qwen3-32B and o3 exhibit strong performance across all three task types.",
+    "char_start": 11547,
+    "char_end": 11663,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "For instance, o3 achieves up to $99\\%$ accuracy on both validity assessment and countermodel construction , and $98\\%$ on formal symbolization .",
+    "char_start": 11664,
+    "char_end": 11808,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "This pattern suggests that reasoning-tuned models may be moving toward more comprehensive logical competence.",
+    "char_start": 11809,
+    "char_end": 11918,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "Perhaps surprisingly, bilingual evaluation shows only minor differences: averaging across models, English and Carroll results are closely aligned (validity $82.9\\%$ vs.\\ $84.4\\%$; symbolization $70.7\\%$ vs.\\ $69.1\\%$), with a maximum difference of $7$ percentage points across all conditions.",
+    "char_start": 11920,
+    "char_end": 12212,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "This null result suggests that the models are not relying primarily on semantic heuristics when processing the syntactic structure of the arguments.",
+    "char_start": 12213,
+    "char_end": 12361,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "For an overview of accuracy values per model, task, and language, we refer to Table in the Appendix.",
+    "char_start": 12362,
+    "char_end": 12462,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "Error analyses across tasks reveal distinct but converging weaknesses in model reasoning.",
+    "char_start": 12464,
+    "char_end": 12553,
+    "sentence_index": 77,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec009",
+    "text": "In the formal symbolization task, over half of the 1,803 incorrect outputs (50.2\\%) are semantically incorrect despite syntactic well-formedness, while the remainder show structural issues such as predicate-arity mismatches or ill-formed parentheses.",
+    "char_start": 12554,
+    "char_end": 12804,
+    "sentence_index": 78,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec009",
+    "text": "In the countermodel construction task, most erroneous outputs (72.9\\% of 2,020) are structurally well-formed but fail to falsify the argument\u2014typically because one or more premises are false\u2014while the rest (27.1\\%) reflect missing interpretations or malformed predicate definitions.",
+    "char_start": 12805,
+    "char_end": 13087,
+    "sentence_index": 79,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec009",
+    "text": "In the validity assessment task, a majority of the 980 incorrect outputs (58.4\\%) include the correct answer alongside additional invalid options, suggesting difficulty in eliminating plausible distractors.",
+    "char_start": 13088,
+    "char_end": 13294,
+    "sentence_index": 80,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "Further details about the error analysis procedure can be found in Appendix .",
+    "char_start": 13295,
+    "char_end": 13372,
+    "sentence_index": 81,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec009",
+    "text": "[b]\n\n3pt\n0.95\np 0.42 rrr\n\nTrain Data & Sym.\\ $ $ & Counter\\ $ $ & Val.\\ $ $\n\nSymbolization (100k) & +80.7 & 0.0 & -4.3\n\nCountermodel (100k) & -3.0 & +15.7 & -6.4\n\nSymb + Counter (200k) & +84.0 & +25.6 & -5.7\n\nTransfer deltas (accuracy points vs.\\ base).",
+    "char_start": 13374,
+    "char_end": 13627,
+    "sentence_index": 82,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec010",
+    "text": "In principle, skill at formal symbolization and countermodel construction should reinforce validity assessment : to judge validity, a model must map sentences to their logical form and evaluate whether any counterexample structure can satisfy the premises while falsifying the conclusion.",
+    "char_start": 13629,
+    "char_end": 13917,
+    "sentence_index": 83,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec010",
+    "text": "To assess potential cross-skill transfer, we conduct a fine-tuning study.",
+    "char_start": 13918,
+    "char_end": 13991,
+    "sentence_index": 84,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec010",
+    "text": "We fine-tune Llama-3.2-3B-Instruct with LoRA adapters on $100$k symbolization and $100$k countermodel examples (targets generated via tpg; schwarz2025tpg ), using a single epoch with AdamW and standard regularization.",
+    "char_start": 13992,
+    "char_end": 14209,
+    "sentence_index": 85,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec010",
+    "text": "After fine-tuning, we observe large in-task gains but no measurable transfer to the validity assessment task .",
+    "char_start": 14210,
+    "char_end": 14320,
+    "sentence_index": 86,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec010",
+    "text": "Yet, joint fine-tuning on symbolization and countermodel data yields larger countermodel gains than countermodel-only training ($+25.6$ vs.\\ $+15.7$), indicating task interaction.",
+    "char_start": 14321,
+    "char_end": 14500,
+    "sentence_index": 87,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec010",
+    "text": "Table summarizes the corresponding transfer matrix.",
+    "char_start": 14501,
+    "char_end": 14552,
+    "sentence_index": 88,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec011",
+    "text": "From Leibniz\u2019s ( Leibniz1685 ) call to ``let us calculate'' to Frege's Begriffsschrift ( Frege1879 ), the project of logic has rested on the conviction that reasoning becomes reliable only when it is translated into a formal system, where validity is established through explicit rules.",
+    "char_start": 14554,
+    "char_end": 14840,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec011",
+    "text": "The evaluations on LogicSkills presented in this work suggest that conventional LLMs can achieve high accuracy on logical tasks without the explicit symbolic and model-based procedures that underpin standard logical methods.",
+    "char_start": 14841,
+    "char_end": 15065,
+    "sentence_index": 90,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec011",
+    "text": "At the same time, recent reasoning-tuned models exhibit a broader and more systematic logical skill profile, pointing to a promising direction for future work.",
+    "char_start": 15066,
+    "char_end": 15225,
+    "sentence_index": 91,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec012",
+    "text": "While our study introduces a novel benchmark for formal reasoning that disentangles core logical skills and exposes failure modes that composite tasks may hide, there are several limitations that future work can address.",
+    "char_start": 15227,
+    "char_end": 15447,
+    "sentence_index": 92,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec012",
+    "text": "Although the evaluation benchmark reported here is fixed in size, the underlying generation pipeline is fully programmatic and supports large-scale expansion; for example, we generate an additional 200k training instances for the PEFT experiments ( ) using the same infrastructure.",
+    "char_start": 15448,
+    "char_end": 15729,
+    "sentence_index": 93,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec012",
+    "text": "Logical and linguistic scope LogicSkills evaluates reasoning within a deliberately restricted logical and linguistic scope.",
+    "char_start": 15731,
+    "char_end": 15854,
+    "sentence_index": 94,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec012",
+    "text": "All tasks are drawn from the two-variable fragment of first-order logic without identity, excluding richer logical resources such as full first-order logic, identity, or modal operators.",
+    "char_start": 15855,
+    "char_end": 16041,
+    "sentence_index": 95,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec012",
+    "text": "Consequently, results may not generalize to reasoning in more expressive logical systems.",
+    "char_start": 16042,
+    "char_end": 16131,
+    "sentence_index": 96,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec012",
+    "text": "The benchmark also relies on a controlled fragment of English and a synthetically generated Carrollian language.",
+    "char_start": 16132,
+    "char_end": 16244,
+    "sentence_index": 97,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "While this design isolates logical structure, it limits linguistic diversity and does not capture many sources of difficulty present in naturally occurring language.",
+    "char_start": 16245,
+    "char_end": 16410,
+    "sentence_index": 98,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "Evaluation procedure Model performance is additionally sensitive to prompting and evaluation protocols.",
+    "char_start": 16412,
+    "char_end": 16515,
+    "sentence_index": 99,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec012",
+    "text": "In the symbolization and countermodel tasks, responses must contain logical content that can be interpreted as formulas or structures for semantic verification.",
+    "char_start": 16516,
+    "char_end": 16676,
+    "sentence_index": 100,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec012",
+    "text": "However, evaluation does not depend on a fixed output template: responses are normalized, parsed, and repaired prior to verification, and cosmetic or notational variants are tolerated.",
+    "char_start": 16677,
+    "char_end": 16861,
+    "sentence_index": 101,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec012",
+    "text": "Correctness is ultimately determined by logical equivalence checks and model-theoretic verification.",
+    "char_start": 16862,
+    "char_end": 16962,
+    "sentence_index": 102,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec012",
+    "text": "Nevertheless, performance may still partly reflect a model\u2019s ability to produce interpretable logical content rather than reasoning ability alone.",
+    "char_start": 16963,
+    "char_end": 17109,
+    "sentence_index": 103,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec012",
+    "text": "Behavior vs.",
+    "char_start": 17111,
+    "char_end": 17123,
+    "sentence_index": 104,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec012",
+    "text": "Mechanism\nLogicSkills evaluates reasoning behaviorally.",
+    "char_start": 17124,
+    "char_end": 17179,
+    "sentence_index": 105,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec012",
+    "text": "While it reveals systematic differences across logical subskills, it does not directly address the internal representations or mechanisms by which models arrive at their answers chalmers2025interpretability,stolfo2023mechanistic .",
+    "char_start": 17180,
+    "char_end": 17410,
+    "sentence_index": 106,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec012",
+    "text": "The PEFT results already suggest that behavioral competence and underlying skill integration can dissociate; whether reasoning-oriented models that pass all three tasks are genuinely approximating model-theoretic reasoning or achieving this through more powerful but equally opaque means remains an open question for mechanistic investigation.",
+    "char_start": 17411,
+    "char_end": 17754,
+    "sentence_index": 107,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec012",
+    "text": "Within the scope of this paper, these limitations are largely intentional design choices, reflecting a tradeoff between expressivity and reliable, solver-verifiable evaluation.",
+    "char_start": 17756,
+    "char_end": 17932,
+    "sentence_index": 108,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec013",
+    "text": "We would like to thank the anonymous reviewers for their comments and suggestions.",
+    "char_start": 17934,
+    "char_end": 18016,
+    "sentence_index": 109,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec013",
+    "text": "Furthermore, we acknowledge the support for BP through the ERC Consolidator Grant DIALECT 101043235.",
+    "char_start": 18017,
+    "char_end": 18117,
+    "sentence_index": 110,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec013",
+    "text": "custom\n\nLogicSkills sentences span a range of first-order constructions.",
+    "char_start": 18119,
+    "char_end": 18191,
+    "sentence_index": 111,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec014",
+    "text": "Table gives representative examples, covering atomic predicates, quantification (including nested and anaphoric forms), Boolean connectives, and conditionals.",
+    "char_start": 18192,
+    "char_end": 18350,
+    "sentence_index": 112,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec014",
+    "text": "Each schema admits systematic surface variants (e.g., VP ellipsis, contrastive conjunctions, unless-disjunctions) that preserve the same logical structure.",
+    "char_start": 18351,
+    "char_end": 18506,
+    "sentence_index": 113,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec014",
+    "text": "Each sentence is realized in two surface languages: controlled English and a Carroll-style nonsense language, each with its own fixed lexicon.",
+    "char_start": 18508,
+    "char_end": 18650,
+    "sentence_index": 114,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec014",
+    "text": "The fixed lexicons contain 3 constants (names) and 13 predicates, which bounds the maximum vocabulary size of any sentence.",
+    "char_start": 18651,
+    "char_end": 18774,
+    "sentence_index": 115,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec015",
+    "text": "Sentence generation.",
+    "char_start": 18776,
+    "char_end": 18796,
+    "sentence_index": 116,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec015",
+    "text": "All tasks are grounded in a large shared sentence inventory (100k+ sentences) generated compositionally.",
+    "char_start": 18797,
+    "char_end": 18901,
+    "sentence_index": 117,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec015",
+    "text": "Each sentence is paired with a surface realization (English or Carrollian), an FO$^ 2 $ logical form, its abstract syntax tree (AST), and a schema of abbreviation (SOA) mapping logical symbols to lexical items.",
+    "char_start": 18902,
+    "char_end": 19112,
+    "sentence_index": 118,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec015",
+    "text": "English and Carroll realizations are linked by a counterpart relation preserving logical form.",
+    "char_start": 19113,
+    "char_end": 19207,
+    "sentence_index": 119,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec015",
+    "text": "Sentences are labeled by syntactic type (atomic, negated, conditional, quantified, etc.) and stored in a database with fields for surface form, SOA, FO$^ 2 $ formula, AST, language tag, and a counterpart identifier linking English and Carroll realizations.",
+    "char_start": 19208,
+    "char_end": 19464,
+    "sentence_index": 120,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec015",
+    "text": "Argument generation.",
+    "char_start": 19466,
+    "char_end": 19486,
+    "sentence_index": 121,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec015",
+    "text": "Arguments are generated by sampling small premise sets (3--5 sentences) from the sentence table and applying solver-based filtering.",
+    "char_start": 19487,
+    "char_end": 19619,
+    "sentence_index": 122,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec015",
+    "text": "Premises must be jointly satisfiable, and candidate conclusions are tested for entailment using Z3.",
+    "char_start": 19620,
+    "char_end": 19719,
+    "sentence_index": 123,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec015",
+    "text": "To enforce non-triviality, we exclude theorems, conclusions derivable from domain constraints alone, and conclusions derivable from only a proper subset (at most 20\\%) of the premises.",
+    "char_start": 19720,
+    "char_end": 19904,
+    "sentence_index": 124,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec015",
+    "text": "For each valid argument, five invalid arguments are constructed using alternative conclusions that fail to follow; distractors are constrained to share subject matter with the valid conclusion (same predicates and constants), preferentially match its syntactic type, and be solver-verified as non-entailed.",
+    "char_start": 19905,
+    "char_end": 20211,
+    "sentence_index": 125,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec015",
+    "text": "Arguments are stored in a database with fields for premise identifiers, conclusion identifier, validity label, and language, and form the large shared pool from which validity and countermodel tasks are derived.",
+    "char_start": 20212,
+    "char_end": 20423,
+    "sentence_index": 126,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "Task instantiation.",
+    "char_start": 20425,
+    "char_end": 20444,
+    "sentence_index": 127,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec015",
+    "text": "Three task families are derived from the sentence and argument tables.",
+    "char_start": 20445,
+    "char_end": 20515,
+    "sentence_index": 128,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec015",
+    "text": "Formal symbolization tasks are constructed from individual sentences paired with their SOA, with the associated FO$^ 2 $ formula as the target.",
+    "char_start": 20516,
+    "char_end": 20659,
+    "sentence_index": 129,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec015",
+    "text": "Although the fixed lexicons permit a larger vocabulary in principle, in practice sentences used to instantiate tasks involve only 3--4 predicates and 1--2 constants (4--6 symbols total).",
+    "char_start": 20660,
+    "char_end": 20846,
+    "sentence_index": 130,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec015",
+    "text": "Argument validity tasks are constructed from solver-certified valid arguments, each paired with five invalid alternatives sharing the same premises.",
+    "char_start": 20847,
+    "char_end": 20995,
+    "sentence_index": 131,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec015",
+    "text": "Countermodel construction tasks are constructed from solver-certified invalid arguments and require a finite model that satisfies all premises while falsifying the conclusion.",
+    "char_start": 20996,
+    "char_end": 21171,
+    "sentence_index": 132,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec016",
+    "text": "All task outputs are verified automatically using Z3.",
+    "char_start": 21173,
+    "char_end": 21226,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec016",
+    "text": "The three tasks differ in how correctness is defined.",
+    "char_start": 21227,
+    "char_end": 21280,
+    "sentence_index": 134,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec016",
+    "text": "For the validity task, each argument has a single correct label (valid or invalid).",
+    "char_start": 21281,
+    "char_end": 21364,
+    "sentence_index": 135,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec016",
+    "text": "Model outputs are compared directly against the gold label.",
+    "char_start": 21365,
+    "char_end": 21424,
+    "sentence_index": 136,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec016",
+    "text": "The symbolization and countermodel tasks admit multiple correct answers, so correctness is defined semantically rather than syntactically.",
+    "char_start": 21425,
+    "char_end": 21563,
+    "sentence_index": 137,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec016",
+    "text": "In the formal symbolization task, accuracy is defined as producing a formula logically equivalent to the target representation.",
+    "char_start": 21565,
+    "char_end": 21692,
+    "sentence_index": 138,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec016",
+    "text": "Two formulas are considered equivalent if they have the same truth conditions in all structures.",
+    "char_start": 21693,
+    "char_end": 21789,
+    "sentence_index": 139,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "Evaluation therefore relies on logical equivalence checking rather than string identity.",
+    "char_start": 21790,
+    "char_end": 21878,
+    "sentence_index": 140,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec016",
+    "text": "Natural-language sentences may admit multiple logically equivalent formalizations.",
+    "char_start": 21879,
+    "char_end": 21961,
+    "sentence_index": 141,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec016",
+    "text": "For example, the formulas $ x(Dx Bx)$ and $ x(Dx Bx)$ are logically equivalent and therefore treated as equally correct representations of the same sentence.",
+    "char_start": 21962,
+    "char_end": 22119,
+    "sentence_index": 142,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec016",
+    "text": "Invalid arguments may admit many countermodels.",
+    "char_start": 22121,
+    "char_end": 22168,
+    "sentence_index": 143,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec016",
+    "text": "The countermodel task therefore defines correctness existentially: a candidate structure is correct if it makes all premises true and the conclusion false.",
+    "char_start": 22169,
+    "char_end": 22324,
+    "sentence_index": 144,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec016",
+    "text": "The task fixes a small finite domain and requires a fully specified structure over that domain.",
+    "char_start": 22325,
+    "char_end": 22420,
+    "sentence_index": 145,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "Candidate structures are normalized into domain assignments, constant interpretations, and predicate extensions prior to verification.",
+    "char_start": 22421,
+    "char_end": 22555,
+    "sentence_index": 146,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "Any structure satisfying these semantic conditions is accepted as correct.",
+    "char_start": 22556,
+    "char_end": 22630,
+    "sentence_index": 147,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "Code for dataset generation, task construction, and evaluation is available at .",
+    "char_start": 22632,
+    "char_end": 22712,
+    "sentence_index": 148,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec017",
+    "text": "Our evaluation pipeline produced structured outputs beyond binary correctness labels, enabling systematic error analysis across all tasks.",
+    "char_start": 22714,
+    "char_end": 22852,
+    "sentence_index": 149,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec017",
+    "text": "For each instance, we retained the raw model response, the extracted or parsed answer, the gold-standard answer, and task-specific diagnostic metadata from the evaluator.",
+    "char_start": 22853,
+    "char_end": 23023,
+    "sentence_index": 150,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec017",
+    "text": "Formal symbolization For symbolization , each response included an assessment label (e.g., Not logically equivalent , Failed to parse ).",
+    "char_start": 23025,
+    "char_end": 23161,
+    "sentence_index": 151,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec017",
+    "text": "Incorrect outputs were filtered and categorized by matching these labels, allowing semantic errors to be distinguished from syntactic or structural failures.",
+    "char_start": 23162,
+    "char_end": 23319,
+    "sentence_index": 152,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec017",
+    "text": "Countermodel construction For countermodel construction , the model checker returned a list of diagnostic error messages (e.g., Not a countermodel , Missing interpretation for:\\!",
+    "char_start": 23321,
+    "char_end": 23499,
+    "sentence_index": 153,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec017",
+    "text": "X , Binary predicate `P' must be a list of pairs , etc.).",
+    "char_start": 23500,
+    "char_end": 23557,
+    "sentence_index": 154,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec017",
+    "text": "Failures were categorized by matching error-message patterns, with additional checks performed by evaluating premises and conclusions against the proposed structure when needed.",
+    "char_start": 23558,
+    "char_end": 23735,
+    "sentence_index": 155,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec017",
+    "text": "Argument validity For validity , both the extracted and correct answers were represented as sets of statement indices.",
+    "char_start": 23737,
+    "char_end": 23855,
+    "sentence_index": 156,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec017",
+    "text": "Set comparisons were used to distinguish incorrect selections from superset errors in which the correct answer was included alongside additional invalid options.",
+    "char_start": 23856,
+    "char_end": 24017,
+    "sentence_index": 157,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec017",
+    "text": "All error analyses were performed programmatically over the full evaluation set, and the resulting error-type distributions correspond to those reported in the main text.",
+    "char_start": 24019,
+    "char_end": 24189,
+    "sentence_index": 158,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec018",
+    "text": "Raw model responses were post-processed by an extractor LLM to normalize outputs into task-specific formats prior to scoring.",
+    "char_start": 24191,
+    "char_end": 24316,
+    "sentence_index": 159,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec018",
+    "text": "To assess the reliability of this extraction step independently of task correctness, we conducted a meta-evaluation.",
+    "char_start": 24317,
+    "char_end": 24433,
+    "sentence_index": 160,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec018",
+    "text": "We randomly sampled 100 evaluation instances, balanced across all task types (symbolization, validity, and countermodel construction) and languages where applicable, and including both correct and incorrect model responses.",
+    "char_start": 24435,
+    "char_end": 24658,
+    "sentence_index": 161,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec018",
+    "text": "For each instance, the evaluator was given the original task prompt, the model\u2019s raw response, and the extracted answer produced by the extractor.",
+    "char_start": 24659,
+    "char_end": 24805,
+    "sentence_index": 162,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "The meta-evaluator (GPT-4o) rendered a binary judgment\u2014faithful or unfaithful\u2014indicating whether the extracted answer accurately reflected the content of the raw response, independent of correctness.",
+    "char_start": 24807,
+    "char_end": 25006,
+    "sentence_index": 163,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "Five cases were flagged as potentially unfaithful.",
+    "char_start": 25007,
+    "char_end": 25057,
+    "sentence_index": 164,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec018",
+    "text": "All flagged cases, together with a random sample of 10 unflagged instances, were subsequently reviewed by a human evaluator (a meta-meta-evaluation).",
+    "char_start": 25059,
+    "char_end": 25208,
+    "sentence_index": 165,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec018",
+    "text": "Of the five flagged cases, one constituted a clear extraction error, in which the model revised a predicate assignment mid-response and the extractor failed to capture the update.",
+    "char_start": 25209,
+    "char_end": 25388,
+    "sentence_index": 166,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "One case involved a normalization failure, where a malformed but correctly extracted formula was not repaired.",
+    "char_start": 25389,
+    "char_end": 25499,
+    "sentence_index": 167,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "The remaining three cases involved internally inconsistent raw responses (e.g., conflicting predicate arities or self-contradictory conclusions); in these cases, the extractor\u2019s output was judged reasonable given the ambiguity of the source response.",
+    "char_start": 25500,
+    "char_end": 25750,
+    "sentence_index": 168,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "After human adjudication, only one instance was deemed a clear extraction failure, with one additional case judged ambiguous, corresponding to an effective extraction accuracy of 98--99\\%.",
+    "char_start": 25752,
+    "char_end": 25940,
+    "sentence_index": 169,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec019",
+    "text": "Figures to illustrate the prompts used for each task type described in Section .",
+    "char_start": 25942,
+    "char_end": 26022,
+    "sentence_index": 170,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec020",
+    "text": "Table reports the complete per-model results underlying .",
+    "char_start": 26024,
+    "char_end": 26081,
+    "sentence_index": 171,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec021",
+    "text": "We used GitHub Copilot for parts of the project's source code and ChatGPT to correct minor grammatical errors.",
+    "char_start": 26083,
+    "char_end": 26193,
+    "sentence_index": 172,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec021",
+    "text": "[b!]\n\nlccccc\n\nModel & Val (Car.) & Val (Eng.) & Sym (Car.) & Sym (Eng.) & Counter\n\nmeta\\_llama-3.1-8B-instruct & 0.46 & 0.45 & 0.14 & 0.14 & 0.00\n\nmeta\\_llama-3.1-70B-instruct & 0.84 & 0.86 & 0.66 & 0.69 & 0.12\n\nqwen2.5-math-72B-instruct & 0.80 & 0.80 & 0.80 & 0.80 & 0.15\n\nanthropic\\_claude-3.7-sonnet & 0.96 & 0.94 & 0.71 & 0.76 & 0.42\n\nopenai/gpt-4o & 0.87 & 0.85 & 0.74 & 0.72 & 0.10\n\ngoogle\\_gemini-2.5-flash & 0.96 & 0.94 & 0.76 & 0.79 & 0.13\n\ndeepseek\\_chat & 0.81 & 0.76 & 0.80 & 0.81 & 0.35\n\nmicrosoft\\_phi-4 & 0.80 & 0.73 & 0.51 & 0.57 & 0.14\n\nqwen3-32B & 0.95 & 0.97 & 0.82 & 0.85 & 0.89\n\nopenai/o3 & 0.99 & 0.99 & 0.97 & 0.94 & 0.99\n\nAccuracy across tasks and models (300 problems per setting).",
+    "char_start": 26195,
+    "char_end": 26901,
+    "sentence_index": 173,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec021",
+    "text": "[b!]\n[backgroundcolor=gray!5, linewidth=0pt, innerleftmargin=10pt, innerrightmargin=10pt]\nArgument Validity Prompt\n\n0.6em\n\nYour task is to solve a logical reasoning problem.",
+    "char_start": 26903,
+    "char_end": 27076,
+    "sentence_index": 174,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec021",
+    "text": "Use any approach you find effective, but clearly and explicitly state your final answer.",
+    "char_start": 27077,
+    "char_end": 27165,
+    "sentence_index": 175,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec021",
+    "text": "0.6em\n\nTask\n\n0.2em\n\nConsider the following situation:\n\nEverything is a tove, a borogove, or a rath (exclusively), and there's at least one of each.",
+    "char_start": 27167,
+    "char_end": 27314,
+    "sentence_index": 176,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec021",
+    "text": "Zindle or Bungo will whiffle.",
+    "char_start": 27315,
+    "char_end": 27344,
+    "sentence_index": 177,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec021",
+    "text": "Only toves will whiffle.",
+    "char_start": 27345,
+    "char_end": 27369,
+    "sentence_index": 178,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec021",
+    "text": "Every rath chortled at Bungo.",
+    "char_start": 27370,
+    "char_end": 27399,
+    "sentence_index": 179,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec021",
+    "text": "If Zindle will whiffle, then every rath is mimsy only if every borogove chortled at Bungo.",
+    "char_start": 27400,
+    "char_end": 27490,
+    "sentence_index": 180,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec021",
+    "text": "Which, if any, of the following statements must be true in this situation?",
+    "char_start": 27492,
+    "char_end": 27566,
+    "sentence_index": 181,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec021",
+    "text": "0.4em\n\n2pt\n2pt\nZindle and Bungo will whiffle.",
+    "char_start": 27568,
+    "char_end": 27613,
+    "sentence_index": 182,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec021",
+    "text": "Every tove will whiffle.",
+    "char_start": 27614,
+    "char_end": 27638,
+    "sentence_index": 183,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec021",
+    "text": "Not all toves will whiffle.",
+    "char_start": 27639,
+    "char_end": 27666,
+    "sentence_index": 184,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec021",
+    "text": "A tove will whiffle.",
+    "char_start": 27667,
+    "char_end": 27687,
+    "sentence_index": 185,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec021",
+    "text": "No toves will whiffle.",
+    "char_start": 27688,
+    "char_end": 27710,
+    "sentence_index": 186,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec021",
+    "text": "Zindle will whiffle.",
+    "char_start": 27711,
+    "char_end": 27731,
+    "sentence_index": 187,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec021",
+    "text": "Illustrative instance of the Argument Validity task.",
+    "char_start": 27733,
+    "char_end": 27785,
+    "sentence_index": 188,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec021",
+    "text": "[tbp]\n\n[backgroundcolor=gray!3, linewidth=0pt, innerleftmargin=10pt, innerrightmargin=10pt]\nFormal Symbolization Prompt\n\n0.6em\n\nYour task is to translate the provided sentence into formal predicate logic, using the abbreviations provided.",
+    "char_start": 27787,
+    "char_end": 28025,
+    "sentence_index": 189,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec021",
+    "text": "0.6em\nInstructions\n-0.6em\n0pt\nUse only the abbreviations given.",
+    "char_start": 28027,
+    "char_end": 28090,
+    "sentence_index": 190,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec021",
+    "text": "Return a single well-formed formula in standard predicate logic syntax.",
+    "char_start": 28091,
+    "char_end": 28162,
+    "sentence_index": 191,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec021",
+    "text": "Use standard logical symbols:\n0pt\nQuantifiers: $ $, $ $\nConnectives: $ $, $ $, $ $, $ $, $ $\nDo not include any explanation or extra text---just the formula.",
+    "char_start": 28163,
+    "char_end": 28320,
+    "sentence_index": 192,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec021",
+    "text": "0.6em\nExample\n\n0.2em\nSentence: Every linguist admires Charlie.",
+    "char_start": 28322,
+    "char_end": 28384,
+    "sentence_index": 193,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec021",
+    "text": "Abbreviations:\n-0.6em\n0pt\nL: \u201c[1] is a linguist\u201d\nR: \u201c[1] admires [2]\u201d\nc: \u201cCharlie\u201d\n\n-0.6em\nTranslation: $ x(Lx Rxc)$\n\n0.5em\n\n1em\n\nTask\n0.2em\n\nSentence: Not all raths will whiffle and no toves chortled at Bungo.",
+    "char_start": 28386,
+    "char_end": 28596,
+    "sentence_index": 194,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec021",
+    "text": "0.5em\nAbbreviations:\n-0.6em\n0pt\nO: \u201c[1] is a rath\u201d\nF: \u201c[1] will whiffle\u201d\nM: \u201c[1] is a tove\u201d\nP: \u201c[1] chortled at [2]\u201d\nc: \u201cBungo\u201d\n\nIllustrative instance of the Formal Symbolization task.",
+    "char_start": 28598,
+    "char_end": 28782,
+    "sentence_index": 195,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec021",
+    "text": "[tbp]\n\n[backgroundcolor=gray!5, linewidth=0pt, innerleftmargin=10pt, innerrightmargin=10pt]\nCountermodel Construction Prompt\n\n0.6em\n\nShow that the provided argument is invalid by giving a countermodel---one where all premises are true and the conclusion is false.",
+    "char_start": 28784,
+    "char_end": 29047,
+    "sentence_index": 196,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec021",
+    "text": "0.6em\nInstructions\n-0.4em\n\n2pt\n2pt\nProvide assignments for all constants and predicates used in the argument.",
+    "char_start": 29049,
+    "char_end": 29158,
+    "sentence_index": 197,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec021",
+    "text": "Respect predicate arity:\n\n1pt\nMonadic predicates take one argument (e.g., $Mx$).",
+    "char_start": 29159,
+    "char_end": 29239,
+    "sentence_index": 198,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec021",
+    "text": "Binary predicates take two arguments (e.g., $Pxy$).",
+    "char_start": 29240,
+    "char_end": 29291,
+    "sentence_index": 199,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec021",
+    "text": "Use the fixed domain $[0, 1, 2]$.",
+    "char_start": 29293,
+    "char_end": 29326,
+    "sentence_index": 200,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec021",
+    "text": "0.6em\nRequired Format\n-0.4em\n\n2pt\nDomain: $[0, 1, 2]$\nConstants: ``a\": $0$\nMonadic predicates: ``F\": $[0, 2]$\nBinary predicates: ``R\": $[[0, 1], [2, 0]]$\n\n0.5em\n\n1em\n\nArgument\n0.8em\n\n& ( x \\,(Mx (Nx Ox)) \\; \\;\n( x \\,(Mx Nx) \\; \\;\n( x \\,(Mx Ox) \\; \\;\nx \\,(Nx Ox)) ) ),\n[6pt]\n& ( x \\,Mx \\; \\; ( x \\,Nx \\; \\; x \\,Ox)),\n[6pt]\n& x y \\,((Mx My) Pxy),\n[6pt]\n& ( x \\,(Ox Qxc) Mb),\n[6pt]\n& ( x \\,(Nx Rxc) x \\,(Nx Rxb)),\n[6pt]\n& ( x \\,(Ox Rxc) (Mb x \\,(Nx Pxc))),\n[6pt]\n& (Pcc x \\,(Ox Rxa))\n[10pt]\n& Mc\n\nIllustrative instance of the Countermodel Construction task.",
+    "char_start": 29328,
+    "char_end": 29882,
+    "sentence_index": 201,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec021",
+    "text": "[b!]\n5pt\n\nl p 4cm p 4cm\n\nSentence type & English example & Carroll example\n\natomic\\_monadic\n& Hazel drank.",
+    "char_start": 29884,
+    "char_end": 29990,
+    "sentence_index": 202,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec021",
+    "text": "& Bungo gyred.",
+    "char_start": 29991,
+    "char_end": 30005,
+    "sentence_index": 203,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec021",
+    "text": "atomic\\_dyadic\n& Hazel kicked Lewis.",
+    "char_start": 30007,
+    "char_end": 30043,
+    "sentence_index": 204,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec021",
+    "text": "& Bungo galumphed over Rafin.",
+    "char_start": 30044,
+    "char_end": 30073,
+    "sentence_index": 205,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec021",
+    "text": "negation\n& Lewis isn\u2019t happy.",
+    "char_start": 30075,
+    "char_end": 30104,
+    "sentence_index": 206,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec021",
+    "text": "& Rafin isn\u2019t uffish.",
+    "char_start": 30105,
+    "char_end": 30126,
+    "sentence_index": 207,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec021",
+    "text": "quantified\\_universal\\_affirmative\n& Every monkey is asleep.",
+    "char_start": 30128,
+    "char_end": 30188,
+    "sentence_index": 208,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec021",
+    "text": "& Every rath is mimsy.",
+    "char_start": 30189,
+    "char_end": 30211,
+    "sentence_index": 209,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec021",
+    "text": "quantified\\_particular\\_affirmative\n& A donkey will run.",
+    "char_start": 30213,
+    "char_end": 30269,
+    "sentence_index": 210,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec021",
+    "text": "& A tove will whiffle.",
+    "char_start": 30270,
+    "char_end": 30292,
+    "sentence_index": 211,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec021",
+    "text": "quantified\\_universal\\_negative\n& No humans chased Alfred.",
+    "char_start": 30294,
+    "char_end": 30352,
+    "sentence_index": 212,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec021",
+    "text": "& No borogoves snicker-snacked Zindle.",
+    "char_start": 30353,
+    "char_end": 30391,
+    "sentence_index": 213,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec021",
+    "text": "quantified\\_particular\\_negative\n& Not all donkeys chased Alfred.",
+    "char_start": 30393,
+    "char_end": 30458,
+    "sentence_index": 214,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec021",
+    "text": "& Not all toves snicker-snacked Zindle.",
+    "char_start": 30459,
+    "char_end": 30498,
+    "sentence_index": 215,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec021",
+    "text": "quantified\\_only\\_restrictor\n& Only humans will run.",
+    "char_start": 30500,
+    "char_end": 30552,
+    "sentence_index": 216,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec021",
+    "text": "& Only borogoves will whiffle.",
+    "char_start": 30553,
+    "char_end": 30583,
+    "sentence_index": 217,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec021",
+    "text": "quantified\\_name\\_all\n& Hazel chased every human.",
+    "char_start": 30585,
+    "char_end": 30634,
+    "sentence_index": 218,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec021",
+    "text": "& Bungo snicker-snacked every borogove.",
+    "char_start": 30635,
+    "char_end": 30674,
+    "sentence_index": 219,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec021",
+    "text": "quantified\\_name\\_some\n& Alfred chased a donkey.",
+    "char_start": 30676,
+    "char_end": 30724,
+    "sentence_index": 220,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec021",
+    "text": "& Zindle snicker-snacked a tove.",
+    "char_start": 30725,
+    "char_end": 30757,
+    "sentence_index": 221,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec021",
+    "text": "quantified\\_all\\_all\n& Every monkey kicked every donkey.",
+    "char_start": 30759,
+    "char_end": 30815,
+    "sentence_index": 222,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec021",
+    "text": "& Every rath galumphed over every tove.",
+    "char_start": 30816,
+    "char_end": 30855,
+    "sentence_index": 223,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec021",
+    "text": "quantified\\_all\\_all\\_all\n& Every donkey saw every donkey that saw every monkey.",
+    "char_start": 30857,
+    "char_end": 30937,
+    "sentence_index": 224,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec021",
+    "text": "& Every tove chortled at every tove that chortled at every rath.",
+    "char_start": 30938,
+    "char_end": 31002,
+    "sentence_index": 225,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec021",
+    "text": "quantified\\_all\\_all\\_back\n& Every donkey chased every monkey that chased it.",
+    "char_start": 31004,
+    "char_end": 31081,
+    "sentence_index": 226,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec021",
+    "text": "& Every tove snicker-snacked every rath that snicker-snacked it.",
+    "char_start": 31082,
+    "char_end": 31146,
+    "sentence_index": 227,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec021",
+    "text": "quantified\\_all\\_some\n& Every monkey kicked a human.",
+    "char_start": 31148,
+    "char_end": 31200,
+    "sentence_index": 228,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec021",
+    "text": "& Every rath galumphed over a borogove.",
+    "char_start": 31201,
+    "char_end": 31240,
+    "sentence_index": 229,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec021",
+    "text": "quantified\\_all\\_some\\_back\n& Every human saw a donkey that saw it.",
+    "char_start": 31242,
+    "char_end": 31309,
+    "sentence_index": 230,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "& Every borogove chortled at a tove that chortled at it.",
+    "char_start": 31310,
+    "char_end": 31366,
+    "sentence_index": 231,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_all\n& A monkey chased every human.",
+    "char_start": 31368,
+    "char_end": 31420,
+    "sentence_index": 232,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec021",
+    "text": "& A rath snicker-snacked every borogove.",
+    "char_start": 31421,
+    "char_end": 31461,
+    "sentence_index": 233,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_all\\_back\n& A monkey saw every human that saw it.",
+    "char_start": 31463,
+    "char_end": 31530,
+    "sentence_index": 234,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec021",
+    "text": "& A rath chortled at every borogove that chortled at it.",
+    "char_start": 31531,
+    "char_end": 31587,
+    "sentence_index": 235,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_some\n& A human chased a donkey.",
+    "char_start": 31589,
+    "char_end": 31638,
+    "sentence_index": 236,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec021",
+    "text": "& A borogove snicker-snacked a tove.",
+    "char_start": 31639,
+    "char_end": 31675,
+    "sentence_index": 237,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_some\\_back\n& A donkey kicked a monkey that kicked it.",
+    "char_start": 31677,
+    "char_end": 31748,
+    "sentence_index": 238,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec021",
+    "text": "& A tove galumphed over a rath that galumphed over it.",
+    "char_start": 31749,
+    "char_end": 31803,
+    "sentence_index": 239,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_some\\_some\n& A human kicked a human that kicked a monkey.",
+    "char_start": 31805,
+    "char_end": 31880,
+    "sentence_index": 240,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec021",
+    "text": "& A borogove galumphed over a borogove that galumphed over a rath.",
+    "char_start": 31881,
+    "char_end": 31947,
+    "sentence_index": 241,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec021",
+    "text": "quantified\\_no\\_all\n& No humans kicked every human.",
+    "char_start": 31949,
+    "char_end": 32000,
+    "sentence_index": 242,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec021",
+    "text": "& No borogoves galumphed over every borogove.",
+    "char_start": 32001,
+    "char_end": 32046,
+    "sentence_index": 243,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec021",
+    "text": "quantified\\_no\\_some\n& No humans chased a human.",
+    "char_start": 32048,
+    "char_end": 32096,
+    "sentence_index": 244,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec021",
+    "text": "& No borogoves snicker-snacked a borogove.",
+    "char_start": 32097,
+    "char_end": 32139,
+    "sentence_index": 245,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec021",
+    "text": "quantified\\_no\\_some\\_back\n& No donkeys kicked a monkey that kicked it.",
+    "char_start": 32141,
+    "char_end": 32212,
+    "sentence_index": 246,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec021",
+    "text": "& No toves galumphed over a rath that galumphed over it.",
+    "char_start": 32213,
+    "char_end": 32269,
+    "sentence_index": 247,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec021",
+    "text": "quantified\\_rev\\_some\\_all\n& There is a donkey that every monkey kicked.",
+    "char_start": 32271,
+    "char_end": 32343,
+    "sentence_index": 248,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec021",
+    "text": "& There is a tove that every rath galumphed over.",
+    "char_start": 32344,
+    "char_end": 32393,
+    "sentence_index": 249,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec021",
+    "text": "quantified\\_rev\\_no\\_all\n& There is not a monkey that every human chased.",
+    "char_start": 32395,
+    "char_end": 32468,
+    "sentence_index": 250,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec021",
+    "text": "& There is not a rath that every borogove snicker-snacked.",
+    "char_start": 32469,
+    "char_end": 32527,
+    "sentence_index": 251,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec021",
+    "text": "quantified\\_some\\_self\n& A donkey kicked itself.",
+    "char_start": 32529,
+    "char_end": 32577,
+    "sentence_index": 252,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec021",
+    "text": "& A tove galumphed over itself.",
+    "char_start": 32578,
+    "char_end": 32609,
+    "sentence_index": 253,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec021",
+    "text": "conjunction\\_simple\n& Hazel saw Lewis and not all monkeys kicked Lewis.",
+    "char_start": 32611,
+    "char_end": 32682,
+    "sentence_index": 254,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec021",
+    "text": "& Bungo chortled at Rafin and not all raths galumphed over Rafin.",
+    "char_start": 32683,
+    "char_end": 32748,
+    "sentence_index": 255,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec021",
+    "text": "disjunction\\_simple\n& Alfred drank or a monkey kicked Alfred.",
+    "char_start": 32750,
+    "char_end": 32811,
+    "sentence_index": 256,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec021",
+    "text": "& Zindle gyred or a rath galumphed over Zindle.",
+    "char_start": 32812,
+    "char_end": 32859,
+    "sentence_index": 257,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec021",
+    "text": "conditional\\_if\\_then\n& If Hazel is a human, then Alfred isn\u2019t a human.",
+    "char_start": 32861,
+    "char_end": 32932,
+    "sentence_index": 258,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec021",
+    "text": "& If Bungo is a borogove, then Zindle isn\u2019t a borogove.",
+    "char_start": 32933,
+    "char_end": 32988,
+    "sentence_index": 259,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec021",
+    "text": "biconditional\\_just\\_in\\_case\n& Hazel is happy just in case every donkey chased Lewis.",
+    "char_start": 32990,
+    "char_end": 33076,
+    "sentence_index": 260,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec021",
+    "text": "& Bungo is uffish just in case every tove snicker-snacked Rafin.",
+    "char_start": 33077,
+    "char_end": 33141,
+    "sentence_index": 261,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec021",
+    "text": "Sentence types used in LogicSkills with representative English and Carroll examples.",
+    "char_start": 33143,
+    "char_end": 33227,
+    "sentence_index": 262,
+    "section_sentence_index": 90
+  }
+]

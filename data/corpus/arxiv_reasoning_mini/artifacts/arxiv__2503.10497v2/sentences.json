@@ -1,0 +1,3035 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Existing large language model (LLM) evaluation benchmarks primarily focus on English, while current multilingual tasks lack parallel questions that specifically assess cross-linguistic reasoning abilities.",
+    "char_start": 0,
+    "char_end": 205,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "This dual limitation makes it challenging to comprehensively assess LLMs' performance in the multilingual setting.",
+    "char_start": 206,
+    "char_end": 320,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To fill this gap, we introduce MMLU-ProX , a comprehensive benchmark covering 29 languages, built on an English benchmark.",
+    "char_start": 321,
+    "char_end": 443,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Each language version consists of 11,829 identical questions, enabling direct cross-linguistic comparisons.",
+    "char_start": 444,
+    "char_end": 551,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Additionally, to meet efficient evaluation needs, we provide a lite version containing 658 questions per language.",
+    "char_start": 552,
+    "char_end": 666,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "To ensure the high quality of MMLU-ProX , we employ a rigorous development process that involves multiple powerful LLMs for translation, followed by expert review to ensure accurate expression, consistent terminology, and cultural relevance.",
+    "char_start": 667,
+    "char_end": 908,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Building on this, we systematically evaluate 36 state-of-the-art LLMs, including reasoning-enhanced and multilingual-optimized LLMs.",
+    "char_start": 909,
+    "char_end": 1041,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "The results reveal significant disparities in the multilingual capabilities of LLMs: While they perform well in high-resource languages, their performance declines markedly in low-resource languages, with gaps of up to 24.3\\%.",
+    "char_start": 1042,
+    "char_end": 1268,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Through MMLU-ProX , we aim to advance the development of more inclusive AI systems and promote equitable access to technology across global contexts.",
+    "char_start": 1269,
+    "char_end": 1418,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "The rapid development of large language models (LLMs) has significantly reshaped the field of natural language processing (NLP), with an increasing shift from predominantly English-centric systems towards multilingual understanding .",
+    "char_start": 1420,
+    "char_end": 1653,
+    "sentence_index": 9,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "As LLMs become more prevalent in global applications, the need for comprehensive multilingual evaluations becomes paramount.",
+    "char_start": 1654,
+    "char_end": 1778,
+    "sentence_index": 10,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "An effective multilingual evaluation ensures the global accessibility of LLMs, particularly benefiting users of diverse linguistic and cultural backgrounds .",
+    "char_start": 1779,
+    "char_end": 1936,
+    "sentence_index": 11,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "[t]\n\nimages/prox_teaser1.pdf\nSelected existing benchmarks for multilingual LLMs evaluation on benchmark difficulty and number of languages.",
+    "char_start": 1938,
+    "char_end": 2077,
+    "sentence_index": 12,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "-5mm\n\nThe multilingual evaluation of LLMs faces two primary challenges, as illustrated in Figure .",
+    "char_start": 2079,
+    "char_end": 2177,
+    "sentence_index": 13,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "First, existing benchmarks are constrained by limitations in both language coverage or translation quality.",
+    "char_start": 2178,
+    "char_end": 2285,
+    "sentence_index": 14,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Although monolingual benchmarks such as TurkishMMLU , KMMLU , and JMMLU offer rigorous evaluation within their respective languages, they provide limited insight for comprehensive multilingual evaluation.",
+    "char_start": 2286,
+    "char_end": 2490,
+    "sentence_index": 15,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Broader initiatives such as Global MMLU extend coverage to 42 languages, distinguishing between culture-sensitive and culture-agnostic questions.",
+    "char_start": 2491,
+    "char_end": 2636,
+    "sentence_index": 16,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "However, the heterogeneous translation approaches pose significant challenges.",
+    "char_start": 2637,
+    "char_end": 2715,
+    "sentence_index": 17,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "The combination of professional translators, community volunteers, and Google Translate introduces quality variations that are difficult to quantify.",
+    "char_start": 2716,
+    "char_end": 2865,
+    "sentence_index": 18,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "These inconsistencies in translation quality impede objective comparison of model reasoning across languages and hinder precise diagnosis of low-resource language deficiencies.",
+    "char_start": 2866,
+    "char_end": 3042,
+    "sentence_index": 19,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "The second challenge pertains to the difficulty of the evaluation.",
+    "char_start": 3043,
+    "char_end": 3109,
+    "sentence_index": 20,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "The evolution from MMLU to MMLU-Pro , and Humanity's Last Exam (HLE) in English benchmarking reflects the rapidly advanced reasoning capabilities of LLMs.",
+    "char_start": 3110,
+    "char_end": 3264,
+    "sentence_index": 21,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Among those, MMLU-Pro enhances its predecessor through more complex reasoning questions, expanded answer choices, and reduction of data set noise, offering greater discriminative power.",
+    "char_start": 3265,
+    "char_end": 3450,
+    "sentence_index": 22,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This progression underscores the pressing need for equally challenging multilingual benchmarks that can effectively evaluate sophisticated reasoning capabilities across languages.",
+    "char_start": 3451,
+    "char_end": 3630,
+    "sentence_index": 23,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "To address these challenges, we introduce MMLU-ProX, a novel multilingual benchmark that builds upon the challenging, reasoning-focused design of MMLU-Pro while extending its coverage to 29 typologically diverse languages.",
+    "char_start": 3632,
+    "char_end": 3854,
+    "sentence_index": 24,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "The resulting benchmark contains 11,829 questions per language in its full version, with a lite version of 658 questions available for efficient evaluation.",
+    "char_start": 3855,
+    "char_end": 4011,
+    "sentence_index": 25,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "To ensure linguistic accuracy and terminological consistency across languages, we develop a semi-automated translation framework that combines state-of-the-art (SOTA) LLMs with expert verification.",
+    "char_start": 4012,
+    "char_end": 4209,
+    "sentence_index": 26,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This approach effectively mitigates the quality variations inherent in heterogeneous translation methods and maintains the discriminative power of MMLU-ProX in the multilingual setting.",
+    "char_start": 4210,
+    "char_end": 4395,
+    "sentence_index": 27,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Our primary contributions include: 1) We introduce MMLU-ProX, a multilingual benchmark for massive multitask language understanding with enhanced reasoning-focused questions across 29 languages.",
+    "char_start": 4397,
+    "char_end": 4591,
+    "sentence_index": 28,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "It enables comprehensive evaluation of LLMs' cross-lingual reasoning abilities and lays a foundation for the development of more inclusive LLMs in the future.",
+    "char_start": 4592,
+    "char_end": 4750,
+    "sentence_index": 29,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Additionally, we engage over 30 experts to verify the data quality, with a total labor effort exceeding 400 hours.",
+    "char_start": 4751,
+    "char_end": 4865,
+    "sentence_index": 30,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "2) We conduct systematic evaluations on MMLU-ProX and its lite version using both 0-shot and 5-shot chain-of-thought (CoT) prompting across 36 latest LLMs, covering both open-weight LLMs ranging from 3.8B to 671B parameters, as well as proprietary LLMs.",
+    "char_start": 4866,
+    "char_end": 5119,
+    "sentence_index": 31,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "3) We analyze the reasoning capabilities of LLMs in the multilingual setting, revealing significant performance disparities across languages.",
+    "char_start": 5120,
+    "char_end": 5261,
+    "sentence_index": 32,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "This analysis underscores the limitations of current LLMs in global contexts, further highlighting the need to enhance global accessibility and advance fairness evaluations.",
+    "char_start": 5262,
+    "char_end": 5435,
+    "sentence_index": 33,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "[ht]\n\n!",
+    "char_start": 5437,
+    "char_end": 5444,
+    "sentence_index": 34,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "lclcccl\n\nDataset & Languages & Evaluation Modality & CoT & Parallel Data & Subjects & Questions\n\nMMLU & 1 & Multiple-choice (4) & & & 57 & 15908\n\nTurkishMMLU* & 1 & Multiple-choice (4) & & & 9& 10032\n\nKMMLU & 1& Multiple-choice (4) & & & 45&35030\n\nXCOPA & 11 & Binary choice & & & 1 & 5500\n\nGlobal-MMLU & 42 & Multiple-choice (4) & & & 57 & $ 600$k\n\nMMMLU & 14 & Multiple-choice (4) & & & 57 & $ $ 197k\n\nHumanitiy's Last Exam & 1 & Multiple-choice \\& exact match & & & 2 & $ $ 5000\n\nMMLU-Pro & 1 & Multiple-choice (10) & & & 57 & $ $ 12k\n\noverall\nMMLU-ProX (this work) & 29 & Multiple-choice (10) & & & 57 & $ $ 342.2k\n\nComparison of multilingual benchmarks with ticks ( ) and crosses ( ) indicating presence or absence of CoT and Parallel Data.",
+    "char_start": 5445,
+    "char_end": 6190,
+    "sentence_index": 35,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "*We acknowledge other MMLU datasets for various languages and randomly select TurkishMMLU as a representative example.",
+    "char_start": 6191,
+    "char_end": 6309,
+    "sentence_index": 36,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "-3mm\n\nMultilingual Large Language Models.",
+    "char_start": 6311,
+    "char_end": 6352,
+    "sentence_index": 37,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "The field of NLP has been profoundly transformed by multilingual LLMs, which have evolved beyond the initial English-centric paradigm to address the linguistic diversity of our world with over 7,000 languages spoken globally .",
+    "char_start": 6353,
+    "char_end": 6579,
+    "sentence_index": 38,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Modern LLMs are sophisticated systems built upon advanced neural architectures such as the Transformer, designed to process, comprehend, and generate text across numerous languages.",
+    "char_start": 6580,
+    "char_end": 6761,
+    "sentence_index": 39,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Recent LLMs such as Claude 3 series , GPT-4 , Gemini series , Qwen3 , and Llama 4 have demonstrated remarkable multilingual capabilities.",
+    "char_start": 6762,
+    "char_end": 6899,
+    "sentence_index": 40,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "These models leverage massive pre-training datasets spanning dozens to hundreds of languages, such as the corpus used by Qwen3, encompassing 119 languages and dialects.",
+    "char_start": 6900,
+    "char_end": 7068,
+    "sentence_index": 41,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "However, research indicates persistent challenges in these systems, including the \"English pivot\" phenomenon where models internally process non-English inputs through English-like representations, and consistent performance gaps between high-resource and low-resource languages.",
+    "char_start": 7069,
+    "char_end": 7348,
+    "sentence_index": 42,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Our work with MMLU-ProX specifically addresses these challenges by providing a comprehensive evaluation framework that enables direct assessment of reasoning capabilities across linguistically diverse contexts.",
+    "char_start": 7349,
+    "char_end": 7559,
+    "sentence_index": 43,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "LLM Evaluation Benchmarks.",
+    "char_start": 7561,
+    "char_end": 7587,
+    "sentence_index": 44,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Prior work on multilingual LLM evaluation has largely focused on breadth or translation fidelity, but often at the expense of reasoning depth or language nuance.",
+    "char_start": 7588,
+    "char_end": 7749,
+    "sentence_index": 45,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Benchmarks like MMLU , TurkishMMLU and KMMLU evaluate expert reasoning tasks but are limited to a single language, while MGSM and XCOPA prioritize multilingual coverage through translated or templated questions yet restrict evaluation to narrow reasoning formats such as math problems or causal inferences.",
+    "char_start": 7750,
+    "char_end": 8056,
+    "sentence_index": 46,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Global-MMLU extends MMLU to 42 languages with human-machine hybrid translations, but it suffers from inconsistent translation quality and remains limited in reasoning difficulty.",
+    "char_start": 8057,
+    "char_end": 8235,
+    "sentence_index": 47,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "MMLU-Pro extends the original MMLU benchmark by introducing highly complex reasoning questions and more distractor options better to evaluate LLMs' reasoning depth and robustness in English.",
+    "char_start": 8236,
+    "char_end": 8426,
+    "sentence_index": 48,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "Similarly, Humanity's Last Exam is a rigorous benchmark of 3,000 expert-crafted questions across diverse subjects, designed to challenge advanced AI systems and assess their progress toward expert-level reasoning, but it still remains to be an English-centric benchmark.",
+    "char_start": 8427,
+    "char_end": 8697,
+    "sentence_index": 49,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "While early comprehensive benchmarks such as XTREME and XGLUE significantly advanced the evaluation of cross-lingual transfer, they primarily focused on traditional tasks, often assessing generalization from English training data rather than deep LLM reasoning.",
+    "char_start": 8698,
+    "char_end": 8959,
+    "sentence_index": 50,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "This landscape underscores the need for benchmarks that not only cover diverse languages but also rigorously assess complex reasoning within appropriate cultural contexts, a gap that MMLU-ProX aims to address.",
+    "char_start": 8960,
+    "char_end": 9169,
+    "sentence_index": 51,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "A detailed comparison of the aforementioned dataset is shown in tab:compare .",
+    "char_start": 9170,
+    "char_end": 9247,
+    "sentence_index": 52,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "Among the selected benchmarks, MMLU-ProX fills an important gap by maintaining a balanced distribution of languages, subjects, and questions, with a focus on data parallelization and reasoning-focused features.",
+    "char_start": 9248,
+    "char_end": 9458,
+    "sentence_index": 53,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "MMLU-ProX extends the challenging MMLU-Pro benchmark to encompass 29 typologically diverse languages: English (EN), Chinese (ZH), Japanese (JA), Korean (KO), French (FR), German (DE), Spanish (ES), Portuguese (PT), Arabic (AR), Thai (TH), Hindi (HI), Bengali (BN), Swahili (SW), Afrikaans (AF), Czech (CS), Hungarian (HU), Indonesian (ID), Italian (IT), Marathi (MR), Nepali (NE), Russian (RU), Serbian (SR), Telugu (TE), Ukrainian (UK), Urdu (UR), Vietnamese (VI), Wolof (WO), Yoruba (YO), and Zulu (ZU).",
+    "char_start": 9460,
+    "char_end": 9965,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "MMLU-ProX benchmark maintains the high difficulty level and reasoning focus of MMLU-Pro while enabling rigorous evaluation of LLMs' cross-lingual reasoning capabilities.",
+    "char_start": 9966,
+    "char_end": 10135,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "By carefully translating the same set of questions across all languages, MMLU-ProX facilitates direct comparison of model performance across linguistic boundaries while controlling for question difficulty.",
+    "char_start": 10136,
+    "char_end": 10341,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "To ensure the quality of MMLU-ProX, we implemented a multi-stage pipeline to generate the data shown in fig:pipeline .",
+    "char_start": 10343,
+    "char_end": 10461,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Initially, we hired a dedicated team to perform preliminary data curation, establishing a clean version suitable for subsequent translations.",
+    "char_start": 10462,
+    "char_end": 10603,
+    "sentence_index": 58,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Following this, we deployed a translation agent to maintain translation quality standards.",
+    "char_start": 10604,
+    "char_end": 10694,
+    "sentence_index": 59,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Finally, we employed a sampling methodology wherein professional translators evaluated selected samples.",
+    "char_start": 10695,
+    "char_end": 10799,
+    "sentence_index": 60,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "The results demonstrated that the generated dataset successfully passed assessment by professional human translators.",
+    "char_start": 10800,
+    "char_end": 10917,
+    "sentence_index": 61,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "images/pipeline.pdf\nMMLU-ProX Data Pipeline: A rigorous four-stage process consisting of data curation, translation, external model verification, and expert review.",
+    "char_start": 10919,
+    "char_end": 11083,
+    "sentence_index": 62,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "-5mm\n\nThe data curation process comprises multiple stages.",
+    "char_start": 11085,
+    "char_end": 11143,
+    "sentence_index": 63,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "First, we identify and address duplicate or partially duplicate questions within MMLU-Pro, either eliminating or merging these instances to ensure fair evaluation without redundancy bias.",
+    "char_start": 11144,
+    "char_end": 11331,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Subsequently, we performed manual corrections of grammatical issues in the filtered dataset, addressing problems that include but are not limited to run-on words, incorrect hyphenation, and inconsistent symbol usage.",
+    "char_start": 11332,
+    "char_end": 11548,
+    "sentence_index": 65,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Finally, we manually rectify inconsistencies within the questions, particularly focusing on misalignments between options and problem statements.",
+    "char_start": 11549,
+    "char_end": 11694,
+    "sentence_index": 66,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "For English data curation, we engage four interdisciplinary specialists, with a total labor investment of approximately 20 hours to correct run-on words, incorrect hyphenation, and other syntactic anomalies that could potentially confound the translation process.",
+    "char_start": 11695,
+    "char_end": 11958,
+    "sentence_index": 67,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "This curation step is critical to establish a clean baseline for our multilingual translations, as source-language errors can propagate and amplify through translation pipelines, particularly in technical and specialized domains that predominate in MMLU-Pro.",
+    "char_start": 11959,
+    "char_end": 12217,
+    "sentence_index": 68,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "Our data curation is followed by implementing a robust translation methodology.",
+    "char_start": 12219,
+    "char_end": 12298,
+    "sentence_index": 69,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "Based on recent machine translation evaluations , we select the SOTA Claude model, Claude Sonnet 3.7 as our primary translation model.",
+    "char_start": 12299,
+    "char_end": 12433,
+    "sentence_index": 70,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "Although LLMs have shown impressive translation capabilities, we recognize the need to safeguard against potential translation errors.",
+    "char_start": 12434,
+    "char_end": 12568,
+    "sentence_index": 71,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "To address this, we develop a four-stage LLM-driven translation framework for producing MMLU-ProX:\n\nI.",
+    "char_start": 12569,
+    "char_end": 12671,
+    "sentence_index": 72,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "Initial Translation : Claude Sonnet 3.7 performs the preliminary translations using carefully crafted prompts.",
+    "char_start": 12672,
+    "char_end": 12782,
+    "sentence_index": 73,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "These prompts emphasize maintaining accurate expression, consistent terminology across questions and options, and cultural appropriateness for target language users.",
+    "char_start": 12783,
+    "char_end": 12948,
+    "sentence_index": 74,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "The translation preserves all LaTeX notation, mathematical formulae, programming code (including variable names and comments), and currency symbols exactly as they appear in the source text.",
+    "char_start": 12949,
+    "char_end": 13139,
+    "sentence_index": 75,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "For units of measurement, we implement standard translations in target languages while maintaining precise numerical relationships and retaining all special formatting and emphasis from the original text.",
+    "char_start": 13140,
+    "char_end": 13344,
+    "sentence_index": 76,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "II.",
+    "char_start": 13346,
+    "char_end": 13349,
+    "sentence_index": 77,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "Self-Reflection : In this stage, Claude Sonnet 3.7 performs a comprehensive review of its own translation's correspondence with the source text, generating feedback for improving the translation quality.",
+    "char_start": 13350,
+    "char_end": 13553,
+    "sentence_index": 78,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "The reflection process focuses on verifying proper noun translations and eliminating any superfluous explanations or additions.",
+    "char_start": 13554,
+    "char_end": 13681,
+    "sentence_index": 79,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "It also ensures the use of established technical terminology in the target language.",
+    "char_start": 13682,
+    "char_end": 13766,
+    "sentence_index": 80,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "III.",
+    "char_start": 13768,
+    "char_end": 13772,
+    "sentence_index": 81,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "Improvements : Claude Sonnet 3.7 then conducts meticulous editing, incorporating feedback from the self-reflection stage.",
+    "char_start": 13773,
+    "char_end": 13894,
+    "sentence_index": 82,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "Additionally, we prompt the model to ensure the explanatory information is only included for concepts lacking direct equivalents in target languages, particularly in low-resource languages like Wolof and Yoruba.",
+    "char_start": 13895,
+    "char_end": 14106,
+    "sentence_index": 83,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "The LLM-driven process maintains strict preservation of original single quotation marks and removes any unnecessary explanations or source language terms.",
+    "char_start": 14107,
+    "char_end": 14261,
+    "sentence_index": 84,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "IV.",
+    "char_start": 14263,
+    "char_end": 14266,
+    "sentence_index": 85,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "External Examination : To mitigate potential systematic errors from single-model biases, we employ two different LLMs for verification: OpenAI O3 for low-resource African languages (Swahili, Zulu, Yoruba, and Wolof), and GPT-4.1 for the rest.",
+    "char_start": 14267,
+    "char_end": 14509,
+    "sentence_index": 86,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "This automated verification process is designed to flag only significant discrepancies for manual review and human translation.",
+    "char_start": 14510,
+    "char_end": 14637,
+    "sentence_index": 87,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "Appendix contains all translation prompts.",
+    "char_start": 14639,
+    "char_end": 14681,
+    "sentence_index": 88,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "To rigorously evaluate the benchmark quality following our translation framework implementation, we conduct comprehensive expert evaluations of the translation quality.",
+    "char_start": 14683,
+    "char_end": 14851,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "Specifically, we randomly sample 20 items from each of the 14 disciplines and use these consistent items across all languages for evaluation.",
+    "char_start": 14852,
+    "char_end": 14993,
+    "sentence_index": 90,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "We select 15 languages and conduct expert verification, with each language evaluated by two professional translators who are native speakers of the target language and proficient in English.",
+    "char_start": 14994,
+    "char_end": 15184,
+    "sentence_index": 91,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "The total annotation effort exceeds 400 hours.",
+    "char_start": 15185,
+    "char_end": 15231,
+    "sentence_index": 92,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Each item undergoes assessment by two high-caliber translators who rate three aspects\u2014accuracy, fluency, and completeness\u2014on a scale of 1\u20135.",
+    "char_start": 15232,
+    "char_end": 15372,
+    "sentence_index": 93,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "Detailed scoring criteria and full results can be found in Appendix .",
+    "char_start": 15373,
+    "char_end": 15442,
+    "sentence_index": 94,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "Subsequently, for any category where both translators assign scores below 3 on any metric, we conduct a complete retranslation of the entire discipline of that language to ensure final averaged scores for all categories strictly exceed 4 points, an indication of accurate translation.",
+    "char_start": 15444,
+    "char_end": 15728,
+    "sentence_index": 95,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "Throughout this process, only the law category in Yoruba requires such modification; all other categories across all languages maintain average scores of 4 or above.",
+    "char_start": 15729,
+    "char_end": 15894,
+    "sentence_index": 96,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "tab:human_verfication presents representative translation scores, showing examples from three languages within each resource group (group criteria are in Appendix ).",
+    "char_start": 15896,
+    "char_end": 16061,
+    "sentence_index": 97,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "The results demonstrate consistently high translation quality under expert evaluation, even for low-resource languages such as Wolof, Yoruba, and Nepali.",
+    "char_start": 16062,
+    "char_end": 16215,
+    "sentence_index": 98,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "This uniform performance across resource groups validates both the reliability of our translation pipeline and the overall quality of MMLU-ProX.",
+    "char_start": 16216,
+    "char_end": 16360,
+    "sentence_index": 99,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "[ht]\n\n0.45 !",
+    "char_start": 16362,
+    "char_end": 16374,
+    "sentence_index": 100,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "lccc\n\nLanguage & Accuracy & Fluency & Completeness\n\n4 l High Resource\n\nZH & 4.70 & 4.84 & 4.92\n\nJA & 4.60 & 4.65 & 4.99\n\nFR & 4.68 & 4.64 & 4.94\n\n4 l Medium Resource\n\nKO & 4.90 & 4.41 & 4.97\n\nPT & 4.79 & 4.77 & 4.99\n\nAF & 4.77 & 4.78 & 4.99\n\n4 l Low Resource\n\nWO & 4.14 & 4.42 & 4.83\n\nYO & 4.06 & 4.56 & 4.95\n\nNE & 4.61 & 4.73 & 4.91\n\nScores (out of 5) assigned by human translators for Accuracy, Fluency, and Completeness, grouped by language resource level (We show representatives here).",
+    "char_start": 16375,
+    "char_end": 16865,
+    "sentence_index": 101,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "-3mm\n\nThe development of MMLU-ProX requires substantial resource investment.",
+    "char_start": 16867,
+    "char_end": 16943,
+    "sentence_index": 102,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": "Taking into account API costs for translation and testing, expert verification expenses, and computational resources, the total development cost approaches \\$80,000 at market rates.",
+    "char_start": 16944,
+    "char_end": 17125,
+    "sentence_index": 103,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "This investment demonstrates our commitment to creating a high-quality, reliable benchmark for advancing multilingual LLM capabilities.",
+    "char_start": 17126,
+    "char_end": 17261,
+    "sentence_index": 104,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "[!t]\n\n0.95 !",
+    "char_start": 17263,
+    "char_end": 17275,
+    "sentence_index": 105,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "l|ccc|cc|c|c|c|c|c|c|cccc\n\nLanguage &\n\ngpttextcolor 90 o4-mini &\n\ngpttextcolor 90 GPT-4.1 &\ngpttextcolor 90 GPT-4o &\n\ndeepseektextcolor 90 DeepSeek-R1 &\ndeepseektextcolor 90 DeepSeek-V3 &\n\nmistraltextcolor 90 Mistral-3.1-24B &\n\ninternlmtextcolor 90 InternLM3-8B &\n\nayatextcolor 90 Aya-32B &\n\nphitextcolor 90 Phi4-14B &\n\nllamatextcolor 90 Llama3.3-70B &\n\ngemmatextcolor 90 Gemma3-27B &\n\nqwentextcolor 90 Qwen3-32B &\nqwentextcolor 90 Qwen3-32B-Think &\nqwentextcolor 90 Qwen3-235B &\nqwentextcolor 90 Qwen3-235B-Think\n\noverall\nOverall (AVG) & 69.3 & 72.7 & 61.1 & 75.5 & 70.5 & 45.9 & 17.2 & 25.6 & 49.9 & 55.8 & 56.6 & 59.9 & 66.3 & 66.7 & 74.9\n\nwesteuropean\nEnglish (EN) & 73.7 & 79.8 & 59.9 & 79.5 & 79.6 & 62.0 & 40.8 & 40.8 & 71.5 & 65.7 & 66.5 & 71.8 & 74.9 & 73.5 & 80.7\n\nwesteuropean\nFrench (FR) & 72.2 & 75.7 & 66.7 & 81.3 & 76.3 & 60.6 & 38.3 & 36.5 & 61.9 & 62.1 & 63.5 & 68.4 & 72.1 & 72.5 & 80.6\n\nwesteuropean\nGerman (DE) & 73.5 & 76.4 & 69.6 & 76.7 & 75.1 & 58.5 & 36.7 & 36.7 & 64.1 & 59.8 & 61.0 & 67.6 & 71.7 & 71.3 & 80.4\n\nwesteuropean\nSpanish (ES) & 74.7 & 77.8 & 68.6 & 80.2 & 76.9 & 59.4 & 36.3 & 35.4 & 59.6 & 61.5 & 63.0 & 68.7 & 72.8 & 73.2 & 80.7\n\nwesteuropean\nPortuguese (PT) & 74.1 & 77.0 & 67.9 & 78.0 & 75.7 & 60.0 & 36.1 & 30.1 & 61.7 & 61.4 & 63.2 & 69.1 & 72.7 & 73.1 & 80.5\n\nwesteuropean\nItalian (IT) & 73.9 & 78.2 & 62.9 & 79.9 & 75.9 & 59.6 & 34.7 & 34.5 & 60.2 & 67.0 & 64.4 & 69.4 & 73.5 & 73.7 & 80.9\n\nindoaryan\nHindi (HI) & 71.8 & 74.5 & 62.3 & 77.5 & 71.6 & 40.8 & 5.2 & 27.7 & 47.8 & 55.4 & 58.4 & 61.5 & 70.4 & 67.6 & 78.7\n\nindoaryan\nBengali (BN) & 70.1 & 72.2 & 62.8 & 66.6 & 69.8 & 32.0 & 3.8 & 14.0 & 34.1 & 50.1 & 55.5 & 57.1 & 66.4 & 67.7 & 77.8\n\nindoaryan\nUrdu (UR) & 72.0 & 68.3 & 59.6 & 76.2 & 70.3 & 43.3 & 2.5 & 20.9 & 41.8 & 56.3 & 56.7 & 62.4 & 70.8 & 68.7 & 76.1\n\nindoaryan\nTelugu (TE) & 69.1 & 65.9 & 51.3 & 71.9 & 67.6 & 29.3 & 6.4 & 7.2 & 24.1 & 47.9 & 55.9 & 51.0 & 70.3 & 66.7 & 77.9\n\nindoaryan\nMarathi (MR) & 70.7 & 72.2 & 68.1 & 70.4 & 69.8 & 30.7 & 2.0 & 13.5 & 43.2 & 56.4 & 56.1 & 58.9 & 70.7 & 67.7 & 78.5\n\nindoaryan\nNepali (NE) & 71.5 & 74.2 & 61.3 & 78.9 & 69.3 & 32.9 & 1.5 & 14.5 & 36.0 & 52.8 & 56.8 & 59.7 & 70.7 & 67.8 & 78.1\n\neastasian\nChinese (ZH) & 72.6 & 75.5 & 64.6 & 78.0 & 73.9 & 56.5 & 24.2 & 37.4 & 62.3 & 58.4 & 60.4 & 67.0 & 68.7 & 70.5 & 77.4\n\neastasian\nJapanese (JA) & 71.5 & 75.6 & 45.8 & 76.9 & 72.9 & 54.4 & 20.6 & 29.9 & 56.5 & 57.0 & 59.3 & 62.6 & 70.2 & 68.8 & 77.1\n\neastasian\nKorean (KO) & 73.2 & 75.4 & 57.9 & 76.7 & 70.7 & 52.3 & 20.0 & 34.4 & 58.2 & 54.5 & 57.8 & 65.5 & 71.2 & 69.6 & 78.3\n\neastasian\nVietnamese (VI) & 73.4 & 76.7 & 70.4 & 76.3 & 75.4 & 53.4 & 5.3 & 30.9 & 57.1 & 65.2 & 61.1 & 68.5 & 72.4 & 71.4 & 72.6\n\neastasian\nThai (TH) & 72.0 & 75.1 & 66.7 & 78.7 & 71.2 & 35.4 & 5.5 & 14.9 & 51.7 & 56.0 & 56.7 & 56.1 & 70.4 & 68.8 & 77.1\n\neastasian\nIndonesian (ID) & 73.8 & 75.6 & 66.1 & 81.3 & 75.8 & 55.5 & 31.6 & 23.1 & 63.9 & 65.5 & 62.6 & 68.5 & 73.4 & 72.5 & 79.9\n\nafrican\nArabic (AR) & 72.5 & 74.1 & 68.3 & 76.2 & 72.4 & 49.8 & 9.1 & 36.6 & 56.8 & 51.0 & 58.7 & 64.9 & 70.4 & 70.1 & 78.7\n\nafrican\nAfrikaans (AF) & 73.5 & 77.2 & 65.3 & 80.9 & 72.9 & 53.3 & 27.6 & 29.7 & 57.8 & 62.7 & 62.0 & 65.9 & 72.4 & 71.1 & 80.6\n\nafrican\nSwahili (SW) & 66.9 & 71.9 & 58.6 & 75.0 & 63.4 & 31.4 & 2.2 & 9.0 & 35.2 & 49.0 & 52.8 & 46.4 & 56.7 & 56.3 & 70.8\n\nafrican\nWolof (WO) & 24.1 & 43.2 & 24.3 & 58.6 & 47.3 & 17.0 & 0.6 & 1.5 & 8.1 & 28.5 & 8.8 & 26.1 & 26.6 & 26.6 & 36.9\n\nafrican\nYoruba (YO) & 54.9 & 53.4 & 44.3 & 57.0 & 47.7 & 13.5 & 0.6 & 3.9 & 23.1 & 31.6 & 32.4 & 25.7 & 18.8 & 40.2 & 49.3\n\nafrican\nZulu (ZU) & 61.2 & 65.0 & 55.3 & 67.3 & 53.7 & 17.0 & 2.2 & 14.5 & 11.5 & 33.6 & 40.7 & 17.9 & 35.2 & 46.2 & 46.4\n\nother\nRussian (RU) & 62.0 & 71.2 & 62.0 & 76.4 & 74.9 & 59.2 & 26.1 & 36.7 & 65.2 & 61.1 & 62.5 & 68.0 & 69.1 & 72.9 & 77.0\n\nother\nUkrainian (UK) & 73.3 & 76.4 & 56.8 & 76.8 & 74.2 & 56.0 & 27.5 & 35.9 & 61.3 & 59.9 & 61.7 & 68.0 & 73.5 & 72.5 & 78.8\n\nother\nSerbian (SR) & 72.6 & 76.9 & 70.6 & 80.9 & 72.9 & 53.9 & 28.9 & 27.4 & 50.7 & 63.0 & 61.7 & 67.2 & 72.3 & 71.1 & 80.2\n\nother\nCzech (CS) & 73.5 & 77.5 & 70.1 & 76.8 & 74.7 & 55.1 & 0.0 & 34.5 & 63.2 & 63.8 & 62.6 & 67.7 & 72.8 & 71.8 & 80.5\n\nother\nHungarian (HU) & 72.6 & 76.6 & 63.0 & 79.1 & 71.4 & 48.7 & 22.2 & 29.1 & 59.4 & 59.7 & 59.8 & 65.9 & 71.1 & 70.1 & 79.8\n\nModel performance (\\%) on MMLU-ProX across 29 languages.",
+    "char_start": 17277,
+    "char_end": 21677,
+    "sentence_index": 106,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "Languages are grouped by linguistic families with distinct colors.",
+    "char_start": 21678,
+    "char_end": 21744,
+    "sentence_index": 107,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "Best result per language is in bold .",
+    "char_start": 21745,
+    "char_end": 21782,
+    "sentence_index": 108,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Full tables can be found in Appendix .",
+    "char_start": 21783,
+    "char_end": 21821,
+    "sentence_index": 109,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "-5mm\n\nWe evaluate a comprehensive set of 36 SOTA LLMs on MMLU-ProX across 29 linguistically diverse languages.",
+    "char_start": 21823,
+    "char_end": 21933,
+    "sentence_index": 110,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec011",
+    "text": "The evaluation includes both open-weight and proprietary LLMs, representing various architectures, parameter scales, and training paradigms.",
+    "char_start": 21934,
+    "char_end": 22074,
+    "sentence_index": 111,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec011",
+    "text": "The open-weight LLMs include Qwen , Llama , DeepSeek , Phi4 , Gemma3 , Mistral , Aya , and InternLM , while the proprietary LLMs comprise o4-mini, GPT4.1 and GPT4o.",
+    "char_start": 22075,
+    "char_end": 22239,
+    "sentence_index": 112,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec011",
+    "text": "Following MMLU-Pro, we primarily employ 5-shot CoT prompting for model evaluation.",
+    "char_start": 22240,
+    "char_end": 22322,
+    "sentence_index": 113,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "All experiments were conducted using vLLM for inference on an H100 cluster.",
+    "char_start": 22323,
+    "char_end": 22398,
+    "sentence_index": 114,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec011",
+    "text": "Our rough estimation indicates that the unified evaluation consumed over 10,000 GPU hours.",
+    "char_start": 22399,
+    "char_end": 22489,
+    "sentence_index": 115,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec012",
+    "text": "We present a comparison in tab:cot_results , showing the CoT performance across all 29 languages and the average results of selected models, specifically the largest or best-performing model from each family (15 out of 36).",
+    "char_start": 22491,
+    "char_end": 22714,
+    "sentence_index": 116,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "We roughly group the languages by geography (stated in Appendix ): westeuropean Western Europe , indoaryan South Asia , eastasian East Asia \\& Southeast Asia , african Africa and other Eastern Europe .",
+    "char_start": 22715,
+    "char_end": 22916,
+    "sentence_index": 117,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "Our evaluation of these LLMs reveals significant disparities in multilingual capabilities.",
+    "char_start": 22918,
+    "char_end": 23008,
+    "sentence_index": 118,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "DeepSeek-R1 demonstrates superior overall performance with an average of 75.2\\% across all languages, followed by GPT-4.1 (72.7\\%) and DeepSeek-V3 (70.5\\%).",
+    "char_start": 23009,
+    "char_end": 23165,
+    "sentence_index": 119,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "The performance generally correlates with model scale and architecture sophistication, with larger models typically outperforming their smaller counterparts.",
+    "char_start": 23166,
+    "char_end": 23323,
+    "sentence_index": 120,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec012",
+    "text": "Among open-weight models, Qwen3-235B-Think shows exceptional capabilities, achieving SOTA results in several languages.",
+    "char_start": 23324,
+    "char_end": 23443,
+    "sentence_index": 121,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec012",
+    "text": "However, there remains a substantial performance gap between high-resource and low-resource languages, with some models showing accuracy as low as 0.6\\% on certain African languages while achieving over 75\\% on Western European languages.",
+    "char_start": 23444,
+    "char_end": 23682,
+    "sentence_index": 122,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec012",
+    "text": "The full evaluation for all 36 LLMs and 0-shot settings could be found in Appendix .",
+    "char_start": 23683,
+    "char_end": 23767,
+    "sentence_index": 123,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec012",
+    "text": "We conduct a more detailed analysis in the following.",
+    "char_start": 23768,
+    "char_end": 23821,
+    "sentence_index": 124,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "[htbp]\n\nimages/deepseek_vs_newcolor_short_largextick_fix.pdf\n1em\nimages/qwen_vs_newcolor_short_largextick_fix.pdf\nComparison of reasoning-enhanced and standard models on representative languages.",
+    "char_start": 23823,
+    "char_end": 24018,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "Top: DeepSeek-V3 vs DeepSeek-R1.",
+    "char_start": 24019,
+    "char_end": 24051,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "Bottom: Qwen3-235B vs Qwen3-235B with thinking mode.",
+    "char_start": 24052,
+    "char_end": 24104,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "-3mm\n\nWe examine how reasoning-enhanced capabilities affect multilingual performance.",
+    "char_start": 24106,
+    "char_end": 24191,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Comparing reasoning-focused and standard LLMs reveals consistent performance improvements.",
+    "char_start": 24192,
+    "char_end": 24282,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "DeepSeek-R1 outperforms DeepSeek-V3 by 4.7\\% on average, with larger gains in low-resource languages (Wolof: +11.3\\%, Yoruba: +9.3\\%).",
+    "char_start": 24283,
+    "char_end": 24417,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "Similarly, Qwen3-235B with thinking mode enabled achieves superior results compared to its base performance, reaching SOTA performance on Western European languages (English: 80.7\\%, Spanish: 80.7\\%, Italian: 80.9\\%).",
+    "char_start": 24418,
+    "char_end": 24635,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "These results suggest that reasoning-enhanced models better handle complex multilingual tasks, particularly in challenging linguistic contexts, indicating a promising direction for robust multilingual LLM development.",
+    "char_start": 24636,
+    "char_end": 24853,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "[h]\n\nimages/mmlu_prox_lang_group_bar_horizontal_nolegend_noedge_sorted_fixed.pdf\nBest LLM scores on MMLU-ProX for each language, grouped by language family as in tab:cot_results .",
+    "char_start": 24855,
+    "char_end": 25034,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "The figure highlights notable performance gaps between language families, especially the advantages for well-resourced Western and Eastern European languages compared to low-resource African and some South Asian languages.",
+    "char_start": 25035,
+    "char_end": 25257,
+    "sentence_index": 134,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "-5mm\n\nThe results in tab:cot_results reveal clear performance trends across linguistic groups and model families.",
+    "char_start": 25259,
+    "char_end": 25372,
+    "sentence_index": 135,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "Western European languages consistently achieve high accuracy across all models, with top-performing models (e.g., Qwen3-235B with thinking mode exceeds 77\\% in every language in this group).",
+    "char_start": 25373,
+    "char_end": 25564,
+    "sentence_index": 136,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "South Asian languages show more variation: Hindi performs best within the group, while Telugu lags, highlighting challenges with Dravidian language modeling.",
+    "char_start": 25565,
+    "char_end": 25722,
+    "sentence_index": 137,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "DeepSeek-R1 and Qwen3-235B-Think stand out for their strong performance across several South Asian languages.",
+    "char_start": 25723,
+    "char_end": 25832,
+    "sentence_index": 138,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "East and Southeast Asian languages perform well overall, with Indonesian achieving 81.3\\% and Japanese and Korean showing stable scores, despite linguistic divergence from Indo-European languages.",
+    "char_start": 25833,
+    "char_end": 26029,
+    "sentence_index": 139,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "In contrast, African languages demonstrate the lowest performance across the board.",
+    "char_start": 26030,
+    "char_end": 26113,
+    "sentence_index": 140,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "While Arabic performs competitively, other African languages such as Wolof, Yoruba, and Zulu exhibit wide performance gaps and significantly lower scores\u2014Wolof ranging from just 0.6\\% to 58.6\\%\u2014highlighting the persistent limitations of current models in low-resource settings.",
+    "char_start": 26114,
+    "char_end": 26391,
+    "sentence_index": 141,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "Notably, Eastern European languages also perform well, with models like DeepSeek and Qwen continuing to lead, suggesting effective adaptation to languages with linguistic similarity to Western European ones.",
+    "char_start": 26392,
+    "char_end": 26599,
+    "sentence_index": 142,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "More detailed analysis can be found in Appendix .",
+    "char_start": 26600,
+    "char_end": 26649,
+    "sentence_index": 143,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec015",
+    "text": "In this section, we present a detailed analysis and observations on model size and prompting strategies.",
+    "char_start": 26651,
+    "char_end": 26755,
+    "sentence_index": 144,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec015",
+    "text": "We then compare the full and lite versions of MMLU-ProX.",
+    "char_start": 26756,
+    "char_end": 26812,
+    "sentence_index": 145,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec015",
+    "text": "Finally, we analyze the translation pipeline using the Chinese and Japanese subsets.",
+    "char_start": 26813,
+    "char_end": 26897,
+    "sentence_index": 146,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "[t]\n\nimages/model_scaling_multilingual_reasoning_by_model.pdf\nPerformance scaling of Qwen3 dense models on selected languages.",
+    "char_start": 26899,
+    "char_end": 27025,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "-3mm\n\nIn Figure , we analyze Qwen3 dense models at different scales (4B, 8B, 14B, 32B), revealing how model size affects multilingual reasoning.",
+    "char_start": 27027,
+    "char_end": 27171,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "Performance improves consistently with scale, and the 32B model reaching 59.9\\% accuracy\u2014an absolute gain of 17.9\\% over the 4B model on average.",
+    "char_start": 27172,
+    "char_end": 27317,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "The largest improvement occurs from 8B to 14B (+8.0\\%), while gains from 4B to 8B (+4.0\\%) and 14B to 32B (+5.9\\%) are more modest.",
+    "char_start": 27318,
+    "char_end": 27449,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "High-resource languages like English show smaller differences (12.6\\% from 59.2\\% to 71.8\\%), whereas low-resource languages benefit more: Wolof improves by 20.5\\% and Russian by 14.4\\%.",
+    "char_start": 27450,
+    "char_end": 27636,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "In some African languages, such as Zulu, only the largest models show meaningful performance, suggesting a minimum model size may be required for effective multilingual capability.",
+    "char_start": 27637,
+    "char_end": 27817,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "These findings underscore how model scaling delivers asymmetric benefits across the linguistic spectrum, with low-resource languages typically requiring larger models to achieve even moderate performance.",
+    "char_start": 27819,
+    "char_end": 28023,
+    "sentence_index": 153,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "This differential scaling behavior highlights the importance of sufficient model capacity when developing multilingual systems intended to serve linguistically diverse user populations.",
+    "char_start": 28024,
+    "char_end": 28209,
+    "sentence_index": 154,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec017",
+    "text": "[ht]\n\nimages/prompting_comparison_coloredlabels.pdf\nPerformance comparison of zero-shot and 5-shot prompting across languages and models.",
+    "char_start": 28211,
+    "char_end": 28348,
+    "sentence_index": 155,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec017",
+    "text": "The height of each bar represents accuracy (\\%).",
+    "char_start": 28349,
+    "char_end": 28397,
+    "sentence_index": 156,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec017",
+    "text": "Numbers above the bar pairs indicate the absolute difference in accuracy between 5-shot and zero-shot prompting for each language-model pair.",
+    "char_start": 28398,
+    "char_end": 28539,
+    "sentence_index": 157,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec017",
+    "text": "Green numbers indicate improvement, while red numbers indicate a decrease.",
+    "char_start": 28540,
+    "char_end": 28614,
+    "sentence_index": 158,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec017",
+    "text": "For LLM evaluation, prompting strategies play a crucial role.",
+    "char_start": 28616,
+    "char_end": 28677,
+    "sentence_index": 159,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec017",
+    "text": "We selected representative LLMs, including GPT-4.1 and two Qwen variants, to comprehensively evaluate the effect of different prompting strategies on multilingual reasoning capabilities.",
+    "char_start": 28678,
+    "char_end": 28864,
+    "sentence_index": 160,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec017",
+    "text": "We evaluate selected languages based on resource availability and linguistic families in fig:prompting_strategies .",
+    "char_start": 28865,
+    "char_end": 28980,
+    "sentence_index": 161,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec017",
+    "text": "Our analysis reveals substantial performance differences between zero-shot and 5-shot prompting across languages and model families.",
+    "char_start": 28982,
+    "char_end": 29114,
+    "sentence_index": 162,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec017",
+    "text": "While 5-shot prompting generally improves performance, the magnitude of improvement varies.",
+    "char_start": 29115,
+    "char_end": 29206,
+    "sentence_index": 163,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec017",
+    "text": "High-resource languages like English show modest gains (e.g., +3.7\\% for GPT-4.1), reflecting strong baseline reasoning abilities, whereas low-resource African languages benefit more significantly, indicating the added value of demonstrations in underrepresented languages.",
+    "char_start": 29207,
+    "char_end": 29480,
+    "sentence_index": 164,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec017",
+    "text": "Reasoning-enhanced models such as Qwen3-30B in thinking mode show smaller changes between prompting styles, suggesting internalized reasoning capabilities.",
+    "char_start": 29481,
+    "char_end": 29636,
+    "sentence_index": 165,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec017",
+    "text": "Additionally, language characteristics\u2014such as morphological complexity\u2014affect prompting effectiveness.",
+    "char_start": 29637,
+    "char_end": 29740,
+    "sentence_index": 166,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec017",
+    "text": "These findings highlight the importance of tailoring prompting strategies to both model architecture and target language characteristics, particularly for multilingual applications targeting diverse linguistic environments.",
+    "char_start": 29741,
+    "char_end": 29964,
+    "sentence_index": 167,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "To address evaluation efficiency concerns in multilingual benchmarking, we also release a lite version by randomly sampling 20 items from each of the 14 disciplines\u2014resulting in 658 items per language\u2014for all 29 languages.",
+    "char_start": 29966,
+    "char_end": 30188,
+    "sentence_index": 168,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "We compare performance between the full version of MMLU-ProX (11,829 questions per language) and this lite version.",
+    "char_start": 30189,
+    "char_end": 30304,
+    "sentence_index": 169,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec018",
+    "text": "Both versions include 70 validation questions used for prompt construction in few-shot evaluations, meaning actual assessments occur on 11,759 and 588 questions, respectively.",
+    "char_start": 30305,
+    "char_end": 30480,
+    "sentence_index": 170,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec018",
+    "text": "As shown in fig:fullvslite , the performance gap between both versions is remarkably small, with an average difference of only 1.14\\% across all evaluated models.",
+    "char_start": 30481,
+    "char_end": 30643,
+    "sentence_index": 171,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec018",
+    "text": "[h]\n\nimages/performance_gap_bar_short.pdf\nComparison between MMLU-ProX full version (11,759 questions) and lite version (588 questions) across evaluated models, showing an average difference of only 1.14\\% while maintaining consistent relative model rankings.",
+    "char_start": 30645,
+    "char_end": 30904,
+    "sentence_index": 172,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec018",
+    "text": "Across models and language families, the lite and full versions of MMLU-ProX yield highly consistent results.",
+    "char_start": 30906,
+    "char_end": 31015,
+    "sentence_index": 173,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec018",
+    "text": "Top-performing models like DeepSeek-R1 and GPT-4.1 show minimal differences between lite and full evaluations (1.5\\% and 1.1\\%, respectively), with even smaller gaps observed in models like DeepSeek-V3 (0.4\\%) and o4-mini (1.3\\%).",
+    "char_start": 31016,
+    "char_end": 31246,
+    "sentence_index": 174,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec018",
+    "text": "This pattern holds across resource levels, from high-resource languages like English and French to low-resource ones like Wolof, which shows differences under 1\\%.",
+    "char_start": 31247,
+    "char_end": 31410,
+    "sentence_index": 175,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec018",
+    "text": "Moreover, the lite version preserves the relative ranking of models almost perfectly, with DeepSeek-R1, GPT-4.1, and DeepSeek-V3 consistently outperforming others, while Phi4-14b remains the weakest.",
+    "char_start": 31411,
+    "char_end": 31610,
+    "sentence_index": 176,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec018",
+    "text": "This consistent ordering confirms that the lite version effectively captures the same performance patterns as the full benchmark.",
+    "char_start": 31611,
+    "char_end": 31740,
+    "sentence_index": 177,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec019",
+    "text": "We introduce MMLU-ProX, a multilingual benchmark spanning 29 diverse languages for evaluating cross-lingual capabilities of LLMs.",
+    "char_start": 31742,
+    "char_end": 31871,
+    "sentence_index": 178,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec019",
+    "text": "Our semi-automatic translation approach combines LLMs with expert verification to ensure quality across languages.",
+    "char_start": 31872,
+    "char_end": 31986,
+    "sentence_index": 179,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "Additionally, we conduct a comprehensive evaluation of 36 SOTA LLMs and reveal significant performance disparities in the multilingual setting.",
+    "char_start": 31987,
+    "char_end": 32130,
+    "sentence_index": 180,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "Our work aims to promote the equitable accessibility of LLMs in the global context.",
+    "char_start": 32131,
+    "char_end": 32214,
+    "sentence_index": 181,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec020",
+    "text": "This project is supported by JST ACT-X (Grant JPMJAX24CU) and JSPS KAKENHI (Grant 24K20832).",
+    "char_start": 32216,
+    "char_end": 32308,
+    "sentence_index": 182,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec020",
+    "text": "This work used supercomputers provided by the Research Institute for Information Technology, Kyushu University, through the HPCI System Research Project (Project ID: hp250092).",
+    "char_start": 32309,
+    "char_end": 32485,
+    "sentence_index": 183,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec020",
+    "text": "This work is also supported by the NVIDIA Academic Grant Program and Google Cloud (Gemma 3 Academic Program).",
+    "char_start": 32486,
+    "char_end": 32595,
+    "sentence_index": 184,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec021",
+    "text": "In this work, we present MMLU-ProX, which covers 29 languages.",
+    "char_start": 32597,
+    "char_end": 32659,
+    "sentence_index": 185,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec021",
+    "text": "One limitation lies in the coverage of languages due to budget constraints.",
+    "char_start": 32660,
+    "char_end": 32735,
+    "sentence_index": 186,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec021",
+    "text": "While our current benchmark encompasses a diverse set of languages, expanding to include additional languages, particularly extremely low-resource ones, remains a future goal.",
+    "char_start": 32736,
+    "char_end": 32911,
+    "sentence_index": 187,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec021",
+    "text": "We recognize that the existing pipeline can be extended to support such languages, and we leave this as future work.",
+    "char_start": 32912,
+    "char_end": 33028,
+    "sentence_index": 188,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec021",
+    "text": "Another limitation pertains to the expert verification of translation quality.",
+    "char_start": 33030,
+    "char_end": 33108,
+    "sentence_index": 189,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec021",
+    "text": "While we engage experts to evaluate translation quality for selected languages, comprehensive expert verification across all languages and subject areas was not feasible due to resource constraints.",
+    "char_start": 33109,
+    "char_end": 33307,
+    "sentence_index": 190,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec021",
+    "text": "In cases where expert evaluation was conducted, translations were assessed based on accuracy, fluency, and completeness using a 5-point Likert scale.",
+    "char_start": 33308,
+    "char_end": 33457,
+    "sentence_index": 191,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec021",
+    "text": "Preliminary results indicate high overall quality, with mean scores above 4 across these dimensions.",
+    "char_start": 33458,
+    "char_end": 33558,
+    "sentence_index": 192,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec021",
+    "text": "However, we acknowledge that automated translation processes may still introduce subtle errors or potential risks on the translation quality, particularly in complex or domain-specific content.",
+    "char_start": 33559,
+    "char_end": 33752,
+    "sentence_index": 193,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec021",
+    "text": "Furthermore, the current benchmark focuses solely on textual inputs and does not account for multimodal contexts, which are increasingly relevant in real-world applications.",
+    "char_start": 33754,
+    "char_end": 33927,
+    "sentence_index": 194,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec021",
+    "text": "Incorporating multimodal evaluation remains an area for future exploration.",
+    "char_start": 33928,
+    "char_end": 34003,
+    "sentence_index": 195,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec021",
+    "text": "custom,anthology_0, anthology_1\n\nFollowing the taxonomy proposed by , and referring to the resource list , we rank the languages from high- to low-resource as follows:\\ , Japanese, French, German, Spanish, Arabic, Korean, Portuguese, Hindi, Serbian, Hungarian, Vietnamese, Czech, Italian, Russian, Thai, Bengali, Indonesian, Ukrainian, Urdu, Afrikaans, Zulu, Swahili, Wolof, Yoruba, Telugu, Marathi, Nepali.",
+    "char_start": 34005,
+    "char_end": 34412,
+    "sentence_index": 196,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec023",
+    "text": "We primarily categorize the languages based on geography .",
+    "char_start": 34414,
+    "char_end": 34472,
+    "sentence_index": 197,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec023",
+    "text": "Inside each category, we rank the languages by resource abailabiliy.",
+    "char_start": 34473,
+    "char_end": 34541,
+    "sentence_index": 198,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec023",
+    "text": "Below is the complete list of categories:\n\nWestern Europe : English, French, German, Spanish, Portuguese, Italian\nSouth Asia : Hindi, Bengali, Urdu, Telugu, Marathi, Nepali\n\nEast Asia \\& Southeast Asia : Chinese, Japanese, Korean, Vietnamese, Thai, Indonesian\nAfrica : Arabic, Afrikaans, Swahili, Wolof, Yoruba, Zulu\nEastern Europe : Russian, Ukrainian, Serbian, Czech, Hungarian\n\nThe results in tab:cot_results reveal distinct patterns across linguistic families, highlighting both achievements and persistent challenges in multilingual capabilities.",
+    "char_start": 34542,
+    "char_end": 35093,
+    "sentence_index": 199,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec024",
+    "text": "As the Western European languages demonstrate consistently strong performance across all models, with scores typically ranging between 70-80\\% for top-performing models.",
+    "char_start": 35095,
+    "char_end": 35264,
+    "sentence_index": 200,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec024",
+    "text": "In this group, Qwen3-235B with thinking achieves remarkable results, reaching 80.9\\% for Italian, 80.7\\% for both English and Spanish, and maintaining above 77\\% performance across all languages in this family.",
+    "char_start": 35265,
+    "char_end": 35475,
+    "sentence_index": 201,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec024",
+    "text": "South Asian languages exhibit a more nuanced performance pattern, with significant variations both across models and within the language family.",
+    "char_start": 35477,
+    "char_end": 35621,
+    "sentence_index": 202,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec024",
+    "text": "Hindi consistently leads this group with scores ranging from 58.4\\% to 78.7\\%, while related languages like Bengali and Marathi show slightly lower but stable performance patterns.",
+    "char_start": 35622,
+    "char_end": 35802,
+    "sentence_index": 203,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec024",
+    "text": "Telugu, representing the Dravidian family, generally shows lower performance across models, highlighting potential challenges in handling its distinct linguistic features.",
+    "char_start": 35803,
+    "char_end": 35974,
+    "sentence_index": 204,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec024",
+    "text": "DeepSeek-R1 and Qwen3-235B-Think demonstrate particularly strong capabilities in this group, consistently achieving scores above 75\\% for several languages.",
+    "char_start": 35975,
+    "char_end": 36131,
+    "sentence_index": 205,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec024",
+    "text": "East Asian \\& Southeast Asian languages present an interesting case of high performance with model-specific variations.",
+    "char_start": 36133,
+    "char_end": 36252,
+    "sentence_index": 206,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec024",
+    "text": "Chinese shows notable fluctuations across models (53.4-75.5\\%), while Japanese and Korean demonstrate more consistent performance patterns.",
+    "char_start": 36253,
+    "char_end": 36392,
+    "sentence_index": 207,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec024",
+    "text": "Southeast Asian languages perform remarkably well, with Indonesian achieving 81.3\\% with DeepSeek-R1.",
+    "char_start": 36393,
+    "char_end": 36494,
+    "sentence_index": 208,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec024",
+    "text": "This success suggests effective handling of these diverse linguistic structures by modern LLMs, despite the significant typological differences from Western languages.",
+    "char_start": 36495,
+    "char_end": 36662,
+    "sentence_index": 209,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec024",
+    "text": "African languages reveal the most pronounced performance disparities, underscoring critical challenges in multilingual AI development.",
+    "char_start": 36664,
+    "char_end": 36798,
+    "sentence_index": 210,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec024",
+    "text": "While Arabic achieves competitive scores (up to 78.7\\% with Qwen3-235B-Think), other African languages show substantially lower performance.",
+    "char_start": 36799,
+    "char_end": 36939,
+    "sentence_index": 211,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec024",
+    "text": "Wolof presents the most challenging case, with scores ranging dramatically from 0.6\\% to 58.6\\%, highlighting severe resource limitations.",
+    "char_start": 36940,
+    "char_end": 37078,
+    "sentence_index": 212,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec024",
+    "text": "Similar patterns emerge for Yoruba (3.9-57.0\\%) and Zulu (11.5-67.3\\%), though with slightly better performance than Wolof.",
+    "char_start": 37079,
+    "char_end": 37202,
+    "sentence_index": 213,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec024",
+    "text": "These stark contrasts emphasize the ongoing need for improved model capabilities in low-resource languages.",
+    "char_start": 37203,
+    "char_end": 37310,
+    "sentence_index": 214,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec024",
+    "text": "Notably, Eastern European languages exhibit comparable performance.",
+    "char_start": 37312,
+    "char_end": 37379,
+    "sentence_index": 215,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec024",
+    "text": "Similarly, models from the DeepSeek and Qwen families continue to perform strongly, with Qwen3-235B-Think achieving over 77\\%.",
+    "char_start": 37380,
+    "char_end": 37506,
+    "sentence_index": 216,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec024",
+    "text": "These strong performances suggest effective adaptation to these languages, likely due to their shared linguistic structures with Western European languages.",
+    "char_start": 37507,
+    "char_end": 37663,
+    "sentence_index": 217,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec025",
+    "text": "For our translation framework evaluation, we compared two competitors in English-to-Japanese translation: reasoning-based translation and human translators.",
+    "char_start": 37665,
+    "char_end": 37821,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec025",
+    "text": "Using the same samples as in Section , we conducted translations using these two methods and employed professional translators to score them using our 5-point scale.",
+    "char_start": 37822,
+    "char_end": 37987,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec025",
+    "text": "The results are presented in tab:en2ja .",
+    "char_start": 37988,
+    "char_end": 38028,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec025",
+    "text": "Our findings reveal that the reasoning-based method achieves translation quality only marginally inferior to our translation framework.",
+    "char_start": 38029,
+    "char_end": 38164,
+    "sentence_index": 221,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec025",
+    "text": "However, compared to our agent-based method, reasoning-based translation consumes significantly more tokens, causing higher translation costs.",
+    "char_start": 38165,
+    "char_end": 38307,
+    "sentence_index": 222,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec025",
+    "text": "As for native-speaking translators, their translation quality, particularly accuracy, proved inferior to LLM-based translation when handling content requiring multidisciplinary expertise.",
+    "char_start": 38308,
+    "char_end": 38495,
+    "sentence_index": 223,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec025",
+    "text": "These results demonstrate the effectiveness of our comprehensive framework and further validate the quality of MMLU-ProX data.",
+    "char_start": 38496,
+    "char_end": 38622,
+    "sentence_index": 224,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec025",
+    "text": "[ht]\n\n0.6 !",
+    "char_start": 38624,
+    "char_end": 38635,
+    "sentence_index": 225,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec025",
+    "text": "l|c|c|c\n\n0.95 Method & Accuracy & Fluency & Completeness\n\nAgent-based Translation (Ours) & 0.9 4.60 & 0.9 4.65 & 0.9 4.99\n\nReasoning-based Translation & 4.56 & 4.21 & 4.99\n\nNative-Speaking Translator & 4.24 & 4.14 & 4.56\n\nScores (out of 5) assigned by human translators for Accuracy, Fluency, and Completeness, grouped by language resource level.",
+    "char_start": 38636,
+    "char_end": 38982,
+    "sentence_index": 226,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec026",
+    "text": "We ensured that all expert annotators were compensated at rates above the minimum hourly wage in their respective countries.",
+    "char_start": 38984,
+    "char_end": 39108,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec026",
+    "text": "Evaluation Criteria for Expert Rating of Machine Translation Results:\n\n1.",
+    "char_start": 39109,
+    "char_end": 39182,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec026",
+    "text": "Accuracy (1-5):\n\n5 (Highly Accurate):\n\nAll key terms and concepts are translated correctly with no errors.",
+    "char_start": 39183,
+    "char_end": 39289,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec026",
+    "text": "Every technical term corresponds precisely to the original text, with no mistranslations or incorrect word choices.",
+    "char_start": 39290,
+    "char_end": 39405,
+    "sentence_index": 230,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec026",
+    "text": "The most appropriate and professional terminology in the target language is used.",
+    "char_start": 39406,
+    "char_end": 39487,
+    "sentence_index": 231,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec026",
+    "text": "Expressions align with commonly used terminology in professional or technical contexts.",
+    "char_start": 39488,
+    "char_end": 39575,
+    "sentence_index": 232,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec026",
+    "text": "4 (Accurate):\n\nMost terms and concepts are translated correctly, with only a few minor errors that do not affect overall comprehension.",
+    "char_start": 39577,
+    "char_end": 39712,
+    "sentence_index": 233,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec026",
+    "text": "Some terms may be slightly imprecise, but the translation remains generally accurate.",
+    "char_start": 39713,
+    "char_end": 39798,
+    "sentence_index": 234,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec026",
+    "text": "Uses appropriate terminology in the target language in most cases.",
+    "char_start": 39799,
+    "char_end": 39865,
+    "sentence_index": 235,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec026",
+    "text": "A few terms may be simplified but remain understandable within the intended domain.",
+    "char_start": 39866,
+    "char_end": 39949,
+    "sentence_index": 236,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec026",
+    "text": "3 (Moderately Accurate):\n\nKey terms and concepts are mostly correct but contain some errors that may cause partial misunderstandings.",
+    "char_start": 39951,
+    "char_end": 40084,
+    "sentence_index": 237,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec026",
+    "text": "Some critical terms are inaccurately translated, requiring the reader to infer the intended meaning.",
+    "char_start": 40085,
+    "char_end": 40185,
+    "sentence_index": 238,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec026",
+    "text": "Slight deviations in the use of target-language terminology.",
+    "char_start": 40186,
+    "char_end": 40246,
+    "sentence_index": 239,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec026",
+    "text": "Occasionally uses uncommon or outdated terms.",
+    "char_start": 40247,
+    "char_end": 40292,
+    "sentence_index": 240,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec026",
+    "text": "2 (Somewhat Inaccurate):\n\nMany key terms and concepts are mistranslated, significantly affecting comprehension.",
+    "char_start": 40294,
+    "char_end": 40405,
+    "sentence_index": 241,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec026",
+    "text": "Important concepts are incorrectly translated, leading to potential misunderstandings of the original text.",
+    "char_start": 40406,
+    "char_end": 40513,
+    "sentence_index": 242,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec026",
+    "text": "Uses incorrect or inappropriate terminology in the target language.",
+    "char_start": 40514,
+    "char_end": 40581,
+    "sentence_index": 243,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec026",
+    "text": "Terminology is inconsistent, reducing the text\u2019s professionalism.",
+    "char_start": 40582,
+    "char_end": 40647,
+    "sentence_index": 244,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec026",
+    "text": "1 (Inaccurate):\n\nFrequent and severe mistranslations of key terms and concepts, failing to convey the original meaning.",
+    "char_start": 40649,
+    "char_end": 40768,
+    "sentence_index": 245,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec026",
+    "text": "Most of the content does not match the original text.",
+    "char_start": 40769,
+    "char_end": 40822,
+    "sentence_index": 246,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec026",
+    "text": "Lacks proper use of target-language terminology.",
+    "char_start": 40823,
+    "char_end": 40871,
+    "sentence_index": 247,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec026",
+    "text": "Terminology is chaotic, possibly using irrelevant or incorrect vocabulary entirely.",
+    "char_start": 40872,
+    "char_end": 40955,
+    "sentence_index": 248,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec026",
+    "text": "2.",
+    "char_start": 40957,
+    "char_end": 40959,
+    "sentence_index": 249,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec026",
+    "text": "Fluency (1\u20135):\n\n5 (Highly Fluent):\n\nThe target-language expression is natural and smooth, making it effortless to read.",
+    "char_start": 40960,
+    "char_end": 41079,
+    "sentence_index": 250,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec026",
+    "text": "The language style is refined and appropriate for professional or formal contexts.",
+    "char_start": 41080,
+    "char_end": 41162,
+    "sentence_index": 251,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec026",
+    "text": "The sentence structure fully adheres to natural conventions in the target language, with no grammatical or lexical errors.",
+    "char_start": 41163,
+    "char_end": 41285,
+    "sentence_index": 252,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec026",
+    "text": "4 (Fluent):\n\nThe target-language expression is generally natural, with only minor linguistic imperfections that do not affect comprehension.",
+    "char_start": 41287,
+    "char_end": 41427,
+    "sentence_index": 253,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec026",
+    "text": "Some sentences may sound slightly stiff.",
+    "char_start": 41428,
+    "char_end": 41468,
+    "sentence_index": 254,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec026",
+    "text": "Sentence structures mostly conform to target-language norms, with very few grammatical errors.",
+    "char_start": 41469,
+    "char_end": 41563,
+    "sentence_index": 255,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec026",
+    "text": "3 (Moderately Fluent):\n\nThe target-language expression is somewhat unnatural, requiring the reader to adjust their understanding slightly.",
+    "char_start": 41565,
+    "char_end": 41703,
+    "sentence_index": 256,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec026",
+    "text": "Some inappropriate word choices or rigid sentence structures are present.",
+    "char_start": 41704,
+    "char_end": 41777,
+    "sentence_index": 257,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec026",
+    "text": "Sentence structures are mostly correct, but some grammatical errors exist.",
+    "char_start": 41778,
+    "char_end": 41852,
+    "sentence_index": 258,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec026",
+    "text": "2 (Somewhat Unnatural):\n\nThe target-language expression lacks fluency, making it difficult to read smoothly.",
+    "char_start": 41854,
+    "char_end": 41962,
+    "sentence_index": 259,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec026",
+    "text": "Sentence transitions are awkward, and logical connections are unclear.",
+    "char_start": 41963,
+    "char_end": 42033,
+    "sentence_index": 260,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec026",
+    "text": "Many structural issues exist, with frequent grammatical errors.",
+    "char_start": 42034,
+    "char_end": 42097,
+    "sentence_index": 261,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec026",
+    "text": "1 (Not Fluent):\n\nThe target-language expression is highly unnatural or difficult to understand.",
+    "char_start": 42099,
+    "char_end": 42194,
+    "sentence_index": 262,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec026",
+    "text": "Literal translation is evident, lacking natural phrasing in the target language.",
+    "char_start": 42195,
+    "char_end": 42275,
+    "sentence_index": 263,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec026",
+    "text": "The sentence structure is disorganized, with severe grammatical mistakes, making the text unreadable.",
+    "char_start": 42276,
+    "char_end": 42377,
+    "sentence_index": 264,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec026",
+    "text": "3.",
+    "char_start": 42379,
+    "char_end": 42381,
+    "sentence_index": 265,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec026",
+    "text": "Completeness (1\u20135):\n\n5 (Fully Complete):\n\nThe full meaning of the original text is retained with no omissions or additions.",
+    "char_start": 42382,
+    "char_end": 42505,
+    "sentence_index": 266,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec026",
+    "text": "All details, data, and annotations are accurately conveyed.",
+    "char_start": 42506,
+    "char_end": 42565,
+    "sentence_index": 267,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec026",
+    "text": "The translation maintains the same length and depth as the original text.",
+    "char_start": 42566,
+    "char_end": 42639,
+    "sentence_index": 268,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec026",
+    "text": "4 (Complete):\n\nThe primary meaning of the original text is retained, with only a few minor details omitted or slightly unclear.",
+    "char_start": 42641,
+    "char_end": 42768,
+    "sentence_index": 269,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec026",
+    "text": "Some less critical information may be left out.",
+    "char_start": 42769,
+    "char_end": 42816,
+    "sentence_index": 270,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec026",
+    "text": "The translation generally corresponds to the original content.",
+    "char_start": 42817,
+    "char_end": 42879,
+    "sentence_index": 271,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec026",
+    "text": "3 (Moderately Complete):\n\nMost of the original meaning is conveyed, but some information is missing or added.",
+    "char_start": 42881,
+    "char_end": 42990,
+    "sentence_index": 272,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec026",
+    "text": "Important details may be overlooked.",
+    "char_start": 42991,
+    "char_end": 43027,
+    "sentence_index": 273,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec026",
+    "text": "The translation differs from the original in certain aspects, requiring readers to infer some content.",
+    "char_start": 43028,
+    "char_end": 43130,
+    "sentence_index": 274,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec026",
+    "text": "2 (Somewhat Incomplete):\n\nThe core information from the original text is not fully conveyed, with noticeable omissions or unnecessary additions.",
+    "char_start": 43132,
+    "char_end": 43276,
+    "sentence_index": 275,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec026",
+    "text": "Potential inclusion of unrelated information.",
+    "char_start": 43277,
+    "char_end": 43322,
+    "sentence_index": 276,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec026",
+    "text": "The translation does not fully correspond to the original, affecting comprehension.",
+    "char_start": 43323,
+    "char_end": 43406,
+    "sentence_index": 277,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec026",
+    "text": "1 (Incomplete):\n\nSignificant omissions or added incorrect information prevent an accurate reflection of the original text.",
+    "char_start": 43408,
+    "char_end": 43530,
+    "sentence_index": 278,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec026",
+    "text": "Important sections or sentences are missing.",
+    "char_start": 43531,
+    "char_end": 43575,
+    "sentence_index": 279,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec026",
+    "text": "The translation deviates heavily from the original, making it difficult to understand the intended meaning.",
+    "char_start": 43576,
+    "char_end": 43683,
+    "sentence_index": 280,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec026",
+    "text": "Scoring Examples:\n\nAccuracy Example:\n\nIf ``bachelor's degree'' is mistranslated as ``single man's degree,'' points should be deducted in the accuracy category.",
+    "char_start": 43685,
+    "char_end": 43844,
+    "sentence_index": 281,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec026",
+    "text": "Fluency Example:\n\nIf the sentence structure follows target-language norms but the word choice is slightly unnatural, a score of 4 may be appropriate.",
+    "char_start": 43846,
+    "char_end": 43995,
+    "sentence_index": 282,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec026",
+    "text": "Completeness Example:\n\nIf the translated text omits the methodology section from the original, it should receive a lower score in completeness.",
+    "char_start": 43997,
+    "char_end": 44140,
+    "sentence_index": 283,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec026",
+    "text": "We perform expert verification in 15 selected languages, the full results are shown in tab:human_verfication_full .",
+    "char_start": 44142,
+    "char_end": 44257,
+    "sentence_index": 284,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec026",
+    "text": "[h]\n\n0.45 !",
+    "char_start": 44259,
+    "char_end": 44270,
+    "sentence_index": 285,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec026",
+    "text": "lccc\n\nLanguage & Accuracy & Fluency & Completeness\n\n4 l High Resource\n\nZH & 4.70 & 4.84 & 4.92\n\nJA & 4.60 & 4.65 & 4.99\n\nFR & 4.68 & 4.64 & 4.94\n\nDE & 4.52 & 4.48 & 4.64\n\nES & 4.59 & 4.58 & 4.84\n\n4 l Medium Resource\n\nKO & 4.90 & 4.41 & 4.97\n\nPT & 4.79 & 4.77 & 4.99\n\nAF & 4.77 & 4.78 & 4.99\n\n4 l Low Resource\n\nZU & 4.20 & 4.62 & 4.97\n\nSW & 4.36 & 4.70 & 4.86\n\nWO & 4.14 & 4.42 & 4.83\n\nYO & 4.06 & 4.56 & 4.95\n\nTE & 4.60 & 4.74 & 4.97\n\nMR & 4.51 & 4.72 & 4.74\n\nNE & 4.61 & 4.73 & 4.91\n\nExpert verification scores on 15 languages for Accuracy, Fluency, and Completeness, grouped by language resource level.",
+    "char_start": 44271,
+    "char_end": 44875,
+    "sentence_index": 286,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec027",
+    "text": "[remarkbox, title=initial\\_translation]\n\nSystem Message: You are a professional translator specializing in accurate translation of technical and academic content from \\ source\\_lang\\ to \\ target\\_lang\\ .",
+    "char_start": 44877,
+    "char_end": 45080,
+    "sentence_index": 287,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec027",
+    "text": "Your task is to translate assessment questions in the \\ category\\ field while:\n\n1.",
+    "char_start": 45082,
+    "char_end": 45164,
+    "sentence_index": 288,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec027",
+    "text": "Preserving technical accuracy and terminology\n\n2.",
+    "char_start": 45165,
+    "char_end": 45214,
+    "sentence_index": 289,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec027",
+    "text": "Ensuring cultural appropriateness for \\ target\\_lang\\ speakers\n\n3.",
+    "char_start": 45215,
+    "char_end": 45281,
+    "sentence_index": 290,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec027",
+    "text": "Keeping terminology consistent throughout questions and options\n\n4.",
+    "char_start": 45282,
+    "char_end": 45349,
+    "sentence_index": 291,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec027",
+    "text": "Preserving all LaTeX notation, mathematical formulas, and programming code exactly as they appear (do not translate content inside LaTeX delimiters or code blocks, including variable names, function names, and comments)\n\n5.",
+    "char_start": 45350,
+    "char_end": 45573,
+    "sentence_index": 292,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec027",
+    "text": "Preserving all currency symbols (\\$) exactly as they appear in the original text, without converting to local currency units\n\n6.",
+    "char_start": 45574,
+    "char_end": 45702,
+    "sentence_index": 293,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec027",
+    "text": "For units of measurement: Use the conventional translations in the target language while preserving the exact numerical values and relationships\n\n7.",
+    "char_start": 45703,
+    "char_end": 45851,
+    "sentence_index": 294,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec027",
+    "text": "Preserving any special formatting or emphasis in the original text\n\nPlease translate the following \\ category\\ assessment question and options:\n\n<SOURCE\\_TEXT>\n\n\\ source\\_text\\\n\n</SOURCE\\_TEXT>\n\nOutput:\n\nOnly provide the \\ target\\_lang\\ translation for the above text.",
+    "char_start": 45852,
+    "char_end": 46120,
+    "sentence_index": 295,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec027",
+    "text": "Do not include any explanations or text apart from the translation.",
+    "char_start": 46121,
+    "char_end": 46188,
+    "sentence_index": 296,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec027",
+    "text": "Different options are separated by newline characters( | |).",
+    "char_start": 46190,
+    "char_end": 46250,
+    "sentence_index": 297,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec027",
+    "text": "The number of options in the output must match the input exactly.",
+    "char_start": 46252,
+    "char_end": 46317,
+    "sentence_index": 298,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec027",
+    "text": "Do not skip or combine any options.",
+    "char_start": 46318,
+    "char_end": 46353,
+    "sentence_index": 299,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec027",
+    "text": "Return the translation in the following JSON format, with keys \"question\" and \"options\", where the value of \"options\" is a dictionary with keys option1, option2, option3, etc.",
+    "char_start": 46355,
+    "char_end": 46530,
+    "sentence_index": 300,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec027",
+    "text": "All JSON keys must remain in English exactly as shown and only translate the content inside square brackets:\n\n<TRANSLATION>\n\n\\ \\\n\n\"question\": \"[translation of question]\",\n\n\"options\": \\ \\\n\n\"option1\": \" 91 translation of option1 93\",\n\n\"option2\": \" 91 translation of option2 93\",\n\n\"option3\": \" 91 translation of option3 93\",\n\n...",
+    "char_start": 46531,
+    "char_end": 46857,
+    "sentence_index": 301,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec027",
+    "text": "\\ \\\n\n\\ \\\n\n</TRANSLATION>\n\n[remarkbox, title=self\\_reflection]\n\nSystem Message: You are a \\ category\\ translation expert, specializing in translation from \\ source\\_lang\\ to \\ target\\_lang\\ .",
+    "char_start": 46859,
+    "char_end": 47049,
+    "sentence_index": 302,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec028",
+    "text": "Task Description:\n\nCarefully review the source text and its translation from \\ source\\_lang\\ to \\ target\\_lang\\ , and then provide constructive suggestions in English.",
+    "char_start": 47051,
+    "char_end": 47218,
+    "sentence_index": 303,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec028",
+    "text": "Requirements:\n\n1.",
+    "char_start": 47220,
+    "char_end": 47237,
+    "sentence_index": 304,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec028",
+    "text": "Do not add, remove, or explain any information.",
+    "char_start": 47238,
+    "char_end": 47285,
+    "sentence_index": 305,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec028",
+    "text": "2.",
+    "char_start": 47287,
+    "char_end": 47289,
+    "sentence_index": 306,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec028",
+    "text": "Make sure retain the original format for specialized information, e.g., anonymous information.",
+    "char_start": 47290,
+    "char_end": 47384,
+    "sentence_index": 307,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec028",
+    "text": "3.",
+    "char_start": 47386,
+    "char_end": 47388,
+    "sentence_index": 308,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec028",
+    "text": "Identify any instances where proper nouns remain untranslated or where the translation contains unnecessary explanations, parenthetical original terms, or additions from \\ source\\_lang\\ .",
+    "char_start": 47389,
+    "char_end": 47576,
+    "sentence_index": 309,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec028",
+    "text": "4.",
+    "char_start": 47578,
+    "char_end": 47580,
+    "sentence_index": 310,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec028",
+    "text": "Examine whether any technical terms, subject-specific concepts, or other specialized vocabulary have been left in \\ source\\_lang\\ instead of using their established \\ target\\_lang\\ equivalents.",
+    "char_start": 47581,
+    "char_end": 47774,
+    "sentence_index": 311,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec028",
+    "text": "5.",
+    "char_start": 47776,
+    "char_end": 47778,
+    "sentence_index": 312,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec028",
+    "text": "Verify that currency symbols, mathematical operators, and measurement units remain exactly as they appear in \\ source\\_lang\\ text.",
+    "char_start": 47779,
+    "char_end": 47909,
+    "sentence_index": 313,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec028",
+    "text": "These symbols should not be converted to their written form in \\ target\\_lang\\ .",
+    "char_start": 47910,
+    "char_end": 47990,
+    "sentence_index": 314,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec028",
+    "text": "6.",
+    "char_start": 47992,
+    "char_end": 47994,
+    "sentence_index": 315,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec028",
+    "text": "Check that no additional symbols or written representations have been added to options where they did not exist in \\ source\\_lang\\ text.",
+    "char_start": 47995,
+    "char_end": 48131,
+    "sentence_index": 316,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec028",
+    "text": "Input:\n\n<SOURCE\\_TEXT>\n\n\\ source\\_text\\\n\n</SOURCE\\_TEXT>\n\n<INITIAL\\_TRANSLATION>\n\n\\ initial\\_trans\\\n\n</INITIAL\\_TRANSLATION>\n\nOutput:\n\n<SUGGESTIONS>\n\n91 Your suggestions here 93\n\n</SUGGESTIONS>\n\n[remarkbox, title=improve\\_translation]\n\nSystem Message: You are a \\ category\\ translation expert, specializing in translation from \\ source\\_lang\\ to \\ target\\_lang\\ .",
+    "char_start": 48133,
+    "char_end": 48496,
+    "sentence_index": 317,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec029",
+    "text": "Task Description:\n\nCarefully review and edit the \\ category\\ translation from \\ source\\_lang\\ to \\ target\\_lang\\ , incorporating the expert feedback.",
+    "char_start": 48498,
+    "char_end": 48647,
+    "sentence_index": 318,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec029",
+    "text": "Requirements:\n\n1.",
+    "char_start": 48649,
+    "char_end": 48666,
+    "sentence_index": 319,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec029",
+    "text": "Do not explain any information.",
+    "char_start": 48667,
+    "char_end": 48698,
+    "sentence_index": 320,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec029",
+    "text": "2.",
+    "char_start": 48700,
+    "char_end": 48702,
+    "sentence_index": 321,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec029",
+    "text": "Strictly keep the single quotes in the original text and do not add new single and double quotes.",
+    "char_start": 48703,
+    "char_end": 48800,
+    "sentence_index": 322,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec029",
+    "text": "3.",
+    "char_start": 48802,
+    "char_end": 48804,
+    "sentence_index": 323,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec029",
+    "text": "Remove unnecessary explanations or original terms from \\ source\\_lang\\ if present in the translation.",
+    "char_start": 48805,
+    "char_end": 48906,
+    "sentence_index": 324,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec029",
+    "text": "Input:\n\n<SOURCE\\_TEXT>\n\n\\ source\\_text\\\n\n</SOURCE\\_TEXT>\n\n<INITIAL\\_TRANSLATION>\n\n\\ initial\\_trans\\\n\n</INITIAL\\_TRANSLATION>\n\n<EXPERT\\_SUGGESTIONS>\n\n\\ reflection\\\n\n</EXPERT\\_SUGGESTIONS>\n\nOutput:\n\nOnly provide the improved translation.",
+    "char_start": 48908,
+    "char_end": 49143,
+    "sentence_index": 325,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec029",
+    "text": "Do not include any explanations or text apart from the translation.",
+    "char_start": 49144,
+    "char_end": 49211,
+    "sentence_index": 326,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec029",
+    "text": "Different options are separated by newline characters( | |).",
+    "char_start": 49213,
+    "char_end": 49273,
+    "sentence_index": 327,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec029",
+    "text": "The number of options in the output must match the input exactly.",
+    "char_start": 49275,
+    "char_end": 49340,
+    "sentence_index": 328,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec029",
+    "text": "Do not skip or combine any options.",
+    "char_start": 49341,
+    "char_end": 49376,
+    "sentence_index": 329,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec029",
+    "text": "Return the translation in the following JSON format, with keys \"question\" and \"options\", where the value of \"options\" is a dictionary with keys option1, option2, option3, etc.",
+    "char_start": 49378,
+    "char_end": 49553,
+    "sentence_index": 330,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec029",
+    "text": "All JSON keys must remain in English exactly as shown and only translate the content inside square brackets:\n\n<IMPROVED\\_TRANSLATION>\n\n\\ \\\n\n\"question\": \" 91 improved translation of question 93\",\n\n\"options\": \\ \\\n\n\"option1\": \" 91 improved translation of option1 93\",\n\n\"option2\": \" 91 improved translation of option2 93\",\n\n\"option3\": \" 91 improved translation of option3 93\",\n\n...",
+    "char_start": 49554,
+    "char_end": 49931,
+    "sentence_index": 331,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec029",
+    "text": "\\ \\\n\n\\ \\\n\n</IMPROVED\\_TRANSLATION>\n\nWe put more results in app:full_res1 , app:full_res2 , app:full_res3 , and app:full_res4 .",
+    "char_start": 49933,
+    "char_end": 50059,
+    "sentence_index": 332,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec030",
+    "text": "3pt\n\nl|c|cccccc|cccccc|cccccc|cccccc|ccccc\n\nModel & Avg & EN & FR & DE & ES & PT & IT & HI & BN & UR & TE & MR & NE & ZH & JA & KO & VI & TH & ID & AR & AF & SW & WO & YO & ZU & RU & UK & SR & CS & HU\n\ngptcolor\no4-mini & 69.3 & 73.7 & 72.2 & 73.5 & 74.7 & 74.1 & 73.9 & 71.8 & 70.1 & 72.0 & 69.1 & 70.7 & 71.5 & 72.6 & 71.5 & 73.2 & 73.4 & 72.0 & 73.8 & 72.5 & 73.5 & 66.9 & 24.1 & 54.9 & 61.2 & 62.0 & 73.3 & 72.6 & 73.5 & 72.6\n\ngptcolor\nGPT-4o & 61.1 & 59.9 & 66.7 & 69.6 & 68.6 & 67.9 & 62.9 & 62.3 & 62.8 & 59.6 & 51.3 & 68.1 & 61.3 & 64.6 & 45.8 & 57.9 & 70.4 & 66.7 & 66.1 & 68.3 & 65.3 & 58.6 & 24.3 & 44.3 & 55.3 & 62.0 & 56.8 & 70.6 & 70.1 & 63.0\n\ngptcolor\nGPT-4.1 & 72.7 & 79.8 & 75.7 & 76.4 & 77.8 & 77.0 & 78.2 & 74.5 & 72.2 & 68.3 & 65.9 & 72.2 & 74.2 & 75.5 & 75.6 & 75.4 & 76.7 & 75.1 & 75.6 & 74.1 & 77.2 & 71.9 & 43.2 & 53.4 & 65.0 & 71.2 & 76.4 & 76.9 & 77.5 & 76.6\n\ndeepseekcolor\nDeepSeek-R1-7B & 17.2 & 28.9 & 31.8 & 31.9 & 38.7 & 37.3 & 39.6 & 4.7 & 0.3 & 3.3 & 2.5 & 1.9 & 5.6 & 33.5 & 2.6 & 3.3 & 33.1 & 10.8 & 40.4 & 28.8 & 23.1 & 0.9 & 0.3 & 0.0 & 0.3 & 18.4 & 24.2 & 26.3 & 25.3 & 0.7\n\ndeepseekcolor\nDeepSeek-R1-8B & 18.4 & 36.2 & 28.5 & 33.6 & 33.9 & 25.4 & 31.4 & 21.4 & 0.0 & 4.7 & 0.0 & 21.5 & 8.2 & 24.5 & 21.3 & 10.6 & 26.9 & 21.1 & 34.2 & 23.2 & 20.1 & 3.2 & 0.5 & 0.4 & 0.6 & 26.9 & 26.1 & 21.9 & 21.9 & 6.4\n\ndeepseekcolor\nDeepSeek-R1-14B & 33.7 & 59.2 & 53.6 & 48.1 & 58.8 & 50.9 & 55.0 & 21.0 & 28.7 & 4.3 & 4.4 & 4.1 & 7.1 & 33.1 & 45.8 & 21.0 & 55.8 & 57.5 & 53.3 & 53.2 & 22.0 & 16.9 & 22.0 & 0.2 & 0.1 & 20.9 & 59.7 & 33.1 & 42.5 & 11.2\n\ndeepseekcolor\nDeepSeek-R1-32B & 45.2 & 71.1 & 61.9 & 58.3 & 67.0 & 58.3 & 61.5 & 43.7 & 42.5 & 39.2 & 7.7 & 21.4 & 34.9 & 55.2 & 57.9 & 43.7 & 62.9 & 58.8 & 62.7 & 54.4 & 39.2 & 9.3 & 40.9 & 0.1 & 0.5 & 60.3 & 61.6 & 64.9 & 57.8 & 38.6\n\ndeepseekcolor\nDeepSeek-R1-70B & 58.7 & 70.3 & 73.7 & 72.5 & 73.7 & 70.6 & 73.6 & 62.0 & 49.3 & 56.9 & 41.2 & 48.4 & 44.0 & 53.4 & 59.8 & 47.4 & 69.3 & 60.0 & 71.5 & 62.6 & 73.1 & 62.0 & 12.2 & 26.3 & 46.7 & 52.7 & 57.5 & 67.1 & 71.7 & 71.5\n\ndeepseekcolor\nDeepSeek-R1 & 75.5 & 79.5 & 81.3 & 76.7 & 80.2 & 78.0 & 79.9 & 77.5 & 66.6 & 76.2 & 71.9 & 70.4 & 78.9 & 78.0 & 76.9 & 76.7 & 76.3 & 78.7 & 81.3 & 76.2 & 80.9 & 75.0 & 58.6 & 57.0 & 67.3 & 76.4 & 76.8 & 80.9 & 76.8 & 79.1\n\ndeepseekcolor\nDeepSeek-V3 & 70.5 & 79.6 & 76.3 & 75.1 & 76.9 & 75.7 & 75.9 & 71.6 & 69.8 & 70.3 & 67.6 & 69.8 & 69.3 & 73.9 & 72.9 & 70.7 & 75.4 & 71.2 & 75.8 & 72.4 & 72.9 & 63.4 & 47.3 & 47.7 & 53.7 & 74.9 & 74.2 & 72.9 & 74.7 & 71.4\n\nmistralcolor\nMistral-Small-24B & 42.8 & 61.2 & 58.2 & 56.5 & 57.7 & 57.8 & 57.7 & 32.0 & 30.8 & 37.6 & 25.7 & 27.2 & 27.8 & 60.7 & 51.8 & 50.3 & 51.1 & 36.1 & 52.6 & 30.2 & 51.8 & 26.4 & 17.1 & 10.2 & 14.8 & 56.8 & 54.9 & 53.1 & 52.4 & 47.9\n\nmistralcolor\nMistral-Small-3.1-24B & 45.9 & 62.0 & 60.6 & 58.5 & 59.4 & 60.0 & 59.6 & 40.8 & 32.0 & 43.3 & 29.3 & 30.7 & 32.9 & 56.5 & 54.4 & 52.3 & 53.4 & 35.4 & 55.5 & 49.8 & 53.3 & 31.4 & 17.0 & 13.5 & 17.0 & 59.2 & 56.0 & 53.9 & 55.1 & 48.7\n\ninterncolor\nInternLM3-8B & 17.2 & 40.8 & 38.3 & 36.7 & 36.3 & 36.1 & 34.7 & 5.2 & 3.8 & 2.5 & 6.4 & 2.0 & 1.5 & 24.2 & 20.6 & 20.0 & 5.3 & 5.5 & 31.6 & 9.1 & 27.6 & 2.2 & 0.6 & 0.6 & 2.2 & 26.1 & 27.5 & 28.9 & 0.0 & 22.2\n\nayacolor\nAya-23-8B & 13.7 & 34.4 & 18.4 & 20.6 & 19.1 & 11.4 & 18.0 & 11.8 & 3.4 & 4.7 & 3.4 & 4.2 & 4.7 & 27.5 & 18.0 & 20.5 & 16.1 & 5.5 & 11.1 & 19.6 & 19.4 & 5.3 & 3.0 & 4.1 & 3.2 & 19.2 & 17.6 & 14.4 & 19.0 & 18.8\n\nayacolor\nAya-23-32B & 25.6 & 40.8 & 36.5 & 36.7 & 35.4 & 30.1 & 34.5 & 27.7 & 14.0 & 20.9 & 7.2 & 13.5 & 14.5 & 37.4 & 29.9 & 34.4 & 30.9 & 14.9 & 23.1 & 36.6 & 29.7 & 9.0 & 1.5 & 3.9 & 14.5 & 36.7 & 35.9 & 27.4 & 34.5 & 29.1\n\nphicolor\nPhi4-mini-3.8B & 21.6 & 51.6 & 37.3 & 36.8 & 37.9 & 37.7 & 35.3 & 13.0 & 11.7 & 14.0 & 14.9 & 12.7 & 8.0 & 35.3 & 23.9 & 14.3 & 24.6 & 17.6 & 14.0 & 27.4 & 18.0 & 13.7 & 3.3 & 3.4 & 2.1 & 32.6 & 22.8 & 24.4 & 21.1 & 16.8\n\nphicolor\nPhi4-14B & 49.9 & 71.5 & 61.9 & 64.1 & 59.6 & 61.7 & 60.2 & 47.8 & 34.1 & 41.8 & 24.1 & 43.2 & 36.0 & 62.3 & 56.5 & 58.2 & 57.1 & 51.7 & 63.9 & 56.8 & 57.8 & 35.2 & 8.1 & 23.1 & 11.5 & 65.2 & 61.3 & 50.7 & 63.2 & 59.4\n\nllamacolor\nLlama3.1-8B & 22.9 & 45.2 & 31.2 & 32.2 & 20.7 & 37.8 & 34.8 & 20.5 & 18.8 & 14.2 & 14.2 & 19.7 & 17.3 & 31.9 & 24.9 & 24.0 & 31.3 & 27.9 & 22.6 & 13.4 & 27.9 & 15.1 & 0.4 & 6.4 & 4.5 & 28.8 & 24.1 & 27.1 & 23.1 & 25.5\n\nllamacolor\nLlama3.1-70B & 49.3 & 62.1 & 58.2 & 55.4 & 58.3 & 57.3 & 59.2 & 48.9 & 45.7 & 49.1 & 41.8 & 46.0 & 44.6 & 54.6 & 51.7 & 49.5 & 55.5 & 52.8 & 51.3 & 48.6 & 57.1 & 44.6 & 26.6 & 24.3 & 23.8 & 49.2 & 50.3 & 56.1 & 55.9 & 50.5\n\nllamacolor\nLlama3.3-70B & 55.8 & 65.7 & 62.1 & 59.8 & 61.5 & 61.4 & 67.0 & 55.4 & 50.1 & 56.3 & 47.9 & 56.4 & 52.8 & 58.4 & 57.0 & 54.5 & 65.2 & 56.0 & 65.5 & 51.0 & 62.7 & 49.0 & 28.5 & 31.6 & 33.6 & 61.1 & 59.9 & 63.0 & 63.8 & 59.7\n\nllamacolor\nLlama4-Scout & 51.3 & 71.2 & 63.0 & 66.6 & 62.8 & 67.4 & 57.8 & 40.1 & 47.6 & 40.3 & 42.4 & 49.3 & 50.0 & 40.2 & 49.6 & 42.0 & 51.1 & 52.4 & 58.4 & 49.4 & 58.2 & 49.0 & 14.2 & 32.2 & 41.2 & 61.4 & 58.3 & 53.0 & 57.5 & 60.2\n\ngemmacolor\nGemma3-4B & 28.1 & 40.8 & 35.3 & 34.3 & 36.4 & 37.1 & 36.4 & 28.6 & 27.1 & 18.1 & 25.4 & 24.9 & 22.2 & 33.4 & 31.4 & 28.3 & 32.4 & 26.9 & 33.5 & 29.7 & 28.6 & 18.0 & 7.0 & 12.7 & 9.8 & 34.7 & 32.9 & 32.1 & 33.5 & 24.9\n\ngemmacolor\nGemma3-12B & 48.5 & 59.8 & 55.6 & 54.3 & 55.8 & 55.5 & 56.3 & 49.6 & 46.0 & 43.6 & 46.7 & 47.7 & 47.2 & 51.7 & 50.8 & 49.1 & 54.5 & 49.7 & 55.4 & 49.9 & 50.7 & 44.0 & 9.4 & 25.0 & 32.0 & 54.0 & 53.9 & 53.1 & 54.8 & 50.5\n\ngemmacolor\nGemma3-27B & 56.6 & 66.5 & 63.5 & 61.0 & 63.0 & 63.2 & 64.4 & 58.4 & 55.5 & 56.7 & 55.9 & 56.1 & 56.8 & 60.4 & 59.3 & 57.8 & 61.1 & 56.7 & 62.6 & 58.7 & 62.0 & 52.8 & 8.8 & 32.4 & 40.7 & 62.5 & 61.7 & 61.7 & 62.6 & 59.8\n\nqwencolor\nQwen2.5-3B & 24.8 & 43.9 & 35.6 & 34.3 & 34.7 & 31.8 & 32.7 & 21.3 & 14.2 & 24.5 & 19.4 & 23.3 & 9.2 & 34.1 & 30.1 & 28.4 & 29.9 & 27.4 & 31.6 & 28.6 & 28.9 & 6.6 & 1.1 & 10.6 & 5.4 & 26.2 & 28.5 & 23.8 & 28.8 & 24.3\n\nqwencolor\nQwen2.5-7B & 37.6 & 57.5 & 48.9 & 46.9 & 49.3 & 46.1 & 49.1 & 34.0 & 32.2 & 25.7 & 23.4 & 29.5 & 27.3 & 50.5 & 43.6 & 41.5 & 46.4 & 39.6 & 46.6 & 40.2 & 41.1 & 23.2 & 11.0 & 21.1 & 13.3 & 46.3 & 42.9 & 39.7 & 42.3 & 31.3\n\nqwencolor\nQwen2.5-14B & 47.7 & 65.5 & 59.1 & 58.5 & 59.6 & 59.0 & 59.8 & 43.4 & 41.5 & 41.1 & 33.6 & 39.2 & 38.3 & 59.9 & 54.7 & 53.5 & 57.1 & 50.3 & 55.9 & 51.0 & 53.3 & 24.2 & 26.3 & 25.9 & 8.6 & 59.1 & 54.0 & 50.1 & 53.7 & 46.0\n\nqwencolor\nQwen2.5-32B & 54.2 & 68.7 & 65.2 & 63.4 & 65.1 & 64.7 & 65.9 & 49.1 & 48.1 & 50.7 & 38.9 & 49.0 & 48.7 & 62.6 & 61.7 & 59.1 & 62.4 & 56.8 & 64.2 & 58.5 & 59.8 & 35.0 & 27.2 & 27.3 & 19.4 & 64.0 & 61.6 & 59.8 & 60.4 & 56.1\n\nqwencolor\nQwen2.5-72B & 58.8 & 70.3 & 67.1 & 65.9 & 66.5 & 66.6 & 68.8 & 58.0 & 57.6 & 59.1 & 47.9 & 56.4 & 57.3 & 65.9 & 63.4 & 62.1 & 66.4 & 60.1 & 68.2 & 62.1 & 65.4 & 40.1 & 29.0 & 27.9 & 25.9 & 68.1 & 66.1 & 65.4 & 66.8 & 62.3\n\nqwencolor\nQwen3-4B & 42.0 & 59.2 & 54.5 & 52.6 & 54.6 & 54.3 & 55.1 & 39.3 & 35.5 & 34.3 & 24.4 & 32.6 & 35.7 & 54.3 & 49.7 & 46.7 & 52.5 & 47.1 & 52.9 & 44.5 & 48.7 & 16.2 & 5.6 & 8.9 & 9.0 & 53.6 & 51.2 & 49.1 & 49.8 & 45.8\n\nqwencolor\nQwen3-4B-Think & 53.8 & 65.2 & 62.9 & 62.9 & 63.3 & 63.4 & 63.1 & 56.9 & 53.8 & 48.9 & 52.3 & 55.3 & 55.1 & 54.3 & 61.3 & 58.7 & 62.3 & 58.9 & 62.6 & 58.0 & 59.7 & 30.4 & 19.3 & 16.7 & 17.3 & 53.8 & 61.2 & 60.2 & 61.6 & 60.0\n\nqwencolor\nQwen3-8B & 46.0 & 63.3 & 59.8 & 57.8 & 59.8 & 58.7 & 59.7 & 47.0 & 44.3 & 44.6 & 21.1 & 37.2 & 43.3 & 58.5 & 54.8 & 52.9 & 57.3 & 52.3 & 58.9 & 52.1 & 54.6 & 6.9 & 1.3 & 8.4 & 1.6 & 59.1 & 55.6 & 54.7 & 56.4 & 51.6\n\nqwencolor\nQwen3-8B-Think & 58.8 & 70.6 & 68.3 & 67.9 & 68.4 & 68.0 & 68.6 & 63.2 & 61.3 & 60.7 & 56.8 & 63.0 & 60.4 & 60.0 & 66.7 & 63.7 & 58.9 & 64.9 & 68.1 & 64.4 & 66.7 & 31.5 & 19.9 & 24.1 & 14.2 & 59.8 & 66.9 & 66.7 & 67.1 & 65.4\n\nqwencolor\nQwen3-14B & 54.0 & 68.6 & 65.2 & 64.4 & 65.7 & 65.6 & 65.8 & 53.7 & 51.7 & 52.1 & 46.5 & 50.9 & 50.9 & 64.2 & 61.8 & 58.9 & 63.7 & 58.8 & 64.5 & 58.2 & 60.2 & 29.0 & 11.5 & 16.8 & 7.4 & 65.0 & 62.3 & 62.2 & 62.2 & 58.5\n\nqwencolor\nQwen3-14B-Think & 65.4 & 74.7 & 72.2 & 71.4 & 72.2 & 71.6 & 73.0 & 67.9 & 66.8 & 68.0 & 64.6 & 66.9 & 67.3 & 66.5 & 70.8 & 70.0 & 71.4 & 69.8 & 72.3 & 69.1 & 71.3 & 48.0 & 28.3 & 32.5 & 32.3 & 72.2 & 71.3 & 71.6 & 71.1 & 69.8\n\nqwencolor\nQwen3-30B-A3B & 57.0 & 70.8 & 67.1 & 65.0 & 66.9 & 66.3 & 67.5 & 57.1 & 53.8 & 54.3 & 50.5 & 53.8 & 54.0 & 66.3 & 63.9 & 60.9 & 65.1 & 60.7 & 65.9 & 60.5 & 62.4 & 29.5 & 25.4 & 20.9 & 23.1 & 66.8 & 64.3 & 64.1 & 64.9 & 61.9\n\nqwencolor\nQwen3-30B-A3B-Think & 64.8 & 75.7 & 74.0 & 73.4 & 74.0 & 73.8 & 72.0 & 69.3 & 68.6 & 69.2 & 69.4 & 69.8 & 69.0 & 70.5 & 72.1 & 71.4 & 38.9 & 70.3 & 74.0 & 70.6 & 72.4 & 49.6 & 24.9 & 19.5 & 26.2 & 70.6 & 72.8 & 72.7 & 73.6 & 72.2\n\nqwencolor\nQwQ-32B & 63.2 & 75.9 & 75.7 & 74.1 & 76.0 & 75.7 & 75.6 & 71.3 & 70.0 & 59.8 & 58.2 & 59.2 & 68.4 & 66.6 & 66.3 & 65.6 & 72.7 & 72.5 & 70.6 & 62.3 & 73.5 & 45.8 & 8.4 & 19.4 & 21.7 & 74.4 & 70.5 & 64.4 & 73.5 & 65.8\n\nqwencolor\nQwen3-32B & 59.9 & 71.8 & 68.4 & 67.6 & 68.7 & 69.1 & 69.4 & 61.5 & 57.1 & 62.4 & 51.0 & 58.9 & 59.7 & 67.0 & 62.6 & 65.5 & 68.5 & 56.1 & 68.5 & 64.9 & 65.9 & 46.4 & 26.1 & 25.7 & 17.9 & 68.0 & 68.0 & 67.2 & 67.7 & 65.9\n\nqwencolor\nQwen3-32B-Think & 66.3 & 74.9 & 72.1 & 71.7 & 72.8 & 72.7 & 73.5 & 70.4 & 66.4 & 70.8 & 70.3 & 70.7 & 70.7 & 68.7 & 70.2 & 71.2 & 72.4 & 70.4 & 73.4 & 70.4 & 72.4 & 56.7 & 26.6 & 18.8 & 35.2 & 69.1 & 73.5 & 72.3 & 72.8 & 71.1\n\nqwencolor\nQwen3-235B & 66.7 & 73.5 & 72.5 & 71.3 & 73.2 & 73.1 & 73.7 & 67.6 & 67.7 & 68.7 & 66.7 & 67.7 & 67.8 & 70.5 & 68.8 & 69.6 & 71.4 & 68.8 & 72.5 & 70.1 & 71.1 & 56.3 & 26.6 & 40.2 & 46.2 & 72.9 & 72.5 & 71.1 & 71.8 & 70.1\n\nqwencolor\nQwen3-235B-Think & 74.9 & 80.7 & 80.6 & 80.4 & 80.7 & 80.5 & 80.9 & 78.7 & 77.8 & 76.1 & 77.9 & 78.5 & 78.1 & 77.4 & 77.1 & 78.3 & 72.6 & 77.1 & 79.9 & 78.7 & 80.6 & 70.8 & 36.9 & 49.3 & 46.4 & 77.0 & 78.8 & 80.2 & 80.5 & 79.8\n\nMMLU-ProX 5-shot Results.",
+    "char_start": 50061,
+    "char_end": 60054,
+    "sentence_index": 333,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec030",
+    "text": "3pt\n\nl|c|cccccc|cccccc|cccccc|cccccc|ccccc\n\nModel & Avg & EN & FR & DE & ES & PT & IT & HI & BN & UR & TE & MR & NE & ZH & JA & KO & VI & TH & ID & AR & AF & SW & WO & YO & ZU & RU & UK & SR & CS & HU\n\ngptcolor\nGPT-4.1 & 71.1 & 76.1 & 74.9 & 76.1 & 73.8 & 77.3 & 75.5 & 74.7 & 72.9 & 72.6 & 60.3 & 74.0 & 74.2 & 77.1 & 73.9 & 75.1 & 76.4 & 74.1 & 67.4 & 75.1 & 76.2 & 71.1 & 45.0 & 50.5 & 65.3 & 50.0 & 76.1 & 76.2 & 75.9 & 75.4\n\nmistralcolor\nMistral-31-24B & 50.4 & 67.5 & 63.9 & 62.5 & 64.1 & 61.7 & 64.9 & 51.1 & 42.6 & 51.0 & 42.1 & 41.9 & 39.6 & 61.1 & 56.2 & 55.6 & 53.8 & 42.9 & 60.9 & 53.6 & 54.2 & 39.2 & 4.8 & 7.4 & 20.6 & 63.1 & 60.8 & 60.8 & 57.2 & 56.4\n\nqwencolor\nQwen2.5-72B & 58.8 & 72.3 & 68.8 & 67.7 & 68.2 & 68.7 & 69.6 & 59.9 & 57.1 & 59.7 & 37.9 & 55.1 & 57.2 & 66.0 & 64.5 & 62.1 & 67.5 & 63.4 & 68.4 & 64.0 & 65.9 & 41.9 & 19.8 & 24.3 & 24.0 & 68.9 & 66.5 & 66.9 & 67.1 & 60.9\n\nqwencolor\nQwen3-30B-A3B & 49.1 & 66.6 & 62.6 & 66.1 & 67.4 & 67.0 & 68.3 & 47.0 & 40.9 & 40.6 & 31.8 & 39.0 & 35.0 & 65.0 & 63.5 & 62.4 & 63.6 & 45.5 & 48.4 & 59.8 & 55.4 & 21.3 & 0.1 & 0.6 & 8.3 & 59.9 & 52.8 & 62.3 & 64.6 & 58.1\n\nqwencolor\nQwen3-30B-A3B-Think & 65.0 & 75.5 & 74.9 & 74.1 & 75.0 & 74.6 & 75.8 & 71.2 & 70.4 & 71.4 & 69.4 & 71.2 & 66.2 & 69.6 & 73.6 & 73.0 & 73.8 & 71.6 & 75.0 & 71.7 & 73.9 & 55.8 & 0.7 & 0.5 & 13.3 & 69.5 & 73.8 & 74.0 & 74.8 & 71.0\n\nqwencolor\nQwen3-32B & 51.3 & 64.2 & 49.5 & 53.8 & 69.5 & 67.9 & 68.7 & 56.3 & 44.3 & 52.2 & 29.0 & 52.9 & 53.4 & 66.0 & 58.8 & 66.1 & 67.3 & 44.8 & 57.7 & 63.9 & 57.2 & 27.4 & 2.1 & 8.3 & 23.3 & 24.8 & 58.1 & 68.2 & 69.1 & 63.9\n\nqwencolor\nQwen3-32B-Think & 61.9 & 71.1 & 70.4 & 69.1 & 71.8 & 71.5 & 71.5 & 67.0 & 65.4 & 67.6 & 56.3 & 68.4 & 63.3 & 67.3 & 68.5 & 69.9 & 69.7 & 66.6 & 70.9 & 68.0 & 69.5 & 57.2 & 0.8 & 10.0 & 19.1 & 63.6 & 70.8 & 71.2 & 72.1 & 65.2\n\nMMLU-ProX zero-shot Results.",
+    "char_start": 60056,
+    "char_end": 61920,
+    "sentence_index": 334,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec030",
+    "text": "l|c|cccccc|cccccc|cccccc|cccccc|ccccc\n\nModel & Avg & EN & FR & DE & ES & PT & IT & HI & BN & UR & TE & MR & NE & ZH & JA & KO & VI & TH & ID & AR & AF & SW & WO & YO & ZU & RU & UK & SR & CS & HU\n\ngptcolor\nGPT-4.1 & 71.6 & 78.7 & 75.2 & 73.6 & 77.6 & 74.3 & 79.8 & 73.0 & 70.4 & 66.8 & 65.5 & 69.4 & 72.6 & 73.0 & 73.8 & 74.7 & 76.4 & 74.3 & 75.9 & 73.0 & 76.9 & 71.1 & 41.5 & 51.7 & 62.9 & 69.9 & 75.9 & 76.0 & 76.2 & 76.5\n\ngptcolor\no4-mini & 68.0 & 73.3 & 72.4 & 72.4 & 73.1 & 73.1 & 73.6 & 69.6 & 69.7 & 69.7 & 67.7 & 69.0 & 68.4 & 70.1 & 68.2 & 71.6 & 73.5 & 69.6 & 71.4 & 73.0 & 72.3 & 66.8 & 25.0 & 51.9 & 61.7 & 58.8 & 71.9 & 73.5 & 71.9 & 68.4\n\ndeepseekcolor\nDeepSeek-R1 & 74.0 & 78.9 & 80.6 & 72.1 & 80.4 & 77.2 & 78.7 & 75.0 & 65.3 & 74.0 & 70.7 & 68.7 & 76.2 & 75.5 & 75.5 & 73.1 & 75.0 & 79.3 & 78.6 & 74.8 & 77.2 & 71.4 & 59.5 & 54.3 & 67.7 & 77.2 & 76.4 & 79.4 & 75.2 & 78.1\n\ndeepseekcolor\nDeepSeek-V3 & 70.1 & 79.6 & 74.7 & 74.8 & 76.7 & 76.4 & 76.9 & 70.2 & 68.0 & 69.2 & 66.2 & 68.4 & 67.5 & 74.5 & 73.0 & 68.5 & 75.2 & 69.7 & 77.7 & 71.9 & 71.8 & 64.8 & 45.2 & 46.8 & 54.6 & 75.9 & 75.2 & 72.1 & 75.0 & 72.8\n\nphicolor\nPhi4-14B & 48.5 & 69.0 & 61.1 & 61.1 & 56.8 & 62.6 & 60.5 & 47.6 & 34.4 & 41.8 & 23.3 & 42.9 & 33.8 & 57.8 & 53.9 & 55.6 & 56.1 & 50.9 & 61.1 & 57.5 & 54.4 & 35.9 & 6.5 & 21.8 & 10.9 & 61.7 & 57.1 & 50.9 & 62.8 & 57.7\n\ngemmacolor\nGemma3-27B & 56.0 & 65.6 & 64.8 & 60.5 & 60.4 & 59.9 & 62.8 & 59.4 & 56.1 & 58.2 & 54.6 & 56.8 & 55.8 & 58.7 & 56.6 & 55.6 & 60.9 & 55.8 & 63.6 & 58.0 & 61.6 & 51.9 & 8.7 & 32.5 & 38.4 & 63.6 & 60.5 & 61.9 & 63.8 & 57.1\n\nllamacolor\nLlama3.3-70B & 55.7 & 68.0 & 65.6 & 63.6 & 64.5 & 65.1 & 65.0 & 53.9 & 50.7 & 52.7 & 46.6 & 54.9 & 49.5 & 60.0 & 59.0 & 56.3 & 61.2 & 56.0 & 62.4 & 54.8 & 63.4 & 55.1 & 28.1 & 28.4 & 32.1 & 59.2 & 57.7 & 60.0 & 63.3 & 58.3\n\nllamacolor\nLlama4-Scout & 49.8 & 69.0 & 65.1 & 62.9 & 58.5 & 64.8 & 56.3 & 36.7 & 46.6 & 38.6 & 40.1 & 48.8 & 49.1 & 38.6 & 47.8 & 41.3 & 48.0 & 49.3 & 56.6 & 48.8 & 57.0 & 49.0 & 15.0 & 30.8 & 40.1 & 60.7 & 56.3 & 52.9 & 56.3 & 59.0\n\nqwencolor\nQwen2.5-72B & 59.8 & 70.4 & 69.0 & 68.4 & 69.4 & 68.4 & 68.5 & 59.4 & 59.4 & 61.7 & 49.8 & 56.0 & 57.7 & 67.3 & 65.0 & 65.1 & 66.7 & 62.2 & 66.7 & 62.9 & 64.5 & 41.8 & 28.2 & 28.6 & 25.5 & 70.7 & 67.9 & 63.9 & 66.8 & 61.6\n\nqwencolor\nQwen3-30B-A3B & 56.0 & 70.4 & 65.8 & 61.6 & 65.3 & 65.6 & 68.0 & 57.0 & 54.6 & 53.1 & 53.4 & 52.4 & 49.1 & 65.3 & 61.9 & 60.5 & 64.1 & 60.0 & 62.4 & 58.3 & 61.1 & 28.7 & 25.7 & 20.2 & 24.7 & 65.3 & 62.1 & 62.4 & 64.1 & 60.9\n\nqwencolor\nQwen3-30B-A3B-Think & 63.8 & 75.2 & 75.3 & 71.8 & 71.4 & 73.5 & 70.4 & 67.0 & 66.3 & 69.9 & 67.2 & 68.2 & 67.2 & 67.3 & 69.4 & 69.2 & 37.2 & 69.6 & 73.8 & 69.4 & 70.1 & 48.8 & 25.7 & 19.9 & 25.0 & 71.3 & 71.9 & 70.7 & 73.5 & 73.0\n\nqwencolor\nQwen3-32B & 58.8 & 71.1 & 67.0 & 67.0 & 67.9 & 67.3 & 70.7 & 60.0 & 56.3 & 64.1 & 50.5 & 58.3 & 58.5 & 66.5 & 60.7 & 63.4 & 66.2 & 54.4 & 66.3 & 62.6 & 64.3 & 42.3 & 26.0 & 25.3 & 16.2 & 67.2 & 67.7 & 67.3 & 66.8 & 64.5\n\nqwencolor\nQwen3-32B-Think & 64.6 & 73.8 & 71.4 & 70.6 & 69.6 & 71.1 & 74.8 & 69.7 & 63.6 & 68.7 & 70.1 & 70.1 & 67.5 & 66.5 & 68.2 & 69.7 & 69.7 & 67.7 & 72.8 & 68.9 & 69.0 & 52.6 & 24.1 & 17.9 & 34.2 & 67.7 & 70.6 & 68.5 & 72.8 & 70.7\n\nqwencolor\nQwen3-235B & 66.0 & 75.0 & 71.3 & 72.3 & 73.5 & 71.6 & 74.3 & 66.3 & 65.0 & 67.0 & 66.5 & 66.5 & 66.5 & 68.9 & 69.7 & 69.7 & 68.5 & 66.5 & 70.2 & 69.4 & 71.4 & 54.3 & 27.9 & 38.3 & 45.1 & 72.6 & 70.6 & 70.6 & 71.9 & 71.4\n\nqwencolor\nQwen3-235B-Think & 74.1 & 80.4 & 81.0 & 78.7 & 79.3 & 78.4 & 79.4 & 76.5 & 74.8 & 76.5 & 75.7 & 78.9 & 76.5 & 76.0 & 75.9 & 78.2 & 71.9 & 78.9 & 81.0 & 78.1 & 77.9 & 68.9 & 37.1 & 48.0 & 44.7 & 78.4 & 79.1 & 79.3 & 80.6 & 79.9\n\nMMLU-ProX Lite 5-shot Results.",
+    "char_start": 61922,
+    "char_end": 65656,
+    "sentence_index": 335,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec030",
+    "text": "l|c|cccccc|cccccc|cccccc|cccccc|ccccc\n\nModel & Avg & EN & FR & DE & ES & PT & IT & HI & BN & UR & TE & MR & NE & ZH & JA & KO & VI & TH & ID & AR & AF & SW & WO & YO & ZU & RU & UK & SR & CS & HU\n\ngptcolor\nGPT-4.1 & 69.2 & 76.0 & 76.7 & 73.8 & 72.3 & 77.2 & 74.5 & 74.1 & 70.1 & 71.6 & 55.3 & 72.1 & 73.8 & 64.3 & 71.4 & 72.6 & 76.2 & 72.3 & 68.5 & 74.8 & 74.1 & 68.2 & 44.2 & 45.2 & 60.9 & 47.4 & 74.3 & 73.8 & 74.5 & 76.0\n\ngptcolor\no4-mini & 67.2 & 74.5 & 73.0 & 70.9 & 72.8 & 71.8 & 74.0 & 69.9 & 70.1 & 69.0 & 68.4 & 69.0 & 70.9 & 72.1 & 68.9 & 69.9 & 71.4 & 67.9 & 73.3 & 73.0 & 71.3 & 66.0 & 17.5 & 54.6 & 62.8 & 38.1 & 72.3 & 71.4 & 71.9 & 72.3\n\ndeepseekcolor\nDeepSeek-R1 & 71.7 & 77.6 & 80.8 & 70.2 & 70.1 & 72.6 & 77.2 & 74.3 & 69.4 & 75.5 & 68.7 & 74.7 & 69.2 & 75.2 & 70.2 & 73.1 & 78.1 & 74.3 & 80.6 & 75.2 & 77.9 & 71.6 & 33.0 & 53.2 & 66.8 & 66.0 & 76.2 & 78.1 & 72.1 & 76.7\n\ndeepseekcolor\nDeepSeek-V3 & 70.1 & 79.1 & 77.2 & 77.7 & 76.4 & 78.1 & 78.9 & 75.2 & 69.7 & 70.9 & 65.0 & 66.2 & 66.0 & 69.7 & 73.3 & 73.6 & 78.2 & 70.9 & 76.7 & 74.3 & 73.5 & 62.8 & 39.8 & 38.3 & 51.7 & 75.2 & 74.3 & 74.0 & 76.7 & 70.2\n\nphicolor\nPhi4-14B & 41.1 & 58.7 & 58.2 & 56.5 & 57.3 & 58.7 & 57.5 & 35.7 & 25.3 & 36.4 & 3.4 & 34.5 & 26.5 & 46.9 & 47.3 & 53.6 & 41.3 & 39.3 & 56.6 & 45.1 & 45.4 & 24.7 & 5.3 & 14.5 & 13.4 & 40.3 & 58.2 & 45.6 & 59.0 & 47.4\n\ngemmacolor\nGemma3-27B & 56.4 & 65.8 & 63.1 & 60.5 & 63.8 & 62.8 & 62.1 & 59.0 & 56.3 & 58.5 & 57.8 & 57.8 & 57.0 & 54.1 & 59.4 & 58.5 & 61.9 & 54.1 & 61.9 & 56.1 & 61.4 & 53.2 & 4.1 & 33.8 & 44.0 & 63.8 & 60.5 & 61.6 & 62.1 & 59.9\n\nllamacolor\nLlama3.3-70B & 52.9 & 66.3 & 67.7 & 63.6 & 62.9 & 65.6 & 66.7 & 56.5 & 44.2 & 48.6 & 12.8 & 55.6 & 43.5 & 60.2 & 54.4 & 56.0 & 61.6 & 58.8 & 63.6 & 59.4 & 65.0 & 53.9 & 23.3 & 32.3 & 31.8 & 28.1 & 62.6 & 60.2 & 63.9 & 46.3\n\nllamacolor\nLlama4-Scout & 62.1 & 75.3 & 69.4 & 70.6 & 68.0 & 70.2 & 70.1 & 61.6 & 59.5 & 56.5 & 58.8 & 61.4 & 63.6 & 49.3 & 65.3 & 63.3 & 67.5 & 64.8 & 70.7 & 64.5 & 68.2 & 61.6 & 11.1 & 34.5 & 51.9 & 68.5 & 68.2 & 70.7 & 68.9 & 67.2\n\nqwencolor\nQwen2.5-72B & 58.9 & 73.1 & 68.0 & 63.9 & 68.4 & 68.7 & 69.0 & 60.0 & 58.0 & 59.5 & 38.6 & 53.9 & 55.8 & 67.3 & 62.8 & 65.3 & 67.7 & 62.1 & 66.8 & 64.8 & 67.5 & 42.0 & 20.1 & 25.7 & 27.2 & 69.9 & 65.8 & 67.0 & 67.7 & 61.2\n\nqwencolor\nQwen3-30B-A3B & 47.9 & 65.1 & 61.9 & 64.6 & 64.6 & 65.6 & 67.9 & 46.1 & 42.7 & 38.6 & 32.8 & 39.1 & 33.5 & 66.3 & 62.9 & 63.3 & 62.2 & 41.8 & 46.1 & 55.8 & 53.2 & 21.6 & 0.0 & 0.9 & 6.6 & 57.3 & 50.0 & 59.4 & 61.7 & 57.0\n\nqwencolor\nQwen3-30B-A3B-Think & 64.1 & 76.7 & 73.5 & 72.3 & 73.0 & 72.3 & 75.9 & 69.4 & 69.4 & 70.1 & 68.9 & 70.1 & 64.5 & 66.5 & 70.6 & 71.6 & 73.6 & 70.7 & 73.6 & 71.3 & 72.1 & 55.3 & 0.7 & 0.0 & 13.9 & 71.3 & 71.6 & 72.4 & 74.7 & 71.9\n\nqwencolor\nQwen3-32B & 50.4 & 62.6 & 46.4 & 51.5 & 69.7 & 67.2 & 65.8 & 54.9 & 42.0 & 51.0 & 27.7 & 51.4 & 54.8 & 65.5 & 60.4 & 64.8 & 67.5 & 41.8 & 53.9 & 62.9 & 54.6 & 28.9 & 2.4 & 8.3 & 24.7 & 26.7 & 57.1 & 66.0 & 68.9 & 61.4\n\nqwencolor\nQwen3-32B-Think & 60.4 & 70.9 & 69.0 & 66.5 & 69.4 & 67.3 & 71.4 & 65.8 & 63.9 & 66.3 & 53.6 & 63.8 & 62.2 & 65.6 & 67.9 & 70.6 & 65.3 & 63.1 & 70.9 & 67.2 & 66.7 & 56.0 & 0.7 & 7.5 & 20.2 & 65.1 & 70.6 & 68.4 & 69.6 & 65.1\n\nqwencolor\nQwen3-235B & 62.0 & 72.8 & 71.9 & 70.1 & 72.1 & 69.9 & 73.0 & 68.9 & 58.5 & 68.4 & 48.8 & 67.0 & 66.2 & 66.7 & 54.9 & 71.8 & 68.4 & 50.9 & 63.9 & 71.4 & 72.6 & 52.9 & 12.4 & 32.0 & 31.5 & 73.3 & 61.7 & 70.4 & 70.2 & 66.7\n\nqwencolor\nQwen3-235B-Think & 73.4 & 80.1 & 77.2 & 78.7 & 80.4 & 80.1 & 83.0 & 77.2 & 75.7 & 75.2 & 77.9 & 76.0 & 77.6 & 74.3 & 75.7 & 77.0 & 75.3 & 77.9 & 80.1 & 74.8 & 78.2 & 70.6 & 27.9 & 50.9 & 32.7 & 77.4 & 78.1 & 81.0 & 80.3 & 77.7\n\nMMLU-ProX Lite zero-shot Results.",
+    "char_start": 65658,
+    "char_end": 69385,
+    "sentence_index": 336,
+    "section_sentence_index": 3
+  }
+]

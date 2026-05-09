@@ -1,0 +1,4304 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language models (LLMs) have demonstrated remarkable capabilities in solving complex reasoning tasks, particularly in mathematics.",
+    "char_start": 0,
+    "char_end": 135,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, the domain of physics reasoning\npresents unique challenges that have received significantly less attention.",
+    "char_start": 136,
+    "char_end": 252,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Existing benchmarks often fall short in evaluating LLMs\u2019 abilities on the breadth and depth of undergraduate-level physics, underscoring the need for a comprehensive evaluation.",
+    "char_start": 253,
+    "char_end": 430,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To fill this gap, we introduce , a large-scale and comprehensive benchmark specifically designed to evaluate U nder G raduate-level Physics ( ) reasoning with LLMs.",
+    "char_start": 431,
+    "char_end": 595,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "includes 5,520 undergraduate-level physics problems in both English and Chinese, covering 13 subjects with seven different answer types and four distinct physics reasoning skills, all screened for data leakage.",
+    "char_start": 596,
+    "char_end": 806,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Additionally, we develop a M odel- A ssistant R ule-based J udgment ( ) pipeline specifically tailored for assessing answer correctness of physics problems, ensuring accurate evaluation.",
+    "char_start": 807,
+    "char_end": 993,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Our evaluation of 31 leading LLMs shows that the highest overall accuracy, 49.8\\% (achieved by OpenAI-o1-mini), emphasizes the necessity for models with stronger physics reasoning skills, beyond math abilities.",
+    "char_start": 995,
+    "char_end": 1205,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "We hope , along with , will drive future advancements in AI for physics reasoning.",
+    "char_start": 1206,
+    "char_end": 1288,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Codes and data are available at https://github.com/YangLabHKUST/UGPhysics https://github.com/YangLabHKUST/UGPhysics .",
+    "char_start": 1289,
+    "char_end": 1406,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "``Physics is the foundation of all the natural sciences.''\n\n-3em\n\n--- Max Planck\n\n-1em\n\n[t]\n\nfigures/example.pdf\nAn overall illustration of .",
+    "char_start": 1408,
+    "char_end": 1549,
+    "sentence_index": 9,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The top part represents the hierarchical physics domains and subjects.",
+    "char_start": 1550,
+    "char_end": 1620,
+    "sentence_index": 10,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "The bottom part showcases one concrete example.",
+    "char_start": 1621,
+    "char_end": 1668,
+    "sentence_index": 11,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Physics forms the foundation for natural sciences planck1949autobiography, hawking1988time, giancoli2000physics , and physics problem solving constitutes a significant aspect of reasoning for artificial intelligence (AI) phyre2019bakhtin, PhysQA2023Ding, physicsreasoner2024pang, MoRA2024jaiswal .",
+    "char_start": 1670,
+    "char_end": 1967,
+    "sentence_index": 12,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Efforts to solve physics problems with machines date back to the mid-to-late 20th century larkin1980expert, mendelson1984physics, klahr1986ai .",
+    "char_start": 1968,
+    "char_end": 2111,
+    "sentence_index": 13,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "After large language models (LLMs) have revolutionized the natural language processing community, significant attention has been paid to solving complex mathematical reasoning problems, which span several areas, such as creating challenging benchmarks CollegeMath2024Tang, omnimath2024gao, ugmathbench2025xu , exploring advanced prompting techniques CoT2022Wei, CoT-SC2022Wang , applying supervised fine-tuning (SFT) dartmath2024tong, E-GSM2024Xu , and leveraging continued pretraining strategies minerva202lewkowycz, llemma2023azerbayev .",
+    "char_start": 2112,
+    "char_end": 2651,
+    "sentence_index": 14,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "In contrast, despite its comparable, or even greater challenges for AI reasoning OlympiadBench2024He, physicsreasoner2024pang , physics has not yet garnered the same level of attention as mathematics.",
+    "char_start": 2652,
+    "char_end": 2852,
+    "sentence_index": 15,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "[t]\n\nComparison of various benchmarks.",
+    "char_start": 2854,
+    "char_end": 2892,
+    "sentence_index": 16,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "For ``Level``, 1: Middle School, 2: High School, 3: College Entrance Examination, 4: Competition, 5: Undergraduate or above.",
+    "char_start": 2893,
+    "char_end": 3017,
+    "sentence_index": 17,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "``\\#Test\" shows the number of textual test examples in physics, while ``\\#UG\" refers to the number of textual physics test examples of at least the undergraduate level.",
+    "char_start": 3018,
+    "char_end": 3186,
+    "sentence_index": 18,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "``\\#Subjects\" specifies the number of physics subjects, and ``-\" means that the dataset does not divide undergraduate-level physics into more fine-grained subjects.",
+    "char_start": 3187,
+    "char_end": 3351,
+    "sentence_index": 19,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "``\\# Ans.",
+    "char_start": 3352,
+    "char_end": 3361,
+    "sentence_index": 20,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Types\" is the number of answer types in physics.",
+    "char_start": 3362,
+    "char_end": 3410,
+    "sentence_index": 21,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "``Language\u201d: ``EN'' for English and \u201cZH\u201d for Chinese.",
+    "char_start": 3411,
+    "char_end": 3464,
+    "sentence_index": 22,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "``Eval.'' describes the evaluation methods and ``Leak.",
+    "char_start": 3465,
+    "char_end": 3519,
+    "sentence_index": 23,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Det.'' states whether data leakage detection is performed, which can alleviate potential test set contamination.",
+    "char_start": 3520,
+    "char_end": 3632,
+    "sentence_index": 24,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "llccccccc\n\nDataset & Level & \\# Test & \\# UG & \\# Subjects & \\# Ans.",
+    "char_start": 3633,
+    "char_end": 3701,
+    "sentence_index": 25,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Types & Language & Eval.",
+    "char_start": 3702,
+    "char_end": 3726,
+    "sentence_index": 26,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "& Leak.",
+    "char_start": 3727,
+    "char_end": 3734,
+    "sentence_index": 27,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Det.",
+    "char_start": 3735,
+    "char_end": 3739,
+    "sentence_index": 28,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "MMLU & 2, 5 & 548 & 118 & 3 & 2 & EN & Rule & 2717\n\nAGIEval & 3 & 200 & 0 & - & 3 & ZH & Rule & 2717\n\nC-Eval & 1, 2, 5 & 601 & 200 & - & 1 & ZH & Rule & 2717\n\nGAOKAO & 3 & 111 & 0 & - & 2 & ZH & Rule \\& Model & 2717\n\nJEEBench & 3 & 123 & 0 & - & 2 & EN & Rule & 2717\n\nCMMLU & 2, 5 & 423 & 147 & 3 & 2 & ZH & Rule & 2717\n\nTheoremQA & 5 & 131 & 131 & - & 5 & EN & Rule & 2717\n\nSciEval & - & 1,657 & - & 3 & 3 & EN & Rule & 2717\n\nPhysQA & 1 & 1,770 & 0 & 5 & - & EN & Rule & 2717\n\nGPQA & 5 & 227 & 227 & 8 & 1 & EN & Rule & 2717\n\nOlympiadBench & 4 & 376 & 0 & 5 & 4 & EN \\& ZH & Rule & 1F5F8\n\nOlympicArena & 4 & 796 & 0 & 6 & 7 & EN \\& ZH & Rule \\& Model & 1F5F8\n\nPhysicsQA & 2 & 370 & 0 & 6 & - & - & Rule & 2717\n\n& 5 & 11,040 & 11,040 & 13 & 7 & EN \\& ZH & Rule \\& Model & 1F5F8\n\nEarly investigations into solving physics problems were often studied alongside other scientific domains minerva202lewkowycz, scienceqa2022Lu, SciBench2023Wang .",
+    "char_start": 3741,
+    "char_end": 4681,
+    "sentence_index": 29,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "However, physics, an ancient and well-established discipline, has its unique characteristics and deserves separate treatment for AI.",
+    "char_start": 4682,
+    "char_end": 4814,
+    "sentence_index": 30,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Unlike mathematics, which predominantly relies on logical reasoning, physics problems often require additional domain-specific knowledge (e.g., laws and principles) for resolution phyre2019bakhtin, physicsreasoner2024pang .",
+    "char_start": 4815,
+    "char_end": 5038,
+    "sentence_index": 31,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Moreover, physics problem-solving typically involves multiple applications of physical laws or formulas, making physics reasoning even more demanding than math reasoning.",
+    "char_start": 5039,
+    "char_end": 5209,
+    "sentence_index": 32,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Thus, evaluating the capabilities of LLMs in physics reasoning is of significant importance.",
+    "char_start": 5210,
+    "char_end": 5302,
+    "sentence_index": 33,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Existing physics benchmarks agieval2023zhong, GaokaoBench2023zhang, JEEBench2023Arora, sciagent2024ma, PhysQA2023Ding, PhysicsQA2024jaiswal primarily target middle or high school physics and typically are multiple-choice questions, which are relatively easy for current LLMs to handle.",
+    "char_start": 5304,
+    "char_end": 5589,
+    "sentence_index": 34,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Although some recent benchmarks have begun to explore competition-level OlympiadBench2024He, OlympicArena2024huang or college-level MMLU2020hendrycks, c-eval2024huang, cmmlu2023li physics, they remain limited in either scope or size of undergraduate-level physics (see Table ), which encompasses a broad range of topics and is widely used in educational assessments for humans phyedu11999McDermott, phyedu21992Heller, phyedu32003redish .",
+    "char_start": 5590,
+    "char_end": 6027,
+    "sentence_index": 35,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "These underscore the demand for a comprehensive benchmark specifically designed to evaluate the physics reasoning abilities of LLMs at the undergraduate level.",
+    "char_start": 6028,
+    "char_end": 6187,
+    "sentence_index": 36,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "In this paper, we introduce , a large-scale and comprehensive benchmark tailored for evaluating the physics problem-solving abilities of LLMs across multiple U nder G raduate-level Physics ( ) disciplines, as shown in Figure .",
+    "char_start": 6189,
+    "char_end": 6415,
+    "sentence_index": 37,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "We carefully collect, format, split, and filter undergraduate-level physics problems (see Section ), creating a benchmark comprising 5,520 distinct problems in three main domains, 13 core subjects, and 59 key topics, classified into six atomic answer types and one compound answer type.",
+    "char_start": 6416,
+    "char_end": 6702,
+    "sentence_index": 38,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "We further translate these problems into English to enable bilingual evaluation, resulting in 11,040 problems in total.",
+    "char_start": 6703,
+    "char_end": 6822,
+    "sentence_index": 39,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "To better delineate the skills needed to solve various physics problems, we categorize the problems into four distinct physics reasoning skills correlated with the requisite solution capacities (see Appendix ).",
+    "char_start": 6823,
+    "char_end": 7033,
+    "sentence_index": 40,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "We also conduct data leakage detection on some mainstream LLMs to validate the quality of our .",
+    "char_start": 7034,
+    "char_end": 7129,
+    "sentence_index": 41,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "These attributes are outlined more clearly in Figure and Table .",
+    "char_start": 7130,
+    "char_end": 7194,
+    "sentence_index": 42,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "To address the challenges of answer assessment brought by unique features of physics problems (e.g., physical constants, equivalent quantities defined in problem descriptions, examples given in Table ), we develop M odel- A ssistant R ule-based J udgment ( ) (see Section ) that combines the high calculation precision of rule-based judgment methods with the flexibility of model-based approaches.",
+    "char_start": 7195,
+    "char_end": 7592,
+    "sentence_index": 43,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "Human evaluation has shown 's reliability on answer judgment of physics problems (see Section ).",
+    "char_start": 7593,
+    "char_end": 7689,
+    "sentence_index": 44,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "We perform a comprehensive evaluation of 31 advanced LLMs, incorporating proprietary models, general-purpose open-source models (e.g.",
+    "char_start": 7691,
+    "char_end": 7824,
+    "sentence_index": 45,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "Qwen-2.5-Instruct qwen252024Yang ), specialized math LLMs (e.g.",
+    "char_start": 7825,
+    "char_end": 7888,
+    "sentence_index": 46,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "NuminaMath numinamath7b ), and even o1-like LLMs (e.g.",
+    "char_start": 7889,
+    "char_end": 7943,
+    "sentence_index": 47,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "DeepSeek-R1-Llama-70B deepseekr12025deepseekai ).",
+    "char_start": 7944,
+    "char_end": 7993,
+    "sentence_index": 48,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "The inclusion of math LLMs aims to assess the extent to which training on specialized math corpus contributes to physics reasoning.",
+    "char_start": 7994,
+    "char_end": 8125,
+    "sentence_index": 49,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "Despite LLMs' strong math reasoning abilities, the best overall accuracy achieved in is 49.8\\% by OpenAI-o1-mini o1 .",
+    "char_start": 8126,
+    "char_end": 8243,
+    "sentence_index": 50,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "These results highlight the challenges that pose to current LLMs in terms of physics problem-solving, underscoring the significance for future research with an emphasis on physics as well.",
+    "char_start": 8244,
+    "char_end": 8432,
+    "sentence_index": 51,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "To summarize our key findings:\n\n1.",
+    "char_start": 8433,
+    "char_end": 8467,
+    "sentence_index": 52,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec002",
+    "text": "is a challenging dataset for LLMs in physics problem-solving, with OpenAI-o1-mini achieving the highest overall accuracy of 49.8\\%.",
+    "char_start": 8468,
+    "char_end": 8599,
+    "sentence_index": 53,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec002",
+    "text": "2.",
+    "char_start": 8601,
+    "char_end": 8603,
+    "sentence_index": 54,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec002",
+    "text": "Unlike math problem-solving, math-specialized LLMs yield only minor improvements over their general-purpose counterparts in , suggesting the compulsion for more high-quality physics corpora.",
+    "char_start": 8604,
+    "char_end": 8794,
+    "sentence_index": 55,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec002",
+    "text": "3.",
+    "char_start": 8796,
+    "char_end": 8798,
+    "sentence_index": 56,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec002",
+    "text": "O1-like LLMs suggest a promising direction for future advancements in physics reasoning.",
+    "char_start": 8799,
+    "char_end": 8887,
+    "sentence_index": 57,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec002",
+    "text": "Among them, DeepSeek-R1-Distill-Llama-70B achieves the second-highest overall accuracy on UGPhysics, though there remains a performance gap compared to top-tier closed-source LLMs.",
+    "char_start": 8888,
+    "char_end": 9068,
+    "sentence_index": 58,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec002",
+    "text": "4.",
+    "char_start": 9070,
+    "char_end": 9072,
+    "sentence_index": 59,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec002",
+    "text": "Unlike abstract math reasoning, math derivation in the context of physics requires additional knowledge and involves practical meanings, where LLMs currently fall short.",
+    "char_start": 9073,
+    "char_end": 9242,
+    "sentence_index": 60,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec002",
+    "text": "5.",
+    "char_start": 9244,
+    "char_end": 9246,
+    "sentence_index": 61,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec002",
+    "text": "Error analysis reveals that, unlike math reasoning, the primary types of errors made by OpenAI-o1-mini are flawed reasoning, knowledge deficiency, and wrong application.",
+    "char_start": 9247,
+    "char_end": 9416,
+    "sentence_index": 62,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "Physics Benchmarks .",
+    "char_start": 9418,
+    "char_end": 9438,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "The growing interest in LLM evaluation has led to the creation of benchmarks across various domains, such as mathematics gsm8k2021cobbe, MATH2021hendrycks, CollegeMath2024Tang, MathBench2024Liu, omnimath2024gao, ugmathbench2025xu , visual reasoning geoqa2021chen, geoqa+2022Cao, OlympiadBench2024He, OlympicArena2024huang, MathVista2023lu , embodied AI (physical reasoning) piqa2019bisk, phyre2019bakhtin,newton2023wang , dynamic benchmarks to mitigate test set contamination MATH_FUNC2024srivastava, GSM1K2024zhang, VarBench2024qian, LiveBench2024white , and many others theoremqa2023chen, pds2024xu, rewardbench2024lambert, feabench2024mudur2024,E-GSM2024Xu, processbench2024zheng .",
+    "char_start": 9439,
+    "char_end": 10123,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "Physics is an ancient yet dynamic discipline and researchers have increasingly turned to benchmarks to assess LLMs in physics reasoning.",
+    "char_start": 10124,
+    "char_end": 10260,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "While high school-level benchmarks sciQ2017welbl, scienceqa2022Lu, E-eval2024hou are valuable, they lack complex reasoning or computational challenges OlympiadBench2024He .",
+    "char_start": 10261,
+    "char_end": 10433,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "College entrance exam-based benchmarks agieval2023zhong, GaokaoBench2023zhang, JEEBench2023Arora present more advanced problems, but they often lack fine-grained subject categorization.",
+    "char_start": 10434,
+    "char_end": 10619,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec003",
+    "text": "Benchmarks like MMLU-STEM MMLU2020hendrycks , C-Eval-STEM c-eval2024huang , and CMMLU-STEM cmmlu2023li include some college-level physics questions, yet they are predominantly multiple-choice questions.",
+    "char_start": 10620,
+    "char_end": 10822,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec003",
+    "text": "Advanced benchmarks such as GPQA gpqa2023rein , OlympiadBench OlympiadBench2024He , and OlympicArena OlympicArena2024huang provide challenging physics problems but are limited in size and breadth, often incorporating other scientific domains.",
+    "char_start": 10823,
+    "char_end": 11065,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec003",
+    "text": "Specialized physics benchmarks like PhysQA PhysQA2023Ding and PhysicsQA PhysicsQA2024jaiswal remain relatively simple.",
+    "char_start": 11066,
+    "char_end": 11184,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec003",
+    "text": "In contrast, our proposed encompasses a broader range of undergraduate-level physics subjects, offering diverse answer types, and providing a significantly larger number of test examples.",
+    "char_start": 11185,
+    "char_end": 11372,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec003",
+    "text": "Answer Judgment .",
+    "char_start": 11374,
+    "char_end": 11391,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec003",
+    "text": "Evaluating model-generated answers to complex mathematical problems has long been a challenging task.",
+    "char_start": 11392,
+    "char_end": 11493,
+    "sentence_index": 73,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec003",
+    "text": "Researchers have primarily relied on two approaches: rule-based methods, often combined with elaborate answer-cleaning codes MATH2021hendrycks, OlympiadBench2024He, PhysicsQA2024jaiswal , and model-based methods that employ LLMs as evaluators omnimath2024gao .",
+    "char_start": 11494,
+    "char_end": 11754,
+    "sentence_index": 74,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec003",
+    "text": "While rule-based methods are efficient, they struggle with handling complex answers omnimath2024gao .",
+    "char_start": 11755,
+    "char_end": 11856,
+    "sentence_index": 75,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec003",
+    "text": "On the other hand, model-based methods offer more flexibility but often fall short in accurately assessing numerical values, possibly due to the current limitations of LLMs in performing precise calculations PoT2022Chen, ugmathbench2025xu .",
+    "char_start": 11857,
+    "char_end": 12097,
+    "sentence_index": 76,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec003",
+    "text": "This issue is particularly pronounced in physics, where customized relative error requirements for different problems are required.",
+    "char_start": 12098,
+    "char_end": 12229,
+    "sentence_index": 77,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec003",
+    "text": "As evidenced by a 12\\% judgment error rate for physics problems in OlympiadBench OlympiadBench2024He , evaluating model-generated answers for physics problems presents an even greater challenge due to frequent appearance of physical constants and equivalent quantities (see Table ).",
+    "char_start": 12230,
+    "char_end": 12512,
+    "sentence_index": 78,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec003",
+    "text": "To address the challenge of answer assessment of physics problems, we propose , a two-stage evaluation framework that integrates both the precise calculation of rule-based judgment with the flexibility of model-based assessment (details in Section ).",
+    "char_start": 12513,
+    "char_end": 12763,
+    "sentence_index": 79,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec003",
+    "text": "Human evaluation has confirmed the reliability of our scoring framework .",
+    "char_start": 12764,
+    "char_end": 12837,
+    "sentence_index": 80,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec003",
+    "text": "Additionally, several works didolkar2024metacognitive, OlympicArena2024huang utilize model-based evaluation to obtain additional metrics for assessing effectiveness.",
+    "char_start": 12838,
+    "char_end": 13003,
+    "sentence_index": 81,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec003",
+    "text": "LLMs for Reasoning .",
+    "char_start": 13005,
+    "char_end": 13025,
+    "sentence_index": 82,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec003",
+    "text": "Significant efforts have been devoted to leveraging LLMs for solving reasoning problems, particularly in mathematics.",
+    "char_start": 13026,
+    "char_end": 13143,
+    "sentence_index": 83,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec003",
+    "text": "Beyond evaluation MathBench2024Liu, CollegeMath2024Tang, omnimath2024gao , researchers have explored various approaches, including advanced prompting techniques CoT2022Wei, CoT-SC2022Wang , supervised fine-tuning (SFT) dartmath2024tong, E-GSM2024Xu , and continued pretraining strategies minerva202lewkowycz, llemma2023azerbayev .",
+    "char_start": 13144,
+    "char_end": 13474,
+    "sentence_index": 84,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec003",
+    "text": "To assess the impact of math-related training on physics reasoning of LLMs, we also evaluate several math-specific LLMs in .",
+    "char_start": 13475,
+    "char_end": 13599,
+    "sentence_index": 85,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec003",
+    "text": "More recently, there has been much work dedicated specifically to physics reasoning physicsreasoner2024pang, MoRA2024jaiswal ,\nyet there is still a lack of a specialized physics corpus for LLMs to continually pretrain or further SFT.",
+    "char_start": 13600,
+    "char_end": 13833,
+    "sentence_index": 86,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec003",
+    "text": "Our findings underscore the necessity for further research in this area.",
+    "char_start": 13834,
+    "char_end": 13906,
+    "sentence_index": 87,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec004",
+    "text": "Benchmark\n\nand Overview\n\nWe introduce , a large and comprehensive undergraduate-level physics benchmark specifically designed to thoroughly evaluate the physics problem-solving ability of LLMs.",
+    "char_start": 13908,
+    "char_end": 14101,
+    "sentence_index": 88,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "is large in size, including 5,520 physics problems presented bilingually for better evaluation.",
+    "char_start": 14102,
+    "char_end": 14197,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec005",
+    "text": "It covers three domains: Mechanics \\& Thermodynamics, Electromagnetism, and, Modern Physics, encompassing 13 core subjects and 59 different topics in undergraduate-level physics (details are in Appendix ).",
+    "char_start": 14198,
+    "char_end": 14403,
+    "sentence_index": 90,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec005",
+    "text": "Similar to OlympiadBench2024He, OlympicArena2024huang, ugmathbench2025xu , each problem is structured with 7 answer types to facilitate answer judgment, including six atomic answer types and one compound type that is a list of atomic ones.",
+    "char_start": 14404,
+    "char_end": 14643,
+    "sentence_index": 91,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec005",
+    "text": "To provide a more granular analysis of LLMs' physics reasoning ability, we categorize each test example into four distinct physics reasoning capabilities, which could possibly show which skill sets certain families of models succeed or fail on.",
+    "char_start": 14644,
+    "char_end": 14888,
+    "sentence_index": 92,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec005",
+    "text": "Detailed statistics of are shown in Table .",
+    "char_start": 14889,
+    "char_end": 14932,
+    "sentence_index": 93,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec005",
+    "text": "Additionally, data leakage detection on several LLMs is conducted to identify potential data contamination (see Section ).",
+    "char_start": 14933,
+    "char_end": 15055,
+    "sentence_index": 94,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec005",
+    "text": "[t]\n\nBenchmark Statistics\nl r\n\nStatistic & Number\n\nTotal Problems & 5520\n\nNumber of Language & $ 2$\n\nTotal Domains & 3\n\nTotal Subjects & 13\n\nTotal Topics & 59\n\nTotal Answer Types & 7\n\nTotal Difficulty Level & 4\n\nAverage Problem Tokens & 82.4\n\nAverage Solution Tokens & 318.5\n\nAverage Number of Answers & 1.34\n\nCreation\n\n[t]\n\nExamples of different answer types.",
+    "char_start": 15057,
+    "char_end": 15417,
+    "sentence_index": 95,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "lcc\n\nType & Abbrev.",
+    "char_start": 15418,
+    "char_end": 15437,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "& Example\n\nNumerical Value & NV & $2.51 10^ -4 $\n\nExpression & EX & $ 2/ $\n\nEquation & EQ & $ J _ -i _ =0$\n\nInterval & IN & $(- ,E/cB]$\n\nTrue/False & TF & Yes\n\nMultiple Choice & MC & A\n\nCompound & - & $ /c,\\, k A _ 0 =0$\n\nOur creation process can mainly be divided into three distinct phases: data collection \\& cleaning, data processing \\& filtering, and problem annotation.",
+    "char_start": 15438,
+    "char_end": 15813,
+    "sentence_index": 97,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "Data Collection \\& Cleaning .",
+    "char_start": 15815,
+    "char_end": 15844,
+    "sentence_index": 98,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "The is sourced from several undergraduate-level physics exercise books (``The Great Compendium of Physics Problems'' from the University of Science and Technology of China, seven books in total).",
+    "char_start": 15845,
+    "char_end": 16040,
+    "sentence_index": 99,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "The corresponding PDF files are converted to LaTeX format using the Mathpix tool for optical character recognition.",
+    "char_start": 16041,
+    "char_end": 16156,
+    "sentence_index": 100,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "Both the original PDFs and the converted LaTeX files are manually reviewed and corrected by our team.",
+    "char_start": 16157,
+    "char_end": 16258,
+    "sentence_index": 101,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "The LaTeX files are then structured into a ``Problem\u2014Solution\u2014Answer'' format using various markups.",
+    "char_start": 16259,
+    "char_end": 16359,
+    "sentence_index": 102,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "Deduplication is carried out based on model embeddings to eliminate potential repeated or similar problems.",
+    "char_start": 16360,
+    "char_end": 16467,
+    "sentence_index": 103,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "Currently, problems containing images are excluded to focus on text-only reasoning of .",
+    "char_start": 16468,
+    "char_end": 16555,
+    "sentence_index": 104,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "Problem Processing \\& Filtering .",
+    "char_start": 16557,
+    "char_end": 16590,
+    "sentence_index": 105,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec006",
+    "text": "In physics, some problems are progressive, where subsequent questions may depend on the answers or information from previous ones.",
+    "char_start": 16591,
+    "char_end": 16721,
+    "sentence_index": 106,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec006",
+    "text": "Unlike OlympiadBench2024He, OlympicArena2024huang , we split these progressive problems into independent new problems, incorporating all relevant information in each new problem.",
+    "char_start": 16722,
+    "char_end": 16900,
+    "sentence_index": 107,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec006",
+    "text": "Additionally, we exclude problems that lack definitive answers for assessing correctness, such as estimation, proof, and explanation problems.",
+    "char_start": 16901,
+    "char_end": 17043,
+    "sentence_index": 108,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec006",
+    "text": "Several examples are provided in Appendix .",
+    "char_start": 17044,
+    "char_end": 17087,
+    "sentence_index": 109,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec006",
+    "text": "All problems are initially in Chinese and then translated into English to facilitate bilingual evaluation.",
+    "char_start": 17088,
+    "char_end": 17194,
+    "sentence_index": 110,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec006",
+    "text": "Problem Annotation .",
+    "char_start": 17196,
+    "char_end": 17216,
+    "sentence_index": 111,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec006",
+    "text": "OlympiadBench2024He, OlympicArena2024huang, ugmathbench2025xu suggest that classifying answer types can facilitate the evaluation pipeline.",
+    "char_start": 17217,
+    "char_end": 17356,
+    "sentence_index": 112,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec006",
+    "text": "In our , we categorize answers into seven types: six atomic answer types and one compound type, which consists of a list of atomic answers separated by commas.",
+    "char_start": 17357,
+    "char_end": 17516,
+    "sentence_index": 113,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec006",
+    "text": "One concrete example for each atomic answer type is presented in Table .",
+    "char_start": 17517,
+    "char_end": 17589,
+    "sentence_index": 114,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec006",
+    "text": "To emphasize the focus on physics reasoning, we label each test example with one of four distinct physics reasoning skills: Knowledge Recall, Laws Application, Math Derivation, and Practical Application (``Others'' for the remaining).",
+    "char_start": 17590,
+    "char_end": 17824,
+    "sentence_index": 115,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec006",
+    "text": "We use GPT-4o as the annotator for the categorization of skill sets.",
+    "char_start": 17825,
+    "char_end": 17893,
+    "sentence_index": 116,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec006",
+    "text": "Further details are provided in Appendix .",
+    "char_start": 17894,
+    "char_end": 17936,
+    "sentence_index": 117,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec007",
+    "text": "Evaluation Framework\n\nEvaluating model-generated answers for physics problems presents a great challenge, as evidenced by a 12\\% judgment error rate for physics problems in OlympiadBench OlympiadBench2024He .",
+    "char_start": 17938,
+    "char_end": 18146,
+    "sentence_index": 118,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec007",
+    "text": "Illustrative examples are provided in Table .",
+    "char_start": 18147,
+    "char_end": 18192,
+    "sentence_index": 119,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec007",
+    "text": "Several reasons are given as follows:\n\nExamples of Challenges for Answer Judgment, where``GT`` stands for ground-truth answers and ``Model Ans.`` is the model-generated answers.",
+    "char_start": 18193,
+    "char_end": 18370,
+    "sentence_index": 120,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec007",
+    "text": "ccc\n\nGT & Model Ans.",
+    "char_start": 18371,
+    "char_end": 18391,
+    "sentence_index": 121,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec007",
+    "text": "& Comments\n\n0.055 s & 55 ms & unit conversion\n\n3000 & $3.02 10^6$ & intermediate precision \\& unit\n\n$ _0 h kT $ & $ _0 E_2 - E_1 kT $ & $h = E_2 - E_1$\n\n$ $ & 1 & inclusion of physical constants\n\n1.",
+    "char_start": 18392,
+    "char_end": 18590,
+    "sentence_index": 122,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec007",
+    "text": "Precision Issues : The occurrence of physical constants poses challenges to the calculation precision, which could be exacerbated in multi-step reasoning, where intermediate values accumulate errors.",
+    "char_start": 18591,
+    "char_end": 18790,
+    "sentence_index": 123,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec007",
+    "text": "Additionally, unit conversions or providing final answers in different units can further complicate the evaluation.",
+    "char_start": 18791,
+    "char_end": 18906,
+    "sentence_index": 124,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec007",
+    "text": "2.",
+    "char_start": 18908,
+    "char_end": 18910,
+    "sentence_index": 125,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec007",
+    "text": "Equivalent Quantities : Physics problems often define equivalent quantities in problem descriptions, leading to multiple correct ways to express the final answer.",
+    "char_start": 18911,
+    "char_end": 19073,
+    "sentence_index": 126,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec007",
+    "text": "These expressions may not always be mathematically equivalent, making it difficult to apply rule-based evaluation.",
+    "char_start": 19074,
+    "char_end": 19188,
+    "sentence_index": 127,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec007",
+    "text": "Additionally, it is conventional to omit certain physical constants in the final answer, further complicating the answer judgment.",
+    "char_start": 19189,
+    "char_end": 19319,
+    "sentence_index": 128,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec007",
+    "text": "These highlight the unreliability of relying solely on traditional rule-based or model-based methods for evaluating answers to physics problems.",
+    "char_start": 19321,
+    "char_end": 19465,
+    "sentence_index": 129,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec007",
+    "text": "To address these evaluation challenges, we propose a Model-Assistant Rule-based Judgment ( ) pipeline, which combines the efficiency of customized rule-based methods for simple answers like numerical values with the flexibility of model-based methods to handle more complex cases (see alg:judge ).",
+    "char_start": 19466,
+    "char_end": 19763,
+    "sentence_index": 130,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec007",
+    "text": "The involves a two-stage evaluation process.",
+    "char_start": 19765,
+    "char_end": 19809,
+    "sentence_index": 131,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec007",
+    "text": "In the first stage, a rule-based judgment system is employed, followed by a second stage where GPT-4o is used to assess cases flagged as ``False'' by the rule-based method.",
+    "char_start": 19810,
+    "char_end": 19982,
+    "sentence_index": 132,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec007",
+    "text": "The entire pipeline is described in detail in Appendix .",
+    "char_start": 19983,
+    "char_end": 20039,
+    "sentence_index": 133,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec007",
+    "text": "In the rule-based matching stage, multiple answers to a given problem are evaluated individually.",
+    "char_start": 20040,
+    "char_end": 20137,
+    "sentence_index": 134,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec007",
+    "text": "If any one answer deviates from the ground-truth, the result is marked as ``False''.",
+    "char_start": 20138,
+    "char_end": 20222,
+    "sentence_index": 135,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec007",
+    "text": "For the model-based judgment stage, all answers are assessed collectively in a single evaluation prompt.",
+    "char_start": 20223,
+    "char_end": 20327,
+    "sentence_index": 136,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec007",
+    "text": "For the rule-based matching stage, different types of answers are handled separately.",
+    "char_start": 20328,
+    "char_end": 20413,
+    "sentence_index": 137,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec007",
+    "text": "TF and MC are judged after transforming the model-generated answers to the same format of ground-truth.",
+    "char_start": 20414,
+    "char_end": 20517,
+    "sentence_index": 138,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec007",
+    "text": "For NV, answers are converted into scientific notation and only the base of the scientific notation is considered, allowing for a relative error of up to $1e^ -2 $ to account for unit differences or rounding.",
+    "char_start": 20518,
+    "char_end": 20726,
+    "sentence_index": 139,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec007",
+    "text": "EX and EQ are normalized by removing all physical constants.",
+    "char_start": 20727,
+    "char_end": 20787,
+    "sentence_index": 140,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec007",
+    "text": "IN are judged by comparing the two endpoints, treating them as either NV or EX.",
+    "char_start": 20788,
+    "char_end": 20867,
+    "sentence_index": 141,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec007",
+    "text": "For the model-based judgment stage, we require the evaluator model to pay attention to physical constants as well as equivalent quantities in the problem description.",
+    "char_start": 20868,
+    "char_end": 21034,
+    "sentence_index": 142,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec007",
+    "text": "The few-shot judging prompt is long and will be released in our code repository.",
+    "char_start": 21035,
+    "char_end": 21115,
+    "sentence_index": 143,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec007",
+    "text": "From the analysis in Section ,\nthe pipeline offers a reliable answer assessment.",
+    "char_start": 21116,
+    "char_end": 21196,
+    "sentence_index": 144,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec008",
+    "text": "Evaluated LLMs .",
+    "char_start": 21198,
+    "char_end": 21214,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec009",
+    "text": "Our evaluation covers 31 leading LLMs, including closed-source commercial LLMs, open-source general-purpose LLMs, o1-like LLMs, and specialized math LLMs.",
+    "char_start": 21215,
+    "char_end": 21369,
+    "sentence_index": 146,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec009",
+    "text": "Based on our , we provide a thorough evaluation of the physics reasoning capabilities of current LLMs.",
+    "char_start": 21370,
+    "char_end": 21472,
+    "sentence_index": 147,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec009",
+    "text": "The evaluated LLMs are listed below:\n\nFor proprietary LLMs, we select OpenAI-o1-mini o1 , GPT4o gpt4o2024openai , and GPT4o-mini gpt4o2024openai .",
+    "char_start": 21473,
+    "char_end": 21619,
+    "sentence_index": 148,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec009",
+    "text": "For open-source general-purpose LLMs, we evaluated the LLaMA-3.1-Instruct series (8B, 70B) llama312024dubey , LLaMA-3.3-Instruct-70B, Qwen2.5-Instruct (7B, 72B) qwen252024Yang , Yi-1.5-Chat (6B, 9B, 34B) ai2024yi , Ministral-8B-Instruct-2410 ministral8b , Mistral-Nemo-Instruct-2407 mistral_nemo_blog , Mistral-Small-Instruct-2409 mistral_small_blog , Mistral-Large-Instruct-2407 mistral_large_blog , DeepSeek-MOE-16B-Chat dai2024deepseekmoe , and DeepSeek-V2-Lite-Chat deepseekv2 .",
+    "char_start": 21621,
+    "char_end": 22103,
+    "sentence_index": 149,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec009",
+    "text": "We also incorporate specialized math LLMs to assess the extent to which continued training and SFT on math-related content can enhance physics reasoning: DeepSeekMath-7B (-RL, -Instruct) deepseekmath2024shao , Qwen2.5-Math (7B, 72B) Qwen25Math2024Yang , Mathstral-7B mathstral2023 , NuminaMath-7B-CoT numinamath7b , and OpenMath2-Llama-3.1 (8B, 70B) openmathinstruct2024toshniwal .",
+    "char_start": 22105,
+    "char_end": 22486,
+    "sentence_index": 150,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec009",
+    "text": "For o1-like LLMs, we cover QwQ-32B-Preview qwq32b_blog , Skywork-o1-Open-Llama-3.1-8B skyworkmodelcard , and DeepSeek-R1 deepseekr12025deepseekai distilled series (DeepSeek-R1-Distilled-Llama-8B, -Llama-70B; -Qwen-7B, -Qwen-32B).",
+    "char_start": 22488,
+    "char_end": 22717,
+    "sentence_index": 151,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec009",
+    "text": "We provide the details of these LLMs in Appendix .",
+    "char_start": 22719,
+    "char_end": 22769,
+    "sentence_index": 152,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec009",
+    "text": "Evaluation Setting .",
+    "char_start": 22771,
+    "char_end": 22791,
+    "sentence_index": 153,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec009",
+    "text": "Following OlympiadBench2024He, OlympicArena2024huang , all our experiments use zero-shot prompts, tailored to different answer types for better answer extraction and rule-based matching.",
+    "char_start": 22792,
+    "char_end": 22978,
+    "sentence_index": 154,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec009",
+    "text": "Detailed prompts are given in Appendix .",
+    "char_start": 22979,
+    "char_end": 23019,
+    "sentence_index": 155,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec009",
+    "text": "We use vLLM https://github.com/vllm-project/vllm https://github.com/vllm-project/vllm to speed up the evaluation process.",
+    "char_start": 23020,
+    "char_end": 23141,
+    "sentence_index": 156,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec009",
+    "text": "To maintain consistency in evaluations and facilitate reproduction, we set the maximum output length to 4,096 tokens and employ a greedy decoding strategy with the temperature 0.",
+    "char_start": 23142,
+    "char_end": 23320,
+    "sentence_index": 157,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec009",
+    "text": "For LLMs with a maximum output length of less than 4,096 tokens during SFT, such as NuminaMath-CoT-7B, we adjust the maximum output length to align with their specific SFT configurations.",
+    "char_start": 23321,
+    "char_end": 23508,
+    "sentence_index": 158,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec009",
+    "text": "More Details of the evaluation setting are given in Appendix .",
+    "char_start": 23509,
+    "char_end": 23571,
+    "sentence_index": 159,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec009",
+    "text": "[!thb]\n\nMain Results on (all figures are in \\%).",
+    "char_start": 23573,
+    "char_end": 23621,
+    "sentence_index": 160,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec009",
+    "text": "Models are classified into four different categories according to their purpose and origin.",
+    "char_start": 23622,
+    "char_end": 23713,
+    "sentence_index": 161,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec009",
+    "text": "The best results within each column are bolded and the best results of LLMs within a similar group are underlined .",
+    "char_start": 23714,
+    "char_end": 23829,
+    "sentence_index": 162,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec009",
+    "text": "``Mec.",
+    "char_start": 23830,
+    "char_end": 23836,
+    "sentence_index": 163,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec009",
+    "text": "and Ther.`` stands for Mechanics \\& Thermodynamics, and ``Elec.`` represents Electromagnetism.",
+    "char_start": 23837,
+    "char_end": 23931,
+    "sentence_index": 164,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec009",
+    "text": "1.0\nlccccccccccc\n\n2 * Models & 2 c Mec.",
+    "char_start": 23932,
+    "char_end": 23971,
+    "sentence_index": 165,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec009",
+    "text": "and Ther.",
+    "char_start": 23972,
+    "char_end": 23981,
+    "sentence_index": 166,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec009",
+    "text": "& 2 c Elec.",
+    "char_start": 23982,
+    "char_end": 23993,
+    "sentence_index": 167,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec009",
+    "text": "& 2 c Modern Physics & 2 c Overall & Average\n\n(lr) 2-3 (lr) 4-5 (lr) 6-7 (lr) 8-9\n& EN & ZH & EN & ZH & EN & ZH & EN & ZH &\n\n10 c Closed-source LLMs\n\n1-10\nOpenAI-o1-mini-2024-09-12 & 48.47 & 49.08 & 43.58 & 43.15 & 54.06 & 52.75 & 49.96 & 49.60 & 49.78\n\nGPT-4o-2024-08-06 & 36.97 & 36.84 & 36.40 & 34.58 & 42.80 & 40.63 & 39.29 & 38.01 & 38.66\n\nGPT-4o-mini-2024-07-18 & 27.81 & 26.07 & 24.84 & 22.38 & 30.72 & 29.28 & 28.51 & 26.78 & 27.64\n\n10 c Open-source Chat LLMs\n\n1-10\nYi-1.5-6B-Chat & 10.99 & 7.28 & 11.99 & 7.82 & 13.66 & 9.29 & 12.26 & 8.21 & 10.24\n\nQwen2.5-7B-Instruct & 23.89 & 20.23 & 24.09 & 17.99 & 25.57 & 21.77 & 24.62 & 20.49 & 22.55\n\nLLaMA3.1-8B-Instruct & 12.64 & 7.67 & 14.35 & 9.85 & 16.80 & 13.00 & 14.66 & 10.25 & 12.45\n\nMinistral-8B-Instruct-2410 & 13.95 & 10.81 & 15.52 & 8.99 & 19.20 & 12.17 & 16.39 & 11.07 & 13.73\n\nYi-1.5-9B-Chat & 16.00 & 11.73 & 15.85 & 13.28 & 19.94 & 15.40 & 17.61 & 13.51 & 15.56\n\nMistral-Nemo-Instruct-2407 & 14.08 & 11.64 & 14.78 & 11.99 & 18.41 & 16.27 & 16.00 & 13.62 & 14.81\n\nDeepSeek-MOE-16B-Chat & 3.75 & 3.18 & 4.93 & 4.82 & 7.16 & 4.49 & 5.36 & 4.00 & 4.68\n\nDeepSeek-V2-Lite-Chat & 6.50 & 4.93 & 6.75 & 5.78 & 9.47 & 7.59 & 7.77 & 6.18 & 6.97\n\nMistral-Small-Instruct-2409 & 22.71 & 21.27 & 22.70 & 18.42 & 29.97 & 23.21 & 25.72 & 21.59 & 23.66\n\nYi-1.5-34B-Chat & 18.79 & 13.38 & 18.63 & 12.74 & 23.17 & 17.84 & 20.58 & 15.13 & 17.85\n\nLLaMA3.1-70B-Instruct & 27.90 & 24.89 & 26.98 & 22.81 & 32.98 & 27.23 & 29.86 & 25.51 & 27.68\n\nLLaMA3.3-70B-Instruct & 33.61 & 25.81 & 33.30 & 24.84 & 39.18 & 26.83 & 35.87 & 26.07 & 30.97\n\nQwen2.5-72B-Instruct & 35.96 & 35.70 & 33.19 & 34.05 & 37.13 & 38.22 & 35.98 & 36.47 & 36.22\n\nMistral-Large-Instruct-2407 & 38.06 & 36.70 & 38.33 & 34.90 & 44.20 & 40.36 & 40.65 & 37.92 & 39.28\n\n10 c Specialized Mathematical LLMs\n\n1-10\nDeepSeek-Math-7B-Instruct & 13.25 & 12.34 & 16.49 & 13.17 & 19.07 & 15.62 & 16.21 & 13.84 & 15.03\n\nDeepSeek-Math-7B-RL & 15.17 & 11.68 & 15.20 & 12.74 & 18.54 & 15.40 & 16.58 & 13.41 & 14.99\n\nNuminaMath-7B-CoT & 13.60 & 15.52 & 14.45 & 15.52 & 18.06 & 18.50 & 15.60 & 16.76 & 16.18\n\nMathstral-7B-v0.1 & 14.82 & 12.47 & 17.77 & 14.99 & 19.94 & 17.06 & 17.45 & 14.80 & 16.12\n\nOpenMath2-Llama-3.1-8B & 8.63 & 6.28 & 10.17 & 7.39 & 11.95 & 9.55 & 10.27 & 7.83 & 9.05\n\nQwen2.5-Math-7B-Instruct & 23.84 & 21.05 & 22.38 & 18.09 & 26.53 & 21.34 & 24.71 & 20.67 & 22.69\n\nOpenMath2-Llama-3.1-70B & 20.31 & 18.70 & 22.16 & 18.63 & 25.44 & 21.51 & 22.75 & 19.86 & 21.30\n\nQwen2.5-Math-72B-Instruct & 39.54 & 39.84 & 35.87 & 38.44 & 41.19 & 39.44 & 39.60 & 39.44 & 39.52\n\n10 c o1-like LLMs\n\n1-10\nDeepSeek-R1-Distill-Qwen-7B & 29.25 & 20.62 & 27.41 & 17.45 & 29.80 & 20.68 & 29.17 & 20.11 & 24.64\n\nSkywork-o1-Open-Llama-3.1-8B & 13.47 & 9.55 & 14.45 & 8.67 & 15.36 & 10.12 & 14.42 & 9.64 & 12.03\n\nDeepSeek-R1-Distill-Llama-8B & 16.35 & 7.15 & 17.13 & 6.53 & 20.90 & 9.08 & 18.37 & 7.84 & 13.11\n\nQwQ-32B-Preview & 36.84 & 38.01 & 35.65 & 31.58 & 38.61 & 38.92 & 37.37 & 37.30 & 37.34\n\nDeepSeek-R1-Distill-Qwen-32B & 35.22 & 28.51 & 33.40 & 23.34 & 38.09 & 28.80 & 36.11 & 27.75 & 31.93\n\nDeepSeek-R1-Distill-Llama-70B & 43.24 & 34.26 & 42.93 & 28.80 & 49.91 & 36.78 & 45.96 & 34.38 & 40.17\n\n10 c Newly-added Results\n\n1-10\nPhi-4 & 34.13 & 32.48 & 36.51 & 29.87 & 40.45 & 35.86 & 37.16 & 33.44 & 35.30\n\nDeepSeek-R1 & 55.49 & 56.67 & 54.50 & 48.39 & 59.90 & 57.29 & 57.16 & 55.53 & 56.34\n\n[ht]\n\n[t] 0.48\n\nfigures/subject.pdf\nAccuracy Across Subjects\n\n[t] 0.48\n\n1.5em\nfigures/skills.pdf\n\nAccuracy Across Reasoning Skills\n\nThe distribution of overall accuracy across subjects, and physics reasoning skills.",
+    "char_start": 23994,
+    "char_end": 27596,
+    "sentence_index": 168,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec009",
+    "text": "(a) The overall accuracy of different subjects averaged across 8 strong LLMs listed in Figure (b).",
+    "char_start": 27597,
+    "char_end": 27695,
+    "sentence_index": 169,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec009",
+    "text": "Each bar consists of several segments with colors indicating their corresponding reasoning skills.",
+    "char_start": 27696,
+    "char_end": 27794,
+    "sentence_index": 170,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec009",
+    "text": "(b) The overall accuracy of reasoning skills, averaged across all subjects.",
+    "char_start": 27795,
+    "char_end": 27870,
+    "sentence_index": 171,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec009",
+    "text": "Only 8 strong LLMs are included for brevity.",
+    "char_start": 27871,
+    "char_end": 27915,
+    "sentence_index": 172,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec009",
+    "text": "``KR'': Knowledge Recall; ``LA'': Laws Application; ``MD'': Math Derivation; ``PA'': Practical Application; ``OT'': Others.",
+    "char_start": 27916,
+    "char_end": 28039,
+    "sentence_index": 173,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec010",
+    "text": "The main results are shown in Table and more detailed results are given in Appendix .",
+    "char_start": 28041,
+    "char_end": 28126,
+    "sentence_index": 174,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec010",
+    "text": "From Table , we have the following observations.",
+    "char_start": 28127,
+    "char_end": 28175,
+    "sentence_index": 175,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec010",
+    "text": "Our presents a significant challenge for current LLMs.",
+    "char_start": 28177,
+    "char_end": 28231,
+    "sentence_index": 176,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec010",
+    "text": "The highest overall accuracy, 49.78\\%, is achieved by OpenAI-o1-mini, followed by DeepSeek-R1-Distill-Llama-70B with 40.17\\%.",
+    "char_start": 28232,
+    "char_end": 28357,
+    "sentence_index": 177,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec010",
+    "text": "Notably, 15 out of 31 evaluated LLMs score below 20\\%, and only two models surpass the 40\\% overall accuracy.",
+    "char_start": 28358,
+    "char_end": 28467,
+    "sentence_index": 178,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec010",
+    "text": "In contrast, OpenAI-o1-mini achieves over 90\\% accuracy on MATH MATH2021hendrycks , over 60\\% on olympic and undergraduate math problems omnimath2024gao, ugmathbench2025xu .",
+    "char_start": 28468,
+    "char_end": 28641,
+    "sentence_index": 179,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec010",
+    "text": "Although current LLMs have powerful math reasoning abilities, they still struggle with complex physics reasoning.",
+    "char_start": 28642,
+    "char_end": 28755,
+    "sentence_index": 180,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec010",
+    "text": "Open-source LLMs are catching up with closed-source LLMs, but a performance disparity remains.",
+    "char_start": 28757,
+    "char_end": 28851,
+    "sentence_index": 181,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec010",
+    "text": "Five open-source LLMs achieve overall accuracy comparable to or even exceeding GPT-4o.",
+    "char_start": 28852,
+    "char_end": 28938,
+    "sentence_index": 182,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec010",
+    "text": "However, the best performing open-source LLM, DeepSeek-R1-Distill-Llama-70B, lags by around 10\\% behind OpenAI-o1-mini.",
+    "char_start": 28939,
+    "char_end": 29058,
+    "sentence_index": 183,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec010",
+    "text": "Furthermore, GPT-4o-mini still outperforms many open-source LLMs, even surpassing some o1-like LLMs.",
+    "char_start": 29059,
+    "char_end": 29159,
+    "sentence_index": 184,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec010",
+    "text": "Model performance improves with increasing parameter size within the same model family.",
+    "char_start": 29161,
+    "char_end": 29248,
+    "sentence_index": 185,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec010",
+    "text": "As model size grows from 7B to 72B, Qwen2.5-Math-Instruct exhibits an approximate 17\\% increase in overall accuracy, with consistent improvements across different domains and languages.",
+    "char_start": 29249,
+    "char_end": 29434,
+    "sentence_index": 186,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec010",
+    "text": "A similar trend is observed in o1-like LLMs, where DeepSeek-R1-Distill-Llama sees an even more pronounced performance gain by 27\\% when scaling from 8B to 70B.",
+    "char_start": 29435,
+    "char_end": 29594,
+    "sentence_index": 187,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec010",
+    "text": "Math-specialized LLMs outperform their general-purpose counterparts, but the improvement is less pronounced than in mathematics.",
+    "char_start": 29596,
+    "char_end": 29724,
+    "sentence_index": 188,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec010",
+    "text": "Qwen2.5-Math-7B-Instruct achieves only a 0.14\\% higher average accuracy than Qwen2.5-7B-Instruct, while Qwen2.5-Math-72B-Instruct outperforms Qwen2.5-72B-Instruct by 3.3\\%.",
+    "char_start": 29725,
+    "char_end": 29897,
+    "sentence_index": 189,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec010",
+    "text": "In contrast, math-specific LLMs usually outperform their general-purpose counterparts in solving mathematical problems by a large margin (around or over 10\\%) MathBench2024Liu, ugmathbench2025xu .",
+    "char_start": 29898,
+    "char_end": 30094,
+    "sentence_index": 190,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec010",
+    "text": "This suggests that continued pre-training and further supervised fine-tuning on mathematical corpora yield only marginal gains in physics problem-solving, highlighting the need for future efforts to incorporate physics-specific content during training.",
+    "char_start": 30095,
+    "char_end": 30347,
+    "sentence_index": 191,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec010",
+    "text": "O1-like LLMs yield surprisingly strong results.",
+    "char_start": 30349,
+    "char_end": 30396,
+    "sentence_index": 192,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec010",
+    "text": "DS-R1-Llama-70B achieves the second-highest overall accuracy on .",
+    "char_start": 30397,
+    "char_end": 30462,
+    "sentence_index": 193,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec010",
+    "text": "Notably, QwQ-32B attains a competitive accuracy of 37.3\\%, closely approaching Qwen2.5-Math-72B-Instruct (39.5\\%) despite its significantly smaller model size.",
+    "char_start": 30463,
+    "char_end": 30622,
+    "sentence_index": 194,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec010",
+    "text": "Furthermore, QwQ-32B outperforms DeepSeek-R1-Distill-Llama-70B on problems in ZH.",
+    "char_start": 30623,
+    "char_end": 30704,
+    "sentence_index": 195,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec011",
+    "text": "In this section, we conduct an in-depth analysis using 8 strong LLMs and delay the complete results to Appendix .",
+    "char_start": 30706,
+    "char_end": 30819,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec012",
+    "text": "LLMs show varying performance across different subjects, although the disparity is relatively small.",
+    "char_start": 30821,
+    "char_end": 30921,
+    "sentence_index": 197,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec012",
+    "text": "As shown in Figure , the average overall accuracy of eight strong LLMs reveals that they perform particularly well in Semiconductor Physics (31.0\\%) and Atomic Physics (26.7\\%).",
+    "char_start": 30922,
+    "char_end": 31099,
+    "sentence_index": 198,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec012",
+    "text": "In contrast, their performance is slightly lower in Theoretical Mechanics (16.5\\%).",
+    "char_start": 31100,
+    "char_end": 31183,
+    "sentence_index": 199,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec012",
+    "text": "Additionally, LLMs show minor performance variation across six out of 13 subjects, with accuracies hovering around 20\\%.",
+    "char_start": 31184,
+    "char_end": 31304,
+    "sentence_index": 200,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec012",
+    "text": "In comparison, LLMs' performance can vary from 10\\% to 70\\% across different math topics MathBench2024Liu .",
+    "char_start": 31305,
+    "char_end": 31412,
+    "sentence_index": 201,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec012",
+    "text": "LLMs exhibit varying levels of physics reasoning skills.",
+    "char_start": 31414,
+    "char_end": 31470,
+    "sentence_index": 202,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec012",
+    "text": "As shown in Figure , the selected 8 LLMs display similar performance trends across different physics reasoning skills.",
+    "char_start": 31471,
+    "char_end": 31589,
+    "sentence_index": 203,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec012",
+    "text": "They perform well on Knowledge Recall tasks but struggle with Math Derivation problems.",
+    "char_start": 31590,
+    "char_end": 31677,
+    "sentence_index": 204,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec012",
+    "text": "This suggests that recalling physics concepts is relatively simple for LLMs, whereas performing complex math derivations in a physics context (usually require physics knowledge and practical meanings) is more challenging.",
+    "char_start": 31678,
+    "char_end": 31899,
+    "sentence_index": 205,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec012",
+    "text": "Notably, OpenAI-o1-mini outperforms the other models across all four distinct physics reasoning skills (as well as ``Others'').",
+    "char_start": 31900,
+    "char_end": 32027,
+    "sentence_index": 206,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec012",
+    "text": "LLMs exhibit varying performance across different languages when solving physics problems.",
+    "char_start": 32029,
+    "char_end": 32119,
+    "sentence_index": 207,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec012",
+    "text": "From Table , some LLMs demonstrate only minor discrepancies in performance between English (EN) and Chinese (ZH), such as OpenAI-o1-mini, Qwen2.5-Math-Instruct, and QwQ-32B.",
+    "char_start": 32120,
+    "char_end": 32293,
+    "sentence_index": 208,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec012",
+    "text": "However, other LLMs exhibit a significant performance gap between ZH and EN, such as Yi-1.5-Chat and LLaMA-3.1.",
+    "char_start": 32294,
+    "char_end": 32405,
+    "sentence_index": 209,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec012",
+    "text": "For further illustration, Figure presents the performance of a subset of LLMs in both languages, with the models sorted by the difference in accuracy between EN and ZH.",
+    "char_start": 32406,
+    "char_end": 32574,
+    "sentence_index": 210,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec012",
+    "text": "It is evident that LLaMA-3.3-70B-Instruct and DeepSeek-R1-Llama-70B show a substantial discrepancy between ZH and EN, while Qwen-2.5-72B-Instruct and QwQ-32B-Preview exhibit negligible differences.",
+    "char_start": 32575,
+    "char_end": 32772,
+    "sentence_index": 211,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec012",
+    "text": "This discrepancy is reasonable, as LLaMA models have limited Chinese corpus for pretraining and fine-tuning llama312024dubey , whereas Qwen LLMs are trained on a much larger Chinese corpus qwen252024Yang, Qwen25Math2024Yang .",
+    "char_start": 32773,
+    "char_end": 32998,
+    "sentence_index": 212,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec012",
+    "text": "figures/language.pdf\nPerformance in different languages, sorted by the difference of EN - ZH.",
+    "char_start": 33000,
+    "char_end": 33093,
+    "sentence_index": 213,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec013",
+    "text": "Despite several studies utilizing LLMs to evaluate correctness across all test examples omnimath2024gao or specific subsets GaokaoBench2023zhang , the capability of our to reliably evaluate physics problems remains inconclusive.",
+    "char_start": 33095,
+    "char_end": 33323,
+    "sentence_index": 214,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec013",
+    "text": "To substantiate our evaluation method, we conduct a human evaluation to determine its alignment with human judgment on a randomly selected subset of 100 test examples.",
+    "char_start": 33324,
+    "char_end": 33491,
+    "sentence_index": 215,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec013",
+    "text": "Specifically, we initially annotate whether each solution adheres to the ground-truth answer for its corresponding problem, establishing these annotations as the gold standard.",
+    "char_start": 33492,
+    "char_end": 33668,
+    "sentence_index": 216,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec013",
+    "text": "Subsequently, we compare the evaluations generated by our rule-model combination with the gold standard.",
+    "char_start": 33669,
+    "char_end": 33773,
+    "sentence_index": 217,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec013",
+    "text": "We find that our evaluation achieves an accuracy of 98\\% when compared to human annotations, underscoring the reliability of our evaluation methods and outcomes.",
+    "char_start": 33774,
+    "char_end": 33935,
+    "sentence_index": 218,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec013",
+    "text": "Furthermore, our evaluation approach is efficient in assessing correctness for examples whose answers can be easily verified by Sympy, while also demonstrating resilience in handling complex answers that are not suitable for rule-based judgments.",
+    "char_start": 33936,
+    "char_end": 34182,
+    "sentence_index": 219,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec014",
+    "text": "[t]\n\nfigures/error.pdf\nDistribution of Error Types of OpenAI-o1-mini\n\nTo gain deeper insights into the performance of LLMs, we select 100 incorrect answers generated by OpenAI-o1-mini and have these errors annotated by human evaluators to determine failure reasons.",
+    "char_start": 34184,
+    "char_end": 34449,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec014",
+    "text": "As illustrated in Figure , the primary error types are flawed reasoning, knowledge deficiency, and incorrect application, which contrast with those in mathematics, where calculation is one of the major sources of errors PoT2022Chen,ugmathbench2025xu .",
+    "char_start": 34450,
+    "char_end": 34701,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec014",
+    "text": "This suggests that reasoning and math derivation in physics, which require additional knowledge and involve real-world meanings, are more challenging than the abstract reasoning in mathematics.",
+    "char_start": 34702,
+    "char_end": 34895,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec014",
+    "text": "Several cases are provided in Appendix .",
+    "char_start": 34897,
+    "char_end": 34937,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec015",
+    "text": "[t]\n\nThe proportion (in \\%) of data leakage detection for: (a) The proportion of contaminated examples.",
+    "char_start": 34939,
+    "char_end": 35042,
+    "sentence_index": 224,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec015",
+    "text": "(b) The proportion of contaminated and correct examples.",
+    "char_start": 35043,
+    "char_end": 35099,
+    "sentence_index": 225,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec015",
+    "text": "``Prop.'' stands for proportion.",
+    "char_start": 35100,
+    "char_end": 35132,
+    "sentence_index": 226,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec015",
+    "text": "lcc\n\nModel & (a) Prop.",
+    "char_start": 35133,
+    "char_end": 35155,
+    "sentence_index": 227,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec015",
+    "text": "& (b) Prop.",
+    "char_start": 35156,
+    "char_end": 35167,
+    "sentence_index": 228,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec015",
+    "text": "DeepSeek-Math-7B-RL & 0.0\\% & 0.0\\%\n\nLLaMA3.1-8B-Instruct & 0.53\\% & 0.06\\%\n\nLLaMA3.3-70B-Instruct & 0.65\\% & 0.29\\%\n\nQwen2.5-Math-7B-Instruct & 0.65\\% & 0.36\\%\n\nQwen2.5-Math-72B-Instruct & 0.75\\% & 0.68\\%\n\nQwQ-32B-Preview & 0.71\\% & 0.65\\%\n\nDeepSeek-R1-Distill-Qwen-7B & 0.0\\% & 0.0\\%\n\nDeepSeek-R1-Distill-Qwen-32B & 0.0\\% & 0.0\\%\n\nWe perform data leakage detection to alleviate the potential data contamination in .",
+    "char_start": 35169,
+    "char_end": 35586,
+    "sentence_index": 229,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec015",
+    "text": "Following benbench2024xu , we utilize n-gram accuracy to detect any data leakage within different LLMs.",
+    "char_start": 35587,
+    "char_end": 35690,
+    "sentence_index": 230,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec015",
+    "text": "Concretely, we combined each problem with its solution in the dataset and randomly chose K positions for extracting 5-grams.",
+    "char_start": 35691,
+    "char_end": 35815,
+    "sentence_index": 231,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec015",
+    "text": "A sample is considered contaminated if the 5-grams predicted by the model match the actual 5-grams from the dataset.",
+    "char_start": 35816,
+    "char_end": 35932,
+    "sentence_index": 232,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec015",
+    "text": "The results for a subset of LLMs are presented in Table .",
+    "char_start": 35933,
+    "char_end": 35990,
+    "sentence_index": 233,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec015",
+    "text": "It is evident that most models exhibit some degree of data leakage.",
+    "char_start": 35991,
+    "char_end": 36058,
+    "sentence_index": 234,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec015",
+    "text": "Among them, Qwen2.5-MATH-72B-instruct shows the highest level of leakage, accurately predicting 5 grams in 78 samples.",
+    "char_start": 36059,
+    "char_end": 36177,
+    "sentence_index": 235,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec015",
+    "text": "Additionally, we report on the contaminated samples that are subsequently answered correctly by the tested models.",
+    "char_start": 36178,
+    "char_end": 36292,
+    "sentence_index": 236,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec015",
+    "text": "The numbers of both ``Contaminated'' and ``Contaminated \\& Correct'' samples are extremely low, suggesting that data leakage has minimal impact on .",
+    "char_start": 36293,
+    "char_end": 36441,
+    "sentence_index": 237,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec016",
+    "text": "Accuracy Compared to Existing Benchmarks\nTo contextualize our 's difficulty, we evaluate GPT-4o on established physics reasoning datasets (Table ).",
+    "char_start": 36443,
+    "char_end": 36590,
+    "sentence_index": 238,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec016",
+    "text": "GPT-4o achieves 38.67\\% accuracy, weaker than its 53.60\\% on GPQA gpqa2023rein , highlighting 's greater challenge.",
+    "char_start": 36591,
+    "char_end": 36706,
+    "sentence_index": 239,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec016",
+    "text": "We also include MATH MATH2021hendrycks for reference.",
+    "char_start": 36707,
+    "char_end": 36760,
+    "sentence_index": 240,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec016",
+    "text": "Tokens Spent on\nWe further analyze the token usage required to solve problems in our benchmark.",
+    "char_start": 36762,
+    "char_end": 36857,
+    "sentence_index": 241,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec016",
+    "text": "DeepSeek-R1 deepseekr12025deepseekai , when used without maximum token constraints (via API), requires an average of 5,555 tokens to solve problems in our benchmark.",
+    "char_start": 36858,
+    "char_end": 37023,
+    "sentence_index": 242,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec016",
+    "text": "To assess the impact of token restrictions, we set a maximum output token limit of 8,192 for DeepSeek-R1-Distill-Qwen-32B in our experimental setup.",
+    "char_start": 37024,
+    "char_end": 37172,
+    "sentence_index": 243,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec016",
+    "text": "Under this constraint, the model requires 3,079 tokens on the MATH MATH2021hendrycks benchmark and 4,081 tokens on our .",
+    "char_start": 37173,
+    "char_end": 37293,
+    "sentence_index": 244,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec016",
+    "text": "These results highlight the computational cost of solving problems in our benchmark relative to other tasks.",
+    "char_start": 37294,
+    "char_end": 37402,
+    "sentence_index": 245,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec016",
+    "text": "[htbp!]\n\nPerformance on various benchmarks.",
+    "char_start": 37404,
+    "char_end": 37447,
+    "sentence_index": 246,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec016",
+    "text": "0.4 !",
+    "char_start": 37448,
+    "char_end": 37453,
+    "sentence_index": 247,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec016",
+    "text": "lc\n\nDataset & Performance (\\%)\n\nMMLU (college physics) & 68.60\n\nMMLU (high school physics) & 72.80\n\nMMLU (conceptual physics) & 92.30\n\nMMLU-pro & 75.06\n\nOlympicArena & 55.92\n\nGPQA & 53.60\n\nMATH & 76.60\n\nUGPhysics & 38.67\n\nThe maximum generation token limit was set to 8,192 in our evaluation.",
+    "char_start": 37454,
+    "char_end": 37746,
+    "sentence_index": 248,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec017",
+    "text": "Open-source o1-like LLMs typically consume more tokens than OpenAI\u2019s o1-mini when solving problems.",
+    "char_start": 37747,
+    "char_end": 37846,
+    "sentence_index": 249,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec017",
+    "text": "With a 8,192 token limit, only 2\\% of o1-mini\u2019s generations exceed this limit, whereas significantly higher proportions of other open-source o1-like LLMs fail to terminate within the limit (Table ).",
+    "char_start": 37847,
+    "char_end": 38045,
+    "sentence_index": 250,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec017",
+    "text": "To assess whether increasing the token limit improves performance, we extended the limit to 16,384.",
+    "char_start": 38046,
+    "char_end": 38145,
+    "sentence_index": 251,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec017",
+    "text": "Results in Table show marginal performance gains, with a small proportion of generations still exceeding the extended limit.",
+    "char_start": 38146,
+    "char_end": 38270,
+    "sentence_index": 252,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec017",
+    "text": "These findings highlight the need to address token redundancy in o1-like LLMs during reasoning, as noted by chen2024overthinking .",
+    "char_start": 38271,
+    "char_end": 38401,
+    "sentence_index": 253,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec017",
+    "text": "[htbp!]\n\nThe Clip Ratio (in \\%) for Different o1-like LLMs.",
+    "char_start": 38403,
+    "char_end": 38462,
+    "sentence_index": 254,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec017",
+    "text": "0.4 !",
+    "char_start": 38464,
+    "char_end": 38469,
+    "sentence_index": 255,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec017",
+    "text": "lcc\n\nModels & 8192 & 16382\n\nDeepSeek-R1-Distill-Qwen-7B & 44.40 & 38.90\n\nDeepSeek-R1-Distill-Qwen-32B & 38.55 & 34.47\n\nDeepSeek-R1-Distill-Llama-8B & 52.37 & 43.80\n\nDeepSeek-R1-Distill-Llama-70B & 19.16 & 12.25\n\nQwQ-32B-Preview & 19.01 & 8.54\n\no1-mini-2024-09-12 & 2.01 & -\n\n[htbp!]\n\nPerformance (in \\%) of Different Token Budget.",
+    "char_start": 38470,
+    "char_end": 38800,
+    "sentence_index": 256,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec017",
+    "text": "0.4 !",
+    "char_start": 38802,
+    "char_end": 38807,
+    "sentence_index": 257,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec017",
+    "text": "lcc\n\nModels & 8192 & 16382\n\nDeepSeek-R1-Distill-Qwen-7B & 24.64 & 24.86\n\nDeepSeek-R1-Distill-Qwen-32B & 31.93 & 32.21\n\nDeepSeek-R1-Distill-Llama-8B & 13.11 & 14.51\n\nDeepSeek-R1-Distill-Llama-70B & 40.17 & 41.77\n\nQwQ-32B-Preview & 37.34 & 38.90\n\nIn this study, we propose , a comprehensive undergraduate-level physics benchmark, and the answer scoring framework to evaluate LLMs' capabilities in solving physics problems.",
+    "char_start": 38808,
+    "char_end": 39228,
+    "sentence_index": 258,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec018",
+    "text": "Through our extensive experiments, we find that although current LLMs excel in mathematical reasoning, there remains considerable potential for improvement in their performance on physics problems.",
+    "char_start": 39229,
+    "char_end": 39426,
+    "sentence_index": 259,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec018",
+    "text": "We believe our dataset and codes will be valuable for the future development of AI with strong physics reasoning abilities.",
+    "char_start": 39427,
+    "char_end": 39550,
+    "sentence_index": 260,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec019",
+    "text": "This paper introduces an undergraduate-level physics benchmark aimed at advancing AI capabilities in physics problem-solving.",
+    "char_start": 39552,
+    "char_end": 39677,
+    "sentence_index": 261,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec019",
+    "text": "Future directions include incorporating problems with images to enable multi-modal evaluation or more language to facilitate multi-lingual assessment.",
+    "char_start": 39678,
+    "char_end": 39828,
+    "sentence_index": 262,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec020",
+    "text": "This work was partially supported by a grant from the Research Grants Council of the Hong Kong Special Administrative Region, China (Project Reference Number: AoE/E-601/24-N).",
+    "char_start": 39830,
+    "char_end": 40005,
+    "sentence_index": 263,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec020",
+    "text": "We would like to thank all the reviewers for their valuable suggestions to improve our work.",
+    "char_start": 40006,
+    "char_end": 40098,
+    "sentence_index": 264,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec020",
+    "text": "example_paper\nicml2025\n\nDuring problem processing, we find some physics problems do not have definite answers for evaluation.",
+    "char_start": 40100,
+    "char_end": 40225,
+    "sentence_index": 265,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec022",
+    "text": "Two examples are given in Table .",
+    "char_start": 40226,
+    "char_end": 40259,
+    "sentence_index": 266,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec022",
+    "text": "We exclude these problems for automatic evaluation in our .",
+    "char_start": 40260,
+    "char_end": 40319,
+    "sentence_index": 267,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec022",
+    "text": "[b]\n\nEstimation and Explanation Problem Example.",
+    "char_start": 40321,
+    "char_end": 40369,
+    "sentence_index": 268,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec022",
+    "text": "|X|\n\n1 |c| Estimation Problem\n\nProvide the best estimate of the cosmic ray flux at sea level.",
+    "char_start": 40370,
+    "char_end": 40463,
+    "sentence_index": 269,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec022",
+    "text": "1 |c| Explanation Problem\n\nWater is a polar molecule.",
+    "char_start": 40465,
+    "char_end": 40518,
+    "sentence_index": 270,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec022",
+    "text": "Discuss the effect of electrode polarization on its dielectric constant at high and low frequencies.",
+    "char_start": 40519,
+    "char_end": 40619,
+    "sentence_index": 271,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec023",
+    "text": "By carefully reviewing a large collection of problems and referring to various past benchmarks OlympiadBench2024He, OlympicArena2024huang, ugmathbench2025xu , we classify all answers to seven categories in total: six atomic and one compound type.",
+    "char_start": 40621,
+    "char_end": 40867,
+    "sentence_index": 272,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec023",
+    "text": "Each compound type is composed of a list of atomic ones.",
+    "char_start": 40868,
+    "char_end": 40924,
+    "sentence_index": 273,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec023",
+    "text": "These types are designed to encompass a wide range of problems.",
+    "char_start": 40925,
+    "char_end": 40988,
+    "sentence_index": 274,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec023",
+    "text": "Detailed definitions for each answer type can be found in Table .",
+    "char_start": 40989,
+    "char_end": 41054,
+    "sentence_index": 275,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec023",
+    "text": "Similar to OlympiadBench2024He , the compound answer type is characterized by the attribute is\\_multiple\\_answers .",
+    "char_start": 41055,
+    "char_end": 41170,
+    "sentence_index": 276,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec023",
+    "text": "[b]\n\nDescriptions of answer types included in evaluation prompts, only include English version for simplicity.",
+    "char_start": 41172,
+    "char_end": 41282,
+    "sentence_index": 277,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec023",
+    "text": "1.0\nlp 9cm\n\nAnswer Type & English Answer Type Description\n\nNV & a numerical value without units\n\nEX & an expression\n\nEQ & an equation\n\nINT & a range interval\n\nTF & either True or False\n\nMC & one option of a multiple choice question\n\nThe definitions of different physics skills are as follows:\n\nKnowledge Recall : Refers to the recall and understanding of basic physics concepts, formulas, and definitions.",
+    "char_start": 41283,
+    "char_end": 41688,
+    "sentence_index": 278,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec024",
+    "text": "This category assesses the ability to accurately remember key physics points, such as the units, definitions, and fundamental properties of physical quantities, without requiring deep reasoning or complex calculations.",
+    "char_start": 41689,
+    "char_end": 41907,
+    "sentence_index": 279,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec024",
+    "text": "Laws Application : Involves understanding and applying important physical laws.",
+    "char_start": 41908,
+    "char_end": 41987,
+    "sentence_index": 280,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec024",
+    "text": "Students are expected to correctly describe the content, conditions, and scope of these laws and determine their applicability to specific scenarios.",
+    "char_start": 41988,
+    "char_end": 42137,
+    "sentence_index": 281,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec024",
+    "text": "Examples include Newton's laws, the laws of thermodynamics, and Coulomb's law.",
+    "char_start": 42138,
+    "char_end": 42216,
+    "sentence_index": 282,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec024",
+    "text": "Math Derivation : Focuses on the mathematical derivation and logical proof of physics formulas or principles.",
+    "char_start": 42217,
+    "char_end": 42326,
+    "sentence_index": 283,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec024",
+    "text": "This requires students to use known laws or principles and apply rigorous mathematical reasoning to derive new relationships or theorems.",
+    "char_start": 42327,
+    "char_end": 42464,
+    "sentence_index": 284,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec024",
+    "text": "Examples include deriving the momentum conservation equation from Newton's second law or deriving thermodynamic relations from the ideal gas law.",
+    "char_start": 42465,
+    "char_end": 42610,
+    "sentence_index": 285,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec024",
+    "text": "Practical Application : Emphasizes the practical use of physics knowledge, laws, and derivations to solve real-world problems.",
+    "char_start": 42611,
+    "char_end": 42737,
+    "sentence_index": 286,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec024",
+    "text": "This includes analyzing scenarios, building physical models, and using calculations and logical reasoning to arrive at solutions.",
+    "char_start": 42738,
+    "char_end": 42867,
+    "sentence_index": 287,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec024",
+    "text": "Examples include calculating the final velocity of a car using the work-energy theorem or analyzing the motion of a charged particle using electric field equations.",
+    "char_start": 42868,
+    "char_end": 43032,
+    "sentence_index": 288,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec024",
+    "text": "The prompt used for classification is given in Table .",
+    "char_start": 43034,
+    "char_end": 43088,
+    "sentence_index": 289,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec024",
+    "text": "Note that there are problems that fail to be classified into certain types of skill, we annotate them as \"others\".",
+    "char_start": 43089,
+    "char_end": 43203,
+    "sentence_index": 290,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec024",
+    "text": "[b]\n\nThe prompt for annotating physics reasoning skills, where problem , solution , and answer represent the components of the problem to be annotated.",
+    "char_start": 43205,
+    "char_end": 43356,
+    "sentence_index": 291,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec024",
+    "text": "|X|\n\nProblem:\n\n\\ problem\\\n\nSolution:\n\n\\ solution\\\n\nAnswer:\n\n\\ answer\\\n\nClassification Categories:\n\n1.",
+    "char_start": 43357,
+    "char_end": 43458,
+    "sentence_index": 292,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec024",
+    "text": "Knowledge Recall: Refers to the recall and understanding of basic physics concepts, formulas, and definitions.",
+    "char_start": 43459,
+    "char_end": 43569,
+    "sentence_index": 293,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec024",
+    "text": "This category assesses the ability to accurately remember key physics points, such as the units, definitions, and fundamental properties of physical quantities, without requiring deep reasoning or complex calculations.",
+    "char_start": 43570,
+    "char_end": 43788,
+    "sentence_index": 294,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec024",
+    "text": "2.",
+    "char_start": 43790,
+    "char_end": 43792,
+    "sentence_index": 295,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec024",
+    "text": "Laws Application: Involves understanding and applying important physical laws.",
+    "char_start": 43793,
+    "char_end": 43871,
+    "sentence_index": 296,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec024",
+    "text": "Students are expected to correctly describe the content, conditions, and scope of these laws and determine their applicability to specific scenarios.",
+    "char_start": 43872,
+    "char_end": 44021,
+    "sentence_index": 297,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec024",
+    "text": "Examples include Newton's laws, the laws of thermodynamics, and Coulomb's law.",
+    "char_start": 44022,
+    "char_end": 44100,
+    "sentence_index": 298,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec024",
+    "text": "3.",
+    "char_start": 44102,
+    "char_end": 44104,
+    "sentence_index": 299,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec024",
+    "text": "Math Derivation: Focuses on the mathematical derivation and logical proof of physics formulas or principles.",
+    "char_start": 44105,
+    "char_end": 44213,
+    "sentence_index": 300,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec024",
+    "text": "This requires students to use known laws or principles and apply rigorous mathematical reasoning to derive new relationships or theorems.",
+    "char_start": 44214,
+    "char_end": 44351,
+    "sentence_index": 301,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec024",
+    "text": "Examples include deriving the momentum conservation equation from Newton's second law or deriving thermodynamic relations from the ideal gas law.",
+    "char_start": 44352,
+    "char_end": 44497,
+    "sentence_index": 302,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec024",
+    "text": "4.",
+    "char_start": 44499,
+    "char_end": 44501,
+    "sentence_index": 303,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec024",
+    "text": "Practical Application: Emphasizes the practical use of physics knowledge, laws, and derivations to solve real-world problems.",
+    "char_start": 44502,
+    "char_end": 44627,
+    "sentence_index": 304,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec024",
+    "text": "This includes analyzing scenarios, building physical models, and using calculations and logical reasoning to arrive at solutions.",
+    "char_start": 44628,
+    "char_end": 44757,
+    "sentence_index": 305,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec024",
+    "text": "Examples include calculating the final velocity of a car using the work-energy theorem or analyzing the motion of a charged particle using electric field equations.",
+    "char_start": 44758,
+    "char_end": 44922,
+    "sentence_index": 306,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec024",
+    "text": "Instructions for Classification: Please classify the above problem by selecting the most appropriate category that best represents the type of thinking and approach required to address the physics problem.",
+    "char_start": 44924,
+    "char_end": 45129,
+    "sentence_index": 307,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec024",
+    "text": "Consider the complexity, the need for creativity, and the depth of knowledge required.",
+    "char_start": 45130,
+    "char_end": 45216,
+    "sentence_index": 308,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec024",
+    "text": "You should conclude your response with \\\"So, the problem can be categorized as ANSWER.\\\", where ANSWER should be one of the indexes in 1, 2, 3, 4.",
+    "char_start": 45217,
+    "char_end": 45363,
+    "sentence_index": 309,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec025",
+    "text": "Our include 3 key domains and 13 core subjects in undergraduate-level physics.",
+    "char_start": 45365,
+    "char_end": 45443,
+    "sentence_index": 310,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec025",
+    "text": "The detailed topics across different subjects and the corresponding number of examples are listed in Table .",
+    "char_start": 45444,
+    "char_end": 45552,
+    "sentence_index": 311,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec025",
+    "text": "There are 59 topics in total.",
+    "char_start": 45553,
+    "char_end": 45582,
+    "sentence_index": 312,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec025",
+    "text": "We illustrate the words of topics in Figure .",
+    "char_start": 45583,
+    "char_end": 45628,
+    "sentence_index": 313,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec025",
+    "text": "Furthermore, the distribution information of our benchmark on different subjects and reasoning skills is presented in Table .",
+    "char_start": 45629,
+    "char_end": 45754,
+    "sentence_index": 314,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec025",
+    "text": "[b]\n\nfigures/wordcloud.pdf\nWord Cloud of Topics in\n\n[hbp]\n\n0.8\n[tbp] lp 8cm c\n\nSubject & Topics & \\# Examples\n\nClassical Mechanics & Particle Dynamics & 644\n\nClassical Mechanics & Vibrations and Waves & 358\n\nClassical Mechanics & Central Force Motion & 156\n\nClassical Mechanics & Rigid-Body Dynamics & 360\n\nClassical Mechanics & Fluid Mechanics & 154\n\nTheoretical Mechanics & Lagrangian Formulation of Mechanics & 202\n\nTheoretical Mechanics & Small Vibrations of Finite System & 182\n\nTheoretical Mechanics & Hamiltonian Formulation of Mechanics & 254\n\nRelativity & General Relativity & 36\n\nRelativity & Special Relativity & 368\n\nRelativity & Relativistic Cosmology & 10\n\nThermodynamics & Phase Transition and Equilibrium & 168\n\nThermodynamics & Thermodynamic State and First Law of Thermodynamics & 146\n\nThermodynamics & Second Law of Thermodynamics and Entropy & 218\n\nThermodynamics & Thermodynamic Functions and Equilibrium Conditions & 134\n\nThermodynamics & Non-equilibrium Thermodynamics & 78\n\nStatistical Mechanics & Ensemble Theory & 234\n\nStatistical Mechanics & Maxwell-Boltzmann Statistics & 294\n\nStatistical Mechanics & Distribution Function and Statistical Entropy & 68\n\nStatistical Mechanics & Fermi-Dirac Statistics & 228\n\nStatistical Mechanics & Bose-Einstein Statistics & 140\n\nStatistical Mechanics & Kinetic Theory of Gases & 156\n\nClassical Electromagnetism & Magstatics & 296\n\nClassical Electromagnetism & Electrostatics & 368\n\nClassical Electromagnetism & Circuit Analysis & 116\n\nElectrodynamics & Propagation and Radiation of Electromagnetic Waves & 194\n\nElectrodynamics & Relativistic Electrodynamics & 116\n\nElectrodynamics & Interaction of Electromagnetic Fields with Matter & 58\n\nGeometrical Optics & Imaging of Light & 88\n\nGeometrical Optics & Reflection and Refraction of Light & 28\n\nWave Optics & Diffraction & 192\n\nWave Optics & Interference & 110\n\nWave Optics & Polarization & 302\n\nQuantum Mechanics & Linear Dynamics Problems & 332\n\nQuantum Mechanics & Basic Principles of Quantum Mechanics & 180\n\nQuantum Mechanics & Central Force and Scattering Problems & 192\n\nQuantum Mechanics & Orbital and Spin Angular Momentum Problems & 270\n\nQuantum Mechanics & Motion of Charged Particles in Electric and Magnetic Fields & 60\n\nQuantum Mechanics & Adiabatic Approximation Problems & 224\n\nQuantum Mechanics & Scattering Problems & 110\n\nQuantum Mechanics & Variational Methods and Perturbation Theory & 120\n\nQuantum Mechanics & Quantum Information Physics & 96\n\nQuantum Mechanics & Few-body Problems & 104\n\nQuantum Mechanics & Others & 104\n\nQuantum Mechanics & Quantum Optics & 246\n\nAtomic Physics & Atomic and Molecular Physics & 622\n\nAtomic Physics & Particle Physics & 394\n\nAtomic Physics & Nuclear Physics & 400\n\nAtomic Physics & Experimental Methods and Particle Beams & 414\n\nSolid-State Physics & Crystal Structure & 38\n\nSolid-State Physics & Lattice Vibrations and Mechanical Properties of Solids & 84\n\nSolid-State Physics & Crystal Defects and Motion & 34\n\nSolid-State Physics & Binding in Solids & 54\n\nSolid-State Physics & Transport Properties of Electrons and Holes in Solids & 60\n\nSolid-State Physics & Motion of Electrons in Electromagnetic Fields & 42\n\nSolid-State Physics & Energy Bands in Solids & 32\n\nSemiconductor Physics & Magnetic, Optical, and Superconducting Properties & 50\n\nSemiconductor Physics & Transport Properties & 80\n\nSemiconductor Physics & Others & 186\n\nSemiconductor Physics & Statistical Distribution of Electrons and Holes in Space & 56\n\nTopics of each subject and corresponding number of examples included in .",
+    "char_start": 45756,
+    "char_end": 49319,
+    "sentence_index": 315,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec025",
+    "text": "[!t]\n\n0.9\nlcccccc\n\n& Knowledge Recall & Laws Application & Math Derivation & Practical Application & Others & All\n\nClassical Mechanics & 72 & 582 & 774 & 172 & 72 & 1,672\n\nTheoretical Mechanics & 30 & 124 & 448 & 20 & 16 & 638\n\nRelativity & 10 & 188 & 154 & 44 & 18 & 414\n\nThermodynamics & 36 & 388 & 246 & 46 & 28 & 744\n\nStatistical Mechanics & 112 & 322 & 590 & 38 & 58 & 1,120\n\nClassical Electromagnetism & 60 & 338 & 314 & 44 & 24 & 780\n\nElectrodynamics & 28 & 142 & 156 & 38 & 4 & 368\n\nGeometrical Optics & 8 & 48 & 26 & 30 & 4 & 116\n\nWave Optics & 52 & 236 & 130 & 160 & 26 & 604\n\nQuantum Mechanics & 226 & 584 & 1,052 & 100 & 76 & 2,038\n\nAtomic Physics & 422 & 784 & 282 & 282 & 60 & 1,830\n\nSolid-State Physics & 36 & 66 & 158 & 70 & 14 & 344\n\nSemiconductor Physics & 76 & 112 & 110 & 62 & 12 & 372\n\nGrand Total & 1,168 & 3,914 & 4,440 & 1,106 & 412 & 11,040\n\nStatistics of across different subjects and physics reasoning skills.",
+    "char_start": 49321,
+    "char_end": 50257,
+    "sentence_index": 316,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec026",
+    "text": "Our evaluation encompasses a range of LLMs, including both proprietary commercial models and publicly accessible models.",
+    "char_start": 50259,
+    "char_end": 50379,
+    "sentence_index": 317,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec027",
+    "text": "For open-source LLMs, we cover general-purpose LLMs, o1-like LLMs, and specialized math LLMs.",
+    "char_start": 50380,
+    "char_end": 50473,
+    "sentence_index": 318,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec027",
+    "text": "Closed-source LLMs are listed as follows:\n\no1-preview o1 : An early preview of OpenAI's o1 model, designed to reason about hard problems using broad general knowledge about the world.",
+    "char_start": 50475,
+    "char_end": 50658,
+    "sentence_index": 319,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec027",
+    "text": "We used o1-preview-2024-09-12 for our evaluation.",
+    "char_start": 50659,
+    "char_end": 50708,
+    "sentence_index": 320,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec027",
+    "text": "GPT-4o gpt4o2024openai : GPT-4o is a multimodal LLM, and has the same high intelligence as GPT-4 Turbo but is much more efficient.",
+    "char_start": 50709,
+    "char_end": 50839,
+    "sentence_index": 321,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec027",
+    "text": "For evaluation, we use this specific version: GPT-4o-2024-08-06 .",
+    "char_start": 50840,
+    "char_end": 50905,
+    "sentence_index": 322,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec027",
+    "text": "GPT-4o-mini : GPT-4o-mini is even more efficient and cheaper than GPT-4o with the cost of minor performance drop.",
+    "char_start": 50906,
+    "char_end": 51019,
+    "sentence_index": 323,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec027",
+    "text": "We use GPT-4o-mini-2024-07-18 for our experiments.",
+    "char_start": 51020,
+    "char_end": 51070,
+    "sentence_index": 324,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec027",
+    "text": "The following open-source general-purpose LLMs are evaluated on our :\n\nLLaMA-3.1-Instruct llama312024dubey : LLaMA-3.1 models are the most capable of the LLaMA families as of writing this paper.",
+    "char_start": 51072,
+    "char_end": 51266,
+    "sentence_index": 325,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec027",
+    "text": "We used instruction finetuned 8B and 70B versions of the model.",
+    "char_start": 51267,
+    "char_end": 51330,
+    "sentence_index": 326,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec027",
+    "text": "These models are licensed under https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE Llama 3.1 Community License .",
+    "char_start": 51331,
+    "char_end": 51469,
+    "sentence_index": 327,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec027",
+    "text": "Ministral-8B-Instruct-2410 ministral8b : https://mistral.ai/licenses/MRL-0.1.md mrl License\nMistral-Nemo-Instruct-2407 mistral_nemo_blog : https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0\nMistral-Small-Instruct-2409 mistral_small_blog : https://mistral.ai/licenses/MRL-0.1.md MRL License .",
+    "char_start": 51470,
+    "char_end": 51765,
+    "sentence_index": 328,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec027",
+    "text": "Mistral-Large-Instruct-2407 mistral_large_blog : https://mistral.ai/licenses/MRL-0.1.md MRL License .",
+    "char_start": 51766,
+    "char_end": 51867,
+    "sentence_index": 329,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec027",
+    "text": "Qwen2.5-Instruct qwen252024Yang : Qwen2.5 series are developed with dedication to math and coding.",
+    "char_start": 51868,
+    "char_end": 51966,
+    "sentence_index": 330,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec027",
+    "text": "We used 7B and 72B models.",
+    "char_start": 51967,
+    "char_end": 51993,
+    "sentence_index": 331,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec027",
+    "text": "7B models are licensed under https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 , while 72B models are under https://huggingface.co/Qwen/Qwen2.5-72B-Instruct/blob/main/LICENSE Qwen License .",
+    "char_start": 51994,
+    "char_end": 52188,
+    "sentence_index": 332,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec027",
+    "text": "Yi-1.5-Chat ai2024yi : Yi-1.5 delivers stronger performance in coding, math, reasoning, and instruction-following capability compared to its predecessor.",
+    "char_start": 52189,
+    "char_end": 52342,
+    "sentence_index": 333,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec027",
+    "text": "We used 6B, 9B, 34B variants.",
+    "char_start": 52343,
+    "char_end": 52372,
+    "sentence_index": 334,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec027",
+    "text": "Yi-1.5 series are licensed under https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 .",
+    "char_start": 52373,
+    "char_end": 52462,
+    "sentence_index": 335,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec027",
+    "text": "DeepSeek-V2-Lite-Chat deepseekv2 : model under https://github.com/deepseek-ai/DeepSeek-V2/blob/main/LICENSE-MODEL Model License code under https://github.com/deepseek-ai/DeepSeek-V2/blob/main/LICENSE-CODE MIT License .",
+    "char_start": 52463,
+    "char_end": 52681,
+    "sentence_index": 336,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec027",
+    "text": "deepseek-moe-16b-chat dai2024deepseekmoe : Model under https://github.com/deepseek-ai/DeepSeek-MoE/blob/main/LICENSE-MODEL Model License , code under https://github.com/deepseek-ai/DeepSeek-MoE/blob/main/LICENSE-CODE MIT License .",
+    "char_start": 52682,
+    "char_end": 52912,
+    "sentence_index": 337,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec027",
+    "text": "For o1-like LLMs, we use the following:\n\nQwQ-32B-Preview qwq32b_blog : QwQ-32B-Preview is developed by the Qwen Team, focused on advancing AI reasoning capabilities.",
+    "char_start": 52914,
+    "char_end": 53079,
+    "sentence_index": 338,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec027",
+    "text": "It is under https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License.",
+    "char_start": 53080,
+    "char_end": 53155,
+    "sentence_index": 339,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec027",
+    "text": "Skywork-o1-Open-Llama-3.1-8B skyworkmodelcard : Skywork-o1-Open-Llama-3.1-8B is an LLM that incorporates o1-like slow thinking and reasoning capabilities.",
+    "char_start": 53156,
+    "char_end": 53310,
+    "sentence_index": 340,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec027",
+    "text": "It is developed by the Skywork team.",
+    "char_start": 53311,
+    "char_end": 53347,
+    "sentence_index": 341,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec027",
+    "text": "DeepSeek-R1 Distilled serires deepseekr12025deepseekai :\nThese LLMs are distilled from DeepSeek's first-generation reasoning models DeepSeek-R1.",
+    "char_start": 53348,
+    "char_end": 53492,
+    "sentence_index": 342,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec027",
+    "text": "Model under https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE-MODEL Model License , code under https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE-CODE MIT License .",
+    "char_start": 53493,
+    "char_end": 53678,
+    "sentence_index": 343,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec027",
+    "text": "In our evaluation, we use DeepSeek-R1-Distilled-Llama-8B, -Llama-70B; -Qwen-7B, -Qwen-32B.",
+    "char_start": 53679,
+    "char_end": 53769,
+    "sentence_index": 344,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec027",
+    "text": "We also experiment with the following specialized math LLMs in our study:\n\nDeepSeekMath-7B deepseekmath2024shao : DeepSeekMath is initialized with DeepSeek-Coder-v1.5 7B and continues pre-training on math-related tokens.",
+    "char_start": 53771,
+    "char_end": 53991,
+    "sentence_index": 345,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec027",
+    "text": "We tested both DeepSeekMath-7B-RL and DeepSeekMath-7B-Instruct variants.",
+    "char_start": 53992,
+    "char_end": 54064,
+    "sentence_index": 346,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec027",
+    "text": "Models are under https://github.com/deepseek-ai/DeepSeek-Math/blob/main/LICENSE-MODEL Model License while code is under https://github.com/deepseek-ai/DeepSeek-Math/blob/main/LICENSE-CODE MIT License .",
+    "char_start": 54065,
+    "char_end": 54266,
+    "sentence_index": 347,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec027",
+    "text": "Qwen2.5-Math Qwen25Math2024Yang : Qwen2.5-Math is a series of specialized math language models built upon the Qwen2.5 LLMs.",
+    "char_start": 54267,
+    "char_end": 54390,
+    "sentence_index": 348,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec027",
+    "text": "We evaluated 7B and 72B variants.",
+    "char_start": 54391,
+    "char_end": 54424,
+    "sentence_index": 349,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec027",
+    "text": "They are under the same license as the Qwen2.5-Instruct series.",
+    "char_start": 54425,
+    "char_end": 54488,
+    "sentence_index": 350,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec027",
+    "text": "Mathstral-7B mathstral2023 : Mathstral stands on the shoulders of Mistral 7B and specializes in STEM subjects.",
+    "char_start": 54489,
+    "char_end": 54599,
+    "sentence_index": 351,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec027",
+    "text": "This model is published under https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 .",
+    "char_start": 54600,
+    "char_end": 54686,
+    "sentence_index": 352,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec027",
+    "text": "Numinamath-7B-CoT numinamath7b : This model is finetuned from DeepSeekMath-7B-base with two stages of supervised fine-tuning to solve math problems using chain of thought (CoT).",
+    "char_start": 54687,
+    "char_end": 54864,
+    "sentence_index": 353,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec027",
+    "text": "It is licensed under https://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 .",
+    "char_start": 54865,
+    "char_end": 54942,
+    "sentence_index": 354,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec027",
+    "text": "OpenMath2-Llama-3.1 openmathinstruct2024toshniwal :\nThese are specialized math LLMs that have undergone SFT on 2.3M augmented GSM-8K and MATH training examples.",
+    "char_start": 54943,
+    "char_end": 55103,
+    "sentence_index": 355,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec027",
+    "text": "These models are trained by Nvidia and are licensed under https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE Llama 3.1 Community License .",
+    "char_start": 55104,
+    "char_end": 55268,
+    "sentence_index": 356,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec028",
+    "text": "The prompts employed in our experiments are presented in Table , with detailed explanations of response types available in Table .",
+    "char_start": 55270,
+    "char_end": 55400,
+    "sentence_index": 357,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec028",
+    "text": "For simplicity, we here only show prompts used by English problems.",
+    "char_start": 55401,
+    "char_end": 55468,
+    "sentence_index": 358,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec028",
+    "text": "The prompts for Chinese problems are quite similar and will be released in our code repository.",
+    "char_start": 55469,
+    "char_end": 55564,
+    "sentence_index": 359,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec028",
+    "text": "Based on OlympiadBench2024He, OlympicArena2024huang , these prompts are tailored for diverse subjects and response types to improve evaluation efficiency.",
+    "char_start": 55565,
+    "char_end": 55719,
+    "sentence_index": 360,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec028",
+    "text": "It should be noted that for chat models, we will adhere to their official https://huggingface.co/docs/transformers/main/en/chat_templating chat template .",
+    "char_start": 55720,
+    "char_end": 55874,
+    "sentence_index": 361,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec028",
+    "text": "[!t]\n\nEvaluation prompts for English problems with single answers or multiple answers.",
+    "char_start": 55876,
+    "char_end": 55962,
+    "sentence_index": 362,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec028",
+    "text": "\\ problem\\ is the specific problem to evaluate.",
+    "char_start": 55963,
+    "char_end": 56010,
+    "sentence_index": 363,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec028",
+    "text": "\\ subject\\ denotes the subject this problem belongs to and all subjects are given in Figure .",
+    "char_start": 56011,
+    "char_end": 56104,
+    "sentence_index": 364,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec028",
+    "text": "\\ answer\\_type\\_description\\ are specified in Table .",
+    "char_start": 56105,
+    "char_end": 56158,
+    "sentence_index": 365,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec028",
+    "text": "p 12cm\n\nEvaluation Prompt for Single Answer\n\nThe following is an open-ended problem from \\ subject\\ of undergraduate-level Physics.",
+    "char_start": 56159,
+    "char_end": 56290,
+    "sentence_index": 366,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec028",
+    "text": "The answer of The problem should be \\ answer\\_type\\_description\\ .",
+    "char_start": 56292,
+    "char_end": 56358,
+    "sentence_index": 367,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec028",
+    "text": "Please calculate the answer according to the given requirements and the information provided.",
+    "char_start": 56360,
+    "char_end": 56453,
+    "sentence_index": 368,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec028",
+    "text": "Please use LaTeX format to represent the variables and formulas used in the solution process and results.",
+    "char_start": 56454,
+    "char_end": 56559,
+    "sentence_index": 369,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec028",
+    "text": "Please end your solution with \"So the final answer is answer (unit).\" and give the result explicitly, note that the unit of the answers should not be included in .",
+    "char_start": 56561,
+    "char_end": 56724,
+    "sentence_index": 370,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec028",
+    "text": "\\ problem\\\n\nEvaluation Prompt for Multiple Answers\n\nThe following is an open-ended problem from \\ subject\\ of undergraduate-level Physics.",
+    "char_start": 56726,
+    "char_end": 56864,
+    "sentence_index": 371,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec028",
+    "text": "The question has multiple answers, with the answers in order being \\ answer\\_type\\_description\\ .",
+    "char_start": 56866,
+    "char_end": 56963,
+    "sentence_index": 372,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec028",
+    "text": "Please calculate the answer according to the given requirements and the information provided.",
+    "char_start": 56965,
+    "char_end": 57058,
+    "sentence_index": 373,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec028",
+    "text": "Please use LaTeX format to represent the variables and formulas used in the solution process and results.",
+    "char_start": 57059,
+    "char_end": 57164,
+    "sentence_index": 374,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec028",
+    "text": "Please end your solution with \"So the final answer is multiple answers connected with commas .\" and give the result explicitly, note that the unit of the answers should not be included in .",
+    "char_start": 57166,
+    "char_end": 57355,
+    "sentence_index": 375,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec028",
+    "text": "\\ problem\\\n\nTo maintain consistency in evaluations and facilitate reproduction, we set the maximum output length to 4,096 tokens and employ a greedy decoding strategy with the temperature 0.",
+    "char_start": 57357,
+    "char_end": 57547,
+    "sentence_index": 376,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec029",
+    "text": "For LLMs with a maximum output length of less than 4,096 tokens during SFT, such as NuminaMath-CoT-7B, we adjust the maximum output length to align with their specific SFT configurations.",
+    "char_start": 57548,
+    "char_end": 57735,
+    "sentence_index": 377,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec029",
+    "text": "For OpenAI-o1-mini , we set it to 8,192 tokens, as this model often requires a higher token count for reasoning tasks.",
+    "char_start": 57736,
+    "char_end": 57854,
+    "sentence_index": 378,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec029",
+    "text": "Exceeding the maximum output length can result in no output being returned.",
+    "char_start": 57855,
+    "char_end": 57930,
+    "sentence_index": 379,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec029",
+    "text": "Similarly, we also set the maximum output length o1-like LLMs to be 8,192 tokens.",
+    "char_start": 57931,
+    "char_end": 58012,
+    "sentence_index": 380,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec029",
+    "text": "The temperature for the OpenAI-o1-mini model is restricted to a value of 1 due to new regulations from OpenAI.",
+    "char_start": 58013,
+    "char_end": 58123,
+    "sentence_index": 381,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec029",
+    "text": "Setting the temperature to other values would result in an error from the API.",
+    "char_start": 58124,
+    "char_end": 58202,
+    "sentence_index": 382,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec030",
+    "text": "Details\n\nThe whole pipeline of is given in alg:judge .",
+    "char_start": 58204,
+    "char_end": 58258,
+    "sentence_index": 383,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec030",
+    "text": "For the first stage, different types of answers (TF, MC, NV, EX, EQ, IN) are handled as follows:\n\nFor TF and MC, answers are judged after transforming model-generated answers to the same format as the golden answers.",
+    "char_start": 58259,
+    "char_end": 58475,
+    "sentence_index": 384,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec030",
+    "text": "For NV, answers are converted into scientific notation.",
+    "char_start": 58476,
+    "char_end": 58531,
+    "sentence_index": 385,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec030",
+    "text": "Only the bases of the scientific notation are considered, allowing for a relative error of up to to account for unit differences or rounding.",
+    "char_start": 58532,
+    "char_end": 58673,
+    "sentence_index": 386,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec030",
+    "text": "For EX and EQ, answers are normalized by removing all physical constants.",
+    "char_start": 58674,
+    "char_end": 58747,
+    "sentence_index": 387,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec030",
+    "text": "The physical constants are listed in Table .",
+    "char_start": 58748,
+    "char_end": 58792,
+    "sentence_index": 388,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec030",
+    "text": "For IN, answers are judged by comparing the two endpoints, treating them as either NV or EX based on the context.",
+    "char_start": 58793,
+    "char_end": 58906,
+    "sentence_index": 389,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec030",
+    "text": "In the second stage, GPT-4o is employed to evaluate answers that were flagged as \"False\" by the rule-based system.",
+    "char_start": 58908,
+    "char_end": 59022,
+    "sentence_index": 390,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec030",
+    "text": "We manually design judging prompts based on the prompt provided by omnimath2024gao .",
+    "char_start": 59023,
+    "char_end": 59107,
+    "sentence_index": 391,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec030",
+    "text": "As this few-shot prompt is long, we will release it in our code repository.",
+    "char_start": 59108,
+    "char_end": 59183,
+    "sentence_index": 392,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec030",
+    "text": "[t]\nPipeline\n\nInput: Problem $P$, Solution $S$, Golden Answer List $GT$, Model Solution $s$, Model Answer List $A$.",
+    "char_start": 59185,
+    "char_end": 59300,
+    "sentence_index": 393,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec030",
+    "text": "Initialize $Correctness = False$\n$len(A)$ not equals $len(GT)$\nreturn $False$\n\n$gt, a$ in $GT, A$\n$flag = False$\n$gt$ equals $a$\n$flag = True$; continue\n\n$P$ is a T/F or MC question\nTransform $gt$, $a$ to standard forms: $gt'$, $a'$\n$gt'$ equals $a'$\n$flag = True$; continue\n\n$gt$ is expression or equation\nNormalizing $a$, $gt$ to $a'$, $gt'$ by removing physical constants\n$gt$ equals $a$ as equation or $gt'$ equals $a'$ as equation\n$flag = True$; continue\n$gt$ equals $a$ as expression or $gt'$ equals $a'$ as expression\n$flag = True$; continue\n\n$gt$ is Numeric Value\nTransform $a$, $gt$ into scientific notation: $a = a_ base 10^ a_ exp $, $gt = gt_ base 10^ gt_ exp $\n$|a_ base - gt_ base |/|gt_ base | < $\n$flag = True$; continue\n\n$gt$ is interval\nlet $c, d$ be endpoints of $gt$; $e, f$ be endpoints of $a$\n$c$ equals $e$ as NV or EX and $d$ equals $f$ as NV or EX\n$flag = True$; continue\n\n$flag$ equals $True$\nreturn $True$\n\nreturn $ModelJudge(P, S, GT, s, A)$\n\n[ht]\n\nPhysical Constants in .",
+    "char_start": 59301,
+    "char_end": 60301,
+    "sentence_index": 394,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec030",
+    "text": "|l|c|\n\nPhysical Quantity & Symbol\n\nSpeed of light in vacuum & $ c $\n\nNewtonian constant of gravitation & $ G $\n\nAvogadro constant & $ N_A $\n\nUniversal gas constant & $ R $\n\nBoltzmann constant (macroscopic) & $ R/N_A $\n\nMolar volume of ideal gas & $ V_m $\n\nElementary charge (proton charge) & $ e $\n\nElectron mass & $ m_e $\n\nElectron charge-to-mass ratio & $ -e / m_e $\n\nProton mass & $ m_p $\n\nNeutron mass & $ m_n $\n\nVacuum permittivity (electric constant) & $ _0 $\n\nVacuum permeability (magnetic constant) & $ _0 $\n\nElectron magnetic moment & $ _e $\n\nProton magnetic moment & $ _p $\n\nBohr radius & $ a_0 $\n\nBohr magneton & $ _B $\n\nNuclear magneton & $ _N $\n\nPlanck constant & $ $\n\nPlanck constant & $ h $\n\nFine-structure constant & $ $\n\nRydberg constant & $ R_ $\n\nCompton wavelength & $ mc $\n\nProton-electron mass ratio & $ m_p m_e $\n\nBoltzmann constant & $ k $\n\nResults across different subjects are given in Table , and .",
+    "char_start": 60303,
+    "char_end": 61227,
+    "sentence_index": 395,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec031",
+    "text": "Results across different physics reasoning skills are provided in Table .",
+    "char_start": 61228,
+    "char_end": 61301,
+    "sentence_index": 396,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec031",
+    "text": "[!thb]\n\nResults across subjects of Mechanics \\& Thermodynamics on (all figures are in \\%).",
+    "char_start": 61303,
+    "char_end": 61393,
+    "sentence_index": 397,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec031",
+    "text": "Models are classified into four different categories according to their purpose and origin.",
+    "char_start": 61394,
+    "char_end": 61485,
+    "sentence_index": 398,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec031",
+    "text": "The best results within each column are bolded and the best results of LLMs within a similar group are underlined .",
+    "char_start": 61486,
+    "char_end": 61601,
+    "sentence_index": 399,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec031",
+    "text": "1.0\nlcccccccccccc\n\n2 * Models & 2 c Class.",
+    "char_start": 61602,
+    "char_end": 61644,
+    "sentence_index": 400,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec031",
+    "text": "Mech.",
+    "char_start": 61645,
+    "char_end": 61650,
+    "sentence_index": 401,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec031",
+    "text": "& 2 c Theor.",
+    "char_start": 61651,
+    "char_end": 61663,
+    "sentence_index": 402,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec031",
+    "text": "Mech.",
+    "char_start": 61664,
+    "char_end": 61669,
+    "sentence_index": 403,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec031",
+    "text": "& 2 c Relativity & 2 c Ther.dyn.",
+    "char_start": 61670,
+    "char_end": 61702,
+    "sentence_index": 404,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec031",
+    "text": "& 2 c Stat.",
+    "char_start": 61703,
+    "char_end": 61714,
+    "sentence_index": 405,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec031",
+    "text": "Mech.",
+    "char_start": 61715,
+    "char_end": 61720,
+    "sentence_index": 406,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec031",
+    "text": "(lr) 2-3 (lr) 4-5 (lr) 6-7 (lr) 8-9 (lr) 10-11\n& EN & ZH & EN & ZH & EN & ZH & EN & ZH & EN & ZH\n\n11 c Closed-source LLMs\n\n1-11\nOpenAI-o1-mini-2024-09-12 & 47.01 & 47.61 & 40.13 & 35.74 & 61.35 & 56.04 & 54.30 & 56.45 & 46.79 & 51.43\n\nGPT-4o-2024-08-06 & 37.68 & 36.84 & 31.03 & 24.45 & 36.71 & 42.03 & 38.71 & 39.78 & 38.21 & 40.00\n\nGPT-4o-mini-2024-07-18 & 29.19 & 27.27 & 20.69 & 20.06 & 26.09 & 22.22 & 29.84 & 28.49 & 29.11 & 27.50\n\n11 c Open-source Chat LLMs\n\n1-11\nYi-1.5-6B-Chat & 12.08 & 9.09 & 6.27 & 4.08 & 10.63 & 5.80 & 14.78 & 9.41 & 9.64 & 5.54\n\nQwen2.5-7B-Instruct & 26.67 & 23.68 & 20.06 & 15.36 & 20.77 & 14.01 & 28.76 & 25.27 & 19.82 & 16.79\n\nLLaMA3.1-8B-Instruct & 12.68 & 8.37 & 11.29 & 4.39 & 9.66 & 5.31 & 16.13 & 8.87 & 12.14 & 8.57\n\nMinistral-8B-Instruct-2410 & 14.00 & 12.56 & 11.91 & 8.46 & 9.66 & 8.70 & 17.47 & 12.63 & 14.29 & 9.11\n\nYi-1.5-9B-Chat & 17.58 & 12.80 & 10.66 & 8.46 & 14.01 & 10.14 & 20.16 & 15.32 & 14.64 & 10.18\n\nMistral-Nemo-Instruct-2407 & 13.88 & 10.29 & 12.23 & 11.29 & 12.56 & 8.70 & 15.86 & 13.98 & 14.82 & 13.39\n\nDeepSeek-MOE-16B-Chat & 3.71 & 2.87 & 3.45 & 2.19 & 2.90 & 3.86 & 4.30 & 5.11 & 3.93 & 2.68\n\nDeepSeek-V2-Lite-Chat & 6.46 & 5.38 & 5.64 & 3.13 & 4.35 & 3.38 & 8.60 & 7.53 & 6.43 & 4.11\n\nMistral-Small-Instruct-2409 & 22.61 & 19.74 & 20.69 & 15.67 & 15.94 & 16.91 & 22.85 & 23.12 & 26.43 & 27.14\n\nYi-1.5-34B-Chat & 20.33 & 14.83 & 13.48 & 7.52 & 22.71 & 11.59 & 21.77 & 17.47 & 16.07 & 12.50\n\nLLaMA3.1-70B-Instruct & 28.23 & 25.48 & 24.45 & 19.12 & 27.05 & 21.26 & 31.72 & 28.23 & 27.14 & 26.43\n\nLLaMA3.3-70B-Instruct & 32.66 & 26.56 & 28.21 & 16.61 & 32.37 & 22.71 & 41.67 & 29.84 & 33.21 & 28.39\n\nQwen2.5-72B-Instruct & 38.52 & 34.33 & 36.05 & 25.71 & 38.16 & 33.82 & 36.29 & 41.13 & 31.07 & 40.54\n\nMistral-Large-Instruct-2407 & 36.72 & 34.33 & 35.74 & 28.53 & 38.65 & 37.68 & 42.74 & 41.13 & 38.04 & 41.61\n\n11 c Specialized Mathematical LLMs\n\n1-11\nDeepSeek-Math-7B-Instruct & 14.47 & 12.92 & 11.60 & 9.72 & 11.11 & 9.18 & 12.90 & 13.71 & 13.39 & 13.21\n\nDeepSeek-Math-7B-RL & 15.55 & 12.68 & 13.79 & 8.46 & 10.63 & 9.18 & 18.55 & 12.37 & 14.82 & 12.50\n\nNuminaMath-7B-CoT & 14.23 & 18.42 & 13.17 & 11.91 & 8.21 & 10.14 & 14.78 & 16.13 & 14.11 & 14.82\n\nMathstral-7B-v0.1 & 15.79 & 13.04 & 12.23 & 10.34 & 13.04 & 7.73 & 14.52 & 12.63 & 15.71 & 14.46\n\nOpenMath2-Llama-3.1-8B & 10.05 & 6.94 & 5.64 & 4.08 & 4.35 & 4.83 & 11.02 & 7.53 & 8.21 & 6.25\n\nQwen2.5-Math-7B-Instruct & 26.08 & 25.72 & 21.00 & 19.12 & 23.19 & 16.43 & 26.61 & 20.70 & 20.54 & 17.14\n\nOpenMath2-Llama-3.1-70B & 21.05 & 20.10 & 15.99 & 16.61 & 16.43 & 14.98 & 23.39 & 20.70 & 21.07 & 17.86\n\nQwen2.5-Math-72B-Instruct & 42.22 & 39.83 & 36.36 & 35.42 & 43.96 & 42.51 & 37.10 & 38.98 & 37.32 & 41.96\n\n11 c o1-like LLMs\n\n1-11\nDeepSeek-R1-Distill-Qwen-7B & 33.13 & 23.56 & 25.08 & 17.24 & 29.95 & 28.02 & 30.38 & 18.01 & 24.82 & 17.14\n\nSkywork-o1-Open-Llama-3.1-8B & 17.46 & 13.88 & 10.03 & 5.96 & 7.25 & 5.31 & 16.40 & 9.14 & 9.82 & 6.96\n\nDeepSeek-R1-Distill-Llama-8B & 17.70 & 7.30 & 9.40 & 4.39 & 21.26 & 9.66 & 17.20 & 8.33 & 15.89 & 6.79\n\nQwQ-32B-Preview & 37.44 & 39.95 & 33.54 & 29.78 & 43.96 & 43.96 & 40.05 & 42.47 & 33.04 & 34.64\n\nDeepSeek-R1-Distill-Qwen-32B & 37.44 & 29.07 & 28.53 & 22.57 & 42.03 & 40.10 & 35.48 & 31.18 & 33.04 & 25.00\n\nDeepSeek-R1-Distill-Llama-70B & 44.26 & 33.97 & 38.24 & 30.09 & 50.24 & 37.68 & 45.70 & 40.86 & 40.36 & 31.43\n\n[!thb]\n\nResults across subjects of Electromagnatism on (all figures are in \\%).",
+    "char_start": 61722,
+    "char_end": 65186,
+    "sentence_index": 407,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec031",
+    "text": "Models are classified into four different categories according to their purpose and origin.",
+    "char_start": 65187,
+    "char_end": 65278,
+    "sentence_index": 408,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec031",
+    "text": "The best results within each column are bolded and the best results of LLMs within a similar group are underlined .",
+    "char_start": 65279,
+    "char_end": 65394,
+    "sentence_index": 409,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec031",
+    "text": "1.0\nlcccccccccc\n\n2 * Models & 2 c Class.",
+    "char_start": 65395,
+    "char_end": 65435,
+    "sentence_index": 410,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec031",
+    "text": "Elec.",
+    "char_start": 65436,
+    "char_end": 65441,
+    "sentence_index": 411,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec031",
+    "text": "& 2 c Elec.Dy.",
+    "char_start": 65442,
+    "char_end": 65456,
+    "sentence_index": 412,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec031",
+    "text": "& 2 c Geo.",
+    "char_start": 65457,
+    "char_end": 65467,
+    "sentence_index": 413,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec031",
+    "text": "Optics & 2 c Wave Optics\n\n(lr) 2-3 (lr) 4-5 (lr) 6-7 (lr) 8-9\n& EN & ZH & EN & ZH & EN & ZH & EN & ZH\n\n9 c Closed-source LLMs\n\n1-9\nOpenAI-o1-mini-2024-09-12 & 45.38 & 48.21 & 41.85 & 40.76 & 27.59 & 31.03 & 45.36 & 40.40\n\nGPT-4o-2024-08-06 & 38.46 & 40.77 & 32.07 & 35.87 & 20.69 & 25.86 & 39.40 & 27.48\n\nGPT-4o-mini-2024-07-18 & 25.13 & 26.41 & 21.20 & 17.93 & 18.97 & 20.69 & 27.81 & 20.20\n\n9 c Open-source Chat LLMs\n\n1-9\nYi-1.5-6B-Chat & 12.56 & 8.21 & 8.70 & 8.70 & 8.62 & 12.07 & 13.91 & 5.96\n\nQwen2.5-7B-Instruct & 26.15 & 20.00 & 17.39 & 18.48 & 20.69 & 15.52 & 26.16 & 15.56\n\nLLaMA3.1-8B-Instruct & 12.05 & 9.74 & 14.67 & 10.87 & 15.52 & 8.62 & 16.89 & 9.60\n\nMinistral-8B-Instruct-2410 & 14.87 & 6.67 & 11.96 & 11.96 & 8.62 & 12.07 & 19.87 & 9.60\n\nYi-1.5-9B-Chat & 17.18 & 15.38 & 16.30 & 11.41 & 17.24 & 15.52 & 13.58 & 11.26\n\nMistral-Nemo-Instruct-2407 & 15.38 & 12.82 & 16.85 & 11.41 & 13.79 & 10.34 & 12.91 & 11.59\n\nDeepSeek-MOE-16B-Chat & 3.85 & 3.85 & 4.89 & 4.35 & 5.17 & 1.72 & 6.29 & 6.95\n\nDeepSeek-V2-Lite-Chat & 7.69 & 4.87 & 6.52 & 7.07 & 6.90 & 3.45 & 5.63 & 6.62\n\nMistral-Small-Instruct-2409 & 25.13 & 19.74 & 17.93 & 20.65 & 17.24 & 15.52 & 23.51 & 15.89\n\nYi-1.5-34B-Chat & 20.00 & 12.05 & 14.13 & 14.13 & 15.52 & 15.52 & 20.20 & 12.25\n\nLLaMA3.1-70B-Instruct & 28.46 & 24.62 & 26.09 & 23.37 & 10.34 & 17.24 & 28.81 & 21.19\n\nLLaMA3.3-70B-Instruct & 33.85 & 29.49 & 30.98 & 23.91 & 20.69 & 17.24 & 36.42 & 20.86\n\nQwen2.5-72B-Instruct & 35.64 & 37.18 & 31.52 & 33.70 & 18.97 & 27.59 & 33.77 & 31.46\n\nMistral-Large-Instruct-2407 & 43.33 & 40.00 & 33.15 & 34.78 & 24.14 & 29.31 & 37.75 & 29.47\n\n9 c Specialized Mathematical LLMs\n\n1-9\nDeepSeek-Math-7B-Instruct & 17.69 & 14.87 & 13.04 & 11.41 & 17.24 & 10.34 & 16.89 & 12.58\n\nDeepSeek-Math-7B-RL & 17.44 & 14.62 & 17.93 & 10.87 & 13.79 & 12.07 & 10.93 & 11.59\n\nNuminaMath-7B-CoT & 15.90 & 15.13 & 15.22 & 15.22 & 10.34 & 22.41 & 12.91 & 14.90\n\nMathstral-7B-v0.1 & 16.41 & 13.08 & 18.48 & 19.02 & 15.52 & 15.52 & 19.54 & 14.90\n\nOpenMath2-Llama-3.1-8B & 10.00 & 6.15 & 8.70 & 7.61 & 13.79 & 8.62 & 10.60 & 8.61\n\nQwen2.5-Math-7B-Instruct & 24.62 & 22.56 & 19.57 & 13.59 & 15.52 & 13.79 & 22.52 & 15.89\n\nOpenMath2-Llama-3.1-70B & 21.54 & 21.28 & 23.91 & 15.76 & 17.24 & 25.86 & 22.85 & 15.56\n\nQwen2.5-Math-72B-Instruct & 40.26 & 40.77 & 28.26 & 38.59 & 29.31 & 22.41 & 36.09 & 38.41\n\n9 c o1-like LLMs\n\n1-9\nDeepSeek-R1-Distill-Qwen-7B & 32.05 & 20.51 & 18.48 & 13.59 & 15.52 & 10.34 & 29.14 & 17.22\n\nSkywork-o1-Open-Llama-3.1-8B & 11.54 & 8.97 & 14.13 & 9.78 & 20.69 & 6.90 & 17.22 & 7.95\n\nDeepSeek-R1-Distill-Llama-8B & 18.46 & 6.92 & 12.50 & 7.07 & 13.79 & 6.90 & 18.87 & 5.63\n\nQwQ-32B-Preview & 35.38 & 35.13 & 31.52 & 36.96 & 20.69 & 22.41 & 41.39 & 25.50\n\nDeepSeek-R1-Distill-Qwen-32B & 37.44 & 27.44 & 22.28 & 21.74 & 15.52 & 17.24 & 38.41 & 20.20\n\nDeepSeek-R1-Distill-Llama-70B & 46.41 & 31.54 & 34.78 & 28.80 & 25.86 & 29.31 & 46.69 & 25.17\n\n[!thb]\n\nResults across subjects of Modern Physics on (all figures are in \\%).",
+    "char_start": 65468,
+    "char_end": 68457,
+    "sentence_index": 414,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec031",
+    "text": "Models are classified into four different categories according to their purpose and origin.",
+    "char_start": 68458,
+    "char_end": 68549,
+    "sentence_index": 415,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec031",
+    "text": "The best results within each column are bolded and the best results of LLMs within a similar group are underlined .",
+    "char_start": 68550,
+    "char_end": 68665,
+    "sentence_index": 416,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec031",
+    "text": "1.0\nlcccccccccc\n\n2 * Models & 2 c Quan.",
+    "char_start": 68666,
+    "char_end": 68705,
+    "sentence_index": 417,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec031",
+    "text": "Mech.",
+    "char_start": 68706,
+    "char_end": 68711,
+    "sentence_index": 418,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec031",
+    "text": "& 2 c Atomic Phy.",
+    "char_start": 68712,
+    "char_end": 68729,
+    "sentence_index": 419,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec031",
+    "text": "& 2 c S.-S.",
+    "char_start": 68730,
+    "char_end": 68741,
+    "sentence_index": 420,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec031",
+    "text": "Phy.",
+    "char_start": 68742,
+    "char_end": 68746,
+    "sentence_index": 421,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec031",
+    "text": "& 2 c Semi.",
+    "char_start": 68747,
+    "char_end": 68758,
+    "sentence_index": 422,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec031",
+    "text": "Phy.",
+    "char_start": 68759,
+    "char_end": 68763,
+    "sentence_index": 423,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec031",
+    "text": "(lr) 2-3 (lr) 4-5 (lr) 6-7 (lr) 8-9\n& EN & ZH & EN & ZH & EN & ZH & EN & ZH\n\n9 c Closed-source LLMs\n\n1-9\nOpenAI-o1-mini-2024-09-12 & 49.95 & 50.54 & 58.58 & 54.86 & 43.60 & 45.93 & 63.98 & 60.75\n\nGPT-4o-2024-08-06 & 41.71 & 39.06 & 44.48 & 39.23 & 36.05 & 41.28 & 46.77 & 58.94\n\nGPT-4o-mini-2024-07-18 & 27.28 & 28.66 & 33.99 & 28.63 & 27.91 & 27.33 & 36.02 & 37.63\n\n9 c Open-source Chat LLMs\n\n1-9\nYi-1.5-6B-Chat & 11.48 & 7.56 & 15.19 & 9.84 & 9.30 & 8.72 & 22.04 & 16.67\n\nQwen2.5-7B-Instruct & 23.06 & 20.22 & 27.10 & 21.75 & 22.09 & 21.51 & 34.95 & 30.65\n\nLLaMA3.1-8B-Instruct & 13.05 & 10.79 & 19.89 & 14.75 & 10.47 & 11.05 & 27.96 & 18.28\n\nMinistral-8B-Instruct-2410 & 15.90 & 10.21 & 21.86 & 12.68 & 15.70 & 11.63 & 27.42 & 20.97\n\nYi-1.5-9B-Chat & 16.58 & 14.82 & 22.84 & 14.43 & 14.53 & 14.53 & 29.03 & 24.19\n\nMistral-Nemo-Instruct-2407 & 16.68 & 14.33 & 20.44 & 17.38 & 15.12 & 13.37 & 20.97 & 24.19\n\nDeepSeek-MOE-16B-Chat & 5.00 & 4.22 & 9.73 & 5.03 & 6.40 & 1.74 & 6.99 & 5.91\n\nDeepSeek-V2-Lite-Chat & 6.67 & 6.48 & 13.01 & 9.07 & 2.91 & 4.07 & 13.44 & 9.68\n\nMistral-Small-Instruct-2409 & 27.67 & 23.06 & 31.91 & 22.40 & 25.58 & 21.51 & 37.10 & 29.57\n\nYi-1.5-34B-Chat & 18.84 & 18.06 & 26.56 & 17.27 & 22.09 & 11.05 & 31.18 & 25.81\n\nLLaMA3.1-70B-Instruct & 31.11 & 27.38 & 33.22 & 26.01 & 29.65 & 24.42 & 45.16 & 34.95\n\nLLaMA3.3-70B-Instruct & 34.54 & 26.30 & 43.83 & 25.36 & 36.63 & 27.33 & 44.09 & 36.56\n\nQwen2.5-72B-Instruct & 34.25 & 37.98 & 40.00 & 37.81 & 33.14 & 34.30 & 42.47 & 45.16\n\nMistral-Large-Instruct-2407 & 42.39 & 41.71 & 47.10 & 38.69 & 34.30 & 36.05 & 48.92 & 45.16\n\n9 c Specialized Mathematical LLMs\n\n1-9\nDeepSeek-Math-7B-Instruct & 15.51 & 13.15 & 23.17 & 16.39 & 15.70 & 17.44 & 21.51 & 23.66\n\nDeepSeek-Math-7B-RL & 16.98 & 12.76 & 20.44 & 17.81 & 15.12 & 12.21 & 20.97 & 20.97\n\nNuminaMath-7B-CoT & 17.27 & 16.19 & 18.91 & 20.22 & 12.21 & 14.53 & 23.66 & 26.34\n\nMathstral-7B-v0.1 & 16.88 & 16.00 & 20.77 & 17.81 & 23.26 & 12.21 & 29.57 & 23.66\n\nOpenMath2-Llama-3.1-8B & 9.91 & 8.34 & 13.33 & 10.16 & 11.05 & 8.14 & 17.20 & 14.52\n\nQwen2.5-Math-7B-Instruct & 24.44 & 24.14 & 28.74 & 18.58 & 19.77 & 16.28 & 33.33 & 24.19\n\nOpenMath2-Llama-3.1-70B & 21.10 & 18.25 & 28.52 & 22.62 & 28.49 & 21.51 & 31.18 & 33.87\n\nQwen2.5-Math-72B-Instruct & 39.35 & 41.22 & 43.61 & 37.60 & 31.98 & 34.30 & 47.85 & 43.55\n\n9 c o1-like LLMs\n\n1-9\nDeepSeek-R1-Distill-Qwen-7B & 27.67 & 21.00 & 32.35 & 20.33 & 19.77 & 12.21 & 38.17 & 28.49\n\nSkywork-o1-Open-Llama-3.1-8B & 12.95 & 9.52 & 17.70 & 10.38 & 11.63 & 7.56 & 20.43 & 14.52\n\nDeepSeek-R1-Distill-Llama-8B & 16.39 & 9.13 & 25.57 & 9.07 & 11.05 & 6.98 & 31.72 & 10.75\n\nQwQ-32B-Preview & 33.56 & 37.88 & 45.36 & 40.87 & 27.33 & 28.49 & 43.55 & 44.62\n\nDeepSeek-R1-Distill-Qwen-32B & 32.78 & 26.10 & 44.70 & 31.48 & 26.16 & 21.51 & 45.70 & 37.10\n\nDeepSeek-R1-Distill-Llama-70B & 46.71 & 35.82 & 53.66 & 35.63 & 40.70 & 36.05 & 57.53 & 48.39\n\n[!thb]\n\nResults across different skill sets on (all figures are in \\%).",
+    "char_start": 68765,
+    "char_end": 71736,
+    "sentence_index": 424,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec031",
+    "text": "Models are classified into four different categories according to their purpose and origin.",
+    "char_start": 71737,
+    "char_end": 71828,
+    "sentence_index": 425,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec031",
+    "text": "The best results within each column are bolded and the best results of LLMs within a similar group are underlined .",
+    "char_start": 71829,
+    "char_end": 71944,
+    "sentence_index": 426,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec031",
+    "text": "1.0\nlcccccccccccc\n\n2 * Models & 2 c Know.",
+    "char_start": 71945,
+    "char_end": 71986,
+    "sentence_index": 427,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec031",
+    "text": "Recall & 2 c Laws App.",
+    "char_start": 71987,
+    "char_end": 72009,
+    "sentence_index": 428,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec031",
+    "text": "& 2 c Math Deri.",
+    "char_start": 72010,
+    "char_end": 72026,
+    "sentence_index": 429,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec031",
+    "text": "& 2 c Prac.",
+    "char_start": 72027,
+    "char_end": 72038,
+    "sentence_index": 430,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec031",
+    "text": "App.",
+    "char_start": 72039,
+    "char_end": 72043,
+    "sentence_index": 431,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec031",
+    "text": "& 2 c Others\n\n(lr) 2-3 (lr) 4-5 (lr) 6-7 (lr) 8-9 (lr) 10-11\n& EN & ZH & EN & ZH & EN & ZH & EN & ZH & EN & ZH\n\n11 c Closed-source LLMs\n\n1-11\nOpenAI-o1-mini-2024-09-12 & 69.18 & 63.87 & 53.60 & 51.46 & 42.16 & 45.05 & 47.92 & 45.75 & 50.49 & 50.97\n\nGPT-4o-2024-08-06 & 63.36 & 55.25 & 42.46 & 38.94 & 31.40 & 33.71 & 34.54 & 32.72 & 38.83 & 40.69\n\nGPT-4o-mini-2024-07-18 & 53.77 & 48.29 & 30.81 & 28.00 & 20.72 & 22.48 & 24.59 & 17.00 & 29.61 & 26.70\n\n11 c Open-source Chat LLMs\n\n1-11\nYi-1.5-6B-Chat & 26.37 & 21.23 & 14.46 & 7.97 & 6.71 & 5.81 & 10.67 & 4.34 & 15.53 & 9.71\n\nQwen2.5-7B-Instruct & 48.29 & 40.24 & 26.78 & 21.72 & 17.48 & 15.68 & 19.71 & 13.92 & 27.18 & 22.33\n\nLLaMA3.1-8B-Instruct & 34.93 & 25.51 & 15.99 & 10.83 & 8.02 & 6.44 & 14.10 & 6.51 & 17.48 & 12.62\n\nMinistral-8B-Instruct-2410 & 37.67 & 26.37 & 16.91 & 10.42 & 10.41 & 8.65 & 14.83 & 5.61 & 19.90 & 14.56\n\nYi-1.5-9B-Chat & 36.13 & 29.62 & 20.49 & 13.64 & 10.95 & 9.95 & 14.29 & 9.40 & 18.45 & 16.02\n\nMistral-Nemo-Instruct-2407 & 35.62 & 32.71 & 15.94 & 12.62 & 11.58 & 10.50 & 12.84 & 8.50 & 16.99 & 16.50\n\nDeepSeek-MOE-16B-Chat & 13.18 & 9.42 & 5.52 & 4.45 & 3.06 & 2.43 & 4.88 & 2.71 & 7.77 & 4.85\n\nDeepSeek-V2-Lite-Chat & 22.26 & 17.98 & 8.94 & 6.34 & 3.78 & 3.74 & 4.16 & 3.25 & 8.25 & 5.34\n\nMistral-Small-Instruct-2409 & 50.17 & 41.78 & 25.45 & 20.75 & 20.54 & 18.74 & 19.53 & 12.48 & 31.55 & 27.67\n\nYi-1.5-34B-Chat & 42.81 & 33.56 & 23.91 & 15.59 & 12.43 & 10.81 & 17.36 & 11.93 & 22.33 & 13.59\n\nLLaMA3.1-70B-Instruct & 52.23 & 42.47 & 30.76 & 24.83 & 23.87 & 23.06 & 27.12 & 18.81 & 29.61 & 28.16\n\nLLaMA3.3-70B-Instruct & 59.25 & 40.92 & 37.71 & 24.48 & 28.47 & 24.37 & 34.54 & 20.25 & 35.44 & 33.01\n\nQwen2.5-72B-Instruct & 56.68 & 56.34 & 38.02 & 37.61 & 29.01 & 32.39 & 33.27 & 26.76 & 40.29 & 39.32\n\nMistral-Large-Instruct-2407 & 64.73 & 58.73 & 42.51 & 38.17 & 33.56 & 34.86 & 37.43 & 27.12 & 39.81 & 38.35\n\n11 c Specialized Mathematical LLMs\n\n1-11\nDeepSeek-Math-7B-Instruct & 37.33 & 32.36 & 16.96 & 14.05 & 10.50 & 10.27 & 13.02 & 6.69 & 19.42 & 16.99\n\nDeepSeek-Math-7B-RL & 38.36 & 30.14 & 16.35 & 12.62 & 12.39 & 10.27 & 9.58 & 10.67 & 20.87 & 14.56\n\nNuminaMath-7B-CoT & 32.36 & 33.90 & 14.51 & 18.14 & 12.57 & 11.85 & 12.12 & 11.03 & 20.39 & 23.30\n\nMathstral-7B-v0.1 & 41.10 & 28.94 & 16.66 & 14.41 & 12.70 & 12.43 & 13.56 & 9.76 & 19.42 & 17.48\n\nOpenMath2-Llama-3.1-8B & 21.92 & 18.66 & 11.24 & 8.07 & 6.71 & 4.95 & 7.78 & 7.23 & 13.11 & 7.28\n\nQwen2.5-Math-7B-Instruct & 45.21 & 35.10 & 26.26 & 20.34 & 18.87 & 18.78 & 20.61 & 11.39 & 25.73 & 28.16\n\nOpenMath2-Llama-3.1-70B & 47.60 & 37.67 & 22.79 & 21.67 & 16.67 & 14.10 & 19.89 & 17.54 & 25.24 & 20.39\n\nQwen2.5-Math-72B-Instruct & 61.30 & 56.51 & 41.44 & 38.83 & 33.69 & 38.15 & 33.82 & 28.57 & 39.81 & 39.81\n\n11 c o1-like LLMs\n\n1-11\nDeepSeek-R1-Distill-Qwen-7B & 47.26 & 34.59 & 32.40 & 20.95 & 22.03 & 16.53 & 26.40 & 15.73 & 31.55 & 21.36\n\nSkywork-o1-Open-Llama-3.1-8B & 31.16 & 21.58 & 16.04 & 9.04 & 9.01 & 7.61 & 12.12 & 6.51 & 16.02 & 11.65\n\nDeepSeek-R1-Distill-Llama-8B & 39.55 & 19.86 & 21.15 & 8.28 & 10.68 & 4.91 & 16.46 & 4.52 & 19.90 & 10.19\n\nQwQ-32B-Preview & 58.05 & 57.19 & 41.29 & 39.04 & 28.15 & 31.85 & 36.53 & 31.46 & 43.20 & 38.83\n\nDeepSeek-R1-Distill-Qwen-32B & 56.85 & 45.89 & 39.29 & 30.10 & 27.61 & 22.07 & 37.25 & 22.24 & 35.44 & 30.10\n\nDeepSeek-R1-Distill-Llama-70B & 64.38 & 46.06 & 49.41 & 36.02 & 38.56 & 31.35 & 43.04 & 28.39 & 48.54 & 34.47\n\nWe perform error analysis in Section , and here we showcase several examples of various error types in Table , , and .",
+    "char_start": 72044,
+    "char_end": 75581,
+    "sentence_index": 432,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec032",
+    "text": "[!t]\n\n1.0\np 10cm\n\nProblem :\nA crystal has \\( N \\) atoms and possesses Frenkel defects.",
+    "char_start": 75582,
+    "char_end": 75668,
+    "sentence_index": 433,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec032",
+    "text": "The numbers of normal positions and interstitial positions are \\( N \\) and \\( N' \\) respectively.",
+    "char_start": 75669,
+    "char_end": 75766,
+    "sentence_index": 434,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec032",
+    "text": "The energy when an atom is in normal and interstitial positions is \\( _1 \\) and \\( _2 \\), with \\( _2 - _1 = w > 0 \\).",
+    "char_start": 75767,
+    "char_end": 75884,
+    "sentence_index": 435,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec032",
+    "text": "Derive the function relationship of the most probable number of interstitial atoms \\( n \\) as a function of temperature \\( T \\) (assuming \\( n, N, N' 1 \\)).",
+    "char_start": 75885,
+    "char_end": 76041,
+    "sentence_index": 436,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec032",
+    "text": "o1-mini Completion :\nTo determine the most probable number of interstitial atoms \\( n \\) as a function of temperature \\( T \\), we consider the statistical mechanics of Frenkel defects in a crystal.",
+    "char_start": 76043,
+    "char_end": 76240,
+    "sentence_index": 437,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec032",
+    "text": "1.",
+    "char_start": 76242,
+    "char_end": 76244,
+    "sentence_index": 438,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec032",
+    "text": "**Multiplicity (\\( \\))**: The number of ways to arrange \\( n \\) interstitial atoms among \\( N \\) normal sites and \\( N' \\) interstitial sites is given by:\nred\n\\[\n= N n N' n\n\\]\n\nblue [should be $ = N N-n N' n $]\n\nTaking the natural logarithm and using Stirling's approximation for large \\( n, N, N' \\):\n\\[\nn ( N n ) + n ( N' n )\n\\]\n2.",
+    "char_start": 76245,
+    "char_end": 76578,
+    "sentence_index": 439,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec032",
+    "text": "**Energy (\\( U \\))**: The total energy associated with \\( n \\) interstitial atoms is:\n\\[\nU = N _1 + n ( _2 - _1) = N _1 + n w\n\\]\nHere, \\( w = _2 - _1 \\).",
+    "char_start": 76579,
+    "char_end": 76732,
+    "sentence_index": 440,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec032",
+    "text": "3.",
+    "char_start": 76734,
+    "char_end": 76736,
+    "sentence_index": 441,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec032",
+    "text": "**Free Energy Maximization**: red To find the most probable \\( n \\), we maximize the entropy subject to the energy constraint:\n\\[\nd dn ( - U kT ) = 0\n\\]\n\nblue [should be $ W - _ l=1 ^ 2 N_l - _ l=1 ^ 2 _l N_l = 0$], applying Lagrange multiplier method, where \\(N_1 = N - n\\), \\(N_2 = n\\)]\n\nThis leads to:\n\\[\n( N N' n^2 ) - 2 - w kT = 0\n\\]\nSolving for \\( n \\):\n\\[\nn = 1 2 ( (N N') - 2 - w kT )\n\\]\nExponentiating both sides gives:\n\\[\nn = N N' \\, e^ -w/(2kT)\n\\]\n\nSo the final answer is \\( N N' \\, e^ -w/(2kT) \\).",
+    "char_start": 76737,
+    "char_end": 77246,
+    "sentence_index": 442,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec032",
+    "text": "Ground-Truth Answer :\n\\[\n(- w kT )\n\\]\n\nModel Output :\n\\[\nNN' e^ - w 2kT\n\\]\n\nAn example of Statistical Mechanics with flawed reasoning error.",
+    "char_start": 77248,
+    "char_end": 77388,
+    "sentence_index": 443,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec032",
+    "text": "[!t]\n\n1.0\np 10cm\n\nProblem :\nAn electromagnetic eddy current brake consists of a disc with electrical conductivity $ $ and thickness $t$, which rotates around an axis through its center at an angular velocity $ $.",
+    "char_start": 77390,
+    "char_end": 77602,
+    "sentence_index": 444,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec032",
+    "text": "There is a magnetic field $ B $ with a coverage area of $a^ 2 $ perpendicular to the disc.",
+    "char_start": 77603,
+    "char_end": 77693,
+    "sentence_index": 445,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec032",
+    "text": "The area $a^ 2 $ is located at a distance $r$ from the axis.",
+    "char_start": 77694,
+    "char_end": 77754,
+    "sentence_index": 446,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec032",
+    "text": "Determine the magnitude of the eddy current $I$ generated under this configuration.",
+    "char_start": 77755,
+    "char_end": 77838,
+    "sentence_index": 447,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec032",
+    "text": "o1-mini Completion :\nTo determine the magnitude of the eddy current \\( I \\) generated in the electromagnetic eddy current brake, we follow these steps:\n\n1.",
+    "char_start": 77840,
+    "char_end": 77995,
+    "sentence_index": 448,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec032",
+    "text": "Induced Electric Field:\nThe disc rotates with an angular velocity \\( \\) in a uniform magnetic field \\( B \\) perpendicular to its surface.",
+    "char_start": 77996,
+    "char_end": 78133,
+    "sentence_index": 449,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec032",
+    "text": "The tangential velocity at a distance \\( r \\) from the center is \\( v = r \\).",
+    "char_start": 78134,
+    "char_end": 78211,
+    "sentence_index": 450,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec032",
+    "text": "The induced electric field \\( E \\) due to this motion is given by:\n\\[\nE = v B = r B r\n\\]\n\n2.",
+    "char_start": 78212,
+    "char_end": 78304,
+    "sentence_index": 451,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec032",
+    "text": "Current Density:\nThe current density \\( J \\) is related to the electric field by Ohm's law:\n\\[\nJ = E = B r r\n\\]\n\n3.",
+    "char_start": 78305,
+    "char_end": 78420,
+    "sentence_index": 452,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec032",
+    "text": "Total Eddy Current:\nred To find the total current \\( I \\), we integrate the current density over the area where the magnetic field is present.",
+    "char_start": 78421,
+    "char_end": 78563,
+    "sentence_index": 453,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec032",
+    "text": "Considering the thickness \\( t \\) of the disc and integrating from the center (\\( r = 0 \\)) to the extent of the magnetic field coverage (\\( r = a \\)):\n\\[\nI = _ 0 ^ a J d A = _ 0 ^ a B r (2 r t) \\, dr\n\\]\n\nblue [should be $I = R = r B a a a t = r B a t$]\n\nSimplifying the integral:\n\\[\nI = 2 B t _ 0 ^ a r^2 \\, dr = 2 B t = 2 3 B t a^3\n\\]\n\nHowever, considering the standard configuration and simplifying constants for the practical scenario, the magnitude of the eddy current can be expressed as:\n\\[\nI = B t a^ 2\n\\]\n\nSo the final answer is \\( B t a^ 2 \\) (A).",
+    "char_start": 78564,
+    "char_end": 79121,
+    "sentence_index": 454,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec032",
+    "text": "Ground-Truth Answer : \\(r B a t\\)\n\nModel Output :\\( B t a^ 2 \\)\n\nAn example of Classical Electromagnetism with wrong application error.",
+    "char_start": 79123,
+    "char_end": 79258,
+    "sentence_index": 455,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec032",
+    "text": "[!t]\n\n1.0\np 10cm\n\nProblem :\nCalculate the effective mass of a hole \\( m_ h ^ * \\).",
+    "char_start": 79260,
+    "char_end": 79342,
+    "sentence_index": 456,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec032",
+    "text": "It is known that the static dielectric constant of \\( InP \\) is \\( 9.6 \\), \\( E_ g = 1.400 \\, eV \\), \\( E_ C = 1.386 \\, eV \\), and holes in \\( InP \\) are much lighter than electrons (\\( m_ h ^ * m_ e ^ * \\)).",
+    "char_start": 79343,
+    "char_end": 79551,
+    "sentence_index": 457,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec032",
+    "text": "o1-mini Completion :\nTo calculate the effective mass of a hole \\( m_ h ^ * \\) in \\( InP \\), we can use the effective Rydberg formula adapted for semiconductors.",
+    "char_start": 79553,
+    "char_end": 79713,
+    "sentence_index": 458,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec032",
+    "text": "The effective Rydberg energy \\( R^* \\) is given by:\n\n\\[\nR^* = e^4 2 (4 _0 )^2 ^2\n\\]\n\nwhere:\n- \\( \\) is the reduced mass, which for \\( m_ h ^ * m_ e ^ * \\) simplifies to \\( m_ h ^ * \\).",
+    "char_start": 79714,
+    "char_end": 79898,
+    "sentence_index": 459,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec032",
+    "text": "- \\( e \\) is the elementary charge.",
+    "char_start": 79899,
+    "char_end": 79934,
+    "sentence_index": 460,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec032",
+    "text": "- \\( _0 \\) is the vacuum permittivity.",
+    "char_start": 79935,
+    "char_end": 79973,
+    "sentence_index": 461,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec032",
+    "text": "- \\( \\) is the static dielectric constant.",
+    "char_start": 79974,
+    "char_end": 80016,
+    "sentence_index": 462,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec032",
+    "text": "- \\( \\) is the reduced Planck's constant.",
+    "char_start": 80017,
+    "char_end": 80058,
+    "sentence_index": 463,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec032",
+    "text": "Assuming the exciton binding energy \\( E_b \\) in \\( InP \\) is approximately \\( 0.01 \\, eV \\), we can solve for the reduced mass \\( \\):\n\n\\[\n= 2 R^* (4 _0 )^2 ^2 e^4\n\\]\n\nred Given that \\( R^* E_b = 0.01 \\, eV \\), and substituting the known values:\nred\n\\[\nm_ h ^ * = 0.01 9.6^2 13.6 0.07 \\, m_0\n\\]\n\nSo the final answer is \\( 0.07 \\).",
+    "char_start": 80060,
+    "char_end": 80390,
+    "sentence_index": 464,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec032",
+    "text": "blue Correct knowledge should look like this:\n\nFor hydrogen-like cases, the distance of these absorption lines from the fundamental absorption threshold is:\n\n\\[\nE_ n = E_ g - m_ r ^ * e^ 4 8 ^ 2 _ 0 ^ 2 h^ 2 n^ 2\n\\]\n\nwhere \\( m_ r ^ * \\) is the reduced mass of the electron-hole pair.",
+    "char_start": 80392,
+    "char_end": 80676,
+    "sentence_index": 465,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec032",
+    "text": "Since\n\\( m_ h ^ * m_ e ^ * \\), it follows that:\n\n\\[\nm_ r ^ * = m_ e ^ * m_ h ^ * m_ e ^ * + m_ h ^ * m_ h ^ *\n\\]\n\nFor the ground state, \\( n=1 \\), and \\( E_ 1 = E_ C = 1.386 \\, eV \\), thus:\n\n\\[\n\nm_ h ^ * &= 8 ^ 2 _ 0 ^ 2 h^ 2 (E_ g - E_ C ) e^ 4\n\n&= 8 9.6^ 2 (8.854 10^ -12 )^ 2 (6.626 10^ -34 )^ 2 0.014 1.6 10^ -19 (1.6 10^ -19 )^ 4\n\n&= 8.67 10^ -36 \\, kg = 8.67 10^ -36 9.1 10^ -31 9.52 10^ -2 m_ 0\n\n\\]\n\nGround-Truth Answer : 9.52 10^ -2\n\nModel Output : 0.07\n\nAn example of Semiconductor Physics with knowledge deficiency error.",
+    "char_start": 80677,
+    "char_end": 81208,
+    "sentence_index": 466,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec032",
+    "text": "[!t]\n\n1.0\np 10cm\n\nProblem :\nCalculate the effective mass of a hole $ m_ h ^ * $.",
+    "char_start": 81210,
+    "char_end": 81290,
+    "sentence_index": 467,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec032",
+    "text": "It is known that the static dielectric constant of $ InP $ is $ 9.6 $, $ E_ g = 1.400 \\, eV $, $ E_ C = 1.386 \\, eV $, and holes in $ InP $ are much lighter than electrons ($ m_ h ^ * m_ e ^ * $).",
+    "char_start": 81291,
+    "char_end": 81487,
+    "sentence_index": 468,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec032",
+    "text": "o1-mini Completion :\nTo calculate the effective mass of a hole $ m_ h ^ * $ in $ InP $, we can use the effective Rydberg formula adapted for semiconductors.",
+    "char_start": 81489,
+    "char_end": 81645,
+    "sentence_index": 469,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec032",
+    "text": "The effective Rydberg energy $ R^* $ is given by:\n\n$$\nR^* = e^4 2 (4 _0 )^2 ^2\n$$\n\nwhere:\n- $ $ is the reduced mass, which for $ m_ h ^ * m_ e ^ * $ simplifies to $ m_ h ^ * $.",
+    "char_start": 81646,
+    "char_end": 81822,
+    "sentence_index": 470,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec032",
+    "text": "- $ e $ is the elementary charge.",
+    "char_start": 81823,
+    "char_end": 81856,
+    "sentence_index": 471,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec032",
+    "text": "- $ _0 $ is the vacuum permittivity.",
+    "char_start": 81857,
+    "char_end": 81893,
+    "sentence_index": 472,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec032",
+    "text": "- $ $ is the static dielectric constant.",
+    "char_start": 81894,
+    "char_end": 81934,
+    "sentence_index": 473,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec032",
+    "text": "- $ $ is the reduced Planck's constant.",
+    "char_start": 81935,
+    "char_end": 81974,
+    "sentence_index": 474,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec032",
+    "text": "Assuming the exciton binding energy $ E_b $ in $ InP $ is approximately $ 0.01 \\, eV $, we can solve for the reduced mass $ $:\n\n$$\n= 2 R^* (4 _0 )^2 ^2 e^4\n$$\n\nred Given that $ R^* E_b = 0.01 \\, eV $, and substituting the known values:\nred\n$$\nm_ h ^ * = 0.01 9.6^2 13.6 0.07 \\, m_0\n$$\n\nSo the final answer is $ 0.07 $.",
+    "char_start": 81976,
+    "char_end": 82294,
+    "sentence_index": 475,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec032",
+    "text": "blue Correct knowledge should look like this:\n\nFor hydrogen-like cases, the distance of these absorption lines from the fundamental absorption threshold is:\n\n$$\nE_ n = E_ g - m_ r ^ * e^ 4 8 ^ 2 _ 0 ^ 2 h^ 2 n^ 2\n$$\n\nwhere $ m_ r ^ * $ is the reduced mass of the electron-hole pair.",
+    "char_start": 82296,
+    "char_end": 82578,
+    "sentence_index": 476,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec032",
+    "text": "Since $ m_ h ^ * m_ e ^ * $, it follows that:\n\n$$\nm_ r ^ * = m_ e ^ * m_ h ^ * m_ e ^ * + m_ h ^ * m_ h ^ *\n$$\n\nFor the ground state, $ n=1 $, and $ E_ 1 = E_ C = 1.386 \\, eV $, thus:\n\n$$\n\nm_ h ^ * &= 8 ^ 2 _ 0 ^ 2 h^ 2 (E_ g - E_ C ) e^ 4\n\n&= 8 9.6^ 2 (8.854 10^ -12 )^ 2 (6.626 10^ -34 )^ 2 0.014 1.6 10^ -19 (1.6 10^ -19 )^ 4\n\n&= 8.67 10^ -36 \\, kg = 8.67 10^ -36 9.1 10^ -31 9.52 10^ -2 m_ 0\n\n$$\n\nGround-Truth Answer : $ 9.52 10^ -2 $\n\nModel Output : $ 0.07 $\n\nAn example of Semiconductor Physics with knowledge deficiency error.",
+    "char_start": 82579,
+    "char_end": 83112,
+    "sentence_index": 477,
+    "section_sentence_index": 44
+  }
+]

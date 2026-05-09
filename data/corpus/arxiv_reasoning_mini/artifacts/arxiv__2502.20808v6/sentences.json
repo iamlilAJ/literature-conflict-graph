@@ -1,0 +1,4394 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Multimodal Large Language Models (MLLMs) have shown promising capabilities in mathematical reasoning within visual contexts across various datasets.",
+    "char_start": 0,
+    "char_end": 148,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, most existing multimodal math benchmarks are limited to single-visual contexts, which diverges from the multi-visual scenarios commonly encountered in real-world mathematical applications.",
+    "char_start": 149,
+    "char_end": 346,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this gap, we introduce MV-MATH: a meticulously curated dataset of 2,009 high-quality mathematical problems.",
+    "char_start": 347,
+    "char_end": 465,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Each problem integrates multiple images interleaved with text, derived from authentic K-12 scenarios, and enriched with detailed annotations.",
+    "char_start": 466,
+    "char_end": 607,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "MV-MATH includes multiple-choice, free-form, and multi-step questions, covering 11 subject areas across 3 difficulty levels, and serves as a comprehensive and rigorous benchmark for assessing MLLMs\u2019 mathematical reasoning in multi-visual contexts.",
+    "char_start": 608,
+    "char_end": 855,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Through extensive experimentation, we observe that MLLMs encounter substantial challenges in multi-visual math tasks, with a considerable performance gap relative to human capabilities on MV-MATH.",
+    "char_start": 856,
+    "char_end": 1052,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Furthermore, we analyze the performance and error patterns of various models, providing insights into MLLMs' mathematical reasoning capabilities within multi-visual settings.",
+    "char_start": 1053,
+    "char_end": 1227,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "The data and code: .",
+    "char_start": 1228,
+    "char_end": 1248,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "[!t]\n\nimage/dataset.pdf\n-3mm\nSampled MV-MATH examples from each question type.",
+    "char_start": 1250,
+    "char_end": 1328,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Each sample contains a multi-visual contexts.",
+    "char_start": 1329,
+    "char_end": 1374,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The specifics of image relevance are discussed in detail in subsec: dataset_overview\n\n-5mm\n\n\"The more you see, the more you know.\" \u2014 Leonardo da Vinci 0.3em\nLarge Language Models (LLMs) have demonstrated exceptional performance across a wide range of tasks including natural language understanding, question answering and code generation .",
+    "char_start": 1375,
+    "char_end": 1714,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Building on LLMs, MLLMs excel at various multimodal tasks by learning specialized features from different modalities, demonstrating a strong ability to understand different modalities, and have achieved remarkable results in various visual-language tasks such as image captioning, visual question answering, and visual reasoning .",
+    "char_start": 1715,
+    "char_end": 2045,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "As MLLMs advance in various tasks, their mathematical reasoning abilities have garnered significant attention.",
+    "char_start": 2047,
+    "char_end": 2157,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Progressing from early text-based benchmarks like GSM8K and MATH to more recent multimodal benchmarks that incorporate visual elements, such as MathVista , MMMU , and GeoEval , MLLMs have demonstrated exceptional proficiency in mathematical reasoning, with the best-performing model on MathVista even surpassing human performance .",
+    "char_start": 2158,
+    "char_end": 2489,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Most existing multimodal mathematics evaluation datasets, such as MathVista, MathVision , and MathVerse , are limited to single-visual contexts, requiring models to reason based on only a single image input.",
+    "char_start": 2490,
+    "char_end": 2697,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "This raises an important question: are single-visual scenarios sufficient to fully capture the reasoning capabilities of MLLMs?",
+    "char_start": 2698,
+    "char_end": 2825,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Evidently, they are not.",
+    "char_start": 2826,
+    "char_end": 2850,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Several multi-visual datasets in general domains have been introduced , which provide valuable resources.",
+    "char_start": 2852,
+    "char_end": 2957,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "However, research specifically focused on mathematical evaluation within multi-visual scenarios remains limited.",
+    "char_start": 2958,
+    "char_end": 3070,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "MathVerse-mv extends the original MathVerse dataset by adapting problems and manually adding supplementary images to transform MathVerse into a multi-visual dataset.",
+    "char_start": 3071,
+    "char_end": 3236,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "However, this approach to data construction limits the diversity of visual information and introduces potential biases.",
+    "char_start": 3237,
+    "char_end": 3356,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Additionally, MathVerse-mv is relatively small, containing only 788 samples.",
+    "char_start": 3357,
+    "char_end": 3433,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Another dataset, CMM-Math , focuses on Chinese contexts and includes 765 multi-image samples in its test set, but some images are of suboptimal quality, affecting the clarity of certain samples.",
+    "char_start": 3434,
+    "char_end": 3628,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Both MathVerse-mv and CMM-Math lack fine-grained categorizations and a diverse range of question types.",
+    "char_start": 3629,
+    "char_end": 3732,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "To overcome the limitations of existing multi-image mathematical reasoning datasets, which are constrained in both quantity and diversity, and to enable a more comprehensive evaluation of MLLMs in multi-visual contexts, we present a novel dataset: MV-MATH.",
+    "char_start": 3734,
+    "char_end": 3990,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "This dataset consists of 2,009 high-quality mathematics problems, each presented in interleaved multi-visual contexts with more than two images, covering a variety of grade 12 scenarios.",
+    "char_start": 3991,
+    "char_end": 4177,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Every problem has been meticulously curated from authentic K-12 sources.",
+    "char_start": 4178,
+    "char_end": 4250,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To ensure the quality and reliability of MV-MATH, each sample has undergone cross-validation by at least two annotators, ensuring the accuracy and precision of the problems, answers, and images.",
+    "char_start": 4251,
+    "char_end": 4445,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "The dataset includes 1,109 multiple-choice questions and 900 free-form questions, of which 100 are multi-step problems, adding complexity and presenting a greater challenge for the models.",
+    "char_start": 4446,
+    "char_end": 4634,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "The problems are categorized into three difficulty levels and span 11 distinct mathematical subjects, each annotated with image relevance, allowing for finer-grained analysis.",
+    "char_start": 4635,
+    "char_end": 4810,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Extensive experiments are conducted on MV-MATH to comprehensively evaluate model performance in multi-visual mathematical contexts.",
+    "char_start": 4812,
+    "char_end": 4943,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "On our MV-MATH dataset, Claude achieves the highest performance with a score of 33.9\\%.",
+    "char_start": 4944,
+    "char_end": 5031,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Notably, the open-source model LLaVA-OneVision achieves a competitive performance with a score of 26.2\\%, surpassing GPT-4v and ranking just below Qwen-vl-max .",
+    "char_start": 5032,
+    "char_end": 5192,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Nevertheless, the performance of all these models remains well below human-level capability.",
+    "char_start": 5193,
+    "char_end": 5285,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Through analysis of these results, we offer insights into the strengths and limitations of open-source models.",
+    "char_start": 5286,
+    "char_end": 5396,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "In conclusion, the contributions of our study are as follows:\n\nWe propose the MV-MATH benchmark, comprising 2,009 interleaved multi-visual mathematics problems derived from real K-12 scenarios, covering multiple-choice, free-form, and multi-step formats.",
+    "char_start": 5397,
+    "char_end": 5651,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "All problems are classified across 3 difficulty levels and annotated with 11 fine-grained subjects.",
+    "char_start": 5652,
+    "char_end": 5751,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "We evaluate 25 MLLMs on MV-MATH, revealing a substantial gap between current model performance and human-level capabilities in multi-visual mathematical tasks.",
+    "char_start": 5753,
+    "char_end": 5912,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "Through an in-depth study of LLaVA-OneVision, we provide insights for enhancing model capabilities in multi-image mathematical reasoning.",
+    "char_start": 5913,
+    "char_end": 6050,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Our further investigation on MV-MATH reveals that MLLMs perform less effectively on image-dependent tasks compared to image-independent ones.",
+    "char_start": 6052,
+    "char_end": 6193,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Additionally, sequential image input outperforms the merged approach, and chain-of-thought (CoT) prompting does not consistently yield improvements.",
+    "char_start": 6194,
+    "char_end": 6342,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "With the fine-grained categorization, we perform a comprehensive error analysis of current MLLMs, offering in-depth insights to inform future advancements.",
+    "char_start": 6344,
+    "char_end": 6499,
+    "sentence_index": 41,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "[!t]\n\nimage/lidar.pdf\n-3mm\nPerformance comparison of six Multimodal Large Language Models(MLLMs) on our proposed MV-MATH dataset across 11 subjects(left) and 3 question types(right).",
+    "char_start": 6501,
+    "char_end": 6683,
+    "sentence_index": 42,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "SAR: Step Accuracy Rate, QCR: Question Completeness Rate.",
+    "char_start": 6684,
+    "char_end": 6741,
+    "sentence_index": 43,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "-5mm\n\nPure Text Benchmarks\nMathQA is a large-scale benchmark focused on math word problems, designed to evaluate models' capabilities in solving complex arithmetic and algebraic tasks through natural language.",
+    "char_start": 6743,
+    "char_end": 6952,
+    "sentence_index": 44,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "GSM8K , developed by OpenAI, assesses LLMs' mathematical reasoning with 8,500 grade-school-level problems requiring 2 to 8 steps, covering arithmetic, fractions, and basic algebra.",
+    "char_start": 6953,
+    "char_end": 7133,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "MATH offers a more challenging dataset of 12,500 high school competition problems, surpassing GSM8K in difficulty.",
+    "char_start": 7134,
+    "char_end": 7248,
+    "sentence_index": 46,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "MathBench includes 3,709 problems, ranging from basic arithmetic to college-level questions and spanning multiple difficulty levels.",
+    "char_start": 7249,
+    "char_end": 7381,
+    "sentence_index": 47,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "SuperCLUE-Math , a Chinese benchmark, evaluates multi-step reasoning with over 2,000 problems, each requiring multiple steps and accompanied by natural language solutions.",
+    "char_start": 7382,
+    "char_end": 7553,
+    "sentence_index": 48,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "-5mm\nMultimodal Benchmarks\nWith the advancement of MLLMs, several high-quality benchmarks have been developed to evaluate mathematical problem-solving abilities in visual contexts.",
+    "char_start": 7554,
+    "char_end": 7734,
+    "sentence_index": 49,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "MathVista is the first multimodal dataset aimed at assessing MLLMs\u2019 mathematical reasoning, specifically focusing on visual math QA tasks.",
+    "char_start": 7735,
+    "char_end": 7873,
+    "sentence_index": 50,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "MATH-Vision targets multimodal mathematical understanding, featuring questions primarily sourced from mathematics competitions and requiring deep reasoning.",
+    "char_start": 7874,
+    "char_end": 8030,
+    "sentence_index": 51,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "MathVerse tests whether current MLLMs can effectively leverage diagram information in mathematical reasoning tasks, offering a collection of 2,612 visual diagrams.",
+    "char_start": 8031,
+    "char_end": 8194,
+    "sentence_index": 52,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "GeoEval focuses on geometry, examining the capabilities of large models in this field through 2,000 geometric samples.",
+    "char_start": 8195,
+    "char_end": 8313,
+    "sentence_index": 53,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "CMMath primarily evaluates mathematical reasoning abilities in the context of Chinese K-12 education.",
+    "char_start": 8314,
+    "char_end": 8415,
+    "sentence_index": 54,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "All of the above datasets are restricted to single-visual contexts, relying on a single image input per problem.",
+    "char_start": 8417,
+    "char_end": 8529,
+    "sentence_index": 55,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "In contrast, our MV-MATH dataset emphasizes multi-visual mathematical reasoning by incorporating multiple images per problem.",
+    "char_start": 8530,
+    "char_end": 8655,
+    "sentence_index": 56,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "Addressing multi-image problems requires models to develop a more comprehensive understanding of relationships between mathematical visual elements, aligning more closely with real-world mathematical scenarios.",
+    "char_start": 8656,
+    "char_end": 8866,
+    "sentence_index": 57,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "The progress in visual-language alignment and rapid evolution of LLMs have endowed these models with visual capabilities, with notable achievements including CLIP and BLIP .",
+    "char_start": 8868,
+    "char_end": 9041,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "CLIP aligns image-text pairs via contrastive learning, while BLIP combines contrastive and generative learning to align and generate image-text pairs.",
+    "char_start": 9042,
+    "char_end": 9192,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Inspired by these, MiniGPT-4 , LLaMA-Adapter , and LLaVA extend text-only models into multimodal ones through vision-language alignment and instruction tuning.",
+    "char_start": 9193,
+    "char_end": 9352,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "Subsequently, large multimodal models emerged, such as the closed-source GPT-4V , Gemini , Claude , GPT-4o and open-source DeepSeek-VL , Qwen-VL , InternLMXComposer-VL , LLaVA-NeXT , and LLaVA-OneVision , which perform well on MMMU and MathVista .",
+    "char_start": 9353,
+    "char_end": 9600,
+    "sentence_index": 61,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "In mathematics, G-LLaVA and Math-LLaVA enhance performance on mathematical tasks using large instruction datasets Geo170K and MathV360K .",
+    "char_start": 9601,
+    "char_end": 9738,
+    "sentence_index": 62,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "MAVIS improves visual perception with three-stage fine-tuning, while MultiMath refines visual-language alignment through a four-stage training process.",
+    "char_start": 9739,
+    "char_end": 9890,
+    "sentence_index": 63,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "V- M ATH Benchmark\n\nWe introduce the MV-MATH benchmark, a meticulously annotated dataset designed to evaluate the mathematical reasoning capabilities of MLLMs in multi-visual contexts.",
+    "char_start": 9892,
+    "char_end": 10076,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "Each sample in MV-MATH consists of interleaved multi-image and text, closely reflecting the multimodal distribution found in real-world scenarios.",
+    "char_start": 10077,
+    "char_end": 10223,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "This interleaved format imposes greater demands on modal fusion and comprehension in MLLMs, providing a more realistic assessment of their performance\n\nThe MV-MATH dataset comprises 2,009 multi-image questions, with some questions containing up to 8 images.",
+    "char_start": 10224,
+    "char_end": 10481,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "It includes three types: multiple-choice, free-form and multi-step questions.",
+    "char_start": 10482,
+    "char_end": 10559,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "MV-MATH is organized into 11 subjects over 3 difficulty levels, including Analytic Geometry, Algebra, Metric Geometry, Combinatorics, Transformation Geometry, Logic, Solid Geometry, Arithmetic, Combinatorial Geometry, Descriptive Geometry and Statistics , covering a range of scenarios from the K-12 mathematics curriculum.",
+    "char_start": 10560,
+    "char_end": 10883,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "Based on image relevance, we categorize MV-MATH into two subsets: a mutually dependent set ( MD ), where images are interrelated and understanding one image necessitates information from another (left and middle of fig: dataset_examples ); and an independent set ( ID ), where images are unrelated and can be interpreted independently without reference to other images (right of fig: dataset_examples ).",
+    "char_start": 10884,
+    "char_end": 11287,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "To facilitate analysis, we provide a test-mini version of MV-MATH containing 200 samples, preserving similar distribution of difficulty levels and question types as the full MV-MATH dataset.",
+    "char_start": 11288,
+    "char_end": 11478,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "Detailed statistics and coverage of MV-MATH are presented in tab:dataset_statistics .",
+    "char_start": 11479,
+    "char_end": 11564,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "[!t]\n\nlc\n\nStatistics & 1 c Number\n\nTotal Questions & 2009\n\n1em *multiple-choice questions & 1109\n\n1em *Free-form questions & 900\n\n1.5em -one-step questions & 800\n\n1.5em -multi-step questions & 100\n\nQuestions in the testmini set & 200\n\nDifficulties (Easy: Medium: Hard) & 27\\%:48\\%:25\\%\n\nTotal images & 6061\n\n1em * question with 2 images & 979 (48.73\\%)\n\n1em * question with 3 images & 312 (15.53\\%)\n\n1em * question with 4 images & 453 (22.55\\%)\n\n1em * question with 5 images and above & 265 (13.39\\%)\n\nImage Relevance &\n\n1em * Mutually Dependent questions & 1412\n\n1em * Independent questions & 597\n\nMinimum question length & 14\n\nMaximum question length & 383\n\nAverage question length & 80.17\n\n-2mm\nKey statistics of M V- M ATH.",
+    "char_start": 11566,
+    "char_end": 12293,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "-5mm\n\nData collection.",
+    "char_start": 12294,
+    "char_end": 12316,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "We initially collect over 300,000 mathematics problems spanning grade 12 scenarios, comprising multiple-choice and free-form questions, including plain text, single-image, and multi-image questions, all stored in PDF format.",
+    "char_start": 12317,
+    "char_end": 12541,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "Using the Mathpix API , we extract text content\u2014such as questions, answers, and analyses\u2014as well as images, and organized this data in JSON format.",
+    "char_start": 12542,
+    "char_end": 12689,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "Based on image counts, we identified a preliminary set of 49,538 multi-image problems.",
+    "char_start": 12690,
+    "char_end": 12776,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "Data filtering.",
+    "char_start": 12778,
+    "char_end": 12793,
+    "sentence_index": 77,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "To ensure the high quality of the multi-image mathematical data, we employ a three-stage data screening strategy.",
+    "char_start": 12794,
+    "char_end": 12907,
+    "sentence_index": 78,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "In the first stage, we verify the alignment between text and images within each question, this is a crucial step since Mathpix does not always yield the correct number of images.",
+    "char_start": 12908,
+    "char_end": 13086,
+    "sentence_index": 79,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "This initial filtering retains 35,562 samples.",
+    "char_start": 13087,
+    "char_end": 13133,
+    "sentence_index": 80,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "In the second stage, we inspect the remaining samples for missing text fields or semantic inaccuracies, then categorize them into two subsets: 10,110 multiple-choice and 8,933 free-form questions for further screening.",
+    "char_start": 13134,
+    "char_end": 13352,
+    "sentence_index": 81,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "In the third stage, we manually filter out samples with low-quality images (e.g., blurry images or images containing text content).",
+    "char_start": 13353,
+    "char_end": 13484,
+    "sentence_index": 82,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "This process ultimately yields 1,109 multiple-choice questions, 800 one-step free-form questions, and 100 multi-step free-form questions.",
+    "char_start": 13485,
+    "char_end": 13622,
+    "sentence_index": 83,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "Each step was cross-verified by at least two graduate students to ensure the reliability of the screening outcomes.",
+    "char_start": 13623,
+    "char_end": 13738,
+    "sentence_index": 84,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "Data labeling.",
+    "char_start": 13740,
+    "char_end": 13754,
+    "sentence_index": 85,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "Using the above samples, we conduct difficulty grading, subject categorization, and image relevance classification.",
+    "char_start": 13755,
+    "char_end": 13870,
+    "sentence_index": 86,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "For each problem, difficulty is categorized by analyzing the lengths of the question and analysis, assigning weights of $0.4$ and $0.6$ respectively.",
+    "char_start": 13871,
+    "char_end": 14020,
+    "sentence_index": 87,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "Based on the weighted lengths, MV-MATH is divided into three levels: easy, medium, and hard.",
+    "char_start": 14021,
+    "char_end": 14113,
+    "sentence_index": 88,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "For subject categorization and image relevance, we apply a majority voting approach, leveraging classification results from GPT-4o, Claude-3.5-Sonnet, and Qwen-VL-Max to determine each problem's subject and its degree of image dependence.",
+    "char_start": 14114,
+    "char_end": 14352,
+    "sentence_index": 89,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "We then manually validate the assigned difficulty levels, subjects, and image relevance, with two annotators independently reviewing each problem and making adjustments to correct misclassifications, ensuring the accuracy of the final result.",
+    "char_start": 14353,
+    "char_end": 14595,
+    "sentence_index": 90,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "[!t]\n\nimage/comparison.pdf\n-7mm\nComparison of MV-MATH with other existing benchmarks.",
+    "char_start": 14597,
+    "char_end": 14682,
+    "sentence_index": 91,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "The size of each circle represents the image distribution per question.",
+    "char_start": 14683,
+    "char_end": 14754,
+    "sentence_index": 92,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "The definition and calculation method of CV are provided in subsec: cv\n-5mm\n\nMost existing multimodal mathematical reasoning datasets are limited to single-visual contexts, where the model interprets only a single image without the need for information interaction between images.",
+    "char_start": 14755,
+    "char_end": 15035,
+    "sentence_index": 93,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec009",
+    "text": "To further distinguish the difference between MV-MATH and other existing ones, we elaborate the benchmark details in fig:comparison .",
+    "char_start": 15036,
+    "char_end": 15169,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec009",
+    "text": "Here, we primarily compare our MV-MATH with MathVerse-mv and CMM-MATH .",
+    "char_start": 15170,
+    "char_end": 15241,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Comparing with MathVerse-mv\nMathVerse-mv is derived by reformatting original problems in MathVerse through question rephrasing and image combination, resulting in 788 generated problems.",
+    "char_start": 15242,
+    "char_end": 15428,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "However, all questions in MathVerse-mv are multiple-choice and primarily focus on a single task type: 'select the correct paired math diagram from given images.' This dataset lacks differentiation in difficulty levels and subject categories.",
+    "char_start": 15429,
+    "char_end": 15670,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "Such artificial rephrasing and image augmentation introduce distribution bias, limiting its representation of authentic multi-image mathematical scenarios.",
+    "char_start": 15671,
+    "char_end": 15826,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "In comparison, our MV-MATH dataset provides 2,009 high-quality samples from real K-12 contexts, including both multiple-choice and free-form questions, each classified by fine-grained difficulty and subject.",
+    "char_start": 15827,
+    "char_end": 16034,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "Sample lengths in MathVerse-mv range from 62 to 246, with an average of 81.91, whereas MV-MATH samples range from 14 to 383, with an average of 80.17.",
+    "char_start": 16035,
+    "char_end": 16185,
+    "sentence_index": 100,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec009",
+    "text": "To assess the diversity in sample length distribution, we calculate the coefficient of variation (CV), with a higher CV indicating greater distribution richness.",
+    "char_start": 16186,
+    "char_end": 16347,
+    "sentence_index": 101,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec009",
+    "text": "The CVs for MathVerse-mv and MV-MATH are 0.19 and 0.74 respectively, highlighting the broader distribution diversity of MV-MATH.",
+    "char_start": 16348,
+    "char_end": 16476,
+    "sentence_index": 102,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": "The CV calculation is as follows:\n\nCV = 100\\%\n\nwhere \\( \\) denotes the standard deviation of sample lengths, and \\( \\) denotes the mean sample length.",
+    "char_start": 16477,
+    "char_end": 16627,
+    "sentence_index": 103,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "[t]\n\n!",
+    "char_start": 16629,
+    "char_end": 16635,
+    "sentence_index": 104,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "@ lcccc@\n\n2 * Models & Easy & Medium & Hard & Overall\n\n& (546) & (968) & (495) & (2009)\n\nClaude-3.5-sonnet & 35.7 & 37.5 & 26.6 & 33.9\n\nGPT-4o & 40.3 & 32.7 & 22.9 & 32.1\n\nGemini-1.5-pro & 34.1 & 30.0 & 20.3 & 29.0\n\nQwen-vl-max & 32.7 & 27.7 & 20.1 & 26.9\n\nGPT-4V & 31.6 & 24.7 & 17.1 & 24.5\n\nLLaVA-OneVision-Chat-72B & 34.6 & 26.0 & 19.2 &26.2\n\nLLaVA-OneVision-Chat-7B & 20.6 & 21.2 & 14.8 &19.0\n\nQwen2VL-Instruct-7B & 18.8 & 17.1 & 13.9 & 16.5\n\nLLaVA-NeXT-Interleave-7B & 15.3 & 16.1 & 10.9 &14.7\n\nDeepseek-VL-Chat-7B & 17.1 & 14.1 & 12.5 & 14.5\n\n-3mm\nResult decomposition across question difficulty levels.",
+    "char_start": 16636,
+    "char_end": 17245,
+    "sentence_index": 105,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "-5mm\n\nComparing with CMM-Math\nCMM-Math is a dataset designed for Chinese-language scenarios, with the multi-image portion containing 765 samples.",
+    "char_start": 17247,
+    "char_end": 17392,
+    "sentence_index": 106,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "Some images in CMM-Math are of lower quality, due to Mathpix\u2019s filtering inconsistencies, some images contain excessive text.",
+    "char_start": 17393,
+    "char_end": 17518,
+    "sentence_index": 107,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "In contrast, we performed manual checks on each image in our samples to ensure that every sample in MV-MATH is of reliable quality.",
+    "char_start": 17519,
+    "char_end": 17650,
+    "sentence_index": 108,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Additionally, MV-MATH primarily focuses on English-language scenarios.",
+    "char_start": 17651,
+    "char_end": 17721,
+    "sentence_index": 109,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "To investigate the impact of language on multi-image mathematical reasoning performance, we also provide a translated Chinese version of M V- M ATH.",
+    "char_start": 17722,
+    "char_end": 17870,
+    "sentence_index": 110,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "[!t]\n\n!",
+    "char_start": 17872,
+    "char_end": 17879,
+    "sentence_index": 111,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "@ lccc@\n\nModels & Original & CoT & CoT \\&2-shot\n\nClaude-3.5-sonnet & 29.2 & 32.6 red 0.8 (+3.4) & 33.9 red 0.8 (+1.3)\n\nGPT-4o & 31.8 & 30.9 darkgreen 0.8 (-0.9)\n& 32.1 red 0.8 (+1.2)\n\nGemini-1.5-pro & 29.8 & 28.3 darkgreen 0.8 (-1.5) & 29.1 red 0.8 (+0.8)\n\nQwen-vl-max & 28.4 & 29.1 red 0.8 (+0.7) & 26.9 darkgreen 0.8 (-2.2)\n\nGPT-4V & 23.4 & 25.1 red 0.8 (+1.7) & 24.5 darkgreen 0.8 (-0.6)\n\nLLaVA-OneVision-Chat-72B & 27.3 & 26.7 darkgreen 0.8 (-0.6) & 26.2 darkgreen 0.8 (-0.5)\n\nLLaVA-OneVision-Chat-7B & 20.5 & 20.1 darkgreen 0.8 (-0.4) & 19.1 darkgreen 0.8 (-1.0)\n\nLLaVA-NeXT-Interleave-7B & 17.9 & 16.3 darkgreen 0.8 (-1.6) & 14.7 darkgreen 0.8 (-1.6)\n\nQwen2VL-Instruct-7B & 19.7 & 16.7 darkgreen 0.8 (-2.0) & 16.5 darkgreen 0.8 (-0.2)\n\nDeepseek-VL-Chat-7B & 17.2 & 15.7 darkgreen 0.8 (-1.5) & 14.5 darkgreen 0.8 (-1.2)\n\n-3mm\nModel Performance Evaluation for Original, CoT, and CoT with 2-shot configurations.",
+    "char_start": 17880,
+    "char_end": 18794,
+    "sentence_index": 112,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "-5mm\n\n[htbp]\n\n!",
+    "char_start": 18796,
+    "char_end": 18811,
+    "sentence_index": 113,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "l|c|ccccccccccc\n\nModel & Overall & AG & Algebra & MG & Combinatorics & TG & Logic & SG & Arithmetic & CG & DG & Statistics\n\n13 c LLMs(Text-only, CoT with 2-shot)\n\nDeepseek-Chat & 16.1 & 14.7 & 10.1 & 16.3 & 18.7 & 25.3 & 21.8 & 18.3 & 6.2 & 19.0 & 8.2 & 13.2\n\n13 c LLMs(Text + Image Caption, CoT with 2-shot)\n\nDeepseek-Chat & 16.9 & 14.1 & 8.0 & 15.3 & 13.4 & 13.2 & 12.7 & 9.4 & 14.4 & 12.8 & 18.0 & 17.3\n\n13 c Open-source MLLMs (Text + Image, CoT with 2-shot)\n\nMath-LLaVA-13B & 3.0 & 1.6 & 6.9 & 4.7 & 4.8 & 2.9 & 0.0 & 3.2 & 18.7 & 6.6 & 2.1 & 5.8\n\nLLaVA-v1.5-13B & 5.0 & 4.8 & 6.8 & 4.1 & 4.8 & 8.7 & 9.0 & 3.5 & 12.5 & 5.1 & 5.0 & 11.7\n\nLLaVA-v1.5-7B & 10.3 & 9.3 & 11.7 & 11.2 & 9.7 & 12.8 & 13.6 & 10.2 & 0.0 & 7.7 & 23.7 & 11.7\n\nVILA-13B & 12.0 & 11.5 & 11.0 & 11.0 & 12.1 & 14.4 & 18.1 & 13.2 & 37.5 & 10.6 & 20.8 & 5.8\n\nInternLM-XComposer2.5-VL-7B & 13.1 & 12.2 & 12.6 & 13.2 & 24.3 & 20.6 & 36.3 & 9.4 & 18.7 & 11.1 & 23.7 & 17.6\n\nInternVL-Chat-8B & 14.4 & 14.1 & 20.4 & 17.5 & 19.5 & 19.6 & 27.2 & 13.0 & 31.2 & 9.9 & 20.1 & 23.5\n\nLlama-3.2-Vision-Instruct-11B & 14.4 & 15.0 & 15.4 & 16.2 & 23.1 & 15.6 & 18.1 & 11.9 & 31.2 & 14.3 & 25.1 & 17.6\n\nDeepseek-VL-7B & 14.5 & 14.8 & 20.2 & 10.8 & 17.0 & 19.8 & 9.0 & 15.1 & 18.7 & 10.9 & 26.6 & 29.4\n\nLLaVA-NeXT-Interleave-7B & 14.7 & 14.0 & 15.5 & 15.2 & 17.0 & 18.2 & 18.1 & 16.3 & 6.2 & 14.1 & 24.4 & 23.5\n\nMantis-Idefics2-8B & 15.5 & 13.3 & 17.7 & 19.2 & 14.6 & 20.9 & 22.7 & 12.3 & 6.2 & 16.0 & 26.6 & 11.7\n\nMantis-siglip-8B & 15.8 & 17.9 & 17.7 & 17.9 & 14.6 & 20.4 & 22.7 & 12.1 & 18.7 & 10.8 & 32.3 & 17.6\n\nQwen2VL-Instruct-7B & 16.5 & 14.2 & 18.6 & 14.8 & 17.0 & 21.9 & 22.7 & 17.2 & 31.2 & 16.1 & 25.1 & 23.5\n\nLLaVA-OneVision-SI-7B & 17.2 & 16.1 & 19.5 & 13.2 & 16.0 & 19.5 & 12.6 & 15.0 & 36.5 & 13.2 & 31.3 & 13.6\n\nLLaVA-OneVision-SFT-7B & 18.8 & 18.2 & 20.3 & 22.3 & 17.3 & 20.1 & 9.0 & 15.8 & 43.1 & 15.8 & 27.3 & 23.5\n\nLLaVA-OneVision-Chat-7B & 19.1 & 19.6 & 20.4 & 21.4 & 14.6 & 18.8 & 4.5 & 20.4 & 43.7 & 16.7 & 28.9 & 29.4\n\nLLaVA-OneVision-SI-72B & 25.0 & 24.7 & 24.3 & 27.6 & 27.0 & 25.3 & wkblue 37.9 & 24.4 & 37.1 & 20.4 & 31.2 & 23.5\n\nLLaVA-OneVision-SFT-72B & 25.9 & 24.2 & 31.3 & 21.1 & 23.1 & 28.9 & 31.8 & 32.8 & 18.7 & 21.5 & 39.5 & 29.4\n\nLLaVA-OneVision-Chat-72B & 26.2 & 25.1 & 32.4 & 23.9 & 35.3 & 28.1 & 27.2 & 31.6 & 31.2 & 22.6 & 35.9 & 35.2\n\n13 c Closed-source MLLMs (Text + Image, CoT with 2-shot)\n\nQwen-vl-plus & 19.7 & 17.9 & 24.1 & 22.0 & 16.0 & 19.9 & 24.8 & 15.9 & 15.2 & 18.7 & 31.4 & 29.4\n\nGPT-4V & 24.5 & 18.7 & 31.6 & 32.4 & 25.6 & 26.3 & 36.3 & 26.8 & wkblue 43.7 & 19.3 & 33.8 & 35.2\n\nQwen-vl-max & 26.9 & 27.6 & 32.1 & 24.7 & 36.5 & 29.6 & 31.8 & 30.9 & 37.5 & wkblue 23.7 & 32.3 & 23.5\n\nGemini-1.5-Pro & 29.1 & wkblue 29.9 & 32.9 & 28.3 & 28.0 & 30.5 & wkred 40.5 & 33.9 & 42.7 & 21.7 & 30.6 & 35.2\n\nGPT-4o & wkblue 32.1 & 28.7 & wkblue 36.7 & wkred 34.4 & wkblue 39.4 & wkblue 30.6 & 29.8 & wkred 38.2 & 41.7 & 20.8 & wkred 44.3 & wkred 47.0\n\nClaude-3.5 & wkred 33.9 & wkred 32.7 & wkred 38.1 & wkblue 34.3 & wkred 46.7 & wkred 33.3 & 29.8 & wkblue 36.3 & wkred 54.2 & wkred 27.0 & wkblue 38.2 & wkblue 41.1\n\n13 c Human Performance\n\nHuman (testmini) & 76.5 & 70.2 & 74.9 & 91.2 & 83.1 & 67.4 & 80.2 & 62.5 & 83.2 & 71.7 & 68.5 & 85.6\n\n-3mm\nComparison of model performances across various mathematical subjects.",
+    "char_start": 18813,
+    "char_end": 22128,
+    "sentence_index": 114,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "AG: Analytic Geometry, MG: Metric Geometry, TG: Transformation Geometry, SG: Solid Geometry, CG: Combinatorial Geometry, DG: Descriptive Geometry.",
+    "char_start": 22129,
+    "char_end": 22275,
+    "sentence_index": 115,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "The wkred first and wkblue second highest accuracy of LMMs are marked in red and blue , respectively.",
+    "char_start": 22276,
+    "char_end": 22377,
+    "sentence_index": 116,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "-5mm\n\nWe conduct extensive experiments on MV-MATH to evaluate a diverse range of models, including 18 open-source and 7 API-based models, assessing both LMMs and MLLMs.",
+    "char_start": 22379,
+    "char_end": 22547,
+    "sentence_index": 117,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Our evaluation encompasses three conditions: text-only, text with image captions, and text with images.",
+    "char_start": 22548,
+    "char_end": 22651,
+    "sentence_index": 118,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Results indicate that models perform better when images are input sequentially rather than merged, with mutually dependent image tasks proving more challenging.",
+    "char_start": 22652,
+    "char_end": 22812,
+    "sentence_index": 119,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "Experimental outcomes show that even the top-performing model, Claude 3.5-Connect, falls significantly short of human-level performance, underscoring considerable room for improvement in mathematical multi-visual reasoning capabilities.",
+    "char_start": 22813,
+    "char_end": 23049,
+    "sentence_index": 120,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Our evaluation is conducted under three settings: original answering, Chain of Thought (CoT), and CoT with 2-shot.",
+    "char_start": 23051,
+    "char_end": 23165,
+    "sentence_index": 121,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "To establish a human performance baseline, we use the testmini set and recruit 50 high school students to independently complete the questions.",
+    "char_start": 23166,
+    "char_end": 23309,
+    "sentence_index": 122,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "For multiple-choice, single-step, and multi-step free-form questions, we carefully design specific prompts to ensure that models generated responses in the correct format.",
+    "char_start": 23310,
+    "char_end": 23481,
+    "sentence_index": 123,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "Answer extraction and evaluation are performed using the Deepseek API , with prompts specifically crafted for each question type to optimize model evaluation accuracy, more detailed information can be found in the Appendix.",
+    "char_start": 23482,
+    "char_end": 23705,
+    "sentence_index": 124,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "Challenging Nature of MV-MATH: The data presented in tab:main_model_performance illustrates the inherent challenges of MV-MATH.",
+    "char_start": 23707,
+    "char_end": 23834,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "Notably, the overall accuracy of the leading model, Claude-3.5-Sonnet, is only 33.9\\%, which falls significantly short of the human level accuracy of 76.5\\%.",
+    "char_start": 23835,
+    "char_end": 23992,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "Among the open-source models, only LLaVA-OneVision-72B (LLaVA-OV-72B) achieves an accuracy above 20\\% on MV-MATH, while all others fall below this threshold.",
+    "char_start": 23993,
+    "char_end": 24150,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": "Notably, Math-LLaVA, a specialized mathematical MLLM, demonstrates limited performance on the MV-MATH dataset, with an accuracy of only 3.0\\%.",
+    "char_start": 24151,
+    "char_end": 24293,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec011",
+    "text": "Our analysis suggests that this underperformance stems from the distribution of its training data.",
+    "char_start": 24294,
+    "char_end": 24392,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec011",
+    "text": "Specifically, Math-LLaVA trained on the Math360K dataset do not effectively generalize to the MV-MATH dataset, underscoring a significant limitation in its generalization capabilities.",
+    "char_start": 24393,
+    "char_end": 24577,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec011",
+    "text": "This finding underscores a challenge for current mathematical MLLMs: the need to achieve robust performance on both in-distribution and out-of-distribution data.",
+    "char_start": 24578,
+    "char_end": 24739,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec011",
+    "text": "Future advancements should prioritize strengthening generalization capabilities over memorizing training data.",
+    "char_start": 24740,
+    "char_end": 24850,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec011",
+    "text": "Disparity of Closed-source and Open-source Models:\nMost open-source models exhibit a substantial performance gap compared to closed-source counterparts.",
+    "char_start": 24852,
+    "char_end": 25004,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "Notably, Claude-3.5-Sonnet achieves the highest accuracy on the MV-MATH dataset at 33.9\\%, while LLaVA-OV-Chat-72B attains a commendable 26.2\\%, thereby narrowing the performance disparity between open-source and closed-source models.",
+    "char_start": 25005,
+    "char_end": 25239,
+    "sentence_index": 134,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "Models with smaller parameter sizes, such as the 7B and 13B variants, generally attain accuracy levels between 10\\% and 20\\%, with the top-performing LLaVA-OV-Chat-7B reaching 19.0\\%.",
+    "char_start": 25240,
+    "char_end": 25423,
+    "sentence_index": 135,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "[!t]\n\n[b] 0.49\n\nimage/image_relavance.pdf\nPerformance Evaluation of Models on ID and MD Sets.",
+    "char_start": 25425,
+    "char_end": 25518,
+    "sentence_index": 136,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "[b] 0.49\n\nimage/merge_sequence.pdf\nComparison of Accuracy with Merge and Sequence Image Inputs.",
+    "char_start": 25520,
+    "char_end": 25615,
+    "sentence_index": 137,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "-3mm\nEvaluation of Model Performance across Different Image Relevance (ID vs.",
+    "char_start": 25617,
+    "char_end": 25694,
+    "sentence_index": 138,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "MD) and Input Methods (Merged vs.",
+    "char_start": 25695,
+    "char_end": 25728,
+    "sentence_index": 139,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "Sequential).",
+    "char_start": 25729,
+    "char_end": 25741,
+    "sentence_index": 140,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec011",
+    "text": "-5mm\n\nComparison among Different Subjects: The dataset encompasses 11 distinct mathematical subjects, ranging from algebra to geometry, each characterized by unique features.",
+    "char_start": 25743,
+    "char_end": 25917,
+    "sentence_index": 141,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec011",
+    "text": "Model performance tends to be weaker in subjects requiring a higher level of image understanding, such as combinatorial geometry, where even the most advanced model, Claude-3.5-Sonnet, achieves an accuracy of only 27.0\\%.",
+    "char_start": 25918,
+    "char_end": 26139,
+    "sentence_index": 142,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec011",
+    "text": "In contrast, Claude\u2019s accuracy in arithmetic reaches 54.2\\%.",
+    "char_start": 26140,
+    "char_end": 26200,
+    "sentence_index": 143,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec011",
+    "text": "This disparity indicates that current MLLMs lack the necessary capabilities to effectively process complex images and comprehend relationships between multiple intricate images.",
+    "char_start": 26201,
+    "char_end": 26378,
+    "sentence_index": 144,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec011",
+    "text": "Significant improvements are still needed in fine-grained visual tasks, particularly in geometric perception and understanding.",
+    "char_start": 26379,
+    "char_end": 26506,
+    "sentence_index": 145,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec011",
+    "text": "Failure of CoT/few-shot:\nAs shown in tab:CoT&shot , we observe that CoT and few-shot do not always improve model performance on MV-MATH.",
+    "char_start": 26508,
+    "char_end": 26644,
+    "sentence_index": 146,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec011",
+    "text": "While Claude performs 3.4\\% better with CoT and 1.3\\% better with 2-shot based on CoT, GPT4o performs best under CoT with 2-shot setting, while Qwen-vl-max and gpt-4v perform best under CoT setting.",
+    "char_start": 26645,
+    "char_end": 26843,
+    "sentence_index": 147,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec011",
+    "text": "For Gemini-1.5-pro and all open-source models, the original versions outperform CoT and CoT with 2-shot prompts.",
+    "char_start": 26844,
+    "char_end": 26956,
+    "sentence_index": 148,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec011",
+    "text": "Notably, for all open-source models, performance declines steadily with the introduction of CoT and 2-shot prompting.",
+    "char_start": 26957,
+    "char_end": 27074,
+    "sentence_index": 149,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec011",
+    "text": "We conduct further analysis on different types of questions in Appendix, and we find that original prompts perform better for multiple-choice questions, while CoT tends to produce better results for free-form questions.",
+    "char_start": 27075,
+    "char_end": 27294,
+    "sentence_index": 150,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec011",
+    "text": "Adding 2-shot on top of CoT tends to degrade model performance on MV-MATH.",
+    "char_start": 27295,
+    "char_end": 27369,
+    "sentence_index": 151,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec011",
+    "text": "Similar results are observed in Math-Vision .",
+    "char_start": 27370,
+    "char_end": 27415,
+    "sentence_index": 152,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "Different Question Types.",
+    "char_start": 27417,
+    "char_end": 27442,
+    "sentence_index": 153,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec012",
+    "text": "We compare the performance of various models on three types of questions.",
+    "char_start": 27443,
+    "char_end": 27516,
+    "sentence_index": 154,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec012",
+    "text": "As shown in fig: lidar (right), the accuracy of the model on multiple-choice questions is significantly higher than on free-form questions.",
+    "char_start": 27517,
+    "char_end": 27656,
+    "sentence_index": 155,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec012",
+    "text": "We design two evaluation metrics for multi-step questions: Step Accuracy Rate ( SAR ) and Question Completeness Rate ( QCR ).",
+    "char_start": 27657,
+    "char_end": 27782,
+    "sentence_index": 156,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec012",
+    "text": "SAR refers to the proportion of correctly answered steps out of the total steps, while QCR is the proportion of questions for which all steps were answered correctly.",
+    "char_start": 27783,
+    "char_end": 27949,
+    "sentence_index": 157,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec012",
+    "text": "The model with the best performance on the QCR metric is GPT-4o, achieving only 6\\%, while its corresponding SAR is 32.6\\%.",
+    "char_start": 27950,
+    "char_end": 28073,
+    "sentence_index": 158,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec012",
+    "text": "This reflects the model's insufficient ability to perform complex reasoning on open and multi-step questions, and also reveals that the multiple-choice question format may not truly reflect the model's actual reasoning and problem-solving ability, as they usually rely on prompts to identify options.",
+    "char_start": 28074,
+    "char_end": 28374,
+    "sentence_index": 159,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec012",
+    "text": "Different Difficulty Levels.",
+    "char_start": 28376,
+    "char_end": 28404,
+    "sentence_index": 160,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec012",
+    "text": "tab:result_diffculty compares the performance of selected models across three difficulty levels.",
+    "char_start": 28405,
+    "char_end": 28501,
+    "sentence_index": 161,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec012",
+    "text": "GPT-4o demonstrates significantly higher proficiency with a success rate of 40.3\\% in the \"Easy\" category.",
+    "char_start": 28502,
+    "char_end": 28608,
+    "sentence_index": 162,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec012",
+    "text": "For the \"Medium\" category, Claude achieves the best performance at 37.5\\%.",
+    "char_start": 28609,
+    "char_end": 28683,
+    "sentence_index": 163,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec012",
+    "text": "The performance disparity further decreases in the \"Hard\" category, where the leading Claude model reaches only 26.6\\% accuracy.",
+    "char_start": 28684,
+    "char_end": 28812,
+    "sentence_index": 164,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec012",
+    "text": "As the difficulty level increases, the performance gap between models becomes smaller.",
+    "char_start": 28813,
+    "char_end": 28899,
+    "sentence_index": 165,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec012",
+    "text": "Of particular note, Claude is the only model whose performance on medium difficulty exceeds that on low difficulty, whereas the performance of other models progressively declines as the difficulty level increases.",
+    "char_start": 28900,
+    "char_end": 29113,
+    "sentence_index": 166,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec013",
+    "text": "Image Relevance, Mutually Dependent vs.",
+    "char_start": 29115,
+    "char_end": 29154,
+    "sentence_index": 167,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec013",
+    "text": "Independent: To facilitate a more detailed analysis of MLLMs on mathematical multi-visual tasks, we conduct experiments on mutually dependent sets (MD) and independent sets (ID) (as detailed in subsec: dataset_overview )in MV-MATH.",
+    "char_start": 29155,
+    "char_end": 29386,
+    "sentence_index": 168,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec013",
+    "text": "While the ID set includes multiple images, they are not interrelated.",
+    "char_start": 29387,
+    "char_end": 29456,
+    "sentence_index": 169,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec013",
+    "text": "In contrast, the MD set comprises mutually dependent images, demanding a higher level of cross-image understanding.",
+    "char_start": 29457,
+    "char_end": 29572,
+    "sentence_index": 170,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec013",
+    "text": "As shown in fig:image_relavance , with the exception of Qwen2VL-7B and LLaVA-OV-Chat-7B, all models exhibit lower performance on the MD set compared to the ID set, with Gemini-1.5-pro demonstrating the largest performance gap between the two, reaching 7.8\\%.",
+    "char_start": 29573,
+    "char_end": 29831,
+    "sentence_index": 171,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec013",
+    "text": "This observation suggests that most models face challenges in effectively handling interdependent image tasks in mathematical scenarios, highlighting the potential limitations of handling cross-image interdependencies in mathematical multi-visual contexts.",
+    "char_start": 29832,
+    "char_end": 30088,
+    "sentence_index": 172,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec013",
+    "text": "Input Methods, Merge vs.",
+    "char_start": 30090,
+    "char_end": 30114,
+    "sentence_index": 173,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec013",
+    "text": "Sequential: To investigate the impact of image input methods on model performance, we apply both merge and sequence input approaches on MV-MATH , with results presented in fig:merge_sequence .",
+    "char_start": 30115,
+    "char_end": 30307,
+    "sentence_index": 174,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec013",
+    "text": "The findings demonstrate that the sequence input method outperforms the merge input method across all tested models, indicating that preserving the positional and sequential information of images is crucial for effective multi-image mathematical reasoning.",
+    "char_start": 30308,
+    "char_end": 30564,
+    "sentence_index": 175,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec013",
+    "text": "This superior performance of sequence input underscores the importance of structured visual information in enhancing model capabilities for interpreting and processing complex mathematical scenarios.",
+    "char_start": 30565,
+    "char_end": 30764,
+    "sentence_index": 176,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec013",
+    "text": "An interesting observation is that, while the LLaVA-OV-SI-72B model underperforms compared to the LLaVA-OV-Chat-72B model on sequence input method, it outperforms the latter on merge input method.",
+    "char_start": 30765,
+    "char_end": 30961,
+    "sentence_index": 177,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec013",
+    "text": "This shift may be attributed to the initial single-image training of LLaVA-OV-SI, which enhances its ability to retain distinct visual features within individual images when processed in a merged format.",
+    "char_start": 30962,
+    "char_end": 31165,
+    "sentence_index": 178,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec014",
+    "text": "[!t]\n\n-10mm\nimage/error_distribution.pdf\nError distribution over 100 annotated Claude errors.",
+    "char_start": 31167,
+    "char_end": 31260,
+    "sentence_index": 179,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec014",
+    "text": "-5mm\n\nError Analysis We conduct a detailed error analysis of Claude-3.5-Sonnet.",
+    "char_start": 31261,
+    "char_end": 31340,
+    "sentence_index": 180,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec014",
+    "text": "We randomly sample 100 errors, examine their distribution in detail, and provide corresponding qualitative examples.",
+    "char_start": 31341,
+    "char_end": 31457,
+    "sentence_index": 181,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec014",
+    "text": "Based on this analysis, we classify the errors into five types, with the specific categories and their distribution shown in fig:error_distribution .",
+    "char_start": 31458,
+    "char_end": 31607,
+    "sentence_index": 182,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec014",
+    "text": "Visual perception error is the most common type, accounting for 42\\%, which is higher than that of most single-image datasets such as MATH-Vision and MMMU .",
+    "char_start": 31609,
+    "char_end": 31765,
+    "sentence_index": 183,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec014",
+    "text": "This suggests that perceiving multi-visual contexts in the MV-MATH dataset presents a greater challenge compared to single-visual contexts.",
+    "char_start": 31766,
+    "char_end": 31905,
+    "sentence_index": 184,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec014",
+    "text": "An example of a visual perception error in MV-MATH is shown in fig:error_example .",
+    "char_start": 31906,
+    "char_end": 31988,
+    "sentence_index": 185,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec014",
+    "text": "Multi-visual perception requires MLLMs to not only accurately perceive and understand each image individually but also to comprehend the relationships between them.",
+    "char_start": 31989,
+    "char_end": 32153,
+    "sentence_index": 186,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec014",
+    "text": "Reasoning errors also constitute a significant proportion.",
+    "char_start": 32154,
+    "char_end": 32212,
+    "sentence_index": 187,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec014",
+    "text": "Even when the model correctly interprets text and images, it often fails to apply logical and mathematical reasoning effectively, leading to incorrect answers due to flaws in reasoning.",
+    "char_start": 32213,
+    "char_end": 32398,
+    "sentence_index": 188,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec014",
+    "text": "Knowledge errors, stemming from the model's lack of relevant expertise, represent the third most common error type on MV-MATH, accounting for 7\\% of errors.",
+    "char_start": 32399,
+    "char_end": 32555,
+    "sentence_index": 189,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec014",
+    "text": "Calculation errors and reject errors make up 7\\% and 2\\%, respectively.",
+    "char_start": 32556,
+    "char_end": 32627,
+    "sentence_index": 190,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec014",
+    "text": "Notably, we observe that all calculation errors are associated with symbolic computation rather than numerical computation.",
+    "char_start": 32628,
+    "char_end": 32751,
+    "sentence_index": 191,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec014",
+    "text": "-5mm\nModel Insights We analyze LLaVA-OV, the best-performing open-source model on MV-MATH, to gain insights for enhancing model capabilities in multi-visual mathematical contexts.",
+    "char_start": 32752,
+    "char_end": 32931,
+    "sentence_index": 192,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec014",
+    "text": "LLaVA-OV\u2019s strong performance is attributed to its staged training strategy and innovative architecture, which progressively increase the complexity of visual signals, thereby enhancing generalization across multi-image and multimodal tasks.",
+    "char_start": 32932,
+    "char_end": 33173,
+    "sentence_index": 193,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec014",
+    "text": "As shown in tab:main_model_performance , LLaVA-OV-SI consistently underperforms compared to LLaVA-OV-SFT, while LLaVA-OV-Chat achieves the highest accuracy across both 7B and 72B model sizes.",
+    "char_start": 33174,
+    "char_end": 33365,
+    "sentence_index": 194,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec014",
+    "text": "LLaVA-OV-SI is trained with a single-image stage; LLaVA-OV-SFT incorporates additional multi-image training to enhance image-text comprehension; and LLaVA-OV-Chat, building on LLaVA-OV-SFT, leverages Direct Preference Optimization (DPO) and human feedback to further improve generalization and reasoning in multi-visual contexts.",
+    "char_start": 33366,
+    "char_end": 33695,
+    "sentence_index": 195,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec014",
+    "text": "The combination of multi-image training, DPO, and human feedback significantly advances multi-image mathematical reasoning, strengthening both generalization and inference capabilities in multi-visual scenarios.",
+    "char_start": 33696,
+    "char_end": 33907,
+    "sentence_index": 196,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec014",
+    "text": "[t]\n\nimage/err_an_example.pdf\n-7mm\nA basic visual perception error, with the error highlighted in red.",
+    "char_start": 33909,
+    "char_end": 34011,
+    "sentence_index": 197,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec014",
+    "text": "More examples can be found in the appendix.",
+    "char_start": 34012,
+    "char_end": 34055,
+    "sentence_index": 198,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec014",
+    "text": "-3mm\n\nThe introduction of the MV-MATH dataset represents a major advancement in evaluating MLLMs\u2019 multi-visual mathematical reasoning capabilities, addressing a critical gap in the assessment of multi-image mathematical tasks.",
+    "char_start": 34057,
+    "char_end": 34283,
+    "sentence_index": 199,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec015",
+    "text": "MV-MATH encompasses a diverse and challenging array of multi-visual mathematical content.",
+    "char_start": 34284,
+    "char_end": 34373,
+    "sentence_index": 200,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec015",
+    "text": "Using this dataset, we conduct a systematic and comprehensive evaluation of numerous open-source and closed-source models, establishing an extensive benchmark.",
+    "char_start": 34374,
+    "char_end": 34533,
+    "sentence_index": 201,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec015",
+    "text": "This benchmark not only reveals a substantial performance gap between human capabilities and current MLLMs in multi-visual mathematical reasoning but also highlights the impact of image relavance, image input methods and question types on multi-visual math performance.",
+    "char_start": 34534,
+    "char_end": 34803,
+    "sentence_index": 202,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec015",
+    "text": "Additionally, insights derived from the LLaVA-OV model offer guidance for enhancing performance in multi-image mathematical tasks, providing valuable direction for future advancements in this field.",
+    "char_start": 34804,
+    "char_end": 35002,
+    "sentence_index": 203,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec016",
+    "text": "This work has been supported by the National Natural Science Foundation of China (NSFC) Grant 62436009.",
+    "char_start": 35004,
+    "char_end": 35107,
+    "sentence_index": 204,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec016",
+    "text": "ieeenat_fullname\nmain\n\npage 1\n\nsection 0\nsection\n\nIn this chapter, we will introduce MV-MATH in more detail.",
+    "char_start": 35109,
+    "char_end": 35217,
+    "sentence_index": 205,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec018",
+    "text": "All questions in MV-MATH are presented in English.",
+    "char_start": 35219,
+    "char_end": 35269,
+    "sentence_index": 206,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec018",
+    "text": "As shown in tab:dataset_statistics , the longest question in MV-MATH spans 383 words, while the shortest contains 14 words, with an average length of 80.17 words.",
+    "char_start": 35270,
+    "char_end": 35432,
+    "sentence_index": 207,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec018",
+    "text": "fig:question_length_distribution further illustrates the distribution of text lengths, highlighting the diversity of MV-MATH.",
+    "char_start": 35433,
+    "char_end": 35558,
+    "sentence_index": 208,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec018",
+    "text": "[!ht]\n\nimage/appendix_question_length_distribution.pdf\nThe distribution of the number of words per\nquestion in MV-MATH.",
+    "char_start": 35560,
+    "char_end": 35679,
+    "sentence_index": 209,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec018",
+    "text": "-5mm\n\nfig:image_length_distribution illustrates the distribution of the number of images associated with each question in the MV-MATH dataset, highlighting its multimodal diversity.",
+    "char_start": 35681,
+    "char_end": 35862,
+    "sentence_index": 210,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec019",
+    "text": "The dataset features an average of 3.02 images per question, with a median of 3, demonstrating a balanced and realistic allocation of visual resources.",
+    "char_start": 35863,
+    "char_end": 36014,
+    "sentence_index": 211,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec019",
+    "text": "Most questions include 2,3 or 4 images, reflecting the dataset's emphasis on providing sufficient visual context for reasoning tasks.",
+    "char_start": 36015,
+    "char_end": 36148,
+    "sentence_index": 212,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec019",
+    "text": "The presence of questions with 5 or more images showcases the dataset's capability to handle complex, multi-visual scenarios.",
+    "char_start": 36149,
+    "char_end": 36274,
+    "sentence_index": 213,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec019",
+    "text": "This diversity ensures MV-MATH is suitable for evaluating the ability of models to integrate and reason across multiple interconnected visual elements, further enhancing its value as a benchmark for multimodal mathematical reasoning.",
+    "char_start": 36275,
+    "char_end": 36508,
+    "sentence_index": 214,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec019",
+    "text": "[!ht]\n\nimage/appendix_image_count_distribution.pdf\nThe distribution of the number of images per\nquestion in MV-MATH.",
+    "char_start": 36510,
+    "char_end": 36626,
+    "sentence_index": 215,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec019",
+    "text": "-5mm\n\nSince MV-MATH is a meticulously annotated dataset containing both answers and an analysis field, it offers a unique advantage for difficulty classification based on the lengths of the question and analysis.",
+    "char_start": 36628,
+    "char_end": 36840,
+    "sentence_index": 216,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec020",
+    "text": "The difficulty classification is conducted in two steps.",
+    "char_start": 36841,
+    "char_end": 36897,
+    "sentence_index": 217,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec020",
+    "text": "Step 1: A weighted average is calculated using the lengths of the question and analysis fields, assigning a weight of 0.4 to the question length and 0.6 to the analysis length.",
+    "char_start": 36899,
+    "char_end": 37075,
+    "sentence_index": 218,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec020",
+    "text": "This weighting reflects the assumption that the solution process (captured in the analysis field) is more indicative of a question's difficulty.",
+    "char_start": 37076,
+    "char_end": 37220,
+    "sentence_index": 219,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec020",
+    "text": "The weighted length distribution is shown in Figure 8.",
+    "char_start": 37221,
+    "char_end": 37275,
+    "sentence_index": 220,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec020",
+    "text": "Using the K-means clustering algorithm, we cluster the weighted lengths into three difficulty levels: easy ($0\u2013150$), medium ($150\u2013500$), and hard ($>500$).",
+    "char_start": 37276,
+    "char_end": 37432,
+    "sentence_index": 221,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec020",
+    "text": "Step 2: Manual verification is performed on the clustering results from Step 1 by two graduate students.",
+    "char_start": 37434,
+    "char_end": 37538,
+    "sentence_index": 222,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec020",
+    "text": "This process adjusts the difficulty classification to account for cases where the weighted length alone may not fully reflect complexity.",
+    "char_start": 37539,
+    "char_end": 37676,
+    "sentence_index": 223,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec020",
+    "text": "For instance, a question with a short weighted length but involving intricate formula derivation is reclassified as harder, while a question with a long weighted length but straightforward reasoning is reclassified as easier.",
+    "char_start": 37677,
+    "char_end": 37902,
+    "sentence_index": 224,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec020",
+    "text": "The detailed distribution of weighted lengths can be seen in fig:weighted_length_distribution .",
+    "char_start": 37904,
+    "char_end": 37999,
+    "sentence_index": 225,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec020",
+    "text": "After the two-step process described above, we classified the questions into 542 as easy , 964 as medium , and 503 as hard .",
+    "char_start": 38000,
+    "char_end": 38124,
+    "sentence_index": 226,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec020",
+    "text": "[!ht]\n\nimage/weighted_length_distribution.pdf\nWeighted Length Distribution of Questions and Analysis for Difficulty Classification in MV-MATH\n\n-5mm\n\nThis section presents examples of images from various categories in the MV-MATH dataset.",
+    "char_start": 38125,
+    "char_end": 38362,
+    "sentence_index": 227,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec021",
+    "text": "fig: Algebra,fig: Arithmetic,fig: Combinatorial Geometry,fig: Analytic Geometry,fig: Combinatorics,fig: Descriptive Geometry,fig: Logic,fig: Metric Geometry,fig: Solid Geometry,fig: Statistics,fig: Transformation Geometry correspond to images under the categories of Algebra , Arithmetic , Combinatorial Geometry , Analytic Geometry , Combinatorics , Descriptive Geometry , Logic , Metric Geometry , Solid Geometry , Statistics , and Transformation Geometry , respectively.",
+    "char_start": 38363,
+    "char_end": 38836,
+    "sentence_index": 228,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec021",
+    "text": "The diversity of images across categories reflects the wide range of mathematical concepts covered in MV-MATH.",
+    "char_start": 38838,
+    "char_end": 38948,
+    "sentence_index": 229,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec021",
+    "text": "For instance, images in the Statistics category primarily include charts, graphs, and tables, providing rich visual representations of statistical data.",
+    "char_start": 38949,
+    "char_end": 39101,
+    "sentence_index": 230,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "In contrast, images under Arithmetic , often targeted at younger students, feature elements with real-world objects or playful designs to aid comprehension.",
+    "char_start": 39102,
+    "char_end": 39258,
+    "sentence_index": 231,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "Similarly, the Combinatorics and Combinatorial Geometry categories include diagrams with intricate arrangements, requiring detailed reasoning.",
+    "char_start": 39259,
+    "char_end": 39401,
+    "sentence_index": 232,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec021",
+    "text": "On the other hand, images in Analytic Geometry and Metric Geometry are more abstract and geometric, often involving coordinate systems, vectors, or precise measurements.",
+    "char_start": 39402,
+    "char_end": 39571,
+    "sentence_index": 233,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec021",
+    "text": "This variety of visual styles within and across categories highlights the versatility of MV-MATH in evaluating models' ability to interpret and reason over diverse visual contexts, making it a comprehensive benchmark for multi-visual mathematical reasoning tasks.",
+    "char_start": 39573,
+    "char_end": 39836,
+    "sentence_index": 234,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec022",
+    "text": "Analytic Geometry.",
+    "char_start": 39838,
+    "char_end": 39856,
+    "sentence_index": 235,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec022",
+    "text": "Analytic Geometry integrates algebraic techniques with geometry through the use of a coordinate system.",
+    "char_start": 39857,
+    "char_end": 39960,
+    "sentence_index": 236,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec022",
+    "text": "It provides a systematic method to describe geometric shapes using equations and to interpret these equations visually.",
+    "char_start": 39961,
+    "char_end": 40080,
+    "sentence_index": 237,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec022",
+    "text": "This branch of mathematics enables a detailed study of geometric properties, such as distance, angles, and tangents.",
+    "char_start": 40081,
+    "char_end": 40197,
+    "sentence_index": 238,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec022",
+    "text": "2mm\n\nAlgebra.",
+    "char_start": 40198,
+    "char_end": 40211,
+    "sentence_index": 239,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec022",
+    "text": "Algebra is a fundamental area of mathematics that explores the use of symbols to represent numbers and quantities in formulas and equations.",
+    "char_start": 40212,
+    "char_end": 40352,
+    "sentence_index": 240,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec022",
+    "text": "It encompasses a wide range of topics, from solving linear equations to studying abstract structures such as groups, rings, and fields, playing a crucial role in generalizing mathematical principles and solving problems where specific values are unknown.",
+    "char_start": 40353,
+    "char_end": 40607,
+    "sentence_index": 241,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec022",
+    "text": "2mm\n\nMetric Geometry.",
+    "char_start": 40608,
+    "char_end": 40629,
+    "sentence_index": 242,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec022",
+    "text": "Metric Geometry focuses on the study of geometric figures based on distances and angles.",
+    "char_start": 40630,
+    "char_end": 40718,
+    "sentence_index": 243,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec022",
+    "text": "It examines properties that remain invariant under transformations such as rotations, translations, and reflections.",
+    "char_start": 40719,
+    "char_end": 40835,
+    "sentence_index": 244,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec022",
+    "text": "Metric Geometry serves as a foundation for applications in computer graphics, engineering, and physics.",
+    "char_start": 40836,
+    "char_end": 40939,
+    "sentence_index": 245,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec022",
+    "text": "2mm\n\nCombinatorics.",
+    "char_start": 40940,
+    "char_end": 40959,
+    "sentence_index": 246,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec022",
+    "text": "Combinatorics is the branch of mathematics concerned with counting, arrangement, and combination of objects.",
+    "char_start": 40960,
+    "char_end": 41068,
+    "sentence_index": 247,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec022",
+    "text": "It investigates problems related to discrete structures, such as permutations, combinations, and graph theory.",
+    "char_start": 41069,
+    "char_end": 41179,
+    "sentence_index": 248,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec022",
+    "text": "Combinatorics is widely used in areas like cryptography, algorithm design, and network theory.",
+    "char_start": 41180,
+    "char_end": 41274,
+    "sentence_index": 249,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec022",
+    "text": "2mm\n\nTransformation Geometry.",
+    "char_start": 41275,
+    "char_end": 41304,
+    "sentence_index": 250,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec022",
+    "text": "Transformation Geometry studies geometric transformations, such as translations, rotations, reflections, and dilations, to understand how shapes change while preserving certain properties.",
+    "char_start": 41305,
+    "char_end": 41493,
+    "sentence_index": 251,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec022",
+    "text": "It provides insights into symmetry, congruence and has significant applications in computer vision.",
+    "char_start": 41494,
+    "char_end": 41593,
+    "sentence_index": 252,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec022",
+    "text": "2mm\n\nLogic.",
+    "char_start": 41594,
+    "char_end": 41605,
+    "sentence_index": 253,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec022",
+    "text": "Logic in mathematics involves the study of principles of reasoning, including the formulation and analysis of valid arguments.",
+    "char_start": 41606,
+    "char_end": 41732,
+    "sentence_index": 254,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec022",
+    "text": "It lays the groundwork for proof techniques and the development of formal systems.",
+    "char_start": 41733,
+    "char_end": 41815,
+    "sentence_index": 255,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec022",
+    "text": "Mathematical logic is essential for understanding the structure of mathematical theories.",
+    "char_start": 41816,
+    "char_end": 41905,
+    "sentence_index": 256,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec022",
+    "text": "2mm\n\nSolid Geometry.",
+    "char_start": 41906,
+    "char_end": 41926,
+    "sentence_index": 257,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec022",
+    "text": "Solid Geometry is the study of three-dimensional figures such as spheres, cubes, cones, and cylinders.",
+    "char_start": 41927,
+    "char_end": 42029,
+    "sentence_index": 258,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec022",
+    "text": "It explores their properties, measurements, and spatial relationships, often involving volume, surface area, and intersections.",
+    "char_start": 42030,
+    "char_end": 42157,
+    "sentence_index": 259,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec022",
+    "text": "2mm\n\nArithmetic.",
+    "char_start": 42158,
+    "char_end": 42174,
+    "sentence_index": 260,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec022",
+    "text": "Arithmetic is the oldest and most fundamental branch of mathematics, dealing with numbers and basic operations such as addition, subtraction, multiplication, and division.",
+    "char_start": 42175,
+    "char_end": 42346,
+    "sentence_index": 261,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec022",
+    "text": "It serves as the foundation for other mathematical disciplines and is essential for everyday problem-solving and quantitative reasoning.",
+    "char_start": 42347,
+    "char_end": 42483,
+    "sentence_index": 262,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec022",
+    "text": "2mm\n\nCombinatorial Geometry.",
+    "char_start": 42484,
+    "char_end": 42512,
+    "sentence_index": 263,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec022",
+    "text": "Combinatorial Geometry combines concepts from combinatorics and geometry to study the arrangement and interaction of geometric objects.",
+    "char_start": 42513,
+    "char_end": 42648,
+    "sentence_index": 264,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec022",
+    "text": "It addresses problems involving configurations of points, lines, and planes, often focusing on optimization and enumeration.",
+    "char_start": 42649,
+    "char_end": 42773,
+    "sentence_index": 265,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec022",
+    "text": "This field has applications in graph theory, computational geometry, and optimization.",
+    "char_start": 42774,
+    "char_end": 42860,
+    "sentence_index": 266,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec022",
+    "text": "2mm\n\nDescriptive Geometry.",
+    "char_start": 42861,
+    "char_end": 42887,
+    "sentence_index": 267,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec022",
+    "text": "Descriptive Geometry is a method for representing three-dimensional objects in two dimensions using projections.",
+    "char_start": 42888,
+    "char_end": 43000,
+    "sentence_index": 268,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec022",
+    "text": "It involves techniques to visualize and solve spatial problems through precise drawings.",
+    "char_start": 43001,
+    "char_end": 43089,
+    "sentence_index": 269,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec022",
+    "text": "This field is widely used in engineering and architecture for designing and visualizing complex structures.",
+    "char_start": 43090,
+    "char_end": 43197,
+    "sentence_index": 270,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec022",
+    "text": "2mm\n\nStatistics.",
+    "char_start": 43198,
+    "char_end": 43214,
+    "sentence_index": 271,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec022",
+    "text": "Statistics is the study of data collection, analysis, interpretation, and presentation.",
+    "char_start": 43215,
+    "char_end": 43302,
+    "sentence_index": 272,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec022",
+    "text": "It involves mathematical techniques to summarize and infer conclusions from data, often focusing on patterns, variability, and uncertainty.",
+    "char_start": 43303,
+    "char_end": 43442,
+    "sentence_index": 273,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec022",
+    "text": "Statistics is indispensable in research, economics, and decision-making processes across various domains.",
+    "char_start": 43443,
+    "char_end": 43548,
+    "sentence_index": 274,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Algebra.pdf\nSome images from Analytic Algebra.",
+    "char_start": 43550,
+    "char_end": 43634,
+    "sentence_index": 275,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Arithmetic.pdf\nSome images from Arithmetic.",
+    "char_start": 43636,
+    "char_end": 43717,
+    "sentence_index": 276,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Combinatorial_Geometry.pdf\nSome images from Combinatorial Geometry.",
+    "char_start": 43719,
+    "char_end": 43824,
+    "sentence_index": 277,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Analytic_Geometry.pdf\nSome images from Analytic Geometry.",
+    "char_start": 43826,
+    "char_end": 43921,
+    "sentence_index": 278,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Combinatorics.pdf\nSome images from Combinatorics.",
+    "char_start": 43923,
+    "char_end": 44010,
+    "sentence_index": 279,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Descriptive_Geometry.pdf\nSome images from Descriptive Geometry.",
+    "char_start": 44012,
+    "char_end": 44113,
+    "sentence_index": 280,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Logic.pdf\nSome images from Logic.",
+    "char_start": 44115,
+    "char_end": 44186,
+    "sentence_index": 281,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Metric_Geometry.pdf\nSome images from Metric Geometry.",
+    "char_start": 44188,
+    "char_end": 44279,
+    "sentence_index": 282,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Solid_Geometry.pdf\nSome images from Solid Geometry.",
+    "char_start": 44281,
+    "char_end": 44370,
+    "sentence_index": 283,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Statistics.pdf\nSome images from Statistics.",
+    "char_start": 44372,
+    "char_end": 44453,
+    "sentence_index": 284,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec022",
+    "text": "[!htbp]\n\nimage/appendix_subjectimages/Transformation_Geometry.pdf\nSome images from Transformation Geometry.",
+    "char_start": 44455,
+    "char_end": 44562,
+    "sentence_index": 285,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec023",
+    "text": "For open-source models, all experiments for 72B-scale models are conducted on H-800 GPUs, while the remaining models are conducted on A6000 GPUs.",
+    "char_start": 44564,
+    "char_end": 44709,
+    "sentence_index": 286,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec024",
+    "text": "We use Claude-3.5-Sonnet to generate image caption, the prompt is as follows: You are an expert in image description, here is a diagram of a math problem, you need to convert the image into text description in detail so that your description can be used to replace the diagram .",
+    "char_start": 44711,
+    "char_end": 44989,
+    "sentence_index": 287,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec025",
+    "text": "To ensure the model provides accurate responses, we design distinct CoT and 2-shot prompts tailored for multiple-choice, single-step, and multi-step free-form questions.",
+    "char_start": 44991,
+    "char_end": 45160,
+    "sentence_index": 288,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec025",
+    "text": "The original prompt directly instructs the model to generate the final answer without intermediate reasoning.",
+    "char_start": 45161,
+    "char_end": 45270,
+    "sentence_index": 289,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec025",
+    "text": "Detailed information can be found in Table tab:model_prompts,tab:single_step_prompts,tab:multi_step_prompts .",
+    "char_start": 45271,
+    "char_end": 45380,
+    "sentence_index": 290,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec026",
+    "text": "Our evaluation is conducted using the Deepseek API.",
+    "char_start": 45382,
+    "char_end": 45433,
+    "sentence_index": 291,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec026",
+    "text": "For the evaluation of multiple-choice, single-step, and multi-step free-form questions, different prompts are designed to ensure accuracy in answer extraction and assessment.",
+    "char_start": 45434,
+    "char_end": 45608,
+    "sentence_index": 292,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec026",
+    "text": "We first use the Deepseek API to extract the model's answers and then it compares the extracted answers with the ground truth to determine the correctness of the answers.",
+    "char_start": 45609,
+    "char_end": 45779,
+    "sentence_index": 293,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec026",
+    "text": "The specific prompts are shown in tab:deepseek_prompts below.",
+    "char_start": 45780,
+    "char_end": 45841,
+    "sentence_index": 294,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec027",
+    "text": "All experiments are conducted using models configured with a temperature of 0.2 and a max\\_new\\_token limit of 2048 for text generation.",
+    "char_start": 45843,
+    "char_end": 45979,
+    "sentence_index": 295,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec027",
+    "text": "Comprehensive details regarding the models utilized in the evaluation are presented in tab:model_sources .",
+    "char_start": 45980,
+    "char_end": 46086,
+    "sentence_index": 296,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec027",
+    "text": "[!b]\n\np 0.8\n\n1 c Original\n\nYou are an assistant for solving math problems.",
+    "char_start": 46088,
+    "char_end": 46162,
+    "sentence_index": 297,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec027",
+    "text": "Your input consists of a math question and images, give your answer directly, without any intermediate steps.",
+    "char_start": 46163,
+    "char_end": 46272,
+    "sentence_index": 298,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec027",
+    "text": "1 c CoT (Chain of Thought)\n\nYou are an assistant for solving math problems.",
+    "char_start": 46274,
+    "char_end": 46349,
+    "sentence_index": 299,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec027",
+    "text": "Your input consists of a math question and images.",
+    "char_start": 46350,
+    "char_end": 46400,
+    "sentence_index": 300,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec027",
+    "text": "Your task is to output the solution steps and the answer.",
+    "char_start": 46401,
+    "char_end": 46458,
+    "sentence_index": 301,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec027",
+    "text": "The output format should be a step-by-step approach.",
+    "char_start": 46459,
+    "char_end": 46511,
+    "sentence_index": 302,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec027",
+    "text": "Each question is multiple choice with one correct answer.",
+    "char_start": 46512,
+    "char_end": 46569,
+    "sentence_index": 303,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec027",
+    "text": "Your final answer must be one of A, B, C, or D, and it should be placed within \\ \\ .",
+    "char_start": 46570,
+    "char_end": 46654,
+    "sentence_index": 304,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec027",
+    "text": "For example: \\ A\\ , \\ B\\ , \\ C\\ , or \\ D\\ .",
+    "char_start": 46655,
+    "char_end": 46698,
+    "sentence_index": 305,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec027",
+    "text": "1 c CoT with 2-shot\n\nExample 1:\n\nQuestion: If a triangle has two sides of length 3 and 4, what is the length of the hypotenuse?",
+    "char_start": 46700,
+    "char_end": 46827,
+    "sentence_index": 306,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec027",
+    "text": "A.10 B.8 C.5 D.4\n\nAnswer:\n\nStep 1 (Mathematical theorem used: Pythagorean theorem): The Pythagorean theorem states that in a right triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+    "char_start": 46829,
+    "char_end": 47057,
+    "sentence_index": 307,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec027",
+    "text": "The formula is: $c^2 = a^2 + b^2$, where $a$ and $b$ are the legs, and $c$ is the hypotenuse.",
+    "char_start": 47058,
+    "char_end": 47151,
+    "sentence_index": 308,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec027",
+    "text": "Step 2 (Substitute the known values): Given $a = 3$ and $b = 4$.",
+    "char_start": 47153,
+    "char_end": 47217,
+    "sentence_index": 309,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec027",
+    "text": "Substituting these values into the formula: $c^2 = 3^2 + 4^2 = 9 + 16 = 25$\n\nStep 3 (Calculate the hypotenuse): Taking the square root gives: $c = 25 = 5$\n\nAnswer: \\ C\\\n\nExample 2:\n\nQuestion: In the right triangle ABC, AB is perpendicular to BC.",
+    "char_start": 47218,
+    "char_end": 47463,
+    "sentence_index": 310,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec027",
+    "text": "It is known that AC=5 and AB=4.",
+    "char_start": 47464,
+    "char_end": 47495,
+    "sentence_index": 311,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec027",
+    "text": "Find the area of the right triangle.",
+    "char_start": 47496,
+    "char_end": 47532,
+    "sentence_index": 312,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec027",
+    "text": "A.20 B.10 C.5 D.6\n\nAnswer:\n\nStep 1 (Mathematical theorem used: Pythagorean theorem): We first use the Pythagorean theorem to find the length of $BC$.",
+    "char_start": 47533,
+    "char_end": 47682,
+    "sentence_index": 313,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec027",
+    "text": "The formula is: $AC^2 = AB^2 + BC^2$, where $AC$ is the hypotenuse, and $AB$ and $BC$ are the legs.",
+    "char_start": 47683,
+    "char_end": 47782,
+    "sentence_index": 314,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec027",
+    "text": "Step 2 (Substitute the known values): Given $AC = 5$ and $AB = 4$.",
+    "char_start": 47784,
+    "char_end": 47850,
+    "sentence_index": 315,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec027",
+    "text": "Substituting these values: $5^2 = 4^2 + BC^2 25 = 16 + BC^2$\n\nStep 3 (Solve for $BC$): $BC^2 = 25 - 16 = 9 BC = 9 = 3$\n\nStep 4 (Calculate the area): The area of the right triangle is given by $ 1 2 AB BC$.",
+    "char_start": 47851,
+    "char_end": 48056,
+    "sentence_index": 316,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec027",
+    "text": "Substituting the known values: $ Area = 1 2 4 3 = 6$\n\nAnswer: \\ D\\\n\nYour final answer must be one of A, B, C, or D, and it should be placed within \\ \\\n\nThe prompts used for choice questions in the evaluation for response generation.",
+    "char_start": 48057,
+    "char_end": 48289,
+    "sentence_index": 317,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec027",
+    "text": "p 0.80\n\n1 c Original Prompt\n\nYou are an assistant for solving math problems.",
+    "char_start": 48291,
+    "char_end": 48367,
+    "sentence_index": 318,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec027",
+    "text": "Your input consists of a math question and images.",
+    "char_start": 48368,
+    "char_end": 48418,
+    "sentence_index": 319,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec027",
+    "text": "Give your answer directly, without any intermediate steps.",
+    "char_start": 48419,
+    "char_end": 48477,
+    "sentence_index": 320,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec027",
+    "text": "1 c CoT (Chain of Thought)\n\nYou are an assistant for solving math problems.",
+    "char_start": 48479,
+    "char_end": 48554,
+    "sentence_index": 321,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec027",
+    "text": "Your input consists of a math question and images.",
+    "char_start": 48555,
+    "char_end": 48605,
+    "sentence_index": 322,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec027",
+    "text": "Your task is to output the solution steps and the answer.",
+    "char_start": 48606,
+    "char_end": 48663,
+    "sentence_index": 323,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec027",
+    "text": "The output format should be a step-by-step approach.",
+    "char_start": 48664,
+    "char_end": 48716,
+    "sentence_index": 324,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec027",
+    "text": "1 c CoT with 2-shot\n\nExample 1:\n\nQuestion: If a triangle has two sides of length 3 and 4, what is the length of the hypotenuse?",
+    "char_start": 48718,
+    "char_end": 48845,
+    "sentence_index": 325,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec027",
+    "text": "Answer:\n\nStep 1: (Mathematical theorem used: Pythagorean theorem): The Pythagorean theorem states that in a right triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+    "char_start": 48847,
+    "char_end": 49058,
+    "sentence_index": 326,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec027",
+    "text": "The formula is: $c^2 = a^2 + b^2$, where $a$ and $b$ are the legs, and $c$ is the hypotenuse.",
+    "char_start": 49059,
+    "char_end": 49152,
+    "sentence_index": 327,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec027",
+    "text": "Step 2: (Substitute the known values): Given $a = 3$ and $b = 4$.",
+    "char_start": 49154,
+    "char_end": 49219,
+    "sentence_index": 328,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec027",
+    "text": "Substituting these values into the formula: $c^2 = 3^2 + 4^2 = 9 + 16 = 25$.",
+    "char_start": 49220,
+    "char_end": 49296,
+    "sentence_index": 329,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec027",
+    "text": "Step 3: (Calculate the hypotenuse): Taking the square root gives: $c = 25 = 5$.",
+    "char_start": 49298,
+    "char_end": 49377,
+    "sentence_index": 330,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec027",
+    "text": "Answer: 5\n\nExample 2:\n\nQuestion: In the right triangle ABC, AB is perpendicular to BC.",
+    "char_start": 49379,
+    "char_end": 49465,
+    "sentence_index": 331,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec027",
+    "text": "It is known that $AC = 5$ and $AB = 4$.",
+    "char_start": 49466,
+    "char_end": 49505,
+    "sentence_index": 332,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec027",
+    "text": "Find the area of the right triangle.",
+    "char_start": 49506,
+    "char_end": 49542,
+    "sentence_index": 333,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec027",
+    "text": "Answer:\n\nStep 1: (Mathematical theorem used: Pythagorean theorem): We first use the Pythagorean theorem to find the length of $BC$.",
+    "char_start": 49544,
+    "char_end": 49675,
+    "sentence_index": 334,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec027",
+    "text": "The formula is: $AC^2 = AB^2 + BC^2$, where $AC$ is the hypotenuse, and $AB$ and $BC$ are the legs.",
+    "char_start": 49676,
+    "char_end": 49775,
+    "sentence_index": 335,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec027",
+    "text": "Step 2: (Substitute the known values): Given $AC = 5$ and $AB = 4$.",
+    "char_start": 49777,
+    "char_end": 49844,
+    "sentence_index": 336,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec027",
+    "text": "Substituting these values: $5^2 = 4^2 + BC^2 25 = 16 + BC^2$.",
+    "char_start": 49845,
+    "char_end": 49906,
+    "sentence_index": 337,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec027",
+    "text": "Step 3: (Solve for $BC$): $BC^2 = 25 - 16 = 9 BC = 9 = 3$.",
+    "char_start": 49908,
+    "char_end": 49966,
+    "sentence_index": 338,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec027",
+    "text": "Step 4: (Calculate the area): The area of the right triangle is given by $ 1 2 AB BC$.",
+    "char_start": 49968,
+    "char_end": 50054,
+    "sentence_index": 339,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec027",
+    "text": "Substituting the known values: $ Area = 1 2 4 3 = 6$.",
+    "char_start": 50055,
+    "char_end": 50108,
+    "sentence_index": 340,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec027",
+    "text": "Answer: 6\n\nPlease reason step by step.",
+    "char_start": 50110,
+    "char_end": 50148,
+    "sentence_index": 341,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec027",
+    "text": "Each step is placed on a new line, using the following format: Step X (Mathematical theorem/basis used): Detailed solution steps.",
+    "char_start": 50149,
+    "char_end": 50278,
+    "sentence_index": 342,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec027",
+    "text": "Answer: \\ \\\n\nPrompts used for single-step free-form questions in the evaluation for response generation.",
+    "char_start": 50279,
+    "char_end": 50383,
+    "sentence_index": 343,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec027",
+    "text": "p 0.80\n\n1 c Original Prompt\n\nYou are an assistant for solving math problems.",
+    "char_start": 50385,
+    "char_end": 50461,
+    "sentence_index": 344,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec027",
+    "text": "Your input consists of a math question and images.",
+    "char_start": 50462,
+    "char_end": 50512,
+    "sentence_index": 345,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec027",
+    "text": "Each problem is a multi-step problem.",
+    "char_start": 50513,
+    "char_end": 50550,
+    "sentence_index": 346,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec027",
+    "text": "Give your answer directly, without any intermediate steps.",
+    "char_start": 50551,
+    "char_end": 50609,
+    "sentence_index": 347,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec027",
+    "text": "1 c CoT (Chain of Thought)\n\nYou are a math problem-solving assistant.",
+    "char_start": 50611,
+    "char_end": 50680,
+    "sentence_index": 348,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec027",
+    "text": "Your input is a math problem and a picture of the problem.",
+    "char_start": 50681,
+    "char_end": 50739,
+    "sentence_index": 349,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec027",
+    "text": "Each problem is a multi-step problem.",
+    "char_start": 50740,
+    "char_end": 50777,
+    "sentence_index": 350,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec027",
+    "text": "Your task is to output the solution ideas and answers for each step.",
+    "char_start": 50778,
+    "char_end": 50846,
+    "sentence_index": 351,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec027",
+    "text": "The output format is step-by-step.",
+    "char_start": 50847,
+    "char_end": 50881,
+    "sentence_index": 352,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec027",
+    "text": "1 c CoT with 2-shot Examples\n\nExample 1:\n\nQuestion: If a triangle has two sides of length 3 and 4, (1) what is the length of the hypotenuse?",
+    "char_start": 50883,
+    "char_end": 51023,
+    "sentence_index": 353,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec027",
+    "text": "(2) what is the area of this triangle?",
+    "char_start": 51024,
+    "char_end": 51062,
+    "sentence_index": 354,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec027",
+    "text": "Answer:\n\n(1) Step 1: (Mathematical theorem used: Pythagorean theorem): The Pythagorean theorem states that in a right triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.",
+    "char_start": 51064,
+    "char_end": 51279,
+    "sentence_index": 355,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec027",
+    "text": "The formula is: $c^2 = a^2 + b^2$, where $a$ and $b$ are the legs, and $c$ is the hypotenuse.",
+    "char_start": 51280,
+    "char_end": 51373,
+    "sentence_index": 356,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec027",
+    "text": "Step 2: (Substitute the known values): Given $a = 3$ and $b = 4$.",
+    "char_start": 51375,
+    "char_end": 51440,
+    "sentence_index": 357,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec027",
+    "text": "Substituting these values into the formula: $c^2 = 3^2 + 4^2 = 9 + 16 = 25$.",
+    "char_start": 51441,
+    "char_end": 51517,
+    "sentence_index": 358,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec027",
+    "text": "Step 3: (Calculate the hypotenuse): Taking the square root gives: $c = 25 = 5$.",
+    "char_start": 51519,
+    "char_end": 51598,
+    "sentence_index": 359,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec027",
+    "text": "So the length of the hypotenuse is 5.",
+    "char_start": 51600,
+    "char_end": 51637,
+    "sentence_index": 360,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec027",
+    "text": "(2) Step 1: The area of a right triangle is half the product of its two sides.",
+    "char_start": 51639,
+    "char_end": 51717,
+    "sentence_index": 361,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec027",
+    "text": "Step 2: So the area of this triangle is $3 4 / 2 = 6$.",
+    "char_start": 51719,
+    "char_end": 51773,
+    "sentence_index": 362,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec027",
+    "text": "So the area of this triangle is 6.",
+    "char_start": 51775,
+    "char_end": 51809,
+    "sentence_index": 363,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec027",
+    "text": "Example 2:\n\nQuestion: In the right triangle ABC, AB is perpendicular to BC.",
+    "char_start": 51811,
+    "char_end": 51886,
+    "sentence_index": 364,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec027",
+    "text": "It is known that $AC = 5$ and $AB = 4$.",
+    "char_start": 51887,
+    "char_end": 51926,
+    "sentence_index": 365,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec027",
+    "text": "(1) Find the area of the right triangle.",
+    "char_start": 51927,
+    "char_end": 51967,
+    "sentence_index": 366,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec027",
+    "text": "(2) What is the height of the hypotenuse of this right triangle?",
+    "char_start": 51968,
+    "char_end": 52032,
+    "sentence_index": 367,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec027",
+    "text": "Answer:\n\n(1) Step 1: (Mathematical theorem used: Pythagorean theorem): We first use the Pythagorean theorem to find the length of $BC$.",
+    "char_start": 52034,
+    "char_end": 52169,
+    "sentence_index": 368,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec027",
+    "text": "The formula is: $AC^2 = AB^2 + BC^2$, where $AC$ is the hypotenuse, and $AB$ and $BC$ are the legs.",
+    "char_start": 52170,
+    "char_end": 52269,
+    "sentence_index": 369,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec027",
+    "text": "Step 2: (Substitute the known values): Given $AC = 5$ and $AB = 4$.",
+    "char_start": 52271,
+    "char_end": 52338,
+    "sentence_index": 370,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec027",
+    "text": "Substituting these values: $5^2 = 4^2 + BC^2 25 = 16 + BC^2$.",
+    "char_start": 52339,
+    "char_end": 52400,
+    "sentence_index": 371,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec027",
+    "text": "Step 3: (Solve for $BC$): $BC^2 = 25 - 16 = 9 BC = 9 = 3$.",
+    "char_start": 52402,
+    "char_end": 52460,
+    "sentence_index": 372,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec027",
+    "text": "Step 4: (Calculate the area): The area of the right triangle is given by $ 1 2 AB BC$.",
+    "char_start": 52462,
+    "char_end": 52548,
+    "sentence_index": 373,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec027",
+    "text": "Substituting the known values: $ Area = 1 2 4 3 = 6$.",
+    "char_start": 52549,
+    "char_end": 52602,
+    "sentence_index": 374,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec027",
+    "text": "So the area of the right triangle is 6.",
+    "char_start": 52604,
+    "char_end": 52643,
+    "sentence_index": 375,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec027",
+    "text": "(2) Step 1: According to the equal area method, the area of a right triangle is equal to half the product of the two right-angled sides, which is also equal to half the product of the hypotenuse and the corresponding height.",
+    "char_start": 52645,
+    "char_end": 52869,
+    "sentence_index": 376,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec027",
+    "text": "Step 2: According to the above principle and the conclusion of the first step, we can get $AB BC / 2 = AC h / 2$.",
+    "char_start": 52871,
+    "char_end": 52984,
+    "sentence_index": 377,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec027",
+    "text": "Step 3: Substituting the values, we get $h = 3 4 / 5 = 2.4$.",
+    "char_start": 52986,
+    "char_end": 53046,
+    "sentence_index": 378,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec027",
+    "text": "So the height of the hypotenuse of this right triangle is 2.4.",
+    "char_start": 53048,
+    "char_end": 53110,
+    "sentence_index": 379,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec027",
+    "text": "Please reason step by step.",
+    "char_start": 53112,
+    "char_end": 53139,
+    "sentence_index": 380,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec027",
+    "text": "Each step is placed on a new line, using the following format: Step X (Mathematical theorem/basis used): Detailed solution steps.",
+    "char_start": 53140,
+    "char_end": 53269,
+    "sentence_index": 381,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec027",
+    "text": "Answer:\\ \\\n\nPrompts used for multi-step free-form questions in the evaluation for response generation.",
+    "char_start": 53270,
+    "char_end": 53372,
+    "sentence_index": 382,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec027",
+    "text": "[!b]\n\np 0.80\n\n1 c Multiple-Choice Prompt\n\nYou are an assistant for evaluating math problems.",
+    "char_start": 53374,
+    "char_end": 53466,
+    "sentence_index": 383,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec027",
+    "text": "Your task is to extract the model's answer to the given multiple-choice question and compare it with the ground truth.",
+    "char_start": 53467,
+    "char_end": 53585,
+    "sentence_index": 384,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec027",
+    "text": "Steps:\n\n1.",
+    "char_start": 53587,
+    "char_end": 53597,
+    "sentence_index": 385,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec027",
+    "text": "Extract the model's answer.",
+    "char_start": 53598,
+    "char_end": 53625,
+    "sentence_index": 386,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec027",
+    "text": "The answer must be one of A, B, C, or D.",
+    "char_start": 53626,
+    "char_end": 53666,
+    "sentence_index": 387,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec027",
+    "text": "2.",
+    "char_start": 53668,
+    "char_end": 53670,
+    "sentence_index": 388,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec027",
+    "text": "Compare the extracted answer with the ground truth.",
+    "char_start": 53671,
+    "char_end": 53722,
+    "sentence_index": 389,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec027",
+    "text": "3.",
+    "char_start": 53724,
+    "char_end": 53726,
+    "sentence_index": 390,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec027",
+    "text": "Indicate whether the model's answer is correct or incorrect.",
+    "char_start": 53727,
+    "char_end": 53787,
+    "sentence_index": 391,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec027",
+    "text": "Output format:\n\n- Extracted Answer: \\ A\\ , \\ B\\ , \\ C\\ , or \\ D\\ .",
+    "char_start": 53789,
+    "char_end": 53855,
+    "sentence_index": 392,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec027",
+    "text": "- Correctness: [true/false].",
+    "char_start": 53857,
+    "char_end": 53885,
+    "sentence_index": 393,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec027",
+    "text": "1 c Single-Step Free-Form Prompt\n\nYou are an assistant for evaluating math problems.",
+    "char_start": 53887,
+    "char_end": 53971,
+    "sentence_index": 394,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec027",
+    "text": "Your task is to extract the model's answer to the given single-step free-form question and compare it with the ground truth.",
+    "char_start": 53972,
+    "char_end": 54096,
+    "sentence_index": 395,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec027",
+    "text": "Steps:\n\n1.",
+    "char_start": 54098,
+    "char_end": 54108,
+    "sentence_index": 396,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec027",
+    "text": "Extract the model's final answer.",
+    "char_start": 54109,
+    "char_end": 54142,
+    "sentence_index": 397,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec027",
+    "text": "2.",
+    "char_start": 54144,
+    "char_end": 54146,
+    "sentence_index": 398,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec027",
+    "text": "Compare the extracted answer with the ground truth.",
+    "char_start": 54147,
+    "char_end": 54198,
+    "sentence_index": 399,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec027",
+    "text": "3.",
+    "char_start": 54200,
+    "char_end": 54202,
+    "sentence_index": 400,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec027",
+    "text": "Indicate whether the model's answer is correct or incorrect.",
+    "char_start": 54203,
+    "char_end": 54263,
+    "sentence_index": 401,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec027",
+    "text": "Output format:\n\n- Extracted Answer: [Final Answer].",
+    "char_start": 54265,
+    "char_end": 54316,
+    "sentence_index": 402,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec027",
+    "text": "- Correctness: [true/false].",
+    "char_start": 54318,
+    "char_end": 54346,
+    "sentence_index": 403,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec027",
+    "text": "1 c Multi-Step Free-Form Prompt\n\nYou are an assistant for evaluating math problems.",
+    "char_start": 54348,
+    "char_end": 54431,
+    "sentence_index": 404,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec027",
+    "text": "Your task is to extract the model's answers to each sub-question of a multi-step free-form problem and compare them with the ground truth.",
+    "char_start": 54432,
+    "char_end": 54570,
+    "sentence_index": 405,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec027",
+    "text": "Steps:\n\n1.",
+    "char_start": 54572,
+    "char_end": 54582,
+    "sentence_index": 406,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec027",
+    "text": "Extract the final answers for each sub-question.",
+    "char_start": 54583,
+    "char_end": 54631,
+    "sentence_index": 407,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec027",
+    "text": "2.",
+    "char_start": 54633,
+    "char_end": 54635,
+    "sentence_index": 408,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec027",
+    "text": "Compare the extracted answers with the corresponding ground truth.",
+    "char_start": 54636,
+    "char_end": 54702,
+    "sentence_index": 409,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec027",
+    "text": "3.",
+    "char_start": 54704,
+    "char_end": 54706,
+    "sentence_index": 410,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec027",
+    "text": "Indicate whether each answer is correct or incorrect.",
+    "char_start": 54707,
+    "char_end": 54760,
+    "sentence_index": 411,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec027",
+    "text": "Output format:\n\n- Sub-Question 1: Extracted Answer: [Answer].",
+    "char_start": 54762,
+    "char_end": 54823,
+    "sentence_index": 412,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec027",
+    "text": "Correctness: [true/false].",
+    "char_start": 54824,
+    "char_end": 54850,
+    "sentence_index": 413,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec027",
+    "text": "- Sub-Question 2: Extracted Answer: [Answer].",
+    "char_start": 54852,
+    "char_end": 54897,
+    "sentence_index": 414,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec027",
+    "text": "Correctness: [true/false].",
+    "char_start": 54898,
+    "char_end": 54924,
+    "sentence_index": 415,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec027",
+    "text": "Prompts used for evaluating different types of math problems with the Deepseek API.",
+    "char_start": 54926,
+    "char_end": 55009,
+    "sentence_index": 416,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec027",
+    "text": "l|l|p 0.52\n\nModel & Source & URL\n\nDeepseek-chat & Deepseek-chat &\n\nMath-LLaVA-13B & local checkpoint &\n\nLLaVA-v1.5-13B & local checkpoint &\n\nLLaVA-v1.5-7B & local checkpoint &\n\n2 * VILA-13B & 2 * local checkpoint &\n\n2 * InternLM-XComposer2.5-VL-7B & 2 * local checkpoint &\n\nInternVL-Chat-8B & local checkpoint &\n\n2 * Llama-3.2-Vision-Instruct-11B & 2 * local checkpoint &\n\n2 * Deepseek-VL-7B & 2 * local checkpoint &\n\n2 * LLaVA-NeXT-Interleave-7B & 2 * local checkpoint &\n\n2 * Mantis-Idefics2-8B & 2 * local checkpoint &\n\n2 * Mantis-siglip-8B & 2 * local checkpoint &\n\nQwen2VL-Instruct-7B & local checkpoint &\n\n2 * LLaVA-OneVision-SI-7B & 2 * local checkpoint &\n\n2 * LLaVA-OneVision-SFT-7B & 2 * local checkpoint &\n\n2 * LLaVA-OneVision-Chat-7B & 2 * local checkpoint &\n\n2 * LLaVA-OneVision-SI-72B & 2 * local checkpoint &\n\n2 * LLaVA-OneVision-SFT-72B & 2 * local checkpoint &\n\n2 * LLaVA-OneVision-Chat-72B & 2 * local checkpoint &\n\n2 * InternLM-XComposer2-VL & 2 * local checkpoint &\n\n2 * Qwen-VL-Plus & 2 * qwen-vl-plus &\n\nGPT-4V & gpt-4-vision-2023-05-15 &\n\n2 * Qwen-VL-Max & 2 * qwen-vl-max &\n\nGemini-1.5-Pro & gemini-1.5-Pro-2023-05-15 &\n\nGPT-4o & gpt-4o-2024-05-14 &\n\nClaude-3.5-Sonnet & claude-3.5-sonnet-2024-05-24 &\n\nThe source of the models used in the evaluation.",
+    "char_start": 55011,
+    "char_end": 56284,
+    "sentence_index": 417,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec028",
+    "text": "In this section, we present a detailed analysis of the experimental results across three question types: multiple-choice, single-step free-form, and multi-step free-form.",
+    "char_start": 56286,
+    "char_end": 56456,
+    "sentence_index": 418,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec028",
+    "text": "Each subsection highlights the model's performance on these distinct question formats, providing insights into the effectiveness and limitations of the evaluated methods.",
+    "char_start": 56457,
+    "char_end": 56627,
+    "sentence_index": 419,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec028",
+    "text": "The results are compared and discussed to showcase how different models handle varying levels of complexity and reasoning requirements.",
+    "char_start": 56628,
+    "char_end": 56763,
+    "sentence_index": 420,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec028",
+    "text": "The result of choice , single-step and multi-step are shown in tab:choice,tab:single-step,tab:multi-step-SAR,tab:multi-step-QCR .",
+    "char_start": 56765,
+    "char_end": 56894,
+    "sentence_index": 421,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec028",
+    "text": "We observe that there is a performance gap between multiple-choice questions and free-form question types.",
+    "char_start": 56895,
+    "char_end": 57001,
+    "sentence_index": 422,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec028",
+    "text": "Claude-3.5-Sonnet perform the best on multiple-choice questions with a score of 44.0\\%, followed by GPT-4o and LLaVA-OneVision-Chat-72B.",
+    "char_start": 57002,
+    "char_end": 57138,
+    "sentence_index": 423,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec028",
+    "text": "On single-step free-form questions, Claude still leads with an accuracy of 24.1\\%, and the gap between open-source models and closed-source models has widened.",
+    "char_start": 57139,
+    "char_end": 57298,
+    "sentence_index": 424,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec028",
+    "text": "For multi-step free-form questions, we calculate two metrics: Step Accuracy Rate (SAR) and Question Completeness Rate (QCR).",
+    "char_start": 57299,
+    "char_end": 57423,
+    "sentence_index": 425,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec028",
+    "text": "GPT-4o achieves the highest scores in both SAR and QCR, with 32.0\\% and 6.0\\%, respectively.",
+    "char_start": 57424,
+    "char_end": 57516,
+    "sentence_index": 426,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec028",
+    "text": "The models\u2019 performance on QCR reflects their inability to perform complex multi-visual mathematical reasoning tasks.",
+    "char_start": 57517,
+    "char_end": 57634,
+    "sentence_index": 427,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec028",
+    "text": "The multi-step part of the overall accuracy in tab:main_model_performance is calculated using the QCR metric.",
+    "char_start": 57635,
+    "char_end": 57744,
+    "sentence_index": 428,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec028",
+    "text": "[p]\n\n!",
+    "char_start": 57746,
+    "char_end": 57752,
+    "sentence_index": 429,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec028",
+    "text": "l|c|ccccccccccc\n\nModel & Overall & AG & Algebra & MG & Combinatorics & TG & Logic & SG & Arithmetic & CG & DG & Statistics\n\n13 c LLMs(Text-only, CoT with 2-shot)\n\nDeepseek-Chat & 27.0 & 26.3 & 32.6 & 19.4 & 31.8 & 28.5 & 9.0 & 29.9 & 27.2 & 24.8 & 28.1 & 13.2\n\n13 c LLMs(Text + Image Caption, CoT with 2-shot)\n\nDeepseek-Chat & 27.5 & 27.7 & 30.1 & 18.4 & 36.8 & 30.5 & 10.9 & 32.9 & 26.8 & 26.8 & 28.7 & 17.3\n\n13 c Open-source MLLMs (Text + Image, CoT with 2-shot)\n\nMath-LLaVA-13B & 3.6 & 2.3 & 7.9 & 3.7 & 9.0 & 2.0 & 0.0 & 1.7 & 18.1 & 5.8 & 2.3 & 5.8\n\nLLaVA-v1.5-13B & 8.6 & 7.0 & 10.8 & 7.4 & 9.0 & 10.0 & 9.0 & 5.9 & 18.1 & 13.1 & 5.4 & 11.7\n\nLLaVA-v1.5-7B & 18.0 & 15.7 & 18.8 & 20.3 & 9.0 & 18.0 & 13.6 & 21.4 & 0.0 & 16.7 & 25.7 & 11.7\n\nVILA-13B & 21.5 & 20.4 & 18.1 & 20.3 & 22.7 & 20.0 & 18.1 & 23.3 & 54.5 & 23.3 & 22.6 & 5.8\n\nInternLM-XComposer2.5-VL-7B & 23.0 & 21.0 & 20.2 & 24.0 & 31.8 & 27.0 & 36.3 & 16.7 & 27.2 & 24.0 & 25.0 & 5.8\n\nInternVL-Chat-8B & 25.9 & 23.9 & 31.8 & 25.9 & 31.8 & 27.5 & 27.2 & 25.1 & 36.3 & 22.6 & 21.8 & 23.5\n\nLlama-3.2-Vision-Instruct-11B & 24.1 & 23.9 & 22.4 & 24.0 & 31.8 & 21.5 & 18.1 & 19.7 & 36.3 & 32.1 & 27.3 & 17.6\n\nDeepseek-VL-7B & 26.0 & 26.3 & 32.6 & 19.4 & 31.8 & 28.5 & 9.0 & 29.9 & 27.2 & 24.8 & 28.1 & 29.4\n\nLLaVA-NeXT-Interleave-7B & 26.6 & 23.9 & 23.1 & 26.8 & 31.8 & 25.5 & 18.1 & 31.7 & 9.0 & 30.6 & 26.5 & 23.5\n\nMantis-Idefics2-8B & 26.6 & 22.8 & 27.5 & 31.4 & 27.2 & 27.0 & 22.7 & 23.9 & 9.0 & 29.9 & 28.9 & 11.7\n\nMantis-siglip-8B & 27.8 & 29.8 & 27.5 & 28.7 & 22.7 & 27.0 & 22.7 & 26.9 & 27.2 & 21.8 & 35.1 & 17.6\n\nQwen2VL-Instruct-7B & 27.8 & 21.0 & 28.2 & 24.0 & 31.8 & 30.0 & 22.7 & 32.3 & 27.2 & 32.1 & 26.5 & 23.5\n\nLLaVA-OneVision-SI-7B & 26.3 & 23.9 & 28.2 & 21.2 & 22.7 & 26.5 & 13.6 & 27.5 & 45.4 & 23.3 & 34.3 & 13.6\n\nLLaVA-OneVision-SFT-7B & 30.1 & 30.4 & 28.6 & 54.5 & 26.2 & 27.2 & 28.1 & 9.0 & 37.9 & 31.7 & 30.0 & 23.5\n\nLLaVA-OneVision-Chat-7B & 31.5 & 32.7 & 29.7 & 34.2 & 22.7 & 26.0 & 4.5 & 37.7 & 54.5 & 32.8 & 32.0 & 29.4\n\nLLaVA-OneVision-SI-72B & 35.8 & 34.5 & 34.0 & 38.8 & 50.0 & 36.0 & wkblue 40.9 & 40.1 & 45.4 & 27.0 & 36.7 & 23.5\n\nLLaVA-OneVision-SFT-72B & 37.0 & 29.8 & 42.0 & 28.7 & 36.3 & 37.5 & 31.8 & wkred 47.9 & 18.1 & 32.8 & wkblue 39.8 & 29.4\n\nLLaVA-OneVision-Chat-72B & 38.0 & 32.1 & 42.0 & 33.3 & 54.5 & 37.5& 27.2 & 47.3 & 36.3 & 35.0 & 35.9 & 35.2\n\n13 c Closed-source MLLMs (Text + Image, CoT with 2-shot)\n\nQwen-vl-plus & 27.7 & 30.4 & 25.3 & 25.0 & 18.1 & 29.0 & 31.8 & 33.5 & 45.4 & 22.6 & 24.2 & 29.4\n\nGPT-4V & 32.5 & 21.0 & 34.7 & 44.4 & 36.3 & 32.5 & 36.3 & 31.7 & 45.4 & 32.1 & 33.5 & 35.2\n\nQwen-vl-max & 37.3 & 35.0 & 38.4 & 29.6 &\nwkblue 59.0 & 37.0 & 31.8 & 43.7 & 45.4 & wkblue 37.2 & 32.8 & 23.5\n\nGemini-1.5-Pro & 35.8 & wkblue 36.2 & 36.2 & 30.5 & 31.8 & 39.0 & wkred 40.9 & 40.1 &\nwkblue 54.5 & 32.8 & 28.9 & 35.2\n\nGPT-4o & wkblue 41.9 & 36.2 & wkblue 46.3 & wkblue 44.4 & 50.0 & wkblue 40.0 & 31.8 & wkblue 47.3 & 45.4 & 35.0 & wkred 45.3 & wkred 47.0\n\nClaude-3.5 & wkred 44.0 & wkred 42.6 & wkred 49.2 & wkred 46.3 & wkred 59.0 & wkred 43.5 & 31.8 & 44.9 & wkred 72.7 & wkred 39.4 & 39.0 & wkblue 41.1\n\n13 c Human Performance\n\nHuman (testmini) & 80.2 & 75.2 & 71.9 & 95.2 & 85.1 & 70.4 & 80.2 & 67.5 & 85.2 & 76.7 & 69.8 & 88.4\n\nComparison of model performances across various mathematical subjects on the choice problem set.",
+    "char_start": 57754,
+    "char_end": 61098,
+    "sentence_index": 430,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec028",
+    "text": "The wkred first and wkblue second highest accuracy of LMMs are marked in red and blue , respectively.",
+    "char_start": 61099,
+    "char_end": 61200,
+    "sentence_index": 431,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec028",
+    "text": "-5mm\n\n[htbp]\n\n!",
+    "char_start": 61202,
+    "char_end": 61217,
+    "sentence_index": 432,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec028",
+    "text": "l|c|cccccccccc\n\nModel & Overall & AG & Algebra & MG & Combinatorics & TG & SG & Arithmetic & CG & DG\n\n11 c LLMs(Text-only, CoT with 2-shot)\n\nDeepseek-Chat & 3.0 & 3.1 & 2.3 & 4.0 & 5.5 & 2.5 & 3.0 & 0.0 & 3.3 & 10.0\n\n11 c LLMs(Text + Image Caption, CoT with 2-shot)\n\nDeepseek-Chat & 4.3 & 5.2 & 3.4 & 5.3 & 0.0 & 1.2 & 3.0 & 20.0 & 2.9 & 20.0\n\n11 c Open-source MLLMs (Text + Image, CoT with 2-shot)\n\nMath-LLaVA-13B & 2.5 & 0.0 & 5.8 & 6.6 & 0.0 & 3.8 & 4.5 & 20.0 & 7.2 & 0.0\n\nLLaVA-v1.5-13B & 0.6 & 2.1 & 1.1 & 0.0 & 0.0 & 6.4 & 1.5 & 0.0 & 0.4 & 0.0\n\nLLaVA-v1.5-7B & 0.3 & 0.0 & 2.3 & 0.0 & 11.1 & 1.2 & 1.0 & 0.0 & 2.9 & 0.0\n\nVILA-13B & 0.5 & 0.0 & 1.1 & 0.0 & 0.0 & 1.2 & 5.0 & 0.0 & 3.3 & 0.0\n\nInternLM-XComposer2.5-VL-7B & 1.0 & 1.0 & 2.3 & 0.0 & 16.6 & 6.4 & 3.5 & 0.0 & 3.8 & 10.0\n\nInternVL-Chat-8B & 0.3 & 1.0 & 4.6 & 8.0 & 5.5 & 1.2 & 3.0 & 20.0 & 2.9 & 0.0\n\nLlama-3.2-Vision-Instruct-11B & 2.7 & 4.2 & 6.9 & 8.0 & 11.1 & 2.5 & 5.0 & 20.0 & 3.8 & 0.0\n\nDeepseek-VL-7B & 1.5 & 0.0 & 2.3 & 0.0 & 0.0 & 0.0 & 3.0 & 0.0 & 3.3 & 10.0\n\nLLaVA-NeXT-Interleave-7B & 2.7\n& 1.0 & 4.6 & 1.3 & 0.0 & 1.2 & 3.5 & 0.0 & 5.0 & 0.0\n\nMantis-Idefics2-8B & 2.0 & 1.0 & 4.6 & 5.3 & 0.0 & 7.7 & 3.0 & 0.0 & 8.4 & 0.0\n\nMantis-siglip-8B & 1.1 & 2.1 & 3.4 & 5.3 & 5.5 & 5.1 & 0.0 & 0.0 & 4.6 & 0.0\n\nQwen2VL-Instruct-7B & 2.8 & 3.1 & 4.6 & 4.0 & 0.0 & 2.5 & 4.5 & 40.0 & 6.7 & 10.0\n\nLLaVA-OneVision-SI-7B & 6.7 & 5.2 & 10.4 & 5.3 & 11.1 & 6.4 & 7.5 & 20.0 & 9.3 & 10.0\n\nLLaVA-OneVision-SFT-7B & 5.5 & 5.2 & 8.1 & 5.3 & 0.0 & 6.4 & 7.5 & 20.0 & 6.0 & 0.0\n\nLLaVA-OneVision-Chat-7B & 4.8 & 1.0\n& 8.1 & 4.0 & 5.5 & 3.8 & 6.0 & 20.0 & 6.7 & 20.0\n\nLLaVA-OneVision-SI-72B & 13.1 & 9.4\n& 11.6 & 12.0 & 0.0 & 6.4 & 16.6 & 20.0 & wkblue 19.9 & 20.0\n\nLLaVA-OneVision-SFT-72B & 13.7 & 13.6 & 13.9 & 12.0 & 5.5 & 6.4 & 20.2 & 20.0 & 15.2 & 40.0\n\nLLaVA-OneVision-Chat-72B & 13.1 & 11.5 & 17.4 & 12.0 & 11.1 & 5.1 & 18.1 & 20.0 & 15.2 & 40.0\n\n11 c Closed-source MLLMs (Text + Image, CoT with 2-shot)\n\nQwen-vl-plus & 12.6 & 8.4 & 13.9 & 8.0 & 16.6 & 10.3 & 16.6 & 20.0 & 11.8 & 20.0\n\nGPT-4V & 16.4 & 12.6 & wkblue 27.9 & 17.3 & 11.1\n& 11.6 & 22.2 & wkblue 40.0 & 11.8 & 40.0\n\nQwen-vl-max & 15.8 & 13.6 & 21.1 & 18.6 & 11.1 & 10.3 & 20.2 & 20.0 & 15.6 & 30.0\n\nGemini-1.5-Pro & wkblue 23.4 & 16.8 & 26.7 & wkblue 26.6 & 22.2 & 11.6 & 28.7 & 20.0 & 15.2 & wkred 70.0\n\nGPT-4o & 22.5 & wkblue 21.0 & 25.5 & wkred 28.0 & wkblue 27.7 & wkblue 14.2 & wkred 34.3 & wkred 40.0 & 15.2 & 50.0\n\nClaude-3.5 & wkred 24.1 & wkred 22.1 & wkred 27.9 & 22.6 & wkred 38.8 & wkred 14.2 & wkblue 32.8 & 20.0 & wkred 22.4 & wkblue 60.0\n\n11 c Human Performance\n\nHuman (testmini) & 73.2 & 69.8 & 72.9 & 86.2 & 80.1 & 65.8 & 61.7 & 85.9 & 70.6 & 71.3\n\nComparison of model performances across various mathematical subjects on the single-step problem set.",
+    "char_start": 61219,
+    "char_end": 64013,
+    "sentence_index": 433,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec028",
+    "text": "The wkred first and wkblue second highest accuracy of MLLMs are marked in red and blue , respectively.",
+    "char_start": 64014,
+    "char_end": 64116,
+    "sentence_index": 434,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec028",
+    "text": "-5mm\n\n[htbp]\n\n!",
+    "char_start": 64118,
+    "char_end": 64133,
+    "sentence_index": 435,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec028",
+    "text": "l|c|ccccccccc\n\nModel & Overall & AG & Algebra & MG & Combinatorics & TG & SG & Arithmetic & CG\n\n10 c LLMs(Text-only, CoT with 2-shot)\n\nDeepseek-Chat & 8.7 & 11.4 & 8.8 & 3.1 & 0.0 & 3.3 & 9.5 & 0.0 & 18.7\n\n10 c LLMs(Text + Image Caption, CoT with 2-shot)\n\nDeepseek-Chat & 9.1 & 11.6 & 7.7 & 5.2 & 0.0 & 6.6 & 19.0 & 0.0 & 19.4\n\n10 c Open-source MLLMs (Text + Image, CoT with 2-shot)\n\nMath-LLaVA-13B & 4.1 & 2.6 & 4.4 & 3.1 & 0.0 & 15.0 & 0.0 & 0.0 & 4.1\n\nLLaVA-v1.5-13B & 2.5 & 1.7 & 2.2 & 2.0 & 0.0 & 0.0 & 4.7 & 0.0 & 6.9\n\nLLaVA-v1.5-7B & 1.6 & 3.5 & 0.0 & 2.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nVILA-13B & 2.0 & 0.0 & 2.2 & 0.0 & 0.0 & 3.3 & 4.7 & 0.0 & 9.0\n\nInternLM-XComposer2.5-VL-7B & 2.1 & 0.8 & 2.2 & 2.0 & 0.0 & 3.3 & 0.0 & 0.0 & 6.9\n\nInternVL-Chat-8B & 4.0 & 3.0 & 5.5 & 5.2 & 0.0 & 3.3 & 9.5 & 0.0 & 2.0\n\nLlama-3.2-Vision-Instruct-11B & 5.0 & 1.7 & 0.0 & 2.0 & 50.0 & 0.0 & 19.0 & 0.0 & 18.7\n\nDeepseek-VL-7B & 2.3 & 0.0 & 8.8 & 3.1 & 0.0 & 0.0 & 4.7 & 0.0 & 0.0\n\nLLaVA-NeXT-Interleave-7B & 5.1 & 7.1 & 7.7 & 2.0 & 0.0 & 3.3 & 9.5 & 0.0 & 4.8\n\nMantis-Idefics2-8B & 1.8 & 1.3 & 2.2 & 1.5 & 0.0 & 0.0 & 0.0 & 0.0 & 6.2\n\nMantis-siglip-8B & 5.5 & 3.9 & 10.0 & 4.1 & 0.0 & 6.6 & 4.7 & 0.0 & 6.9\n\nQwen2VL-Instruct-7B & 10.8 & 11.6 & 11.1 & 3.1 & 0.0 & 10.0 & 16.6 & 0.0 & 19.4\n\nLLaVA-OneVision-SI-7B & 16.0 & 11.4 & 23.3 & 8.3 & 0.0 & 10.0 & 35.7 & 0.0 & 28.4\n\nLLaVA-OneVision-SFT-7B & 17.8 & 14.9 & 22.2 & 16.6 & 0.0 & 18.3 & 14.2 & 0.0 & 27.7\n\nLLaVA-OneVision-Chat-7B & 18.3 & 14.9 & 22.2 & 16.6 & 0.0 & 18.3 & 14.2 & 0.0 & 27.7\n\nLLaVA-OneVision-SI-72B & 24.0 & 26.7 & 23.3 & wkblue 25.5 & 50.0 & 15.0 & 28.5 & 0.0 & 19.4\n\nLLaVA-OneVision-SFT-72B & 25.9 & 25.4 & 33.3 & 13.0 & 50.0 & 30.0 & 33.3 & 0.0 & 27.7\n\nLLaVA-OneVision-Chat-72B & 26.2 & 27.1 & 30.0 & 16.6 & 50.0 & 18.3 & 36.9 & 0.0 & 27.7\n\n10 c Closed-source MLLMs (Text + Image, CoT with 2-shot)\n\nQwen-vl-plus & 24.2 & 26.7 & 23.3 & 16.6 & 50.0 & 18.3 & 28.5 & 0.0 & 19.4\n\nGPT-4V & 23.8 & 23.4 & 24.8 & 22.3 & 50.0 & 15.0 & wkred 40.4 & wkred 100.0 & 20.1\n\nQwen-vl-max & 29.5 & 29.1 & 36.6 & 19.7 & 0.0 & 30.0 & 28.5 & 0.0 & 29.1\n\nGemini-1.5-Pro & 31.7 & wkred 34.4 & wkblue 38.8 & 21.8 & wkblue 50.0 & wkred 36.6 & 30.9 & 0.0 & 24.3\n\nGPT-4o & wkred 32.6 & 30.2 & wkred 43.3 & 21.3 & wkred 100.0 & 28.3 & wkblue 38.0 & 0.0 & wkblue 34.0\n\nClaude-3.5 & wkblue 32.3 & wkblue 30.7 & 26.6 & wkred 32.8 & 0.0 & wkblue 35.0 & 38.0 & 0.0 & wkred 38.8\n\n10 c Human Performance\n\nHuman (testmini) & 78.5 & 75.2 & 76.4 & 83.2 & 79.1 & 72.4 & 66.5 & 79.0 & 71.7\n\nComparison of model performances across various mathematical subjects on the multi-step problem set(SAR).",
+    "char_start": 64135,
+    "char_end": 66751,
+    "sentence_index": 436,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec028",
+    "text": "The wkred first and wkblue second highest accuracy of MLLMs are marked in red and blue , respectively.",
+    "char_start": 66752,
+    "char_end": 66854,
+    "sentence_index": 437,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec028",
+    "text": "-5mm\n\n[p]\n\n!",
+    "char_start": 66856,
+    "char_end": 66868,
+    "sentence_index": 438,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec028",
+    "text": "l|c|ccccccccc\n\nModel & Overall & AG & Algebra & MG & Combinatorics & TG & SG & Arithmetic & CG\n\n10 c LLMs(Text-only, CoT with 2-shot)\n\nDeepseek-Chat & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\n10 c LLMs(Text + Image Caption, CoT with 2-shot)\n\nDeepseek-Chat & 1.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\n10 c Open-source MLLMs (Text + Image, CoT with 2-shot)\n\nMath-LLaVA-13B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-v1.5-13B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-v1.5-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nVILA-13B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nInternLM-XComposer2.5-VL-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nInternVL-Chat-8B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLlama-3.2-Vision-Instruct-11B & 1.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nDeepseek-VL-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-NeXT-Interleave-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nMantis-Idefics2-8B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nMantis-siglip-8B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nQwen2VL-Instruct-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-OneVision-SI-7B & 1.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nLLaVA-OneVision-SFT-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-OneVision-Chat-7B & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\n\nLLaVA-OneVision-SI-72B & 1.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nLLaVA-OneVision-SFT-72B & 2.0 & 0.0 & 6.6 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nLLaVA-OneVision-Chat-72B & 2.0 & 0.0 & 6.6 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\n10 c Closed-source MLLMs (Text + Image, CoT with 2-shot)\n\nQwen-vl-plus & 1.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nGPT-4V & 3.0 & 0.0 & 6.6 & 0.0 & 0.0 & 0.0 & 28.5 & 0.0 & 0.0\n\nQwen-vl-max & 2.0 & 0.0 & 6.6 & 0.0 & 0.0 & 0.0 & 14.2 & 0.0 & 0.0\n\nGemini-1.5-Pro & 5.0 & 0.0 & 6.6 & 12.5 & 0.0 & 0.0 & 28.5 & 0.0 & 0.0\n\nGPT-4o & 6.0 & 0.0 & 6.6 & 6.2 & 50.0 & 0.0 & 28.5 & 0.0 & 8.3\n\nClaude-3.5 & 4.0 & 0.0 & 0.0 & 6.2 & 0.0 & 10.0 & 28.5 & 0.0 & 0.0\n\n10 c Human Performance\n\nHuman (testmini) & 66.0 & 60.6 & 66.7 & 52.2 & 100.0 & 70.0 & 71.4 & 63.2 & 75.0\n\nComparison of model performances across various mathematical subjects on the multi-step problem set(QCR).",
+    "char_start": 66870,
+    "char_end": 69283,
+    "sentence_index": 439,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec028",
+    "text": "10mm\n\nWe observe a distinct difference in how prompting strategies affect model performance across different question types as shown in tab:CoT and shot .",
+    "char_start": 69285,
+    "char_end": 69439,
+    "sentence_index": 440,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec029",
+    "text": "For multiple-choice questions, the addition of Chain-of-Thought (CoT) and 2-shot examples tend to decrease performance for most models.",
+    "char_start": 69440,
+    "char_end": 69575,
+    "sentence_index": 441,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec029",
+    "text": "Specifically, out of the ten models we test, eight models perform best with the original prompt.",
+    "char_start": 69576,
+    "char_end": 69672,
+    "sentence_index": 442,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec029",
+    "text": "This suggests that for multiple-choice questions, which typically require selecting an answer from given options, simpler prompts lead to better outcomes as they reduce potential confusion or overthinking induced by extra information.",
+    "char_start": 69673,
+    "char_end": 69907,
+    "sentence_index": 443,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec029",
+    "text": "In contrast, for free-form question types, CoT and 2-shot strategies bring about more significant performance improvements, particularly for multi-step problems.",
+    "char_start": 69909,
+    "char_end": 70070,
+    "sentence_index": 444,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec029",
+    "text": "The complex nature of these questions benefits from the step-by-step reasoning facilitated by CoT and the illustrative examples provided by 2-shot prompting.",
+    "char_start": 70071,
+    "char_end": 70228,
+    "sentence_index": 445,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec029",
+    "text": "Models like Claude-3.5-sonnet show a substantial increase in performance on single-step free-form questions when CoT and 2-shot examples are used, improving from 19.6\\% to 25.6\\%.",
+    "char_start": 70229,
+    "char_end": 70408,
+    "sentence_index": 446,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec029",
+    "text": "Similarly, on multi-step free-form questions, models such as GPT-4o improved from 25.4\\% to 32.6\\% with the addition of these strategies.",
+    "char_start": 70409,
+    "char_end": 70546,
+    "sentence_index": 447,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec029",
+    "text": "These findings highlight that while CoT and few-shot prompting strategies may not universally enhance performance across all question types, they are particularly effective for free-form questions that require detailed reasoning and problem-solving steps.",
+    "char_start": 70548,
+    "char_end": 70803,
+    "sentence_index": 448,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec029",
+    "text": "Incorporating these strategies can aid models in navigating the complexities of open-ended mathematical problems, thereby improving their overall reasoning capabilities.",
+    "char_start": 70804,
+    "char_end": 70973,
+    "sentence_index": 449,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec029",
+    "text": "[h]\n\n!",
+    "char_start": 70975,
+    "char_end": 70981,
+    "sentence_index": 450,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec029",
+    "text": "l|ccc|ccc|ccc\n\nModels & 3 c| Multiple-Choice & 3 c| Single-Step Free-Form & 3 c Multi-Step Free-Form(SAR)\n\n2-10\n& Original & +CoT & +2-shot \\& CoT & Original & +CoT & +2-shot \\& CoT & Original & +CoT & +2-shot \\& CoT\n\nClosed-source Models\n\nClaude-3.5-sonnet & 39.5 & 41.6 red 0.8 (+2.1) & 44.0 red 0.8 (+2.4) & 19.6 & 25.3 red 0.8 (+5.7) & 24.1 darkgreen 0.8 (-1.2) & 30.4 & 32.7 red 0.8 (+2.3) & 32.3 darkgreen 0.8 (-0.4)\n\nGPT-4o & 41.9 & 36.2 darkgreen 0.8 (-5.7) & 41.9 red 0.8 (+5.7) & 24.1 & 28.1 red 0.8 (+4.0) & 22.5 darkgreen 0.8 (-5.6) & 25.4 & 31.6 red 0.8 (+6.2) & 32.6 red 0.8 (+1.0)\n\nGemini-1.5-pro & 40.5 & 35.0 darkgreen 0.8 (-5.5) & 35.8 red 0.8 (+0.8) & 19.7 & 22.6 red 0.8 (+2.9) & 23.4 red 0.8 (+0.8) & 31.1 & 33.9 red 0.8 (+2.8) & 31.7 darkgreen 0.8 (-2.2)\n\nQwen-vl-max & 41.5 & 41.3 darkgreen 0.8 (-0.2) & 37.3 darkgreen 0.8 (-4.0) & 15.5 & 17.1 red 0.8 (+1.6) & 15.8 darkgreen 0.8 (-1.3) & 29.4 & 29.0 darkgreen 0.8 (-0.4) & 29.5 red 0.8 (+0.5)\n\nGPT-4V & 28.9 & 33.2 red 0.8 (+4.3) & 32.5 darkgreen 0.8 (-0.7) & 19.8 & 18.2 darkgreen 0.8 (-1.6) & 16.4 darkgreen 0.8 (-1.8) & 20.0 & 23.2 red 0.8 (+3.2) & 23.8 red 0.8 (+0.6)\n\nOpen-source Models\n\nLLaVA-OneVision-Chat-72B & 39.3 & 38.0 darkgreen 0.8 (-1.3) & 38.0 darkgreen 0.8 (0.0) & 15.8 & 14.2 darkgreen 0.8 (-1.6) & 13.1 darkgreen 0.8 (-1.1) & 25.2 & 24.0 darkgreen 0.8 (-1.2) & 26.2 red 0.8 (+2.2)\n\nLLaVA-OneVision-Chat-7B & 31.6 & 31.0 darkgreen 0.8 (-0.6) & 31.5 red 0.8 (+0.5) & 9.8 & 8.8 darkgreen 0.8 (-1.0) & 4.8 darkgreen 0.8 (-4.0) & 14.7 & 18.6 red 0.8 (+3.9) & 18.3 darkgreen 0.8 (-0.3)\n\nLLaVA-NeXT-Interleave-7B & 29.7 & 29.4 darkgreen 0.8 (-0.3) & 26.6 darkgreen 0.8 (-2.8) & 6.0 & 3.1 darkgreen 0.8 (-2.9) & 2.7 darkgreen 0.8 (-0.4) & 11.5 & 6.8 darkgreen 0.8 (-4.7) & 5.1 darkgreen 0.8 (-1.7)\n\nQwen2VL-Instruct-7B & 33.6 & 28.2 darkgreen 0.8 (-5.4) & 27.8 darkgreen 0.8 (-0.4) & 6.2 & 5.2 darkgreen 0.8 (-1.0) & 2.8 darkgreen 0.8 (-2.4) & 5.5 & 10.7 red 0.8 (+5.2) & 10.8 red 0.8 (+0.1)\n\nDeepseek-VL-Chat-7B & 29.0 & 28.8 darkgreen 0.8 (-0.2) & 26.0 darkgreen 0.8 (-2.8) & 6.0 & 2.7 darkgreen 0.8 (-3.3) & 1.5 darkgreen 0.8 (-1.2) & 5.1 & 2.5 darkgreen 0.8 (-2.6) & 2.3 darkgreen 0.8 (-0.2)\n\nModel Performance Evaluation across 3 Question Types and Configurations.",
+    "char_start": 70982,
+    "char_end": 73236,
+    "sentence_index": 451,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec029",
+    "text": "The best performance in each category is bolded .",
+    "char_start": 73237,
+    "char_end": 73286,
+    "sentence_index": 452,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec029",
+    "text": "Improvements over the previous configuration are indicated in red red for increases and darkgreen green for decreases.",
+    "char_start": 73287,
+    "char_end": 73405,
+    "sentence_index": 453,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec029",
+    "text": "-5mm\n\nTo the best of our knowledge, this study is the first to analyze multi-image mathematical tasks from the perspective of image relevance.",
+    "char_start": 73407,
+    "char_end": 73549,
+    "sentence_index": 454,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec030",
+    "text": "Beyond relevance, we also investigate the impact of image quantity on model performance.",
+    "char_start": 73550,
+    "char_end": 73638,
+    "sentence_index": 455,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec030",
+    "text": "However, no clear patterns are observed, suggesting that the number of images may not be a critical factor in determining performance.",
+    "char_start": 73639,
+    "char_end": 73773,
+    "sentence_index": 456,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec030",
+    "text": "Instead, relevance appears to play a more significant role, as the interdependence among images demands a model\u2019s ability to perform cross-image understanding, posing a greater challenge to its reasoning capabilities.",
+    "char_start": 73774,
+    "char_end": 73991,
+    "sentence_index": 457,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec030",
+    "text": "[h]\n\n!",
+    "char_start": 73993,
+    "char_end": 73999,
+    "sentence_index": 458,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec030",
+    "text": "l|ccccc|ccc|ccc\n\nBenchmarks & Language & Multi-image & Avg Question length & Avg Analysis length & Image Relevance Annotation & Subject Number & Size & Source & MC & FF & MS\n\nMathVista & EN & & 77.1 & & & 7 & 1K/6K & Synthesized & & &\n\nGeoQA & EN & & 37.1 & 58.2 & & 1 & 0.7K & Internet & & &\n\nMATH-Vision & EN & & 42.4 & & & 16 & 3K & Synthesized & & &\n\nMMMU-math & EN & & 40.8 & & & 8 & 0.5K & Textbook & & &\n\nMathverse-mv& EN & & 76.9 & & & 1 & 0.8K & Synthesized & & &\n\nCMM-math & CN & & - & - & &7 & 0.7K & Internet & & &\n\nMV-MATH(Ours) & EN & & 80.2 & 150.9 & & 11 & 2K & Internet\\&Annotated & & &\n\nComparison with existing multimodal math benchmarks.",
+    "char_start": 74000,
+    "char_end": 74657,
+    "sentence_index": 459,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec030",
+    "text": "MC: Multiple Choice, FF: Free-form, MS:Multi-Step.",
+    "char_start": 74658,
+    "char_end": 74708,
+    "sentence_index": 460,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec031",
+    "text": "We have crawled a large number of multimodal math test questions totaling around 380k multimodal math questions.",
+    "char_start": 74710,
+    "char_end": 74822,
+    "sentence_index": 461,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec032",
+    "text": "To format all questions for use, we process them by OCR engine like Mathpix interface.",
+    "char_start": 74823,
+    "char_end": 74909,
+    "sentence_index": 462,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec032",
+    "text": "Due to inherent errors in the OCR engine, we introduce manual checks to ensure the accuracy of parsing results and to verify whether the questions belong to multimodal math problems.",
+    "char_start": 74910,
+    "char_end": 75092,
+    "sentence_index": 463,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec032",
+    "text": "Specifically, we use the three-stage strategy outlined in sec:dataset to complete the final filtering of the data, ensuring not only the high quality of the questions but also the high quality of the images.",
+    "char_start": 75093,
+    "char_end": 75300,
+    "sentence_index": 464,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec032",
+    "text": "In the 1st stage, text-image alignment refers to ensuring the number of referenced images matches those returned by the Mathpix API.",
+    "char_start": 75302,
+    "char_end": 75434,
+    "sentence_index": 465,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec032",
+    "text": "For instance, if the question text mentions 'as shown in figure 4' but the Mathpix returns 3 images, it is filtered out by our rule-based system.",
+    "char_start": 75435,
+    "char_end": 75580,
+    "sentence_index": 466,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec032",
+    "text": "The 2nd stage applies rule-based filtering to detect missing text fields (e.g., missing answers or analysis) and categorize samples into multiple-choice and free-form subsets for further screening.",
+    "char_start": 75581,
+    "char_end": 75778,
+    "sentence_index": 467,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec032",
+    "text": "The 3rd stage involves manual verification, where we filter out blurred images or images with text overlays.",
+    "char_start": 75779,
+    "char_end": 75887,
+    "sentence_index": 468,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec032",
+    "text": "Our annotation team includes graduate students and a field expert.",
+    "char_start": 75888,
+    "char_end": 75954,
+    "sentence_index": 469,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec033",
+    "text": "For the categorization of subjects and image relevance, we first obtain preliminary results through majority voting among three models: GPT-4o, Claude-3.5-Sonnet, and Qwen-VL-Max.",
+    "char_start": 75956,
+    "char_end": 76135,
+    "sentence_index": 470,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec033",
+    "text": "For questions without a consensus from the voting, no annotations are initially assigned.",
+    "char_start": 76136,
+    "char_end": 76225,
+    "sentence_index": 471,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec033",
+    "text": "Subsequently, each question is independently reviewed by two graduate students specializing in relevant fields, with each producing an individual annotation result.",
+    "char_start": 76226,
+    "char_end": 76390,
+    "sentence_index": 472,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec033",
+    "text": "Finally, questions with conflicting annotations are adjudicated by domain experts to determine the final MV-MATH annotations.",
+    "char_start": 76391,
+    "char_end": 76516,
+    "sentence_index": 473,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec034",
+    "text": "We provide a detailed comparison between our MV-MATH and existing mathematical\nbenchmarks in tab:comparison_among_benchmarks .",
+    "char_start": 76518,
+    "char_end": 76644,
+    "sentence_index": 474,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec035",
+    "text": "In this section, we provide more detailed error examples of Claude-3.5-Sonnet.",
+    "char_start": 76646,
+    "char_end": 76724,
+    "sentence_index": 475,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec035",
+    "text": "We classify Claude's errors into five categories: Visual Perception Error, Reasoning Error, Calculation Error, Knowledge Error, and Reject Error.",
+    "char_start": 76725,
+    "char_end": 76870,
+    "sentence_index": 476,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec035",
+    "text": "Detailed examples can be seen in fig: VPE1,fig: VPE2,fig: RE1,fig: RE2,fig: KE1,fig: KE2,fig: CE1,fig: CE2,fig: reject1,fig: reject2 .",
+    "char_start": 76871,
+    "char_end": 77005,
+    "sentence_index": 477,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec035",
+    "text": "[p]\n\nimage/casestudy/VPE1.pdf\nAn example of visual perception error.",
+    "char_start": 77007,
+    "char_end": 77075,
+    "sentence_index": 478,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec035",
+    "text": "[p]\n\nimage/casestudy/VPE2.pdf\nAn example of visual perception error.",
+    "char_start": 77077,
+    "char_end": 77145,
+    "sentence_index": 479,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/RE1.pdf\nAn example of reasoning error.",
+    "char_start": 77147,
+    "char_end": 77210,
+    "sentence_index": 480,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/RE2.pdf\nAn example of reasoning error.",
+    "char_start": 77212,
+    "char_end": 77275,
+    "sentence_index": 481,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/KE.pdf\nAn example of knowledge error.",
+    "char_start": 77277,
+    "char_end": 77339,
+    "sentence_index": 482,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/KE2.pdf\nAn example of knowledge error.",
+    "char_start": 77341,
+    "char_end": 77404,
+    "sentence_index": 483,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/CE1.pdf\nAn example of calculation error.",
+    "char_start": 77406,
+    "char_end": 77471,
+    "sentence_index": 484,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/CE2.pdf\nAn example of calculation error.",
+    "char_start": 77473,
+    "char_end": 77538,
+    "sentence_index": 485,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/rejecterror.pdf\n-5mm\nAn example of reject error.",
+    "char_start": 77540,
+    "char_end": 77613,
+    "sentence_index": 486,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec035",
+    "text": "[!htbp]\n\nimage/casestudy/rejecterror2.pdf\nAn example of reject error.",
+    "char_start": 77615,
+    "char_end": 77684,
+    "sentence_index": 487,
+    "section_sentence_index": 12
+  }
+]

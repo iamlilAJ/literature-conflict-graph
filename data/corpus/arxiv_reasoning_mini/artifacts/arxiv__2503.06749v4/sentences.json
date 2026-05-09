@@ -1,0 +1,2549 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "DeepSeek-R1-Zero has successfully demonstrated the emergence of reasoning capabilities in LLMs purely through Reinforcement Learning (RL).",
+    "char_start": 0,
+    "char_end": 138,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Inspired by this breakthrough, we explore how RL can be utilized to enhance the reasoning capability of MLLMs.",
+    "char_start": 139,
+    "char_end": 249,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, direct training with RL struggles to activate complex reasoning capabilities such as questioning and reflection in MLLMs, due to the absence of substantial high-quality multimodal reasoning data.",
+    "char_start": 250,
+    "char_end": 454,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To address this issue, we propose the reasoning MLLM, Vision-R1 , to improve multimodal reasoning capability.",
+    "char_start": 455,
+    "char_end": 564,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Specifically, we first construct a high-quality multimodal CoT dataset without human annotations by leveraging an existing MLLM and DeepSeek-R1 through modality bridging and data filtering to obtain a 200K multimodal CoT dataset, Vision-R1-cold dataset .",
+    "char_start": 565,
+    "char_end": 819,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "It serves as cold-start initialization data for Vision-R1.",
+    "char_start": 820,
+    "char_end": 878,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "To mitigate the optimization challenges caused by overthinking after cold start, we propose Progressive Thinking Suppression Training (PTST) strategy and employ Group Relative Policy Optimization (GRPO) with the hard formatting result reward function to gradually refine the model's ability to learn correct and complex reasoning processes on the multimodal math dataset.",
+    "char_start": 879,
+    "char_end": 1250,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Comprehensive experiments show our model achieves an average improvement of $ $6\\% across various multimodal math reasoning benchmarks using only a 10K multimodal math data during RL training.",
+    "char_start": 1251,
+    "char_end": 1443,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Vision-R1-7B achieves a 73.5\\% accuracy on the widely used MathVista benchmark, which is only 0.4\\% lower than the leading reasoning model, OpenAI O1.",
+    "char_start": 1444,
+    "char_end": 1594,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "Scaling up the amount of multimodal math data in the RL training, Vision-R1-32B and Vison-R1-72B achieves 76.4\\% and 78.2\\% MathVista benchmark scores, respectively.",
+    "char_start": 1595,
+    "char_end": 1760,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec001",
+    "text": "The datasets, weight and code will be released in: .",
+    "char_start": 1761,
+    "char_end": 1813,
+    "sentence_index": 10,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Enhancing the complex reasoning capability of Large Language Models (LLMs) remains one of the most challenging problems in Artificial Intelligence (AI), which is widely regarded as a critical pathway toward Artificial General Intelligence (AGI) jaech2024openai, deepseekai2025deepseekr1incentivizingreasoningcapability .",
+    "char_start": 1815,
+    "char_end": 2135,
+    "sentence_index": 11,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Conventional inference paradigms typically rely on a simple ``direct prediction\" approach to generate concise final answers without explicit, structured intermediate reasoning steps, which often exhibits suboptimal performance on complex reasoning tasks jaech2024openai .",
+    "char_start": 2136,
+    "char_end": 2407,
+    "sentence_index": 12,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "OpenAI O1 jaech2024openai was the first LLM with strong reasoning ability\nby using complex Chain-of-Thought (CoT) for training to achieve significant performance gains over prior LLMs.",
+    "char_start": 2408,
+    "char_end": 2592,
+    "sentence_index": 13,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Meanwhile, various methods wei2022chain,yao2023tree,besta2024graph,lightman2023let, uesato2022solving, wang2023math,lai2024step, wan2024alphazero, trinh2024solving, xin2024deepseek, muennighoff2025s1, ye2025limo have been explored to generate high-quality complex CoT reasoning and further advance the field by optimizing reasoning pathways.",
+    "char_start": 2593,
+    "char_end": 2934,
+    "sentence_index": 14,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "In the field of Multimodal Large Language Models (MLLMs), recent works yao2024mulberry,thawakar2025llamav have also explored the application of CoT reasoning.",
+    "char_start": 2936,
+    "char_end": 3094,
+    "sentence_index": 15,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "These approaches assume that MLLMs lack a structured reasoning process, achieving low performance on the tasks that require logical inference.",
+    "char_start": 3095,
+    "char_end": 3237,
+    "sentence_index": 16,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "To improve the reasoning capability of MLLMs, several methods xu2024llava,yao2024mulberry try to construct the datasets manually containing step-level reasoning processes and apply supervised fine-tuning (SFT) to reformat MLLMs\u2019 outputs.",
+    "char_start": 3238,
+    "char_end": 3475,
+    "sentence_index": 17,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "However, this manually designed ``Formatted Reasoning MLLM'' often results in ``Pseudo-CoT\" reasoning, which lacks essential cognitive processes commonly observed in human thoughts, such as questioning, reflection and inspecting (see Fig.",
+    "char_start": 3476,
+    "char_end": 3714,
+    "sentence_index": 18,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": ", the data examples of ``Pseudo-CoT\" and the complex CoT).",
+    "char_start": 3715,
+    "char_end": 3773,
+    "sentence_index": 19,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "This limitation hinders their application on complex vision reasoning tasks.",
+    "char_start": 3774,
+    "char_end": 3850,
+    "sentence_index": 20,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Thus, it is important to generate human-like, high-quality, complex CoT reasoning data for training MLLMs, enabling them to more effectively tackle intricate multimodal reasoning tasks.",
+    "char_start": 3851,
+    "char_end": 4036,
+    "sentence_index": 21,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Recently, DeepSeek-R1 deepseekai2025deepseekr1incentivizingreasoningcapability has successfully applied Reinforcement Learning (RL) to induce the self-emergence of complex cognitive reasoning ability in LLMs.",
+    "char_start": 4038,
+    "char_end": 4246,
+    "sentence_index": 22,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This begs our rethinking: Can RL be utilized to incentivize the reasoning capability in MLLMs?",
+    "char_start": 4247,
+    "char_end": 4341,
+    "sentence_index": 23,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "To answer this question, we first follow the DeepSeek-R1-Zero paradigm deepseekai2025deepseekr1incentivizingreasoningcapability , by directly using RL to improve the reasoning capability of MLLMs.",
+    "char_start": 4342,
+    "char_end": 4538,
+    "sentence_index": 24,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Unfortunately, this direct RL training is challenged, as it struggles to effectively guide MLLMs generating complex CoT reasoning in absence of large-scale, high-quality multimodal data and prolonged training (see Fig.",
+    "char_start": 4539,
+    "char_end": 4757,
+    "sentence_index": 25,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "(E) and (F)).",
+    "char_start": 4758,
+    "char_end": 4771,
+    "sentence_index": 26,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To address the above issue, we propose Vision-R1, a reasoning MLLM that integrates cold-start initialization with RL training.",
+    "char_start": 4773,
+    "char_end": 4899,
+    "sentence_index": 27,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "First, we construct a high-quality multimodal CoT dataset without requiring manual annotations.",
+    "char_start": 4900,
+    "char_end": 4995,
+    "sentence_index": 28,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Specifically, we leverage an existing MLLM to generate ``Pseudo-CoT\" reasoning text from multimodal image-text pairs.",
+    "char_start": 4996,
+    "char_end": 5113,
+    "sentence_index": 29,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "This ``Pseudo-CoT\" reasoning explicitly incorporates both vision descriptions and structured step-level reasoning process, exposing more detailed vision information in a textual format.",
+    "char_start": 5114,
+    "char_end": 5299,
+    "sentence_index": 30,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Next, we feed the enriched reasoning text back into the MLLM to obtain a description including necessary vision information.",
+    "char_start": 5300,
+    "char_end": 5424,
+    "sentence_index": 31,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "This process effectively implements ``Modality Bridging\", converting vision information to language.",
+    "char_start": 5425,
+    "char_end": 5525,
+    "sentence_index": 32,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "The resulting textual descriptions are then passed to a text-only reasoning LLM, DeepSeek-R1, to extract high-quality CoT reasoning.",
+    "char_start": 5526,
+    "char_end": 5658,
+    "sentence_index": 33,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Finally, the dataset is refined through rule-based data filtering, ultimately obtaining a dataset with 200K multimodal human-like complex CoT reasoning samples, which serves as the cold-start initialization dataset for Vision-R1.",
+    "char_start": 5659,
+    "char_end": 5888,
+    "sentence_index": 34,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Following the DeepSeek-R1 training pipeline, we need to apply Group Relative Policy Optimization (GRPO) shao2024deepseekmath,deepseekai2025deepseekr1incentivizingreasoningcapability on a 10K multimodal math dataset to enhance the model\u2019s reasoning capability.",
+    "char_start": 5890,
+    "char_end": 6149,
+    "sentence_index": 35,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "However, as shown in Fig.",
+    "char_start": 6150,
+    "char_end": 6175,
+    "sentence_index": 36,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "(A) and (D), we observe an overthinking phenomenon in the cold-start initialized MLLM, i.e.",
+    "char_start": 6176,
+    "char_end": 6267,
+    "sentence_index": 37,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": ", the correct reasoning processes tend to be concentrated on shorter CoT reasoning sequences.",
+    "char_start": 6268,
+    "char_end": 6361,
+    "sentence_index": 38,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "This issue leads to the optimization problem in subsequent RL training.",
+    "char_start": 6362,
+    "char_end": 6433,
+    "sentence_index": 39,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "To address this challenge, we propose Progressive Thinking Suppression Training (PTST) alongside GRPO, which incorporates a hard-formatting result reward function.",
+    "char_start": 6434,
+    "char_end": 6597,
+    "sentence_index": 40,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "This approach encourages Vision-R1 to compress CoT reasoning steps early in the RL process, internalizing correct reasoning methods while progressively extending its reasoning duration over time to effectively tackle more complex problems.",
+    "char_start": 6598,
+    "char_end": 6837,
+    "sentence_index": 41,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "Our main contributions can be summarized as follows:\n\n1.",
+    "char_start": 6839,
+    "char_end": 6895,
+    "sentence_index": 42,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "We explore how to use R1-like RL for MLLMs and introduce Vision-R1, a reasoning MLLM that leverages cold-start initialization and RL training to incentivize reasoning capability.",
+    "char_start": 6896,
+    "char_end": 7074,
+    "sentence_index": 43,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "It is an early exploration that investigates the application of R1-like RL for enhancing reasoning capability in MLLMs and analyzes differences between direct RL training and the combined approach of cold-start initialization and RL training.",
+    "char_start": 7075,
+    "char_end": 7317,
+    "sentence_index": 44,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "We believe that our exploration can inspire new insights for the community.",
+    "char_start": 7318,
+    "char_end": 7393,
+    "sentence_index": 45,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "2.",
+    "char_start": 7395,
+    "char_end": 7397,
+    "sentence_index": 46,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "A high-quality 200K multimodal CoT dataset without human annotations is constructed to serve as a cold-start initialization data for MLLMs.",
+    "char_start": 7398,
+    "char_end": 7537,
+    "sentence_index": 47,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "We leverage the proposed PTST to GRPO with hard-formatting result reward function, which effectively addresses the overthinking optimization problem in RL training.",
+    "char_start": 7538,
+    "char_end": 7702,
+    "sentence_index": 48,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "PTST enables Vision-R1 to progressively develop more complex reasoning processes while effectively guiding MLLMs toward enhanced reasoning capability.",
+    "char_start": 7703,
+    "char_end": 7853,
+    "sentence_index": 49,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "3.",
+    "char_start": 7855,
+    "char_end": 7857,
+    "sentence_index": 50,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "Notably, despite having only 7B parameters, Vision-R1 achieves performance comparable to State-of-The-Art (SoTA) MLLMs with over 70B parameters in math reasoning tasks.",
+    "char_start": 7858,
+    "char_end": 8026,
+    "sentence_index": 51,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "Furthermore, the Vision-R1-32B and Vision-R1-72B models achieve an average accuracy improvement of around 10\\% compared to the base model on multiple multimodal math benchmarks.",
+    "char_start": 8027,
+    "char_end": 8204,
+    "sentence_index": 52,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "As researchers have discovered that enabling LLMs to simulate human-like thought processes and perform stepwise reasoning can significantly enhance their performance on reasoning tasks jaech2024openai , extensive work has been dedicated to exploring LLM reasoning methods.",
+    "char_start": 8206,
+    "char_end": 8478,
+    "sentence_index": 53,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "These approaches typically rely on human design to format LLM outputs to follow specific steps, such as Chain-of-Thought (CoT) prompting methods wei2022chain , plan-based methods like Tree-of-Thought and Graph-of-Thought yao2023tree, besta2024graph , process-based reward models lightman2023let, uesato2022solving, wang2023math, lai2024step , Monte Carlo Tree Search (MCTS) and Beam Search wan2024alphazero, trinh2024solving, xin2024deepseek , as well as constructing SFT datasets muennighoff2025s1, ye2025limo .",
+    "char_start": 8479,
+    "char_end": 8991,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "A recent development, DeepSeek-R1 deepseekai2025deepseekr1incentivizingreasoningcapability , demonstrates that applying large-scale Reinforcement Learning (RL) with formatting and result-only reward functions can guide LLMs toward self-emerging thought processes, producing human-like complex CoT reasoning and achieving significant advantages in complex reasoning tasks.",
+    "char_start": 8993,
+    "char_end": 9364,
+    "sentence_index": 55,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "This approach has shown immense potential in the field of Large Language Model Reasoning, however, its application to MLLMs remains an open area of inquiry.",
+    "char_start": 9365,
+    "char_end": 9521,
+    "sentence_index": 56,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "MLLMs typically map inputs from other modalities to the textual modality, which are then processed by LLMs.",
+    "char_start": 9523,
+    "char_end": 9630,
+    "sentence_index": 57,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "This approach has been proven to exhibit superior performance in a range of vision understanding tasks liu2024visual,liu2024improved,bai2023qwen,zhu2023minigpt, huang2024dynamic,zhao2024aligngpt .",
+    "char_start": 9631,
+    "char_end": 9827,
+    "sentence_index": 58,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Inspired by advancements in LLM reasoning, many studies have also sought to enhance the reasoning capability of MLLMs.",
+    "char_start": 9828,
+    "char_end": 9946,
+    "sentence_index": 59,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "For instance, efforts have been made to employ CoT prompting zhang2024improve,mitra2024compositional,luan2024textcot and to construct SFT datasets that include step-level reasoning yao2024mulberry,thawakar2025llamav .",
+    "char_start": 9947,
+    "char_end": 10164,
+    "sentence_index": 60,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "However, the CoT generated by these methods often lacks natural human cognitive processes, such as questioning, reflection, and inspecting, which limits their effectiveness in solving complex reasoning tasks.",
+    "char_start": 10165,
+    "char_end": 10373,
+    "sentence_index": 61,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "In contrast, Vision-R1 distinguishes itself by combining cold-start initialization with RL training to acquire high-quality, complex CoT reasoning capability.",
+    "char_start": 10374,
+    "char_end": 10532,
+    "sentence_index": 62,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "[t]\n\nfig/r1-data.pdf\n\nThe overall data generation pipeline incorporating our Modality Bridging method.",
+    "char_start": 10534,
+    "char_end": 10636,
+    "sentence_index": 63,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "The multimodal data is first sent to MLLMs to obtain a ``Pseudo-CoT'' consisting of a caption and reasoning process, which serves as the input of MLLMs along with the original image-question pair to produce detailed descriptions.",
+    "char_start": 10637,
+    "char_end": 10866,
+    "sentence_index": 64,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "Through this modality bridging approach, the textual descriptions provide DeepSeek-R1 with holistic information that facilitates the generation of high-quality CoT processes, which are post-processed and integrated with the original data to create the final Vision-R1-cold dataset.",
+    "char_start": 10867,
+    "char_end": 11148,
+    "sentence_index": 65,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Inspired by DeepSeek-R1-Zero deepseekai2025deepseekr1incentivizingreasoningcapability , we aimed to directly use RL to guide models towards self-thought and the emergence of complex reasoning capability.",
+    "char_start": 11150,
+    "char_end": 11353,
+    "sentence_index": 66,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "To this end, we collected a dataset of 10K open-source math problems for RL training.",
+    "char_start": 11354,
+    "char_end": 11439,
+    "sentence_index": 67,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "Specifically, we followed the DeepSeek-R1-Zero pipeline,\ntraining a base MLLM using GRPO shao2024deepseekmath ,\nwith output format constraints dictated by the following system prompt:\n\nA conversation between User and Assistant.",
+    "char_start": 11440,
+    "char_end": 11667,
+    "sentence_index": 68,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "...",
+    "char_start": 11668,
+    "char_end": 11671,
+    "sentence_index": 69,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "first thinks about the reasoning process ...",
+    "char_start": 11672,
+    "char_end": 11716,
+    "sentence_index": 70,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "provides the user with the answer.",
+    "char_start": 11717,
+    "char_end": 11751,
+    "sentence_index": 71,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags ...",
+    "char_start": 11752,
+    "char_end": 11853,
+    "sentence_index": 72,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "For the reward function, we utilized both formatting and result rewards:\n\n1.",
+    "char_start": 11855,
+    "char_end": 11931,
+    "sentence_index": 73,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "Formatting reward function: The model's output must adhere to the `` <think> </think><answer> </answer> '' format.",
+    "char_start": 11932,
+    "char_end": 12046,
+    "sentence_index": 74,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "2.",
+    "char_start": 12048,
+    "char_end": 12050,
+    "sentence_index": 75,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "Result reward function: The model's generated final result must align with the ground truth.",
+    "char_start": 12051,
+    "char_end": 12143,
+    "sentence_index": 76,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "We set the formatting and result reward ratio as $1:1$.",
+    "char_start": 12145,
+    "char_end": 12200,
+    "sentence_index": 77,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "The model after purely RL training is named as Vision-R1-Zero.",
+    "char_start": 12202,
+    "char_end": 12264,
+    "sentence_index": 78,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Unfortunately, as shown in Fig.",
+    "char_start": 12265,
+    "char_end": 12296,
+    "sentence_index": 79,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "(D) and (E), directly applying RL to train MLLMs has proven challenging in stimulating MLLM\u2019s reasoning capability and producing lengthy, complex CoT, limiting the model\u2019s reasoning ability.",
+    "char_start": 12297,
+    "char_end": 12487,
+    "sentence_index": 80,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "Moreover, we observed that as training progressed over extended periods, the model gradually learned to use longer reasoning processes to solve hard problems,\nbut this did not show significant performance improvement.",
+    "char_start": 12488,
+    "char_end": 12705,
+    "sentence_index": 81,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "Thus, we claim that\ndirectly using RL to incentivize\nthe reasoning capability of MLLMs for solving complex reasoning problems remains a challenging task,\nespecially under constraints of data quality and quantity, as well as computation resources .",
+    "char_start": 12706,
+    "char_end": 12953,
+    "sentence_index": 82,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "In our above explorations, we observed that an RL-only approach struggles to guide MLLMs in generating human-like, complex CoT.",
+    "char_start": 12955,
+    "char_end": 13082,
+    "sentence_index": 83,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "Consequently, we explored an alternative strategy and introduced the reasoning MLLM, Vision-R1 .",
+    "char_start": 13083,
+    "char_end": 13179,
+    "sentence_index": 84,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "This method begins with a cold-start using a multimodal CoT dataset, which initially teaches the base model to reason in a ``human-like'' manner.",
+    "char_start": 13180,
+    "char_end": 13325,
+    "sentence_index": 85,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "Subsequently, we apply RL to the cold-start initialized model Vision-R1-CI to guide it towards adopting the correct reasoning process, thereby incentivizing the reasoning capability in the final model Vision-R1.",
+    "char_start": 13326,
+    "char_end": 13537,
+    "sentence_index": 86,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "In the following sections, we first describe our approach to create a high-quality, human annotation-free multimodal CoT dataset in Sec.",
+    "char_start": 13539,
+    "char_end": 13675,
+    "sentence_index": 87,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": ", as well as the Overthinking Optimization Problem faced by post-cold-start MLLMs in Sec.",
+    "char_start": 13676,
+    "char_end": 13765,
+    "sentence_index": 88,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": ".\nThen we discuss the RL training method, Progressive Thinking Suppression Training (PTST) in Sec.",
+    "char_start": 13766,
+    "char_end": 13864,
+    "sentence_index": 89,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": ", to address the Overthinking Optimization Problem.",
+    "char_start": 13865,
+    "char_end": 13916,
+    "sentence_index": 90,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "[t]\n\nfig/grpo.pdf\n\nGRPO with our proposed PTST strategy.",
+    "char_start": 13918,
+    "char_end": 13974,
+    "sentence_index": 91,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "We progressively loosen the context length restrictions, increasing the length of reasoning process.",
+    "char_start": 13975,
+    "char_end": 14075,
+    "sentence_index": 92,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Specifically, we set the reasoning length to 4K, 8K and 16K tokens for each stage, with corresponding group numbers of 16, 8 and 4 respectively.",
+    "char_start": 14076,
+    "char_end": 14220,
+    "sentence_index": 93,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "The reward function for GRPO is based on a hard formatting result reward function (HFRRF).",
+    "char_start": 14221,
+    "char_end": 14311,
+    "sentence_index": 94,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "The dotted line in the ``Stage 3'' indicates that the final version of Vision-R1 did not undergo the third stage of training.",
+    "char_start": 14312,
+    "char_end": 14437,
+    "sentence_index": 95,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Many existing works xu2024llava,yao2024mulberry have attempted to construct multimodal reasoning datasets to enhance the reasoning capability of MLLMs.",
+    "char_start": 14439,
+    "char_end": 14590,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "Prior efforts typically gathered CoT data which often lack the natural cognitive processes of questioning, and self-reflection.",
+    "char_start": 14591,
+    "char_end": 14718,
+    "sentence_index": 97,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "These datasets are typically constructed in a step-by-step form based on human heuristics.",
+    "char_start": 14719,
+    "char_end": 14809,
+    "sentence_index": 98,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "However, our goal is to collect a multimodal CoT dataset that encompasses complex cognitive processes to teach Vision-R1 to reason in a human-like, natural manner.",
+    "char_start": 14810,
+    "char_end": 14973,
+    "sentence_index": 99,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "Furthermore, DeepSeek-R1 has demonstrated the ability to generate CoT with natural cognitive processes and has proven to have strong reasoning capability.",
+    "char_start": 14974,
+    "char_end": 15128,
+    "sentence_index": 100,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "By using the high-quality CoT data it generates, which incorporates human-like cognitive self-reflection processes, we can train MLLMs to enhance their reasoning capability.",
+    "char_start": 15129,
+    "char_end": 15302,
+    "sentence_index": 101,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "However, being a ``text-only'' LLM, DeepSeek-R1 struggles to effectively process multimodal inputs to produce high-quality CoT.",
+    "char_start": 15303,
+    "char_end": 15430,
+    "sentence_index": 102,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "To overcome these limitations, we utilize existing MLLMs alongside DeepSeek-R1 and propose a method named Modality Bridging to indirectly convert multimodal information into textual information, thereby capturing the complex cognitive processes of DeepSeek-R1.",
+    "char_start": 15432,
+    "char_end": 15692,
+    "sentence_index": 103,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "As the data generation pipeline that shown in Fig.",
+    "char_start": 15693,
+    "char_end": 15743,
+    "sentence_index": 104,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": ", firstly, we follow prior works xu2024llava, yao2024mulberry by inputting an image-question-answer pair and a prompt into a MLLM to generate a ``Pseudo-CoT'' featuring both image description and reasoning processes.",
+    "char_start": 15744,
+    "char_end": 15960,
+    "sentence_index": 105,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "Subsequently, we concatenate the image-question pair with the ``Pseudo-CoT'' and a prompt, and then feed them into a MLLM to obtain a detailed image description.",
+    "char_start": 15961,
+    "char_end": 16122,
+    "sentence_index": 106,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "Below is the prompt template:\n\nGiven a image, a question:\\ question\\ and a thinking process:\\ thinking process\\ , provide a detailed description containing all the necessary details of the image to answer the question correctly...",
+    "char_start": 16123,
+    "char_end": 16353,
+    "sentence_index": 107,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": "This process of generating ``Pseudo-CoT'' explicitly exposes more of the necessary vision details for reasoning in textual form, compared to pure image descriptions.",
+    "char_start": 16355,
+    "char_end": 16520,
+    "sentence_index": 108,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "This assists the MLLM in producing more detailed descriptions, thereby minimizing information loss during the conversion of original multimodal information to textual information (see Fig.",
+    "char_start": 16521,
+    "char_end": 16709,
+    "sentence_index": 109,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": ").",
+    "char_start": 16710,
+    "char_end": 16712,
+    "sentence_index": 110,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "At this stage, we cleverly bridge image information to textual information and feed it into DeepSeek-R1 to obtain high-quality CoT processes.",
+    "char_start": 16714,
+    "char_end": 16855,
+    "sentence_index": 111,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "We then retain reasoning processes from the generated multimodal CoT data that the final answer is aligned with ground truth and apply rule-based data filtering to remove logical inconsistent samples and replace\nsome words for semantic coherence.",
+    "char_start": 16856,
+    "char_end": 17102,
+    "sentence_index": 112,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "Finally, we pair the pure text CoT data generated by DeepSeek-R1 from the above process with the corresponding images, integrating into multimodal CoT data, named Vision-R1-cold dataset.",
+    "char_start": 17104,
+    "char_end": 17290,
+    "sentence_index": 113,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "This dataset is used for the cold-start initialization of Vision-R1.",
+    "char_start": 17291,
+    "char_end": 17359,
+    "sentence_index": 114,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "By acquiring CoT data in this manner, which closely mimics human cognitive behavior, the reasoning processes exhibit natural thinking.",
+    "char_start": 17360,
+    "char_end": 17494,
+    "sentence_index": 115,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "[t]\n\nComprehensive comparison with SoTA MLLMs (closed-source, open-source general/math/reasoning MLLMs) across diverse\nmultimodal math benchmarks.``Avg.\" denotes the average performance over all benchmarks.",
+    "char_start": 17496,
+    "char_end": 17702,
+    "sentence_index": 116,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "For MathVista benchmark, we have specifically compared all models on three sub-tasks that are highly related to mathematical reasoning: geometry reasoning (GEO), algebraic reasoning (ALG), geometry problem solving (GPS) and math word problems (MWP).",
+    "char_start": 17703,
+    "char_end": 17952,
+    "sentence_index": 117,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "``ALL'' denotes the average score on MathVista benchmark.",
+    "char_start": 17953,
+    "char_end": 18010,
+    "sentence_index": 118,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "The best results are bolded .",
+    "char_start": 18011,
+    "char_end": 18040,
+    "sentence_index": 119,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "0.95 !",
+    "char_start": 18042,
+    "char_end": 18048,
+    "sentence_index": 120,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "c|c|ccccc|c|c|c|c\n\n2 * Model & 2 * Params.",
+    "char_start": 18050,
+    "char_end": 18092,
+    "sentence_index": 121,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "& 5 c| MathVista & 2 * MathVerse & 2 * MM-Math & 2 * DynaMath & 2 * Avg.",
+    "char_start": 18093,
+    "char_end": 18165,
+    "sentence_index": 122,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "3-7\n& & GEO & ALG & GPS & MWP & ALL & & & &\n\n10 c Closed-Source MLLMs\n\nOpenAI O1 jaech2024openai & $-$& $-$& $-$& $-$& $-$& 73.9$^ $& $-$& $-$& $-$ &$-$\n\nGPT-4o hurst2024gpt & $-$& $-$& $-$& $-$& $-$& 63.8 & 37.6 & 31.8 & 64.9 &\n\nGPT-4V gpt-4v & $-$& $-$& $-$& $-$& $-$& 49.9 & 39.4 & 23.1 & $-$ & 37.5\n\nClaude-3.5 Sonnet claude-3.5 & $-$& $-$& $-$& $-$& $-$& 67.7 & 26.5& $-$ &62.5 & $-$\n\n10 c Open-Source General MLLMs\n\nQwen2.5-VL-7B Qwen2.5-VL & 7B & 66.9 & 68.7 & 66.8 & 76.9 & 68.1 & 46.7 & 34.1 & 50.7 & 49.9\n\nQwen2.5-VL-32B Qwen2.5-VL & 32B & 72.8 &73.7 & 75.0 & 72.6 & 72.9 & 52.3 & 34.9 & 55.5 & 53.9\n\nQwen2.5-VL-72B Qwen2.5-VL & 72B & 77.8 & 77.9& 78.8 & 74.7 & 73.5 & 51.3 & 45.6 & 61.2 & 57.9\n\nInternVL2.5-78B chen2024expanding & 78B & 76.6 & 76.5 & 77.9 & 75.8 & 71.9 & 25.4 & 17.8 & 41.4 & 39.1\n\n11 c Open-Source Math MLLMs\n\nMath-LLaVA-13B shi-etal-2024-math & 13B & 56.5 & 40.2 & 57.7 & 56.5 & 46.6 & 22.9 & $-$ & $-$ & $-$\n\nMath-PUMA-Qwen2-7B zhuang2024math & 7B & 47.3 & $-$& 48.1 & $-$& 47.9 & 33.6 & $-$ & $-$ & $-$\n\nMultimath-7B peng2024multimath & 7B & $-$& $-$& 66.8 & 61.8 & 50.0 & 26.9 & $-$ & $-$ & $-$\n\nURSA-8B luo2025ursa & 8B & $-$ & $-$ & 79.3 & 75.3 & 59.8 & 45.7 & $-$ & $-$ & $-$\n\n11 c Open-Source Reasoning MLLMs\n\nLLaVA-CoT-11B xu2024llava & 11B & $-$ & $-$ & $-$ & $-$ & 54.8 & 20.3 & 16.5 & 34.6 & 31.6\n\nMulberry-7B yao2024mulberry & 7B & $-$ & $-$ & $-$ & $-$ & 63.1 & $-$ & 23.7 & $-$ & $-$\n\n11 c Our Model\n\nsoftblue Vision-R1-7B (Ours) & softblue 7B & softblue 80.3& softblue 79.0& softblue 83.2& softblue 80.6 & softblue 73.5& softblue 52.4& softblue 40.2& softblue 56.3 & softblue 55.6\n\n2 c| $ $ (vs Qwen2.5-VL-7B) & +13.4 & +10.3 & +16.4 & +3.7 & +5.4 & +5.7 & +6.1 & +5.6 & +5.7\n\nsoftblue Vision-R1-32B* (Ours) & softblue 32B & softblue 85.8& softblue 82.6& softblue 88.0& softblue 78.5& softblue 76.4& softblue 62.1& softblue 55.3& softblue 65.6 & softblue 64.9\n\n2 c| $ $ (vs Qwen2.5-VL-32B) & +13.0 & +8.9 & +13.0 & +5.9 & +4.7 & +9.8 & +20.4 & +10.1 & +11.0\n\nsoftblue Vision-R1-72B* (Ours) & softblue 72B & softblue 88.3 & softblue 86.8 & softblue 89.4 & softblue 79.6 & softblue 78.2 & softblue 63.2 & softblue 59.3 & softblue 66.4 & softblue 66.8\n\n2 c| $ $ (vs Qwen2.5-VL-72B) & +10.5 & +8.9 & +10.6 & +4.9 & +4.7 & +11.9 & +13.7 & +5.2 & +8.9\n\nThe result is collected from the official MathVista leaderboard ( ).",
+    "char_start": 18167,
+    "char_end": 20527,
+    "sentence_index": 123,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "It uses additional data during RL training.",
+    "char_start": 20528,
+    "char_end": 20571,
+    "sentence_index": 124,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "After obtaining a multimodal CoT dataset, we conducted SFT on\na pretrained MLLM (such as Qwen2.5-VL Qwen2.5-VL ) as the base MLLM for cold-start initialization.",
+    "char_start": 20573,
+    "char_end": 20733,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "The MLLM after cold start initialization is named as Vision-R1-CI.",
+    "char_start": 20734,
+    "char_end": 20800,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "At this stage, the base MLLM had learned the complex reasoning mode from DeepSeek-R1, however, this led to the Overthinking Optimization Problem, i.e.",
+    "char_start": 20801,
+    "char_end": 20951,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": ", Vision-R1-CI would engage in prolonged thought processes on certain problems, whereas the correct reasoning processes were typically concentrated in shorter cognitive chains.",
+    "char_start": 20952,
+    "char_end": 21128,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec011",
+    "text": "As shown in Fig.",
+    "char_start": 21130,
+    "char_end": 21146,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec011",
+    "text": "(D) and (E), this propensity for excessive incorrect reasoning significantly complicates the optimization of subsequent RL training.",
+    "char_start": 21147,
+    "char_end": 21279,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec011",
+    "text": "For instance, when the allowed thought length during RL training for Vision-R1-CI was directly extended to 16K, the model tended to generate longer answers to fulfill the demands of complex reasoning.",
+    "char_start": 21280,
+    "char_end": 21480,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec011",
+    "text": "However, this incorrect reasoning did not lead to performance improvements, thus presenting challenges in incentivizing reasoning capability in MLLMs.",
+    "char_start": 21481,
+    "char_end": 21631,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec011",
+    "text": "So, it is crucial to guide the model to learn correct thinking in the early stages for the reasoning performance of MLLMs .",
+    "char_start": 21632,
+    "char_end": 21755,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec012",
+    "text": "Inspired by the above phenomenon, we propose the Progressive Thinking Suppression Training (PTST) algorithm to initially suppress the length of reasoning during the early stages of RL training for Vision-R1, while guiding it towards the correct reasoning processes.",
+    "char_start": 21757,
+    "char_end": 22022,
+    "sentence_index": 134,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec012",
+    "text": "As training progresses, we gradually relax these constraints, allowing Vision-R1 to autonomously learn to utilize longer CoT to address increasingly complex problems, thereby enhancing its reasoning capability.",
+    "char_start": 22023,
+    "char_end": 22233,
+    "sentence_index": 135,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec012",
+    "text": "Specifically, we implement Group Relative Policy Optimization (GRPO) with hard formatting result rewards for the model\u2019s self-learning.",
+    "char_start": 22234,
+    "char_end": 22369,
+    "sentence_index": 136,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec012",
+    "text": "Consider the standard GRPO approach, it samples a group of generated output set $\\ o_1,o_2, ,o_G\\ $ for each question $q$ from policy model $ _ _ old $.",
+    "char_start": 22370,
+    "char_end": 22522,
+    "sentence_index": 137,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec012",
+    "text": "Then GRPO maximizes the following objective and optimizes the model $ _ $.",
+    "char_start": 22523,
+    "char_end": 22597,
+    "sentence_index": 138,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec012",
+    "text": "&J_ GRPO ( )\n= E _ q P(Q),\\, \\ o_i\\ _ i=1 ^G _ _ old (O q)\n\n& ,\n\nwhere $ $ and $ $ are the PPO clipping hyper-parameter and the coefficient controlling the Kullback\u2013Leibler (KL) penalty shao2024deepseekmath,schulman2017proximal , respectively.",
+    "char_start": 22599,
+    "char_end": 22842,
+    "sentence_index": 139,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec012",
+    "text": "We set $ $=0.2 and $ $=1e-2 during training.",
+    "char_start": 22843,
+    "char_end": 22887,
+    "sentence_index": 140,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec012",
+    "text": "$A_i = r_i - mean (\\ r_1, r_2, , r_G\\ ) std (\\ r_1, r_2, , r_G\\ ) $ is the computed advantage using the group rewards $\\ r_1,r_2, ,r_G\\ $ and $D_ KL ( _ \\,\\|\\, _ ref )\n= _ ref (o_i q) _ (o_i q)\n- \\!",
+    "char_start": 22888,
+    "char_end": 23086,
+    "sentence_index": 141,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "( _ ref (o_i q) _ (o_i q) )\n- 1 \\,$ is the KL divergence.",
+    "char_start": 23087,
+    "char_end": 23144,
+    "sentence_index": 142,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "[t]\n\nComparison with SoTA MLLMs across diverse comprehensive multimodal benchmarks.",
+    "char_start": 23146,
+    "char_end": 23229,
+    "sentence_index": 143,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "The base MLLM is Llama-3.2-11B-V-Instruct dubey2024llama .",
+    "char_start": 23230,
+    "char_end": 23288,
+    "sentence_index": 144,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "The results indicate that our data significantly enhances the generalization capabilities of our model, leading to superior performance across all benchmarks.",
+    "char_start": 23289,
+    "char_end": 23447,
+    "sentence_index": 145,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "0.85 !",
+    "char_start": 23449,
+    "char_end": 23455,
+    "sentence_index": 146,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "c|cccc|ccc\n\n2 * Method & 4 c| General Benchmark & 3 c Math Benchmark\n\n2-8\n& MMStar& ChartQA& MME$_ sum $& HallBench&MathVista& MathVerse& MM-Math\n\nLlama-3.2-11B-V dubey2024llama & 49.8& 83.4& 1787& 40.3&48.6& 8.4& 4.1\n\nMulberry-Llama-11B yao2024mulberry & 58.5 & 83.5 & 2035& 48.9 & 61.1 & $-$& 18.7\n\nLLaVA-Cot-11B xu2024llava & 57.6& 81.9& 2137 & 47.8&54.8& 20.3& 16.5\n\nsoftblue Vision-R1-LlamaV-CI-11B & softblue 61.4 & softblue 83.9 & softblue 2190 & softblue 49.5 & softblue 62.7 & softblue 27.1 & softblue 26.1\n\nAs shown in Fig.",
+    "char_start": 23457,
+    "char_end": 23990,
+    "sentence_index": 147,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": ", in our proposed PTST, we denote the total number of training stages by $S$, with each stage having its own sampling count $G_s$ and sequence length limit $L_s$.",
+    "char_start": 23991,
+    "char_end": 24153,
+    "sentence_index": 148,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "The output space for stage $s \\ 1,2, ,S\\ $ is $ O^ (s) = \\ \\,o : o L_s\\ $.",
+    "char_start": 24154,
+    "char_end": 24228,
+    "sentence_index": 149,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": "The training objective for the $s$-th stage can be further reformulated based on Eq.",
+    "char_start": 24229,
+    "char_end": 24313,
+    "sentence_index": 150,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "as:\n\n&J_ GRPO ^ (s), w/PTST ( )\n= E _ q P(Q),\\, \\ o_i^ (s) \\ _ i=1 ^ G_s _ _ old \\!",
+    "char_start": 24314,
+    "char_end": 24397,
+    "sentence_index": 151,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": "(O^ (s) \\!",
+    "char_start": 24398,
+    "char_end": 24408,
+    "sentence_index": 152,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "q )\n\n& ,\n\nwhere $A_i^ (s) $ denotes the advantage estimate for the $i$-th sample in the training stage $s$, and $ _ _ old $ denotes the policy model with an output length constraint of $O(s)$.",
+    "char_start": 24409,
+    "char_end": 24601,
+    "sentence_index": 153,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec012",
+    "text": "We employ the hard formatting result reward function as the reward mechanism for GRPO, i.e.",
+    "char_start": 24602,
+    "char_end": 24693,
+    "sentence_index": 154,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec012",
+    "text": ",\nthe model receives a reward score of $r_i=1$ only when both the formatting requirements and the correctness of the final answer are simultaneously satisfied; otherwise, it receives a score of $r_i=0$.",
+    "char_start": 24694,
+    "char_end": 24896,
+    "sentence_index": 155,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec012",
+    "text": "Moreover, we do not impose constraints using a system prompt, as Vision-R1-CI has already acquired robust formatting capability during the cold-start initialization.",
+    "char_start": 24897,
+    "char_end": 25062,
+    "sentence_index": 156,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec012",
+    "text": "By applying PTST, we compress the model's thought length in the early training stages to guide correct reasoning and gradually relax these constraints in later stages.",
+    "char_start": 25064,
+    "char_end": 25231,
+    "sentence_index": 157,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec012",
+    "text": "As illustrated in Fig.",
+    "char_start": 25232,
+    "char_end": 25254,
+    "sentence_index": 158,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec012",
+    "text": ", this progressive strategy enables Vision-R1 to generate more complex CoT and significantly enhances its reasoning capability.",
+    "char_start": 25255,
+    "char_end": 25382,
+    "sentence_index": 159,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec012",
+    "text": "Notably, in practice, we observe that Vision-R1 achieves competitive performance by the end of the second training stage, leading us to select it as the final stage, i.e.",
+    "char_start": 25383,
+    "char_end": 25553,
+    "sentence_index": 160,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec012",
+    "text": ", we set the parameters as $S=2$, $L_s \\ 4K, 8K, 16K\\ $, and $G_s \\ 16, 8, 4\\ $, respectively.",
+    "char_start": 25554,
+    "char_end": 25648,
+    "sentence_index": 161,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec012",
+    "text": "[t]\n\nfig/data_sample.pdf\n\nThe output examples of Vision-R1-7B on MathVerse benchmark.",
+    "char_start": 25650,
+    "char_end": 25735,
+    "sentence_index": 162,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec012",
+    "text": "Vision-R1-7B shows ``human-like'' questioning and self-reflective thought process when solving math reasoning problems, which is also called ``Aha moment'' in DeepSeek-R1's paper deepseekai2025deepseekr1incentivizingreasoningcapability .",
+    "char_start": 25736,
+    "char_end": 25973,
+    "sentence_index": 163,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec012",
+    "text": "More examples are provided in supplementary materials.",
+    "char_start": 25974,
+    "char_end": 26028,
+    "sentence_index": 164,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec013",
+    "text": "Please refer to Appendix to obtain the detailed data and training settings.",
+    "char_start": 26030,
+    "char_end": 26105,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec013",
+    "text": "We provide the main results of Vision-R1 in Sec , and then we introduce the detailed ablation study in Sec .",
+    "char_start": 26106,
+    "char_end": 26214,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec014",
+    "text": "As shown in Tab.",
+    "char_start": 26216,
+    "char_end": 26232,
+    "sentence_index": 167,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec014",
+    "text": ", our proposed Vision-R1-7B achieves competitive results across multiple math reasoning benchmarks, even when compared to SoTA models with over 10 times the parameters of Vision-R1-7B.",
+    "char_start": 26233,
+    "char_end": 26417,
+    "sentence_index": 168,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec014",
+    "text": "For instance, on the MathVista benchmark, Vision-R1-7B achieves a score of 73.5\\%, only 0.4\\% lower than OpenAI O1, the most widely recognized reasoning model.",
+    "char_start": 26418,
+    "char_end": 26577,
+    "sentence_index": 169,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec014",
+    "text": "l 0.55\n\nEvaluating the impact of Cold Start Initialization, GRPO, Progressive Thinking Suppression Training (PTST).",
+    "char_start": 26578,
+    "char_end": 26693,
+    "sentence_index": 170,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec014",
+    "text": "``Avg.",
+    "char_start": 26694,
+    "char_end": 26700,
+    "sentence_index": 171,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec014",
+    "text": "Len.'' denotes the average output token length on the 10K multimodal math dataset for RL training.",
+    "char_start": 26701,
+    "char_end": 26799,
+    "sentence_index": 172,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec014",
+    "text": "``Avg.",
+    "char_start": 26800,
+    "char_end": 26806,
+    "sentence_index": 173,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec014",
+    "text": "Acc.\" denotes the average performance (MathVista, MathVerse, MM-Math).",
+    "char_start": 26807,
+    "char_end": 26877,
+    "sentence_index": 174,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec014",
+    "text": "0.99 !",
+    "char_start": 26879,
+    "char_end": 26885,
+    "sentence_index": 175,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec014",
+    "text": "c|ccc|cc\n\nMethod & Cold Start & GRPO & PTST & Avg.",
+    "char_start": 26887,
+    "char_end": 26937,
+    "sentence_index": 176,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec014",
+    "text": "Len.",
+    "char_start": 26938,
+    "char_end": 26942,
+    "sentence_index": 177,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec014",
+    "text": "& Avg.",
+    "char_start": 26943,
+    "char_end": 26949,
+    "sentence_index": 178,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec014",
+    "text": "Acc.",
+    "char_start": 26950,
+    "char_end": 26954,
+    "sentence_index": 179,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec014",
+    "text": "Vision-R1-Zero & & $ $ && 1285&50.7\n\nVision-R1-CI & $ $ & && 3566&44.5\n\nVision-R1-Long & $ $ & $ $ && 3107&47.7\n\nsoftblue Vision-R1 (Ours)& softblue $ $& softblue $ $ & softblue $ $ & softblue 2057& softblue 55.4\n\nMoreover, on the complex math reasoning sub-tasks of MathVista, i.e.",
+    "char_start": 26956,
+    "char_end": 27238,
+    "sentence_index": 180,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec014",
+    "text": ", GEO, ALG, and GPS, Vision-R1-7B achieves scores of 80.3\\%, 79.0\\%, and 83.2\\%, respectively, exceeding the base model Qwen-2.5-VL-7B by an average accuracy improvement of over 10\\%.",
+    "char_start": 27239,
+    "char_end": 27422,
+    "sentence_index": 181,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec014",
+    "text": "These results highlight the strong reasoning capability Vision-R1-7B gains through ``human-like'' complex thinking processes.",
+    "char_start": 27423,
+    "char_end": 27548,
+    "sentence_index": 182,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec014",
+    "text": "Furthermore, on the more challenging MathVerse and MM-Math benchmarks, Vision-R1-7B ranks Top-1 and Top-2, respectively, with the latter being second only to Qwen-2.5-VL-72B.",
+    "char_start": 27549,
+    "char_end": 27723,
+    "sentence_index": 183,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec014",
+    "text": "This demonstrates Vision-R1-7B\u2019s effectiveness in solving complex math problems.",
+    "char_start": 27724,
+    "char_end": 27804,
+    "sentence_index": 184,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec015",
+    "text": "Cold-start Dataset Quality.",
+    "char_start": 27806,
+    "char_end": 27833,
+    "sentence_index": 185,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec015",
+    "text": "We conduct a quality analysis of our proposed Vision-R1-cold dataset.",
+    "char_start": 27834,
+    "char_end": 27903,
+    "sentence_index": 186,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec015",
+    "text": "The primary objective of constructing Vision-R1-cold is to supplement the existing multimodal CoT datasets, which lack complex cognitive processes, and to leverage DeepSeek-R1\u2019s high-quality CoT process as cold-start data.",
+    "char_start": 27904,
+    "char_end": 28126,
+    "sentence_index": 187,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec015",
+    "text": "To evaluate this, we present a comparative analysis in Tab.",
+    "char_start": 28127,
+    "char_end": 28186,
+    "sentence_index": 188,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec015",
+    "text": ", where we statistically examine the presence of questioning, reflection, and inspection within the CoT processes of Mulberry, LLaVA-CoT, and Vision-R1-cold datasets.",
+    "char_start": 28187,
+    "char_end": 28353,
+    "sentence_index": 189,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec015",
+    "text": "The results indicate that Vision-R1-cold contains a significantly higher proportion of human-like cognitive processes compared to previous multimodal CoT datasets.",
+    "char_start": 28354,
+    "char_end": 28517,
+    "sentence_index": 190,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec015",
+    "text": "This complex CoT structure facilitates the base MLLM in learning reasoning mechanisms, providing a high-quality cold-start initialization for RL training.",
+    "char_start": 28518,
+    "char_end": 28672,
+    "sentence_index": 191,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec015",
+    "text": "[t]\n\nComparison of the occurrence frequency of self-reflective indicators between llava-cot, mulberry and our Vision-R1-cold dataset.",
+    "char_start": 28674,
+    "char_end": 28807,
+    "sentence_index": 192,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec015",
+    "text": "The higher frequency of these reflective markers in our dataset demonstrates its distinctive self-reflection and self-correction characteristic.",
+    "char_start": 28808,
+    "char_end": 28952,
+    "sentence_index": 193,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec015",
+    "text": "0.6 !",
+    "char_start": 28954,
+    "char_end": 28959,
+    "sentence_index": 194,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec015",
+    "text": "c|ccc\n\nWord & llava-cot\n(100K) & Mulberry\n(260K) & Vision-R1-cold\n(200K)\n\n``Wait'' & 2,300 & 1,122 & 585,719\n\n``Hmm'' & 1 & 0 & 75,853\n\n``Mistake'' & 183 & 8,784 & 26,697\n\n``Alternatively''& 251 & 68 & 188,187\n\n``Check'' & 8,332 & 26,421 & 100,148\n\nAdditionally, we compare Vision-R1-cold with previous multimodal CoT datasets by training on Llama-3.2-11B-V in Tab.",
+    "char_start": 28960,
+    "char_end": 29325,
+    "sentence_index": 195,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec015",
+    "text": ".\nAfter SFT, our Vision-R1-LlamaV-CI-11B model achieves SoTA performance across all general and math reasoning benchmarks, outperforming both LLaVA-CoT-11B and Mulberry-Llama-11B, directly confirming the superior quality of Vision-R1-cold dataset.",
+    "char_start": 29326,
+    "char_end": 29573,
+    "sentence_index": 196,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec015",
+    "text": "Effect of Main Strategy.",
+    "char_start": 29575,
+    "char_end": 29599,
+    "sentence_index": 197,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec015",
+    "text": "As shown in Tab.",
+    "char_start": 29600,
+    "char_end": 29616,
+    "sentence_index": 198,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec015",
+    "text": ", we compare the performance of various RL training strategies.",
+    "char_start": 29617,
+    "char_end": 29680,
+    "sentence_index": 199,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec015",
+    "text": "The results indicate that Vision-R1-Zero, which applies RL training directly without cold-start initialization, struggles to generate sufficiently long and complex CoT reasoning, thereby limiting its ability to handle intricate reasoning tasks.",
+    "char_start": 29681,
+    "char_end": 29925,
+    "sentence_index": 200,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec015",
+    "text": "In contrast, Vision-R1-CI, after cold-start initialization, tends to generate excessively long CoTs.",
+    "char_start": 29926,
+    "char_end": 30026,
+    "sentence_index": 201,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec015",
+    "text": "However, the presence of numerous incorrect reasoning steps leads to lower overall performance.",
+    "char_start": 30027,
+    "char_end": 30122,
+    "sentence_index": 202,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec015",
+    "text": "Furthermore, Vision-R1-Long via applying RL training directly to Vision-R1-CI results in optimization difficulty, making it hard to achieve significant performance improvements.",
+    "char_start": 30123,
+    "char_end": 30300,
+    "sentence_index": 203,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec015",
+    "text": "In comparison, our proposed Vision-R1 demonstrates a substantial advantage in reasoning performance, effectively balancing CoT complexity and accuracy.",
+    "char_start": 30301,
+    "char_end": 30452,
+    "sentence_index": 204,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec015",
+    "text": "Effect of PTST.",
+    "char_start": 30454,
+    "char_end": 30469,
+    "sentence_index": 205,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec015",
+    "text": "In Tab.",
+    "char_start": 30470,
+    "char_end": 30477,
+    "sentence_index": 206,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec015",
+    "text": ", our two-stage setup (4K$ $16$ $8K$ $8) achieves the best average (55.4\\%), outperforming training with a fixed short length (4K$ $16$ $4K$ $16) by +1.1 Avg.",
+    "char_start": 30478,
+    "char_end": 30636,
+    "sentence_index": 207,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec015",
+    "text": "(54.3$ $55.4), indicating that progressively relaxing the length constraint in Stage 2 yields consistent gains once correct thinking is established in Stage 1.",
+    "char_start": 30637,
+    "char_end": 30796,
+    "sentence_index": 208,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec015",
+    "text": "In contrast, training with fixed 16K (16K$ $4 or 16K$ $16) severely underperforms (47.7\\%/47.9\\%), showing that early length constraints effectively mitigate overthinking.",
+    "char_start": 30797,
+    "char_end": 30968,
+    "sentence_index": 209,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec015",
+    "text": "Further increasing Stage 2 sampling to 16 (4K$ $16$ $8K$ $16, 55.3\\%) or inserting an extra stage (4K$ $16$ $6K$ $12$ $8K$ $8, 55.1\\%) brings no meaningful improvement, suggesting PTST is robust and a simple two-stage schedule suffices under matched training time (sampling$ $length kept constant per stage).",
+    "char_start": 30969,
+    "char_end": 31277,
+    "sentence_index": 210,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec015",
+    "text": "[t]\n\nEffect of PTST.",
+    "char_start": 31279,
+    "char_end": 31299,
+    "sentence_index": 211,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec015",
+    "text": "``4K$ $16'' denotes a PTST setup where the Stage limits the response length to 4K with 16 samples.",
+    "char_start": 31300,
+    "char_end": 31398,
+    "sentence_index": 212,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec015",
+    "text": "``Avg.\" denotes the average performance (MathVista, MathVerse, MM-Math).",
+    "char_start": 31399,
+    "char_end": 31471,
+    "sentence_index": 213,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec015",
+    "text": "0.8 !",
+    "char_start": 31473,
+    "char_end": 31478,
+    "sentence_index": 214,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec015",
+    "text": "c|ccc|ccc|c\n\nMethod & Stage 1 & Stage 2 & Stage 3 & MathVisita & MathVerse & MM-Math & Avg.",
+    "char_start": 31480,
+    "char_end": 31571,
+    "sentence_index": 215,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec015",
+    "text": "Baseline & $-$ & $-$ & $-$ & 68.1 & 46.7 & 34.1 & 49.6\n\n$-$ & 4K$ $16 & 4K$ $16 & $-$ & 72.6 & 51.4 & 39.0 & 54.3\n\n$-$ & 4K$ $16 & 8K$ $16 & $-$ & 72.9 & 53.5 & 39.5 & 55.3\n\n$-$ & 4K$ $16 & 6K$ $12 & 8K$ $8 & 73.0 & 52.6 & 39.8 & 55.1\n\nVision-R1-Long & 16K$ $4 & 16K$ $4 & $-$ & 70.3 & 36.8 & 36.1 & 47.7\n\n$-$ & 16K$ $16 & 16K$ $16 & $-$ & 71.1 & 36.5 & 36.1 & 47.9\n\nsoftblue Vision-R1 (Ours)& softblue 4K$ $16 & softblue 8K$ $8 & softblue $-$ & softblue 73.5 & softblue 52.4 & softblue 40.2 & softblue 55.4\n\nEffect of Cold Start.",
+    "char_start": 31573,
+    "char_end": 32103,
+    "sentence_index": 216,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec015",
+    "text": "Tab.",
+    "char_start": 32104,
+    "char_end": 32108,
+    "sentence_index": 217,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec015",
+    "text": "demonstrates that PTST alone offers limited benefit without cold start (Zero+PTST: 51.8\\% vs Vision-R1-Zero: 50.7\\%), and SFT without CoT before RL is detrimental (Zero+SFT+PTST: 39.8\\%).",
+    "char_start": 32109,
+    "char_end": 32296,
+    "sentence_index": 218,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec015",
+    "text": "In contrast, cold-starting on Vision-R1-cold followed by PTST yields the best average (55.4\\%), with a substantial gain on MM-Math (40.2\\% vs 33.1\\%/28.8\\%).",
+    "char_start": 32297,
+    "char_end": 32454,
+    "sentence_index": 219,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec015",
+    "text": "These results support that complex CoT priors acquired in cold start are essential for RL to learn correct reasoning patterns.",
+    "char_start": 32455,
+    "char_end": 32581,
+    "sentence_index": 220,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec015",
+    "text": "Furthermore, PTST then suppresses early overthinking (short 4K) and safely extends reasoning length (8K), leading to consistent improvements.",
+    "char_start": 32582,
+    "char_end": 32723,
+    "sentence_index": 221,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec015",
+    "text": "[t]\n\nEffect of Cold Start.",
+    "char_start": 32725,
+    "char_end": 32751,
+    "sentence_index": 222,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec015",
+    "text": "``Zero+PTST'' denotes we keep the Vision-R1-Zero settings while adopting PTST strategy.",
+    "char_start": 32752,
+    "char_end": 32839,
+    "sentence_index": 223,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec015",
+    "text": "``Zero+SFT+PTST '' involves training the base model in the Vision-R1-cold dataset without CoT annotations before RL training, followed by RL training with the same ``Zero+PTST'' setup.",
+    "char_start": 32840,
+    "char_end": 33024,
+    "sentence_index": 224,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec015",
+    "text": "``Avg.\" denotes the average performance (MathVista, MathVerse, MM-Math).",
+    "char_start": 33025,
+    "char_end": 33097,
+    "sentence_index": 225,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec015",
+    "text": "0.6 !",
+    "char_start": 33099,
+    "char_end": 33104,
+    "sentence_index": 226,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec015",
+    "text": "c|ccc|c\n\nMethod & MathVisita & MathVerse & MM-Math & Avg.",
+    "char_start": 33106,
+    "char_end": 33163,
+    "sentence_index": 227,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec015",
+    "text": "Vision-R1-Zero & 70.6 & 52.6 & 28.8 & 50.7\n\nZero+PTST & 71.3 & 50.9 & 33.1 & 51.8\n\nZero+SFT+PTST & 68.7 & 32.0 & 18.9 & 39.8\n\nsoftblue Vision-R1 (Ours)& softblue 73.5 & softblue 52.4 & softblue 40.2 & softblue 55.4\n\nVisualization.",
+    "char_start": 33165,
+    "char_end": 33395,
+    "sentence_index": 228,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec015",
+    "text": "As shown in Fig.",
+    "char_start": 33396,
+    "char_end": 33412,
+    "sentence_index": 229,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec015",
+    "text": ", our proposed Vision-R1-7B is capable of generating complex reasoning processes and exhibits the emergence of the so-called ``Aha moment'' deepseekai2025deepseekr1incentivizingreasoningcapability , i.e.",
+    "char_start": 33413,
+    "char_end": 33616,
+    "sentence_index": 230,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec015",
+    "text": ", a phenomenon analogous to human cognitive processes involving questioning and reflection.",
+    "char_start": 33617,
+    "char_end": 33708,
+    "sentence_index": 231,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec015",
+    "text": "This sophisticated reasoning capability significantly enhances the model's inference performance, leading to substantial improvements in solving complex reasoning tasks.",
+    "char_start": 33709,
+    "char_end": 33878,
+    "sentence_index": 232,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec016",
+    "text": "We explore how to use RL training to incentivize reasoning capability in MLLMs.",
+    "char_start": 33880,
+    "char_end": 33959,
+    "sentence_index": 233,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec016",
+    "text": "Moreover, we proposed Vision-R1 and achieved the strong math reasoning ability, achieving comparable performance to SoTA MLLMs.",
+    "char_start": 33960,
+    "char_end": 34087,
+    "sentence_index": 234,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec016",
+    "text": "iclr2026_conference\niclr2026_conference\n\nDataset and Benchmarks.",
+    "char_start": 34089,
+    "char_end": 34153,
+    "sentence_index": 235,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec017",
+    "text": "To obtain the cold-start dataset, we use the multimodal visual question answering (VQA) datasets, LLaVA-CoT dataset (100K) xu2024llava and Mulberry dataset (260K) yao2024mulberry , to conduct Vision-R1-cold (200K).",
+    "char_start": 34154,
+    "char_end": 34368,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec017",
+    "text": "During GRPO process, we mix the math datasets of We-Math qiao2024we , MathVision wang2025measuring , Polymath gupta2024polymath , SceMQA liang2024scemqa , Geometry3K lu2021inter as our RL training data.",
+    "char_start": 34369,
+    "char_end": 34571,
+    "sentence_index": 237,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec017",
+    "text": "Total amount of data is around 10K.",
+    "char_start": 34572,
+    "char_end": 34607,
+    "sentence_index": 238,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec017",
+    "text": "For scaling up the RL dataset for Vision-R1-32B and Vision-R1-72B, we render text-based AIME data before 2024 as images, extract a subset from MAmmoTH-VL guo2024mammoth and MMIQ cai2025mm , obtaining a total of $ $20K additional data.",
+    "char_start": 34608,
+    "char_end": 34842,
+    "sentence_index": 239,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec017",
+    "text": "For evaluating the reasoning capability of our Vision-R1, we choose three widely used multimodal math benchmarks: MM-Math sun2024mm , MathVista lu2023mathvista , MathVerse zhang2024mathverse .",
+    "char_start": 34844,
+    "char_end": 35036,
+    "sentence_index": 240,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec017",
+    "text": "These benchmarks covers various mathematical fields which can provide a thorough evaluation of MLLMs' math reasoning ability.",
+    "char_start": 35037,
+    "char_end": 35162,
+    "sentence_index": 241,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec017",
+    "text": "Besides, we select four general multimodal benchmarks to demenstrate the general ability of our model: MMStar chen2024we , ChartQA masry2022chartqa , MME Fu2023MMEAC and HallBench guan2024hallusionbench .",
+    "char_start": 35163,
+    "char_end": 35367,
+    "sentence_index": 242,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec017",
+    "text": "Those general benchmarks are used to evaluate the data quality of our proposed Vision-R1-cold dataset.",
+    "char_start": 35368,
+    "char_end": 35470,
+    "sentence_index": 243,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec017",
+    "text": "Implementation Details.",
+    "char_start": 35472,
+    "char_end": 35495,
+    "sentence_index": 244,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec017",
+    "text": "For the Vision-R1-cold dataset preparation, we deploy the open-source MLLM Qwen2.5-VL-72B Qwen2.5-VL and the reasoning LLM DeepSeek-R1 deepseekai2025deepseekr1incentivizingreasoningcapability .",
+    "char_start": 35496,
+    "char_end": 35689,
+    "sentence_index": 245,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec017",
+    "text": "We then process the VQA datasets using Qwen-2.5-VL-72B and DeepSeek-R1.",
+    "char_start": 35690,
+    "char_end": 35761,
+    "sentence_index": 246,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec017",
+    "text": "For the cold-start initialization of Vision-R1, we adopt Qwen2.5-VL Qwen2.5-VL as the base model and train it via supervised fine-tuning (SFT) for 2 epochs using Llama-Factory framework zheng2024llamafactory .",
+    "char_start": 35763,
+    "char_end": 35972,
+    "sentence_index": 247,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec017",
+    "text": "After cold-start initialization, we obtain the post-cold-start model, Vision-R1-CI, which is subsequently trained on the collected math dataset using GRPO in Verl training framework sheng2024hybridflow,zheng2025easyr1 , while following the two-stage PTST approach (note that we do not use the third stage checkpoints), i.e.",
+    "char_start": 35973,
+    "char_end": 36296,
+    "sentence_index": 248,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec017",
+    "text": ", $S$ was set to 2.",
+    "char_start": 36297,
+    "char_end": 36316,
+    "sentence_index": 249,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec017",
+    "text": "The all models in the paper are summarised as follows:\n\nVision-R1-Zero : This represents the baseline approach where reinforcement learning (RL) is applied directly to the base MLLM without cold-start initialization.",
+    "char_start": 36317,
+    "char_end": 36533,
+    "sentence_index": 250,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec017",
+    "text": "We adopt the limit of 4K generation token length with 16 samples to train the base model via RL training.",
+    "char_start": 36534,
+    "char_end": 36639,
+    "sentence_index": 251,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec017",
+    "text": "The system prompt and the training method are described in Sec.",
+    "char_start": 36640,
+    "char_end": 36703,
+    "sentence_index": 252,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec017",
+    "text": ".\nThe full training step is set to 300.",
+    "char_start": 36704,
+    "char_end": 36743,
+    "sentence_index": 253,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec017",
+    "text": "Vision-R1-CI : The base MLLM is cold-start initialized using the Vision-R1-cold dataset, resulting in this model.",
+    "char_start": 36744,
+    "char_end": 36857,
+    "sentence_index": 254,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec017",
+    "text": "Vision-R1-Long : This variant is trained with a maximum generation length of 16K tokens, where four samples per input are generated from the cold-started Vision-R1-CI, followed by 300 training steps.",
+    "char_start": 36858,
+    "char_end": 37057,
+    "sentence_index": 255,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec017",
+    "text": "Vision-R1 : This model follows the Progressive Thinking Suppression Training (PTST) strategy, where a two-stage RL training process is applied:\n\nStage 1 : The model is trained from Vision-R1-CI for 100 steps with an 4K token generation limit, sampling 16 samples per input.",
+    "char_start": 37058,
+    "char_end": 37331,
+    "sentence_index": 256,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec017",
+    "text": "Stage 2 : Training continues for another 100 steps with a maximum generation length of 8K tokens, sampling 8 samples per input.",
+    "char_start": 37332,
+    "char_end": 37459,
+    "sentence_index": 257,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec017",
+    "text": "The final model checkpoint at the end of Stage 2 is the final Vision-R1 model, as this stage achieves an optimal balance between reasoning length and overall performance.",
+    "char_start": 37461,
+    "char_end": 37631,
+    "sentence_index": 258,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec017",
+    "text": "Note that for Vision-R1-32B and Vision-R1-72B , we use additional data to continue training them in the RL stage under the same PTST Stage 2 settings.",
+    "char_start": 37632,
+    "char_end": 37782,
+    "sentence_index": 259,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec017",
+    "text": "Additionally, Vision-R1 can be further extended to a third training stage, following the same parameter settings as Vision-R1-Long and continuing for an additional 100 training steps.",
+    "char_start": 37784,
+    "char_end": 37967,
+    "sentence_index": 260,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec017",
+    "text": "However, as shown in Fig.",
+    "char_start": 37968,
+    "char_end": 37993,
+    "sentence_index": 261,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec017",
+    "text": ", further training does not yield significant performance improvements but does generate more complex reasoning processes.",
+    "char_start": 37994,
+    "char_end": 38116,
+    "sentence_index": 262,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec017",
+    "text": "For the ablation study experiments in Sec , we choose Vision-R1-7B as the default to evaluate.",
+    "char_start": 38118,
+    "char_end": 38212,
+    "sentence_index": 263,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec017",
+    "text": "In Tab.",
+    "char_start": 38213,
+    "char_end": 38220,
+    "sentence_index": 264,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec017",
+    "text": "and Tab.",
+    "char_start": 38221,
+    "char_end": 38229,
+    "sentence_index": 265,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec017",
+    "text": ", we chose the optimal checkpoint for reporting performance by evaluating every fifth step in the final 50 steps of the RL training process, thereby avoiding the statistical bias caused by training instability.",
+    "char_start": 38230,
+    "char_end": 38440,
+    "sentence_index": 266,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec017",
+    "text": "To assess the quality of the Vision-R1-cold dataset, we apply the same training hyper-parameters of the cold-start initialization to Llama-3.2-V-Instruct dubey2024llama for SFT, resulting in another post-cold-start MLLM, Vision-R1-LlamaV-CI , which can also be used for subsequent RL training.",
+    "char_start": 38442,
+    "char_end": 38735,
+    "sentence_index": 267,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec017",
+    "text": "[t]\n\nfig/cot_data.pdf\n\nComparison between the CoT processes generated by descriptions with and without ``Pseudo-CoT''.",
+    "char_start": 38737,
+    "char_end": 38855,
+    "sentence_index": 268,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec017",
+    "text": "Simple descriptions generated without the ``Pseudo-CoT'' input lack sufficient visual information, leading to confusion and hallucination in the reasoning process of DeepSeek-R1.",
+    "char_start": 38856,
+    "char_end": 39034,
+    "sentence_index": 269,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec017",
+    "text": "In contrast, detailed descriptions enhanced through our Modality Bridging with ``Pseudo-CoT'' integrate high-quality visual information into textual descriptions, which facilitates accurate reasoning and enables R1 to generate correct answers.",
+    "char_start": 39035,
+    "char_end": 39278,
+    "sentence_index": 270,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec018",
+    "text": "We compare the CoT example generated by descriptions with and without ``Pseudo-Co'' in Fig.",
+    "char_start": 39280,
+    "char_end": 39371,
+    "sentence_index": 271,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec018",
+    "text": ".\nWhen we directly use the naive image description as the input for DeepSeek-R1, the strong reasoning LLM cannot generate the correct trajectories for a massive amount of VQA data.",
+    "char_start": 39372,
+    "char_end": 39552,
+    "sentence_index": 272,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec018",
+    "text": "This is because the MLLM does not know which image information is important for reasoning, and the generated image description lacks key converted image information, resulting in unusual CoT data.",
+    "char_start": 39553,
+    "char_end": 39749,
+    "sentence_index": 273,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec018",
+    "text": "[t]\n\nfig/supp_input_sample.pdf\n\nExamples of our Vision-R1-cold data.",
+    "char_start": 39751,
+    "char_end": 39819,
+    "sentence_index": 274,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec018",
+    "text": "It comprises abundant information obtained through our Modality Bridging method.",
+    "char_start": 39820,
+    "char_end": 39900,
+    "sentence_index": 275,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec018",
+    "text": "[t]\n\nfig/supp_output_sample.pdf\n\nMore output examples of our Vision-R1-7B on MathVerse benchmark.",
+    "char_start": 39902,
+    "char_end": 39999,
+    "sentence_index": 276,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec019",
+    "text": "We provide some more examples of our Vision-R1-cold dataset in Fig.",
+    "char_start": 40001,
+    "char_end": 40068,
+    "sentence_index": 277,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec019",
+    "text": ".\nFig.",
+    "char_start": 40069,
+    "char_end": 40075,
+    "sentence_index": 278,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec019",
+    "text": "showcases multiple response instances generated by our Vision-R1 model, including comprehensive reasoning processes and corresponding final answers.",
+    "char_start": 40076,
+    "char_end": 40224,
+    "sentence_index": 279,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec020",
+    "text": "Our proposed Vision-R1-cold dataset consists of a wide range of multimodal data, including the following categories:\n\nMathematical Data: GLLaVA gao2023g , GEOS seo2015solving , UniGeo chen2022unigeo , GeoQA Plus chen2021geoqa , Geo3K lu2021inter , MathVision wang2025measuring , GeoMverse kazemi2023geomverse , MathV360K shi-etal-2024-math , IconQA lu2021iconqa , TabMWP lu2023dynamic , CLEVR johnson2017clevr , CLEVR-Math lindstrom2022clevr , and Super-CLEVR li2023super .",
+    "char_start": 40226,
+    "char_end": 40699,
+    "sentence_index": 280,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec020",
+    "text": "General QA Data: ShareGPT4V chen2024sharegpt4v , PISC li2017dual VQA-AS antol2015vqa , A-OKVQA schwenk2022okvqa , TextVQA singh2019towards , Vizwiz gurari2018vizwiz , and VQA2.0 goyal2017making\nScience and Medical Data: From GeoQA+ cao2022augmented , CLEVR-Math lindstrom2022clevr , TQA kembhavi2017you , AI2D kembhavi2016diagram , ScienceQA lu2022learn , VQA-RAD lau2018dataset , and PMC-VQA zhang2023pmc\nFigure Understanding Data: From DVQA kafle2018dvqa , DocVQA mathew2021docvqa , FigureQA kahou2017figureqa , PlotQA methani2020plotqa , ChartQA masry2022chartqa , InfoVQA mathew2022infographicvqa , MultiHiertt zhao2022multihiertt , and LRV-Chart liu2023mitigating .",
+    "char_start": 40700,
+    "char_end": 41370,
+    "sentence_index": 281,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec021",
+    "text": "In this paper, we have used an LLM to refine some sentences and improve the grammar, making the paper more academic.",
+    "char_start": 41372,
+    "char_end": 41488,
+    "sentence_index": 282,
+    "section_sentence_index": 0
+  }
+]

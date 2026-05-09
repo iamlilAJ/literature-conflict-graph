@@ -1,0 +1,4637 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Long-form video understanding presents significant challenges due to extensive temporal-spatial complexity and the difficulty of question answering under such extended contexts.",
+    "char_start": 0,
+    "char_end": 177,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "While Large Language Models (LLMs) have demonstrated considerable advancements in video analysis capabilities and long context handling, they continue to exhibit limitations when processing information-dense hour-long videos.",
+    "char_start": 179,
+    "char_end": 404,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To overcome such limitations, we propose the D eep V ideo D iscovery ( DVD ) agent to leverage an agentic search strategy over segmented video clips.",
+    "char_start": 405,
+    "char_end": 554,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Unlike previous video agents that rely on predefined workflows applied uniformly across different queries, our approach emphasizes the autonomous and adaptive nature of agents.",
+    "char_start": 555,
+    "char_end": 731,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "By providing a set of search-centric tools on multi-granular video database,\nour DVD agent leverages the advanced reasoning capability of LLM to plan on its current observation state, strategically selects tools to orchestrate adaptive workflow for different queries in light of the gathered information.",
+    "char_start": 732,
+    "char_end": 1036,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "We perform comprehensive evaluation on multiple long video understanding benchmarks that demonstrates our advantage.",
+    "char_start": 1037,
+    "char_end": 1153,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Our DVD agent achieves state-of-the-art performance on the challenging LVBench dataset, reaching an accuracy of 74.2\\% , which substantially surpasses all prior works, and further improves to 76.0\\% with transcripts.",
+    "char_start": 1155,
+    "char_end": 1371,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "The code has been released at .",
+    "char_start": 1373,
+    "char_end": 1404,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Long-form videos are ubiquitous in everyday life, spanning diverse domains such as movies, meeting recordings, sports games, and variety shows.",
+    "char_start": 1406,
+    "char_end": 1549,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Accurately comprehending and interpreting content within these extensive videos remains an intrinsically challenging task , demanding an ability to simultaneously integrate and reason about intricate spatiotemporal details across broad global contexts.",
+    "char_start": 1550,
+    "char_end": 1802,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Effective retrieval of relevant information from hour-long or even longer sequences not only necessitates attending to fine-grained local details but also simultaneously interpreting subtle semantic relations distributed throughout extended temporal intervals.",
+    "char_start": 1803,
+    "char_end": 2063,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Recent advancements in Large Language Models (LLMs) and Large Vision-language Models (VLMs) have notably improved capabilities in video understanding and increased context length handling more than one million tokens .",
+    "char_start": 2064,
+    "char_end": 2282,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "However, even this extended context length remains insufficient for comprehending the information density typically found in long-form videos of hour-long duration.",
+    "char_start": 2283,
+    "char_end": 2447,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Empirical observations also suggest a decline in the model's effective instruction-following ability and reasoning clarity as the temporal dimension and information density increase.",
+    "char_start": 2449,
+    "char_end": 2631,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Concurrently, recent breakthroughs on reasoning capability of LLMs have facilitated advances in agentic systems capable of complex information gathering tasks, such as Deep Research or Deep Search .",
+    "char_start": 2633,
+    "char_end": 2831,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "These agentic approaches demonstrate how decomposing difficult tasks into modular sub-tasks enables iterative reasoning, information searching, and content synthesis.",
+    "char_start": 2832,
+    "char_end": 2998,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Inspired by these successes,\nwe conceptualize the challenge of understanding extremely long videos as a multi-step information search problem, where the video serves as the exploration environment and is segmented into multiple shorter video clips serving as manageable units of information.",
+    "char_start": 2999,
+    "char_end": 3290,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "We name our approach as (Fig.",
+    "char_start": 3291,
+    "char_end": 3320,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": ", left).",
+    "char_start": 3321,
+    "char_end": 3329,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "While existing video agent frameworks incorporate searching processes in their designs, they manually design the search process with their human prior.",
+    "char_start": 3331,
+    "char_end": 3482,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "For instance, both VideoTree and VCA employ tree-based search strategies that navigate from root nodes to leaf nodes.",
+    "char_start": 3483,
+    "char_end": 3600,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "This approach alleviates the context length limitations of VLMs but\nis inefficient for fine-grained queries which might benefit more from direct retrieving among leaf nodes.",
+    "char_start": 3601,
+    "char_end": 3774,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Additionally, semantically relevant entities may not exhibit temporal proximity, potentially diminishing the efficiency of backdate mechanism in tree-based search methods.",
+    "char_start": 3775,
+    "char_end": 3946,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Most critically, these existing frameworks prescribe fixed workflows that are uniformly applied across all query types, failing to adapt to the diverse information needs and optimal search strategies required by different questions.",
+    "char_start": 3947,
+    "char_end": 4179,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "In contrast to existing systems that typically rely on manually defined, rigid workflows, our approach is distinctly designed around an autonomous and adaptive agentic search paradigm for different queries.",
+    "char_start": 4181,
+    "char_end": 4387,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Instead of explicitly prescribing task workflows or search behaviors, we develop modular search tools that operate at multiple granularities, including (1) Global Browse , (2) Clip Search , and (3) Frame Inspect .",
+    "char_start": 4388,
+    "char_end": 4601,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Global Browse enables global summarization and indexing of subjects and global contexts across the entire video.",
+    "char_start": 4603,
+    "char_end": 4715,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Clip Search implements efficient semantic retrieval of relevant events within segmented clips.",
+    "char_start": 4716,
+    "char_end": 4810,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Specifically, Frame Inspection empowers the agent to extract fine-grained details directly from pixel-level information in a specified temporal range.",
+    "char_start": 4811,
+    "char_end": 4961,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Equipped with this search-centric toolkit and multi-granular video database, our agent is inherently capable of autonomous reasoning, dynamic strategy orchestration, and iterative decision-making to proactively discover and extract crucial evidence.",
+    "char_start": 4963,
+    "char_end": 5212,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "By leveraging the sophisticated reasoning capabilities intrinsic in the latest LLM, our agent does not merely use these tools independently, but adaptively combines their complementary strengths into a chain of thoughts and tool uses, effectively addressing diverse temporal-spatial and complex questions for long video.",
+    "char_start": 5213,
+    "char_end": 5533,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "In the end, Deep Video Discovery can autonomously reason, plan, and retrieve pertinent information through adaptive search strategies tailored to specific video understanding queries.",
+    "char_start": 5534,
+    "char_end": 5717,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We conduct comprehensive evaluations on long video benchmarks, demonstrating the efficiency and strong performance of our agent.",
+    "char_start": 5719,
+    "char_end": 5847,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "In particular, on the challenging LVBench, we push forward the state-of-the-art performance by a large margin to 74.2\\% (as shown in Fig.",
+    "char_start": 5848,
+    "char_end": 5985,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": ", right), further achieving 76.0\\% with auxiliary transcripts.",
+    "char_start": 5986,
+    "char_end": 6048,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "We also set a series of ablation studies that show the effectiveness of our tool design.",
+    "char_start": 6049,
+    "char_end": 6137,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "In addition, we analyze the behavior patterns of different reasoning models in tool use sequences, providing future insight of developing agents for long video understanding tasks.",
+    "char_start": 6138,
+    "char_end": 6318,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "Long Video Understanding.",
+    "char_start": 6320,
+    "char_end": 6345,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Long video understanding remains a formidable challenge due to the intricate demands of temporal and spatial reasoning over extended durations and the complexity of information retrieval .",
+    "char_start": 6346,
+    "char_end": 6534,
+    "sentence_index": 38,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Recent efforts in VLM for long video understanding primarily tackle challenges of limited input frame number by extending the context length of models or minimizing video redundancy to reduce visual token numbers .",
+    "char_start": 6535,
+    "char_end": 6749,
+    "sentence_index": 39,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Approaches such as dynamically compress visual token by allocating adaptive compression ratios across time and model layers, thus significantly expanding the effective input frame number.",
+    "char_start": 6750,
+    "char_end": 6937,
+    "sentence_index": 40,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "However, token compression inherently introduces uncertainty regarding information loss, and models continue to face difficulties when answering complex queries under elongated context windows.",
+    "char_start": 6938,
+    "char_end": 7131,
+    "sentence_index": 41,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "In parallel, given the sparsity of key information about the given query, some works propose to explore the video content by agentic system.",
+    "char_start": 7132,
+    "char_end": 7272,
+    "sentence_index": 42,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "But they usually manually guide the agent about the search workflow by their priors or only allow the agent at simplex frame granularity to search , which cannot make full use of the reasoning capability of LLMs, resulting in suboptimal search efficiency and a lack of holistic, global comprehension of the long video content.",
+    "char_start": 7273,
+    "char_end": 7599,
+    "sentence_index": 43,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Agent and tool use.",
+    "char_start": 7601,
+    "char_end": 7620,
+    "sentence_index": 44,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Recent advancements in large language models (LLMs), particularly their enhanced reasoning and planning capabilities, have significantly accelerated the development of autonomous agents .",
+    "char_start": 7621,
+    "char_end": 7808,
+    "sentence_index": 45,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "The ability to leverage external tools further narrows the gap between general-purpose LLMs and real-world applications, enabling LLMs to acquire information, perform planning, and execute actions in complex environments.",
+    "char_start": 7809,
+    "char_end": 8030,
+    "sentence_index": 46,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Our work extends this line of research to long video understanding, contributing to the broader investigation of solving complex video understanding tasks by integrating the advanced reasoning capabilities of LLMs with tool use.",
+    "char_start": 8031,
+    "char_end": 8259,
+    "sentence_index": 47,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "We introduce a suite of search-centric tools that allow LLMs to autonomously gather information at varying levels of granularity.",
+    "char_start": 8260,
+    "char_end": 8389,
+    "sentence_index": 48,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "By dynamically composing these tools, the agent can construct multi-step tool-use chains to improve the ability to answer complex queries effectively.",
+    "char_start": 8390,
+    "char_end": 8540,
+    "sentence_index": 49,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "[t]\n\nfigures/pipeline2.pdf\n\nconsists of two stages: 1) Multi-granular Video Database Construction.",
+    "char_start": 8542,
+    "char_end": 8640,
+    "sentence_index": 50,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "We extract video information from different levels to enable comprehensive understanding, efficient retrieval, and preservation of original content.",
+    "char_start": 8641,
+    "char_end": 8789,
+    "sentence_index": 51,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "2) Agentic Search and Answer.",
+    "char_start": 8790,
+    "char_end": 8819,
+    "sentence_index": 52,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "The agent iteratively reasons on user query and leverage the tailored toolset to gather information to answer.",
+    "char_start": 8820,
+    "char_end": 8930,
+    "sentence_index": 53,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "Overview.",
+    "char_start": 8932,
+    "char_end": 8941,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "To solve the long-form video understanding problem in an agentic search way,\nwe first build a multi-grained structured database from the long-form video.",
+    "char_start": 8942,
+    "char_end": 9095,
+    "sentence_index": 55,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "The database then serves for search-centric tools that work at different granularities.",
+    "char_start": 9096,
+    "char_end": 9183,
+    "sentence_index": 56,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "Specifically, our Deep Video Discovery agent consists of three main components: the multi-grained video database $ D $, search-centric toolset $ T $, and the LLM \\( M \\) as the agent's orchestrator.",
+    "char_start": 9184,
+    "char_end": 9382,
+    "sentence_index": 57,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "Given the user query $Q$, the agent reasons iteratively to choose an action $A_i T \\ Answer \\ $ with parameters $P$ to gather information for the video database $ D $ or make decision to answer the query by referring to the accumulated information in this process.",
+    "char_start": 9383,
+    "char_end": 9647,
+    "sentence_index": 58,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "In the following subsections, we sequentially introduce the multi-grained video database construction and Agentic Search and Answer with Tool Use.",
+    "char_start": 9648,
+    "char_end": 9794,
+    "sentence_index": 59,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Given an ultra long input video $V$, our goal is to transform it into a database that can provide efficient fast retrieval and also provide the original pixels of video for detailed information when necessary.",
+    "char_start": 9796,
+    "char_end": 10005,
+    "sentence_index": 60,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "Hence, we design it in a multiple granularity style which can provide different levels of video information for corresponding search tools.",
+    "char_start": 10006,
+    "char_end": 10145,
+    "sentence_index": 61,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "Specifically, we first segment the video into clips as the basic information unit then make the\ndatabase include global summarized information to cover the whole video, a clip-based caption corpus and indexed frames from the clip.",
+    "char_start": 10146,
+    "char_end": 10376,
+    "sentence_index": 62,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "Fig.",
+    "char_start": 10377,
+    "char_end": 10381,
+    "sentence_index": 63,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "(left) provides an overview.",
+    "char_start": 10382,
+    "char_end": 10410,
+    "sentence_index": 64,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "We introduce these components sequentially.",
+    "char_start": 10411,
+    "char_end": 10454,
+    "sentence_index": 65,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "Temporal segmentation.",
+    "char_start": 10456,
+    "char_end": 10478,
+    "sentence_index": 66,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "We start by uniformly partitioning the input video $V$ into a temporal sequence of non-overlapping short clips $\\ v_i\\ _ i=1 ^ N $, where the total segments $N= len (V) t $.",
+    "char_start": 10480,
+    "char_end": 10653,
+    "sentence_index": 67,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "Empirically, we set $t=5$ seconds to provide an adequate balance between computing cost and semantic and action completeness.",
+    "char_start": 10655,
+    "char_end": 10780,
+    "sentence_index": 68,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "Then all the video clips are decoded into frames $\\ f_i\\ _ i=1 ^ N $ under 2 frames per second for further process.",
+    "char_start": 10781,
+    "char_end": 10896,
+    "sentence_index": 69,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "Multi-granular information extraction.",
+    "char_start": 10898,
+    "char_end": 10936,
+    "sentence_index": 70,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Our multi-granular video information is designed as three levels: global video level, clip level and frame level.",
+    "char_start": 10938,
+    "char_end": 11051,
+    "sentence_index": 71,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "Specifically, at the global level we summarize the video content into a compact, subject-centric representation.",
+    "char_start": 11052,
+    "char_end": 11164,
+    "sentence_index": 72,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "At the clip level, we leverage textual captions to facilitate efficient information retrieval, while at the frame level we preserve original decoded frames indexed according to their corresponding clips, enabling precise reference and detailed analysis when required.",
+    "char_start": 11165,
+    "char_end": 11432,
+    "sentence_index": 73,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "To derive the subject-centric global representation while minimizing redundancy in caption generation, we maintain an progressive structured subject registry $S$ throughout the clip captioning process.",
+    "char_start": 11434,
+    "char_end": 11635,
+    "sentence_index": 74,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": "Specifically, given a video clip $v_i$ and decoded frame $f_i$, we prompt a large VLM to generate the captioning $c_i$ and evolve registry whenever new subjects appear.",
+    "char_start": 11636,
+    "char_end": 11804,
+    "sentence_index": 75,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec005",
+    "text": "The process is denoted as $S_i, c_i=VLM(f_i, S_ i-1 )$ where $S_0$ is initialized as empty, and at the conclusion of the captioning process, the final subject registry is denoted by $S=S_N$.",
+    "char_start": 11805,
+    "char_end": 11995,
+    "sentence_index": 76,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec005",
+    "text": "Each subject within the registry is represented by a comprehensive set of attributes, including name, physical appearance, identity descriptors, associated actions, and corresponding temporal spans in the video.",
+    "char_start": 11996,
+    "char_end": 12207,
+    "sentence_index": 77,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec005",
+    "text": "The obtained caption $c_i$ is subsequently embedded into a dense semantic vector $e_i R ^d$ using a language embedding model, facilitating fast retrieval in downstream applications.",
+    "char_start": 12208,
+    "char_end": 12389,
+    "sentence_index": 78,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec005",
+    "text": "Despite careful design choices, perceptual compression inherent in caption generation inevitably entails some information loss.",
+    "char_start": 12390,
+    "char_end": 12517,
+    "sentence_index": 79,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec005",
+    "text": "To mitigate this when necessary, we explicitly retain the decoded frames $f_i$ alongside their corresponding textual captions and embeddings.",
+    "char_start": 12518,
+    "char_end": 12659,
+    "sentence_index": 80,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec005",
+    "text": "Outcome.",
+    "char_start": 12661,
+    "char_end": 12669,
+    "sentence_index": 81,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec005",
+    "text": "The finalized database therefore encapsulates the decoded frames, captions and corresponding embedding triples, thus forming a structured database\n$\nD = \\ S, \\ f_i,\\, c_i,\\, e_i\\ _ i=1 ^ N \\ .",
+    "char_start": 12670,
+    "char_end": 12862,
+    "sentence_index": 82,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec005",
+    "text": "$\nThis offline construction procedure transforms a lengthy raw video into a structured set of textually searchable embeddings with associated clips, while simultaneously preserving the complete visual content at pixel resolution.",
+    "char_start": 12863,
+    "char_end": 13092,
+    "sentence_index": 83,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec005",
+    "text": "The resulting database becomes the basis for adaptive tool usage, enabling global information browsing, efficient semantic retrieval at the video-clip scale, and comprehensive grounding of generated outputs back to their source frames.",
+    "char_start": 13093,
+    "char_end": 13328,
+    "sentence_index": 84,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec005",
+    "text": "[t]\n\n[t] 0.42\n\nAction space overview of our DVD.",
+    "char_start": 13330,
+    "char_end": 13378,
+    "sentence_index": 85,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec005",
+    "text": "The first three actions are from our toolset and the final Answer action is designed as stop criterion.",
+    "char_start": 13379,
+    "char_end": 13482,
+    "sentence_index": 86,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec005",
+    "text": "1mm\n!",
+    "char_start": 13483,
+    "char_end": 13488,
+    "sentence_index": 87,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec005",
+    "text": "ll\n\nAction & Parameter\n\n2 * Global\nBrowse & video database $ D $\n\n& user query $ Q $\n\n3 * Clip\nSearch & video database $ D $\n\n& agent synthesized query $ Q $\n\n& return top-$k$ captions\n\n3 * Frame\nInspect & video database $ D $\n\n& agent synthesized query $ Q $\n\n& temporal range $[t_s, t_e]$\n\nAnswer & the answer to user query\n\n[t] 0.52\n\n[H]\nAgentic Search and Answer.",
+    "char_start": 13489,
+    "char_end": 13856,
+    "sentence_index": 88,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "Input Input\nOutput Output\nInitial query $Q$, max step $N$, LLM $M$, tool set $ T $, action space $ A = T \\ Answer \\ $\nAnswer to $Q$\nInitialize history $H_0 \\ Q, A \\ $\n\n$i 1$ $N$\n$R_i M.reason(H_ i-1 )$\n\n$A_i, P_i M.call(R_i, H_ i-1 ) where A_i A $\n\n$A_i = Answer $\nbreak\n\n$O_i A_i(P_i)$\n\n$H_i H_ i-1 \\ (R_i, A_i, O_i)\\ $\n\n$t=N$\n$P_i M.answer(H_i)$\n\n$ Answer (P_i)$\n\nWith the built multi-granular video database, we design a set of search-centric tools that can enable global information understanding, efficient clip retrieval by semantic query, and details exploration on original video content.",
+    "char_start": 13858,
+    "char_end": 14454,
+    "sentence_index": 89,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "By equipping a reasoning large language model with this toolset, we build our DVD that can address complex user query on long video though autonomous planning and strategical search tool combination, as shown in Fig.",
+    "char_start": 14455,
+    "char_end": 14671,
+    "sentence_index": 90,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "(right).",
+    "char_start": 14672,
+    "char_end": 14680,
+    "sentence_index": 91,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "We refer to this stage as Agentic Search and Answer with Tool Use ( ASA ).",
+    "char_start": 14681,
+    "char_end": 14755,
+    "sentence_index": 92,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "We introduce this stage through two subsections: Search-centric Tool Preparation and Agent Design.",
+    "char_start": 14756,
+    "char_end": 14854,
+    "sentence_index": 93,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec007",
+    "text": "Leveraging the established video database, we have developed a suite of tools designed to efficiently gather information from video data at varying levels of granularity.",
+    "char_start": 14856,
+    "char_end": 15026,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec007",
+    "text": "Specifically, we divide long videos into three distinct hierarchical levels and introduce corresponding specialized tools: (1) Global Browse, (2) Clip Search, and (3) Frame Inspect.",
+    "char_start": 15027,
+    "char_end": 15208,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec007",
+    "text": "Given the significant computational cost associated with processing lengthy videos using VLMs, our tool design carefully balances efficiency and performance.",
+    "char_start": 15209,
+    "char_end": 15366,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec007",
+    "text": "Central to our approach is an agentic search paradigm, wherein the agent decomposes the user query and strategically chains up tools with synthesized parameters, enabling iterative reasoning and information collection to resolve the task.",
+    "char_start": 15367,
+    "char_end": 15605,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec007",
+    "text": "Through the effective integration and coordinated use of these tools, the agent progressively enhances its understanding of user intent and precisely locates relevant information within extensive video content.",
+    "char_start": 15606,
+    "char_end": 15816,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec007",
+    "text": "We introduce the three tools sequentially in the following paragraphs.",
+    "char_start": 15817,
+    "char_end": 15887,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec007",
+    "text": "Tool: Global Browse.",
+    "char_start": 15889,
+    "char_end": 15909,
+    "sentence_index": 100,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec007",
+    "text": "The Global Browse tool takes the video database and the original user query as input, and returns global summaries capturing high-level contextual information.",
+    "char_start": 15911,
+    "char_end": 16070,
+    "sentence_index": 101,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec007",
+    "text": "We construct two distinct types of global information: subject-centric and event-centric summaries.",
+    "char_start": 16071,
+    "char_end": 16170,
+    "sentence_index": 102,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec007",
+    "text": "For subject-centric summarization, we pre-construct it when building the multi-granular video dataset as mentioned in Section since it is query-irrelevant.",
+    "char_start": 16171,
+    "char_end": 16326,
+    "sentence_index": 103,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec007",
+    "text": "For event-centric summarization, we uniformly sample frames across the entire video and feed these sampled frames into the VLM.",
+    "char_start": 16327,
+    "char_end": 16454,
+    "sentence_index": 104,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec007",
+    "text": "We instruct the VLM to describe noteworthy events explicitly related to the original user query.",
+    "char_start": 16455,
+    "char_end": 16551,
+    "sentence_index": 105,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec007",
+    "text": "Upon invocation by the agent, the Global Browse tool efficiently retrieves and returns these global representations, providing the agent immediate access to high-level global context information.",
+    "char_start": 16552,
+    "char_end": 16747,
+    "sentence_index": 106,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec007",
+    "text": "Tool: Clip Search.",
+    "char_start": 16749,
+    "char_end": 16767,
+    "sentence_index": 107,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec007",
+    "text": "Clip Search provides a mid-level granularity retrieval capability, enabling fast and efficient exploration of video content via caption embedding.",
+    "char_start": 16769,
+    "char_end": 16915,
+    "sentence_index": 108,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec007",
+    "text": "Given a query $ Q $ synthesized based on the agent\u2019s current internal reasoning context, this module retrieves a ranked list of top-$k$ relevant video clips along with their captions.",
+    "char_start": 16916,
+    "char_end": 17099,
+    "sentence_index": 109,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec007",
+    "text": "Specifically, the tool computes the cosine similarity between the embedding of the provided query and the pre-computed embeddings of all video clip captions, returning the clips corresponding to the highest-ranked caption matches.",
+    "char_start": 17100,
+    "char_end": 17330,
+    "sentence_index": 110,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec007",
+    "text": "Each retrieved observation contains both the corresponding caption and the time ranges of the associated video clip.",
+    "char_start": 17331,
+    "char_end": 17447,
+    "sentence_index": 111,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec007",
+    "text": "To achieve an accurate and detailed understanding, the agent can iteratively invoke this tool, progressively refining temporal constraints or reformulating its queries based on newly acquired contextual knowledge.",
+    "char_start": 17448,
+    "char_end": 17661,
+    "sentence_index": 112,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec007",
+    "text": "This iterative chain-of-query approach effectively guides the agent toward precise temporal segments relevant to the original high-level query.",
+    "char_start": 17662,
+    "char_end": 17805,
+    "sentence_index": 113,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec007",
+    "text": "Tool: Frame Inspect.",
+    "char_start": 17807,
+    "char_end": 17827,
+    "sentence_index": 114,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec007",
+    "text": "Frame Inspect receives a temporal range $[t_s, t_e]$ within the video and an sub-query freely defined by the agent as input, returning an open format visual-question-answering (VQA) response.",
+    "char_start": 17829,
+    "char_end": 18020,
+    "sentence_index": 115,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec007",
+    "text": "The agent can invoke this tool whenever explicit frame-level details such as subtle attributes, object counting, or fine-grained spatial relationships, are required but not clearly depicted in captions or global summaries.",
+    "char_start": 18021,
+    "char_end": 18243,
+    "sentence_index": 116,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec007",
+    "text": "The open-ended query format allows significant freedom for the agent to leverage its reasoning capability, enabling highly adaptable visual inspection.",
+    "char_start": 18244,
+    "char_end": 18395,
+    "sentence_index": 117,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec007",
+    "text": "Specifically, the Frame Inspect tool loads raw frames from the requested interval and prompts a VLM with these frames and agent-synthesized query.",
+    "char_start": 18396,
+    "char_end": 18542,
+    "sentence_index": 118,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec007",
+    "text": "To ensure computational efficiency, we limit processing to a maximum of 50 frames, uniformly sampling from frames exceeding this limit.",
+    "char_start": 18543,
+    "char_end": 18678,
+    "sentence_index": 119,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec007",
+    "text": "The resulting response thus equips the agent with accurate, visually-grounded evidence essential for detailed reasoning tasks.",
+    "char_start": 18679,
+    "char_end": 18805,
+    "sentence_index": 120,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec008",
+    "text": "To maximally leverage the reasoning and planning capacity intrinsic to modern LLMs, we intentionally abstain from manually instructing explicit seaching workflow or tool utilization patterns.",
+    "char_start": 18807,
+    "char_end": 18998,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec008",
+    "text": "Instead, we enable the agent to reason, plan, and take actions through a streamlined iterative observe-reason-act loop, similar to ReAct .",
+    "char_start": 18999,
+    "char_end": 19137,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec008",
+    "text": "For a given query, the agent reasons about its current observation state, strategically selects search tools, formulates appropriate parameters for actions, and dynamically refines its internal reasoning in light of the gathered evidence.",
+    "char_start": 19138,
+    "char_end": 19376,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec008",
+    "text": "Within ASA, the LLM acts as a sophisticated cognitive driver, taking actions at each iteration based on cumulative knowledge and reasoned evidence, thereby reinforcing its pivotal role in adaptively navigating the discovery process.",
+    "char_start": 19377,
+    "char_end": 19609,
+    "sentence_index": 124,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec008",
+    "text": "Specifically, as illustrated in Algorithm , given an initial user query \\( Q \\), a predefined action space \\( A = T \\ Answer \\ \\), and a maximum allowable step count \\( N \\), our agent performs iterative reasoning to strategically navigate the available actions.",
+    "char_start": 19611,
+    "char_end": 19873,
+    "sentence_index": 125,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec008",
+    "text": "The agent leverages an LLM \\( M \\) to reason upon the current dialogue history, plan its immediate action, interact with the toolset \\( T = \\ GlobalBrowse , ClipSearch , FrameInspect \\ \\), and collect observations \\( O_ i \\).",
+    "char_start": 19874,
+    "char_end": 20099,
+    "sentence_index": 126,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec008",
+    "text": "More concretely, at each step \\( t \\), the agent maintains a historical context \\( H_ i \\), reflects to generate a reasoning step \\( R_ i \\), selects an action \\( A_ i T \\ Answer \\ \\) accompanied by relevant parameters \\( P_ i \\), and receives subsequent observation outcomes \\( O_ i \\) from the environment.",
+    "char_start": 20100,
+    "char_end": 20408,
+    "sentence_index": 127,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec008",
+    "text": "These components, reasoning, action, and obtained outcomes, are successively appended to the interaction history \\( H_ i \\), enriching the context for subsequent iterations of inference.",
+    "char_start": 20409,
+    "char_end": 20595,
+    "sentence_index": 128,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec008",
+    "text": "The iterative process terminates either when the agent explicitly selects the Answer action, or upon reaching the step limit \\( N \\), at which prompts the agent directly generates a final answer prediction.",
+    "char_start": 20596,
+    "char_end": 20802,
+    "sentence_index": 129,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec008",
+    "text": "The agent then outputs the final answer to the original user query.",
+    "char_start": 20803,
+    "char_end": 20870,
+    "sentence_index": 130,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec008",
+    "text": "By positioning the LLM's sophisticated reasoning at the core of this iterative loop, this approach endows the agent with an inherently autonomous, evidence-guided, and flexible action-taking mechanism.",
+    "char_start": 20872,
+    "char_end": 21073,
+    "sentence_index": 131,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec008",
+    "text": "This autonomous and iterative paradigm fosters a strategic and context-sensitive inquiry cycle, thereby enabling the agent to effectively leverage the available tools to iteratively decompose the original query into progressively refined sub-queries, updating and improving the query representation as it receives new observations.",
+    "char_start": 21074,
+    "char_end": 21405,
+    "sentence_index": 132,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec008",
+    "text": "Through iterative reasoning and interaction cycles, guided by deeper and increasingly comprehensive observations collected from prior tool usage, the agent systematically enhances its understanding and interpretation of the task context, ultimately leading to more accurate and informed answers to the given question.",
+    "char_start": 21406,
+    "char_end": 21723,
+    "sentence_index": 133,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec009",
+    "text": "[t]\nComparison on LVBench under different question categories.",
+    "char_start": 21725,
+    "char_end": 21787,
+    "sentence_index": 134,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec009",
+    "text": "The metric shown is accuracy (\\%).",
+    "char_start": 21788,
+    "char_end": 21822,
+    "sentence_index": 135,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec009",
+    "text": "1.15\n\n0.88 !",
+    "char_start": 21824,
+    "char_end": 21836,
+    "sentence_index": 136,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec009",
+    "text": "l cccccc c\n\nMethods & ER & EU & KIR & TG & Rea & Sum & Overall\n\n8 l gray Commercial VLMs 0.2mm\n\nGemini-1.5-Pro & 32.1 & 30.9 & 39.3 & 31.8 & 27.0 & 32.8 & 33.1\n\nGemini-2.0-Flash & 47.4 & 48.5 & 56.8 & 39.3 & 44.4 & 41.4 & 48.6\n\nGLM-4V-Plus & 46.2 & 47.8 & 54.1 & 42.7 & 46.5 & 37.9 & 48.7\n\nGPT-4o & 48.9 & 49.5 & 48.1 & 40.9 & 50.3 & 50.0 & 48.9\n\nOpenAI o3 & 57.6 & 56.4 & 62.9 & 46.8 & 50.8 & 67.2 & 57.1\n\n8 l gray Open-Source VLMs 0.2mm\n\nInternVL2.5-78B & 43.8 & 42.0 & 42.1 & 36.8 & 51.0 & 37.9 & 43.6\n\nVideoLLaMA3-7B & 45.8 & 42.4 & 47.8 & 35.9 & 45.8 & 36.2 & 45.3\n\nQwen2.5-VL-72B & - & - & - & - & - & - & 47.7\n\nVideoChat-Flash & 51.1 & 46.0 & 49.0 & 38.9 & 48.5 & 34.5 & 48.2\n\n& 53.0 & 50.7 & 62.2 & 45.5 & 54.7 & 37.9 & 53.3\n\n8 l gray Video Agents and Others 0.2mm\n\nVideoTree & 30.3 & 25.1 & 26.5 & 27.7 & 31.9 & 25.5 & 28.8\n\nVideoAgent & 28.0 & 30.3 & 28.0 & 29.3 & 28.0 & 36.4 & 29.3\n\nVCA & 43.7 & 40.7 & 37.8 & 38.0 & 46.2 & 27.3 & 41.3\n\nMR.",
+    "char_start": 21838,
+    "char_end": 22790,
+    "sentence_index": 137,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec009",
+    "text": "Video & 59.8 & 57.4 & 71.4 & 58.8 & 57.7 & 50.0 & 60.8\n\nDeep Video Discovery (Ours) & 73.4 & 73.3 & 80.4 & 72.3 & 70.7 & 74.1 & 74.2\n\nblack \\ + Auxiliary transcripts & black 75.5 & black 77.1 & black 79.0 & black 72.7 & black 68.7 & black 84.5 & black 76.0\n\nWe assess the long-form video understanding capabilities of Deep Video Discovery using several established long video benchmarks.",
+    "char_start": 22791,
+    "char_end": 23178,
+    "sentence_index": 138,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "Our primary evaluation benchmark, LVBench , includes 1,549 multiple-choice questions across 103 hour-long videos.",
+    "char_start": 23179,
+    "char_end": 23292,
+    "sentence_index": 139,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "It stands as one of the most comprehensive and challenging benchmarks for extreme long-form video understanding.",
+    "char_start": 23293,
+    "char_end": 23405,
+    "sentence_index": 140,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "LongVideoBench features 6,678 questions from 3,763 videos, ranging in duration from a few seconds to an hour.",
+    "char_start": 23406,
+    "char_end": 23515,
+    "sentence_index": 141,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "We emphasize the longest subset with durations in $(900s, 3600s]$ (denoted as the Long subset), comprising 564 questions from 188 videos.",
+    "char_start": 23516,
+    "char_end": 23653,
+    "sentence_index": 142,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec010",
+    "text": "Video MME is segmented by video duration; we concentrate on the Long subset without subtitles to isolate long-video comprehension, covering 300 videos of 30 to 60 minutes with 900 questions.",
+    "char_start": 23654,
+    "char_end": 23844,
+    "sentence_index": 143,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec010",
+    "text": "Finally, EgoSchema serves as a diagnostic benchmark for long-video understanding,\nwhere we evaluate on its validation split of 500 videos with 500 questions.",
+    "char_start": 23845,
+    "char_end": 24002,
+    "sentence_index": 144,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec011",
+    "text": "Baselines .",
+    "char_start": 24004,
+    "char_end": 24015,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec011",
+    "text": "We compare Deep Video Discovery with a range of long-video understanding systems, including both VLM-based and agent-based approaches .",
+    "char_start": 24016,
+    "char_end": 24151,
+    "sentence_index": 146,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec011",
+    "text": "Most baseline results are taken from official leaderboards or published reports, except for the recently released OpenAI o3 , which has not yet been evaluated on these benchmarks.",
+    "char_start": 24152,
+    "char_end": 24331,
+    "sentence_index": 147,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec011",
+    "text": "Following , we uniformly sample 256 frames per video to evaluate OpenAI o3.",
+    "char_start": 24332,
+    "char_end": 24407,
+    "sentence_index": 148,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec011",
+    "text": "Deep Video Discovery flexibly integrates different models depending on the needs of each component.",
+    "char_start": 24409,
+    "char_end": 24508,
+    "sentence_index": 149,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec011",
+    "text": "For the VLM in video database construction, we use GPT-4.1 to produce high-quality captions on LVBench, and GPT-4.1-mini for other benchmarks to reduce cost.",
+    "char_start": 24509,
+    "char_end": 24666,
+    "sentence_index": 150,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec011",
+    "text": "During agentic search and answering, we employ OpenAI o3 as LLM \\( M \\) for its strong reasoning ability, including in the Frame Inspect module for fine-grained VQA.",
+    "char_start": 24667,
+    "char_end": 24832,
+    "sentence_index": 151,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec011",
+    "text": "All frames are resized to 720p to maintain visual details.",
+    "char_start": 24833,
+    "char_end": 24891,
+    "sentence_index": 152,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec011",
+    "text": "In Clip Search, we set 16 as the default value of top-$k$ while leaving the flexibility for LLM to change it.",
+    "char_start": 24892,
+    "char_end": 25001,
+    "sentence_index": 153,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec011",
+    "text": "Maximum reasoning step is set to $N=15$.",
+    "char_start": 25002,
+    "char_end": 25042,
+    "sentence_index": 154,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec011",
+    "text": "To explore the upper bound of understanding ability, we additionally evaluate LVBench using auxiliary transcripts .",
+    "char_start": 25043,
+    "char_end": 25158,
+    "sentence_index": 155,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec011",
+    "text": "Audio is transcribed with WhisperX , and transcripts are used to guide video segmentation and enrich captions.",
+    "char_start": 25159,
+    "char_end": 25269,
+    "sentence_index": 156,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec011",
+    "text": "This audio-visual fusion enhances understanding of long, complex content, leading to stronger results.",
+    "char_start": 25270,
+    "char_end": 25372,
+    "sentence_index": 157,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec011",
+    "text": "API Content filtering.",
+    "char_start": 25374,
+    "char_end": 25396,
+    "sentence_index": 158,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec011",
+    "text": "We use LLM API via Azure OpenAI Service.",
+    "char_start": 25397,
+    "char_end": 25437,
+    "sentence_index": 159,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec011",
+    "text": "We observe that the safety content filtering mechanism of the service misjudges a small part of data from the benchmark as offensive and block the request, which leads to the reduced performance of both OpenAI o3 baseline and our DVD agent.",
+    "char_start": 25438,
+    "char_end": 25678,
+    "sentence_index": 160,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec011",
+    "text": "We provide more details and mitigation strategies in Appendix .",
+    "char_start": 25679,
+    "char_end": 25742,
+    "sentence_index": 161,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec011",
+    "text": "[t]\nComparison on long video benchmarks.",
+    "char_start": 25744,
+    "char_end": 25784,
+    "sentence_index": 162,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec011",
+    "text": "1.15\n\n0.99 !",
+    "char_start": 25786,
+    "char_end": 25798,
+    "sentence_index": 163,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec011",
+    "text": "l ccccc\n\n2 * Methods & LVBench & 2 c LongVideoBench (Val) & Video MME & EgoSchema\n\n& Overall & Overall & Long & Long (w/o sub) & Val\n\n4 l gray Commercial VLMs 0.2mm\n\nGemini-1.5-Pro & 33.1 & 64.0 & 58.6 & 67.4 & -\n\nGemini-2.0-Flash & 48.3 & - & 45.7 & 63.0 & 71.2\n\nGPT-4o & 48.9 & 66.7 & 60.9 & 65.3 & 70.4\n\nOpenAI o3 & 57.1 & 67.5 & 60.6 & 64.7 & 63.2\n\n4 l gray Open-Source VLMs 0.2mm\n\nmPLUG-Owl3 & 43.5 & 59.8 & - & 50.1 & -\n\nInternVL2.5-78B & 43.6 & 63.6 & - & 62.6 & -\n\nQwen2.5-VL-72B & 47.7 & 60.7 & - & 63.9 & -\n\n& 53.3 & 67.0 & - & 65.0 & -\n\n4 l gray Video Agents and Others 0.2mm\n\nVideoTree & 28.8 & - & - & - & 67.0\n\nVideoAgent & 29.3 & - & - & - & 63.2\n\nVCA & 41.3 & - & - & - & 73.6\n\nMR.",
+    "char_start": 25800,
+    "char_end": 26497,
+    "sentence_index": 164,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec011",
+    "text": "Video & 60.8 & - & 61.6 & 61.8 & 73.0\n\nDeep Video Discovery (Ours) & 74.2 & 71.6 & 68.6 & 67.3 & 76.6\n\nTable presents the comparison results on LVBench.",
+    "char_start": 26498,
+    "char_end": 26650,
+    "sentence_index": 165,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec012",
+    "text": "DVD significantly outperforms all baselines, surpassing the previous SOTA MR.",
+    "char_start": 26651,
+    "char_end": 26728,
+    "sentence_index": 166,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec012",
+    "text": "Video by 13.4\\%.",
+    "char_start": 26729,
+    "char_end": 26745,
+    "sentence_index": 167,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec012",
+    "text": "Compared to the prior leading video agent VCA, our method achieves a remarkable 32.9\\% gain.",
+    "char_start": 26746,
+    "char_end": 26838,
+    "sentence_index": 168,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec012",
+    "text": "Against our base VLM, OpenAI o3, our full system delivers a substantial 17.1\\% gain, highlighting the importance of agentic reasoning.",
+    "char_start": 26839,
+    "char_end": 26973,
+    "sentence_index": 169,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec012",
+    "text": "Incorporating transcript information provides an additional 1.8\\% boost.",
+    "char_start": 26974,
+    "char_end": 27046,
+    "sentence_index": 170,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec012",
+    "text": "These results highlight the effectiveness of our search-centric agentic reasoning framework in handling ultra-long video understanding tasks.",
+    "char_start": 27047,
+    "char_end": 27188,
+    "sentence_index": 171,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec012",
+    "text": "Table provides a comprehensive evaluation across several long-video benchmarks.",
+    "char_start": 27190,
+    "char_end": 27269,
+    "sentence_index": 172,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec012",
+    "text": "On LongVideoBench, DVD outperforms the previous SOTA by 4.1\\% overall and 7.0\\% on the longest-duration subset.",
+    "char_start": 27270,
+    "char_end": 27381,
+    "sentence_index": 173,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec012",
+    "text": "On the Video MME Long subset, it beats the best open-source VLM, , by 2.3\\%, and MR.",
+    "char_start": 27382,
+    "char_end": 27466,
+    "sentence_index": 174,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec012",
+    "text": "Video by 5.5\\%, approaching the performance of Gemini-1.5-Pro.",
+    "char_start": 27467,
+    "char_end": 27529,
+    "sentence_index": 175,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec012",
+    "text": "On EgoSchema, our method exceeds the previous best by 3.0\\%.",
+    "char_start": 27530,
+    "char_end": 27590,
+    "sentence_index": 176,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec012",
+    "text": "Notably, it exceeds reported human-level accuracy of $ $76\\% on this benchmark.",
+    "char_start": 27591,
+    "char_end": 27670,
+    "sentence_index": 177,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec012",
+    "text": "Across all datasets, our system consistently outperforms the base VLM OpenAI o3, confirming the effectiveness and generalizability of our agentic reasoning framework.",
+    "char_start": 27671,
+    "char_end": 27837,
+    "sentence_index": 178,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec012",
+    "text": "[t]\n[t] 0.51\nAblation on used models.",
+    "char_start": 27839,
+    "char_end": 27876,
+    "sentence_index": 179,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec012",
+    "text": "$M_ database $ for captioning in database construction, $M_ reasoning $ for reasoning in ASA, $M_ tool $ for Frame Inspect.",
+    "char_start": 27877,
+    "char_end": 28000,
+    "sentence_index": 180,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec012",
+    "text": "1.15\n\n!",
+    "char_start": 28002,
+    "char_end": 28009,
+    "sentence_index": 181,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec012",
+    "text": "ccc|c\n\n3 c| Adopted models & LVBench\n\n$M_ database $ & $M_ reasoning $ & $M_ tool $ & w/ transcripts\n\n4.1 & o3 & 4.1-mini & 72.3\n\n4.1 & o4-mini & o3 & 70.2\n\n4.1 & 4o & o3 & 62.3\n\n4.1-mini & o3 & o3 & 71.9\n\n4.1 & o3 & o3 & 76.0\n\n[t] 0.44\nAblation on the search-centeric tools \\( T \\).",
+    "char_start": 28011,
+    "char_end": 28294,
+    "sentence_index": 182,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec012",
+    "text": "Note that the anchor uses 4.1-mini for $M_ database $, and o3 for both $M_ reasoning $ and $M_ tool $.",
+    "char_start": 28295,
+    "char_end": 28397,
+    "sentence_index": 183,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec012",
+    "text": "1.15\n\n!",
+    "char_start": 28399,
+    "char_end": 28406,
+    "sentence_index": 184,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec012",
+    "text": "ccc|c\n\n3 c| Search-centeric Tools & LVBench\n\nGlobal\\ &\nClip\\ &\nFrame\\ & w/ transcripts\n\n& & & 69.0\n\n& & & 59.6\n\n& & & 63.5\n\n& & & 71.9\n\nWe evaluate the impact of different model choices across system components.",
+    "char_start": 28408,
+    "char_end": 28619,
+    "sentence_index": 185,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec013",
+    "text": "By default, GPT-4.1 is used for captioning and subject extraction during Multi-granular Video Database Construction and OpenAI o3 serves as the reasoning model in the Agentic search and Answer with tool use process while Frame Inspect tool also leverages OpenAI o3 to query the fine-grained details on the frame pixels.",
+    "char_start": 28620,
+    "char_end": 28939,
+    "sentence_index": 186,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec013",
+    "text": "We denote the three models as $M_ database $, $M_ reasoning $ and $M_ tool $ in Table .",
+    "char_start": 28940,
+    "char_end": 29027,
+    "sentence_index": 187,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec013",
+    "text": "Replacing GPT-4.1 with GPT-4.1-mini for database construction or Frame Inspect tool results in moderate drops of 4.1\\% and 3.7\\%, respectively, indicating relatively minor impact.",
+    "char_start": 29028,
+    "char_end": 29207,
+    "sentence_index": 188,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec013",
+    "text": "For reasoning model in agentic search, switching to OpenAI o4-mini leads to a 5.8\\% drop, while GPT-4o causes a substantial 13.7\\% decline.",
+    "char_start": 29208,
+    "char_end": 29347,
+    "sentence_index": 189,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec013",
+    "text": "It highlights the reasoning model as the most critical component in our agentic system because our system is designed surrounding and to make full use of the reasoning capability of LLM.",
+    "char_start": 29348,
+    "char_end": 29534,
+    "sentence_index": 190,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec013",
+    "text": "The lack of reasoning ability leads to the collapse of agent behavior, as analyzed further in the subsequent subsection.",
+    "char_start": 29535,
+    "char_end": 29655,
+    "sentence_index": 191,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec013",
+    "text": "We next examine how the choice of reasoning model affects performance when pairing DVD with various open-source LLMs on LVBench.",
+    "char_start": 29657,
+    "char_end": 29785,
+    "sentence_index": 192,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec013",
+    "text": "As reported in Table , combining DVD with the open-source DeepSeek-R1 reasoning model yields 68.5\\% accuracy, surpassing all prior methods.",
+    "char_start": 29786,
+    "char_end": 29925,
+    "sentence_index": 193,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec013",
+    "text": "Notably, even when restricted to a 32B model Qwen3-32B, DVD attains 57.3\\% accuracy, outperforming existing VLM approaches, including GPT-4o and OpenAI o3.",
+    "char_start": 29926,
+    "char_end": 30081,
+    "sentence_index": 194,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec013",
+    "text": "Finally we assess the contribution of each tool in the agentic search and answer phase (Table ).",
+    "char_start": 30083,
+    "char_end": 30179,
+    "sentence_index": 195,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec013",
+    "text": "Removing Global Browse which is responsible for global summarization and long-range event linking leads to a 2.9\\% drop.",
+    "char_start": 30180,
+    "char_end": 30300,
+    "sentence_index": 196,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec013",
+    "text": "Disabling Frame Inspect with the fine-grained VQA results in a 8.4\\% decline, highlighting its role in fine-grained understanding.",
+    "char_start": 30301,
+    "char_end": 30431,
+    "sentence_index": 197,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec013",
+    "text": "Removing Clip Search causes the largest drop of 12.3\\%, as it breaks the searching ability for iteratively refine reasoning.",
+    "char_start": 30432,
+    "char_end": 30556,
+    "sentence_index": 198,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec013",
+    "text": "These results underscore the importance of tool integration in our search-centric framework.",
+    "char_start": 30557,
+    "char_end": 30649,
+    "sentence_index": 199,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec013",
+    "text": "[t]\n[t] 0.52\nComparison of DVD agent with different LLMs as reasoning models on LVBench .",
+    "char_start": 30651,
+    "char_end": 30740,
+    "sentence_index": 200,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec013",
+    "text": "* denotes Qwen3-32B-Thinking model.",
+    "char_start": 30741,
+    "char_end": 30776,
+    "sentence_index": 201,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec013",
+    "text": "1.15\n\n!",
+    "char_start": 30778,
+    "char_end": 30785,
+    "sentence_index": 202,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec013",
+    "text": "ccc\n\nCategory & Model & Accuracy (\\%)\n\n2 * DVD w/\\ -sourced\n& OpenAI o3 & 76.0\n\n& GPT-4o & 62.3\n\n3 * DVD w/\\ -sourced\n& DeepSeek-R1 & 68.5\n\n& DeepSeek-V3 & 57.5\n\n& Qwen3-32B$^*$ & 57.3\n\n[t] 0.44\nComparison DVD and its variation on different max step number.",
+    "char_start": 30787,
+    "char_end": 31044,
+    "sentence_index": 203,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec013",
+    "text": "1.15\n\n!",
+    "char_start": 31046,
+    "char_end": 31053,
+    "sentence_index": 204,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec013",
+    "text": "lccc\n\nMax Step Limit & 8 & 12 & 15\n\n4 l Ours\n\nAvg.\\ Actual Steps & 6.7 & 7.2 & 7.3\n\nAccuracy (\\%) & 72.3 & 73.8 & 74.2\n\n4 l Ours w/ VideoAgent workflow\n\nAvg.\\ Actual Steps & 5.0 & 8.3 & 11.1\n\nAccuracy (\\%) & 48.4 & 66.3 & 70.2\n\n[t]\n\nfigures/analysis_arxiv.pdf\nAnalysis of the behavior of Deep Video Discovery using different reasoning models.",
+    "char_start": 31055,
+    "char_end": 31397,
+    "sentence_index": 205,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec013",
+    "text": "We categorize tool-calling behavior into five types.",
+    "char_start": 31398,
+    "char_end": 31450,
+    "sentence_index": 206,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec013",
+    "text": "For each type, we report its proportion ( Ratio , sector angels), average reasoning steps ( Steps , sector radius) and score ( Score , dashed lines).",
+    "char_start": 31451,
+    "char_end": 31600,
+    "sentence_index": 207,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec013",
+    "text": "A clear correlation emerges among behavior patterns, reasoning depth, and score (see Section for details).",
+    "char_start": 31601,
+    "char_end": 31707,
+    "sentence_index": 208,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec014",
+    "text": "To understand the efficiency of our designed agent, we compare DVD's performance with different maximum step limits on LVBench without transcripts.",
+    "char_start": 31709,
+    "char_end": 31856,
+    "sentence_index": 209,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec014",
+    "text": "Since the core strength of DVD lies in its adaptive workflow orchestrated by the reasoning model, we also evaluate a variant that replaces this adaptive workflow with the hand-crafted workflow from VideoAgent while keeping all other settings identical.",
+    "char_start": 31857,
+    "char_end": 32109,
+    "sentence_index": 210,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec014",
+    "text": "Specifically, the VideoAgent workflow follows a fixed sequence: first predicting answers and confidence scores, then identifying missing information through self-reflection, searching video clips for the missing information, merging found information into current observations, and finally re-predicting answers and confidence scores.",
+    "char_start": 32110,
+    "char_end": 32444,
+    "sentence_index": 211,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec014",
+    "text": "As shown in Table , the hand-crafted approach results in a significant 7.5\\% absolute accuracy drop while requiring more steps.",
+    "char_start": 32445,
+    "char_end": 32572,
+    "sentence_index": 212,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec014",
+    "text": "Even when scaled to 11.1 average steps (52\\% more than our DVD), the hand-crafted workflow achieves only 70.2\\% accuracy, still 4.0\\% below our adaptive approach.",
+    "char_start": 32573,
+    "char_end": 32735,
+    "sentence_index": 213,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec014",
+    "text": "This comparison highlights the superior search efficiency of our adaptive workflow design.",
+    "char_start": 32736,
+    "char_end": 32826,
+    "sentence_index": 214,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec015",
+    "text": "The reasoning model is the most critical component in DVD.",
+    "char_start": 32828,
+    "char_end": 32886,
+    "sentence_index": 215,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec015",
+    "text": "During the observe-reason-act loop, the agent autonomously integrates current context and flexibly decides the next tool to invoke.",
+    "char_start": 32887,
+    "char_end": 33018,
+    "sentence_index": 216,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec015",
+    "text": "To better understand this, we analyze the tool-calling behavior during the agentic search and answer phase and category it into five types for analysis (see Fig.",
+    "char_start": 33019,
+    "char_end": 33180,
+    "sentence_index": 217,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec015",
+    "text": ").",
+    "char_start": 33181,
+    "char_end": 33183,
+    "sentence_index": 218,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec015",
+    "text": "At the same time, we provide more detailed qualitative case study in Appendix .",
+    "char_start": 33184,
+    "char_end": 33263,
+    "sentence_index": 219,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec015",
+    "text": "Global Browse Only.",
+    "char_start": 33265,
+    "char_end": 33284,
+    "sentence_index": 220,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec015",
+    "text": "The agent confidently answers after a single Global Browse call.",
+    "char_start": 33285,
+    "char_end": 33349,
+    "sentence_index": 221,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec015",
+    "text": "This pattern, though rare, correlates with very high accuracy, suggesting the initial global context was sufficient.",
+    "char_start": 33350,
+    "char_end": 33466,
+    "sentence_index": 222,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec015",
+    "text": "Simple Action.",
+    "char_start": 33468,
+    "char_end": 33482,
+    "sentence_index": 223,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec015",
+    "text": "The agent follows a direct search-inspect-answer path, typically involving one or two Clip Search and Frame Inspect calls.",
+    "char_start": 33483,
+    "char_end": 33605,
+    "sentence_index": 224,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec015",
+    "text": "This is the most common and effective strategy, employed in over half of the queries and achieving high accuracy.",
+    "char_start": 33606,
+    "char_end": 33719,
+    "sentence_index": 225,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec015",
+    "text": "Iterative Search.",
+    "char_start": 33721,
+    "char_end": 33738,
+    "sentence_index": 226,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec015",
+    "text": "The agent alternates between Clip Search and Frame Inspect multiple times.",
+    "char_start": 33739,
+    "char_end": 33813,
+    "sentence_index": 227,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec015",
+    "text": "This indicates an initial difficulty in locating sufficient information, requiring a more exploratory approach.",
+    "char_start": 33814,
+    "char_end": 33925,
+    "sentence_index": 228,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec015",
+    "text": "These trajectories are longer ( e.g.",
+    "char_start": 33926,
+    "char_end": 33962,
+    "sentence_index": 229,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec015",
+    "text": ", 8.0 vs.",
+    "char_start": 33963,
+    "char_end": 33972,
+    "sentence_index": 230,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec015",
+    "text": "5.2 steps for OpenAI o3) and yield slightly lower accuracy than a Simple Action.",
+    "char_start": 33973,
+    "char_end": 34053,
+    "sentence_index": 231,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec015",
+    "text": "Frame Inspect Trap.",
+    "char_start": 34055,
+    "char_end": 34074,
+    "sentence_index": 232,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec015",
+    "text": "The agent becomes stuck in a loop of fine-grained analysis, invoking Frame Inspect more than three consecutive times without reaching a conclusion.",
+    "char_start": 34075,
+    "char_end": 34222,
+    "sentence_index": 233,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec015",
+    "text": "This behavior leads to prolonged reasoning chains and significantly lower accuracy.",
+    "char_start": 34223,
+    "char_end": 34306,
+    "sentence_index": 234,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec015",
+    "text": "Clip Search Trap.",
+    "char_start": 34308,
+    "char_end": 34325,
+    "sentence_index": 235,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec015",
+    "text": "The agent repeatedly calls Clip Search more than three times consecutively, often when key information is absent from the video database.",
+    "char_start": 34326,
+    "char_end": 34463,
+    "sentence_index": 236,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec015",
+    "text": "The agent fails to adapt, resulting in unproductive loops.",
+    "char_start": 34464,
+    "char_end": 34522,
+    "sentence_index": 237,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec015",
+    "text": "This pattern is a primary failure mode for the OpenAI o3 model.",
+    "char_start": 34523,
+    "char_end": 34586,
+    "sentence_index": 238,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec015",
+    "text": "This analysis yields two key insights into designing effective autonomous video agents:\n\nInsight 1: The dual nature of reasoning length.",
+    "char_start": 34588,
+    "char_end": 34724,
+    "sentence_index": 239,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec015",
+    "text": "For a single model, longer reasoning trajectories often signal uncertainty and correlate with lower accuracy ( e.g.",
+    "char_start": 34725,
+    "char_end": 34840,
+    "sentence_index": 240,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec015",
+    "text": ", Simple Action vs.",
+    "char_start": 34841,
+    "char_end": 34860,
+    "sentence_index": 241,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec015",
+    "text": "Iterative Search).",
+    "char_start": 34861,
+    "char_end": 34879,
+    "sentence_index": 242,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec015",
+    "text": "However, when comparing across models, superior performance is often achieved by the model capable of conducting more thorough, and thus longer, reasoning processes.",
+    "char_start": 34880,
+    "char_end": 35045,
+    "sentence_index": 243,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec015",
+    "text": "Insight 2: Overconfidence leads to behavioral collapse.",
+    "char_start": 35047,
+    "char_end": 35102,
+    "sentence_index": 244,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec015",
+    "text": "The GPT-4o model significantly underperforms, collapsing into the Simple Action pattern for 91.4\\% of queries.",
+    "char_start": 35103,
+    "char_end": 35213,
+    "sentence_index": 245,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec015",
+    "text": "With an average of only 4.6 reasoning steps, it frequently concludes prematurely, rarely exploring alternative strategies.",
+    "char_start": 35214,
+    "char_end": 35336,
+    "sentence_index": 246,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec015",
+    "text": "This ''overconfidence`` and lack of flexibility appear to be the primary cause of its poor performance, highlighting the need for agents that can balance exploitation with exploration.",
+    "char_start": 35337,
+    "char_end": 35521,
+    "sentence_index": 247,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec016",
+    "text": "We introduces the proposed agent for long-form video understanding, utilizing multi-granular search tools on constructed database for iterative search and reasoning over extensive video content.",
+    "char_start": 35523,
+    "char_end": 35717,
+    "sentence_index": 248,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec016",
+    "text": "Our approach outperforms prior methods by adaptively integrating global browsing, clip search, and frame inspection, as demonstrated by state-of-the-art results on multiple benchmarks.",
+    "char_start": 35718,
+    "char_end": 35902,
+    "sentence_index": 249,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec016",
+    "text": "Ablation studies confirm the effectiveness of our tool design, while analyses of reasoning model behavior provide insight into model reasoning patterns.",
+    "char_start": 35903,
+    "char_end": 36055,
+    "sentence_index": 250,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec016",
+    "text": "Overall, our framework offers a scalable and flexible solution for comprehensive analysis of long videos.",
+    "char_start": 36056,
+    "char_end": 36161,
+    "sentence_index": 251,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec016",
+    "text": "Limitations .",
+    "char_start": 36163,
+    "char_end": 36176,
+    "sentence_index": 252,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec016",
+    "text": "While our agent significantly improves long video understanding, the iterative reasoning introduces higher computational overhead.",
+    "char_start": 36178,
+    "char_end": 36308,
+    "sentence_index": 253,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec016",
+    "text": "In future work, we will explore more effective database construction and searching to reduce reasoning difficulty and thereby lower computational costs.",
+    "char_start": 36309,
+    "char_end": 36461,
+    "sentence_index": 254,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec017",
+    "text": "[leftmargin=*,itemsep=2pt, parsep=0pt]\nv1 (2025-05-23): Initial submission.",
+    "char_start": 36463,
+    "char_end": 36538,
+    "sentence_index": 255,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec017",
+    "text": "v2 (2025-05-28): Fixed the evaluation code to correctly account for answers enclosed in parentheses, resulting in consistently improved reported accuracy.",
+    "char_start": 36539,
+    "char_end": 36693,
+    "sentence_index": 256,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec017",
+    "text": "v3 (2025-07-24): GitHub repository link update.",
+    "char_start": 36694,
+    "char_end": 36741,
+    "sentence_index": 257,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec017",
+    "text": "v4 (2025-11-03): Camera-ready version.",
+    "char_start": 36742,
+    "char_end": 36780,
+    "sentence_index": 258,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec017",
+    "text": "Update Tab.",
+    "char_start": 36781,
+    "char_end": 36792,
+    "sentence_index": 259,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec017",
+    "text": "6 and 7 to discuss efficiency of our DVD.",
+    "char_start": 36793,
+    "char_end": 36834,
+    "sentence_index": 260,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec017",
+    "text": "abbrvnat\nmain\n\nWe describe the prompts used by different models within the proposed DVD, including: (1) Captioning and subject extraction model $M_ database $ used in Multi-granular Video Database Construction (Tab.",
+    "char_start": 36836,
+    "char_end": 37051,
+    "sentence_index": 261,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec019",
+    "text": "); (2) Reasoning model $M_ reasoning $ used in Agentic Search and Answer (Tab.",
+    "char_start": 37052,
+    "char_end": 37130,
+    "sentence_index": 262,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec019",
+    "text": "); (3) Fine-grained detail querying model $M_ tool $ used in the Frame Inspect tool (Tab.",
+    "char_start": 37131,
+    "char_end": 37220,
+    "sentence_index": 263,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec019",
+    "text": "); (4) event-centric global information in the Global Browse tool(Tab.",
+    "char_start": 37221,
+    "char_end": 37291,
+    "sentence_index": 264,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec019",
+    "text": ").",
+    "char_start": 37292,
+    "char_end": 37294,
+    "sentence_index": 265,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec019",
+    "text": "The JSON schema for tool use of OpenAI model are also provided in Tab.",
+    "char_start": 37295,
+    "char_end": 37365,
+    "sentence_index": 266,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec019",
+    "text": "and Tab.",
+    "char_start": 37366,
+    "char_end": 37374,
+    "sentence_index": 267,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec019",
+    "text": ".\n\nWe measure the average API cost of our agent when calling OpenAI o3 on LVBench.",
+    "char_start": 37375,
+    "char_end": 37457,
+    "sentence_index": 268,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec020",
+    "text": "On average, DVD incurs a cost of \\$0.213 with 0.15 million tokens per question with OpenAI API price at 2025-11-03.",
+    "char_start": 37458,
+    "char_end": 37573,
+    "sentence_index": 269,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec021",
+    "text": "We utilize the LLM API through Azure OpenAI Service to evaluate both our proposed DVD agent and the OpenAI o3 model .",
+    "char_start": 37575,
+    "char_end": 37692,
+    "sentence_index": 270,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec021",
+    "text": "However, we note two key limitations in the service that may affect performance: (1) a restriction on the maximum number of input images, and (2) a safety content filtering mechanism.",
+    "char_start": 37693,
+    "char_end": 37876,
+    "sentence_index": 271,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec021",
+    "text": "This section discusses their impact and our mitigation strategies.",
+    "char_start": 37877,
+    "char_end": 37943,
+    "sentence_index": 272,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec022",
+    "text": "Azure OpenAI Service imposes a limit of 50 images per request, which is significantly lower than the token limit allowed by Large VLMs we used.",
+    "char_start": 37945,
+    "char_end": 38088,
+    "sentence_index": 273,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec022",
+    "text": "This restriction poses notable challenges in tasks involving long-form video understanding, as the model's comprehension capability strongly depends on the number of input frames provided.",
+    "char_start": 38089,
+    "char_end": 38277,
+    "sentence_index": 274,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec022",
+    "text": "To overcome this limitation and deliver richer visual context within the imposed constraints, we adopt a strategy of combining multiple frames into a single composite image:\n\nFor DVD , we horizontally splice up to 5 frames into a single image.",
+    "char_start": 38278,
+    "char_end": 38521,
+    "sentence_index": 275,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec022",
+    "text": "This allows us to input up to 250 frames (50 images \u00d7 5 frames).",
+    "char_start": 38522,
+    "char_end": 38586,
+    "sentence_index": 276,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "Note that we only use the 250 frames setting in event-centric global information gathering in the Global Browse tool while maximum 50 frames are used in the Frame Inspect tool.",
+    "char_start": 38587,
+    "char_end": 38763,
+    "sentence_index": 277,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec022",
+    "text": "For OpenAI o3 , we use a 2\u00d74 format\u2014splicing up to 4 frames horizontally and stacking 2 such groups vertically per image.",
+    "char_start": 38765,
+    "char_end": 38886,
+    "sentence_index": 278,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec022",
+    "text": "This enables our test condition of 256 frames by using 32 spliced images.",
+    "char_start": 38887,
+    "char_end": 38960,
+    "sentence_index": 279,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec022",
+    "text": "We find that this configuration yields better performance than the 1\u00d75 format used in DVD.",
+    "char_start": 38961,
+    "char_end": 39051,
+    "sentence_index": 280,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec023",
+    "text": "Azure OpenAI's safety filtering mechanism occasionally misclassifies benign inputs as offensive, blocking some requests.",
+    "char_start": 39053,
+    "char_end": 39173,
+    "sentence_index": 281,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec023",
+    "text": "This affects the performance of both OpenAI o3 and our DVD agent.",
+    "char_start": 39174,
+    "char_end": 39239,
+    "sentence_index": 282,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec023",
+    "text": "For such filtered questions, we adopt different mitigation strategies to reduce its influence.",
+    "char_start": 39240,
+    "char_end": 39334,
+    "sentence_index": 283,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec023",
+    "text": "For OpenAI o3 , when a query is blocked, we randomly select an answer from the remaining candidates.",
+    "char_start": 39336,
+    "char_end": 39436,
+    "sentence_index": 284,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec023",
+    "text": "Across benchmarks, approximately 10\\% to 25\\% of queries are filtered, as shown in Tab.",
+    "char_start": 39437,
+    "char_end": 39524,
+    "sentence_index": 285,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec023",
+    "text": ". To better assess true performance, we also report scores on the subset of unfiltered responses, where performance improves significantly.",
+    "char_start": 39525,
+    "char_end": 39664,
+    "sentence_index": 286,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec023",
+    "text": "For DVD , when VLM returns none due to the content filtering, we do not implement additional error handling for the agent.",
+    "char_start": 39666,
+    "char_end": 39788,
+    "sentence_index": 287,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec023",
+    "text": "Instead, we let the agent make its own decisions to handle error.",
+    "char_start": 39789,
+    "char_end": 39854,
+    "sentence_index": 288,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec023",
+    "text": "It may invoke alternative tools or attempt to answer based on available information.",
+    "char_start": 39855,
+    "char_end": 39939,
+    "sentence_index": 289,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec023",
+    "text": "If a captioning query is blocked, we leave the corresponding entry blank in the database.",
+    "char_start": 39940,
+    "char_end": 40029,
+    "sentence_index": 290,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec023",
+    "text": "While this affects database completeness, the agent remains operational due to its adaptive behavior.",
+    "char_start": 40030,
+    "char_end": 40131,
+    "sentence_index": 291,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec023",
+    "text": "Tab.",
+    "char_start": 40132,
+    "char_end": 40136,
+    "sentence_index": 292,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec023",
+    "text": ".\n\n[t]\nStatistics for content filtering in Azure OpenAI API.",
+    "char_start": 40137,
+    "char_end": 40197,
+    "sentence_index": 293,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec023",
+    "text": "1.15\n\n0.94 !",
+    "char_start": 40199,
+    "char_end": 40211,
+    "sentence_index": 294,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec023",
+    "text": "l ccccc\n\n2 * Methods & LVBench & 2 c LongVideoBench (Val) & Video MME & EgoSchema\n\n& Overall & Overall & Long & Long (w/o sub) & Val\n\nOpenAI o3 & 57.1 & 66.7 & 59.6 & 64.7 & 63.2\n\nUnfiltered Ratio & 83\\% & 90\\% & 85\\% & 83\\% & 75\\%\n\nUnfiltered Subset Score & 63.3 & 71.5 & 72.6 & 73.2 & 77.5\n\nDeep Video Discovery (Ours) & 71.9 & 70.5 & 68.4 & 66.8 & 76.6\n\nUnfiltered Ratio & 24\\% & 61\\% & 40\\% & 24\\% & 54\\%\n\nUnfiltered Subset Score & 70.5 & 71.6 & 70.5 & 69.7 & 77.0\n\n-2mm\n\nTo assess the statistical significance of DVD, we evaluate it on LVBench (using auxiliary transcriptions) three times.",
+    "char_start": 40213,
+    "char_end": 40807,
+    "sentence_index": 295,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec025",
+    "text": "It achieves an average score of 74.0 with a variance of 0.125, demonstrating the consistency and robustness of the proposed method.",
+    "char_start": 40808,
+    "char_end": 40939,
+    "sentence_index": 296,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec026",
+    "text": "We provide illustrative examples of the tool-calling process for different agent behaviors described in Section 4.5 of the paper.",
+    "char_start": 40941,
+    "char_end": 41070,
+    "sentence_index": 297,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec026",
+    "text": "All examples are from LVBench .",
+    "char_start": 41071,
+    "char_end": 41102,
+    "sentence_index": 298,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec026",
+    "text": "Each example highlights how the agent selects actions and invokes tools to gather information for answering the question, and how each tool call retrieves relevant data from the database.",
+    "char_start": 41103,
+    "char_end": 41290,
+    "sentence_index": 299,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec026",
+    "text": "In the tool responses, we highlight orange useful and correct information in orange orange and purple useless or incorrect information in purple purple .",
+    "char_start": 41291,
+    "char_end": 41444,
+    "sentence_index": 300,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec026",
+    "text": "Global Browse Only is shown in Fig.",
+    "char_start": 41446,
+    "char_end": 41481,
+    "sentence_index": 301,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec026",
+    "text": ". When asked about the type of video, the agent directly invokes Global Browse to retrieve global context.",
+    "char_start": 41482,
+    "char_end": 41588,
+    "sentence_index": 302,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec026",
+    "text": "The subject-level browsing reveals many technical subjects, while the event-level browsing summarizes the key themes and categorizes the video as a technology documentary.",
+    "char_start": 41589,
+    "char_end": 41760,
+    "sentence_index": 303,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec026",
+    "text": "Based on this information, the agent correctly classifies the video into a technology documentary.",
+    "char_start": 41761,
+    "char_end": 41859,
+    "sentence_index": 304,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec026",
+    "text": "Simple Action is shown in Fig.",
+    "char_start": 41861,
+    "char_end": 41891,
+    "sentence_index": 305,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec026",
+    "text": ". In this case, Global Browse incorrectly indicates that the mirror fragments are thrown away.",
+    "char_start": 41892,
+    "char_end": 41986,
+    "sentence_index": 306,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec026",
+    "text": "To verify, the agent uses Clip Search to locate the time range of the mirror breaking event and then calls Frame Inspect for finer-grained analysis.",
+    "char_start": 41987,
+    "char_end": 42135,
+    "sentence_index": 307,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec026",
+    "text": "It discovers that the fragments actually fly into the sky and thus selects the correct answer.",
+    "char_start": 42136,
+    "char_end": 42230,
+    "sentence_index": 308,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec026",
+    "text": "Iterative Search is shown in Fig.",
+    "char_start": 42232,
+    "char_end": 42265,
+    "sentence_index": 309,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec026",
+    "text": ". This question involves multiple subjects (boy, dog, cat, bird, and man), making it more complex.",
+    "char_start": 42266,
+    "char_end": 42364,
+    "sentence_index": 310,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec026",
+    "text": "Global Browse initially suggests that the man is chasing the dog.",
+    "char_start": 42365,
+    "char_end": 42430,
+    "sentence_index": 311,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec026",
+    "text": "However, the first round of Clip Search and Frame Inspect indicates that he is chasing a bird.",
+    "char_start": 42431,
+    "char_end": 42525,
+    "sentence_index": 312,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec026",
+    "text": "To resolve the ambiguity, the agent issues two more Clip Search queries for events involving \"man chasing dog\" and \"man chasing bird\".",
+    "char_start": 42526,
+    "char_end": 42660,
+    "sentence_index": 313,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec026",
+    "text": "The search yields relevant and useful results only for the later, suggesting that the man is actually chasing the bird.",
+    "char_start": 42661,
+    "char_end": 42780,
+    "sentence_index": 314,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec026",
+    "text": "To confirm the subject's identity, the agent checks for the presence of a mustache.",
+    "char_start": 42781,
+    "char_end": 42864,
+    "sentence_index": 315,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec026",
+    "text": "Convinced that the mustached man is chasing the bird, the agent selects the correct option.",
+    "char_start": 42865,
+    "char_end": 42956,
+    "sentence_index": 316,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec026",
+    "text": "Notably, when a Frame Inspect call fails to find relevant results in step 6, the agent can automatically ask another question to obtain an useful response.",
+    "char_start": 42957,
+    "char_end": 43112,
+    "sentence_index": 317,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec026",
+    "text": "Frame Inspect Trap is shown in Fig.",
+    "char_start": 43114,
+    "char_end": 43149,
+    "sentence_index": 318,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec026",
+    "text": ". This question targets an event at a specific timestamp.",
+    "char_start": 43150,
+    "char_end": 43207,
+    "sentence_index": 319,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec026",
+    "text": "Around this time, the agent asks three consecutive questions.",
+    "char_start": 43208,
+    "char_end": 43269,
+    "sentence_index": 320,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec026",
+    "text": "While Frame Inspect sometimes captures accurate information, it occasionally fails to interpret frames correctly, providing misleading responses.",
+    "char_start": 43270,
+    "char_end": 43415,
+    "sentence_index": 321,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec026",
+    "text": "As a result, the agent cannot discern which information is reliable and ultimately answers incorrectly.",
+    "char_start": 43416,
+    "char_end": 43519,
+    "sentence_index": 322,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec026",
+    "text": "Clip Search Trap is shown in Fig.",
+    "char_start": 43521,
+    "char_end": 43554,
+    "sentence_index": 323,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec026",
+    "text": ". This example relies on identifying the correct time range using key terms like \u201cprotagonist\u201d and \u201cutility room.\u201d However, the database contains few directly relevant captions or subjects.",
+    "char_start": 43555,
+    "char_end": 43744,
+    "sentence_index": 324,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec026",
+    "text": "Despite the agent\u2019s attempts to rephrase and refine its Clip Search queries, the tool fails to return relevant results, leading to an incorrect answer.",
+    "char_start": 43745,
+    "char_end": 43896,
+    "sentence_index": 325,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec027",
+    "text": "DVD facilitates natural language interaction with long-form video content, improving accessibility for users with visual or cognitive impairments.",
+    "char_start": 43898,
+    "char_end": 44044,
+    "sentence_index": 326,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec028",
+    "text": "It can also enhance efficiency in media summarization and analysis, significantly reducing the need for manual review.",
+    "char_start": 44045,
+    "char_end": 44163,
+    "sentence_index": 327,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec029",
+    "text": "As DVD leverages large models (e.g., LLMs and VLMs) for captioning and reasoning, it inherits common concerns such as potential bias from training data, which may result in inaccurate or unfair interpretations of video content.",
+    "char_start": 44165,
+    "char_end": 44392,
+    "sentence_index": 328,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec029",
+    "text": "Additionally, the agentic search process demands substantial computational resources, raising sustainability and accessibility concerns.",
+    "char_start": 44393,
+    "char_end": 44529,
+    "sentence_index": 329,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec029",
+    "text": "[t]\n\n// system prompt\nYou are a helpful assistant.",
+    "char_start": 44531,
+    "char_end": 44581,
+    "sentence_index": 330,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec029",
+    "text": "// user prompt\nThere are consecutive frames from a video.",
+    "char_start": 44583,
+    "char_end": 44640,
+    "sentence_index": 331,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec029",
+    "text": "BENCHMARK_CUSTOM_PLACEHOLDER Please understand the video clip with given corresponding transcript and historical subject information then output following JSON format with filled content:\n\nTranscript of the current video clip:\n\n[TRANSCRIPTS]\n\nHistorical subject information:\n\n[SUBJECTS]\n\nOutput template:\n\n\"clip_start_time\": CLIP_START_TIME,\n\"clip_end_time\": CLIP_END_TIME,\n\"new_subject_registry\": # add new subjects if any not in the historical subject information else leave it empty\n<new_subject_id>:\n\"name\": <new_subject_name if the name is unknown please use 'unknown'>,\n\"appearance\": <a list of subject appearance description phase, including hair, face, clothes>,\n\"identity\": <a list of subject identity description shown in current video clip>,\n\"first_seen\": <timestamp>\n,\n...",
+    "char_start": 44641,
+    "char_end": 45425,
+    "sentence_index": 332,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec029",
+    "text": ",\n\"clip_description\":\n\"subjects_present\": [<subject_id_list>],\n\"captions\": <a smooth and very detailed narration about the whole video clip>\n\nPrompts for captioning and subject extraction model $M_ database $ in video database construction.",
+    "char_start": 45426,
+    "char_end": 45666,
+    "sentence_index": 333,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec029",
+    "text": "[h]\n\n// system prompt\nYou are a helpful assistant who can answer multistep questions by sequentially calling functions.",
+    "char_start": 45668,
+    "char_end": 45787,
+    "sentence_index": 334,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec029",
+    "text": "Follow a pattern of THOUGHT (reason step-by-step about which function to call next), ACTION (call a function to as a next step towards the final answer), OBSERVATION (output of the function).",
+    "char_start": 45788,
+    "char_end": 45979,
+    "sentence_index": 335,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec029",
+    "text": "Reason step by step which actions to take to get to the answer.",
+    "char_start": 45980,
+    "char_end": 46043,
+    "sentence_index": 336,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec029",
+    "text": "Only call functions with arguments coming verbatim from the user or the output of other functions.",
+    "char_start": 46045,
+    "char_end": 46143,
+    "sentence_index": 337,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec029",
+    "text": "Please keep going until the user's query is completely resolved, before ending your turn and yielding back to the user.",
+    "char_start": 46144,
+    "char_end": 46263,
+    "sentence_index": 338,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec029",
+    "text": "Only terminate your turn when you are sure that the problem is solved.",
+    "char_start": 46264,
+    "char_end": 46334,
+    "sentence_index": 339,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec029",
+    "text": "If you are not sure about file content or codebase structure pertaining to the user's request, use your tools to read files and gather the relevant information: do NOT guess or make up an answer.",
+    "char_start": 46336,
+    "char_end": 46531,
+    "sentence_index": 340,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec029",
+    "text": "You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls.",
+    "char_start": 46533,
+    "char_end": 46657,
+    "sentence_index": 341,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec029",
+    "text": "DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.",
+    "char_start": 46658,
+    "char_end": 46795,
+    "sentence_index": 342,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec029",
+    "text": "The timestamp can be formatted as 'HH:MM:SS' or 'MM:SS'.",
+    "char_start": 46797,
+    "char_end": 46853,
+    "sentence_index": 343,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec029",
+    "text": "// user prompt\nCarefully read timestamp and narration in the following script.",
+    "char_start": 46855,
+    "char_end": 46933,
+    "sentence_index": 344,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec029",
+    "text": "Pay attention to the cause and sequence of events, the detail and movement of objects and the action and pose of persons.",
+    "char_start": 46934,
+    "char_end": 47055,
+    "sentence_index": 345,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec029",
+    "text": "You will be given a subject registry (which could be inaccurate) in this video and a video-level coarse understanding of the question.",
+    "char_start": 47057,
+    "char_end": 47191,
+    "sentence_index": 346,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec029",
+    "text": "Please output your think process and use corresponding functions if you can not directly find answer from the given information.",
+    "char_start": 47192,
+    "char_end": 47320,
+    "sentence_index": 347,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec029",
+    "text": "+ CLIP_SEARCH_WITH_TIME_PLACEHOLDER If you need to find details without knowing the specific timespot, please use `ClipSearch`.",
+    "char_start": 47322,
+    "char_end": 47449,
+    "sentence_index": 348,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec029",
+    "text": "+ If the observed / searched information does not include accurate question-relevant content, e.g.",
+    "char_start": 47451,
+    "char_end": 47549,
+    "sentence_index": 349,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec029",
+    "text": "'unkown' name or other cases, use `FrameInspect` to ask a fine-grained question within a list of the specified time ranges (list[tuple[hhmmss, hhmmss]]).",
+    "char_start": 47550,
+    "char_end": 47703,
+    "sentence_index": 350,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec029",
+    "text": "+ If you can not make sure the answer by searched content, you should use `FrameInspect` to query related content in specified time ranges.",
+    "char_start": 47705,
+    "char_end": 47844,
+    "sentence_index": 351,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec029",
+    "text": "+ If you have found answer in a specific script, you should use `FrameInspect` to ask a fine-grained question to **confirm** it.",
+    "char_start": 47846,
+    "char_end": 47974,
+    "sentence_index": 352,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec029",
+    "text": "You can use multiple times of these functions to prgressively find the answer.",
+    "char_start": 47976,
+    "char_end": 48054,
+    "sentence_index": 353,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec029",
+    "text": "Based on your observations and returned result from functions, select the best option that accurately addresses the question.",
+    "char_start": 48056,
+    "char_end": 48181,
+    "sentence_index": 354,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec029",
+    "text": "Question: [question]\n\nAnswer with the option's letter from the given choices directly and only give the best option.",
+    "char_start": 48183,
+    "char_end": 48299,
+    "sentence_index": 355,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec029",
+    "text": "// history messages in the reasoning chain\n[history messages]\n\nPrompts for reasoning model $M_ reasoning $.",
+    "char_start": 48301,
+    "char_end": 48408,
+    "sentence_index": 356,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec029",
+    "text": "[h]\n\n// system prompt\nYou are a helpful assistant to answer questions.",
+    "char_start": 48410,
+    "char_end": 48480,
+    "sentence_index": 357,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec029",
+    "text": "// user prompt\nCarefully watch the video frames.",
+    "char_start": 48482,
+    "char_end": 48530,
+    "sentence_index": 358,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec029",
+    "text": "Pay attention to the cause and sequence of events, the detail and movement of objects and the action and pose of persons.",
+    "char_start": 48531,
+    "char_end": 48652,
+    "sentence_index": 359,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec029",
+    "text": "Based on your observations, if you find content that can answer the question, select the best option that accurately answers the question.",
+    "char_start": 48654,
+    "char_end": 48792,
+    "sentence_index": 360,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec029",
+    "text": "If no relevant content is found within the given time range, return: `Error: Cannot find corresponding result in the given time range.`.",
+    "char_start": 48793,
+    "char_end": 48929,
+    "sentence_index": 361,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec029",
+    "text": "Question: [question]\n\nPrompts for fine-grained detail query $M_ tool $ in Frame Inspect tool.",
+    "char_start": 48931,
+    "char_end": 49024,
+    "sentence_index": 362,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec029",
+    "text": "[h]\n\n// system prompt\nYou are a helpful assistant to answer questions.",
+    "char_start": 49026,
+    "char_end": 49096,
+    "sentence_index": 363,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec029",
+    "text": "// user prompt\nCarefully watch the video frames.",
+    "char_start": 49098,
+    "char_end": 49146,
+    "sentence_index": 364,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec029",
+    "text": "Pay attention to the cause and sequence of events, the detail and movement of objects and the action and pose of persons.",
+    "char_start": 49147,
+    "char_end": 49268,
+    "sentence_index": 365,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec029",
+    "text": "Based on your observations, provide detailed insights to help interpret the question and video.",
+    "char_start": 49270,
+    "char_end": 49365,
+    "sentence_index": 366,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec029",
+    "text": "If you find content that answers the question, suggest a possible answer.",
+    "char_start": 49366,
+    "char_end": 49439,
+    "sentence_index": 367,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec029",
+    "text": "If no relevant content is found in the sampled frames, returns `Error: Cannot find corresponding result in sampled frames.`.",
+    "char_start": 49440,
+    "char_end": 49564,
+    "sentence_index": 368,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec029",
+    "text": "Format the answer into a single paragraph.",
+    "char_start": 49565,
+    "char_end": 49607,
+    "sentence_index": 369,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec029",
+    "text": "Question: [question]\n\nPrompts for query in Global Browse tool.",
+    "char_start": 49609,
+    "char_end": 49671,
+    "sentence_index": 370,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec029",
+    "text": "[h]\n\n[\n\n\"function\":\n\"name\": \"global_browse\",\n\"description\": \"Obtain a subject registry and relevant information about the query from the whole video.",
+    "char_start": 49673,
+    "char_end": 49822,
+    "sentence_index": 371,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec029",
+    "text": ": str: A formatted subject registry includes multiple identical attributes of subjects and a narration about relevant information about the query.",
+    "char_start": 49823,
+    "char_end": 49969,
+    "sentence_index": 372,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec029",
+    "text": "\",\n\"parameters\":\n\"properties\":\n\"database\":\n\"$ref\": \"#/$defs/NanoVectorDB\",\n\"description\": \"The database object that supports querying with embeddings.\"\n,\n\"query\":\n\"description\": \"A textual description of the question to search for.\",\n\"type\": \"string\"\n\n,\n\"required\": [\n\"database\",\n\"query\"\n],\n\"type\": \"object\"\n\n,\n\"type\": \"function\"\n,\n\n\"function\":\n\"name\": \"clip_search\",\n\"description\": \"Searches for events in a video clip database based on a given event description and retrieves the top-k most relevant video clip captions.",
+    "char_start": 49970,
+    "char_end": 50492,
+    "sentence_index": 373,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec029",
+    "text": ": str: A formatted string containing the concatenated captions of the searched video clip scripts.",
+    "char_start": 50493,
+    "char_end": 50591,
+    "sentence_index": 374,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec029",
+    "text": ": - This function utilizes the OpenAI Embedding Service to generate embeddings for the input text.",
+    "char_start": 50592,
+    "char_end": 50690,
+    "sentence_index": 375,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec029",
+    "text": "- Use default values for `top_k` to limit the number of results returned.\",\n\"parameters\":\n\"properties\":\n\"database\":\n\"$ref\": \"#/$defs/NanoVectorDB\",\n\"description\": \"The database object that supports querying with embeddings.\"\n,\n\"event_description\":\n\"description\": \"A textual description of the event to search for.\",\n\"type\": \"string\"\n,\n\"top_k\":\n\"default\": 16,\n\"description\": \"The maximum number of top results to retrieve.",
+    "char_start": 50691,
+    "char_end": 51112,
+    "sentence_index": 376,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec029",
+    "text": "Just use the default value.\",\n\"type\": \"integer\"\n\n,\n\"required\": [\n\"database\",\n\"event_description\"\n],\n\"type\": \"object\"\n\n,\n\"type\": \"function\"\n\n]\n\nFunction JSON schema for OpenAI model's tool use.",
+    "char_start": 51113,
+    "char_end": 51305,
+    "sentence_index": 377,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec029",
+    "text": "Part 1/2.",
+    "char_start": 51306,
+    "char_end": 51315,
+    "sentence_index": 378,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec029",
+    "text": "[h]\n\n[\n\n\"function\":\n\"name\": \"frame_inspect\",\n\"description\": \"Crop the video frames based on the time ranges and ask the model a detailed question about the cropped video clips.",
+    "char_start": 51317,
+    "char_end": 51493,
+    "sentence_index": 379,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec029",
+    "text": ": str: The model's response to the question.",
+    "char_start": 51494,
+    "char_end": 51538,
+    "sentence_index": 380,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec029",
+    "text": "If no relevant content is found within the time range, returns an error message: \\\"Error: Cannot find corresponding result in the given time range.\\\"\",\n\"parameters\":\n\"properties\":\n\"database\":\n\"$ref\": \"#/$defs/NanoVectorDB\",\n\"description\": \"The database containing video metadata.",
+    "char_start": 51539,
+    "char_end": 51818,
+    "sentence_index": 381,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec029",
+    "text": "Must be an instance of NanoVectorDB.\"\n,\n\"question\":\n\"description\": \"The specific detailed question to ask about the video content during the specified time ranges.",
+    "char_start": 51819,
+    "char_end": 51982,
+    "sentence_index": 382,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec029",
+    "text": "No need to add time ranges in the question.\",\n\"type\": \"string\"\n,\n\"time_ranges_hhmmss\":\n\"description\": \"A list of tuples containing start and end times in HH:MM:SS format.",
+    "char_start": 51983,
+    "char_end": 52153,
+    "sentence_index": 383,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec029",
+    "text": "If the time range is longer than 50 seconds, the function samples 50 evenly distributed frames.",
+    "char_start": 52154,
+    "char_end": 52249,
+    "sentence_index": 384,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec029",
+    "text": "Otherwise, it uses all frames within the specified range.\",\n\"items\":\n\"items\": ,\n\"type\": \"array\"\n,\n\"type\": \"array\"\n\n,\n\"required\": [\n\"database\",\n\"question\",\n\"time_ranges_hhmmss\"\n],\n\"type\": \"object\"\n\n,\n\"type\": \"function\"\n,\n\n\"function\":\n\"name\": \"answer\",\n\"description\": \"Call this function after confirming the answer of the user's question, and finish the conversation.\",\n\"parameters\":\n\"properties\":\n\"answer\":\n\"description\": \"Answer to the user's question.\",\n\"type\": \"string\"\n\n,\n\"required\": [\n\"answer\"\n],\n\"type\": \"object\"\n\n,\n\"type\": \"function\"\n\n]\n\nFunction JSON schema for OpenAI model's tool use.",
+    "char_start": 52250,
+    "char_end": 52844,
+    "sentence_index": 385,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec029",
+    "text": "Part 2/2.",
+    "char_start": 52845,
+    "char_end": 52854,
+    "sentence_index": 386,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 52856,
+    "char_end": 52871,
+    "sentence_index": 387,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec029",
+    "text": "[colback=white, colframe=gray!50!black,\ntitle= Question , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nQuestion: What type of video is this?",
+    "char_start": 52872,
+    "char_end": 53021,
+    "sentence_index": 388,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec029",
+    "text": "(A) A technology documentary\n\n(B) A news report\n\n(C) A travel documentary\n\n(D) A travel vlog\n\n[t] 0.9\n\n0.85 !",
+    "char_start": 53023,
+    "char_end": 53132,
+    "sentence_index": 389,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 1) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Global Browse .",
+    "char_start": 53133,
+    "char_end": 53290,
+    "sentence_index": 390,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Global Browse , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSubjects Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 53292,
+    "char_end": 53576,
+    "sentence_index": 391,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec029",
+    "text": "\"subject_2\":\n\"name\": \"industrial_robot\",\n\"appearance\": ...",
+    "char_start": 53577,
+    "char_end": 53635,
+    "sentence_index": 392,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec029",
+    "text": "\"identity\": [\n\"(*@ orange Industrial automation robot @*), performing repetitive manufacturing or assembly line tasks\"\n]\n,\n...",
+    "char_start": 53636,
+    "char_end": 53762,
+    "sentence_index": 393,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec029",
+    "text": "\"subject_10\":\n\"name\": \"digital_face_scan_display\",\n\"appearance\": ...,\n\"identity\": [\n\"Computer interface for (*@ orange facial recognition and identification @*), used for matching and analyzing faces in security or surveillance contexts\"\n]\n,\n...",
+    "char_start": 53763,
+    "char_end": 54008,
+    "sentence_index": 394,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec029",
+    "text": "\"subject_21\":\n\"name\": \"Pedro Domingos\",\n\"appearance\": ...,\n\"identity\": [\n\"(*@ orange Academic expert and commentator @*), providing context on the Go match and public expectations\"\n]\n,\n...",
+    "char_start": 54009,
+    "char_end": 54197,
+    "sentence_index": 395,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec029",
+    "text": "Event Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nThe montage shows extended, polished coverage of artificial-intelligence themes: the AlphaGo challenge match and Google DeepMind branding, autonomous trucks on desert highways, ...",
+    "char_start": 54199,
+    "char_end": 54516,
+    "sentence_index": 396,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec029",
+    "text": ". Therefore, the video is best classified as a (*@ orange technology documentary @*).",
+    "char_start": 54517,
+    "char_end": 54602,
+    "sentence_index": 397,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 54604,
+    "char_end": 54619,
+    "sentence_index": 398,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 2) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nExecuting Asnwer : (A) A technology documentary.",
+    "char_start": 54620,
+    "char_end": 54797,
+    "sentence_index": 399,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec029",
+    "text": "$ $ red Right\n\n3mm\nfigure Case study of Global Browse Only behavior.",
+    "char_start": 54798,
+    "char_end": 54866,
+    "sentence_index": 400,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 54868,
+    "char_end": 54883,
+    "sentence_index": 401,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec029",
+    "text": "[colback=white, colframe=gray!50!black,\ntitle= Question , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nQuestion: What happens when the villain's mirror breaks?",
+    "char_start": 54884,
+    "char_end": 55052,
+    "sentence_index": 402,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec029",
+    "text": "(A) The mirror fragments automatically fuse on the ground into a whole mirror again\n\n(B) The mirror fragments cut the villain's hand\n\n(C) The mirror fragments are thrown away by the villains\n\n(D) The mirror fragments fly into the sky\n\n[t] 0.9\n\n0.85 !",
+    "char_start": 55054,
+    "char_end": 55304,
+    "sentence_index": 403,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 1) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Global Browse .",
+    "char_start": 55305,
+    "char_end": 55462,
+    "sentence_index": 404,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Global Browse , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSubjects Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 55464,
+    "char_end": 55748,
+    "sentence_index": 405,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec029",
+    "text": "\"subject_18\":\n\"name\": \"(*@ orange Baron Badblood @*)\",\n\"appearance\": ...,\n\"identity\": [\n\"(*@ orange Villainous character @*), shown invoking his magic (*@ orange mirror @*) to reveal ...\"\n]\n,\n...",
+    "char_start": 55749,
+    "char_end": 55944,
+    "sentence_index": 406,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec029",
+    "text": "Event Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nThe scene shows the villain ...; the next shots focus on the villain angrily flinging the pieces aside so that the multicolored shards clatter to the ground and lie scattered around his lair; ...",
+    "char_start": 55946,
+    "char_end": 56278,
+    "sentence_index": 407,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec029",
+    "text": "; therefore (*@ purple the mirror fragments are thrown away by the villains @*).",
+    "char_start": 56279,
+    "char_end": 56359,
+    "sentence_index": 408,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 56361,
+    "char_end": 56376,
+    "sentence_index": 409,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 2) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"villain mirror breaks shards thrown away.\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n[00:03:7.0, 00:03:20.0] ...",
+    "char_start": 56377,
+    "char_end": 56900,
+    "sentence_index": 410,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec029",
+    "text": "Baron Badblood stands before a large, ornate mirror ...",
+    "char_start": 56901,
+    "char_end": 56956,
+    "sentence_index": 411,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 56957,
+    "char_end": 56960,
+    "sentence_index": 412,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec029",
+    "text": "[00:09:46.0, 00:10:6.0] ...",
+    "char_start": 56961,
+    "char_end": 56988,
+    "sentence_index": 413,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec029",
+    "text": "(*@ orange Baron strikes the mirror @*) with a sword, causing it to shatter.",
+    "char_start": 56989,
+    "char_end": 57065,
+    "sentence_index": 414,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec029",
+    "text": "The shards (*@ orange explode outward, tumbling and spinning through the air @*) as they scatter ...",
+    "char_start": 57066,
+    "char_end": 57166,
+    "sentence_index": 415,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 57167,
+    "char_end": 57170,
+    "sentence_index": 416,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec029",
+    "text": "[00:23:52.0, 00:24:4.0] ...",
+    "char_start": 57171,
+    "char_end": 57198,
+    "sentence_index": 417,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec029",
+    "text": "The mirror shimmers with swirling pink light, ...",
+    "char_start": 57199,
+    "char_end": 57248,
+    "sentence_index": 418,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 57250,
+    "char_end": 57265,
+    "sentence_index": 419,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 3) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:09:46\", \"00:10:06\"]: \"What do the broken pieces of the mirror do after Baron Badblood smashes it?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nThe fragments come to life: they quiver, gather into a swirling flock and fly out of the room, (*@ orange sailing away into the sky @*).",
+    "char_start": 57266,
+    "char_end": 57948,
+    "sentence_index": 420,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 57950,
+    "char_end": 57965,
+    "sentence_index": 421,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 4) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nExecuting Asnwer : (D) The mirror fragments fly into the sky.",
+    "char_start": 57966,
+    "char_end": 58156,
+    "sentence_index": 422,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec029",
+    "text": "$ $ red Right\n\n3mm\nfigure Case study of Simple Action behavior.",
+    "char_start": 58157,
+    "char_end": 58220,
+    "sentence_index": 423,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 58222,
+    "char_end": 58237,
+    "sentence_index": 424,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec029",
+    "text": "[colback=white, colframe=gray!50!black,\ntitle= Question , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nQuestion: What does the man with the mustache do when boy, cat, and dog carrying treasure chest, shovel and pickaxe back?",
+    "char_start": 58238,
+    "char_end": 58471,
+    "sentence_index": 425,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec029",
+    "text": "(A) He chases a cat\n\n(B) He chases a cow\n\n(C) He chases a dog\n\n(D) He chases a bird\n\n[t] 0.9\n\n0.85 !",
+    "char_start": 58473,
+    "char_end": 58573,
+    "sentence_index": 426,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 1) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Global Browse .",
+    "char_start": 58574,
+    "char_end": 58731,
+    "sentence_index": 427,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Global Browse , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSubjects Information : ...",
+    "char_start": 58733,
+    "char_end": 58900,
+    "sentence_index": 428,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec029",
+    "text": "[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n\nEvent Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nAmong the night-time forest shots the boy, cat and dog are shown tramping back along the path laden.",
+    "char_start": 58901,
+    "char_end": 59256,
+    "sentence_index": 429,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec029",
+    "text": "The black-moustached postman suddenly rushes out and runs after Sharik the dog, trying to (*@ purple grab the dog @*), while the cat and boy keep hold of the chest and tools.",
+    "char_start": 59257,
+    "char_end": 59431,
+    "sentence_index": 430,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 59433,
+    "char_end": 59448,
+    "sentence_index": 431,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 2) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"man with mustache chases dog while boy cat carrying treasure chest\".",
+    "char_start": 59449,
+    "char_end": 59683,
+    "sentence_index": 432,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 59685,
+    "char_end": 59974,
+    "sentence_index": 433,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec029",
+    "text": "[00:08:0.0, 00:08:20.0] ...",
+    "char_start": 59975,
+    "char_end": 60002,
+    "sentence_index": 434,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec029",
+    "text": "the (*@ orange boy @*) pushes a cart carrying a large, padlocked chest, followed closely by the (*@ orange cat and dog @*), each carrying a pickaxe and shovel ...",
+    "char_start": 60003,
+    "char_end": 60165,
+    "sentence_index": 435,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec029",
+    "text": "Overhead, a (*@ orange black crow @*) soars across the sky ...",
+    "char_start": 60166,
+    "char_end": 60228,
+    "sentence_index": 436,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec029",
+    "text": "Meanwhile, the tall thin (*@ orange man rushes after the group @*), ...",
+    "char_start": 60229,
+    "char_end": 60300,
+    "sentence_index": 437,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 60301,
+    "char_end": 60304,
+    "sentence_index": 438,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 60306,
+    "char_end": 60321,
+    "sentence_index": 439,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 3) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:08:00\", \"00:08:24\"]: \"Describe exactly what the tall thin adult man does as the boy, cat, and dog carry the treasure chest, shovel, and pickaxe back along the path.",
+    "char_start": 60322,
+    "char_end": 60650,
+    "sentence_index": 440,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec029",
+    "text": "Is he chasing anyone specifically?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nAs the boy, cat, and dog come back, the man appears on the same path.",
+    "char_start": 60651,
+    "char_end": 61039,
+    "sentence_index": 441,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec029",
+    "text": "1.",
+    "char_start": 61041,
+    "char_end": 61043,
+    "sentence_index": 442,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec029",
+    "text": "He is sprinting, coat and scarf flying, eyes fixed on the sky.",
+    "char_start": 61044,
+    "char_end": 61106,
+    "sentence_index": 443,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec029",
+    "text": "2.",
+    "char_start": 61107,
+    "char_end": 61109,
+    "sentence_index": 444,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec029",
+    "text": "His arms reach up as he runs, grabbing at the air.",
+    "char_start": 61110,
+    "char_end": 61160,
+    "sentence_index": 445,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec029",
+    "text": "3.",
+    "char_start": 61161,
+    "char_end": 61163,
+    "sentence_index": 446,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec029",
+    "text": "He (*@ orange never even looks at the boy, the animals or the chest @*); instead he is clearly trying to (*@ orange reach the black crow @*).",
+    "char_start": 61164,
+    "char_end": 61305,
+    "sentence_index": 447,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec029",
+    "text": "4.",
+    "char_start": 61306,
+    "char_end": 61308,
+    "sentence_index": 448,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec029",
+    "text": "The man leaps and claws at the air, following the crow's flight.",
+    "char_start": 61309,
+    "char_end": 61373,
+    "sentence_index": 449,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec029",
+    "text": "So he is not chasing the boy, the cat, the dog or the treasure chest at all; he is chasing only the crow that is carrying the white object.",
+    "char_start": 61375,
+    "char_end": 61514,
+    "sentence_index": 450,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 61516,
+    "char_end": 61531,
+    "sentence_index": 451,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 4) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"mustached man chases dog\".",
+    "char_start": 61532,
+    "char_end": 61724,
+    "sentence_index": 452,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 61726,
+    "char_end": 62015,
+    "sentence_index": 453,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec029",
+    "text": "[00:33:12.0, 00:33:32.0] ...",
+    "char_start": 62016,
+    "char_end": 62044,
+    "sentence_index": 454,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec029",
+    "text": "The cat darts away down the sandy road, desperate to escape, while the (*@ purple dog @*) quickly recovers and (*@ purple resumes the chase @*), bounding after the cat ...",
+    "char_start": 62045,
+    "char_end": 62216,
+    "sentence_index": 455,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 62217,
+    "char_end": 62220,
+    "sentence_index": 456,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 62222,
+    "char_end": 62237,
+    "sentence_index": 457,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 5) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"man with mustache chases crow\".",
+    "char_start": 62238,
+    "char_end": 62435,
+    "sentence_index": 458,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 62437,
+    "char_end": 62726,
+    "sentence_index": 459,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec029",
+    "text": "[00:08:28.0, 00:08:48.0] ...",
+    "char_start": 62727,
+    "char_end": 62755,
+    "sentence_index": 460,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec029",
+    "text": "The (*@ orange man @*) points accusatorily at the boy and the crow, prompting the boy to hand over a shiny white object which (*@ orange the crow had stolen earlier @*) ...",
+    "char_start": 62756,
+    "char_end": 62928,
+    "sentence_index": 461,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 62929,
+    "char_end": 62932,
+    "sentence_index": 462,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 62934,
+    "char_end": 62949,
+    "sentence_index": 463,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 6) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:08:06\", \"00:08:14\"]: \"Does the man who is running after the crow have a visible mustache?",
+    "char_start": 62950,
+    "char_end": 63203,
+    "sentence_index": 464,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec029",
+    "text": "Describe his facial hair.\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nCannot find corresponding result in the given time range.",
+    "char_start": 63204,
+    "char_end": 63430,
+    "sentence_index": 465,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 63432,
+    "char_end": 63447,
+    "sentence_index": 466,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 7) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:08:06\", \"00:08:14\"]: \"Does the tall thin man chasing the crow have a mustache, beard, or is he clean-shaven?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nHe has a (*@ orange mustache @*).",
+    "char_start": 63448,
+    "char_end": 64038,
+    "sentence_index": 467,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 64040,
+    "char_end": 64055,
+    "sentence_index": 468,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 8) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nExecuting Asnwer : (D) He chases a bird.",
+    "char_start": 64056,
+    "char_end": 64225,
+    "sentence_index": 469,
+    "section_sentence_index": 141
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec029",
+    "text": "$ $ red Right\n\n3mm\nfigure Case study of Iterative Search behavior.",
+    "char_start": 64226,
+    "char_end": 64292,
+    "sentence_index": 470,
+    "section_sentence_index": 142
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 64294,
+    "char_end": 64309,
+    "sentence_index": 471,
+    "section_sentence_index": 143
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec029",
+    "text": "[colback=white, colframe=gray!50!black,\ntitle= Question , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nQuestion: Why does the tall man cut off the chains at 21:49?",
+    "char_start": 64310,
+    "char_end": 64482,
+    "sentence_index": 472,
+    "section_sentence_index": 144
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec029",
+    "text": "(A) To open the gate\n\n(B) To blow out the candles\n\n(C) To trigger a trap\n\n(D) To help the character\n\n[t] 0.9\n\n0.85 !",
+    "char_start": 64484,
+    "char_end": 64600,
+    "sentence_index": 473,
+    "section_sentence_index": 145
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 1) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Global Browse .",
+    "char_start": 64601,
+    "char_end": 64758,
+    "sentence_index": 474,
+    "section_sentence_index": 146
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Global Browse , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSubjects Information : ...",
+    "char_start": 64760,
+    "char_end": 64927,
+    "sentence_index": 475,
+    "section_sentence_index": 147
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec029",
+    "text": "[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n\nEvent Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nThe tall man steps up to a hanging length of chain that holds the barred door of a cell shut, raises his sword and slices clean through the links; the chain clatters free and the cell door can now be pushed open, allowing the (*@ purple wounded protagonist inside to be supported out @*).",
+    "char_start": 64928,
+    "char_end": 65471,
+    "sentence_index": 476,
+    "section_sentence_index": 148
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 65473,
+    "char_end": 65488,
+    "sentence_index": 477,
+    "section_sentence_index": 149
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 2) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:21:40\", \"00:21:58\"]: \"Why does the tall man cut off the chains?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nHe severs the ceiling chains so the (*@ purple candle-chandelier comes crashing down @*), plunging the corridor into darkness, (*@ purple giving his companion a fighting chance to survive the attack @*).",
+    "char_start": 65489,
+    "char_end": 66204,
+    "sentence_index": 478,
+    "section_sentence_index": 150
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 66206,
+    "char_end": 66221,
+    "sentence_index": 479,
+    "section_sentence_index": 151
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 3) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:21:45\", \"00:21:55\"]: \"What happens immediately after the tall man slices through the chains hanging from the ceiling?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nThe chain he cuts (*@ orange holds the candle-chandelier @*); as soon as it is severed, the chandelier comes crashing down from the ceiling onto the floor.",
+    "char_start": 66222,
+    "char_end": 66943,
+    "sentence_index": 480,
+    "section_sentence_index": 152
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 66945,
+    "char_end": 66960,
+    "sentence_index": 481,
+    "section_sentence_index": 153
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 4) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Frame Inspect at [\"00:21:40\", \"00:22:10\"]: \"Does the tall man ever cut a chain to open a gate or door around 21:49?\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Frame Inspect , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nFine-grained Response :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nNo.",
+    "char_start": 66961,
+    "char_end": 67506,
+    "sentence_index": 482,
+    "section_sentence_index": 154
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 67508,
+    "char_end": 67523,
+    "sentence_index": 483,
+    "section_sentence_index": 155
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 5) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nExecuting Asnwer : (C) To trigger a trap.",
+    "char_start": 67524,
+    "char_end": 67694,
+    "sentence_index": 484,
+    "section_sentence_index": 156
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec029",
+    "text": "$ $ red Wrong\n\n3mm\nfigure Case study of Frame Inspect Trap behavior.",
+    "char_start": 67695,
+    "char_end": 67763,
+    "sentence_index": 485,
+    "section_sentence_index": 157
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 67765,
+    "char_end": 67780,
+    "sentence_index": 486,
+    "section_sentence_index": 158
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec029",
+    "text": "[colback=white, colframe=gray!50!black,\ntitle= Question , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nQuestion: What does the protagonist see through the window after she is taken to the utility room?",
+    "char_start": 67781,
+    "char_end": 67991,
+    "sentence_index": 487,
+    "section_sentence_index": 159
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec029",
+    "text": "(A) A group of monks sitting cross-legged in the snow\n\n(B) A group of citizens chatting together\n\n(C) A group of warriors practicing swords\n\n(D) A group of samurais eating\n\n[t] 0.9\n\n0.85 !",
+    "char_start": 67993,
+    "char_end": 68181,
+    "sentence_index": 488,
+    "section_sentence_index": 160
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 1) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Global Browse .",
+    "char_start": 68182,
+    "char_end": 68339,
+    "sentence_index": 489,
+    "section_sentence_index": 161
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Global Browse , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSubjects Information : ...",
+    "char_start": 68341,
+    "char_end": 68508,
+    "sentence_index": 490,
+    "section_sentence_index": 162
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec029",
+    "text": "[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n\nEvent Information :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\nInside the cramped utility room the heroine peers out through the lattice window and her eyes settle on the snow-covered courtyard where (*@ purple several monks sit cross-legged @*) and bare-chested despite the freezing weather, engaged in silent meditation.",
+    "char_start": 68509,
+    "char_end": 69023,
+    "sentence_index": 491,
+    "section_sentence_index": 163
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 69025,
+    "char_end": 69040,
+    "sentence_index": 492,
+    "section_sentence_index": 164
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 2) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"utility room window sees group monks cross-legged snow\".",
+    "char_start": 69041,
+    "char_end": 69263,
+    "sentence_index": 493,
+    "section_sentence_index": 165
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 69265,
+    "char_end": 69554,
+    "sentence_index": 494,
+    "section_sentence_index": 166
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec029",
+    "text": "[00:19:31.0, 00:19:42.0] ...",
+    "char_start": 69555,
+    "char_end": 69583,
+    "sentence_index": 495,
+    "section_sentence_index": 167
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec029",
+    "text": "As (*@ purple soft snowflakes @*) drift through the pale morning air, the solitary traveler appears on a frosted hill overlooking a vast, traditional Japanese town ...",
+    "char_start": 69584,
+    "char_end": 69751,
+    "sentence_index": 496,
+    "section_sentence_index": 168
+  },
+  {
+    "sentence_id": "s0498",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 69753,
+    "char_end": 69768,
+    "sentence_index": 497,
+    "section_sentence_index": 169
+  },
+  {
+    "sentence_id": "s0499",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 3) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"utility room protagonist looks through window sees\".",
+    "char_start": 69769,
+    "char_end": 69987,
+    "sentence_index": 498,
+    "section_sentence_index": 170
+  },
+  {
+    "sentence_id": "s0500",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 69989,
+    "char_end": 70278,
+    "sentence_index": 499,
+    "section_sentence_index": 171
+  },
+  {
+    "sentence_id": "s0501",
+    "section_id": "sec029",
+    "text": "[00:02:2.0, 00:02:7.0] ...",
+    "char_start": 70279,
+    "char_end": 70305,
+    "sentence_index": 500,
+    "section_sentence_index": 172
+  },
+  {
+    "sentence_id": "s0502",
+    "section_id": "sec029",
+    "text": "Dust motes drift lazily through beams of sunlight streaming from the paper (*@ purple window @*), highlighting the wooden shelves lined with bowls ...",
+    "char_start": 70306,
+    "char_end": 70456,
+    "sentence_index": 501,
+    "section_sentence_index": 173
+  },
+  {
+    "sentence_id": "s0503",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 70457,
+    "char_end": 70460,
+    "sentence_index": 502,
+    "section_sentence_index": 174
+  },
+  {
+    "sentence_id": "s0504",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 70462,
+    "char_end": 70477,
+    "sentence_index": 503,
+    "section_sentence_index": 175
+  },
+  {
+    "sentence_id": "s0505",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 4 - Step 14) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with queries :\n\n\"utility room small storage taken escorted feed him utility\",\n\n\"utility room window look out\",\n\n...",
+    "char_start": 70478,
+    "char_end": 70757,
+    "sentence_index": 504,
+    "section_sentence_index": 176
+  },
+  {
+    "sentence_id": "s0506",
+    "section_id": "sec029",
+    "text": "\"storeroom small room snow see out window\"\n\n[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 70759,
+    "char_end": 71092,
+    "sentence_index": 505,
+    "section_sentence_index": 177
+  },
+  {
+    "sentence_id": "s0507",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 71094,
+    "char_end": 71109,
+    "sentence_index": 506,
+    "section_sentence_index": 178
+  },
+  {
+    "sentence_id": "s0508",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 15) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nCalling tool Clip Search with query \"utility room\".",
+    "char_start": 71110,
+    "char_end": 71291,
+    "sentence_index": 507,
+    "section_sentence_index": 179
+  },
+  {
+    "sentence_id": "s0509",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\nmax width=0.85\n[\ncolback=white, colframe=blue!30!gray,\ntitle= Clip Search , boxrule=0.3mm, width= , arc=3mm, auto outer arc=true]\nSearched Video Clip Scripts :\n[basicstyle= , frame=none, backgroundcolor= white , breaklines=true, showstringspaces=false, escapeinside= (*@ @*) ]\n...",
+    "char_start": 71293,
+    "char_end": 71582,
+    "sentence_index": 508,
+    "section_sentence_index": 180
+  },
+  {
+    "sentence_id": "s0510",
+    "section_id": "sec029",
+    "text": "[00:17:32.0, 00:17:49.0] ...",
+    "char_start": 71583,
+    "char_end": 71611,
+    "sentence_index": 509,
+    "section_sentence_index": 181
+  },
+  {
+    "sentence_id": "s0511",
+    "section_id": "sec029",
+    "text": "The setting is dim and somber, likely a (*@ purple shelter or workshop @*) with stone flooring and faint light filtering in from the outside ...",
+    "char_start": 71612,
+    "char_end": 71756,
+    "sentence_index": 510,
+    "section_sentence_index": 182
+  },
+  {
+    "sentence_id": "s0512",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 71757,
+    "char_end": 71760,
+    "sentence_index": 511,
+    "section_sentence_index": 183
+  },
+  {
+    "sentence_id": "s0513",
+    "section_id": "sec029",
+    "text": "[t] 0.9\n\n0.85 !",
+    "char_start": 71762,
+    "char_end": 71777,
+    "sentence_index": 512,
+    "section_sentence_index": 184
+  },
+  {
+    "sentence_id": "s0514",
+    "section_id": "sec029",
+    "text": "[colback=orange!5!white, colframe=orange!75!black,\ntitle= Agent (Step 16) , boxrule=0.3mm, width= , arc=2mm, auto outer arc=true]\nExecuting Asnwer : (A) A group of monks sitting cross-legged in the snow.",
+    "char_start": 71778,
+    "char_end": 71981,
+    "sentence_index": 513,
+    "section_sentence_index": 185
+  },
+  {
+    "sentence_id": "s0515",
+    "section_id": "sec029",
+    "text": "$ $ red Wrong\n\n3mm\nfigure Case study of Clip Search Trap behavior.",
+    "char_start": 71982,
+    "char_end": 72048,
+    "sentence_index": 514,
+    "section_sentence_index": 186
+  }
+]

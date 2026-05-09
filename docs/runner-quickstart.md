@@ -24,8 +24,12 @@ export AIGRAPH_LLM_TIMEOUT=180
 export AIGRAPH_REASONING_EFFORT=minimal
 
 # 3. run end-to-end on a local corpus
+#    The repo bundles a 100-paper mini corpus at
+#    data/corpus/arxiv_reasoning_mini/ (~55 MB, matches the e2e proof
+#    in artifacts/runs/arxiv-reasoning-v0.7-100p/). Use it for the
+#    first run; replace with your own corpus dir later.
 python3 scripts/run_local_corpus.py \
-    --corpus data/corpus/arxiv_reasoning \
+    --corpus data/corpus/arxiv_reasoning_mini \
     --max-papers 100 \
     --year-min 2023 \
     --keywords "reasoning,chain-of-thought,planning,tool use,agent" \

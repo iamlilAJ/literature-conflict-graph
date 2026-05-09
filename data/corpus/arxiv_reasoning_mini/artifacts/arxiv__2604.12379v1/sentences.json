@@ -1,0 +1,3971 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language models (LLMs) increasingly rely on explicit reasoning to solve coding tasks, yet evaluating the quality of this reasoning remains challenging.",
+    "char_start": 0,
+    "char_end": 157,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Existing reasoning evaluators are not designed for coding, and current benchmarks focus primarily on code generation, leaving other coding tasks largely unexplored.",
+    "char_start": 158,
+    "char_end": 322,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce CodeRQ-Bench, the first benchmark for evaluating LLM reasoning quality across three coding task categories: generation, summarization, and classification.",
+    "char_start": 323,
+    "char_end": 490,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Using this benchmark, we analyze 1,069 mismatch cases from existing evaluators, identify five recurring limitations, and derive four design insights for reasoning evaluation in coding tasks.",
+    "char_start": 491,
+    "char_end": 681,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Guided by these insights, we propose VERA, a two-stage evaluator that combines evidence-grounded verification with ambiguity-aware score correction.",
+    "char_start": 682,
+    "char_end": 830,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Experiments on CodeRQ-Bench show that VERA consistently outperforms strong baselines across four datasets, improving AUCROC by up to 0.26 and AUPRC by up to 0.21.",
+    "char_start": 831,
+    "char_end": 993,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "We release CodeRQ-Bench at , supporting future investigations.",
+    "char_start": 994,
+    "char_end": 1056,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Large Language models (LLMs) are widely used for coding tasks .",
+    "char_start": 1058,
+    "char_end": 1121,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "With the rise of reasoning-enhanced models such as OpenAI\u2019s o-series , DeepSeek-R1 , and Chain-of-Thought (CoT) prompting and its variants , eliciting step-by-step reasoning has become a key strategy for improving performance on coding tasks.",
+    "char_start": 1122,
+    "char_end": 1364,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "However, the quality of such reasoning is often unreliable , and flawed reasoning can degrade the final output .",
+    "char_start": 1366,
+    "char_end": 1478,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Despite this, existing evaluation primarily focuses on final output correctness.",
+    "char_start": 1479,
+    "char_end": 1559,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Benchmarks such as SWE-bench and HumanEval assess task success using outcome-based metrics (e.g., test passing, pass@k), leaving the reasoning process largely unexamined.",
+    "char_start": 1560,
+    "char_end": 1730,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "As a result, LLMs may produce correct code while relying on faulty intermediate reasoning (Fig.",
+    "char_start": 1731,
+    "char_end": 1826,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "shows an example).",
+    "char_start": 1827,
+    "char_end": 1845,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Ignoring the reasoning process limits our understanding of model behavior and hinders progress toward reliable reasoning in coding tasks.",
+    "char_start": 1846,
+    "char_end": 1983,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "[t!]\n\nfigures/figure1_6.pdf\n\nOutput-based vs.",
+    "char_start": 1985,
+    "char_end": 2030,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Reasoning-based evaluation in a code generation task.",
+    "char_start": 2031,
+    "char_end": 2084,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "-0.27in\n\nRecent work has begun to move beyond output correctness and evaluate the reasoning processes generated by LLMs.",
+    "char_start": 2086,
+    "char_end": 2206,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "RECEVAL assesses reasoning along correctness and informativeness, SOCREVAL uses Socratic-style prompting to evaluate reasoning, and CaSE applies step-level causal scoring to assess relevance and coherence.",
+    "char_start": 2207,
+    "char_end": 2412,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "However, these methods were developed and validated on general NLP tasks, such as arithmetic reasoning and commonsense question answering.",
+    "char_start": 2413,
+    "char_end": 2551,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Coding tasks differ from NLP tasks substantially, as they involve program structure, semantics, and execution behavior .",
+    "char_start": 2552,
+    "char_end": 2672,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Therefore, it is necessary to evaluate these methods in the coding domain to assess their effectiveness.",
+    "char_start": 2673,
+    "char_end": 2777,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Another key challenge is the lack of comprehensive benchmarks for evaluating reasoning quality in coding tasks.",
+    "char_start": 2779,
+    "char_end": 2890,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Existing efforts focus mainly on code generation, with limited coverage of other task categories.",
+    "char_start": 2891,
+    "char_end": 2988,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Coding tasks are commonly grouped by output modality into generation, summarization, and classification .",
+    "char_start": 2989,
+    "char_end": 3094,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "These categories require different forms of reasoning : generation involves constructive planning, summarization requires semantic abstraction and compression, and classification relies on diagnostic deduction.",
+    "char_start": 3095,
+    "char_end": 3305,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Restricting evaluation to generation therefore provides only a partial view of evaluator performance, obscuring task-specific limitations and hindering the development of more reliable reasoning evaluators.",
+    "char_start": 3306,
+    "char_end": 3512,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To address these limitations,\n(1) we introduce Code R easoning Q uality Bench mark (CodeRQ-Bench), to our knowledge the first benchmark for evaluating the quality of LLM-generated reasoning across three coding task categories.",
+    "char_start": 3514,
+    "char_end": 3740,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Each instance is annotated for reasoning quality through a three-expert consensus-based annotation process, following established practices in dataset annotation and annotator agreement assessment .",
+    "char_start": 3741,
+    "char_end": 3939,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "(2) Built on CodeRQ-Bench, we show that existing reasoning evaluators have substantial limitations on coding tasks.",
+    "char_start": 3940,
+    "char_end": 4055,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "We analyze 1,069 cases where evaluators misjudge reasoning correctness, identify five recurring limitations, and derive four key insights that highlight new directions for reasoning-quality evaluation in coding tasks (see ).",
+    "char_start": 4056,
+    "char_end": 4280,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "(3) Motivated by these findings, we propose V erified E valuation of R easoning with A mbiguity-awareness ( ), a two-stage evaluator that first verifies reasoning correctness against external evidence and then calibrates scores based on task ambiguity and how well the reasoning addresses it.",
+    "char_start": 4281,
+    "char_end": 4573,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "On CodeRQ-Bench, achieves state-of-the-art performance, improving over existing baselines by up to 0.26 in AUCROC and 0.21 in AUPRC.",
+    "char_start": 4574,
+    "char_end": 4706,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec003",
+    "text": "Outcome-Based Evaluation of Coding Tasks.",
+    "char_start": 4708,
+    "char_end": 4749,
+    "sentence_index": 33,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "Existing evaluation of coding tasks is largely outcome-based, relying on metrics such as execution correctness, exact match, and classification accuracy across tasks like code generation, repair, summarization, and bug detection .",
+    "char_start": 4751,
+    "char_end": 4981,
+    "sentence_index": 34,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "While effective for measuring task success, these metrics cannot assess the reliability of the reasoning process: correct outputs may arise from flawed reasoning, and vice versa .",
+    "char_start": 4982,
+    "char_end": 5161,
+    "sentence_index": 35,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "Recent benchmarks such as CRUXEval , CoRe , CodeMind, and EquiBench evaluate models on reasoning-intensive coding tasks but still focus on task performance as the primary metric.",
+    "char_start": 5162,
+    "char_end": 5340,
+    "sentence_index": 36,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "In contrast, our work evaluates the reasoning chain itself, enabling direct assessment of reasoning reliability and more fine-grained diagnosis of reasoning failures.",
+    "char_start": 5341,
+    "char_end": 5507,
+    "sentence_index": 37,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Existing Reasoning Evaluation Methods.",
+    "char_start": 5509,
+    "char_end": 5547,
+    "sentence_index": 38,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Early work evaluates model-generated reasoning by comparing it with human-written explanations using similarity-based metrics .",
+    "char_start": 5549,
+    "char_end": 5676,
+    "sentence_index": 39,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "ROSCOE extends this approach by assessing reasoning along multiple dimensions, including factuality, coherence, and redundancy .",
+    "char_start": 5677,
+    "char_end": 5805,
+    "sentence_index": 40,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "However, reference-based methods rely on predefined reasoning chains, limiting their ability to capture the diversity of valid reasoning paths.",
+    "char_start": 5806,
+    "char_end": 5949,
+    "sentence_index": 41,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "Recent work moves toward reference-free reasoning evaluation.",
+    "char_start": 5951,
+    "char_end": 6012,
+    "sentence_index": 42,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "ReCEval evaluates reasoning in terms of correctness and informativeness; SocREval uses Socratic-style prompting to guide LLMs through probing questions before producing an evaluation; and CaSE applies causal stepwise scoring to assess relevance and coherence.",
+    "char_start": 6013,
+    "char_end": 6272,
+    "sentence_index": 43,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "However, these methods were developed for general reasoning tasks, such as arithmetic and commonsense question answering, rather than coding tasks.",
+    "char_start": 6273,
+    "char_end": 6420,
+    "sentence_index": 44,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "In coding settings, reasoning quality depends not only on linguistic coherence but also on code semantics, execution behavior, and technical constraints.",
+    "char_start": 6421,
+    "char_end": 6574,
+    "sentence_index": 45,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "We address this gap by introducing a coding-oriented benchmark and evaluator.",
+    "char_start": 6575,
+    "char_end": 6652,
+    "sentence_index": 46,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "Code Reasoning Quality (CodeRQ) evaluation focuses on assessing the correctness of LLM-generated reasoning for solving a coding task.",
+    "char_start": 6654,
+    "char_end": 6787,
+    "sentence_index": 47,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "In CodeRQ evaluation, the input consists of a coding-task description $q$, an LLM-generated reasoning chain $C=(s_1, ,s_n)$, and the corresponding final output $o$.",
+    "char_start": 6788,
+    "char_end": 6952,
+    "sentence_index": 48,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "Given $(q,C,o)$, the goal is to return a score in $[0,1]$ indicating how likely the reasoning process is correct, where larger values indicate higher estimated reasoning quality.",
+    "char_start": 6953,
+    "char_end": 7131,
+    "sentence_index": 49,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "-0.1in\n\n-0.1in\nTo date, the only reasoning-annotated datasets for coding tasks are CoderEval- R easoning E valuation (CoderEval-RE) and SWE-bench- R easoning E valuation (SWEbench-RE), both introduced by Zhang et al.",
+    "char_start": 7133,
+    "char_end": 7349,
+    "sentence_index": 50,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": ". We adopt the DeepSeek-R1 -generated traces provided in that work (see Appx.",
+    "char_start": 7350,
+    "char_end": 7427,
+    "sentence_index": 51,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "for details).",
+    "char_start": 7428,
+    "char_end": 7441,
+    "sentence_index": 52,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "A comprehensive benchmark for CodeRQ evaluation should cover the three categories of coding tasks under the output-modality taxonomy: generation, summarization, and classification .",
+    "char_start": 7442,
+    "char_end": 7623,
+    "sentence_index": 53,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "However, CoderEval-RE and SWEbench-RE cover only the generation category, limiting evaluation to a single modality.",
+    "char_start": 7624,
+    "char_end": 7739,
+    "sentence_index": 54,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "To address this limitation, CodeRQ-Bench builds on these two datasets and further introduces Modified-ClassEval- R easoning E valuation ( ) for summarization and Bug Detection- R easoning E valuation ( ) for classification, each annotated by three experts.",
+    "char_start": 7740,
+    "char_end": 7996,
+    "sentence_index": 55,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "is constructed based on Modified-ClassEval , a dataset obtained by reformulating ClassEval for code summarization.",
+    "char_start": 7998,
+    "char_end": 8112,
+    "sentence_index": 56,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "is constructed based on DebugBench , a code debugging benchmark in which models determine whether a code snippet contains a defect.",
+    "char_start": 8114,
+    "char_end": 8245,
+    "sentence_index": 57,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "For both datasets, we sample 139 and 252 instances for and , respectively, at a confidence level of 90\\% and a margin of error of 5\\%.",
+    "char_start": 8247,
+    "char_end": 8381,
+    "sentence_index": 58,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "For each sampled instance, we generate a reasoning trace with GPT-4o , selected for its strong overall capability and favorable cost .",
+    "char_start": 8383,
+    "char_end": 8517,
+    "sentence_index": 59,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "We then label its correctness with three expert annotators.",
+    "char_start": 8519,
+    "char_end": 8578,
+    "sentence_index": 60,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "More details about the construction of and , including the used source datasets and sampling procedure, see Appx.",
+    "char_start": 8579,
+    "char_end": 8692,
+    "sentence_index": 61,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "and .",
+    "char_start": 8693,
+    "char_end": 8698,
+    "sentence_index": 62,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "CodeRQ-Bench's data distribution is shown in Table .",
+    "char_start": 8700,
+    "char_end": 8752,
+    "sentence_index": 63,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "[ht]\n\nCodeRQ-Bench Dataset Distribution\n-0.1in\n\n=0.9 !",
+    "char_start": 8754,
+    "char_end": 8808,
+    "sentence_index": 64,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "1.2\n@ l l c c @\n\nOutput Modality & Dataset & Size & \\# Correct / Incorrect\nReasoning\n\n2 * Code Generation & CoderEval-RE & 230 & 70 / 160\n\n(lr) 2-4\n& SWEBench-RE & 111 & 21 / 90\n\nCode Summarization & ClassEval-RE & 139 & 112 / 27\n\nBug Detection & DebugBench-RE & 252 & 153 / 99\n\n-0.1in\n\n-0.1in\n\nTo ensure annotation consistency, three expert annotators follow a consensus-based workflow, consistent with common dataset annotation practices .",
+    "char_start": 8809,
+    "char_end": 9250,
+    "sentence_index": 65,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "The annotators first jointly establish guidelines for judging reasoning correctness and then independently annotate each instance.",
+    "char_start": 9251,
+    "char_end": 9381,
+    "sentence_index": 66,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "To assess reliability before adjudication, we measure inter-annotator agreement during the initial annotation phase using Fleiss' $ $ , which is suitable for three annotators.",
+    "char_start": 9382,
+    "char_end": 9557,
+    "sentence_index": 67,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "For the two newly constructed datasets, Fleiss' $ $ is 0.91 for and 0.95 for , with adjudication rates of 4.32\\% and 3.57\\%, respectively, indicating almost perfect agreement .",
+    "char_start": 9558,
+    "char_end": 9734,
+    "sentence_index": 68,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "After independent annotation, annotators review cases with inconsistent labels and assign a consensus label through discussion.",
+    "char_start": 9736,
+    "char_end": 9863,
+    "sentence_index": 69,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "If disagreements reveal ambiguities in the guidelines, the rules are refined and the affected instances are re-annotated.",
+    "char_start": 9864,
+    "char_end": 9985,
+    "sentence_index": 70,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "This cycle of independent annotation, disagreement resolution, and guideline refinement continues until consensus labels are obtained for all instances.",
+    "char_start": 9986,
+    "char_end": 10138,
+    "sentence_index": 71,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "The annotation guideline is grounded in theories of human problem solving and logical reasoning.",
+    "char_start": 10140,
+    "char_end": 10236,
+    "sentence_index": 72,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "Following P\u00f3lya\u2019s framework of understanding, planning, execution, and verification , we operationalize reasoning quality into three stage-specific dimensions: Comprehension , Analysis , and Conclusion .",
+    "char_start": 10237,
+    "char_end": 10440,
+    "sentence_index": 73,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "In addition, inspired by Johnson-Laird et al.",
+    "char_start": 10441,
+    "char_end": 10486,
+    "sentence_index": 74,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": ", which shows that inconsistency detection relies on constructing a coherent mental model, we introduce Consistency as a cross-cutting dimension.",
+    "char_start": 10487,
+    "char_end": 10632,
+    "sentence_index": 75,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "For each dimension, we define concrete annotation rules for each dataset.",
+    "char_start": 10633,
+    "char_end": 10706,
+    "sentence_index": 76,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "The full guidelines for and are provided in Appx.",
+    "char_start": 10707,
+    "char_end": 10756,
+    "sentence_index": 77,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "and Appx.",
+    "char_start": 10757,
+    "char_end": 10766,
+    "sentence_index": 78,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": ".\n\nExisting reasoning quality evaluators, including RECEVAL, SOCREVAL, and CaSE , perform poorly on coding tasks, often failing to distinguish correct from incorrect reasoning and achieving near-random performance (see Table ).",
+    "char_start": 10767,
+    "char_end": 10994,
+    "sentence_index": 79,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "To diagnose these limitations and inform the design of improved evaluators, we analyze cases where evaluator scores misalign with the actual reasoning correctness.",
+    "char_start": 10995,
+    "char_end": 11158,
+    "sentence_index": 80,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "[!h]\n\nTaxonomy of existing reasoning-quality evaluator limitations on coding tasks.",
+    "char_start": 11160,
+    "char_end": 11243,
+    "sentence_index": 81,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec009",
+    "text": "For each limitation, we report its definition, the distribution of annotated mismatch cases across evaluators, and the breakdown by error type.",
+    "char_start": 11244,
+    "char_end": 11387,
+    "sentence_index": 82,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec009",
+    "text": "REC.",
+    "char_start": 11388,
+    "char_end": 11392,
+    "sentence_index": 83,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec009",
+    "text": ", SOCR.",
+    "char_start": 11393,
+    "char_end": 11400,
+    "sentence_index": 84,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec009",
+    "text": ", and CaSE denote ReCEval, SocREval, and CaSE, respectively; Missed and FA denote missed errors and false alarms.",
+    "char_start": 11401,
+    "char_end": 11514,
+    "sentence_index": 85,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec009",
+    "text": "-0.1in\n\n@\n> p 2cm\n> X\n> p 2.5cm\n> p 2cm @\n\nLimitation & Definition & Evaluator\n( REC.",
+    "char_start": 11516,
+    "char_end": 11601,
+    "sentence_index": 86,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec009",
+    "text": "/ SOCR.",
+    "char_start": 11602,
+    "char_end": 11609,
+    "sentence_index": 87,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "/ CaSE ) & Error Type\n( Missed / FA )\n\nEvidence-Ungrounded Assessment\n& The evaluator does not ground its assessment in the evidence needed to verify reasoning correctness in coding tasks, where many claims must be searched and checked against repository context, API documents, or task specifications.",
+    "char_start": 11610,
+    "char_end": 11912,
+    "sentence_index": 88,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "& 14.4\\% / 41.6\\% / 44.0\\%\n& 85.4\\% / 14.6\\%\n\nAmbiguity Assessment Deficit\n& The evaluator cannot determine whether a task is ambiguous or underspecified, nor assess whether the reasoning handles such ambiguity.",
+    "char_start": 11913,
+    "char_end": 12124,
+    "sentence_index": 89,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "& 30.2\\% / 36.5\\% / 33.3\\%\n& 77.4\\% / 22.6\\%\n\nScore Aggregation Failure\n& The evaluator produces an unreliable final score because its scoring rule combines step-level judgments in a way that either lets one misjudged step override an otherwise correct trace or allows fatal correctness errors to be diluted by other steps.",
+    "char_start": 12125,
+    "char_end": 12448,
+    "sentence_index": 90,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "& 70.5\\% / -- / 29.5\\%\n& 24.7\\% / 75.3\\%\n\nSelf-Generated Reference Bias\n& The evaluator judges reasoning against self-generated references or standards, creating circular validation in which shared errors or biases are mistaken for correctness.",
+    "char_start": 12449,
+    "char_end": 12693,
+    "sentence_index": 91,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "& -- / 100\\% / --\n& 97.3\\% / 2.7\\%\n\nCode-Unaware Assessment\n& The evaluator fails to reliably assess code-related reasoning because it cannot correctly represent or judge code-relevant semantics in the reasoning process.",
+    "char_start": 12694,
+    "char_end": 12914,
+    "sentence_index": 92,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "& 100\\% / -- / --\n& 9.0\\% / 91.0\\%\n\n-0.1in\n\nWe apply existing reasoning evaluators to CodeRQ-Bench and analyze cases where their scores misalign with the ground-truth reasoning correctness.",
+    "char_start": 12915,
+    "char_end": 13104,
+    "sentence_index": 93,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec009",
+    "text": "We categorize mismatches into two types: missed errors , where incorrect reasoning receives a high score, and false alarms , where correct reasoning receives a low score.",
+    "char_start": 13105,
+    "char_end": 13275,
+    "sentence_index": 94,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec009",
+    "text": "Since the existing evaluators produce continuous scores, we use the midpoint of each evaluator\u2019s score range as a threshold, treating scores above or equal to the midpoint as high and those below as low.",
+    "char_start": 13276,
+    "char_end": 13479,
+    "sentence_index": 95,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Using this criterion, we identify 1,069 mismatch cases, including 709 missed errors and 360 false alarms .",
+    "char_start": 13480,
+    "char_end": 13586,
+    "sentence_index": 96,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "We analyze these mismatch cases using a three-step protocol.",
+    "char_start": 13588,
+    "char_end": 13648,
+    "sentence_index": 97,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "First, for each case, we use GPT-5.2 , which supports long-context, to generate a diagnostic annotation explaining why the evaluator\u2019s score diverges from the ground-truth reasoning correctness.",
+    "char_start": 13649,
+    "char_end": 13843,
+    "sentence_index": 98,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "The annotation considers the evaluator\u2019s method description, the task prompt, the LLM-generated reasoning chain and final output, and the evaluator\u2019s detailed assessment outputs.",
+    "char_start": 13844,
+    "char_end": 14022,
+    "sentence_index": 99,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "Second, GPT-5.2 extracts open-coded limitation labels from these diagnostics.",
+    "char_start": 14023,
+    "char_end": 14100,
+    "sentence_index": 100,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec009",
+    "text": "Third, we consolidate these labels into higher-level categories through a two-stage process: embedding-based pre-clustering using text-embedding-3-large , followed by taxonomy consolidation with GPT-5.2, yielding a taxonomy of evaluator limitations.",
+    "char_start": 14101,
+    "char_end": 14350,
+    "sentence_index": 101,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec009",
+    "text": "All prompts are provided in Appx.",
+    "char_start": 14351,
+    "char_end": 14384,
+    "sentence_index": 102,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": ". To validate the LLM-based analysis, we randomly sample 65 cases (90\\% confidence level, 10\\% margin of error) for manual review; 61 cases (93.8\\%) contain valid diagnoses and limitation labels.",
+    "char_start": 14385,
+    "char_end": 14580,
+    "sentence_index": 103,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "Based on the mismatch-case analysis above, we organize the observed evaluator limitations into a taxonomy of five limitation categories that cover all mismatch cases.",
+    "char_start": 14582,
+    "char_end": 14748,
+    "sentence_index": 104,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "These categories are non-exclusive, and a single mismatch case may exhibit more than one limitation.",
+    "char_start": 14749,
+    "char_end": 14849,
+    "sentence_index": 105,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "Table summarizes their definitions, along with how each limitation is distributed across evaluators and mismatch types.",
+    "char_start": 14850,
+    "char_end": 14969,
+    "sentence_index": 106,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "Fig.",
+    "char_start": 14970,
+    "char_end": 14974,
+    "sentence_index": 107,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": "visualizes the distribution of limitation annotations across the 1,069 mismatch cases, including a breakdown by evaluation method.",
+    "char_start": 14975,
+    "char_end": 15105,
+    "sentence_index": 108,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "[t!]\n\nfigures/dis_of_limitation_by_methods_dpi300.png\nDistribution of five limitation categories across 1,069 mismatch cases from three evaluation methods.",
+    "char_start": 15107,
+    "char_end": 15262,
+    "sentence_index": 109,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Background bars show aggregated totals (percentages relative to all cases; categories are non-exclusive).",
+    "char_start": 15263,
+    "char_end": 15368,
+    "sentence_index": 110,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "Foreground bars decompose each category by method.",
+    "char_start": 15369,
+    "char_end": 15419,
+    "sentence_index": 111,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "-0.1in\n\nEvidence-Ungrounded Assessment arises when evaluators score reasoning without verifying claims or assumptions that require external evidence (e.g., repository context, API documentation, or task specifications).",
+    "char_start": 15421,
+    "char_end": 15640,
+    "sentence_index": 112,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "Existing evaluators do not support such evidence retrieval and verification, and therefore tend to accept plausible but unverified reasoning as correct, which results primarily in missed errors (85.4\\% of the cases under this limitation).",
+    "char_start": 15641,
+    "char_end": 15879,
+    "sentence_index": 113,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "[leftmargin=*]\nInsight 1: Evidence-grounded verification.",
+    "char_start": 15881,
+    "char_end": 15938,
+    "sentence_index": 114,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "CodeRQ evaluators should retrieve and incorporate supporting evidence during assessment (e.g., repository context, API documentation, tests/specifications) and verify whether the reasoning is consistent with that evidence, rather than scoring based on plausibility alone.",
+    "char_start": 15939,
+    "char_end": 16210,
+    "sentence_index": 115,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "Ambiguity Assessment Deficit arises when the underlying coding problem specification is ambiguous or underspecified, in which case correct reasoning should remain conditional or explicitly uncertain rather than overly certain.",
+    "char_start": 16212,
+    "char_end": 16438,
+    "sentence_index": 116,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Existing evaluators cannot recognize such ambiguity or assess whether the reasoning responds appropriately to it, and thus often accept overconfident reasoning, resulting primarily in missed errors (77.4\\%).",
+    "char_start": 16439,
+    "char_end": 16646,
+    "sentence_index": 117,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "[leftmargin=*]\nInsight 2: Ambiguity-aware assessment under underspecification.",
+    "char_start": 16647,
+    "char_end": 16725,
+    "sentence_index": 118,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "CodeRQ evaluators should detect ambiguity or underspecification in the task specification and penalize overconfident reasoning when correctness cannot be established.",
+    "char_start": 16726,
+    "char_end": 16892,
+    "sentence_index": 119,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "Score Aggregation Failure occurs in RECEVAL and CaSE, where the aggregation of step-level scores distorts the final judgment.",
+    "char_start": 16894,
+    "char_end": 17019,
+    "sentence_index": 120,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "In RECEVAL, min aggregation makes the score overly sensitive to a single misjudged step, whereas in CaSE, averaging can dilute correctness errors across steps.",
+    "char_start": 17020,
+    "char_end": 17179,
+    "sentence_index": 121,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "Self-Generated Reference Bias occurs in SocREVAL, where the evaluator judges reasoning against self-generated references, creating a form of circular validation in which shared errors or biases may be mistaken for correctness.",
+    "char_start": 17181,
+    "char_end": 17407,
+    "sentence_index": 122,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "As a result, agreement with these references can reflect shared mistakes rather than true correctness, leading primarily to missed errors (97.3\\%).",
+    "char_start": 17408,
+    "char_end": 17555,
+    "sentence_index": 123,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "[leftmargin=*]\nInsight 3: Avoid self-referential standards.",
+    "char_start": 17557,
+    "char_end": 17616,
+    "sentence_index": 124,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "CodeRQ evaluators should avoid using self-generated references as the primary standard for correctness; instead, they should prefer evidence-grounded checks or independently sourced verification signals to reduce circular validation and shared-error amplification.",
+    "char_start": 17617,
+    "char_end": 17881,
+    "sentence_index": 125,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "Code-Unaware Assessment occurs in RECEVAL, whose pipeline converts reasoning steps into premise\u2013conclusion pairs via semantic role labeling (SRL)\n\nand evaluates entailment using a natural language inference (NLI) model .",
+    "char_start": 17883,
+    "char_end": 18103,
+    "sentence_index": 126,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "Because these models are trained on general natural-language corpora and are brittle on code-mixed reasoning, RECEVAL often misinterprets code-related statements or entailment relations.",
+    "char_start": 18105,
+    "char_end": 18291,
+    "sentence_index": 127,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "As a result, many correct reasoning traces are incorrectly flagged, leading predominantly to false alarms (91.0\\%).",
+    "char_start": 18292,
+    "char_end": 18407,
+    "sentence_index": 128,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "[leftmargin=*]\nInsight 4: Code-aware semantic assessment.",
+    "char_start": 18409,
+    "char_end": 18466,
+    "sentence_index": 129,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "CodeRQ evaluators should incorporate code-aware understanding when assessing reasoning, so that statements about code are evaluated based on the actual semantics and behavior of the code involved.",
+    "char_start": 18467,
+    "char_end": 18663,
+    "sentence_index": 130,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "[!ht]\n\nfigures/method_3.pdf\nOverview of .",
+    "char_start": 18665,
+    "char_end": 18706,
+    "sentence_index": 131,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "The left panel shows an input sample with the task description, the LLM-generated reasoning chain, and the generated code output; the right panel shows the two-stage evaluation process.",
+    "char_start": 18707,
+    "char_end": 18892,
+    "sentence_index": 132,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "method_orange Orange text marks Stage 1 evidence-verified claims, producing a base score $p$, and method_green green text marks Stage 2 ambiguity-related content, producing a correction term $ $.",
+    "char_start": 18893,
+    "char_end": 19088,
+    "sentence_index": 133,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "The final score combines $p$ and $ $.",
+    "char_start": 19089,
+    "char_end": 19126,
+    "sentence_index": 134,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "-0.1in\n\n-0.2in\n\n-0.1in\n\n)\n\nGuided by the four design insights derived in , we propose , a two-stage automated evaluation method for assessing the quality of reasoning in coding tasks.",
+    "char_start": 19128,
+    "char_end": 19311,
+    "sentence_index": 135,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec012",
+    "text": "Given a task description $q$, a reasoning chain $C=(s_1, s_2, , s_n)$, and a generated output $o$, produces a quality score in $[0,1]$ through two stages (Fig.",
+    "char_start": 19312,
+    "char_end": 19471,
+    "sentence_index": 136,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec012",
+    "text": ").",
+    "char_start": 19472,
+    "char_end": 19474,
+    "sentence_index": 137,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec012",
+    "text": "The first stage performs verified reasoning evaluation : an LLM judge scores the correctness of the reasoning trace, with access to a web search tool that it invokes autonomously when encountering technical claims requiring factual verification, and yields a base score $p [0,1]$.",
+    "char_start": 19476,
+    "char_end": 19756,
+    "sentence_index": 138,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec012",
+    "text": "The second stage performs ambiguity-aware score correction : a second LLM judge call assesses the degree of task ambiguity and how appropriately the reasoning addresses it, producing a penalty $ 0$.",
+    "char_start": 19758,
+    "char_end": 19956,
+    "sentence_index": 139,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec012",
+    "text": "The final score is\n$\n(q,C,o) = (p + ,\\; 0)\n$,\nwhere the $ $ operator ensures that the final score remains in $[0,1]$.",
+    "char_start": 19958,
+    "char_end": 20075,
+    "sentence_index": 140,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec013",
+    "text": "Motivated by prior LLM-as-a-Judge studies , we use an LLM judge as a starting point for automated reasoning evaluation in this setting.",
+    "char_start": 20077,
+    "char_end": 20212,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec013",
+    "text": "Given a sample $(q, C, o)$, the first stage prompts an LLM judge to assess the overall correctness of the reasoning chain $C$, focusing on whether the reasoning captures the technical requirements of the task, makes technically sound claims, and supports an output that correctly addresses the problem, in line with Insight 4 ( ).",
+    "char_start": 20213,
+    "char_end": 20543,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec013",
+    "text": "The full evaluation prompt and rubric are provided in Appx.",
+    "char_start": 20545,
+    "char_end": 20604,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec013",
+    "text": ".\n\nTo reduce reliance on the judge's parametric knowledge, the judge is given access to a search tool that invokes autonomously during evaluation, in line with Insights 1 and 3 ( ).",
+    "char_start": 20605,
+    "char_end": 20786,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec013",
+    "text": "When the reasoning chain contains verifiable technical claims, such as the behavior of a standard library function or the documented behavior of a framework component, the judge issues a search query to retrieve external evidence before rendering its judgment.",
+    "char_start": 20787,
+    "char_end": 21047,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec013",
+    "text": "The retrieved evidence is then used in the subsequent evaluation, allowing the judge to compare the claim against external sources before producing its final score.",
+    "char_start": 21048,
+    "char_end": 21212,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec013",
+    "text": "This mechanism shifts evaluation from pure plausibility-based assessment toward evidence-grounded verification; its empirical effect is measured via an ablation study in .",
+    "char_start": 21213,
+    "char_end": 21384,
+    "sentence_index": 147,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec013",
+    "text": "The judge produces an integer score $r [1, 10]$ according to a rubric with anchored descriptions ranging from fundamentally incorrect reasoning ($r = 1$) to fully correct reasoning, with verifiable claims correctly supported when applicable ($r = 10$).",
+    "char_start": 21386,
+    "char_end": 21638,
+    "sentence_index": 148,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec013",
+    "text": "The base score is obtained by normalizing to the unit interval:\n$\np = r - 1 9\n\n$.",
+    "char_start": 21639,
+    "char_end": 21720,
+    "sentence_index": 149,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "The base score $p$ from Stage 1 evaluates whether the reasoning is correct and, when needed, grounds this judgment in verifiable evidence.",
+    "char_start": 21722,
+    "char_end": 21860,
+    "sentence_index": 150,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "However, like existing reasoning evaluators, it does not assess whether the task itself is ambiguous, nor whether the reasoning appropriately responds to such ambiguity.",
+    "char_start": 21861,
+    "char_end": 22030,
+    "sentence_index": 151,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "Stage 2 addresses this limitation by evaluating both the degree of task ambiguity and the quality of ambiguity handling, and applies a penalty when ambiguity is handled poorly, in line with Insight 2 ( ).",
+    "char_start": 22031,
+    "char_end": 22235,
+    "sentence_index": 152,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec014",
+    "text": "In Stage 2, we also use an LLM judge to produce two judgments for each sample $(q, C, o)$: an ambiguity level $a [0,1]$, measuring how underspecified the task $q$ is, and a handling quality score $h [0,1]$, measuring how appropriately the reasoning chain $C$ handles that ambiguity.",
+    "char_start": 22237,
+    "char_end": 22519,
+    "sentence_index": 153,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec014",
+    "text": "Both are elicited in a single call to ensure that they are assessed under the same interpretation of the instance.",
+    "char_start": 22520,
+    "char_end": 22634,
+    "sentence_index": 154,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec014",
+    "text": "The full prompt and calibrated rubrics are provided in Appx.",
+    "char_start": 22635,
+    "char_end": 22695,
+    "sentence_index": 155,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec014",
+    "text": ".\n\nThe two scores are combined into a penalty $ $:\n\n\\[\n=\n\na (2h-1,0), & if a ,\n\n0, & otherwise,\n\n\\]\nwhere $ $ is a threshold on the ambiguity level.",
+    "char_start": 22696,
+    "char_end": 22844,
+    "sentence_index": 156,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "The transformation $2h - 1$ recenters $h$ so that $h = 0.5$ serves as the neutral point, while $h < 0.5$ maps to a negative value.",
+    "char_start": 22845,
+    "char_end": 22975,
+    "sentence_index": 157,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec014",
+    "text": "The $ ( , 0)$ operator ensures that $ 0$: good ambiguity handling prevents penalty but does not inflate the score beyond what the correctness assessment already warrants.",
+    "char_start": 22976,
+    "char_end": 23146,
+    "sentence_index": 158,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec014",
+    "text": "Scaling by $a$ makes the penalty magnitude proportional to the degree of ambiguity.",
+    "char_start": 23147,
+    "char_end": 23230,
+    "sentence_index": 159,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec014",
+    "text": "$ $ is set to $0.4$; a sensitivity analysis is provided in Appx.",
+    "char_start": 23231,
+    "char_end": 23295,
+    "sentence_index": 160,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec014",
+    "text": ".\n\n[!ht]\nPerformance of and six baselines on the four CodeRQ-Bench datasets, evaluated using Somers' D, Spearman's $ $, AUCROC, and AUPRC ($ $ higher is better).",
+    "char_start": 23296,
+    "char_end": 23457,
+    "sentence_index": 161,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "Best results highlighted in bold.",
+    "char_start": 23458,
+    "char_end": 23491,
+    "sentence_index": 162,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "-0.1in\n\n3pt\n!",
+    "char_start": 23492,
+    "char_end": 23505,
+    "sentence_index": 163,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "lcccc|cccc\n\n1 c 2 * Method & 4 c CoderEval-RE (Generation) & 4 c SWEbench-RE (Generation)\n2-9\n1 c & Somers' D $ $ & Spearman's $ $ $ $ & AUCROC $ $ & AUPRC $ $ & Somers' D $ $ & Spearman's $ $ $ $ & AUCROC $ $ & AUPRC $ $\n\ntablegray\nRECEVAl & 0.1255 & 0.1000 (p=0.1308) & 0.5627 & 0.3516 & 0.0878 & 0.0596 (p=0.5344) & 0.5439 & 0.2125\n\nSOCREVAl & 0.1399 & 0.1248 (p=0.0588) & 0.5700 & 0.3410 & 0.1556 & 0.1830 (p=0.0545) & 0.5778 & 0.2165\n\ntablegray\nCaSE & 0.0368 & 0.0392 (p=0.5543) & 0.5184 & 0.3131 & -0.0243& -0.0588 (p=0.5400) & 0.4878 & 0.1855\n\nMAD$^ * $ & -0.0408 & -0.0480 (p=0.4684) & 0.4796 & 0.2963 & -0.0746 & -0.0644 (p=0.5019) & 0.4627 & 0.1785\n\ntablegray\nLLM-as-Judge & 0.0864 & 0.1077 (p=0.1032) & 0.5432 & 0.3252 & 0.0222 & 0.0280 (p=0.7707) & 0.5111 & 0.1924\n\nAutoRace$^ * $ & 0.0178 & 0.0146 (p=0.8253) & 0.5089 & 0.3359 & 0.0344 & 0.0247 (p=0.7972) & 0.5172 & 0.2114\n\nlightbrown\n(Ours) & 0.3811 & 0.3076 (p<0.0001) & 0.6905 & 0.4615 & 0.2799 & 0.1947 (p=0.0406) & 0.6399 & 0.3058\n\n1 c 2 * Method & 4 c (Summarization) & 4 c (Classification)\n2-9\n1 c & Somers' D $ $ & Spearman's $ $ $ $ & AUCROC $ $ & AUPRC $ $ & Somers' D $ $ & Spearman's $ $ $ $ & AUCROC $ $ & AUPRC $ $\n\ntablegray\nRECEVAl & -0.0218& -0.0150 (p=0.8613)& 0.4891 & 0.8239 & -0.0896& -0.0758 (p=0.2306)& 0.4552 & 0.5844\n\nSOCREVAl & 0.1680 & 0.1814 (p=0.0330) & 0.5840 & 0.8345 & 0.1819 & 0.1958 (p=0.0018) & 0.5909 & 0.6566\n\ntablegray\nCaSE & 0.0397 & 0.0582 (p=0.4960) & 0.5198 & 0.8120 & 0.3538 & 0.3402 (p<0.0001) & 0.6769 & 0.7431\n\nMAD$^ * $ & 0.2209 & 0.1588 (p=0.0619) & 0.6104 & 0.8494 & -0.0166 & -0.0197 (p=0.7557) & 0.4917 & 0.6192\n\ntablegray\nLLM-as-Judge & -0.0089 & -0.0418 (p=0.6252) & 0.4955 & 0.8044 & 0.0530 & 0.0471 (p=0.4569) & 0.5265 & 0.6262\n\nAutoRace$^ * $ & 0.2500 & 0.1905 (p=0.0247) & 0.6250 & 0.8502 & 0.2063 & 0.1772 (p=0.0048) & 0.6032 & 0.7142\n\nlightbrown\n(Ours) & 0.4180 & 0.3085 (p=0.0002) & 0.7090 & 0.8869 & 0.4351 & 0.3845 (p<0.0001) & 0.7176 & 0.7939\n\n-0.1in\n\nMethods Compared.",
+    "char_start": 23506,
+    "char_end": 25502,
+    "sentence_index": 164,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "We compare against six representative reasoning evaluation baselines.",
+    "char_start": 25503,
+    "char_end": 25572,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec016",
+    "text": "RECEVAL is a step-level evaluator that measures intra-step correctness, inter-step correctness, and informativeness, and aggregates them into chain-level scores.",
+    "char_start": 25573,
+    "char_end": 25734,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec016",
+    "text": "SOCREVAL is a Socratic-prompting-based LLM judge that assigns a discrete overall score to the full reasoning trace.",
+    "char_start": 25735,
+    "char_end": 25850,
+    "sentence_index": 167,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec016",
+    "text": "CaSE is a causal stepwise evaluator that scores each reasoning step in terms of relevance and coherence using only its preceding context.",
+    "char_start": 25851,
+    "char_end": 25988,
+    "sentence_index": 168,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec016",
+    "text": "LLM-as-Judge is a vanilla LLM-based evaluator that directly assigns an overall quality score to the reasoning trace.",
+    "char_start": 25989,
+    "char_end": 26105,
+    "sentence_index": 169,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec016",
+    "text": "MAD$^ * $ is adapted from MAD, a debate-based framework for detecting low-quality reasoning, with its original binary output converted into a continuous score in $[0,1]$ for comparison.",
+    "char_start": 26106,
+    "char_end": 26291,
+    "sentence_index": 170,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec016",
+    "text": "AutoRace$^ * $ is adapted from AutoRace, a task-adaptive automated reasoning evaluation framework that induces task-specific criteria from example incorrect reasoning chains and then uses an LLM judge for assessment, with its original binary output converted into a continuous score in $[0,1]$ for comparison.",
+    "char_start": 26292,
+    "char_end": 26601,
+    "sentence_index": 171,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec016",
+    "text": "Since MAD$^ * $ relies on role-based debate and AutoRace$^ * $ depends on induced task-specific criteria rather than fixed evaluator formulations, we do not include them in the limitation analysis in .",
+    "char_start": 26602,
+    "char_end": 26803,
+    "sentence_index": 172,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec016",
+    "text": "Additional details of the baseline methods are provided in Appx.",
+    "char_start": 26804,
+    "char_end": 26868,
+    "sentence_index": 173,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec016",
+    "text": ".\n\nEvaluation Metrics.",
+    "char_start": 26869,
+    "char_end": 26891,
+    "sentence_index": 174,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec016",
+    "text": "We evaluate each reasoning evaluator using rank-based and discriminative metrics: Somers' D , Spearman's $ $ , AUCROC , and AUPRC .",
+    "char_start": 26892,
+    "char_end": 27023,
+    "sentence_index": 175,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec016",
+    "text": "Together, these metrics assess both ranking quality and discriminative ability.",
+    "char_start": 27024,
+    "char_end": 27103,
+    "sentence_index": 176,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "Full details are provided in Appx.",
+    "char_start": 27104,
+    "char_end": 27138,
+    "sentence_index": 177,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec016",
+    "text": ".\n\nImplementation Details.",
+    "char_start": 27139,
+    "char_end": 27165,
+    "sentence_index": 178,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec016",
+    "text": "RECEVAL is implemented following its original configuration with three dimensions averaged into a unified score.",
+    "char_start": 27166,
+    "char_end": 27278,
+    "sentence_index": 179,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "SOCREVAL and CaSE use GPT-4 by default and GPT-4.1 on SWEbench-RE due to context length limits.",
+    "char_start": 27279,
+    "char_end": 27374,
+    "sentence_index": 180,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "VERA, MAD$^ * $, LLM-as-Judge, and AutoRace$^ * $ use GPT-4o-mini for cost efficiency.",
+    "char_start": 27375,
+    "char_end": 27461,
+    "sentence_index": 181,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "VERA uses $ =0.4$ based on the sensitivity study in Appx.",
+    "char_start": 27462,
+    "char_end": 27519,
+    "sentence_index": 182,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": ", and all outputs are normalized to $[0,1]$.",
+    "char_start": 27520,
+    "char_end": 27564,
+    "sentence_index": 183,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "To ensure the robustness of our findings, we repeat each experiment three times and report the average performance.",
+    "char_start": 27565,
+    "char_end": 27680,
+    "sentence_index": 184,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "Full details are in Appx.",
+    "char_start": 27681,
+    "char_end": 27706,
+    "sentence_index": 185,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": ".\n\nCross-dataset comparison and the value of CodeRQ-Bench.",
+    "char_start": 27707,
+    "char_end": 27765,
+    "sentence_index": 186,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec017",
+    "text": "Table reports Somers' D and Spearman's $ $ measuring the association between predicted scores and ground-truth correctness labels, respectively.",
+    "char_start": 27766,
+    "char_end": 27910,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec017",
+    "text": "AUCROC measures the probability that a correct reasoning trace receives a higher score than an incorrect one, while AUPRC is particularly informative under class imbalance.",
+    "char_start": 27911,
+    "char_end": 28083,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec017",
+    "text": "The results show that baseline performance varies across coding settings.",
+    "char_start": 28085,
+    "char_end": 28158,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec017",
+    "text": "SOCREVAL is the strongest baseline on the two generation-oriented datasets, but this advantage does not generalize to summarization and classification tasks.",
+    "char_start": 28159,
+    "char_end": 28316,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec017",
+    "text": "CaSE becomes more competitive on bug detection, whereas MAD$^ * $ and AutoRace$^ * $ perform relatively better on code summarization than on generation.",
+    "char_start": 28317,
+    "char_end": 28469,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec017",
+    "text": "These shifts indicate that conclusions drawn from generation-only benchmarks provide an incomplete view of evaluator performance.",
+    "char_start": 28470,
+    "char_end": 28599,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec017",
+    "text": "Notably, even does not achieve uniform performance across settings, underscoring the need for evaluation beyond generation-only benchmarks.",
+    "char_start": 28601,
+    "char_end": 28740,
+    "sentence_index": 193,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec017",
+    "text": "Overall, these results highlight the importance of CodeRQ-Bench\u2019s broad task coverage for assessing reasoning evaluators in coding tasks.",
+    "char_start": 28741,
+    "char_end": 28878,
+    "sentence_index": 194,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec017",
+    "text": "Overall performance of .",
+    "char_start": 28880,
+    "char_end": 28904,
+    "sentence_index": 195,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec017",
+    "text": "Table shows that consistently achieves the best performance across all four datasets and all evaluation metrics, indicating substantially stronger alignment with reasoning correctness in both rank consistency and discriminative ability.",
+    "char_start": 28905,
+    "char_end": 29141,
+    "sentence_index": 196,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec017",
+    "text": "The gains are particularly pronounced on the generation-oriented datasets.",
+    "char_start": 29142,
+    "char_end": 29216,
+    "sentence_index": 197,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec017",
+    "text": "On CoderEval-RE, Somers' D increases from 0.1399 to 0.3811 and AUCROC from 0.5700 to 0.6905; on SWEbench-RE, Somers' D improves from 0.1556 to 0.2799 and AUPRC from 0.2165 to 0.3058.",
+    "char_start": 29217,
+    "char_end": 29399,
+    "sentence_index": 198,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec017",
+    "text": "These results suggest that existing evaluators are particularly limited when reasoning makes factual claims about code behavior, API usage, or library semantics that cannot be verified from the reasoning text alone.",
+    "char_start": 29400,
+    "char_end": 29615,
+    "sentence_index": 199,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec017",
+    "text": "A similar advantage holds on (0.4180 Somers' D, 0.7090 AUCROC) and (0.4351 Somers' D, 0.7176 AUCROC), where CaSE is the strongest baseline yet still falls below on all metrics, indicating that step-level relevance and coherence alone are insufficient for accurate reasoning evaluation.",
+    "char_start": 29617,
+    "char_end": 29902,
+    "sentence_index": 200,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec017",
+    "text": "LLM-as-Judge yields modest and sometimes unstable performance, including negative rank correlations on some datasets.",
+    "char_start": 29904,
+    "char_end": 30021,
+    "sentence_index": 201,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec017",
+    "text": "MAD$^ * $ is relatively competitive on (0.2209 Somers' D, 0.6104 AUCROC) but performs poorly on the generation and bug detection datasets.",
+    "char_start": 30022,
+    "char_end": 30160,
+    "sentence_index": 202,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec017",
+    "text": "Together, these results show that strong reasoning evaluation does not emerge from a general-purpose LLM judge or debate-based procedure alone; it requires a design that explicitly accounts for evidence grounding and task ambiguity.",
+    "char_start": 30161,
+    "char_end": 30393,
+    "sentence_index": 203,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec017",
+    "text": "Notably, despite using the more economical GPT-4o-mini , outperforms GPT-4-based baselines by a large margin, confirming that the gains stem from the evaluation design rather than model size.",
+    "char_start": 30394,
+    "char_end": 30585,
+    "sentence_index": 204,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec018",
+    "text": "[!ht]\nAblation study of on four CodeRQ-Bench datasets, including two ablated variants: w/o verif.",
+    "char_start": 30587,
+    "char_end": 30684,
+    "sentence_index": 205,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec018",
+    "text": "(without evidence verification) and w/o ambig.",
+    "char_start": 30685,
+    "char_end": 30731,
+    "sentence_index": 206,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec018",
+    "text": "(without ambiguity-aware correction).",
+    "char_start": 30732,
+    "char_end": 30769,
+    "sentence_index": 207,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec018",
+    "text": "3pt\n!",
+    "char_start": 30771,
+    "char_end": 30776,
+    "sentence_index": 208,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec018",
+    "text": "cl|cccc\n\nDataset & 1 c Method & Somers' D $ $ & Spearman's $ $ $ $ & AUCROC $ $ & AUPRC $ $\n\n3 * [c] @ c@ CoderEval-RE\n\n(Generation)\n& lightbrown (Ours) & lightbrown 0.3811 & lightbrown 0.3076 (p<0.0001) & lightbrown 0.6905 & lightbrown 0.4615\n\n& w/o verif.",
+    "char_start": 30777,
+    "char_end": 31034,
+    "sentence_index": 209,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec018",
+    "text": "& 0.2945 & 0.2369 (p=0.0003) & 0.6472 & 0.4356\n\n& tablegray w/o ambig.",
+    "char_start": 31035,
+    "char_end": 31105,
+    "sentence_index": 210,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec018",
+    "text": "& tablegray 0.3216 & tablegray 0.2658 (p<0.0001) & tablegray 0.6608 & tablegray 0.4364\n\n3 * [c] @ c@ SWEbench-RE\n\n(Generation)\n& lightbrown (Ours) & lightbrown 0.2799 & lightbrown 0.1947 (p=0.0406) & lightbrown 0.6399 & lightbrown 0.3058\n\n& w/o verif.",
+    "char_start": 31106,
+    "char_end": 31357,
+    "sentence_index": 211,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec018",
+    "text": "& -0.0376 & -0.0261 (p=0.7855) & 0.4812 & 0.1842\n\n& tablegray w/o ambig.",
+    "char_start": 31358,
+    "char_end": 31430,
+    "sentence_index": 212,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec018",
+    "text": "& tablegray 0.2571 & tablegray 0.1796 (p=0.0593) & tablegray 0.6286 & tablegray 0.3012\n\n3 * [c] @ c@\n\n(Summarization)\n& lightbrown (Ours) & lightbrown 0.4180 & lightbrown 0.3085 (p=0.0002) & lightbrown 0.7090 & lightbrown 0.8869\n\n& w/o verif.",
+    "char_start": 31431,
+    "char_end": 31673,
+    "sentence_index": 213,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec018",
+    "text": "& 0.2622 & 0.1984 (p=0.0192) & 0.6311 & 0.8561\n\n& tablegray w/o ambig.",
+    "char_start": 31674,
+    "char_end": 31744,
+    "sentence_index": 214,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec018",
+    "text": "& tablegray 0.4134 & tablegray 0.3051 (p=0.0003) & tablegray 0.7067 & tablegray 0.8864\n\n3 * [c] @ c@\n(Classification)\n& lightbrown (Ours) & lightbrown 0.4351 & lightbrown 0.3845 (p<0.0001) & lightbrown 0.7176 & lightbrown 0.7939\n\n& w/o verif.",
+    "char_start": 31745,
+    "char_end": 31987,
+    "sentence_index": 215,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec018",
+    "text": "& 0.3440 & 0.3094 (p<0.0001) & 0.6720 & 0.7575\n\n& tablegray w/o ambig.",
+    "char_start": 31988,
+    "char_end": 32058,
+    "sentence_index": 216,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "& tablegray 0.4184 & tablegray 0.3725 (p<0.0001) & tablegray 0.7092 & tablegray 0.7887\n\nTable reports two ablated variants: w/o verif., in which the Stage 1 evaluator judges reasoning correctness without externally verifying verifiable technical claims, and w/o ambig., which removes the ambiguity-aware correction.",
+    "char_start": 32059,
+    "char_end": 32374,
+    "sentence_index": 217,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec018",
+    "text": "Both consistently underperform the full model, confirming that each component is necessary.",
+    "char_start": 32375,
+    "char_end": 32466,
+    "sentence_index": 218,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec018",
+    "text": "Removing evidence verification causes the largest degradation, particularly on the generation-oriented datasets: Somers' D drops from 0.3811 to 0.2945 on CoderEval-RE and from 0.2799 to $-$0.0376 on SWEbench-RE, with similar trends on and .",
+    "char_start": 32467,
+    "char_end": 32707,
+    "sentence_index": 219,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec018",
+    "text": "This identifies evidence verification as the dominant driver of improvement, especially when reasoning makes factual claims about code behavior, API usage, or library semantics that require external grounding to assess.",
+    "char_start": 32708,
+    "char_end": 32927,
+    "sentence_index": 220,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec018",
+    "text": "Removing ambiguity-aware correction yields a smaller but consistent drop, most visible on the generation-oriented datasets where task requirements are more often underspecified.",
+    "char_start": 32928,
+    "char_end": 33105,
+    "sentence_index": 221,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec018",
+    "text": "Its impact on and is marginal, confirming that this component provides complementary benefits primarily under ambiguous task conditions.",
+    "char_start": 33106,
+    "char_end": 33242,
+    "sentence_index": 222,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec019",
+    "text": "We introduce CodeRQ-Bench and analyze 1,069 mismatches from existing reasoning-quality evaluators, deriving four design insights.",
+    "char_start": 33244,
+    "char_end": 33373,
+    "sentence_index": 223,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec019",
+    "text": "Next, we propose VERA, a two-stage evaluator combining evidence-grounded verification with ambiguity-aware score correction.",
+    "char_start": 33374,
+    "char_end": 33498,
+    "sentence_index": 224,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec019",
+    "text": "Our results show that VERA outperforms baselines across four datasets, highlighting the need for both broader benchmarks and evaluation methods beyond plausibility-based judgment to reliably assess reasoning in coding.",
+    "char_start": 33499,
+    "char_end": 33717,
+    "sentence_index": 225,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec020",
+    "text": "-0.1in\nDespite its contributions, this work has certain limitations.",
+    "char_start": 33719,
+    "char_end": 33787,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec020",
+    "text": "Although CodeRQ-Bench provides broad coverage across generation, summarization, and classification tasks, the current benchmark still focuses on relatively controlled evaluation settings and does not yet fully capture more realistic coding workflows, such as tool-integrated problem solving, interactive debugging, and richer long-context repository reasoning.",
+    "char_start": 33788,
+    "char_end": 34148,
+    "sentence_index": 227,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec020",
+    "text": "Future work can extend the benchmark to these broader settings, enabling more comprehensive evaluation of reasoning quality in coding tasks.",
+    "char_start": 34149,
+    "char_end": 34289,
+    "sentence_index": 228,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec021",
+    "text": "-0.1in\nThis work adheres to ethical standards emphasizing transparency, reliability, and privacy in reasoning-quality evaluation for coding tasks.",
+    "char_start": 34291,
+    "char_end": 34437,
+    "sentence_index": 229,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec021",
+    "text": "By openly releasing CodeRQ-Bench, reporting our empirical analysis of existing evaluator limitations, and introducing VERA, this work provides a standardized foundation for advancing more reliable assessment of LLM reasoning in coding tasks.",
+    "char_start": 34438,
+    "char_end": 34679,
+    "sentence_index": 230,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "All benchmark instances are derived from publicly available datasets and contain no personally identifiable information.",
+    "char_start": 34680,
+    "char_end": 34800,
+    "sentence_index": 231,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "External models and APIs are used in accordance with their respective terms of service.",
+    "char_start": 34801,
+    "char_end": 34888,
+    "sentence_index": 232,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec021",
+    "text": "Additionally, we used ChatGPT exclusively to improve minor grammar in the final manuscript text.",
+    "char_start": 34889,
+    "char_end": 34985,
+    "sentence_index": 233,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec022",
+    "text": "-0.1in\nThe benchmark and evaluator proposed in this paper provide a benchmark foundation for reasoning-quality evaluation in coding tasks.",
+    "char_start": 34987,
+    "char_end": 35125,
+    "sentence_index": 234,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec022",
+    "text": "By standardizing the evaluation setting and moving beyond final-output correctness, this work supports progress in reliable coding assistants, reasoning evaluation methods, and trustworthy LLM research for software engineering.",
+    "char_start": 35126,
+    "char_end": 35353,
+    "sentence_index": 235,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec022",
+    "text": "The benchmark promotes transparency, reproducibility, and further innovation, ultimately contributing to more reliable and responsible use of LLMs in coding-related applications.",
+    "char_start": 35354,
+    "char_end": 35532,
+    "sentence_index": 236,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec022",
+    "text": "custom\n\nsection 0\nfigure 0\ntable 0\n\nsection\nsection\nA figure\nA figure\nA table\nA table\n\nA table\nequation 0\nA equation\n\nZhang et al.",
+    "char_start": 35534,
+    "char_end": 35664,
+    "sentence_index": 237,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec025",
+    "text": "evaluate three LLMs on CoderEval and SWE-bench , providing expert annotations that verify the correctness of LLM-generated reasoning traces.",
+    "char_start": 35665,
+    "char_end": 35805,
+    "sentence_index": 238,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec025",
+    "text": "Due to the partial release of the original experimental data, we use the expert-annotated reasoning traces generated by DeepSeek-R1 to ensure the completeness and reproducibility of our baseline.",
+    "char_start": 35807,
+    "char_end": 36002,
+    "sentence_index": 239,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec025",
+    "text": "CoderEval-RE\nCoderEval is a benchmark designed for pragmatic code generation, containing real-world coding tasks extracted from open-source projects.",
+    "char_start": 36004,
+    "char_end": 36153,
+    "sentence_index": 240,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec025",
+    "text": "CoderEval-RE extends this benchmark with reasoning trace annotations, enabling evaluation of the logical correctness of LLM reasoning processes during code generation.",
+    "char_start": 36154,
+    "char_end": 36321,
+    "sentence_index": 241,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec025",
+    "text": "SWEbench-RE\nSWE-bench consists of real GitHub issues and their corresponding pull requests from popular Python repositories.",
+    "char_start": 36323,
+    "char_end": 36447,
+    "sentence_index": 242,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec025",
+    "text": "SWEbench-RE augments this benchmark with expert-annotated reasoning traces, allowing assessment of whether LLMs reason correctly when resolving software engineering tasks.",
+    "char_start": 36448,
+    "char_end": 36619,
+    "sentence_index": 243,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec026",
+    "text": "Dataset Details\n\nClassEval is a class-level Python code generation benchmark consisting of 100 manually constructed class-level programming tasks, covering 100 classes and 410 methods.",
+    "char_start": 36621,
+    "char_end": 36805,
+    "sentence_index": 244,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec027",
+    "text": "Modified-ClassEval adapts this benchmark for the code summarization setting by extracting the contextual information, function implementation, and corresponding natural language summary for each method.",
+    "char_start": 36806,
+    "char_end": 37008,
+    "sentence_index": 245,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec028",
+    "text": "To construct , we first filtered the 410 methods to remove cases containing fewer than five lines of code, as such trivial implementations typically do not require substantial reasoning for summarization.",
+    "char_start": 37010,
+    "char_end": 37214,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec028",
+    "text": "This filtering step resulted in a pool of 282 candidate methods.",
+    "char_start": 37215,
+    "char_end": 37279,
+    "sentence_index": 247,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec028",
+    "text": "From this pool, we randomly sampled instances using a confidence level of 90\\% and a margin of error of 5\\%, yielding a final dataset of 139 methods.",
+    "char_start": 37280,
+    "char_end": 37429,
+    "sentence_index": 248,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec028",
+    "text": "For the sampled instances, we use GPT-4o to generate reasoning traces.",
+    "char_start": 37431,
+    "char_end": 37501,
+    "sentence_index": 249,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec028",
+    "text": "The correctness of these reasoning traces is then annotated by three expert annotators following the annotation process described in .",
+    "char_start": 37503,
+    "char_end": 37637,
+    "sentence_index": 250,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec029",
+    "text": "Table summarizes the dimension-specific annotation rules for .",
+    "char_start": 37639,
+    "char_end": 37701,
+    "sentence_index": 251,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec029",
+    "text": "[ht]\n\nAnnotation rules for (Code Summarization) across four evaluation dimensions.",
+    "char_start": 37703,
+    "char_end": 37785,
+    "sentence_index": 252,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec029",
+    "text": "1.3\n\n@ c X @\n\n2 @ l Dimension: Comprehension\n\nR1 & The reasoning must correctly identify the input parameters and return values of the code.",
+    "char_start": 37787,
+    "char_end": 37927,
+    "sentence_index": 253,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec029",
+    "text": "R2 & The reasoning must accurately trace the control flow (loops, conditionals, branches) of the code.",
+    "char_start": 37929,
+    "char_end": 38031,
+    "sentence_index": 254,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec029",
+    "text": "R3 & The reasoning must correctly interpret the operations performed on data structures.",
+    "char_start": 38033,
+    "char_end": 38121,
+    "sentence_index": 255,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec029",
+    "text": "R4 & The reasoning must not attribute functionality that does not exist in the code.",
+    "char_start": 38123,
+    "char_end": 38207,
+    "sentence_index": 256,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec029",
+    "text": "2 @ l Dimension: Analysis\n\nR1 & The reasoning must correctly map variable names and function calls to their semantic roles.",
+    "char_start": 38209,
+    "char_end": 38332,
+    "sentence_index": 257,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec029",
+    "text": "R2 & The reasoning must abstract implementation details to appropriate conceptual descriptions.",
+    "char_start": 38334,
+    "char_end": 38429,
+    "sentence_index": 258,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec029",
+    "text": "R3 & The reasoning must correctly identify the algorithmic or design pattern employed in the code.",
+    "char_start": 38431,
+    "char_end": 38529,
+    "sentence_index": 259,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec029",
+    "text": "2 @ l Dimension: Conclusion\n\nR1 & The reasoning must address the primary functionality of the code.",
+    "char_start": 38531,
+    "char_end": 38630,
+    "sentence_index": 260,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec029",
+    "text": "R2 & The reasoning must cover all significant code branches and edge cases that affect the summary.",
+    "char_start": 38632,
+    "char_end": 38731,
+    "sentence_index": 261,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec029",
+    "text": "R3 & The reasoning must not include irrelevant analysis that does not contribute to understanding the code's purpose.",
+    "char_start": 38733,
+    "char_end": 38850,
+    "sentence_index": 262,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec029",
+    "text": "2 @ l Dimension: Consistency\n\nR1 & The reasoning must not contain self-contradictory statements about code behavior.",
+    "char_start": 38852,
+    "char_end": 38968,
+    "sentence_index": 263,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec029",
+    "text": "R2 & Each reasoning step must logically follow from the previous step or from the code itself.",
+    "char_start": 38970,
+    "char_end": 39064,
+    "sentence_index": 264,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec029",
+    "text": "R3 & The final summary must be logically derivable from the reasoning steps presented.",
+    "char_start": 39066,
+    "char_end": 39152,
+    "sentence_index": 265,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec030",
+    "text": "Dataset Details\n\nDebugBench is a bug detection benchmark composed of LeetCode-style code snippets in which bugs are injected using GPT-4 and subsequently verified by both human annotators and LLMs.",
+    "char_start": 39154,
+    "char_end": 39351,
+    "sentence_index": 266,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec031",
+    "text": "The dataset contains both correct and buggy programs spanning four bug categories: syntax errors, reference errors, logic errors, and multiple errors (a combination of the previous three categories).",
+    "char_start": 39352,
+    "char_end": 39551,
+    "sentence_index": 267,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec032",
+    "text": "To construct , we filtered the dataset to remove instances labeled solely as syntax errors, as detecting syntax errors is largely trivial and does not require substantive reasoning.",
+    "char_start": 39553,
+    "char_end": 39734,
+    "sentence_index": 268,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec032",
+    "text": "After filtering, 3,492 instances remained.",
+    "char_start": 39735,
+    "char_end": 39777,
+    "sentence_index": 269,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec032",
+    "text": "From this pool, we randomly sampled examples using a confidence level of 90\\% and a margin of error of 5\\%, resulting in a final dataset of 252 methods, consisting of 126 bug-free and 126 buggy programs.",
+    "char_start": 39778,
+    "char_end": 39981,
+    "sentence_index": 270,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec032",
+    "text": "For the sampled instances, we use GPT-4o to generate reasoning traces.",
+    "char_start": 39983,
+    "char_end": 40053,
+    "sentence_index": 271,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec032",
+    "text": "The correctness of these reasoning traces is then annotated by three expert annotators following the annotation process described in .",
+    "char_start": 40055,
+    "char_end": 40189,
+    "sentence_index": 272,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec033",
+    "text": "Table summarizes the dimension-specific annotation rules for .",
+    "char_start": 40191,
+    "char_end": 40253,
+    "sentence_index": 273,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec033",
+    "text": "[ht]\n\nAnnotation rules for (Bug Detection) across four evaluation dimensions.",
+    "char_start": 40255,
+    "char_end": 40332,
+    "sentence_index": 274,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec033",
+    "text": "1.3\n\n@ c X @\n\n2 @ l Dimension: Comprehension\n\nR1 & The reasoning must correctly identify parameters, their types (if inferable), and their roles where bugs are identified.",
+    "char_start": 40334,
+    "char_end": 40505,
+    "sentence_index": 275,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec033",
+    "text": "R2 & The reasoning must correctly identify the return value(s), including affected conditionals where bugs are identified.",
+    "char_start": 40507,
+    "char_end": 40629,
+    "sentence_index": 276,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec033",
+    "text": "R3 & The reasoning must correctly describe how bug-related data structures (e.g., lists, maps, trees) are read, modified, or traversed.",
+    "char_start": 40631,
+    "char_end": 40766,
+    "sentence_index": 277,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec033",
+    "text": "2 @ l Dimension: Analysis\n\nR1 & All bugs that affect observable behavior must be acknowledged.",
+    "char_start": 40768,
+    "char_end": 40862,
+    "sentence_index": 278,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec033",
+    "text": "R2 & The reasoning must correctly describe the execution order of conditionals, loops, and function calls.",
+    "char_start": 40864,
+    "char_end": 40970,
+    "sentence_index": 279,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec033",
+    "text": "R3 & The reasoning must not describe conditionals that are unreachable or nonexistent in the code.",
+    "char_start": 40972,
+    "char_end": 41070,
+    "sentence_index": 280,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec033",
+    "text": "R4 & The reasoning must not misattribute algorithmic behavior (e.g., sorting, filtering) where it does not occur.",
+    "char_start": 41072,
+    "char_end": 41185,
+    "sentence_index": 281,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec033",
+    "text": "2 @ l Dimension: Conclusion\n\nR1 & The reasoning must make a single, unambiguous verdict and bind it to the analyzed defect site(s).",
+    "char_start": 41187,
+    "char_end": 41318,
+    "sentence_index": 282,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec033",
+    "text": "R2 & The reasoning must not rely on unstated assumptions about specifications, libraries, or inputs.",
+    "char_start": 41320,
+    "char_end": 41420,
+    "sentence_index": 283,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec033",
+    "text": "2 @ l Dimension: Consistency\n\nR1 & The reasoning must not contain statements that contradict earlier claims.",
+    "char_start": 41422,
+    "char_end": 41530,
+    "sentence_index": 284,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec033",
+    "text": "R2 & Terminology and abstraction levels must remain consistent throughout the explanation.",
+    "char_start": 41532,
+    "char_end": 41622,
+    "sentence_index": 285,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec033",
+    "text": "R3 & The same code element must not be assigned conflicting roles.",
+    "char_start": 41624,
+    "char_end": 41690,
+    "sentence_index": 286,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec033",
+    "text": "R4 & No conclusions may be drawn without sufficient grounding in the code.",
+    "char_start": 41692,
+    "char_end": 41766,
+    "sentence_index": 287,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec034",
+    "text": "We use GPT-5.2 to generate diagnostic annotations for mismatch cases.",
+    "char_start": 41768,
+    "char_end": 41837,
+    "sentence_index": 288,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec036",
+    "text": "The model is provided with the original task, the LLM-generated reasoning chain and final output, and the evaluator's detailed assessment outputs for that reasoning.",
+    "char_start": 41838,
+    "char_end": 42003,
+    "sentence_index": 289,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec036",
+    "text": "The diagnostic annotation stage uses two prompt variants corresponding to the two mismatch types defined in : missed errors and false alarms .",
+    "char_start": 42004,
+    "char_end": 42146,
+    "sentence_index": 290,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec036",
+    "text": "Prompt for Missed Errors\n\nThis prompt is used for mismatch cases in which the evaluator assigns a high score to reasoning that is actually incorrect.",
+    "char_start": 42148,
+    "char_end": 42297,
+    "sentence_index": 291,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec036",
+    "text": "The full prompt is shown in Table .",
+    "char_start": 42298,
+    "char_end": 42333,
+    "sentence_index": 292,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec036",
+    "text": "[h]\n\nPROMPT TEMPLATE: DIAGNOSTIC ANNOTATION FOR MISSED ERRORS\nYou are an expert analyzing why the reasoning evaluation method method\\_name produces scores/conclusions that significantly differ from human evaluation when assessing LLM-generated reasoning.",
+    "char_start": 42335,
+    "char_end": 42589,
+    "sentence_index": 293,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec036",
+    "text": "\\#\\# Background\n\nThis is a case where method\\_name gave a high score, but the reasoning is actually incorrect (human label = 0).",
+    "char_start": 42591,
+    "char_end": 42719,
+    "sentence_index": 294,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec036",
+    "text": "Your task is NOT to judge whether the LLM's reasoning is correct (this is already determined by human annotation).",
+    "char_start": 42720,
+    "char_end": 42834,
+    "sentence_index": 295,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec036",
+    "text": "Instead, analyze what content the evaluation method method\\_name failed to assess in this LLM-generated reasoning, causing it to give a high score while human annotators marked it as incorrect.",
+    "char_start": 42835,
+    "char_end": 43028,
+    "sentence_index": 296,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec036",
+    "text": "\\#\\# method\\_name Evaluation Method Details\n\nmethod\\_description\n\n\\#\\# Case Content\n\ncase\\_content\n\n\\#\\# Your Analysis Task\n\nThe \"Execution Log\" section above shows the actual intermediate outputs from the method\\_name pipeline for this case.",
+    "char_start": 43030,
+    "char_end": 43272,
+    "sentence_index": 297,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec036",
+    "text": "Use this evidence to pinpoint exactly where and why the evaluation failed.",
+    "char_start": 43273,
+    "char_end": 43347,
+    "sentence_index": 298,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec036",
+    "text": "Specifically:\n\n1.",
+    "char_start": 43348,
+    "char_end": 43365,
+    "sentence_index": 299,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec036",
+    "text": "Identify which specific component/step in the pipeline produced the erroneous signal (e.g., which SRL parse was wrong, which NLI judgment was incorrect, which dimension scored too high, or how the self-generated reference was flawed).",
+    "char_start": 43366,
+    "char_end": 43600,
+    "sentence_index": 300,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec036",
+    "text": "2.",
+    "char_start": 43602,
+    "char_end": 43604,
+    "sentence_index": 301,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec036",
+    "text": "Explain the root cause: why did that component fail on this particular input?",
+    "char_start": 43605,
+    "char_end": 43682,
+    "sentence_index": 302,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec036",
+    "text": "3.",
+    "char_start": 43684,
+    "char_end": 43686,
+    "sentence_index": 303,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec036",
+    "text": "What capability is missing from method\\_name that would be needed to correctly evaluate this case?",
+    "char_start": 43687,
+    "char_end": 43785,
+    "sentence_index": 304,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec036",
+    "text": "Prompt template used to generate diagnostic annotations for missed-error cases, where the evaluator assigns a high score to reasoning that is actually incorrect.",
+    "char_start": 43787,
+    "char_end": 43948,
+    "sentence_index": 305,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec036",
+    "text": "Here, case\\_content includes the original task, the LLM-generated reasoning chain and final output, and, the execution log containing the evaluator's intermediate assessment outputs.",
+    "char_start": 43949,
+    "char_end": 44131,
+    "sentence_index": 306,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec036",
+    "text": "Text in blue braces denotes dynamic variables.",
+    "char_start": 44132,
+    "char_end": 44178,
+    "sentence_index": 307,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec036",
+    "text": "Prompt for False Alarms\n\nThis prompt is used for mismatch cases in which the evaluator assigns a low score to reasoning that is actually correct.",
+    "char_start": 44180,
+    "char_end": 44325,
+    "sentence_index": 308,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec036",
+    "text": "The full prompt is shown in Table .",
+    "char_start": 44326,
+    "char_end": 44361,
+    "sentence_index": 309,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec036",
+    "text": "[h]\n\nPROMPT TEMPLATE: DIAGNOSTIC ANNOTATION FOR FALSE ALARMS\nYou are an expert analyzing why the reasoning evaluation method method\\_name produces scores/conclusions that significantly differ from human evaluation when assessing LLM-generated reasoning.",
+    "char_start": 44363,
+    "char_end": 44616,
+    "sentence_index": 310,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec036",
+    "text": "\\#\\# Background\n\nThis is a case where method\\_name gave a low score, but the reasoning is actually correct (human label = 1).",
+    "char_start": 44618,
+    "char_end": 44743,
+    "sentence_index": 311,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec036",
+    "text": "Your task is NOT to judge whether the LLM's reasoning is correct (this is already determined by human annotation).",
+    "char_start": 44744,
+    "char_end": 44858,
+    "sentence_index": 312,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec036",
+    "text": "Instead, analyze what content the evaluation method method\\_name may have incorrectly penalized in this LLM-generated reasoning, causing it to give a low score while human annotators marked it as correct.",
+    "char_start": 44859,
+    "char_end": 45063,
+    "sentence_index": 313,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec036",
+    "text": "\\#\\# method\\_name Evaluation Method Details\n\nmethod\\_description\n\n\\#\\# Case Content\n\ncase\\_content\n\n\\#\\# Your Analysis Task\n\nThe \"Execution Log\" section above shows the actual intermediate outputs from the method\\_name pipeline for this case.",
+    "char_start": 45065,
+    "char_end": 45307,
+    "sentence_index": 314,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec036",
+    "text": "Use this evidence to pinpoint exactly where and why the evaluation failed.",
+    "char_start": 45308,
+    "char_end": 45382,
+    "sentence_index": 315,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec036",
+    "text": "Specifically:\n\n1.",
+    "char_start": 45383,
+    "char_end": 45400,
+    "sentence_index": 316,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec036",
+    "text": "Identify which specific component/step in the pipeline produced the erroneous signal (e.g., which step was the bottleneck, which SRL parse was malformed, which NLI score was unreasonably low, or which dimension was incorrectly penalized).",
+    "char_start": 45401,
+    "char_end": 45639,
+    "sentence_index": 317,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec036",
+    "text": "2.",
+    "char_start": 45641,
+    "char_end": 45643,
+    "sentence_index": 318,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec036",
+    "text": "Explain the root cause: why did that component fail on this particular input?",
+    "char_start": 45644,
+    "char_end": 45721,
+    "sentence_index": 319,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec036",
+    "text": "3.",
+    "char_start": 45723,
+    "char_end": 45725,
+    "sentence_index": 320,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec036",
+    "text": "What are the characteristics of this correct reasoning that confused the method\\_name evaluator?",
+    "char_start": 45726,
+    "char_end": 45822,
+    "sentence_index": 321,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec036",
+    "text": "Prompt template used to generate diagnostic annotations for false-alarm cases, where the evaluator assigns a low score to reasoning that is actually correct.",
+    "char_start": 45824,
+    "char_end": 45981,
+    "sentence_index": 322,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec036",
+    "text": "Here, case\\_content includes the original task, the LLM-generated reasoning chain and final output, and, when available, the execution log containing the evaluator's intermediate assessment outputs.",
+    "char_start": 45982,
+    "char_end": 46180,
+    "sentence_index": 323,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec036",
+    "text": "Text in blue braces denotes dynamic variables.",
+    "char_start": 46181,
+    "char_end": 46227,
+    "sentence_index": 324,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec037",
+    "text": "In the second stage of the pipeline, we use GPT-5.2 to extract open-coded limitation labels from the diagnostic annotations generated in the previous stage.",
+    "char_start": 46229,
+    "char_end": 46385,
+    "sentence_index": 325,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec037",
+    "text": "These labels are intended to capture the specific failure modes reflected in each mismatch case before taxonomy consolidation into higher-level categories.",
+    "char_start": 46387,
+    "char_end": 46542,
+    "sentence_index": 326,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec037",
+    "text": "The full prompt is shown in Table .",
+    "char_start": 46544,
+    "char_end": 46579,
+    "sentence_index": 327,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec037",
+    "text": "[t]\n\nPROMPT TEMPLATE: OPEN-CODED LIMITATION LABEL EXTRACTION\nYou are analyzing a case in which method\\_name , an evaluation method for assessing LLM-generated reasoning on coding tasks, produced an assessment that is misaligned with the actual correctness of the reasoning.",
+    "char_start": 46581,
+    "char_end": 46854,
+    "sentence_index": 328,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec037",
+    "text": "\\#\\# Mismatch Type: mismatch\\_type\n\nmismatch\\_description\n\n\\#\\# Diagnostic Annotation\n\nThe following diagnostic annotation explains why method\\_name failed on this case:\n\nannotation\n\n\\#\\# Task\n\nBased on the diagnostic annotation above, extract 2--4 limitation labels that describe why method\\_name failed in this case.",
+    "char_start": 46856,
+    "char_end": 47174,
+    "sentence_index": 329,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec037",
+    "text": "Key question: What limitation caused method\\_name to make this misjudgment?",
+    "char_start": 47176,
+    "char_end": 47251,
+    "sentence_index": 330,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec037",
+    "text": "\\#\\# Requirements\n\n- Derive the labels directly from the diagnostic annotation\n\n- Each label should contain 2--5 words, written in lowercase with underscores\n\n- Focus on limitations in evaluating LLM-generated reasoning for coding tasks\n\n- Do not use overly generic labels that could apply to any evaluation error\n\nReturn JSON:\n\n\\ \\ \"limitations\": [\"label1\", \"label2\", ...]\\ \\\n\nUnified prompt template used to extract open-coded limitation labels from diagnostic annotations in the second stage of the pipeline.",
+    "char_start": 47253,
+    "char_end": 47764,
+    "sentence_index": 331,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec037",
+    "text": "Here, method\\_name denotes the evaluation method being analyzed; mismatch\\_type denotes the mismatch type of the case, whose value is either missed errors or false alarms ; mismatch\\_description provides the corresponding textual description of that mismatch type; and annotation denotes the diagnostic annotation generated in the previous stage for the case.",
+    "char_start": 47765,
+    "char_end": 48124,
+    "sentence_index": 332,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec037",
+    "text": "The prompt returns 2--4 limitation labels in JSON format.",
+    "char_start": 48125,
+    "char_end": 48182,
+    "sentence_index": 333,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec037",
+    "text": "Text in blue braces denotes dynamic variables.",
+    "char_start": 48183,
+    "char_end": 48229,
+    "sentence_index": 334,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec038",
+    "text": "In the third stage of the pipeline, we consolidate the open-coded limitation labels into higher-level limitation categories.",
+    "char_start": 48231,
+    "char_end": 48355,
+    "sentence_index": 335,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec038",
+    "text": "This stage follows a two-step process: embedding-based pre-clustering using text-embedding-3-large , followed by taxonomy consolidation using GPT-5.2.",
+    "char_start": 48357,
+    "char_end": 48507,
+    "sentence_index": 336,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec038",
+    "text": "The pre-clustering step groups semantically similar labels before GPT-based consolidation into the final taxonomy.",
+    "char_start": 48509,
+    "char_end": 48623,
+    "sentence_index": 337,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec038",
+    "text": "The full prompt for taxonomy consolidation is shown in Table .",
+    "char_start": 48625,
+    "char_end": 48687,
+    "sentence_index": 338,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec038",
+    "text": "[t]\n\nPROMPT TEMPLATE: TAXONOMY CONSOLIDATION\nYou are given num\\_pcs label clusters (called \"preclusters\") that describe mismatch patterns of automated methods for evaluating Chain-of-Thought reasoning in coding tasks.",
+    "char_start": 48689,
+    "char_end": 48906,
+    "sentence_index": 339,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec038",
+    "text": "These preclusters were extracted from 1,069 mismatch cases across three coding tasks (code generation, code summarization, bug detection) and three evaluation methods (CaSE, ReCEval, SocREval).",
+    "char_start": 48908,
+    "char_end": 49101,
+    "sentence_index": 340,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec038",
+    "text": "Each precluster name describes a specific way an evaluation method mismatches---either by missing an error in reasoning or by falsely flagging correct reasoning.",
+    "char_start": 49102,
+    "char_end": 49263,
+    "sentence_index": 341,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec038",
+    "text": "\\#\\# All num\\_pcs Preclusters (sorted by frequency):\n\nformatted\\_preclusters\n\n\\#\\# Your Task\n\nGroup these num\\_pcs preclusters into categories that are strictly MECE (Mutually Exclusive and Collectively Exhaustive).",
+    "char_start": 49265,
+    "char_end": 49480,
+    "sentence_index": 342,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec038",
+    "text": "\\#\\#\\# MECE Requirements\n\nMutually Exclusive means:\n\n- For ANY given precluster, there must be exactly ONE category it belongs to---no ambiguity.",
+    "char_start": 49482,
+    "char_end": 49627,
+    "sentence_index": 343,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec038",
+    "text": "- Two categories X and Y are mutually exclusive if and only if: there is NO conceivable mismatch instance that could be equally well described by both X and Y.",
+    "char_start": 49629,
+    "char_end": 49788,
+    "sentence_index": 344,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec038",
+    "text": "- Conceptual test: If someone describes a mismatch and you cannot decide whether it is X or Y, then X and Y are NOT mutually exclusive and must be merged or re-divided along a clearer fault line.",
+    "char_start": 49790,
+    "char_end": 49985,
+    "sentence_index": 345,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec038",
+    "text": "Collectively Exhaustive means:\n\n- Every single one of the num\\_pcs preclusters must fit into exactly one category.",
+    "char_start": 49987,
+    "char_end": 50101,
+    "sentence_index": 346,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec038",
+    "text": "- No residual \"other\" or \"miscellaneous\" category.",
+    "char_start": 50103,
+    "char_end": 50153,
+    "sentence_index": 347,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec038",
+    "text": "\\#\\#\\# What NOT to do\n\n- Do NOT create categories based on evaluation method names (CaSE, ReCEval, SocREval)---categories should describe the nature of the mismatch, not which tool has it.",
+    "char_start": 50155,
+    "char_end": 50343,
+    "sentence_index": 348,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec038",
+    "text": "- Do NOT create categories that are subsets of other categories.",
+    "char_start": 50345,
+    "char_end": 50409,
+    "sentence_index": 349,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec038",
+    "text": "- Do NOT create categories that have causal relationships (e.g., \"shallow analysis\" causing \"logic errors\")---if A commonly causes B, they are not independent dimensions and need rethinking.",
+    "char_start": 50411,
+    "char_end": 50601,
+    "sentence_index": 350,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec038",
+    "text": "\\#\\#\\# Instructions\n\n1.",
+    "char_start": 50603,
+    "char_end": 50626,
+    "sentence_index": 351,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec038",
+    "text": "First, read through all num\\_pcs preclusters and identify the natural fault lines.",
+    "char_start": 50627,
+    "char_end": 50709,
+    "sentence_index": 352,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec038",
+    "text": "2.",
+    "char_start": 50711,
+    "char_end": 50713,
+    "sentence_index": 353,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec038",
+    "text": "Propose categories.",
+    "char_start": 50714,
+    "char_end": 50733,
+    "sentence_index": 354,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec038",
+    "text": "For each category, provide:\n\n- A clear name (2--5 words, lowercase\\_with\\_underscores)\n\n- A precise definition (1--2 sentences)\n\n- A boundary rule : how to decide if a precluster belongs here vs.",
+    "char_start": 50734,
+    "char_end": 50929,
+    "sentence_index": 355,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec038",
+    "text": "in another category\n\n3.",
+    "char_start": 50930,
+    "char_end": 50953,
+    "sentence_index": 356,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec038",
+    "text": "After proposing all categories, run a pairwise MECE check : for each pair (X, Y), state in one sentence why a mismatch described by X cannot also be described by Y.",
+    "char_start": 50954,
+    "char_end": 51118,
+    "sentence_index": 357,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec038",
+    "text": "If you find overlap, revise.",
+    "char_start": 51119,
+    "char_end": 51147,
+    "sentence_index": 358,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec038",
+    "text": "4.",
+    "char_start": 51149,
+    "char_end": 51151,
+    "sentence_index": 359,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec038",
+    "text": "Finally, assign every precluster to exactly one category.",
+    "char_start": 51152,
+    "char_end": 51209,
+    "sentence_index": 360,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec038",
+    "text": "\\#\\#\\# Output Format\n\nReturn a JSON object:\n\n\\ \"reasoning\": \"Your analysis of the natural fault lines you identified\",\n\n\"categories\": [ \\\n\n\"name\": \"category\\_name\", \"definition\": \"Precise definition of this category\",\n\n\"boundary\\_rule\": \"When a precluster is X vs Y, it belongs here if...\",\n\n\"assigned\\_preclusters\": [\"precluster1\", \"precluster2\", ...] \\ ],\n\n\"pairwise\\_checks\": [ \\ \"pair\": [\"category\\_a\", \"category\\_b\"],\n\n\"why\\_exclusive\": \"One sentence explaining mutual exclusivity\" \\ ] \\\n\nPrompt template used for GPT-based taxonomy consolidation in the third stage of the pipeline.",
+    "char_start": 51211,
+    "char_end": 51798,
+    "sentence_index": 361,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec038",
+    "text": "Here, num\\_pcs denotes the number of preclusters produced after embedding-based pre-clustering, and formatted\\_preclusters denotes the formatted list of those preclusters together with their frequency, size, and task-distribution information.",
+    "char_start": 51799,
+    "char_end": 52041,
+    "sentence_index": 362,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec038",
+    "text": "The prompt asks the model to consolidate these preclusters into a final taxonomy and return category names, definitions, boundary rules, assigned preclusters, and consistency checks in JSON format.",
+    "char_start": 52042,
+    "char_end": 52239,
+    "sentence_index": 363,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec038",
+    "text": "Text in blue braces denotes dynamic variables.",
+    "char_start": 52240,
+    "char_end": 52286,
+    "sentence_index": 364,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec039",
+    "text": "Table presents the prompt template used in the first stage of .",
+    "char_start": 52288,
+    "char_end": 52351,
+    "sentence_index": 365,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec040",
+    "text": "Given a coding-task description, an LLM-generated reasoning chain, and the corresponding output, this prompt instructs the evaluator to assess the overall correctness of the reasoning process.",
+    "char_start": 52352,
+    "char_end": 52544,
+    "sentence_index": 366,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec040",
+    "text": "When technical claims require external verification, the evaluator is allowed to consult web search for evidence grounding.",
+    "char_start": 52545,
+    "char_end": 52668,
+    "sentence_index": 367,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec040",
+    "text": "The returned score is an integer from 1 to 10, which is later normalized to $[0,1]$ as described in .",
+    "char_start": 52669,
+    "char_end": 52770,
+    "sentence_index": 368,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec040",
+    "text": "[h]\n\nPrompt for Verified Reasoning Evaluation\nYou are a strict evaluator of AI reasoning chains in coding tasks, with access to web search.",
+    "char_start": 52772,
+    "char_end": 52911,
+    "sentence_index": 369,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec040",
+    "text": "Most AI-generated reasoning contains errors --- your job is to find them.",
+    "char_start": 52912,
+    "char_end": 52985,
+    "sentence_index": 370,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec040",
+    "text": "\\#\\# Task / Question:\n\n\\ question\\\n\n\\#\\# AI's Reasoning Chain:\n\n\\ chain\\\n\n\\#\\# AI's Generated Output:\n\n\\ output\\\n\nUse web search to verify specific technical claims when needed (API usage, library functions, language features, algorithm correctness).",
+    "char_start": 52987,
+    "char_end": 53237,
+    "sentence_index": 371,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec040",
+    "text": "Evaluate the CORRECTNESS of the reasoning chain and whether it leads to a correct solution:\n\n- Does the reasoning correctly identify the key technical aspects of the task?",
+    "char_start": 53239,
+    "char_end": 53410,
+    "sentence_index": 372,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec040",
+    "text": "- Are claims about algorithms, data structures, edge cases, and syntax correct?",
+    "char_start": 53412,
+    "char_end": 53491,
+    "sentence_index": 373,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec040",
+    "text": "- Does the reasoning lead to an output that correctly solves the problem?",
+    "char_start": 53493,
+    "char_end": 53566,
+    "sentence_index": 374,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec040",
+    "text": "- Are there factual errors about language features, APIs, or libraries in the reasoning?",
+    "char_start": 53568,
+    "char_end": 53656,
+    "sentence_index": 375,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec040",
+    "text": "Rate the reasoning correctness from 1 to 10 (most samples should fall in 3--7 range; reserve 9--10 only for truly flawless reasoning):\n\n10 = Flawless reasoning; all claims correct, leads to correct solution\n\n8--9 = Strong; minor issues that do not affect the solution's correctness\n\n6--7 = Acceptable; one moderate technical error or oversight in reasoning\n\n4--5 = Problematic; significant error that would affect solution correctness\n\n2--3 = Poor; multiple reasoning errors that would produce wrong results\n\n1 = Fundamentally wrong; core reasoning approach is incorrect\n\nRespond with ONLY a JSON object:\n\n\\ \"score\": <1-10>, \"reason\": \"brief justification\"\\\n\nPrompt template used in the verified reasoning evaluation stage of .",
+    "char_start": 53658,
+    "char_end": 54385,
+    "sentence_index": 376,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec040",
+    "text": "The placeholders \\ question\\ , \\ chain\\ , and \\ output\\ are instantiated with the task description, the candidate reasoning chain, and the corresponding generated output, respectively.",
+    "char_start": 54386,
+    "char_end": 54570,
+    "sentence_index": 377,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec041",
+    "text": "Table presents the prompt template used in the second stage of .",
+    "char_start": 54572,
+    "char_end": 54636,
+    "sentence_index": 378,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec041",
+    "text": "Given the task description, the reasoning chain, and the generated output, the evaluator estimates two quantities: the ambiguity level of the task and the quality of the model's uncertainty handling.",
+    "char_start": 54637,
+    "char_end": 54836,
+    "sentence_index": 379,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec041",
+    "text": "These two scores are then used to compute the ambiguity-aware correction term described in .",
+    "char_start": 54837,
+    "char_end": 54929,
+    "sentence_index": 380,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec041",
+    "text": "[h]\n\nPrompt for Ambiguity-Aware Score Correction\nYou are evaluating how well an AI's reasoning chain handles uncertainty in a coding task.",
+    "char_start": 54931,
+    "char_end": 55069,
+    "sentence_index": 381,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec041",
+    "text": "\\#\\# Task / Question:\n\n\\ question\\\n\n\\#\\# AI's Reasoning Chain:\n\n\\ chain\\\n\n\\#\\# AI's Generated Output:\n\n\\ output\\\n\nAssess two things:\n\n\\#\\#\\# 1.",
+    "char_start": 55071,
+    "char_end": 55214,
+    "sentence_index": 382,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec041",
+    "text": "Task Ambiguity Level (0.0 - 1.0)\n\nHow ambiguous or underspecified is this task for a software developer?",
+    "char_start": 55215,
+    "char_end": 55319,
+    "sentence_index": 383,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec041",
+    "text": "Use this calibrated scale --- note that scores above 0.5 should be common for real-world tasks:\n\n- 0.9--1.0 = Fundamentally underspecified: no single correct answer; any experienced developer would need to ask clarifying questions before starting.",
+    "char_start": 55321,
+    "char_end": 55568,
+    "sentence_index": 384,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec041",
+    "text": "E.g., ``improve this function,'' ``fix the bug,'' open-ended refactoring, or missing success criteria.",
+    "char_start": 55569,
+    "char_end": 55671,
+    "sentence_index": 385,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec041",
+    "text": "- 0.6--0.8 = Significantly ambiguous: the task has a plausible main interpretation, but key design decisions (error handling, edge cases, performance/readability trade-offs, API style) are left unstated and reasonable developers would make different choices.",
+    "char_start": 55673,
+    "char_end": 55931,
+    "sentence_index": 386,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec041",
+    "text": "- 0.3--0.5 = Mildly ambiguous: mostly clear, but one or two specific behaviors are underspecified (e.g., what to return on empty input, whether to mutate or copy, which exception type to raise).",
+    "char_start": 55933,
+    "char_end": 56127,
+    "sentence_index": 387,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec041",
+    "text": "- 0.1--0.2 = Essentially clear: a well-specified algorithmic task; at most trivial naming choices remain.",
+    "char_start": 56129,
+    "char_end": 56234,
+    "sentence_index": 388,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec041",
+    "text": "- 0.0 = Fully deterministic: one unambiguous correct answer, no design decisions required.",
+    "char_start": 56236,
+    "char_end": 56326,
+    "sentence_index": 389,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec041",
+    "text": "\\#\\#\\# 2.",
+    "char_start": 56328,
+    "char_end": 56337,
+    "sentence_index": 390,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec041",
+    "text": "Uncertainty Handling Quality (0.0 - 1.0)\n\nOnly matters when ambiguity\\_level > 0.2.",
+    "char_start": 56338,
+    "char_end": 56421,
+    "sentence_index": 391,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec041",
+    "text": "How appropriately does the AI's reasoning respond to the actual ambiguity?",
+    "char_start": 56422,
+    "char_end": 56496,
+    "sentence_index": 392,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec041",
+    "text": "Strict scale --- most reasoning chains will score low because they ignore ambiguity:\n\n- 0.8--1.0 = Excellent: explicitly names the ambiguity, states which interpretation was chosen and why, preserves conditional conclusions (``if X, then A; otherwise B''), or reasonably abstains on genuinely unknowable aspects.",
+    "char_start": 56498,
+    "char_end": 56810,
+    "sentence_index": 393,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec041",
+    "text": "- 0.5--0.7 = Partial: acknowledges uncertainty somewhere in the reasoning but does not fully address it (e.g., mentions ``assuming X'' once without justification).",
+    "char_start": 56812,
+    "char_end": 56975,
+    "sentence_index": 394,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec041",
+    "text": "- 0.2--0.4 = Poor: proceeds confidently with one interpretation, makes large implicit assumptions, and gives no acknowledgment of alternatives.",
+    "char_start": 56977,
+    "char_end": 57120,
+    "sentence_index": 395,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec041",
+    "text": "- 0.0--0.1 = Actively misleading: presents a highly contested design choice as the only correct approach, or expresses false certainty about unknowable behavior.",
+    "char_start": 57122,
+    "char_end": 57283,
+    "sentence_index": 396,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec041",
+    "text": "Default: if ambiguity\\_level < 0.2, set handling\\_quality = 0.5 (neutral --- the task is clear, so uncertainty handling is not relevant).",
+    "char_start": 57285,
+    "char_end": 57422,
+    "sentence_index": 397,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec041",
+    "text": "Respond with ONLY a JSON object:\n\n\\ \"ambiguity\\_level\": <0.0-1.0>, \"handling\\_quality\": <0.0-1.0>, \"handling\\_issues\": \"brief explanation\"\\\n\nPrompt template used in the ambiguity-aware score correction stage of .",
+    "char_start": 57424,
+    "char_end": 57636,
+    "sentence_index": 398,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec041",
+    "text": "The placeholders \\ question\\ , \\ chain\\ , and \\ output\\ are instantiated with the task description, the candidate reasoning chain, and the corresponding generated output, respectively.",
+    "char_start": 57637,
+    "char_end": 57821,
+    "sentence_index": 399,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec042",
+    "text": "RECEVAL\nRECEVAL (Reasoning Chain Evaluation) is a reference-free framework for evaluating multi-step reasoning chains, originally developed for tasks such as deductive reasoning, mathematical word problems, and discrete reading comprehension.",
+    "char_start": 57823,
+    "char_end": 58065,
+    "sentence_index": 400,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec043",
+    "text": "It conceptualizes a reasoning chain as an informal proof and decomposes each step into fine-grained Reasoning Content Units (RCUs) using semantic role labeling.",
+    "char_start": 58066,
+    "char_end": 58226,
+    "sentence_index": 401,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec043",
+    "text": "The method evaluates reasoning along two primary dimensions, correctness and informativeness: correctness is measured through both intra-step and inter-step logical consistency using natural language inference, while informativeness is quantified by pointwise V-information to capture each step\u2019s information gain toward the final answer.",
+    "char_start": 58227,
+    "char_end": 58565,
+    "sentence_index": 402,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec043",
+    "text": "In its original form, RECEVAL outputs continuous chain-level scores for these dimensions by applying minimum-pooling aggregation over step-level evaluations, where correctness is a probability in $(0,1)$ and informativeness is an unbounded real-valued score.",
+    "char_start": 58566,
+    "char_end": 58824,
+    "sentence_index": 403,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec043",
+    "text": "SOCREVAL\nSOCREVAL (Socratic Method-Inspired Reasoning Evaluation) is a reference-free framework for assessing machine-generated reasoning chains without model fine-tuning or human-written references.",
+    "char_start": 58826,
+    "char_end": 59025,
+    "sentence_index": 404,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec043",
+    "text": "It uses large language models prompted with Socratic principles, including Definition, Maieutics, and Dialectic, to guide qualitative evaluation of reasoning.",
+    "char_start": 59026,
+    "char_end": 59184,
+    "sentence_index": 405,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec043",
+    "text": "The evaluator first generates its own response to the input prompt, then analyzes the candidate reasoning chain, and finally assigns an overall reasoning-quality judgment.",
+    "char_start": 59185,
+    "char_end": 59356,
+    "sentence_index": 406,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec043",
+    "text": "The original method outputs a discrete score from 1 to 5 and was developed and validated on a range of general reasoning tasks, including arithmetic reasoning, deductive and commonsense inference, and discrete reasoning over paragraphs.",
+    "char_start": 59357,
+    "char_end": 59593,
+    "sentence_index": 407,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec043",
+    "text": "CaSE\nCaSE (Causal Stepwise Evaluation) is a step-level framework for reasoning evaluation, originally developed for mathematical problem-solving tasks.",
+    "char_start": 59595,
+    "char_end": 59746,
+    "sentence_index": 408,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec043",
+    "text": "To reduce hindsight bias and better reflect autoregressive reasoning generation, it evaluates each intermediate step using only the original question and the preceding context available before that step.",
+    "char_start": 59747,
+    "char_end": 59950,
+    "sentence_index": 409,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec043",
+    "text": "The method assesses reasoning mainly along two dimensions, relevance and coherence, where relevance measures whether a step is grounded in the problem and coherence measures whether it logically follows from prior steps.",
+    "char_start": 59951,
+    "char_end": 60171,
+    "sentence_index": 410,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec043",
+    "text": "In its original form, CaSE outputs explicit binary judgments (0 or 1) for each reasoning step on these dimensions, providing localized fine-grained evaluations rather than a single holistic score.",
+    "char_start": 60172,
+    "char_end": 60368,
+    "sentence_index": 411,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec043",
+    "text": "MAD\nMAD (Multi-Agent Debate) is adapted by Zhang et al.",
+    "char_start": 60370,
+    "char_end": 60425,
+    "sentence_index": 412,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec043",
+    "text": "for detecting low-quality reasoning through structured multi-agent debate.",
+    "char_start": 60426,
+    "char_end": 60500,
+    "sentence_index": 413,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec043",
+    "text": "In this setup, a verifier raises potential logical flaws in a candidate reasoning chain, a defender responds with counterarguments and supporting evidence, and an arbiter evaluates the rationality of the debate outcome.",
+    "char_start": 60501,
+    "char_end": 60720,
+    "sentence_index": 414,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec043",
+    "text": "The original method produces a final binary decision after a fixed number of debate rounds.",
+    "char_start": 60721,
+    "char_end": 60812,
+    "sentence_index": 415,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec043",
+    "text": "LLM-as-Judge\nLLM-as-Judge is a general evaluation paradigm that uses strong large language models to assess the quality of candidate responses across diverse tasks, including coding and mathematical reasoning.",
+    "char_start": 60814,
+    "char_end": 61023,
+    "sentence_index": 416,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec043",
+    "text": "It supports both pairwise comparison and direct scoring; in the latter setting, the judge assigns a score, typically with a textual explanation.",
+    "char_start": 61024,
+    "char_end": 61168,
+    "sentence_index": 417,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec043",
+    "text": "In our experiments, we use it as a vanilla LLM-based evaluator for overall reasoning quality assessment.",
+    "char_start": 61169,
+    "char_end": 61273,
+    "sentence_index": 418,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec043",
+    "text": "AutoRace\nAutoRace is a fully automated framework for evaluating step-by-step reasoning chains, originally developed for mathematical, commonsense, and logical reasoning tasks.",
+    "char_start": 61275,
+    "char_end": 61450,
+    "sentence_index": 419,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec043",
+    "text": "It operates by first inducing task-specific evaluation criteria from collected incorrect reasoning chains, using a LLM to identify and summarize common error patterns.",
+    "char_start": 61451,
+    "char_end": 61618,
+    "sentence_index": 420,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec043",
+    "text": "The resulting criteria are then used to guide detailed evaluation of a candidate reasoning chain.",
+    "char_start": 61619,
+    "char_end": 61716,
+    "sentence_index": 421,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec043",
+    "text": "Since these criteria are generated dynamically for each task, the evaluation dimensions are task-adaptive rather than fixed, and the original method outputs a binary judgment for the overall reasoning process.",
+    "char_start": 61717,
+    "char_end": 61926,
+    "sentence_index": 422,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec044",
+    "text": "Somers' D and Spearman's $ $, both defined in $[-1,1]$, measure the ordinal and monotonic association between predicted scores and ground-truth correctness labels, respectively.",
+    "char_start": 61928,
+    "char_end": 62105,
+    "sentence_index": 423,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec044",
+    "text": "AUCROC measures the probability that a correct reasoning trace receives a higher score than an incorrect one, while AUPRC is particularly informative under class imbalance.",
+    "char_start": 62106,
+    "char_end": 62278,
+    "sentence_index": 424,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec045",
+    "text": "We follow the original configurations of all baselines whenever possible.",
+    "char_start": 62280,
+    "char_end": 62353,
+    "sentence_index": 425,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec045",
+    "text": "RECEVAL retains its original correctness scores, with informativeness normalized to $[0,1]$ before averaging the three reported dimensions into a unified score.",
+    "char_start": 62354,
+    "char_end": 62514,
+    "sentence_index": 426,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec045",
+    "text": "SOCREVAL and CaSE use GPT-4 by default and GPT-4.1 on SWEbench-RE due to context length limits.",
+    "char_start": 62515,
+    "char_end": 62610,
+    "sentence_index": 427,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec045",
+    "text": "VERA, MAD$^ * $, LLM-as-Judge, and AutoRace$^ * $ are all instantiated with GPT-4o-mini for fair comparison.",
+    "char_start": 62612,
+    "char_end": 62720,
+    "sentence_index": 428,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec045",
+    "text": "Each MAD debate runs for three rounds.",
+    "char_start": 62721,
+    "char_end": 62759,
+    "sentence_index": 429,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec045",
+    "text": "For AutoRace$^ * $, we first collect incorrect reasoning examples using Qwen-2.5 with manual verification, and then use GPT-4o-mini for both criteria induction and final evaluation.",
+    "char_start": 62760,
+    "char_end": 62941,
+    "sentence_index": 430,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec045",
+    "text": "VERA uses $ =0.4$, selected based on the threshold sensitivity study in Appx.",
+    "char_start": 62943,
+    "char_end": 63020,
+    "sentence_index": 431,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec045",
+    "text": ". All baseline outputs are normalized to $[0,1]$ for comparability.",
+    "char_start": 63021,
+    "char_end": 63088,
+    "sentence_index": 432,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec045",
+    "text": "[!t]\n\nfigures/tau_ablation.png\nThreshold sensitivity analysis for the ambiguity threshold $ $ in .",
+    "char_start": 63090,
+    "char_end": 63188,
+    "sentence_index": 433,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec046",
+    "text": "We analyze the sensitivity of to the ambiguity threshold $ $ used in the ambiguity-aware correction module.",
+    "char_start": 63190,
+    "char_end": 63297,
+    "sentence_index": 434,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec046",
+    "text": "To do so, we vary $ $ from $0.0$ to $1.0$ and evaluate the resulting performance on all four datasets using the same metrics as in the main experiments.",
+    "char_start": 63298,
+    "char_end": 63450,
+    "sentence_index": 435,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec046",
+    "text": "Fig.",
+    "char_start": 63452,
+    "char_end": 63456,
+    "sentence_index": 436,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec046",
+    "text": "summarizes the results.",
+    "char_start": 63457,
+    "char_end": 63480,
+    "sentence_index": 437,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec046",
+    "text": "Overall, achieves the strongest average performance around $ =0.4$, which we therefore use in all experiments.",
+    "char_start": 63481,
+    "char_end": 63591,
+    "sentence_index": 438,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec046",
+    "text": "Smaller values make ambiguity-aware correction overly aggressive, whereas larger values make it too conservative.",
+    "char_start": 63592,
+    "char_end": 63705,
+    "sentence_index": 439,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec046",
+    "text": "The effect is more pronounced on the generation-oriented datasets, while the summarization and bug detection datasets are relatively less sensitive to the threshold.",
+    "char_start": 63706,
+    "char_end": 63871,
+    "sentence_index": 440,
+    "section_sentence_index": 6
+  }
+]

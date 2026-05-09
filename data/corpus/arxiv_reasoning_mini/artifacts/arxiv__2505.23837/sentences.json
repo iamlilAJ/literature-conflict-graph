@@ -1,0 +1,5330 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large Language Models (LLMs) offer new opportunities for the next Point-Of-Interest (POI) prediction task, leveraging their capabilities in semantic understanding of POI trajectories.",
+    "char_start": 0,
+    "char_end": 183,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, previous LLM-based methods, which are superficially adapted to next POI prediction, largely overlook critical challenges associated with applying LLMs to this task.",
+    "char_start": 184,
+    "char_end": 357,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Specifically, LLMs encounter two critical challenges: (1) a lack of intrinsic understanding of numeric spatiotemporal data, which hinders accurate modeling of users\u2019 spatiotemporal distributions and preferences; and (2) an excessively large and unconstrained candidate POI space, which often results in random or irrelevant predictions.",
+    "char_start": 358,
+    "char_end": 694,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To address these issues, we propose a Co llaborative M ulti- A gent Framework for Next POI Prediction, named CoMaPOI .",
+    "char_start": 695,
+    "char_end": 813,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Through the close interaction of three specialized agents (Profiler, Forecaster, and Predictor), CoMaPOI collaboratively addresses the two critical challenges.",
+    "char_start": 814,
+    "char_end": 973,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "The Profiler agent is responsible for converting numeric data into language descriptions, enhancing semantic understanding.",
+    "char_start": 974,
+    "char_end": 1097,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "The Forecaster agent focuses on dynamically constraining and refining the candidate POI space.",
+    "char_start": 1098,
+    "char_end": 1192,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "The Predictor agent integrates this information to generate high-precision predictions.",
+    "char_start": 1193,
+    "char_end": 1280,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Extensive experiments on three benchmark datasets (NYC, TKY, and CA) demonstrate that CoMaPOI achieves state-of-the-art performance, improving all metrics by 5\\% to 10\\% compared to SOTA baselines.",
+    "char_start": 1281,
+    "char_end": 1478,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "This work pioneers the investigation of challenges associated with applying LLMs to complex spatiotemporal tasks by leveraging tailored collaborative agents Our source code is available at: https://github.com/Chips98/CoMaPOI.",
+    "char_start": 1479,
+    "char_end": 1704,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec001",
+    "text": ".\n\nWith the rapid development of mobile internet and positioning technologies, next Point-of-Interest (POI) prediction has become a core technique in smart cities, travel planning, and commercial applications .",
+    "char_start": 1705,
+    "char_end": 1915,
+    "sentence_index": 10,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "By modeling users' mobility preferences from their check-in trajectories, POI prediction can generate the most likely location recommendations for the user's next movement .",
+    "char_start": 1916,
+    "char_end": 2089,
+    "sentence_index": 11,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Traditional deep learning-based POI prediction methods have made notable progress, such as leveraging sequence models and attention mechanisms to capture spatiotemporal features , or incorporating contrastive learning, graph neural networks, and diffusion models to enrich multidimensional data representations .",
+    "char_start": 2090,
+    "char_end": 2402,
+    "sentence_index": 12,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "However, these methods still face challenges in semantic understanding and interpretability when dealing with complex and dynamic user demands .",
+    "char_start": 2403,
+    "char_end": 2547,
+    "sentence_index": 13,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Therefore, how to effectively extract semantic information from trajectory data to further construct more accurate user mobility preferences remains a key challenge in POI prediction tasks.",
+    "char_start": 2548,
+    "char_end": 2737,
+    "sentence_index": 14,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Recently, Large Language Models (LLMs) have demonstrated powerful generation and contextual reasoning abilities in natural language processing tasks .",
+    "char_start": 2739,
+    "char_end": 2889,
+    "sentence_index": 15,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Researchers have begun exploring how to integrate LLMs into spatiotemporal tasks such as POI, traffic management , and flow prediction .",
+    "char_start": 2890,
+    "char_end": 3026,
+    "sentence_index": 16,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "By leveraging LLMs\u2019 strengths in semantic representation and understanding, researchers convert sequential data or POI attributes into natural language descriptions and further extract deeper features, thereby improving the effectiveness of downstream tasks .",
+    "char_start": 3027,
+    "char_end": 3286,
+    "sentence_index": 17,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "For example, LLM4POI extracts consensus information among similar users with the help of LLMs, aiding in the next POI prediction for the target user.",
+    "char_start": 3287,
+    "char_end": 3436,
+    "sentence_index": 18,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "kim2024poi proposes POI GPT, which attempts to leverage LLMs to extract more accurate check-in data from social media.",
+    "char_start": 3437,
+    "char_end": 3555,
+    "sentence_index": 19,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Fundamentally, these methods demonstrate how LLMs can be used to enhance the utility of POI data, showcasing their potential in POI prediction.",
+    "char_start": 3556,
+    "char_end": 3699,
+    "sentence_index": 20,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "However, although LLM-based methods have shown potential in data enhancement and semantic representation for POI prediction, they often do not fully consider two core limitations.",
+    "char_start": 3700,
+    "char_end": 3879,
+    "sentence_index": 21,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Firstly, LLMs inherently lack the ability to comprehend numerical spatiotemporal data, such as POI trajectories .",
+    "char_start": 3881,
+    "char_end": 3994,
+    "sentence_index": 22,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Since their pre-training is primarily based on textual data, these models struggle with understanding the physical meanings of coordinates, time, and distance.",
+    "char_start": 3995,
+    "char_end": 4154,
+    "sentence_index": 23,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "This limitation hinders their capacity to accurately capture user mobility preferences .",
+    "char_start": 4155,
+    "char_end": 4243,
+    "sentence_index": 24,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "For instance, a user's check-ins might show locations with similar latitude and longitude values that are far apart in reality, such as different floors in a skyscraper or locations separated by a river.",
+    "char_start": 4244,
+    "char_end": 4447,
+    "sentence_index": 25,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Moreover, LLMs lack the intrinsic spatiotemporal understanding needed to discern these subtleties.",
+    "char_start": 4448,
+    "char_end": 4546,
+    "sentence_index": 26,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This limitation becomes more pronounced when faced with irregular check-in intervals, like visits to seasonal attractions, or when navigating diverse POI categories, each with unique spatial contexts.",
+    "char_start": 4547,
+    "char_end": 4747,
+    "sentence_index": 27,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Secondly, when directly using LLMs for POI prediction, the candidate space is vast.",
+    "char_start": 4749,
+    "char_end": 4832,
+    "sentence_index": 28,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "For example, there may be tens of thousands of POIs in city, making it impractical and costly to provide all this information to LLMs.",
+    "char_start": 4833,
+    "char_end": 4967,
+    "sentence_index": 29,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Although some researchers have attempted to modify the output structures of LLMs using embedding vectors, these approaches may weaken linguistic capabilities and increase the complexity of applications .",
+    "char_start": 4968,
+    "char_end": 5171,
+    "sentence_index": 30,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Therefore, without altering the structure of LLMs, a more feasible approach is to provide a refined candidate set that includes high-probability options.",
+    "char_start": 5172,
+    "char_end": 5325,
+    "sentence_index": 31,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "This set should maximize the inclusion of the true label while minimizing its size to reduce noise from irrelevant POIs.",
+    "char_start": 5326,
+    "char_end": 5446,
+    "sentence_index": 32,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Therefore, providing a high-quality candidate POI set to reduce prediction errors is the second challenge this paper aims to address.",
+    "char_start": 5447,
+    "char_end": 5580,
+    "sentence_index": 33,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "To address the two challenges outlined above, this paper proposes a Co llaborative M ulti- A gent Framework for Next POI Prediction (CoMaPOI) .",
+    "char_start": 5582,
+    "char_end": 5725,
+    "sentence_index": 34,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Inspired by research on multi-agent collaboration , CoMaPOI addresses the complex POI prediction task by decomposing it into multiple subtasks.",
+    "char_start": 5726,
+    "char_end": 5869,
+    "sentence_index": 35,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "CoMaPOI leverages the complementary strengths of multiple agents, each built on an LLM, to handle specific aspects of the task.",
+    "char_start": 5870,
+    "char_end": 5997,
+    "sentence_index": 36,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Specifically, CoMaPOI incorporates three agents.",
+    "char_start": 5998,
+    "char_end": 6046,
+    "sentence_index": 37,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "The Profiler agent transforms users\u2019 trajectories into natural language descriptions, allowing the LLM to better understand users\u2019 profiles and mobility patterns.",
+    "char_start": 6047,
+    "char_end": 6209,
+    "sentence_index": 38,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "The Forecaster agent is responsible for generating candidate sets optimized based on mobility preferences, thus providing a more precise and narrowed set of options for prediction.",
+    "char_start": 6210,
+    "char_end": 6390,
+    "sentence_index": 39,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Finally, the Predictor agent integrates user profiles, mobility patterns, and the refined candidate sets to produce more accurate next POI predictions.",
+    "char_start": 6391,
+    "char_end": 6542,
+    "sentence_index": 40,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "During the fine-tuning phase, to better adapt CoMaPOI's inference, we introduce a Reverse Reasoning Fine-Tuning (RRF) strategy.",
+    "char_start": 6543,
+    "char_end": 6670,
+    "sentence_index": 41,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "This strategy generates high-quality backward reasoning samples for each agent, enabling them to learn their specific tasks effectively.",
+    "char_start": 6671,
+    "char_end": 6807,
+    "sentence_index": 42,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "In summary, the main contributions of this paper are as follows:\n\n[leftmargin=*,topsep=2pt,itemsep=2pt,parsep=0pt]\nMulti-agent collaboration for POI prediction.",
+    "char_start": 6809,
+    "char_end": 6969,
+    "sentence_index": 43,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "To the best of our knowledge, this is the first work to introduce an LLM-based multi-agent collaborative mechanism for POI prediction.",
+    "char_start": 6970,
+    "char_end": 7104,
+    "sentence_index": 44,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "It systematically explores the effectiveness of agent collaboration, profile construction, candidate enhancement, and reverse reasoning fine-tuning in complex spatiotemporal tasks.",
+    "char_start": 7105,
+    "char_end": 7285,
+    "sentence_index": 45,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "Converting trajectory into language.",
+    "char_start": 7287,
+    "char_end": 7323,
+    "sentence_index": 46,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "Utilizing our specially designed statistical analysis tools, the Profiler agent transforms numerical check-in data into temporal and spatial statistics, which are then abstracted into linguistic descriptions.",
+    "char_start": 7324,
+    "char_end": 7532,
+    "sentence_index": 47,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "This offers a novel way for LLMs to comprehend spatiotemporal data.",
+    "char_start": 7533,
+    "char_end": 7600,
+    "sentence_index": 48,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "Dynamic constraint on the candidate space.",
+    "char_start": 7602,
+    "char_end": 7644,
+    "sentence_index": 49,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "The Forecaster agent retrieves POIs relevant to the user's current behavior using attribute similarity and re-ranks them based on mobility preferences.",
+    "char_start": 7645,
+    "char_end": 7796,
+    "sentence_index": 50,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "This method significantly reduces both the candidate space and prediction error, with its effectiveness validated experimentally and theoretically.",
+    "char_start": 7797,
+    "char_end": 7944,
+    "sentence_index": 51,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "Extensive experiments and performance gains.",
+    "char_start": 7946,
+    "char_end": 7990,
+    "sentence_index": 52,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec002",
+    "text": "Experiments conducted on three mainstream benchmark datasets demonstrate that the proposed framework significantly outperforms state-of-the-art methods, achieving approximately a 5\\%-10\\% improvement across all metrics compared to the best baseline.",
+    "char_start": 7991,
+    "char_end": 8240,
+    "sentence_index": 53,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec002",
+    "text": "The remainder of this paper is organized as follows.",
+    "char_start": 8242,
+    "char_end": 8294,
+    "sentence_index": 54,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec002",
+    "text": "Section reviews related work on traditional POI prediction models and the use of LLMs in POI task, highlighting key challenges.",
+    "char_start": 8295,
+    "char_end": 8422,
+    "sentence_index": 55,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec002",
+    "text": "Section provides definitions for some key concepts and the problem.",
+    "char_start": 8423,
+    "char_end": 8490,
+    "sentence_index": 56,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec002",
+    "text": "Section details the proposed CoMaPOI framework, including its design, key modules (Profiler, Forecaster, and Predictor), and the RRF strategy.",
+    "char_start": 8491,
+    "char_end": 8633,
+    "sentence_index": 57,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec002",
+    "text": "Additionally, we theoretically analyze the impact of providing a high-quality candidate set on reducing prediction errors.",
+    "char_start": 8634,
+    "char_end": 8756,
+    "sentence_index": 58,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec002",
+    "text": "Section describes the experimental setup, evaluation metrics, and results, discussing the effectiveness of each module and the overall framework.",
+    "char_start": 8757,
+    "char_end": 8902,
+    "sentence_index": 59,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec002",
+    "text": "Finally, Section concludes the paper and suggests future research directions.",
+    "char_start": 8903,
+    "char_end": 8980,
+    "sentence_index": 60,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "Traditional Models for POI Prediction.",
+    "char_start": 8982,
+    "char_end": 9020,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "Traditional POI prediction models primarily leverage deep learning techniques to capture the high-order dependencies between users and POIs .",
+    "char_start": 9021,
+    "char_end": 9162,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "Early approaches often employ sequence models, such as RNNs and LSTMs , to enhance the representation of check-in features and improve the understanding of user preferences.",
+    "char_start": 9163,
+    "char_end": 9336,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "SASRec combines attention mechanisms with RNNs to identify correlations between users and check-in data.",
+    "char_start": 9337,
+    "char_end": 9441,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "BERT4Rec adopts BERT's bidirectional masking strategy to model user check-in sequences and uses the Cloze objective for recommendation.",
+    "char_start": 9442,
+    "char_end": 9577,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "STGN focuses on modeling both long-term and short-term preferences within an LSTM-based framework to strengthen the connections between check-ins.",
+    "char_start": 9578,
+    "char_end": 9724,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "TiCoSeRec addresses the challenge of preference drift in sequential data by introducing a series of enhancement operations.",
+    "char_start": 9725,
+    "char_end": 9848,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec003",
+    "text": "These models leverage self-attention or bidirectional Transformer architectures to capture sequential user behaviors, enhancing the modeling of temporal dynamics .",
+    "char_start": 9849,
+    "char_end": 10012,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec003",
+    "text": "To further enhance spatiotemporal information representation, some studies explore contrastive learning, graph-based modeling, and diffusion models .",
+    "char_start": 10014,
+    "char_end": 10163,
+    "sentence_index": 69,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec003",
+    "text": "DuoRec employs contrastive regularization to reconstruct sequence representation distributions, while DiffuRec applies diffusion models to sequence recommendation to handle item representation and inject uncertainty.",
+    "char_start": 10164,
+    "char_end": 10380,
+    "sentence_index": 70,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec003",
+    "text": "Other works, such as GetNext and MTNet , integrate multi-task learning or graph-based modeling to enhance multidimensional data representation.",
+    "char_start": 10381,
+    "char_end": 10524,
+    "sentence_index": 71,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec003",
+    "text": "POIGDE explicitly utilizes the continuous evolution of user interests by solving the graph differential equation for user interaction behavior.",
+    "char_start": 10525,
+    "char_end": 10668,
+    "sentence_index": 72,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec003",
+    "text": "Despite these advancements, these methods often lack sufficient semantic understanding of spatiotemporal data , resulting in performance degradation when handling diverse user behaviors and large-scale POIs.",
+    "char_start": 10669,
+    "char_end": 10876,
+    "sentence_index": 73,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec003",
+    "text": "LLM-based Models for Recommendations.",
+    "char_start": 10878,
+    "char_end": 10915,
+    "sentence_index": 74,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec003",
+    "text": "To address the limitations in semantic information fusion, recent studies have begun exploring the integration of LLMs in recommendation tasks .",
+    "char_start": 10916,
+    "char_end": 11060,
+    "sentence_index": 75,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec003",
+    "text": "With their powerful contextual understanding and reasoning capabilities, LLMs can transform user behavior logs and item attributes into natural language representations, improving user preference modeling .",
+    "char_start": 11061,
+    "char_end": 11267,
+    "sentence_index": 76,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec003",
+    "text": "For instance, LLMRec enhances graph data by using LLM-generated outputs to enrich node and edge semantics, improving downstream recommendation performance.",
+    "char_start": 11268,
+    "char_end": 11423,
+    "sentence_index": 77,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec003",
+    "text": "A-LLMRec extracts collaborative knowledge from traditional filtering models to integrate LLM capabilities.",
+    "char_start": 11424,
+    "char_end": 11530,
+    "sentence_index": 78,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec003",
+    "text": "Additionally, methods like RDRec focus on rationale distillation to learn LLM-generated reasoning processes, improving user-item relevance modeling.",
+    "char_start": 11531,
+    "char_end": 11679,
+    "sentence_index": 79,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec003",
+    "text": "BAHE employs hierarchical encoding to separate user behavior representations from interactions, improving CTR modeling efficiency.",
+    "char_start": 11680,
+    "char_end": 11810,
+    "sentence_index": 80,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec003",
+    "text": "However, LLM predictions heavily rely on having seen all possible items during fine-tuning, making it challenging to handle cold-start items effectively.",
+    "char_start": 11811,
+    "char_end": 11964,
+    "sentence_index": 81,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec003",
+    "text": "LLM-based Models for Temporal and Sequential Tasks.",
+    "char_start": 11966,
+    "char_end": 12017,
+    "sentence_index": 82,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec003",
+    "text": "In temporal and sequential decision-making domains, prior studies have demonstrated the potential of LLMs in processing time-series data .",
+    "char_start": 12018,
+    "char_end": 12156,
+    "sentence_index": 83,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec003",
+    "text": "By incorporating external retrieval modules, knowledge bases, or structured prompts, LLMs can better understand domain-specific spatiotemporal patterns, enabling future state prediction or complex decision-making .",
+    "char_start": 12157,
+    "char_end": 12371,
+    "sentence_index": 84,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec003",
+    "text": "For instance, TIME-LLM adapts LLM input and output layers for time-series data, leveraging fine-tuning for temporal predictions.",
+    "char_start": 12372,
+    "char_end": 12500,
+    "sentence_index": 85,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec003",
+    "text": "LLMLight applies LLMs to traffic light decision-making, using refined prompt strategies to significantly reduce average vehicle waiting times.",
+    "char_start": 12501,
+    "char_end": 12643,
+    "sentence_index": 86,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec003",
+    "text": "$S^2$IP-LLM aligns temporal and semantic embeddings in joint space for time-series prediction.",
+    "char_start": 12644,
+    "char_end": 12738,
+    "sentence_index": 87,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec003",
+    "text": "However, these methods often require structural modifications to LLMs, which diminish the LLM's core language abilities and increase model deployment complexity.",
+    "char_start": 12739,
+    "char_end": 12900,
+    "sentence_index": 88,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec003",
+    "text": "Thus, achieving deep spatiotemporal understanding and efficient inference without compromising LLM's core strengths remains a challenge .",
+    "char_start": 12901,
+    "char_end": 13038,
+    "sentence_index": 89,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec003",
+    "text": "LLM-based Models for POI Prediction.",
+    "char_start": 13040,
+    "char_end": 13076,
+    "sentence_index": 90,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec003",
+    "text": "POI prediction combines recommendation tasks focusing on user-item (POI) relationships with time-series analysis to capture spatiotemporal behavior patterns .",
+    "char_start": 13077,
+    "char_end": 13235,
+    "sentence_index": 91,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec003",
+    "text": "For instance, LLMMove integrates user geographic preferences, spatial distances, and sequence transitions to frame POI prediction as a ranking problem.",
+    "char_start": 13236,
+    "char_end": 13387,
+    "sentence_index": 92,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec003",
+    "text": "LLM4POI uses similar users\u2019 data to assist LLMs in POI prediction, improving performance through consensus information.",
+    "char_start": 13388,
+    "char_end": 13507,
+    "sentence_index": 93,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec003",
+    "text": "kim2024poi employ LLMs to extract POI-related information from social media, enriching sparse POI datasets through named entity recognition.",
+    "char_start": 13508,
+    "char_end": 13648,
+    "sentence_index": 94,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec003",
+    "text": "Despite these efforts, most approaches focus on data or feature augmentation without addressing the core challenges of applying LLMs to POI prediction.",
+    "char_start": 13650,
+    "char_end": 13801,
+    "sentence_index": 95,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec003",
+    "text": "First, LLMs pre-trained on textual data lack the ability to interpret sparse spatiotemporal numerical data, limiting their capacity to model check-in behavior distributions.",
+    "char_start": 13802,
+    "char_end": 13975,
+    "sentence_index": 96,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec003",
+    "text": "Second, the absence of effective constraints on large-scale POI candidates often results in uncontrolled generation , increasing prediction uncertainty and errors.",
+    "char_start": 13976,
+    "char_end": 14139,
+    "sentence_index": 97,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec003",
+    "text": "To tackle these challenges, this paper proposes converting users' spatiotemporal information into natural language descriptions and constructing refined POI candidate sets to constrain the candidate space.",
+    "char_start": 14140,
+    "char_end": 14345,
+    "sentence_index": 98,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec003",
+    "text": "The design and validation of these methods are detailed in subsequent sections.",
+    "char_start": 14346,
+    "char_end": 14425,
+    "sentence_index": 99,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec004",
+    "text": "In this section, we introduce the core concepts and notations for the POI prediction task.",
+    "char_start": 14427,
+    "char_end": 14517,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec004",
+    "text": "We define the set of users and the set of POIs as $ U = \\ u_1, u_2, , u_N\\ $ and $ P = \\ p_1, p_2, , p_M\\ $, respectively.",
+    "char_start": 14519,
+    "char_end": 14641,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec004",
+    "text": "Each check-in behavior of a user corresponds to a POI.",
+    "char_start": 14642,
+    "char_end": 14696,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec004",
+    "text": "The definitions are as follows:\n\nPoint of Interest (POI).",
+    "char_start": 14697,
+    "char_end": 14754,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec004",
+    "text": "A POI is a specific spatial item associated with a geographical location that users may visit.",
+    "char_start": 14755,
+    "char_end": 14849,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec004",
+    "text": "Each POI $p P $ is represented by a tuple $p = l, lat , lon , c $, where $l$ is the unique identifier of the POI, $ lat $ and $ lon $ are its latitude and longitude, and $c$ denotes its category (e.g., restaurant, park).",
+    "char_start": 14850,
+    "char_end": 15070,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec004",
+    "text": "Check-In.",
+    "char_start": 15072,
+    "char_end": 15081,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec004",
+    "text": "A user's check-in behavior is defined as a tuple $x = u, p, t $, where $u U $ represents the user, $p P $ is the POI visited, and $t T $ is the timestamp.",
+    "char_start": 15082,
+    "char_end": 15236,
+    "sentence_index": 107,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec004",
+    "text": "Each check-in constitutes a trajectory point in the user's trajectory.",
+    "char_start": 15237,
+    "char_end": 15307,
+    "sentence_index": 108,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec004",
+    "text": "Historical Trajectory.",
+    "char_start": 15309,
+    "char_end": 15331,
+    "sentence_index": 109,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec004",
+    "text": "The historical trajectory $ T _u^ H $ includes the user's earlier check-ins, reflecting long-term preferences.",
+    "char_start": 15332,
+    "char_end": 15442,
+    "sentence_index": 110,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec004",
+    "text": "T _u^ H = \\ p_ u,1 , t_ u,1 , , p_ u,n_u - L - 1 , t_ u,n_u - L - 1 \\ .",
+    "char_start": 15444,
+    "char_end": 15515,
+    "sentence_index": 111,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec004",
+    "text": "Current Trajectory.",
+    "char_start": 15517,
+    "char_end": 15536,
+    "sentence_index": 112,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec004",
+    "text": "The current trajectory consists of the user's most recent $L$ check-ins, capturing short-term preferences:\n\nT _u^ C = \\ p_ u,n_u - L , t_ u,n_u - L , , p_ u,n_u - 1 , t_ u,n_u - 1 \\ .",
+    "char_start": 15537,
+    "char_end": 15720,
+    "sentence_index": 113,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec004",
+    "text": "Candidate Space.",
+    "char_start": 15722,
+    "char_end": 15738,
+    "sentence_index": 114,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec004",
+    "text": "The candidate space, denoted as $ C P $, is a subset of the complete set of POIs, representing the potential next destinations for a user.",
+    "char_start": 15739,
+    "char_end": 15877,
+    "sentence_index": 115,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec004",
+    "text": "In an unconstrained scenario, the candidate space $ C $ is identical to the full set of POIs, $ P $.",
+    "char_start": 15878,
+    "char_end": 15978,
+    "sentence_index": 116,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec004",
+    "text": "Problem Definition.",
+    "char_start": 15980,
+    "char_end": 15999,
+    "sentence_index": 117,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec004",
+    "text": "Based on the above definitions, the POI prediction task aims to predict the next POI that a user $u$ is most likely to visit, given their current trajectory $ T _u^ C $.",
+    "char_start": 16000,
+    "char_end": 16169,
+    "sentence_index": 118,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec004",
+    "text": "The historical trajectory $ T _u^ H $ serves as training data to learn the predictive model.",
+    "char_start": 16170,
+    "char_end": 16262,
+    "sentence_index": 119,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec004",
+    "text": "The model generates the predicted POI $ p _ u,n_u $ to complete the sequence.",
+    "char_start": 16263,
+    "char_end": 16340,
+    "sentence_index": 120,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec004",
+    "text": "Formally, the prediction is defined as $ p _ u,n_u = f( T _u^ C )$, where $f( )$ represents the predictive function (e.g., implemented via LLMs or traditional POI models).",
+    "char_start": 16341,
+    "char_end": 16512,
+    "sentence_index": 121,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec005",
+    "text": "[htbp]\n-10pt\n\nFigures/MODEL.png\n-10pt\nThe overview of the CoMaPOI framework, consisting of three specialized agents (Profiler, Forecaster, and Predictor) collaborating to generate accurate next POI predictions.",
+    "char_start": 16514,
+    "char_end": 16724,
+    "sentence_index": 122,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec005",
+    "text": "The process involves extracting long-term user profiles and short-term mobility patterns, retrieving constrained candidate set, and finally producing the prediction.",
+    "char_start": 16725,
+    "char_end": 16890,
+    "sentence_index": 123,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec005",
+    "text": "To address the challenges of POI prediction with Large Language Models (LLMs), we introduce the Collaborative Multi-Agent Framework for Next POI Prediction (CoMaPOI) (see Figure ).",
+    "char_start": 16892,
+    "char_end": 17072,
+    "sentence_index": 124,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec005",
+    "text": "This framework consists of three agents: the Profiler , the Forecaster , and the Predictor .",
+    "char_start": 17073,
+    "char_end": 17165,
+    "sentence_index": 125,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec005",
+    "text": "The Profiler converts user trajectories into natural language by extracting temporal, spatial, and frequency data, thereby enabling LLMs to better interpret sparse spatiotemporal information.",
+    "char_start": 17166,
+    "char_end": 17357,
+    "sentence_index": 126,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec005",
+    "text": "The Forecaster uses retrieval-enhanced techniques to generate and refine a candidate set with insights from user profiles and mobility patterns.",
+    "char_start": 17358,
+    "char_end": 17502,
+    "sentence_index": 127,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec005",
+    "text": "The Predictor then integrates these inputs to achieve precise POI predictions.",
+    "char_start": 17503,
+    "char_end": 17581,
+    "sentence_index": 128,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec005",
+    "text": "Additionally, CoMaPOI incorporates a Reverse Reasoning Fine-Tuning (RRF) strategy during fine-tuning to reverse-engineer optimal labels, enhancing task-specific performance.",
+    "char_start": 17582,
+    "char_end": 17755,
+    "sentence_index": 129,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec005",
+    "text": "Finally, we provide a theoretical analysis of candidate space optimization in the sections that follow.",
+    "char_start": 17756,
+    "char_end": 17859,
+    "sentence_index": 130,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec006",
+    "text": "Profiler: From Trajectory to Language Understanding\nWe observe that due to the discrete nature and high precision of trajectory data, LLMs struggle with accurately extracting visitation frequencies and constructing user preferences from check-in data.",
+    "char_start": 17861,
+    "char_end": 18112,
+    "sentence_index": 131,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec006",
+    "text": "Thus, establishing intermediary information that is more regular and comprehensible for LLMs is essential.",
+    "char_start": 18113,
+    "char_end": 18219,
+    "sentence_index": 132,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec006",
+    "text": "Inspired by tool-based agent applications , we develop statistical tools targeting the key aspects of POI prediction.",
+    "char_start": 18220,
+    "char_end": 18337,
+    "sentence_index": 133,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec006",
+    "text": "These tools enable the Profiler to extract user profiles and mobility patterns, addressing LLM limitations in processing trajectories.",
+    "char_start": 18338,
+    "char_end": 18472,
+    "sentence_index": 134,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec006",
+    "text": "The toolset includes the time, spatial, category and POI frequency distribution tools.",
+    "char_start": 18474,
+    "char_end": 18560,
+    "sentence_index": 135,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec006",
+    "text": "The outputs from these tools describe the distribution of trajectories from a specific perspective in a natural language format.",
+    "char_start": 18561,
+    "char_end": 18689,
+    "sentence_index": 136,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec006",
+    "text": "For example, the output of $ Tool _ cat $ might be: `` The historical trajectory of User 27 shows the following category distribution: Home (private), Frequency: 117; Government Building, Frequency: 51; Gym / Fitness Center, Frequency: 25; \u2026; Airport, Frequency: 2; Sporting Goods Shop, Frequency: 1.",
+    "char_start": 18690,
+    "char_end": 18990,
+    "sentence_index": 137,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec006",
+    "text": "'' The complete toolbox can be represented as $ Tools = \\ Tool _ freq , Tool _ cat , Tool _ time , Tool _ loc \\ $.",
+    "char_start": 18991,
+    "char_end": 19105,
+    "sentence_index": 138,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec006",
+    "text": "The user\u2019s long-term trajectory, while temporally distant from the next check-in and less reflective of recent preferences, offers valuable insights into macro-level characteristics.",
+    "char_start": 19107,
+    "char_end": 19289,
+    "sentence_index": 139,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec006",
+    "text": "Accordingly, the long-term prompt emphasizes constructing a comprehensive user profile, including attributes such as age, occupation, and social preferences.",
+    "char_start": 19290,
+    "char_end": 19447,
+    "sentence_index": 140,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec006",
+    "text": "To achieve this, the Profiler leverages tools to analyze and extract statistical descriptions from the user's historical trajectory:\n\n\\ X_u^ freq ,H , X_u^ cat ,H , X_u^ time ,H , X_u^ loc ,H \\ = Tools ( T _u^ H ),\n\nwhere $\\ X_u^ freq ,H , X_u^ cat ,H , X_u^ time ,H , X_u^ loc ,H \\ $ represent the frequency distributions for POI frequency, category, time, and space, respectively.",
+    "char_start": 19448,
+    "char_end": 19830,
+    "sentence_index": 141,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec006",
+    "text": "The Profiler then integrates these statistical results into the user's long-term profile through the LLM, as shown in Prompt 1 for Profiler in Figure , constructing the user's long-term profile $P_u$:\n\nP_u LLM (\\ X_u^ freq ,H , X_u^ cat ,H , X_u^ time ,H , X_u^ loc ,H \\ , T _u^ H ).",
+    "char_start": 19831,
+    "char_end": 20114,
+    "sentence_index": 142,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec006",
+    "text": "For specific examples of user profiles $P_u$, see the first part of the Profiler's output in the case study section in Figure .",
+    "char_start": 20116,
+    "char_end": 20243,
+    "sentence_index": 143,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec006",
+    "text": "Moreover, the Profiler also needs to perform the same operations on the current trajectory.",
+    "char_start": 20245,
+    "char_end": 20336,
+    "sentence_index": 144,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec006",
+    "text": "For the current trajectory, we consider it more aligned with target check-ins and therefore more focused on specific preferences.",
+    "char_start": 20337,
+    "char_end": 20466,
+    "sentence_index": 145,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec006",
+    "text": "Thus, the prompt for the current trajectory emphasizes analyzing the user's recent mobility patterns, like peak hours, key destinations, daily routes and so on.",
+    "char_start": 20467,
+    "char_end": 20627,
+    "sentence_index": 146,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec006",
+    "text": "The output of mobility patterns can be expressed with the following formula:\n\nM_u LLM (\\ X_u^ freq ,C , X_u^ cat ,C , X_u^ time ,C , X_u^ loc ,C \\ , T _u^ C ),\nwhere the statistical information of the current trajectory is obtained by $ Tools ( T _u^ C )$.",
+    "char_start": 20628,
+    "char_end": 20884,
+    "sentence_index": 147,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec006",
+    "text": "The prompts for generating mobility patterns $M_u$ can be referenced in Prompt 2 for Profiler in Figure .",
+    "char_start": 20885,
+    "char_end": 20990,
+    "sentence_index": 148,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec006",
+    "text": "For specific examples of mobility patterns $M_u$, see the second part of the Profiler's output in the case study section in Figure .",
+    "char_start": 20991,
+    "char_end": 21123,
+    "sentence_index": 149,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec006",
+    "text": "Through the above process, the Profiler leverages tool functions to transform discrete numerical trajectories into more structured statistical information, further refining the user's long-term profiles and recent mobility patterns.",
+    "char_start": 21125,
+    "char_end": 21357,
+    "sentence_index": 150,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec006",
+    "text": "These language descriptions provide richer context for the subsequent agents, enhancing their performance.",
+    "char_start": 21358,
+    "char_end": 21464,
+    "sentence_index": 151,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec006",
+    "text": "Forecaster: Reducing the candidate Space\nThe Forecaster primarily addresses the challenge of narrowing the candidate space for prediction.",
+    "char_start": 21466,
+    "char_end": 21604,
+    "sentence_index": 152,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec006",
+    "text": "In POI prediction tasks, a city can have hundreds of thousands of POIs, making it impractical to provide all POI information to the LLM.",
+    "char_start": 21605,
+    "char_end": 21741,
+    "sentence_index": 153,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec006",
+    "text": "Therefore, creating a high-hit-rate candidate set is a feasible alternative.",
+    "char_start": 21742,
+    "char_end": 21818,
+    "sentence_index": 154,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec006",
+    "text": "Inspired by Retrieval-Augmented Generation (RAG) , we develop a RAG strategy tailored for POI scenarios, using semantic similarity retrieval to return a set of candidate POIs.",
+    "char_start": 21819,
+    "char_end": 21994,
+    "sentence_index": 155,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec006",
+    "text": "To generate an initial candidate set, we convert all POI information into embedding vectors stored in a vector database.",
+    "char_start": 21996,
+    "char_end": 22116,
+    "sentence_index": 156,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec006",
+    "text": "During inference, we generate embedding vectors for the current trajectory's POIs and match them with the most relevant POIs in the database.",
+    "char_start": 22117,
+    "char_end": 22258,
+    "sentence_index": 157,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec006",
+    "text": "These similar POIs form the initial candidate set.",
+    "char_start": 22259,
+    "char_end": 22309,
+    "sentence_index": 158,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec006",
+    "text": "Each POI is converted into a check-in description, e.g., \"POI $p$ is located at coordinates ($lat$, $lon$), category: $c$\" .",
+    "char_start": 22310,
+    "char_end": 22434,
+    "sentence_index": 159,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec006",
+    "text": "This description is then transformed into a semantic vector tuple $(p, e _p)$ using the BCE embedding model , where $p$ is the POI ID and $ e _p$ is the corresponding embedding.",
+    "char_start": 22435,
+    "char_end": 22612,
+    "sentence_index": 160,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec006",
+    "text": "All tuples are stored in an embedding database $V = \\ (p, e _p) p P \\ $.",
+    "char_start": 22613,
+    "char_end": 22685,
+    "sentence_index": 161,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec006",
+    "text": "During the prediction phase, the Forecaster queries $V$ by computing an embedding $ e _ p_ u,i $ for each POI $p_ u,i $ in $ T _u^ C $ and retrieving the top-$K_C$ most similar POIs based on:\n\nC_ p_ u,i = _ C P , |C|=K_C _ p C sim ( e _ p_ u,i , e _p),\n\nwhere $ sim ( e _ p_ u,i , e _p) = e _ p_ u,i e _p \\| e _ p_ u,i \\| \\| e _p\\| $.",
+    "char_start": 22687,
+    "char_end": 23021,
+    "sentence_index": 162,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec006",
+    "text": "Aggregating over all $p_ u,i T _u^ C $ yields the initial candidate set $C_u^ C, init = _ p_ u,i T _u^ C C_ p_ u,i $.",
+    "char_start": 23022,
+    "char_end": 23139,
+    "sentence_index": 163,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec006",
+    "text": "To address the insufficient hit rate of $C_u^ C, init $ observed in subsequent evaluations (see Table ), we introduced the Forecaster agent to optimize the candidate set.",
+    "char_start": 23141,
+    "char_end": 23311,
+    "sentence_index": 164,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec006",
+    "text": "It mitigates the impact of noise by ensuring the label is ranked higher and reordering candidates based on user profiles and mobility patterns from the Profiler, effectively prioritizing high-probability POIs and reducing the candidate size (e.g., from 250 to 25).",
+    "char_start": 23312,
+    "char_end": 23576,
+    "sentence_index": 165,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec006",
+    "text": "From a long-term perspective, we prompt the Forecaster to optimize $C_u^ C, init $ based on the user profile $P_u$, involving reordering and narrowing down the number of candidates.",
+    "char_start": 23578,
+    "char_end": 23759,
+    "sentence_index": 166,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec006",
+    "text": "Specific prompts can be found in Prompt 1 for Forecaster in Figure , resulting in the long-term candidate set:\n\nC_u^H LLM (P_u, C_u^ C, init ).",
+    "char_start": 23760,
+    "char_end": 23903,
+    "sentence_index": 167,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec006",
+    "text": "Simultaneously, as shown in Prompt 2 for Forecaster in Figure , the Forecaster also optimizes $C_u^ C, init $ based on the recent mobility pattern $M_u$ to generate the short-term candidate set:\n\nC_u^C LLM (M_u, C_u^ C, init ).",
+    "char_start": 23905,
+    "char_end": 24132,
+    "sentence_index": 168,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec006",
+    "text": "Finally, the Forecaster outputs $C_u^H$ and $C_u^C$, representing refined candidate sets aligned with the user's long-term interests and short-term behavioral characteristics, respectively.",
+    "char_start": 24134,
+    "char_end": 24323,
+    "sentence_index": 169,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec006",
+    "text": "These high-quality candidate sets provide valuable input for the Predictor, enabling more accurate prediction decisions.",
+    "char_start": 24324,
+    "char_end": 24444,
+    "sentence_index": 170,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec006",
+    "text": "Predictor: Integrated Decision-Making\n\nAs shown in the prompt ( Prompt for Predictor ) in Figure , the Predictor's prediction prompt has been expanded beyond the recent trajectory $ T _u^ C $ to include the long-term user profiles $P_u$, short-term patterns $M_u$, long-term candidates $C_u^ H $, short-term candidates $C_u^ C $, as well as the recent trajectory $ T _u^ C $.",
+    "char_start": 24446,
+    "char_end": 24821,
+    "sentence_index": 171,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec006",
+    "text": "Here, $P_u$ and $M_u$ assist the Predictor in understanding the deeper user mobility intentions behind the discrete trajectories, while $C_u^ H $ and $C_u^ C $ provide a more focused candidate space for prediction.",
+    "char_start": 24822,
+    "char_end": 25036,
+    "sentence_index": 172,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec006",
+    "text": "Based on these information, the Predictor's prediction is represented as:\n\np _ u,n_u LLM (\\ P_u, M_u, C_u^ H , C_u^ C \\ , T _u^ C ),\n\nwhere the Predictor can select a POI from $C_u^ H C_u^ C $ or, if necessary, opt for a POI outside this candidate set.",
+    "char_start": 25037,
+    "char_end": 25289,
+    "sentence_index": 173,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec006",
+    "text": "This integration ensures that the Predictor effectively balances long-term user preferences, short-term mobility insights, and the flexibility to explore candidate options, leading to a robust and context-aware decision-making process.",
+    "char_start": 25290,
+    "char_end": 25525,
+    "sentence_index": 174,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec007",
+    "text": "To further enhance the accuracy of CoMaPOI predictions, we need to fine-tune each agent based on task-specific requirements.",
+    "char_start": 25527,
+    "char_end": 25651,
+    "sentence_index": 175,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec007",
+    "text": "A prominent issue is the lack of labels corresponding to CoMaPOI sub-tasks in the POI data.",
+    "char_start": 25652,
+    "char_end": 25743,
+    "sentence_index": 176,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec007",
+    "text": "For instance, the Profiler lacks ideal user profiles and mobility patterns as labels, while the Forecaster lacks ideal candidate sets.",
+    "char_start": 25744,
+    "char_end": 25878,
+    "sentence_index": 177,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec007",
+    "text": "Although the Predictor has labels, its input prompts lack relevant content.",
+    "char_start": 25879,
+    "char_end": 25954,
+    "sentence_index": 178,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec007",
+    "text": "Therefore, before fine-tuning, we need to reverse-engineer the required labels or prompts.",
+    "char_start": 25955,
+    "char_end": 26045,
+    "sentence_index": 179,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec007",
+    "text": "To address this issue, we propose a method called Reverse Reasoning Fine-Tuning (RRF) to supplement the missing labels by reversing the inference process.",
+    "char_start": 26047,
+    "char_end": 26201,
+    "sentence_index": 180,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec007",
+    "text": "Simply put, by providing the correct POI ID $p_ u,n_u $, the agents reverse-engineer the corresponding user profiles, mobility patterns, and candidate sets.",
+    "char_start": 26202,
+    "char_end": 26358,
+    "sentence_index": 181,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec007",
+    "text": "During this process, ensure that the output can guide the LLM to accurately determine the correct $p_ u,n_u $.",
+    "char_start": 26359,
+    "char_end": 26469,
+    "sentence_index": 182,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec007",
+    "text": "For example, the candidate set must include $p_ u,n_u $, and the mobility pattern descriptions must be highly relevant to $p_ u,n_u $.",
+    "char_start": 26470,
+    "char_end": 26604,
+    "sentence_index": 183,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec007",
+    "text": "The reverse reasoning process of RRF is essentially about creating labels that maximize the probability of correctly predicting the true POI:\n\n(P_u^ + , M_u^ + ) & _ P, M S(P_u, C_u^ H ; p_ u,n_u ),\n\n(C_u^ H+ , C_u^ C+ ) & _ M, C S(M_u, C_u^ C ; p_ u,n_u ),\n\nwhere, $S( )$ denotes alignment scores that measure the association between the constructed content and $p_ u,n_u $.",
+    "char_start": 26605,
+    "char_end": 26980,
+    "sentence_index": 184,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec007",
+    "text": "Once the reverse reasoning is complete, we obtain the ideal user profiles, mobility patterns, and candidate sets, which serve as labels for fine-tuning the Profiler and Forecaster.",
+    "char_start": 26982,
+    "char_end": 27162,
+    "sentence_index": 185,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec007",
+    "text": "For the Predictor, its task is to predict the next POI by integrating the current trajectory $ T _u^C$ with the additional information.",
+    "char_start": 27163,
+    "char_end": 27298,
+    "sentence_index": 186,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec007",
+    "text": "$(P_u^ + , M_u^ + , C_u^ H+ , C_u^ C+ )$ serve as additional information in the prompts, constructing the fine-tuning samples for the Predictor.",
+    "char_start": 27299,
+    "char_end": 27443,
+    "sentence_index": 187,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec007",
+    "text": "After reverse reasoning, the fine-tuning samples required for CoMaPOI are constructed.",
+    "char_start": 27445,
+    "char_end": 27531,
+    "sentence_index": 188,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec007",
+    "text": "The next step involves fine-tuning the LLM, where the optimization goal is to integrate the three agents (Profiler, Forecaster, and Predictor) into a unified optimization objective:\n\n( _p, _f, _r) = _ _p, _f, _r - P_ (p_ u,n_u X^ + ),\n\nwhere $X^ + $ represents the backward-constructed reasoning samples, including $(P_u^ + , M_u^ + , C_u^ H+ , C_u^ C+ )$ and all relevant prompts.",
+    "char_start": 27532,
+    "char_end": 27913,
+    "sentence_index": 189,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec007",
+    "text": "During the fine-tuning process, we adopt LoRA and quantization techniques to accelerate computation and reduce costs.",
+    "char_start": 27915,
+    "char_end": 28032,
+    "sentence_index": 190,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec007",
+    "text": "This process is implemented using the TRL framework , which ensures efficiency and scalability.",
+    "char_start": 28033,
+    "char_end": 28128,
+    "sentence_index": 191,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec007",
+    "text": "After fine-tuning with RRF, the model is capable of producing forward reasoning paths during inference that are more likely to align with the true causal relationships.",
+    "char_start": 28129,
+    "char_end": 28297,
+    "sentence_index": 192,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec008",
+    "text": "When no candidate POI is provided, LLM's prediction of the POI can be viewed as identifying the next POI over the entire range of POIs, which we call a global search.",
+    "char_start": 28299,
+    "char_end": 28465,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec008",
+    "text": "The vast and unconstrained range of candidates in global retrieval can increase prediction errors.",
+    "char_start": 28466,
+    "char_end": 28564,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec008",
+    "text": "To address this, in CoMaPOI, we provide an optimized candidate POI set to reduce the candidate space, thus lowering prediction errors.",
+    "char_start": 28565,
+    "char_end": 28699,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec008",
+    "text": "Naturally, a key question arises: \"How do we determine that providing a candidate POI set indeed reduces prediction error compared to global search, rather than introducing more noise?\"\n\nLet the set of all possible POIs be $ P $ of size $M$, and let $p^*$ be the true label for the user.",
+    "char_start": 28700,
+    "char_end": 28987,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec008",
+    "text": "In the global search, the posterior probability of LLM correctly predicting can be defined as $P (p^* T _u^C )$.",
+    "char_start": 28988,
+    "char_end": 29100,
+    "sentence_index": 197,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec008",
+    "text": "Consequently, the probability of failing to predict $p^*$ under global search is represented as:\n\nError_ global = 1 - P (p^* T _u^C ).",
+    "char_start": 29101,
+    "char_end": 29235,
+    "sentence_index": 198,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec008",
+    "text": "In CoMaPOI, the prediction probability is calculated based on the optimized candidate set.",
+    "char_start": 29237,
+    "char_end": 29327,
+    "sentence_index": 199,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec008",
+    "text": "Suppose the optimized candidate set is $C P $, where $|C| M$.",
+    "char_start": 29328,
+    "char_end": 29389,
+    "sentence_index": 200,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec008",
+    "text": "Whether the candidate set itself contains the key for label $p^*$ is represented by $ P (p^* C)$, which can also be considered as the hit rate of the candidate set for the label.",
+    "char_start": 29390,
+    "char_end": 29568,
+    "sentence_index": 201,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec008",
+    "text": "After providing a candidate set, the prediction error comes from two scenarios: the first is that the candidate set contains the label, but the LLM makes an incorrect prediction, represented by $ P (p^* C) $.",
+    "char_start": 29570,
+    "char_end": 29778,
+    "sentence_index": 202,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec008",
+    "text": "The second scenario is that the candidate set does not contain the label, and the LLM still makes an incorrect prediction, represented by $ $.",
+    "char_start": 29779,
+    "char_end": 29921,
+    "sentence_index": 203,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec008",
+    "text": "Therefore, in CoMaPOI, the prediction error can be expressed as:\n\nError_ with\\,candidate & = P (p^* C)\n\n& + .",
+    "char_start": 29922,
+    "char_end": 30031,
+    "sentence_index": 204,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec008",
+    "text": "A necessary condition for the candidate-based approach to outperform the global search can be expressed as:\n\nError_ with\\,candidate < Error_ global .",
+    "char_start": 30033,
+    "char_end": 30182,
+    "sentence_index": 205,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec008",
+    "text": "By substituting the above definitions and rearranging, we obtain:\n\n& P (p^* C)P (p^* T _u^C, p^* C )\n\n& + (1 - P (p^* C) )P (p^* T _u^C, p^* C ) > P (p^* T _u^C ),\n\nThen isolating $ P (p^* C)$, we obtain:\n\nP (p^* C) > P (p^* T _u^C ) - P (p^* T _u^C, p^* C )\nP (p^* T _u^C, p^* C ) - P (p^* T _u^C, p^* C ) .",
+    "char_start": 30184,
+    "char_end": 30492,
+    "sentence_index": 206,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec008",
+    "text": "Equation indicates that when the hit rate of the candidate set $ P (p^* C)$ is higher than the right side (considered as a lower bound), it ensures that the prediction error based on the candidates is lower than the prediction error of the global search.",
+    "char_start": 30494,
+    "char_end": 30748,
+    "sentence_index": 207,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec008",
+    "text": "The optimization strategy in CoMaPOI promotes an increase in the hit rate of the candidate set, i.e., it increases $ P (p^* C)$.",
+    "char_start": 30749,
+    "char_end": 30877,
+    "sentence_index": 208,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec008",
+    "text": "Additionally, it enhances the probability of successful predictions based on the candidates, i.e., $P (p^* T _u^C, p^* C )$ is increased.",
+    "char_start": 30878,
+    "char_end": 31015,
+    "sentence_index": 209,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec008",
+    "text": "This theoretically proves that the method of providing high-quality candidate set in CoMaPOI effectively reduces prediction error.",
+    "char_start": 31016,
+    "char_end": 31146,
+    "sentence_index": 210,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec008",
+    "text": "Moreover, Table in this paper demonstrates that the candidate set hit rates under CoMaPOI on three datasets satisfy the inequality of eq .",
+    "char_start": 31147,
+    "char_end": 31285,
+    "sentence_index": 211,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec008",
+    "text": "For example, CoMaPOI in NYC, $ P (p^* C)$ reached 67.51\\%, and $P (p^* T _u^C, p^* C )$ reached 88.16\\%.",
+    "char_start": 31286,
+    "char_end": 31390,
+    "sentence_index": 212,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec008",
+    "text": "The lower bound was calculated to be 45.27\\%, satisfying the inequality $67.51\\% > 45.27\\%$.",
+    "char_start": 31391,
+    "char_end": 31483,
+    "sentence_index": 213,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec009",
+    "text": "In this section, we comprehensively evaluate the proposed CoMaPOI framework for POI prediction through extensive experiments.",
+    "char_start": 31485,
+    "char_end": 31610,
+    "sentence_index": 214,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec009",
+    "text": "The evaluation emphasizes comparisons between CoMaPOI and state-of-the-art (SOTA) baselines to demonstrate its effectiveness.",
+    "char_start": 31611,
+    "char_end": 31736,
+    "sentence_index": 215,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec009",
+    "text": "Next, we analyze CoMaPOI's scalability across various LLM architectures, including smaller parameter LLMs, underscoring its applicability in resource-constrained scenarios.",
+    "char_start": 31737,
+    "char_end": 31909,
+    "sentence_index": 216,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec009",
+    "text": "Additionally, we conduct ablation studies to examine performance variations when different modules are removed.",
+    "char_start": 31910,
+    "char_end": 32021,
+    "sentence_index": 217,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec009",
+    "text": "Furthermore, we analyze the effects of candidate space optimization and visualization, as well as the impact of hyperparameter tuning for the candidate set size.",
+    "char_start": 32022,
+    "char_end": 32183,
+    "sentence_index": 218,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec009",
+    "text": "Finally, in the case study, we present CoMaPOI\u2019s intermediate outputs during reasoning and its ability to produce accurate and interpretable predictions.",
+    "char_start": 32184,
+    "char_end": 32337,
+    "sentence_index": 219,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec009",
+    "text": "The following subsections detail the experimental setup, results, and analysis.",
+    "char_start": 32338,
+    "char_end": 32417,
+    "sentence_index": 220,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec010",
+    "text": "Datasets.",
+    "char_start": 32419,
+    "char_end": 32428,
+    "sentence_index": 221,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec010",
+    "text": "We use three publicly available POI datasets: NYC , TKY , and CA .",
+    "char_start": 32429,
+    "char_end": 32495,
+    "sentence_index": 222,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec010",
+    "text": "The NYC dataset contains check-ins collected in New York City from April 2012 to February 2013, while the TKY dataset includes check-ins from Tokyo during the same time period .",
+    "char_start": 32496,
+    "char_end": 32673,
+    "sentence_index": 223,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec010",
+    "text": "The CA dataset consists of check-ins from California and Nevada, collected between February 2009 and October 2010 .",
+    "char_start": 32674,
+    "char_end": 32789,
+    "sentence_index": 224,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec010",
+    "text": "Each record in these datasets contains a user ID, POI ID, POI category, GPS coordinates, and a timestamp.",
+    "char_start": 32790,
+    "char_end": 32895,
+    "sentence_index": 225,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec010",
+    "text": "Consistent with previous studies , we excluded users and POIs with a low number of check-ins.",
+    "char_start": 32896,
+    "char_end": 32989,
+    "sentence_index": 226,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec010",
+    "text": "After preprocessing, the NYC dataset contains 988 users, 5086 POIs, and 99,964 check-ins; the TKY dataset contains 2206 users, 7849 POIs, and 325,313 check-ins; the CA dataset contains 1818 users, 13,564 POIs, and 174,791 check-ins.",
+    "char_start": 32990,
+    "char_end": 33222,
+    "sentence_index": 227,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec010",
+    "text": "For each user in these datasets, we designate the last 30 visited points as the test set, also referred to as the current trajectory $ T _u^ C $, while all preceding points constitute the training set, referred to as the historical trajectory $ T _u^ H $.",
+    "char_start": 33223,
+    "char_end": 33478,
+    "sentence_index": 228,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec010",
+    "text": "The fixed trajectory length in the test set is designed to control the token length input to the LLM, ensuring a consistent token budget that effectively prevents memory overflow.",
+    "char_start": 33479,
+    "char_end": 33658,
+    "sentence_index": 229,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec010",
+    "text": "Baseline Methods.",
+    "char_start": 33660,
+    "char_end": 33677,
+    "sentence_index": 230,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec010",
+    "text": "We compare CoMaPOI with 11 state-of-the-art methods, which can be categorized into four groups.",
+    "char_start": 33678,
+    "char_end": 33773,
+    "sentence_index": 231,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec010",
+    "text": "Sequential Models, such as SASRec , BERT4Rec , and TiCoSeRec , leverage Transformer architectures to directly model user check-in sequences, improving recommendation accuracy.",
+    "char_start": 33774,
+    "char_end": 33949,
+    "sentence_index": 232,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec010",
+    "text": "Graph-based or Contrastive methods, including GETNext , CrossDR , MAERec , and DuoRec , incorporate graph neural networks, contrastive learning, and spatio-temporal information to address data sparsity and cold start challenges, enhancing recommendation robustness.",
+    "char_start": 33950,
+    "char_end": 34215,
+    "sentence_index": 233,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec010",
+    "text": "Generative and Diffusion-based methods, such as POIGDE , MTNet , and DiffuRec , employ generative techniques or diffusion frameworks to capture the distribution of potential next POIs, providing diverse and accurate predictions.",
+    "char_start": 34216,
+    "char_end": 34444,
+    "sentence_index": 234,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec010",
+    "text": "Lastly, LLM-based methods, like LLM4POI , introduce LLM into the POI prediction pipeline, representing a baseline for LLM-enhanced solutions.",
+    "char_start": 34445,
+    "char_end": 34586,
+    "sentence_index": 235,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec010",
+    "text": "Evaluation Metrics.",
+    "char_start": 34588,
+    "char_end": 34607,
+    "sentence_index": 236,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec010",
+    "text": "We assess model performance using standard ranking-based metrics commonly used in POI prediction tasks: HR@k , indicating the proportion of test cases where the correct POI appears in the top $k$ predictions; NDCG@k , reflecting both accuracy and the ranking quality of predictions; and MRR , which evaluates the position of the correct answer by calculating the reciprocal of its rank.",
+    "char_start": 34608,
+    "char_end": 34994,
+    "sentence_index": 237,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec010",
+    "text": "Implementation Details.",
+    "char_start": 34996,
+    "char_end": 35019,
+    "sentence_index": 238,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec010",
+    "text": "During CoMaPOI\u2019s inference, we set top\\_p to 1, temperature to 0, and n to 1 to eliminate sampling randomness.",
+    "char_start": 35020,
+    "char_end": 35130,
+    "sentence_index": 239,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec010",
+    "text": "For the fine-tuning of CoMaPOI, we adopt a learning rate of $1 e ^ -4 $, a batch size of 16, and a maximum of 200 steps.",
+    "char_start": 35131,
+    "char_end": 35251,
+    "sentence_index": 240,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec010",
+    "text": "Additionally, we used 50 warm-up steps and applied a weight decay of 0.01 to balance computational efficiency and optimization stability.",
+    "char_start": 35252,
+    "char_end": 35389,
+    "sentence_index": 241,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec010",
+    "text": "Both inference and fine-tuning of CoMaPOI were conducted on three NVIDIA H800 80G GPUs.",
+    "char_start": 35390,
+    "char_end": 35477,
+    "sentence_index": 242,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec010",
+    "text": "The foundational LLM for CoMaPOI is Llama3.1:8b .",
+    "char_start": 35478,
+    "char_end": 35527,
+    "sentence_index": 243,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec010",
+    "text": "Additionally, in the application validation experiments, we also tested other LLMs, including Qwen2.5 and Mistral .",
+    "char_start": 35528,
+    "char_end": 35643,
+    "sentence_index": 244,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec011",
+    "text": "[htpb]\n\nPerformance Comparison Between CoMaPOI and Baselines Across Three Datasets\n-10pt\n!",
+    "char_start": 35645,
+    "char_end": 35735,
+    "sentence_index": 245,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec011",
+    "text": "lccccccccccccccc\n\n1 c 2 [2] * Model & 5 c NYC (\\%) & 5 c TKY (\\%) & 5 c CA (\\%)\n\n(lr) 2-6 (lr) 7-11 (lr) 12-16\n& HR@5 & HR@10 & NDCG@5 & NDCG@10 & MRR\n& HR@5 & HR@10 & NDCG@5 & NDCG@10 & MRR\n& HR@5 & HR@10 & NDCG@5 & NDCG@10 & MRR\n\nSASRec & 40.38 & 48.28 & 28.98 & 31.26 & 27.01 & 34.72 & 43.25 & 25.48 & 28.37 & 24.70 & 21.34 & 26.40 & 16.04 & 17.68 & 15.94\n\nBERT4Rec & 39.60 & 46.70 & 29.03 & 30.94 & 27.11 & 36.17 & 43.47 & 26.70 & 29.08 & 25.39 & 23.22 & 28.22 & 17.26 & 18.66 & 16.61\n\nDuoRec & 34.72 & 40.69 & 24.54 & 26.34 & 22.76 & 24.66 & 31.19 & 18.77 & 20.89 & 18.67 & 19.47 & 24.04 & 14.47 & 15.85 & 14.31\n\nTiCoSeRec & 40.69 & 48.08 & 29.65 & 32.04 & 27.54 & 29.33 & 37.04 & 21.83 & 24.21 & 21.51 & 22.66 & 28.11 & 16.99 & 18.48 & 16.75\n\nCrossDR & 40.80 & 47.20 & 30.67 & 32.59 & 28.66 & 32.51 & 40.57 & 23.58 & 26.19 & 22.65 & 22.11 & 28.61 & 16.11 & 18.18 & 15.79\n\nMAERec & 37.65 & 44.53 & 27.72 & 29.85 & 26.10 & 32.73 & 40.66 & 23.93 & 26.14 & 23.05 & 24.37 & 29.37 & 17.76 & 19.48 & 17.09\n\nGETNext & 43.60 & 51.30 & 32.56 & 35.13 & 30.97 & 41.11 & 48.50 & 30.75 & 33.21 & 29.21 & 24.26 & 29.32 & 17.83 & 19.48 & 17.16\n\nPOIGDE & 34.11 & 38.36 & 26.64 & 27.97 & 25.40 & 28.20 & 31.82 & 22.46 & 23.57 & 21.80 & 22.61 & 26.73 & 18.24 & 19.49 & 17.89\n\nMTNet & 47.57 & 53.24 & 35.85 & 37.69 & 33.40 & 44.15 & 51.22 & 32.99 & 35.37 & 31.18 & 30.25 & 36.08 & 22.39 & 24.27 & 21.35\n\nDiffuRec & 37.25 & 40.79 & 29.16 & 30.23 & 27.74 & 34.50 & 39.89 & 26.89 & 28.70 & 25.94 & 21.67 & 24.15 & 17.35 & 18.06 & 16.60\n\nLLM4POI & 44.64 & 46.66 & 37.49 & 38.16 & 35.90 & 34.90 & 39.48 & 27.23 & 28.22 & 29.72 & 23.65 & 25.91 & 19.01 & 19.39 & 20.13\n\nCoMaPOI (ours) & 51.62 & 59.01 & 40.42 & 42.82 & 37.67 & 45.83 & 54.26 & 34.48 & 37.20 & 31.82 & 33.00 & 39.16 & 24.96 & 26.96 & 23.10\n\n0.95\nImprovement & black + 8.51\\% & black + 10.84\\% & black + 7.82\\% & black + 12.21\\% & black + 4.93\\% & black + 3.81\\% & black + 5.94\\% & black + 4.52\\% & black + 5.17\\% & black + 2.05\\% & black + 9.09\\% & black + 8.54\\% & black + 11.48\\% & black + 11.08\\% & black + 8.20\\%\n\nTo evaluate whether CoMaPOI outperforms SOTA methods, we compare its performance against multiple baselines on the NYC, TKY, and CA datasets, as shown in Table .",
+    "char_start": 35737,
+    "char_end": 37960,
+    "sentence_index": 246,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec011",
+    "text": "Based on LLama3.1:8b, CoMaPOI consistently outperforms all baselines across the three datasets.",
+    "char_start": 37961,
+    "char_end": 38056,
+    "sentence_index": 247,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec011",
+    "text": "Specifically, it achieves average improvements over the best performance among the baselines (primarily contributed by MTNet and LLM4POI) by 8.86\\% on NYC, 4.3\\% on TKY, and 9.68\\% on CA across five key metrics.",
+    "char_start": 38057,
+    "char_end": 38268,
+    "sentence_index": 248,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec011",
+    "text": "The results indicate that different baselines demonstrate their own strengths across datasets.",
+    "char_start": 38270,
+    "char_end": 38364,
+    "sentence_index": 249,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec011",
+    "text": "MTNet performs well on the NYC and TKY datasets due to its robust sequence modeling capabilities but struggles on the CA dataset, which features a larger geographical scope and more diverse POIs.",
+    "char_start": 38365,
+    "char_end": 38560,
+    "sentence_index": 250,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec011",
+    "text": "LLM4POI exhibits competitive performance on metrics such as NDCG, leveraging LLM-based contextual information to effectively capture similarities between users.",
+    "char_start": 38561,
+    "char_end": 38721,
+    "sentence_index": 251,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec011",
+    "text": "Other baselines, such as SASRec, POIGDE, and GETNext, incorporate various optimizations but still fall short in addressing the complex spatiotemporal dependencies and diverse user preferences required for accurate predictions.",
+    "char_start": 38722,
+    "char_end": 38948,
+    "sentence_index": 252,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec011",
+    "text": "In contrast, by leveraging a multi-agent collaborative mechanism, CoMaPOI effectively models both macro-level user profiles and micro-level mobility patterns.",
+    "char_start": 38950,
+    "char_end": 39108,
+    "sentence_index": 253,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec011",
+    "text": "Furthermore, its well-designed candidate set filtering narrows the candidate space, reducing prediction errors.",
+    "char_start": 39109,
+    "char_end": 39220,
+    "sentence_index": 254,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec011",
+    "text": "These innovations collectively contribute to CoMaPOI\u2019s substantial performance improvements.",
+    "char_start": 39221,
+    "char_end": 39313,
+    "sentence_index": 255,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec012",
+    "text": "We further analyze the applicability and scalability of CoMaPOI, as shown in Figure .",
+    "char_start": 39315,
+    "char_end": 39400,
+    "sentence_index": 256,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec012",
+    "text": "Due to its non-intrusive design that avoids modifications to the LLM architecture, CoMaPOI can be seamlessly applied to various LLM architectures.",
+    "char_start": 39401,
+    "char_end": 39547,
+    "sentence_index": 257,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec012",
+    "text": "We evaluate CoMaPOI on several mainstream open-source LLMs, including Mistral:7B, Llama3.1:8B, and Qwen2.5:7B.",
+    "char_start": 39548,
+    "char_end": 39658,
+    "sentence_index": 258,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec012",
+    "text": "The experimental results in Figure (a) demonstrate that CoMaPOI significantly enhances POI prediction performance across all three LLMs.",
+    "char_start": 39659,
+    "char_end": 39795,
+    "sentence_index": 259,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec012",
+    "text": "The largest improvement was observed on Llama3.1:8B, followed by Mistral:7B.",
+    "char_start": 39796,
+    "char_end": 39872,
+    "sentence_index": 260,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec012",
+    "text": "In resource-constrained environments, such as mobile devices or in-vehicle systems, POI prediction often requires deploying smaller LLMs.",
+    "char_start": 39874,
+    "char_end": 40011,
+    "sentence_index": 261,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec012",
+    "text": "To explore this, we further test CoMaPOI on smaller models in Figure (b), such as Llama3.2:3B and Qwen2.5:0.5B.",
+    "char_start": 40012,
+    "char_end": 40123,
+    "sentence_index": 262,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec012",
+    "text": "These smaller models, which generally perform poorly in their original (Vanilla) configurations, exhibit significant improvements when integrated with the CoMaPOI framework.",
+    "char_start": 40124,
+    "char_end": 40297,
+    "sentence_index": 263,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec012",
+    "text": "For instance, Llama3.2:3B outperforms the MTNet after applying CoMaPOI.",
+    "char_start": 40298,
+    "char_end": 40369,
+    "sentence_index": 264,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec012",
+    "text": "Additionally, we introduce a lightweight variant of CoMaPOI, called CoMaPOI (RRF).",
+    "char_start": 40371,
+    "char_end": 40453,
+    "sentence_index": 265,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec012",
+    "text": "CoMaPOI (RRF) involves using a single agent to perform all tasks in CoMaPOI, where RRF fine-tunes the agent to simultaneously learn the three subtasks: profile construction, candidate optimization, and prediction.",
+    "char_start": 40454,
+    "char_end": 40667,
+    "sentence_index": 266,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec012",
+    "text": "Notably, the inference cost under the RRF setting remains comparable to that of directly using a vanilla LLM for reasoning.",
+    "char_start": 40668,
+    "char_end": 40791,
+    "sentence_index": 267,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec012",
+    "text": "Although CoMaPOI (RRF) achieves slightly lower performance than the full CoMaPOI framework, it still delivers substantial improvements over vanilla LLMs and outperforms the SOTA.",
+    "char_start": 40792,
+    "char_end": 40970,
+    "sentence_index": 268,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec012",
+    "text": "These results highlight the practicality and versatility of CoMaPOI in real-world applications.",
+    "char_start": 40971,
+    "char_end": 41066,
+    "sentence_index": 269,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec012",
+    "text": "[t]\n-5pt\n\nFigures/Different/ndcg10.png\n\nFigures/SMALL/ndcg10.png\n\n-10pt\nPerformance Evaluation of CoMaPOI Across Different LLMs Architectures and Smaller Parameter LLMs.",
+    "char_start": 41068,
+    "char_end": 41237,
+    "sentence_index": 270,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec012",
+    "text": "-15pt\n\nTable demonstrates the unique contribution of each module to the CoMaPOI framework's performance.",
+    "char_start": 41239,
+    "char_end": 41343,
+    "sentence_index": 271,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec013",
+    "text": "\"w/o Profiler\" results in the loss of essential contextual information, causing consistent performance declines across all datasets.",
+    "char_start": 41344,
+    "char_end": 41476,
+    "sentence_index": 272,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec013",
+    "text": "\"w/o Forecaster\" leaves the candidate space unconstrained, increasing prediction uncertainty and leading to degraded performance.",
+    "char_start": 41477,
+    "char_end": 41606,
+    "sentence_index": 273,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec013",
+    "text": "\"w/o RRF\" significantly reduces prediction accuracy and ranking performance, particularly on the CA dataset, highlighting the critical role of RRF in enhancing agents' understanding and adaptability to user behavior.",
+    "char_start": 41607,
+    "char_end": 41823,
+    "sentence_index": 274,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec013",
+    "text": "In the \"w/o Refine\" setting, candidates are directly retrieved from RAG without further optimization, resulting in a broader and less focused candidate space that negatively impacts prediction quality.",
+    "char_start": 41824,
+    "char_end": 42025,
+    "sentence_index": 275,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec013",
+    "text": "The \"only Single Agent\" setting lacks the complementary perspectives offered by multi-agent collaboration, leading to diminished results.",
+    "char_start": 42026,
+    "char_end": 42163,
+    "sentence_index": 276,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec013",
+    "text": "Finally, the \"only SFT\" baseline relies solely on supervised fine-tuning, showing the weakest performance due to the absence of all modules.",
+    "char_start": 42164,
+    "char_end": 42304,
+    "sentence_index": 277,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec013",
+    "text": "These findings underscore the importance of each module, particularly RRF and candidate space optimization, in achieving superior POI prediction performance.",
+    "char_start": 42305,
+    "char_end": 42462,
+    "sentence_index": 278,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec013",
+    "text": "[t]\n\nAblation Study of CoMaPOI Framework and the Impact of Removing Key Modules\n0.48 !",
+    "char_start": 42464,
+    "char_end": 42550,
+    "sentence_index": 279,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec013",
+    "text": "lcccccc\n\n2 [2] * Setting & 2 c NYC (\\%) & 2 c TKY (\\%) & 2 c CA (\\%)\n\n& HR@10 & NDCG@10 & HR@10 & NDCG@10 & HR@10 & NDCG@10\n\nCoMaPOI & 59.01 & 42.82 & 54.26 & 37.20 & 39.16 & 26.96\n\nw/o Profiler & 58.60 & 40.59 & 52.40 & 34.93 & 32.01 & 22.31\n\nw/o Forecaster & 56.48 & 39.61 & 49.86 & 34.86 & 35.64 & 23.61\n\nw/o RRF & 54.35 & 38.40 & 46.51 & 31.83 & 32.84 & 22.86\n\nw/o Refine & 57.79 & 40.63 & 51.86 & 35.11 & 37.46 & 26.09\n\nonly Single Agent & 56.91 & 40.52 & 51.72 & 35.61 & 37.27 & 25.48\n\nonly SFT & 47.77 & 35.32 & 41.75 & 30.39 & 29.10 & 22.38\n\nAnalysis of Candidate Space\n\nTable presents the candidate set hit rates and related prediction statistics of the CoMaPOI framework across three datasets, serving as validation for the theoretical analysis in Section .",
+    "char_start": 42551,
+    "char_end": 43318,
+    "sentence_index": 280,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec014",
+    "text": "A successful hit is defined as the inclusion of the label within the candidate set.",
+    "char_start": 43319,
+    "char_end": 43402,
+    "sentence_index": 281,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec014",
+    "text": "From the candidate set stages, the RAG initial candidate set shows a relatively low hit rate (e.g., 43.52\\% for NYC).",
+    "char_start": 43403,
+    "char_end": 43520,
+    "sentence_index": 282,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec014",
+    "text": "However, with optimizations based on user profiles and movement patterns, the candidate set hit rate improves significantly, reaching 67.51\\% for the merged candidate set in the NYC dataset.",
+    "char_start": 43521,
+    "char_end": 43711,
+    "sentence_index": 283,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec014",
+    "text": "From the prediction statistics, the posterior probability of the global search without candidate sets is quite low (e.g., 36.03\\% for NYC), while the posterior success rate based on the optimized merged candidate set is significantly higher (88.16\\% for NYC).",
+    "char_start": 43712,
+    "char_end": 43971,
+    "sentence_index": 284,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec014",
+    "text": "This demonstrates that the optimization strategy greatly enhances prediction accuracy.",
+    "char_start": 43972,
+    "char_end": 44058,
+    "sentence_index": 285,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec014",
+    "text": "Meanwhile, the out-of-candidate success rate $P(p^* T _u^C, p^* C)$ varies across datasets, with NYC at $0.31\\%$ and TKY at $13.17\\%$, reflecting differences in dataset complexity and the robustness of the model's out-of-candidate predictions.",
+    "char_start": 44059,
+    "char_end": 44302,
+    "sentence_index": 286,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec014",
+    "text": "Through these results, we successfully verified that CoMaPOI satisfies eq across all three datasets.",
+    "char_start": 44303,
+    "char_end": 44403,
+    "sentence_index": 287,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec014",
+    "text": "Furthermore, Figure (b) visualizes the candidate set optimization process in a successful prediction.",
+    "char_start": 44405,
+    "char_end": 44506,
+    "sentence_index": 288,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec014",
+    "text": "The global boundary without any candidate filtering includes all POIs, resulting in an especially large candidate space.",
+    "char_start": 44507,
+    "char_end": 44627,
+    "sentence_index": 289,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec014",
+    "text": "In contrast, CoMaPOI gradually reduces the candidate space through candidate generation and optimization, consistently ensuring the inclusion of the ground truth label.",
+    "char_start": 44628,
+    "char_end": 44796,
+    "sentence_index": 290,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec014",
+    "text": "During the prediction phase, providing a smaller candidate set that includes the label helps the Predictor achieve successful predictions.",
+    "char_start": 44797,
+    "char_end": 44935,
+    "sentence_index": 291,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec014",
+    "text": "[t]\n\nStatistics of Candidate Set Hit Rates and Inequality Verification across Datasets.",
+    "char_start": 44937,
+    "char_end": 45024,
+    "sentence_index": 292,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec014",
+    "text": "0.48 !",
+    "char_start": 45025,
+    "char_end": 45031,
+    "sentence_index": 293,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec014",
+    "text": "-15pt\nlccc\n\nMetric/Stage & NYC (\\%) & TKY (\\%) & CA (\\%)\n\n4 c Candidate Set Stages\n\nInitial Candidate Set Hit Rate (RAG) & 43.52 & 37.81 & 18.43\n\nProfile-based Candidate Set Hit Rate & 61.13 & 42.43 & 43.95\n\nPattern-based Candidate Set Hit Rate & 63.66 & 42.11 & 42.30\n\nMerged Candidate Set Hit Rate ($ P (p^ C)$) & 67.51 & 62.15 & 50.17\n\n4 c Prediction Statistics\n\nGlobal Posterior Probability ($P (p^* T _u^C )$) & 36.03 & 31.87 & 22.00\n\nCandidate-based Posterior Probability ($P (p^ T _u^C, p^ C )$) & 88.16 & 79.21 & 77.96\n\nNon-candidate Posterior Probability ($P (p^ T _u^C, p^ C )$) & 0.31 & 13.17 & 0.33\n\n4 c Inequality Validation\n\nValidation of Inequality (eq ) : & 67.51 > 45.27 & 62.15 > 28.31 & 50.17 > 28.02\n\n-5pt\n\nImpact of Candidate List Size.",
+    "char_start": 45033,
+    "char_end": 45790,
+    "sentence_index": 294,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec014",
+    "text": "[t]\n\n0pt\n[b] 0.2\n\nFigures/NC/ndcg10.png\nImpact of Candidate Size\n\n[b] 0.26\n\nFigures/CASE/candidate-v.png\nVisualization of Candidate Space\n\nImpact of Candidate Size and Visualization of Candidate Space Reduction\n\n-15pt\n\nTo identify the optimal scale for candidate POIs, we conducted an experiment to systematically examine the effects of varying $K$.",
+    "char_start": 45792,
+    "char_end": 46141,
+    "sentence_index": 295,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec014",
+    "text": "This study examines how varying $K$ affects performance to identify an optimal range for candidate list construction.",
+    "char_start": 46142,
+    "char_end": 46259,
+    "sentence_index": 296,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec014",
+    "text": "The results, as shown in Figure (a), indicate that increasing $K$ from 0 to approximately 25 leads to consistent improvements.",
+    "char_start": 46260,
+    "char_end": 46386,
+    "sentence_index": 297,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec014",
+    "text": "This trend suggests that a larger candidate pool provides richer options for identifying the correct POIs.",
+    "char_start": 46387,
+    "char_end": 46493,
+    "sentence_index": 298,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec014",
+    "text": "However, beyond $K=25$, performance tends to plateau or even decline, indicating that an excessively large candidate set introduces noise, thereby reducing precision.",
+    "char_start": 46494,
+    "char_end": 46660,
+    "sentence_index": 299,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec014",
+    "text": "Therefore, in our experiments, the Forecaster optimizes based on profile and pattern information, respectively, to obtain candidate sets containing 25 POIs.",
+    "char_start": 46661,
+    "char_end": 46817,
+    "sentence_index": 300,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec014",
+    "text": "During prediction, these two sets are combined and fed into the Predictor.",
+    "char_start": 46818,
+    "char_end": 46892,
+    "sentence_index": 301,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec014",
+    "text": "Case Study\n\n[t]\n\nFigures/CASE/case.png\nA Successful Prediction by CoMaPOI.",
+    "char_start": 46894,
+    "char_end": 46968,
+    "sentence_index": 302,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec014",
+    "text": "-10pt\n\nTo demonstrate CoMaPOI's reasoning, Figure presents a case study of its three-agent workflow.",
+    "char_start": 46970,
+    "char_end": 47070,
+    "sentence_index": 303,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec014",
+    "text": "The Profiler transforms the user\u2019s trajectories into descriptive profiles and patterns, capturing both long-term and short-term preferences.",
+    "char_start": 47071,
+    "char_end": 47211,
+    "sentence_index": 304,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec014",
+    "text": "Long-term preferences reflect macro-level traits, such as age, personality, and tendencies toward entertainment or social activities, while short-term preferences capture detailed mobility patterns, like frequent visits to transportation hubs.",
+    "char_start": 47212,
+    "char_end": 47455,
+    "sentence_index": 305,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec014",
+    "text": "The Forecaster then leverages RAG-based similarity retrieval and re-ranking based on the user preference description to narrow the candidate space, ensuring that the true label remains consistently included in the candidate set.",
+    "char_start": 47456,
+    "char_end": 47684,
+    "sentence_index": 306,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec014",
+    "text": "This process results in a higher-quality set of POI candidates.",
+    "char_start": 47685,
+    "char_end": 47748,
+    "sentence_index": 307,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec014",
+    "text": "Finally, the Predictor integrates the user profiles, mobility patterns, and the optimized candidate set to accurately predict the POI ID \"734,\" which matches the true label.",
+    "char_start": 47749,
+    "char_end": 47922,
+    "sentence_index": 308,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec014",
+    "text": "Additionally, the Predictor generates highly contextually relevant interpretative texts based on the enriched profiles and mobility descriptions, further enhancing the interpretability of the prediction results.",
+    "char_start": 47923,
+    "char_end": 48134,
+    "sentence_index": 309,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec015",
+    "text": "To address the challenges of insufficient spatiotemporal data understanding and unconstrained candidate space in LLM-based POI prediction, this paper proposes CoMaPOI, a multi-agent collaborative framework that effectively applies LLMs to POI prediction tasks.",
+    "char_start": 48136,
+    "char_end": 48396,
+    "sentence_index": 310,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec015",
+    "text": "One agent constructs user profiles and mobility patterns.",
+    "char_start": 48397,
+    "char_end": 48454,
+    "sentence_index": 311,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec015",
+    "text": "Another agent generates and optimizes the candidate set, narrowing the candidate space.",
+    "char_start": 48455,
+    "char_end": 48542,
+    "sentence_index": 312,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec015",
+    "text": "Finally, a third agent integrates these information to deliver more accurate and interpretable POI predictions.",
+    "char_start": 48543,
+    "char_end": 48654,
+    "sentence_index": 313,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec015",
+    "text": "Extensive experimental results demonstrate that CoMaPOI consistently outperforms existing SOTA methods across all settings.",
+    "char_start": 48655,
+    "char_end": 48778,
+    "sentence_index": 314,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec015",
+    "text": "Additionally, this paper provides theoretical evidence that candidate set optimization effectively reduces errors in LLM predictions.",
+    "char_start": 48779,
+    "char_end": 48912,
+    "sentence_index": 315,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec015",
+    "text": "CoMaPOI offers an innovative solution to address the limitations of LLMs in spatiotemporal prediction tasks by leveraging multi-agent collaboration, paving the way for future applications of LLMs in complex spatiotemporal tasks.",
+    "char_start": 48913,
+    "char_end": 49141,
+    "sentence_index": 316,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec015",
+    "text": "61\n\n#1\n#1 #1\n#1\n#1\n#1\n#1\n#1 #1\n#1 #1\n\n#2\n#2\n#1\n[] arXiv:#2\n\nbao2023large\nauthor person Keqin Bao , person Jizhi Zhang , person Yang Zhang , person Wang Wenjie , person Fuli Feng , and person Xiangnan He .",
+    "char_start": 49143,
+    "char_end": 49347,
+    "sentence_index": 317,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 49348,
+    "char_end": 49359,
+    "sentence_index": 318,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec015",
+    "text": "Large language models for recommendation: progresses and future directions .",
+    "char_start": 49360,
+    "char_end": 49436,
+    "sentence_index": 319,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the Annual International ACM SIGIR Conference on Research and Development in Information Retrieval in the Asia Pacific Region .",
+    "char_start": 49437,
+    "char_end": 49592,
+    "sentence_index": 320,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec015",
+    "text": "pages 306\u2013309 .",
+    "char_start": 49593,
+    "char_end": 49608,
+    "sentence_index": 321,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec015",
+    "text": "9798400704086\n\nchan2023chateval\nauthor person Chi-Min Chan , person Weize Chen , person Yusheng Su , person Jianxuan Yu , person Wei Xue , person Shanghang Zhang , person Jie Fu , and person Zhiyuan Liu .",
+    "char_start": 49610,
+    "char_end": 49814,
+    "sentence_index": 322,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 49815,
+    "char_end": 49826,
+    "sentence_index": 323,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec015",
+    "text": "ChatEval: Towards Better LLM -based Evaluators through Multi-Agent Debate .",
+    "char_start": 49827,
+    "char_end": 49902,
+    "sentence_index": 324,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec015",
+    "text": "In booktitle The Twelfth International Conference on Learning Representations .",
+    "char_start": 49903,
+    "char_end": 49982,
+    "sentence_index": 325,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec015",
+    "text": "chen2024quantifying\nauthor person Jiuhai Chen and person Jonas Mueller .",
+    "char_start": 49984,
+    "char_end": 50056,
+    "sentence_index": 326,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 50057,
+    "char_end": 50068,
+    "sentence_index": 327,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec015",
+    "text": "Quantifying uncertainty in answers from any language model and enhancing their trustworthiness .",
+    "char_start": 50069,
+    "char_end": 50165,
+    "sentence_index": 328,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) .",
+    "char_start": 50166,
+    "char_end": 50292,
+    "sentence_index": 329,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec015",
+    "text": "pages 5186--5200 .",
+    "char_start": 50293,
+    "char_end": 50311,
+    "sentence_index": 330,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec015",
+    "text": "cuconasu2024powercuconasu2024power\nauthorauthor personperson Florin Florin CuconasuFlorin Cuconasu , , , , personperson Giovanni Giovanni TrappoliniGiovanni Trappolini , , , , personperson Federico Federico SicilianoFederico Siciliano , , , , personperson Simone Simone FiliceSimone Filice , , , , personperson Cesare CampagnanoCesare Campagnano , , , , personperson Yoelle MaarekYoelle Maarek , , , , personperson Nicola Nicola TonellottoNicola Tonellotto , , , , andand personperson Fabrizio SilvestriFabrizio Silvestri ....",
+    "char_start": 50313,
+    "char_end": 50839,
+    "sentence_index": 331,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec015",
+    "text": "yearyear 2024202420242024 ....",
+    "char_start": 50840,
+    "char_end": 50870,
+    "sentence_index": 332,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec015",
+    "text": "The power of noise: Redefining retrieval for rag systems .",
+    "char_start": 50871,
+    "char_end": 50929,
+    "sentence_index": 333,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 50930,
+    "char_end": 51056,
+    "sentence_index": 334,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec015",
+    "text": "pages 719--729 .",
+    "char_start": 51057,
+    "char_end": 51073,
+    "sentence_index": 335,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec015",
+    "text": "poi2\nauthor person Qiang Cui , person Chenrui Zhang , person Yafeng Zhang , person Jinpeng Wang , and person Mingchen Cai .",
+    "char_start": 51075,
+    "char_end": 51198,
+    "sentence_index": 336,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec015",
+    "text": "year 2021 .",
+    "char_start": 51199,
+    "char_end": 51210,
+    "sentence_index": 337,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec015",
+    "text": "ST-PIL: Spatial-Temporal Periodic Interest Learning for Next Point-of-Interest Recommendation .",
+    "char_start": 51211,
+    "char_end": 51306,
+    "sentence_index": 338,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 30th ACM International Conference on Information \\& Knowledge Management .",
+    "char_start": 51307,
+    "char_end": 51413,
+    "sentence_index": 339,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec015",
+    "text": "pages 2960\u20132964 .",
+    "char_start": 51414,
+    "char_end": 51431,
+    "sentence_index": 340,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec015",
+    "text": "9781450384469\n\ndang2023uniform\nauthor person Yizhou Dang , person Enneng Yang , person Guibing Guo , person Linying Jiang , person Xingwei Wang , person Xiaoxiao Xu , person Qinghui Sun , and person Hong Liu .",
+    "char_start": 51433,
+    "char_end": 51642,
+    "sentence_index": 341,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 51643,
+    "char_end": 51654,
+    "sentence_index": 342,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec015",
+    "text": "Uniform sequence better: Time interval aware data augmentation for sequential recommendation .",
+    "char_start": 51655,
+    "char_end": 51749,
+    "sentence_index": 343,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the AAAI conference on artificial intelligence , Vol.",
+    "char_start": 51750,
+    "char_end": 51831,
+    "sentence_index": 344,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec015",
+    "text": "volume 37 .",
+    "char_start": 51832,
+    "char_end": 51843,
+    "sentence_index": 345,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec015",
+    "text": "pages 4225--4232 .",
+    "char_start": 51844,
+    "char_end": 51862,
+    "sentence_index": 346,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec015",
+    "text": "unsloth\nauthor person Michael Han Daniel Han and person Unsloth team .",
+    "char_start": 51864,
+    "char_end": 51934,
+    "sentence_index": 347,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 51935,
+    "char_end": 51946,
+    "sentence_index": 348,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec015",
+    "text": "booktitle Unsloth .",
+    "char_start": 51947,
+    "char_end": 51966,
+    "sentence_index": 349,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec015",
+    "text": "feng2024move\nauthor person Shanshan Feng , person Haoming Lyu , person Fan Li , person Zhu Sun , and person Caishun Chen .",
+    "char_start": 51968,
+    "char_end": 52090,
+    "sentence_index": 350,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 52091,
+    "char_end": 52102,
+    "sentence_index": 351,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec015",
+    "text": "Where to move next: Zero-shot generalization of llms for next poi recommendation .",
+    "char_start": 52103,
+    "char_end": 52185,
+    "sentence_index": 352,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec015",
+    "text": "In booktitle 2024 IEEE Conference on Artificial Intelligence (CAI) .",
+    "char_start": 52186,
+    "char_end": 52254,
+    "sentence_index": 353,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec015",
+    "text": "IEEE, pages 1530--1535 .",
+    "char_start": 52255,
+    "char_end": 52279,
+    "sentence_index": 354,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec015",
+    "text": "geng2024breaking\nauthor person Binzong Geng , person Zhaoxin Huan , person Xiaolu Zhang , person Yong He , person Liang Zhang , person Fajie Yuan , person Jun Zhou , and person Linjian Mo .",
+    "char_start": 52281,
+    "char_end": 52470,
+    "sentence_index": 355,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 52471,
+    "char_end": 52482,
+    "sentence_index": 356,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec015",
+    "text": "Breaking the length barrier: Llm-enhanced CTR prediction in long textual user behaviors .",
+    "char_start": 52483,
+    "char_end": 52572,
+    "sentence_index": 357,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 52573,
+    "char_end": 52699,
+    "sentence_index": 358,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec015",
+    "text": "pages 2311--2315 .",
+    "char_start": 52700,
+    "char_end": 52718,
+    "sentence_index": 359,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec015",
+    "text": "lora2021\nauthor person Edward J Hu , person yelong shen , person Phillip Wallis , person Zeyuan Allen-Zhu , person Yuanzhi Li , person Shean Wang , person Lu Wang , and person Weizhu Chen .",
+    "char_start": 52720,
+    "char_end": 52909,
+    "sentence_index": 360,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec015",
+    "text": "year 2022 .",
+    "char_start": 52910,
+    "char_end": 52921,
+    "sentence_index": 361,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec015",
+    "text": "LoRA: Low-Rank Adaptation of Large Language Models .",
+    "char_start": 52922,
+    "char_end": 52974,
+    "sentence_index": 362,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec015",
+    "text": "In booktitle International Conference on Learning Representations .",
+    "char_start": 52975,
+    "char_end": 53042,
+    "sentence_index": 363,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec015",
+    "text": "huang2019attention\nauthor person Liwei Huang , person Yutao Ma , person Shibo Wang , and person Yanbo Liu .",
+    "char_start": 53044,
+    "char_end": 53151,
+    "sentence_index": 364,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec015",
+    "text": "year 2019 .",
+    "char_start": 53152,
+    "char_end": 53163,
+    "sentence_index": 365,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec015",
+    "text": "An attention-based spatiotemporal lstm network for next poi recommendation .",
+    "char_start": 53164,
+    "char_end": 53240,
+    "sentence_index": 366,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec015",
+    "text": "journal IEEE Transactions on Services Computing volume 14 , number 6 ( year 2019 ), pages 1585--1597 .",
+    "char_start": 53241,
+    "char_end": 53343,
+    "sentence_index": 367,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec015",
+    "text": "huang2024learning\nauthor person Tianhao Huang , person Xuan Pan , person Xiangrui Cai , person Ying Zhang , and person Xiaojie Yuan .",
+    "char_start": 53345,
+    "char_end": 53478,
+    "sentence_index": 368,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 53479,
+    "char_end": 53490,
+    "sentence_index": 369,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec015",
+    "text": "Learning Time Slot Preferences via Mobility Tree for Next POI Recommendation .",
+    "char_start": 53491,
+    "char_end": 53569,
+    "sentence_index": 370,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the AAAI Conference on Artificial Intelligence , Vol.",
+    "char_start": 53570,
+    "char_end": 53651,
+    "sentence_index": 371,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec015",
+    "text": "volume 38 .",
+    "char_start": 53652,
+    "char_end": 53663,
+    "sentence_index": 372,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec015",
+    "text": "pages 8535--8543 .",
+    "char_start": 53664,
+    "char_end": 53682,
+    "sentence_index": 373,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec015",
+    "text": "jiang2023mistral7b\nauthor person Albert Q.",
+    "char_start": 53684,
+    "char_end": 53726,
+    "sentence_index": 374,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec015",
+    "text": "Jiang , person Alexandre Sablayrolles , person Arthur Mensch , person Chris Bamford , person Devendra Singh Chaplot , person Diego de las Casas , person Florian Bressand , person Gianna Lengyel , person Guillaume Lample , person Lucile Saulnier , person L\u00e9lio Renard Lavaud , person Marie-Anne Lachaux , person Pierre Stock , person Teven Le Scao , person Thibaut Lavril , person Thomas Wang , person Timoth\u00e9e Lacroix , and person William El Sayed .",
+    "char_start": 53727,
+    "char_end": 54176,
+    "sentence_index": 375,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 54177,
+    "char_end": 54188,
+    "sentence_index": 376,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec015",
+    "text": "title Mistral 7B .",
+    "char_start": 54189,
+    "char_end": 54207,
+    "sentence_index": 377,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec015",
+    "text": "2310.06825 [cs.CL]\n\njin2023time\nauthor person Ming Jin , person Shiyu Wang , person Lintao Ma , person Zhixuan Chu , person James Y.",
+    "char_start": 54209,
+    "char_end": 54341,
+    "sentence_index": 378,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec015",
+    "text": "Zhang , person Xiaoming Shi , person Pin-Yu Chen , person Yuxuan Liang , person Yuan-Fang Li , person Shirui Pan , and person Qingsong Wen .",
+    "char_start": 54342,
+    "char_end": 54482,
+    "sentence_index": 379,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 54483,
+    "char_end": 54494,
+    "sentence_index": 380,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec015",
+    "text": "Time-LLM: Time Series Forecasting by Reprogramming Large Language Models .",
+    "char_start": 54495,
+    "char_end": 54569,
+    "sentence_index": 381,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec015",
+    "text": "In booktitle ICLR .",
+    "char_start": 54570,
+    "char_end": 54589,
+    "sentence_index": 382,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec015",
+    "text": "kang2018self\nauthor person Wang-Cheng Kang and person Julian McAuley .",
+    "char_start": 54591,
+    "char_end": 54661,
+    "sentence_index": 383,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec015",
+    "text": "year 2018 .",
+    "char_start": 54662,
+    "char_end": 54673,
+    "sentence_index": 384,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec015",
+    "text": "Self-attentive sequential recommendation .",
+    "char_start": 54674,
+    "char_end": 54716,
+    "sentence_index": 385,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec015",
+    "text": "In booktitle 2018 IEEE international conference on data mining (ICDM) .",
+    "char_start": 54717,
+    "char_end": 54788,
+    "sentence_index": 386,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec015",
+    "text": "IEEE, pages 197--206 .",
+    "char_start": 54789,
+    "char_end": 54811,
+    "sentence_index": 387,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec015",
+    "text": "kim2024poi\nauthor person Hyebin Kim and person Sugie Lee .",
+    "char_start": 54813,
+    "char_end": 54871,
+    "sentence_index": 388,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 54872,
+    "char_end": 54883,
+    "sentence_index": 389,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec015",
+    "text": "POI GPT: Extracting POI information from social media text data .",
+    "char_start": 54884,
+    "char_end": 54949,
+    "sentence_index": 390,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec015",
+    "text": "journal The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences volume 48 ( year 2024 ), pages 113--118 .",
+    "char_start": 54950,
+    "char_end": 55097,
+    "sentence_index": 391,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec015",
+    "text": "kim2024large\nauthor person Sein Kim , person Hongseok Kang , person Seungyoon Choi , person Donghyun Kim , person Minchul Yang , and person Chanyoung Park .",
+    "char_start": 55099,
+    "char_end": 55255,
+    "sentence_index": 392,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 55256,
+    "char_end": 55267,
+    "sentence_index": 393,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec015",
+    "text": "Large language models meet collaborative filtering: An efficient all-round llm-based recommender system .",
+    "char_start": 55268,
+    "char_end": 55373,
+    "sentence_index": 394,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining .",
+    "char_start": 55374,
+    "char_end": 55473,
+    "sentence_index": 395,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec015",
+    "text": "pages 1395--1406 .",
+    "char_start": 55474,
+    "char_end": 55492,
+    "sentence_index": 396,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec015",
+    "text": "KOLAT2023100102\nauthor person M\u00e1t\u00e9 Kolat , person Tam\u00e1s Tettamanti , person Tam\u00e1s B\u00e9csi , and person Domokos Eszterg\u00e1r-Kiss .",
+    "char_start": 55494,
+    "char_end": 55619,
+    "sentence_index": 397,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 55620,
+    "char_end": 55631,
+    "sentence_index": 398,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec015",
+    "text": "On the relationship between the activity at point of interests and road traffic .",
+    "char_start": 55632,
+    "char_end": 55713,
+    "sentence_index": 399,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec015",
+    "text": "journal Communications in Transportation Research volume 3 ( year 2023 ), pages 100102 .",
+    "char_start": 55714,
+    "char_end": 55802,
+    "sentence_index": 400,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec015",
+    "text": "2772-4247\n\nlai2023large\nauthor person Siqi Lai , person Zhao Xu , person Weijia Zhang , person Hao Liu , and person Hui Xiong .",
+    "char_start": 55804,
+    "char_end": 55931,
+    "sentence_index": 401,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec015",
+    "text": "year 2023 b .",
+    "char_start": 55932,
+    "char_end": 55945,
+    "sentence_index": 402,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec015",
+    "text": "Large Language Models as Traffic Signal Control Agents: Capacity and Opportunity .",
+    "char_start": 55946,
+    "char_end": 56028,
+    "sentence_index": 403,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec015",
+    "text": "journal CoRR volume abs/2312.16044 ( year 2023 ).",
+    "char_start": 56029,
+    "char_end": 56078,
+    "sentence_index": 404,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec015",
+    "text": "lai2023multi\nauthor person Yantong Lai , person Yijun Su , person Lingwei Wei , person Gaode Chen , person Tianci Wang , and person Daren Zha .",
+    "char_start": 56080,
+    "char_end": 56223,
+    "sentence_index": 405,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec015",
+    "text": "year 2023 a .",
+    "char_start": 56224,
+    "char_end": 56237,
+    "sentence_index": 406,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec015",
+    "text": "Multi-view spatial-temporal enhanced hypergraph network for next poi recommendation .",
+    "char_start": 56238,
+    "char_end": 56323,
+    "sentence_index": 407,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec015",
+    "text": "In booktitle International Conference on Database Systems for Advanced Applications .",
+    "char_start": 56324,
+    "char_end": 56409,
+    "sentence_index": 408,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec015",
+    "text": "Springer, pages 237--252 .",
+    "char_start": 56410,
+    "char_end": 56436,
+    "sentence_index": 409,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec015",
+    "text": "lai2024disentangled\nauthor person Yantong Lai , person Yijun Su , person Lingwei Wei , person Tianqi He , person Haitao Wang , person Gaode Chen , person Daren Zha , person Qiang Liu , and person Xingxing Wang .",
+    "char_start": 56438,
+    "char_end": 56649,
+    "sentence_index": 410,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 56650,
+    "char_end": 56661,
+    "sentence_index": 411,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec015",
+    "text": "Disentangled contrastive hypergraph learning for next POI recommendation .",
+    "char_start": 56662,
+    "char_end": 56736,
+    "sentence_index": 412,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 56737,
+    "char_end": 56863,
+    "sentence_index": 413,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec015",
+    "text": "pages 1452--1462 .",
+    "char_start": 56864,
+    "char_end": 56882,
+    "sentence_index": 414,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec015",
+    "text": "li2024large\nauthor person Peibo Li , person Maarten de Rijke , person Hao Xue , person Shuang Ao , person Yang Song , and person Flora D Salim .",
+    "char_start": 56884,
+    "char_end": 57028,
+    "sentence_index": 415,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 57029,
+    "char_end": 57040,
+    "sentence_index": 416,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec015",
+    "text": "Large language models for next point-of-interest recommendation .",
+    "char_start": 57041,
+    "char_end": 57106,
+    "sentence_index": 417,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 57107,
+    "char_end": 57233,
+    "sentence_index": 418,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec015",
+    "text": "pages 1463--1472 .",
+    "char_start": 57234,
+    "char_end": 57252,
+    "sentence_index": 419,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec015",
+    "text": "li2023diffurec\nauthor person Zihao Li , person Aixin Sun , and person Chenliang Li .",
+    "char_start": 57254,
+    "char_end": 57338,
+    "sentence_index": 420,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 57339,
+    "char_end": 57350,
+    "sentence_index": 421,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec015",
+    "text": "Diffurec: A diffusion model for sequential recommendation .",
+    "char_start": 57351,
+    "char_end": 57410,
+    "sentence_index": 422,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec015",
+    "text": "journal ACM Transactions on Information Systems volume 42 , number 3 ( year 2023 ), pages 1--28 .",
+    "char_start": 57411,
+    "char_end": 57508,
+    "sentence_index": 423,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec015",
+    "text": "liu2024cbrec\nauthor person Bo Liu , person Jun Zeng , person Junhao Wen , person Min Gao , and person Wei Zhou .",
+    "char_start": 57510,
+    "char_end": 57622,
+    "sentence_index": 424,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec015",
+    "text": "year 2024 b .",
+    "char_start": 57623,
+    "char_end": 57636,
+    "sentence_index": 425,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec015",
+    "text": "CBRec: A causal way balancing multidimensional attraction effect in POI recommendations .",
+    "char_start": 57637,
+    "char_end": 57726,
+    "sentence_index": 426,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec015",
+    "text": "journal Knowledge-Based Systems volume 305 ( year 2024 ), pages 112607 .",
+    "char_start": 57727,
+    "char_end": 57799,
+    "sentence_index": 427,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec015",
+    "text": "liu2024can\nauthor person Lei Liu , person Shuo Yu , person Runze Wang , person Zhenxun Ma , and person Yanming Shen .",
+    "char_start": 57801,
+    "char_end": 57918,
+    "sentence_index": 428,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec015",
+    "text": "year 2024 a .",
+    "char_start": 57919,
+    "char_end": 57932,
+    "sentence_index": 429,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec015",
+    "text": "How can large language models understand spatial-temporal data?",
+    "char_start": 57933,
+    "char_end": 57996,
+    "sentence_index": 430,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2401.14192 ( year 2024 ).",
+    "char_start": 57997,
+    "char_end": 58051,
+    "sentence_index": 431,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec015",
+    "text": "liu2025st\nauthor person Ruyang Liu , person Chen Li , person Haoran Tang , person Yixiao Ge , person Ying Shan , and person Ge Li .",
+    "char_start": 58053,
+    "char_end": 58184,
+    "sentence_index": 432,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec015",
+    "text": "year 2025 .",
+    "char_start": 58185,
+    "char_end": 58196,
+    "sentence_index": 433,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec015",
+    "text": "St-llm: Large language models are effective temporal learners .",
+    "char_start": 58197,
+    "char_end": 58260,
+    "sentence_index": 434,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec015",
+    "text": "In booktitle European Conference on Computer Vision .",
+    "char_start": 58261,
+    "char_end": 58314,
+    "sentence_index": 435,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec015",
+    "text": "Springer, pages 1--18 .",
+    "char_start": 58315,
+    "char_end": 58338,
+    "sentence_index": 436,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec015",
+    "text": "lyu2024crud\nauthor person Yuanjie Lyu , person Zhiyu Li , person Simin Niu , person Feiyu Xiong , person Bo Tang , person Wenjin Wang , person Hao Wu , person Huanyong Liu , person Tong Xu , and person Enhong Chen .",
+    "char_start": 58340,
+    "char_end": 58555,
+    "sentence_index": 437,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 58556,
+    "char_end": 58567,
+    "sentence_index": 438,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec015",
+    "text": "Crud-rag: A comprehensive chinese benchmark for retrieval-augmented generation of large language models .",
+    "char_start": 58568,
+    "char_end": 58673,
+    "sentence_index": 439,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec015",
+    "text": "journal ACM Transactions on Information Systems ( year 2024 ).",
+    "char_start": 58674,
+    "char_end": 58736,
+    "sentence_index": 440,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec015",
+    "text": "nakshatri2023using\nauthor person Nishanth Nakshatri , person Siyi Liu , person Sihao Chen , person Dan Roth , person Dan Goldwasser , and person Daniel Hopkins .",
+    "char_start": 58738,
+    "char_end": 58899,
+    "sentence_index": 441,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 58900,
+    "char_end": 58911,
+    "sentence_index": 442,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec015",
+    "text": "Using LLM for improving key event discovery: Temporal-guided news stream clustering with event summaries .",
+    "char_start": 58912,
+    "char_end": 59018,
+    "sentence_index": 443,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec015",
+    "text": "In booktitle Findings of the Association for Computational Linguistics: EMNLP 2023 .",
+    "char_start": 59019,
+    "char_end": 59103,
+    "sentence_index": 444,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec015",
+    "text": "pages 4162--4173 .",
+    "char_start": 59104,
+    "char_end": 59122,
+    "sentence_index": 445,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec015",
+    "text": "youdao_bcembedding_2023\nauthor person Inc.",
+    "char_start": 59124,
+    "char_end": 59166,
+    "sentence_index": 446,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec015",
+    "text": "NetEase Youdao .",
+    "char_start": 59167,
+    "char_end": 59183,
+    "sentence_index": 447,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 59184,
+    "char_end": 59195,
+    "sentence_index": 448,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec015",
+    "text": "title BCEmbedding: Bilingual and crosslingual embedding for RAG .",
+    "char_start": 59196,
+    "char_end": 59261,
+    "sentence_index": 449,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec015",
+    "text": "howpublished .",
+    "char_start": 59262,
+    "char_end": 59276,
+    "sentence_index": 450,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec015",
+    "text": "pan2024textbf\nauthor person Zijie Pan , person Yushan Jiang , person Sahil Garg , person Anderson Schneider , person Yuriy Nevmyvaka , and person Dongjin Song .",
+    "char_start": 59278,
+    "char_end": 59438,
+    "sentence_index": 451,
+    "section_sentence_index": 141
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 59439,
+    "char_end": 59450,
+    "sentence_index": 452,
+    "section_sentence_index": 142
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec015",
+    "text": "S2IP-LLM: Semantic space informed prompt learning with LLM for time series forecasting .",
+    "char_start": 59451,
+    "char_end": 59539,
+    "sentence_index": 453,
+    "section_sentence_index": 143
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2403.05798 ( year 2024 ).",
+    "char_start": 59540,
+    "char_end": 59594,
+    "sentence_index": 454,
+    "section_sentence_index": 144
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec015",
+    "text": "qin2025taylors\nauthor person Jianyang Qin , person Yan Jia , person Binxing Fang , and person Qing Liao .",
+    "char_start": 59596,
+    "char_end": 59701,
+    "sentence_index": 455,
+    "section_sentence_index": 145
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec015",
+    "text": "year 2025 .",
+    "char_start": 59702,
+    "char_end": 59713,
+    "sentence_index": 456,
+    "section_sentence_index": 146
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec015",
+    "text": "TaylorS: A Multi-Order Expansion Structure for Urban Spatio-Temporal Forecasting .",
+    "char_start": 59714,
+    "char_end": 59796,
+    "sentence_index": 457,
+    "section_sentence_index": 147
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec015",
+    "text": "journal IEEE Transactions on Knowledge and Data Engineering ( year 2025 ).",
+    "char_start": 59797,
+    "char_end": 59871,
+    "sentence_index": 458,
+    "section_sentence_index": 148
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec015",
+    "text": "qiu2022contrastive\nauthor person Ruihong Qiu , person Zi Huang , person Hongzhi Yin , and person Zijian Wang .",
+    "char_start": 59873,
+    "char_end": 59983,
+    "sentence_index": 459,
+    "section_sentence_index": 149
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec015",
+    "text": "year 2022 .",
+    "char_start": 59984,
+    "char_end": 59995,
+    "sentence_index": 460,
+    "section_sentence_index": 150
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec015",
+    "text": "Contrastive learning for representation degeneration problem in sequential recommendation .",
+    "char_start": 59996,
+    "char_end": 60087,
+    "sentence_index": 461,
+    "section_sentence_index": 151
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the fifteenth ACM international conference on web search and data mining .",
+    "char_start": 60088,
+    "char_end": 60190,
+    "sentence_index": 462,
+    "section_sentence_index": 152
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec015",
+    "text": "pages 813--823 .",
+    "char_start": 60191,
+    "char_end": 60207,
+    "sentence_index": 463,
+    "section_sentence_index": 153
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec015",
+    "text": "qwen\nauthor person Qwen , person : , person An Yang , person Baosong Yang , person Beichen Zhang , person Binyuan Hui , person Bo Zheng , person Bowen Yu , person Chengyuan Li , person Dayiheng Liu , person Fei Huang , person Haoran Wei , person Huan Lin , person Jian Yang , person Jianhong Tu , person Jianwei Zhang , person Jianxin Yang , person Jiaxi Yang , person Jingren Zhou , person Junyang Lin , person Kai Dang , person Keming Lu , person Keqin Bao , person Kexin Yang , person Le Yu , person Mei Li , person Mingfeng Xue , person Pei Zhang , person Qin Zhu , person Rui Men , person Runji Lin , person Tianhao Li , person Tianyi Tang , person Tingyu Xia ,\nperson Xingzhang Ren , person Xuancheng Ren , person Yang Fan , person Yang Su , person Yichang Zhang , person Yu Wan , person Yuqiong Liu , person Zeyu Cui , person Zhenru Zhang , and person Zihan Qiu .",
+    "char_start": 60209,
+    "char_end": 61079,
+    "sentence_index": 464,
+    "section_sentence_index": 154
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec015",
+    "text": "year 2025 .",
+    "char_start": 61080,
+    "char_end": 61091,
+    "sentence_index": 465,
+    "section_sentence_index": 155
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec015",
+    "text": "title Qwen2.5 technical report .",
+    "char_start": 61092,
+    "char_end": 61124,
+    "sentence_index": 466,
+    "section_sentence_index": 156
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec015",
+    "text": "2412.15115 [cs.CL]\n\npoi1\nauthor person Pablo S\\' a nchez and person Alejandro Bellog\\' n .",
+    "char_start": 61126,
+    "char_end": 61216,
+    "sentence_index": 467,
+    "section_sentence_index": 157
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec015",
+    "text": "year 2022 .",
+    "char_start": 61217,
+    "char_end": 61228,
+    "sentence_index": 468,
+    "section_sentence_index": 158
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec015",
+    "text": "Point-of-Interest Recommender Systems Based on Location-Based Social Networks: A Survey from an Experimental Perspective .",
+    "char_start": 61229,
+    "char_end": 61351,
+    "sentence_index": 469,
+    "section_sentence_index": 159
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec015",
+    "text": "volume 54 , number 11s , Article articleno 223 ( year 2022 ), numpages 37 pages.",
+    "char_start": 61352,
+    "char_end": 61432,
+    "sentence_index": 470,
+    "section_sentence_index": 160
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec015",
+    "text": "0360-0300\n\nsreenivas2024llm\nauthor person Sharath Turuvekere Sreenivas , person Saurav Muralidharan , person Raviraj Joshi , person Marcin Chochowski , person Mostofa Patwary , person Mohammad Shoeybi , person Bryan Catanzaro , person Jan Kautz , and person Pavlo Molchanov .",
+    "char_start": 61434,
+    "char_end": 61709,
+    "sentence_index": 471,
+    "section_sentence_index": 161
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 61710,
+    "char_end": 61721,
+    "sentence_index": 472,
+    "section_sentence_index": 162
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec015",
+    "text": "Llm pruning and distillation in practice: The minitron approach .",
+    "char_start": 61722,
+    "char_end": 61787,
+    "sentence_index": 473,
+    "section_sentence_index": 163
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2408.11796 ( year 2024 ).",
+    "char_start": 61788,
+    "char_end": 61842,
+    "sentence_index": 474,
+    "section_sentence_index": 164
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec015",
+    "text": "BERT4Rec\nauthor person Fei Sun , person Jun Liu , person Jian Wu , person Changhua Pei , person Xiao Lin , person Wenwu Ou , and person Peng Jiang .",
+    "char_start": 61844,
+    "char_end": 61992,
+    "sentence_index": 475,
+    "section_sentence_index": 165
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec015",
+    "text": "year 2019 .",
+    "char_start": 61993,
+    "char_end": 62004,
+    "sentence_index": 476,
+    "section_sentence_index": 166
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec015",
+    "text": "BERT4Rec: Sequential recommendation with bidirectional encoder representations from transformer .",
+    "char_start": 62005,
+    "char_end": 62102,
+    "sentence_index": 477,
+    "section_sentence_index": 167
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 28th ACM International Conference on Information and Knowledge Management (Beijing, China) ( series CIKM '19 ) .",
+    "char_start": 62103,
+    "char_end": 62247,
+    "sentence_index": 478,
+    "section_sentence_index": 168
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec015",
+    "text": "publisher ACM , address New York, NY, USA , pages 1441--1450 .",
+    "char_start": 62248,
+    "char_end": 62310,
+    "sentence_index": 479,
+    "section_sentence_index": 169
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec015",
+    "text": "978-1-4503-6976-3\n\ntan2024idgenrec\nauthor person Juntao Tan , person Shuyuan Xu , person Wenyue Hua , person Yingqiang Ge , person Zelong Li , and person Yongfeng Zhang .",
+    "char_start": 62312,
+    "char_end": 62482,
+    "sentence_index": 480,
+    "section_sentence_index": 170
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 62483,
+    "char_end": 62494,
+    "sentence_index": 481,
+    "section_sentence_index": 171
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec015",
+    "text": "Idgenrec: Llm-recsys alignment with textual id learning .",
+    "char_start": 62495,
+    "char_end": 62552,
+    "sentence_index": 482,
+    "section_sentence_index": 172
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 62553,
+    "char_end": 62679,
+    "sentence_index": 483,
+    "section_sentence_index": 173
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec015",
+    "text": "pages 355--364 .",
+    "char_start": 62680,
+    "char_end": 62696,
+    "sentence_index": 484,
+    "section_sentence_index": 174
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec015",
+    "text": "tao2023next\nauthor person Hongjin Tao , person Jun Zeng , person Ziwei Wang , person Min Gao , and person Junhao Wen .",
+    "char_start": 62698,
+    "char_end": 62816,
+    "sentence_index": 485,
+    "section_sentence_index": 175
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 62817,
+    "char_end": 62828,
+    "sentence_index": 486,
+    "section_sentence_index": 176
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec015",
+    "text": "Next POI recommendation based on spatial and temporal disentanglement representation .",
+    "char_start": 62829,
+    "char_end": 62915,
+    "sentence_index": 487,
+    "section_sentence_index": 177
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec015",
+    "text": "In booktitle 2023 IEEE International Conference on Web Services (ICWS) .",
+    "char_start": 62916,
+    "char_end": 62988,
+    "sentence_index": 488,
+    "section_sentence_index": 178
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec015",
+    "text": "IEEE, pages 84--90 .",
+    "char_start": 62989,
+    "char_end": 63009,
+    "sentence_index": 489,
+    "section_sentence_index": 179
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec015",
+    "text": "tsai2024leveraging\nauthor person Alicia Y Tsai , person Adam Kraft , person Long Jin , person Chenwei Cai , person Anahita Hosseini , person Taibai Xu , person Zemin Zhang , person Lichan Hong , person Ed H Chi , and person Xinyang Yi .",
+    "char_start": 63011,
+    "char_end": 63247,
+    "sentence_index": 490,
+    "section_sentence_index": 180
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 63248,
+    "char_end": 63259,
+    "sentence_index": 491,
+    "section_sentence_index": 181
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec015",
+    "text": "Leveraging LLM Reasoning Enhances Personalized Recommender Systems .",
+    "char_start": 63260,
+    "char_end": 63328,
+    "sentence_index": 492,
+    "section_sentence_index": 182
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2408.00802 ( year 2024 ).",
+    "char_start": 63329,
+    "char_end": 63383,
+    "sentence_index": 493,
+    "section_sentence_index": 183
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec015",
+    "text": "vonwerra2022trl\nauthor person Leandro von Werra , person Younes Belkada , person Lewis Tunstall , person Edward Beeching , person Tristan Thrush , person Nathan Lambert , person Shengyi Huang , person Kashif Rasul , and person Quentin Gallou\u00e9dec .",
+    "char_start": 63385,
+    "char_end": 63632,
+    "sentence_index": 494,
+    "section_sentence_index": 184
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec015",
+    "text": "year 2020 .",
+    "char_start": 63633,
+    "char_end": 63644,
+    "sentence_index": 495,
+    "section_sentence_index": 185
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec015",
+    "text": "title TRL: Transformer reinforcement learning .",
+    "char_start": 63645,
+    "char_end": 63692,
+    "sentence_index": 496,
+    "section_sentence_index": 186
+  },
+  {
+    "sentence_id": "s0498",
+    "section_id": "sec015",
+    "text": "howpublished .",
+    "char_start": 63693,
+    "char_end": 63707,
+    "sentence_index": 497,
+    "section_sentence_index": 187
+  },
+  {
+    "sentence_id": "s0499",
+    "section_id": "sec015",
+    "text": "WANG2023308\nauthor person Kuo Wang , person LingBo Liu , person Yang Liu , person GuanBin Li , person Fan Zhou , and person Liang Lin .",
+    "char_start": 63709,
+    "char_end": 63844,
+    "sentence_index": 498,
+    "section_sentence_index": 188
+  },
+  {
+    "sentence_id": "s0500",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 63845,
+    "char_end": 63856,
+    "sentence_index": 499,
+    "section_sentence_index": 189
+  },
+  {
+    "sentence_id": "s0501",
+    "section_id": "sec015",
+    "text": "Urban regional function guided traffic flow prediction .",
+    "char_start": 63857,
+    "char_end": 63913,
+    "sentence_index": 500,
+    "section_sentence_index": 190
+  },
+  {
+    "sentence_id": "s0502",
+    "section_id": "sec015",
+    "text": "journal Information Sciences volume 634 ( year 2023 ), pages 308--320 .",
+    "char_start": 63914,
+    "char_end": 63985,
+    "sentence_index": 501,
+    "section_sentence_index": 191
+  },
+  {
+    "sentence_id": "s0503",
+    "section_id": "sec015",
+    "text": "0020-0255\n\nwang2024rethinking\nauthor person Qineng Wang , person Zihao Wang , person Ying Su , person Hanghang Tong , and person Yangqiu Song .",
+    "char_start": 63987,
+    "char_end": 64130,
+    "sentence_index": 502,
+    "section_sentence_index": 192
+  },
+  {
+    "sentence_id": "s0504",
+    "section_id": "sec015",
+    "text": "year 2024 b .",
+    "char_start": 64131,
+    "char_end": 64144,
+    "sentence_index": 503,
+    "section_sentence_index": 193
+  },
+  {
+    "sentence_id": "s0505",
+    "section_id": "sec015",
+    "text": "Rethinking the Bounds of LLM Reasoning: Are Multi-Agent Discussions the Key?",
+    "char_start": 64145,
+    "char_end": 64221,
+    "sentence_index": 504,
+    "section_sentence_index": 194
+  },
+  {
+    "sentence_id": "s0506",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2402.18272 ( year 2024 ).",
+    "char_start": 64222,
+    "char_end": 64276,
+    "sentence_index": 505,
+    "section_sentence_index": 195
+  },
+  {
+    "sentence_id": "s0507",
+    "section_id": "sec015",
+    "text": "wang2024embracing\nauthor person Tianxing Wang and person Can Wang .",
+    "char_start": 64278,
+    "char_end": 64345,
+    "sentence_index": 506,
+    "section_sentence_index": 196
+  },
+  {
+    "sentence_id": "s0508",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 64346,
+    "char_end": 64357,
+    "sentence_index": 507,
+    "section_sentence_index": 197
+  },
+  {
+    "sentence_id": "s0509",
+    "section_id": "sec015",
+    "text": "Embracing LLMs for Point-of-Interest Recommendations .",
+    "char_start": 64358,
+    "char_end": 64412,
+    "sentence_index": 508,
+    "section_sentence_index": 198
+  },
+  {
+    "sentence_id": "s0510",
+    "section_id": "sec015",
+    "text": "journal IEEE Intelligent Systems volume 39 , number 1 ( year 2024 ), pages 56--59 .",
+    "char_start": 64413,
+    "char_end": 64496,
+    "sentence_index": 509,
+    "section_sentence_index": 199
+  },
+  {
+    "sentence_id": "s0511",
+    "section_id": "sec015",
+    "text": "wang2024rdrec\nauthor person Xinfeng Wang , person Jin Cui , person Yoshimi Suzuki , and person Fumiyo Fukumoto .",
+    "char_start": 64498,
+    "char_end": 64610,
+    "sentence_index": 510,
+    "section_sentence_index": 200
+  },
+  {
+    "sentence_id": "s0512",
+    "section_id": "sec015",
+    "text": "year 2024 a .",
+    "char_start": 64611,
+    "char_end": 64624,
+    "sentence_index": 511,
+    "section_sentence_index": 201
+  },
+  {
+    "sentence_id": "s0513",
+    "section_id": "sec015",
+    "text": "RDRec: Rationale distillation for LLM-based recommendation .",
+    "char_start": 64625,
+    "char_end": 64685,
+    "sentence_index": 512,
+    "section_sentence_index": 202
+  },
+  {
+    "sentence_id": "s0514",
+    "section_id": "sec015",
+    "text": "journal arXiv preprint arXiv:2405.10587 ( year 2024 ).",
+    "char_start": 64686,
+    "char_end": 64740,
+    "sentence_index": 513,
+    "section_sentence_index": 203
+  },
+  {
+    "sentence_id": "s0515",
+    "section_id": "sec015",
+    "text": "wang2024dsdrec\nauthor person Ziwei Wang , person Jun Zeng , person Lin Zhong , person Ling Liu , person Min Gao , and person Junhao Wen .",
+    "char_start": 64742,
+    "char_end": 64879,
+    "sentence_index": 514,
+    "section_sentence_index": 204
+  },
+  {
+    "sentence_id": "s0516",
+    "section_id": "sec015",
+    "text": "year 2024 c .",
+    "char_start": 64880,
+    "char_end": 64893,
+    "sentence_index": 515,
+    "section_sentence_index": 205
+  },
+  {
+    "sentence_id": "s0517",
+    "section_id": "sec015",
+    "text": "DSDRec: Next POI recommendation using deep semantic extraction and diffusion model .",
+    "char_start": 64894,
+    "char_end": 64978,
+    "sentence_index": 516,
+    "section_sentence_index": 206
+  },
+  {
+    "sentence_id": "s0518",
+    "section_id": "sec015",
+    "text": "journal Information Sciences ( year 2024 ), pages 121004 .",
+    "char_start": 64979,
+    "char_end": 65037,
+    "sentence_index": 517,
+    "section_sentence_index": 207
+  },
+  {
+    "sentence_id": "s0519",
+    "section_id": "sec015",
+    "text": "wei2024llmrec\nauthor person Wei Wei , person Xubin Ren , person Jiabin Tang , person Qinyong Wang , person Lixin Su , person Suqi Cheng , person Junfeng Wang , person Dawei Yin , and person Chao Huang .",
+    "char_start": 65039,
+    "char_end": 65241,
+    "sentence_index": 518,
+    "section_sentence_index": 208
+  },
+  {
+    "sentence_id": "s0520",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 65242,
+    "char_end": 65253,
+    "sentence_index": 519,
+    "section_sentence_index": 209
+  },
+  {
+    "sentence_id": "s0521",
+    "section_id": "sec015",
+    "text": "Llmrec: Large language models with graph augmentation for recommendation .",
+    "char_start": 65254,
+    "char_end": 65328,
+    "sentence_index": 520,
+    "section_sentence_index": 210
+  },
+  {
+    "sentence_id": "s0522",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 17th ACM International Conference on Web Search and Data Mining .",
+    "char_start": 65329,
+    "char_end": 65426,
+    "sentence_index": 521,
+    "section_sentence_index": 211
+  },
+  {
+    "sentence_id": "s0523",
+    "section_id": "sec015",
+    "text": "pages 806--815 .",
+    "char_start": 65427,
+    "char_end": 65443,
+    "sentence_index": 522,
+    "section_sentence_index": 212
+  },
+  {
+    "sentence_id": "s0524",
+    "section_id": "sec015",
+    "text": "yan2023spatio\nauthor person Xiaodong Yan , person Tengwei Song , person Yifeng Jiao , person Jianshan He , person Jiaotuan Wang , person Ruopeng Li , and person Wei Chu .",
+    "char_start": 65445,
+    "char_end": 65615,
+    "sentence_index": 523,
+    "section_sentence_index": 213
+  },
+  {
+    "sentence_id": "s0525",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 65616,
+    "char_end": 65627,
+    "sentence_index": 524,
+    "section_sentence_index": 214
+  },
+  {
+    "sentence_id": "s0526",
+    "section_id": "sec015",
+    "text": "Spatio-temporal hypergraph learning for next POI recommendation .",
+    "char_start": 65628,
+    "char_end": 65693,
+    "sentence_index": 525,
+    "section_sentence_index": 215
+  },
+  {
+    "sentence_id": "s0527",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 46th international ACM SIGIR conference on research and development in information retrieval .",
+    "char_start": 65694,
+    "char_end": 65820,
+    "sentence_index": 526,
+    "section_sentence_index": 216
+  },
+  {
+    "sentence_id": "s0528",
+    "section_id": "sec015",
+    "text": "pages 403--412 .",
+    "char_start": 65821,
+    "char_end": 65837,
+    "sentence_index": 527,
+    "section_sentence_index": 217
+  },
+  {
+    "sentence_id": "s0529",
+    "section_id": "sec015",
+    "text": "yang2014modeling\nauthor person Dingqi Yang , person Daqing Zhang , person Vincent W Zheng , and person Zhiyong Yu .",
+    "char_start": 65839,
+    "char_end": 65954,
+    "sentence_index": 528,
+    "section_sentence_index": 218
+  },
+  {
+    "sentence_id": "s0530",
+    "section_id": "sec015",
+    "text": "year 2014 .",
+    "char_start": 65955,
+    "char_end": 65966,
+    "sentence_index": 529,
+    "section_sentence_index": 219
+  },
+  {
+    "sentence_id": "s0531",
+    "section_id": "sec015",
+    "text": "Modeling user activity preference by leveraging user spatial temporal characteristics in LBSNs .",
+    "char_start": 65967,
+    "char_end": 66063,
+    "sentence_index": 530,
+    "section_sentence_index": 220
+  },
+  {
+    "sentence_id": "s0532",
+    "section_id": "sec015",
+    "text": "journal IEEE Transactions on Systems, Man, and Cybernetics: Systems volume 45 , number 1 ( year 2014 ), pages 129--142 .",
+    "char_start": 66064,
+    "char_end": 66184,
+    "sentence_index": 531,
+    "section_sentence_index": 221
+  },
+  {
+    "sentence_id": "s0533",
+    "section_id": "sec015",
+    "text": "yang2022getnext\nauthor person Song Yang , person Jiamou Liu , and person Kaiqi Zhao .",
+    "char_start": 66186,
+    "char_end": 66271,
+    "sentence_index": 532,
+    "section_sentence_index": 222
+  },
+  {
+    "sentence_id": "s0534",
+    "section_id": "sec015",
+    "text": "year 2022 .",
+    "char_start": 66272,
+    "char_end": 66283,
+    "sentence_index": 533,
+    "section_sentence_index": 223
+  },
+  {
+    "sentence_id": "s0535",
+    "section_id": "sec015",
+    "text": "GETNext: trajectory flow map enhanced transformer for next POI recommendation .",
+    "char_start": 66284,
+    "char_end": 66363,
+    "sentence_index": 534,
+    "section_sentence_index": 224
+  },
+  {
+    "sentence_id": "s0536",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 45th International ACM SIGIR Conference on research and development in information retrieval .",
+    "char_start": 66364,
+    "char_end": 66490,
+    "sentence_index": 535,
+    "section_sentence_index": 225
+  },
+  {
+    "sentence_id": "s0537",
+    "section_id": "sec015",
+    "text": "pages 1144--1153 .",
+    "char_start": 66491,
+    "char_end": 66509,
+    "sentence_index": 536,
+    "section_sentence_index": 226
+  },
+  {
+    "sentence_id": "s0538",
+    "section_id": "sec015",
+    "text": "yang2024siamese\nauthor person Yuxuan Yang , person Siyuan Zhou , person He Weng , person Dongjing Wang , person Xin Zhang , person Dongjin Yu , and person Shuiguang Deng .",
+    "char_start": 66511,
+    "char_end": 66682,
+    "sentence_index": 537,
+    "section_sentence_index": 227
+  },
+  {
+    "sentence_id": "s0539",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 66683,
+    "char_end": 66694,
+    "sentence_index": 538,
+    "section_sentence_index": 228
+  },
+  {
+    "sentence_id": "s0540",
+    "section_id": "sec015",
+    "text": "Siamese learning based on graph differential equation for next-POI recommendation .",
+    "char_start": 66695,
+    "char_end": 66778,
+    "sentence_index": 539,
+    "section_sentence_index": 229
+  },
+  {
+    "sentence_id": "s0541",
+    "section_id": "sec015",
+    "text": "journal Applied Soft Computing volume 150 ( year 2024 ), pages 111086 .",
+    "char_start": 66779,
+    "char_end": 66850,
+    "sentence_index": 540,
+    "section_sentence_index": 230
+  },
+  {
+    "sentence_id": "s0542",
+    "section_id": "sec015",
+    "text": "ye2023graph\nauthor person Yaowen Ye , person Lianghao Xia , and person Chao Huang .",
+    "char_start": 66852,
+    "char_end": 66935,
+    "sentence_index": 541,
+    "section_sentence_index": 231
+  },
+  {
+    "sentence_id": "s0543",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 66936,
+    "char_end": 66947,
+    "sentence_index": 542,
+    "section_sentence_index": 232
+  },
+  {
+    "sentence_id": "s0544",
+    "section_id": "sec015",
+    "text": "Graph masked autoencoder for sequential recommendation .",
+    "char_start": 66948,
+    "char_end": 67004,
+    "sentence_index": 543,
+    "section_sentence_index": 233
+  },
+  {
+    "sentence_id": "s0545",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 46th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 67005,
+    "char_end": 67131,
+    "sentence_index": 544,
+    "section_sentence_index": 234
+  },
+  {
+    "sentence_id": "s0546",
+    "section_id": "sec015",
+    "text": "pages 321--330 .",
+    "char_start": 67132,
+    "char_end": 67148,
+    "sentence_index": 545,
+    "section_sentence_index": 235
+  },
+  {
+    "sentence_id": "s0547",
+    "section_id": "sec015",
+    "text": "yin2023next\nauthor person Feiyu Yin , person Yong Liu , person Zhiqi Shen , person Lisi Chen , person Shuo Shang , and person Peng Han .",
+    "char_start": 67150,
+    "char_end": 67286,
+    "sentence_index": 546,
+    "section_sentence_index": 236
+  },
+  {
+    "sentence_id": "s0548",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 67287,
+    "char_end": 67298,
+    "sentence_index": 547,
+    "section_sentence_index": 237
+  },
+  {
+    "sentence_id": "s0549",
+    "section_id": "sec015",
+    "text": "Next POI recommendation with dynamic graph and explicit dependency .",
+    "char_start": 67299,
+    "char_end": 67367,
+    "sentence_index": 548,
+    "section_sentence_index": 238
+  },
+  {
+    "sentence_id": "s0550",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the AAAI Conference on Artificial Intelligence , Vol.",
+    "char_start": 67368,
+    "char_end": 67449,
+    "sentence_index": 549,
+    "section_sentence_index": 239
+  },
+  {
+    "sentence_id": "s0551",
+    "section_id": "sec015",
+    "text": "volume 37 .",
+    "char_start": 67450,
+    "char_end": 67461,
+    "sentence_index": 550,
+    "section_sentence_index": 240
+  },
+  {
+    "sentence_id": "s0552",
+    "section_id": "sec015",
+    "text": "pages 4827--4834 .",
+    "char_start": 67462,
+    "char_end": 67480,
+    "sentence_index": 551,
+    "section_sentence_index": 241
+  },
+  {
+    "sentence_id": "s0553",
+    "section_id": "sec015",
+    "text": "yu2023harnessing\nauthor person Xinli Yu , person Zheng Chen , and person Yanbin Lu .",
+    "char_start": 67482,
+    "char_end": 67566,
+    "sentence_index": 552,
+    "section_sentence_index": 242
+  },
+  {
+    "sentence_id": "s0554",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 67567,
+    "char_end": 67578,
+    "sentence_index": 553,
+    "section_sentence_index": 243
+  },
+  {
+    "sentence_id": "s0555",
+    "section_id": "sec015",
+    "text": "Harnessing LLMs for temporal data-a study on explainable financial time series forecasting .",
+    "char_start": 67579,
+    "char_end": 67671,
+    "sentence_index": 554,
+    "section_sentence_index": 244
+  },
+  {
+    "sentence_id": "s0556",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: Industry Track .",
+    "char_start": 67672,
+    "char_end": 67789,
+    "sentence_index": 555,
+    "section_sentence_index": 245
+  },
+  {
+    "sentence_id": "s0557",
+    "section_id": "sec015",
+    "text": "pages 739--753 .",
+    "char_start": 67790,
+    "char_end": 67806,
+    "sentence_index": 556,
+    "section_sentence_index": 246
+  },
+  {
+    "sentence_id": "s0558",
+    "section_id": "sec015",
+    "text": "yuan2024back\nauthor person Chenhan Yuan , person Qianqian Xie , person Jimin Huang , and person Sophia Ananiadou .",
+    "char_start": 67808,
+    "char_end": 67922,
+    "sentence_index": 557,
+    "section_sentence_index": 247
+  },
+  {
+    "sentence_id": "s0559",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 67923,
+    "char_end": 67934,
+    "sentence_index": 558,
+    "section_sentence_index": 248
+  },
+  {
+    "sentence_id": "s0560",
+    "section_id": "sec015",
+    "text": "Back to the future: Towards explainable temporal reasoning with large language models .",
+    "char_start": 67935,
+    "char_end": 68022,
+    "sentence_index": 559,
+    "section_sentence_index": 249
+  },
+  {
+    "sentence_id": "s0561",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the ACM on Web Conference 2024 .",
+    "char_start": 68023,
+    "char_end": 68083,
+    "sentence_index": 560,
+    "section_sentence_index": 250
+  },
+  {
+    "sentence_id": "s0562",
+    "section_id": "sec015",
+    "text": "pages 1963--1974 .",
+    "char_start": 68084,
+    "char_end": 68102,
+    "sentence_index": 561,
+    "section_sentence_index": 251
+  },
+  {
+    "sentence_id": "s0563",
+    "section_id": "sec015",
+    "text": "yuan2013time\nauthor person Quan Yuan , person Gao Cong , person Zongyang Ma , person Aixin Sun , and person Nadia Magnenat Thalmann .",
+    "char_start": 68104,
+    "char_end": 68237,
+    "sentence_index": 562,
+    "section_sentence_index": 252
+  },
+  {
+    "sentence_id": "s0564",
+    "section_id": "sec015",
+    "text": "year 2013 .",
+    "char_start": 68238,
+    "char_end": 68249,
+    "sentence_index": 563,
+    "section_sentence_index": 253
+  },
+  {
+    "sentence_id": "s0565",
+    "section_id": "sec015",
+    "text": "Time-aware point-of-interest recommendation .",
+    "char_start": 68250,
+    "char_end": 68295,
+    "sentence_index": 564,
+    "section_sentence_index": 254
+  },
+  {
+    "sentence_id": "s0566",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 36th international ACM SIGIR conference on Research and development in information retrieval .",
+    "char_start": 68296,
+    "char_end": 68422,
+    "sentence_index": 565,
+    "section_sentence_index": 255
+  },
+  {
+    "sentence_id": "s0567",
+    "section_id": "sec015",
+    "text": "pages 363--372 .",
+    "char_start": 68423,
+    "char_end": 68439,
+    "sentence_index": 566,
+    "section_sentence_index": 256
+  },
+  {
+    "sentence_id": "s0568",
+    "section_id": "sec015",
+    "text": "zeng2025global\nauthor person Jun Zeng , person Hongjin Tao , person Haoran Tang , person Junhao Wen , and person Min Gao .",
+    "char_start": 68441,
+    "char_end": 68563,
+    "sentence_index": 567,
+    "section_sentence_index": 257
+  },
+  {
+    "sentence_id": "s0569",
+    "section_id": "sec015",
+    "text": "year 2025 .",
+    "char_start": 68564,
+    "char_end": 68575,
+    "sentence_index": 568,
+    "section_sentence_index": 258
+  },
+  {
+    "sentence_id": "s0570",
+    "section_id": "sec015",
+    "text": "Global and local hypergraph learning method with semantic enhancement for POI recommendation .",
+    "char_start": 68576,
+    "char_end": 68670,
+    "sentence_index": 569,
+    "section_sentence_index": 259
+  },
+  {
+    "sentence_id": "s0571",
+    "section_id": "sec015",
+    "text": "journal Information Processing \\& Management volume 62 , number 1 ( year 2025 ), pages 103868 .",
+    "char_start": 68671,
+    "char_end": 68766,
+    "sentence_index": 570,
+    "section_sentence_index": 260
+  },
+  {
+    "sentence_id": "s0572",
+    "section_id": "sec015",
+    "text": "zeng2023lgsa\nauthor person Jun Zeng , person Yizhu Zhao , person Ziwei Wang , person Hongjin Tao , person Min Gao , and person Junhao Wen .",
+    "char_start": 68768,
+    "char_end": 68907,
+    "sentence_index": 571,
+    "section_sentence_index": 261
+  },
+  {
+    "sentence_id": "s0573",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 68908,
+    "char_end": 68919,
+    "sentence_index": 572,
+    "section_sentence_index": 262
+  },
+  {
+    "sentence_id": "s0574",
+    "section_id": "sec015",
+    "text": "LGSA: A next POI prediction method by using local and global interest with spatiotemporal awareness .",
+    "char_start": 68920,
+    "char_end": 69021,
+    "sentence_index": 573,
+    "section_sentence_index": 263
+  },
+  {
+    "sentence_id": "s0575",
+    "section_id": "sec015",
+    "text": "journal Expert Systems with Applications volume 227 ( year 2023 ), pages 120291 .",
+    "char_start": 69022,
+    "char_end": 69103,
+    "sentence_index": 574,
+    "section_sentence_index": 264
+  },
+  {
+    "sentence_id": "s0576",
+    "section_id": "sec015",
+    "text": "zhao2020go\nauthor person Pengpeng Zhao , person Anjing Luo , person Yanchi Liu , person Jiajie Xu , person Zhixu Li , person Fuzhen Zhuang , person Victor S Sheng , and person Xiaofang Zhou .",
+    "char_start": 69105,
+    "char_end": 69296,
+    "sentence_index": 575,
+    "section_sentence_index": 265
+  },
+  {
+    "sentence_id": "s0577",
+    "section_id": "sec015",
+    "text": "year 2020 .",
+    "char_start": 69297,
+    "char_end": 69308,
+    "sentence_index": 576,
+    "section_sentence_index": 266
+  },
+  {
+    "sentence_id": "s0578",
+    "section_id": "sec015",
+    "text": "Where to go next: A spatio-temporal gated network for next poi recommendation .",
+    "char_start": 69309,
+    "char_end": 69388,
+    "sentence_index": 577,
+    "section_sentence_index": 267
+  },
+  {
+    "sentence_id": "s0579",
+    "section_id": "sec015",
+    "text": "journal IEEE Transactions on Knowledge and Data Engineering volume 34 , number 5 ( year 2020 ), pages 2512--2524 .",
+    "char_start": 69389,
+    "char_end": 69503,
+    "sentence_index": 578,
+    "section_sentence_index": 268
+  },
+  {
+    "sentence_id": "s0580",
+    "section_id": "sec015",
+    "text": "zhao2024let\nauthor person Yuyue Zhao , person Jiancan Wu , person Xiang Wang , person Wei Tang , person Dingxian Wang , and person Maarten de Rijke .",
+    "char_start": 69505,
+    "char_end": 69654,
+    "sentence_index": 579,
+    "section_sentence_index": 269
+  },
+  {
+    "sentence_id": "s0581",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 69655,
+    "char_end": 69666,
+    "sentence_index": 580,
+    "section_sentence_index": 270
+  },
+  {
+    "sentence_id": "s0582",
+    "section_id": "sec015",
+    "text": "Let me do it for you: Towards llm empowered recommendation via tool learning .",
+    "char_start": 69667,
+    "char_end": 69745,
+    "sentence_index": 581,
+    "section_sentence_index": 271
+  },
+  {
+    "sentence_id": "s0583",
+    "section_id": "sec015",
+    "text": "In booktitle Proceedings of the 47th International ACM SIGIR Conference on Research and Development in Information Retrieval .",
+    "char_start": 69746,
+    "char_end": 69872,
+    "sentence_index": 582,
+    "section_sentence_index": 272
+  },
+  {
+    "sentence_id": "s0584",
+    "section_id": "sec015",
+    "text": "pages 1796--1806 .",
+    "char_start": 69873,
+    "char_end": 69891,
+    "sentence_index": 583,
+    "section_sentence_index": 273
+  },
+  {
+    "sentence_id": "s0585",
+    "section_id": "sec015",
+    "text": "zhong2024scfl\nauthor person Lin Zhong , person Jun Zeng , person Ziwei Wang , person Wei Zhou , and person Junhao Wen .",
+    "char_start": 69893,
+    "char_end": 70012,
+    "sentence_index": 584,
+    "section_sentence_index": 274
+  },
+  {
+    "sentence_id": "s0586",
+    "section_id": "sec015",
+    "text": "year 2024 .",
+    "char_start": 70013,
+    "char_end": 70024,
+    "sentence_index": 585,
+    "section_sentence_index": 275
+  },
+  {
+    "sentence_id": "s0587",
+    "section_id": "sec015",
+    "text": "SCFL: Spatio-temporal consistency federated learning for next POI recommendation .",
+    "char_start": 70025,
+    "char_end": 70107,
+    "sentence_index": 586,
+    "section_sentence_index": 276
+  },
+  {
+    "sentence_id": "s0588",
+    "section_id": "sec015",
+    "text": "journal Information Processing \\& Management volume 61 , number 6 ( year 2024 ), pages 103852 .",
+    "char_start": 70108,
+    "char_end": 70203,
+    "sentence_index": 587,
+    "section_sentence_index": 277
+  },
+  {
+    "sentence_id": "s0589",
+    "section_id": "sec015",
+    "text": "zhuang2023toolqa\nauthor person Yuchen Zhuang , person Yue Yu , person Kuan Wang , person Haotian Sun , and person Chao Zhang .",
+    "char_start": 70205,
+    "char_end": 70331,
+    "sentence_index": 588,
+    "section_sentence_index": 278
+  },
+  {
+    "sentence_id": "s0590",
+    "section_id": "sec015",
+    "text": "year 2023 .",
+    "char_start": 70332,
+    "char_end": 70343,
+    "sentence_index": 589,
+    "section_sentence_index": 279
+  },
+  {
+    "sentence_id": "s0591",
+    "section_id": "sec015",
+    "text": "Toolqa: A dataset for llm question answering with external tools .",
+    "char_start": 70344,
+    "char_end": 70410,
+    "sentence_index": 590,
+    "section_sentence_index": 280
+  },
+  {
+    "sentence_id": "s0592",
+    "section_id": "sec015",
+    "text": "journal Advances in Neural Information Processing Systems volume 36 ( year 2023 ), pages 50117--50143 .",
+    "char_start": 70411,
+    "char_end": 70514,
+    "sentence_index": 591,
+    "section_sentence_index": 281
+  }
+]

@@ -1,0 +1,4403 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Reasoning is a fundamental capability for solving complex multi-step problems, particularly in visual contexts where sequential step-wise understanding is essential.",
+    "char_start": 0,
+    "char_end": 165,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Existing approaches lack a comprehensive framework for evaluating visual reasoning and do not emphasize step-wise problem-solving.",
+    "char_start": 166,
+    "char_end": 296,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To this end, we propose a comprehensive framework for advancing step-by-step visual reasoning in large language models (LMMs) through three key contributions.",
+    "char_start": 297,
+    "char_end": 455,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "First , we introduce a visual reasoning chain benchmark specifically designed to evaluate multi-step reasoning tasks.",
+    "char_start": 456,
+    "char_end": 573,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "The benchmark presents a diverse set of challenges with eight different categories ranging from complex visual perception to scientific reasoning with over 4k reasoning steps in total, enabling robust evaluation of LLMs\u2019 abilities to perform accurate and interpretable visual reasoning across multiple steps.",
+    "char_start": 574,
+    "char_end": 882,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Second , we propose a novel metric that assesses visual reasoning quality at the granularity of individual steps, emphasizing both correctness and logical coherence.",
+    "char_start": 883,
+    "char_end": 1048,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "The proposed metric offers deeper insights into reasoning performance compared to traditional end-task accuracy metrics.",
+    "char_start": 1049,
+    "char_end": 1169,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Third , we present a new multimodal visual reasoning model, named LlamaV-o1, trained using a multi-step curriculum learning approach, where tasks are progressively organized to facilitate incremental skill acquisition and problem-solving.",
+    "char_start": 1170,
+    "char_end": 1408,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "The proposed LlamaV-o1 is designed for multi-step reasoning and learns step-by-step through a structured training paradigm.",
+    "char_start": 1409,
+    "char_end": 1532,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "Extensive experiments show that our LlamaV-o1 outperforms existing open-source models and performs favourably against close-source proprietary models.",
+    "char_start": 1533,
+    "char_end": 1683,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec001",
+    "text": "Compared to the recent Llava-CoT, our LlamaV-o1 achieves an average score of 67.3 with an absolute gain of 3.8\\% across six benchmarks while being 5$ $ faster during inference scaling.",
+    "char_start": 1684,
+    "char_end": 1868,
+    "sentence_index": 10,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec001",
+    "text": "Our benchmark, model, and code are publicly available.",
+    "char_start": 1869,
+    "char_end": 1923,
+    "sentence_index": 11,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) are designed to understand and generate text, enabling them to handle a wide range of tasks such as translation , summarization , and question-answering .",
+    "char_start": 1925,
+    "char_end": 2108,
+    "sentence_index": 12,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "The integration of visual data through Large Multimodal Models (LMMs) extends capabilities further by combining text, images, or videos, allowing for more complex multimodal tasks like image captioning, visual question answering, and video analysis.",
+    "char_start": 2109,
+    "char_end": 2358,
+    "sentence_index": 13,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "To effectively solve these tasks, visual reasoning is essential for LMMs to process and connect diverse information, ensuring logical coherence and sequential problem-solving.",
+    "char_start": 2359,
+    "char_end": 2534,
+    "sentence_index": 14,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "The ability to reason across multiple modalities is crucial to addressing complex real-world problems.",
+    "char_start": 2535,
+    "char_end": 2637,
+    "sentence_index": 15,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To improve the problem-solving ability of LLMs, step-by-step reasoning is desired to break down complex tasks into easier components.",
+    "char_start": 2639,
+    "char_end": 2772,
+    "sentence_index": 16,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This approach resembles human cognitive processes, enabling models to track their thought processes and ensure logical consistency throughout their reasoning.",
+    "char_start": 2773,
+    "char_end": 2931,
+    "sentence_index": 17,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "By following a structured reasoning path, models can reach more accurate and interpretable conclusions.",
+    "char_start": 2932,
+    "char_end": 3035,
+    "sentence_index": 18,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "To this end, previous works have demonstrated that prompting or fine-tuning LLMs to generate step-by-step rationales can lead to improvements in reasoning tasks .",
+    "char_start": 3036,
+    "char_end": 3198,
+    "sentence_index": 19,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "These methods encourage models to explicitly reason through each step, focusing on improving their ability to tackle complex tasks.",
+    "char_start": 3199,
+    "char_end": 3330,
+    "sentence_index": 20,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "However, most existing works struggle to handle step-by-step multimodal reasoning tasks (see Fig.",
+    "char_start": 3331,
+    "char_end": 3428,
+    "sentence_index": 21,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": ").",
+    "char_start": 3429,
+    "char_end": 3431,
+    "sentence_index": 22,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Further, a notable gap in current visual reasoning benchmarks is their lack of emphasis on step-by-step reasoning.",
+    "char_start": 3432,
+    "char_end": 3546,
+    "sentence_index": 23,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Most benchmarks focus primarily on end-task accuracy, neglecting the quality of intermediate reasoning steps.",
+    "char_start": 3547,
+    "char_end": 3656,
+    "sentence_index": 24,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Moreover, the absence of standardized evaluation can likely lead to inaccurate comparisons between models, making it difficult to assess their true visual reasoning capabilities.",
+    "char_start": 3657,
+    "char_end": 3835,
+    "sentence_index": 25,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "[t!]\n\nassets/teaser_figure.pdf\n\nComparison of the reasoning abilities of our model (LlamaV-o1) with closed-source Gemini-1.5-Flash and Claude-3.5-Sonnet on an example in pattern recognition task from our proposed VRC-Bench.",
+    "char_start": 3837,
+    "char_end": 4060,
+    "sentence_index": 26,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "While Claude-3.5-Sonnet concludes \"none of the options,\" its reasoning steps lack full alignment with the observed logic (highlighted in red).",
+    "char_start": 4061,
+    "char_end": 4203,
+    "sentence_index": 27,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Gemini-1.5-Flash demonstrates weaker reasoning with less logical coherence details (highlighted in red).",
+    "char_start": 4204,
+    "char_end": 4308,
+    "sentence_index": 28,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Our LlamaV-o1 provides better and more systematic reasoning, identifying that option D follows the established pattern, thereby showcasing its logical reasoning capability.",
+    "char_start": 4309,
+    "char_end": 4481,
+    "sentence_index": 29,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Additional results are presented in Fig.",
+    "char_start": 4482,
+    "char_end": 4522,
+    "sentence_index": 30,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": ".\n\nOur work strives to bridge the aforementioned gaps by introducing a holistic approach to evaluating step-by-step visual reasoning capabilities.",
+    "char_start": 4523,
+    "char_end": 4669,
+    "sentence_index": 31,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "To this end, we introduce Visual Reasoning-Chain (VRC-Bench), a comprehensive a benchmark specifically designed to assess multi-step visual reasoning tasks.",
+    "char_start": 4670,
+    "char_end": 4826,
+    "sentence_index": 32,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "The benchmark spans 8 diverse categories: Visual Reasoning, Math \\& Logic Reasoning, Social \\& Cultural Context, Medical Imaging (Basic Medical Science), Charts \\& Diagram Understanding, OCR \\& Document Understanding, Complex Visual Perception, and Scientific Reasoning.",
+    "char_start": 4827,
+    "char_end": 5097,
+    "sentence_index": 33,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "It includes over 1,000 challenging samples, meticulously curated to evaluate reasoning capabilities across various domains.",
+    "char_start": 5098,
+    "char_end": 5221,
+    "sentence_index": 34,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Furthermore, the benchmark features 4,173 manually verified reasoning steps, ensuring accuracy and reliability in assessing step-by-step logical reasoning.",
+    "char_start": 5222,
+    "char_end": 5377,
+    "sentence_index": 35,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Recognizing that measuring end-task accuracy is insufficient, we present a new metric that evaluates visual reasoning quality at the granularity of individual steps, focusing on both correctness and logical coherence.",
+    "char_start": 5378,
+    "char_end": 5595,
+    "sentence_index": 36,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Further, we explore the combined advantages of integrating Beam Search with Multi-Step curriculum learning in the training of visual reasoning models.",
+    "char_start": 5596,
+    "char_end": 5746,
+    "sentence_index": 37,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "By leveraging the efficiency of Beam Search alongside the progressive structure of curriculum learning, the proposed model incrementally acquires skills, starting with simpler tasks such as summary of the approach and question derived captioning and advancing to more complex multi-step reasoning scenarios, ensuring both optimized inference and robust reasoning capabilities.",
+    "char_start": 5747,
+    "char_end": 6123,
+    "sentence_index": 38,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "We observe this structured training paradigm not only to enhance the model's performance but also to improve interpretability and adaptability in handling different visual reasoning tasks (see Fig.",
+    "char_start": 6124,
+    "char_end": 6321,
+    "sentence_index": 39,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": ").",
+    "char_start": 6322,
+    "char_end": 6324,
+    "sentence_index": 40,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "Our extensive experiments demonstrate that our approach, named LlamaV-o1, outperforms existing open-source methods, including the recent Llava-CoT model, across multiple evaluation metrics.",
+    "char_start": 6325,
+    "char_end": 6514,
+    "sentence_index": 41,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "In summary, this paper presents a unified framework that aims to advance step-by-step visual reasoning capabilities through a new benchmark, a novel metric, and a new model trained with curriculum learning.",
+    "char_start": 6516,
+    "char_end": 6722,
+    "sentence_index": 42,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "Our contributions are as follows:\n\nStep-by-Step Visual Reasoning Benchmark: To the best of our knowledge, the proposed benchmark is the first effort designed to evaluate multimodal multi-step reasoning tasks across diverse topics.",
+    "char_start": 6723,
+    "char_end": 6953,
+    "sentence_index": 43,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "The proposed benchmark, named VRC-Bench, spans around eight different categories (Visual Reasoning, Math \\& Logic Reasoning, Social \\& Cultural Context, Medical Imaging (Basic Medical Science), Charts \\& Diagram Understanding, OCR \\& Document Understanding, Complex Visual Perception and Scientific Reasoning) with over 1,000 challenging samples and more than 4k reasoning steps.",
+    "char_start": 6954,
+    "char_end": 7333,
+    "sentence_index": 44,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "Novel Evaluation Metric: A metric that assesses the reasoning quality at the level of individual steps, emphasizing both correctness and logical coherence.",
+    "char_start": 7334,
+    "char_end": 7489,
+    "sentence_index": 45,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "Combined Multi-Step Curriculum Learning and Beam Search Approach: A multimodal reasoning method, named LlamaV-o1, that combines the structured progression of curriculum learning with the efficiency of Beam Search.",
+    "char_start": 7491,
+    "char_end": 7704,
+    "sentence_index": 46,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "The proposed approach ensures incremental skill development while optimizing reasoning paths, enabling the model to be effective in complex multi-step visual reasoning tasks in terms of both accuracy and efficiency.",
+    "char_start": 7705,
+    "char_end": 7920,
+    "sentence_index": 47,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "Specifically, the proposed LlamaV-o1 achieves an absolute gain of 3.8\\% in terms of average score across six benchmarks while being 5$ $ faster, compared to the recent Llava-CoT .",
+    "char_start": 7921,
+    "char_end": 8100,
+    "sentence_index": 48,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "Reasoning with LLMs: The development of robust reasoning capabilities in Large Language Models (LLMs) has been a focal point of research.",
+    "char_start": 8102,
+    "char_end": 8239,
+    "sentence_index": 49,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "Early work often relied on neural-symbolic methods for explicit modeling of the reasoning process using formal language instead of natural language .",
+    "char_start": 8240,
+    "char_end": 8389,
+    "sentence_index": 50,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "However, the emergence of powerful LLMs has prompted new approaches that leverage their inherent reasoning abilities .",
+    "char_start": 8390,
+    "char_end": 8508,
+    "sentence_index": 51,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "For example, inference time computing is scaled in recent models to perform reasoning before giving the final answer .",
+    "char_start": 8509,
+    "char_end": 8627,
+    "sentence_index": 52,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "Techniques like Chain-of-Thought (CoT) prompting, where a complex question is decomposed into intermediate reasoning steps, have shown promise in guiding LLMs to structured solutions .",
+    "char_start": 8628,
+    "char_end": 8812,
+    "sentence_index": 53,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "Nevertheless, maintaining logical consistency, especially in tasks requiring multi-step inference, poses a significant challenge, leading to errors and hallucinated outputs .",
+    "char_start": 8813,
+    "char_end": 8987,
+    "sentence_index": 54,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "LLMs, even with CoT guidance, might generate unfaithful explanations, deviate from logical reasoning paths, and struggle with verifying and selecting correct reasoning steps .",
+    "char_start": 8988,
+    "char_end": 9163,
+    "sentence_index": 55,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "These approaches are further extended to VLMs.",
+    "char_start": 9164,
+    "char_end": 9210,
+    "sentence_index": 56,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": "Reasoning with VLMs:\nVisual reasoning tasks require models to possess visual perception and high-level cognitive abilities .",
+    "char_start": 9212,
+    "char_end": 9336,
+    "sentence_index": 57,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "The visual reasoning skills have broad applicability across domains such as science , mathematics , robotic planning and advanced question answering .",
+    "char_start": 9337,
+    "char_end": 9487,
+    "sentence_index": 58,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "Similar to the case of LLMs, the conventional approaches employed neural-symbolic methods to explicitly model the reasoning process .",
+    "char_start": 9488,
+    "char_end": 9621,
+    "sentence_index": 59,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "For example, amizadeh2020neuro propose differentiable logic formalism to decouple the reasoning aspect of VQA from visual perception.",
+    "char_start": 9622,
+    "char_end": 9755,
+    "sentence_index": 60,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "More recent VLMs leverage the reasoning capabilities of LLMs for visual tasks.",
+    "char_start": 9756,
+    "char_end": 9834,
+    "sentence_index": 61,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "Visual programming provides a modular neuro-symbolic system based on computer vision models as functions and GPT-3 LLM for compositional visual reasoning.",
+    "char_start": 9835,
+    "char_end": 9989,
+    "sentence_index": 62,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "Zhang et al.",
+    "char_start": 9990,
+    "char_end": 10002,
+    "sentence_index": 63,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "argue that VLM training with concise answers results in reduced generalization to more complex problems requiring reasoning.",
+    "char_start": 10003,
+    "char_end": 10127,
+    "sentence_index": 64,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "They use GPT-4o model to create rationales and use correct and incorrect reasoning chains in training to enhance model's reasoning ability via reinforcement learning (RL) .",
+    "char_start": 10128,
+    "char_end": 10300,
+    "sentence_index": 65,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "In contrast, LlaVA-o1 does not use RL and advocates for stage-wise reasoning instead of CoT prompting, where the answer is worked out sequentially via summarization, interpretation, reasoning, and conclusion steps.",
+    "char_start": 10301,
+    "char_end": 10515,
+    "sentence_index": 66,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "Our work builds on and shows the importance of curriculum learning and path search for visual reasoning.",
+    "char_start": 10516,
+    "char_end": 10620,
+    "sentence_index": 67,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec003",
+    "text": "Benchmarks for Visual Reasoning:\nSeveral datasets and benchmarks have been developed to evaluate and advance visual reasoning in VLMs.",
+    "char_start": 10622,
+    "char_end": 10756,
+    "sentence_index": 68,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec003",
+    "text": "These datasets vary in complexity, visual context, and reasoning skills required.",
+    "char_start": 10757,
+    "char_end": 10838,
+    "sentence_index": 69,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec003",
+    "text": "Some notable examples are as follows.",
+    "char_start": 10839,
+    "char_end": 10876,
+    "sentence_index": 70,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec003",
+    "text": "CLEVR (Compositional Language and Elementary Visual Reasoning) tests visual reasoning abilities like counting, comparisons, and logical inference through rendered images and automatically generated questions .",
+    "char_start": 10877,
+    "char_end": 11086,
+    "sentence_index": 71,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec003",
+    "text": "StrategyQA is a multi-hop question-answering dataset on Wikipedia that necessitates implicit decompositions and diverse reasoning strategies .",
+    "char_start": 11087,
+    "char_end": 11229,
+    "sentence_index": 72,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec003",
+    "text": "ScienceQA offers a large-scale multimodal science dataset with multi-modal contexts, diverse science topics, and annotated answers with corresponding lectures and explanations .",
+    "char_start": 11230,
+    "char_end": 11407,
+    "sentence_index": 73,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec003",
+    "text": "A consolidated mathematical reasoning benchmark in diverse visual contexts called MathVista incorporates 28 existing multimodal datasets and three new datasets .",
+    "char_start": 11408,
+    "char_end": 11569,
+    "sentence_index": 74,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec003",
+    "text": "Zhang et al.",
+    "char_start": 11570,
+    "char_end": 11582,
+    "sentence_index": 75,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec003",
+    "text": "propose ShareGPT-4o-Reasoning, a comprehensive CoT dataset containing 193k examples covering various VQA tasks, designed to improve CoT reasoning in VLMs.",
+    "char_start": 11583,
+    "char_end": 11737,
+    "sentence_index": 76,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec003",
+    "text": "However, these benchmarks do not provide step-by-step reasoning in complex evaluation scenarios and generally judge the correctness based on only the final answer.",
+    "char_start": 11738,
+    "char_end": 11901,
+    "sentence_index": 77,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec003",
+    "text": "In this work, our goal is to provide a comprehensive benchmark that assesses the reasoning chains as well as the final outcome in complex reasoning scenarios.",
+    "char_start": 11902,
+    "char_end": 12060,
+    "sentence_index": 78,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec003",
+    "text": "[t]\n\nassets/dataset_examples.pdf\n\nThe proposed VRC-Bench examples show the diverse and challenging reasoning tasks our benchmark encompasses, spanning a wide range of modalities and contexts.",
+    "char_start": 12062,
+    "char_end": 12253,
+    "sentence_index": 79,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec003",
+    "text": "Each example emphasizes step-by-step reasoning, starting from task comprehension and progressing to logical inference and answer generation.",
+    "char_start": 12254,
+    "char_end": 12394,
+    "sentence_index": 80,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec003",
+    "text": "The tasks include mathematical reasoning using geometric principles, scientific classification based on molecular structures, visual interpretation of charts and diagrams, artistic identification from historical paintings, and medical diagnosis from tissue images.",
+    "char_start": 12395,
+    "char_end": 12659,
+    "sentence_index": 81,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec003",
+    "text": "For instance, one example demonstrates the calculation of an angle in a geometric diagram by leveraging linear pairs and perpendicular relationships.",
+    "char_start": 12660,
+    "char_end": 12809,
+    "sentence_index": 82,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec003",
+    "text": "Another highlights scientific reasoning by identifying ethane as a compound based on its molecular composition.",
+    "char_start": 12810,
+    "char_end": 12921,
+    "sentence_index": 83,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec003",
+    "text": "Visual perception tasks challenge the model to analyze pie charts for global energy reserves or recognize reflected shapes.",
+    "char_start": 12922,
+    "char_end": 13045,
+    "sentence_index": 84,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec003",
+    "text": "Artistic and cultural tasks require identifying paintings and sports based on visual and contextual cues.",
+    "char_start": 13046,
+    "char_end": 13151,
+    "sentence_index": 85,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec003",
+    "text": "Finally, tasks in medical imaging and advertisement recognition test the model's ability to classify tissue types or extract product names through careful observation.",
+    "char_start": 13152,
+    "char_end": 13319,
+    "sentence_index": 86,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec004",
+    "text": "To facilitate a thorough assessment of the reasoning capabilities in complex scenarios, we introduce a step-by-step visual reasoning benchmark.",
+    "char_start": 13321,
+    "char_end": 13464,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec004",
+    "text": "This benchmark serves as a structured tool to assess both the logical progression of reasoning chains and the accuracy of the final outcomes generated by LMMs.",
+    "char_start": 13465,
+    "char_end": 13624,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec004",
+    "text": "By integrating diverse datasets that include a diverse range of topics, such as science, mathematics, medical knowledge, social sciences, and data interpretation, we ensure that our evaluation benchmark captures the diverse aspects of reasoning.",
+    "char_start": 13625,
+    "char_end": 13870,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec004",
+    "text": "[t]\n\nassets/intro_figure.pdf\n\nThe figure illustrates our comprehensive benchmark structure and comparative performance of LMMs on the proposed ReasoningChain-Bench.",
+    "char_start": 13872,
+    "char_end": 14036,
+    "sentence_index": 90,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec004",
+    "text": "(Left) The dataset spans multiple domains, including carefully selected samples for mathematical and logical reasoning (e.g., MathVista with 231 samples and LogicVista with 158 samples), scientific reasoning (e.g., Science-QA with 83 samples), and visual perception (e.g., Blink-IQ-Test with 35 samples).",
+    "char_start": 14037,
+    "char_end": 14341,
+    "sentence_index": 91,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec004",
+    "text": "Additionally, it includes specialized areas such as medical imaging (e.g., MMMU-Medical with 29 samples), cultural and social understanding (e.g., ALM-Bench with 104 samples), and document understanding through OCR (e.g., Doc-VQA with 61 samples).",
+    "char_start": 14342,
+    "char_end": 14589,
+    "sentence_index": 92,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec004",
+    "text": "By integrating tasks like chart and diagram comprehension (e.g., Chart-VQA with 107 samples), our dataset not only covers a broad spectrum of real-world applications but also expand LMM's ability to reason, perceive, and interpret complex multimodal information.",
+    "char_start": 14590,
+    "char_end": 14852,
+    "sentence_index": 93,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec004",
+    "text": "(Right) The bar chart compares various SoTA reasoning models on the VRC-Bench, highlighting both final answer accuracy and step-by-step reasoning scores.",
+    "char_start": 14853,
+    "char_end": 15006,
+    "sentence_index": 94,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec004",
+    "text": "The models evaluated for complex reasoning tasks include GPT-4o, Gemini-2.0-Flash, Claude-3.5-Sonnet, and Llava-CoT.",
+    "char_start": 15007,
+    "char_end": 15123,
+    "sentence_index": 95,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec004",
+    "text": "Our benchmark evaluates models not only on their ability to generate accurate final answers but also on the coherence and logical flow of their reasoning steps.",
+    "char_start": 15124,
+    "char_end": 15284,
+    "sentence_index": 96,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec004",
+    "text": "Our approach, LlamaV-o1, outperforms GPT-4o-mini, Gemini-1.5-Flash and Llava-CoT in the VRC-Bench, achieving superior results in final answer accuracy across complex multimodal reasoning tasks.",
+    "char_start": 15285,
+    "char_end": 15478,
+    "sentence_index": 97,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec005",
+    "text": "Benchmark Domains: To ensure a comprehensive assessment of reasoning capabilities, our step-by-step visual reasoning benchmark incorporates samples from several specific datasets across various domains.",
+    "char_start": 15480,
+    "char_end": 15682,
+    "sentence_index": 98,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec005",
+    "text": "Figure shows examples of the questions and answers included in our benchmark.",
+    "char_start": 15683,
+    "char_end": 15760,
+    "sentence_index": 99,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec005",
+    "text": "The data distribution is shown in Figure .",
+    "char_start": 15761,
+    "char_end": 15803,
+    "sentence_index": 100,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec005",
+    "text": "By integrating these diverse sources, we capture a wide range of reasoning scenarios, allowing for an extensive evaluation of the models' abilities to respond to complex inquiries.",
+    "char_start": 15804,
+    "char_end": 15984,
+    "sentence_index": 101,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec005",
+    "text": "Based on these diverse data samples, we generate step-by-step reasoning steps using a semi-automated annotation pipeline with detailed rationales.",
+    "char_start": 15985,
+    "char_end": 16131,
+    "sentence_index": 102,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec005",
+    "text": "Next, we outline the main domains covered in the benchmark and then explain the annotation process.",
+    "char_start": 16132,
+    "char_end": 16231,
+    "sentence_index": 103,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec005",
+    "text": "Mathematical and Logical Reasoning :\nThis category includes datasets focused on mathematical and logical tasks.",
+    "char_start": 16233,
+    "char_end": 16344,
+    "sentence_index": 104,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec005",
+    "text": "MathVista , provides a variety of mathematical problems, while DynaMath offers dynamic mathematical challenges.",
+    "char_start": 16345,
+    "char_end": 16456,
+    "sentence_index": 105,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec005",
+    "text": "Additionally, ChartQA encompasses tasks related to chart and diagram comprehension, allowing evaluation of visual reasoning in logical contexts.",
+    "char_start": 16457,
+    "char_end": 16601,
+    "sentence_index": 106,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec005",
+    "text": "Scientific Reasoning :\nFor scientific reasoning, we include samples from Science-QA to test the model's ability to answer questions based on scientific knowledge and reasoning.",
+    "char_start": 16603,
+    "char_end": 16779,
+    "sentence_index": 107,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec005",
+    "text": "Furthermore, MMMU-Medical , focuses on medical imaging tasks, assessing the model's capability in interpreting complex multimodal medical data.",
+    "char_start": 16780,
+    "char_end": 16923,
+    "sentence_index": 108,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec005",
+    "text": "Cultural and Social Understanding :\nTo assess the model\u2019s ability to recognize and interpret diverse cultural scenarios, we include samples from ALM-Bench , which is designed to assess understanding of the social and cultural context.",
+    "char_start": 16925,
+    "char_end": 17159,
+    "sentence_index": 109,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec005",
+    "text": "Other Visual Reasoning Scenarios :\nWe further include samples from other visual reasoning datasets.",
+    "char_start": 17161,
+    "char_end": 17260,
+    "sentence_index": 110,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec005",
+    "text": "LogicVista and Blink-IQ focus on complex visual perception, providing challenges that require the model to analyze and interpret intricate visual information.",
+    "char_start": 17261,
+    "char_end": 17419,
+    "sentence_index": 111,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec005",
+    "text": "Doc-VQA targets OCR and document understanding, evaluating the model's ability to extract information from text-based documents.",
+    "char_start": 17420,
+    "char_end": 17548,
+    "sentence_index": 112,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec005",
+    "text": "Lastly, MMMU and BLINK (Art Split) contribute to visual reasoning tasks.",
+    "char_start": 17549,
+    "char_end": 17621,
+    "sentence_index": 113,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec005",
+    "text": "Semi-Automatic Step-by-Step Reasoning Generation: We adopt a semi-automatic approach to generate step-by-step reasoning responses.",
+    "char_start": 17623,
+    "char_end": 17753,
+    "sentence_index": 114,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec005",
+    "text": "We begin by using the GPT-4o model to create detailed reasoning steps and answers for the various questions in our dataset.",
+    "char_start": 17754,
+    "char_end": 17877,
+    "sentence_index": 115,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec005",
+    "text": "This involves crafting specific prompts to guide the model in producing detailed logical reasoning.",
+    "char_start": 17878,
+    "char_end": 17977,
+    "sentence_index": 116,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec005",
+    "text": "In this way, we efficiently generate various reasoning chains with a consistent format, where the step-by-step reasoning includes all the required steps and actions to reach the desired answer.",
+    "char_start": 17978,
+    "char_end": 18171,
+    "sentence_index": 117,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec005",
+    "text": "Additional details are provided in Appendix (Section.",
+    "char_start": 18172,
+    "char_end": 18225,
+    "sentence_index": 118,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec005",
+    "text": ").",
+    "char_start": 18226,
+    "char_end": 18228,
+    "sentence_index": 119,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec005",
+    "text": "Manual Verification: Since automated responses are not always reliable, we perform manual verification to ensure that all reasoning steps are accurate and correct.",
+    "char_start": 18230,
+    "char_end": 18393,
+    "sentence_index": 120,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec005",
+    "text": "In this stage, a team of verifiers meticulously reviewed the generated reasoning chains and final answers, making necessary adjustments to enhance clarity and correctness.",
+    "char_start": 18394,
+    "char_end": 18565,
+    "sentence_index": 121,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec005",
+    "text": "Our benchmark consists of examples spanning over 8 diverse categories as shown in Fig.",
+    "char_start": 18566,
+    "char_end": 18652,
+    "sentence_index": 122,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec005",
+    "text": ".\nWe ask the verifiers to add missing reasoning steps when necessary, and we drop examples with less than three reasoning steps after the verification except some samples from MathVista as they can be addressed with 2 steps.",
+    "char_start": 18653,
+    "char_end": 18877,
+    "sentence_index": 123,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec005",
+    "text": "Over 25\\% of the data was corrected during the manual verification resulting in more than 1,000 samples and carefully verified 4,173 reasoning steps.",
+    "char_start": 18878,
+    "char_end": 19027,
+    "sentence_index": 124,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec005",
+    "text": "The manual verification stage is essential for establishing a trustworthy ground truth, which serves as the benchmark for evaluating LMMs performance in our evaluations.",
+    "char_start": 19028,
+    "char_end": 19197,
+    "sentence_index": 125,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec005",
+    "text": "[ht]\n\nAn overview of comprehensive set of attributes considered in our evaluation to assess the quality of reasoning in LMMs.",
+    "char_start": 19199,
+    "char_end": 19324,
+    "sentence_index": 126,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec005",
+    "text": "These attributes focus on critical aspects such as faithfulness, informativeness, and logical coherence of reasoning steps.",
+    "char_start": 19325,
+    "char_end": 19448,
+    "sentence_index": 127,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec005",
+    "text": "Key measures include ensuring alignment of reasoning steps with the source (Faithfulness-Step and Token), completeness of information (Informativeness-Step), and identifying issues like hallucinations, redundancy, or missing steps.",
+    "char_start": 19449,
+    "char_end": 19680,
+    "sentence_index": 128,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec005",
+    "text": "Additional metrics, such as Semantic Coverage and Reasoning Alignment, evaluate the logical and semantic integrity of the response.",
+    "char_start": 19681,
+    "char_end": 19812,
+    "sentence_index": 129,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec005",
+    "text": "Together, these metrics provide a robust framework for evaluating the accuracy, completeness, and reliability of LLM-generated reasoning.",
+    "char_start": 19813,
+    "char_end": 19950,
+    "sentence_index": 130,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec005",
+    "text": "@ p 0.3 p 0.65 @\n\nMetric & Definition\n\nFaithfulness-Step & Measures how well the reasoning steps in the LMM response align with the source reasoning steps.",
+    "char_start": 19952,
+    "char_end": 20107,
+    "sentence_index": 131,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec005",
+    "text": "Faithfulness-Token & Extends Faithfulness-Step to token-level granularity, checking if the content within each step is accurate.",
+    "char_start": 20109,
+    "char_end": 20237,
+    "sentence_index": 132,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec005",
+    "text": "Informativeness-Step & Measures how well the reasoning steps extract all relevant information from the context.",
+    "char_start": 20239,
+    "char_end": 20350,
+    "sentence_index": 133,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec005",
+    "text": "Repetition-Token & Identifies repeated or unnecessarily paraphrased reasoning steps.",
+    "char_start": 20352,
+    "char_end": 20436,
+    "sentence_index": 134,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec005",
+    "text": "Hallucination & Detects irrelevant or fabricated reasoning steps not aligned with the source.",
+    "char_start": 20438,
+    "char_end": 20531,
+    "sentence_index": 135,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec005",
+    "text": "Redundancy & Identifies redundant reasoning steps that do not add value.",
+    "char_start": 20533,
+    "char_end": 20605,
+    "sentence_index": 136,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec005",
+    "text": "Semantic Coverage-Step & Measures how well the response covers the essential semantic elements of the source reasoning steps.",
+    "char_start": 20607,
+    "char_end": 20732,
+    "sentence_index": 137,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec005",
+    "text": "Reasoning Alignment & Overall alignment between the hypothesis and reference reasoning chain.",
+    "char_start": 20734,
+    "char_end": 20827,
+    "sentence_index": 138,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec005",
+    "text": "Commonsense & Checks for missing commonsense reasoning are required to solve the problem.",
+    "char_start": 20829,
+    "char_end": 20918,
+    "sentence_index": 139,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec005",
+    "text": "Missing Step & Identifies if any necessary reasoning steps are missing.",
+    "char_start": 20920,
+    "char_end": 20991,
+    "sentence_index": 140,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec006",
+    "text": "While multiple previous methods have been proposed for evaluating reasoning chains , these methods exhibit various limitations.",
+    "char_start": 20993,
+    "char_end": 21120,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec006",
+    "text": "These methods adopt a reference-free approach, as they do not depend on a set ground truth.",
+    "char_start": 21121,
+    "char_end": 21212,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec006",
+    "text": "While this allows for flexibility in evaluation, it can lead to significant problems.",
+    "char_start": 21213,
+    "char_end": 21298,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec006",
+    "text": "For example, even if the reasoning steps are logically sequenced, a minor error can lead to a major disruption in the reasoning chain but still result in a high score.",
+    "char_start": 21299,
+    "char_end": 21466,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec006",
+    "text": "This compromises the accuracy of the assessment, as it does not truly reflect the quality of the reasoning.",
+    "char_start": 21467,
+    "char_end": 21574,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec006",
+    "text": "In our research, we stress on the importance of having a ground truth for scoring.",
+    "char_start": 21575,
+    "char_end": 21657,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec006",
+    "text": "By comparing generated responses to a reliable reference, we aim to improve the accuracy of our evaluations.",
+    "char_start": 21658,
+    "char_end": 21766,
+    "sentence_index": 147,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec006",
+    "text": "Using a ground truth reasoning chain allows us to better identify and address inaccuracies.",
+    "char_start": 21767,
+    "char_end": 21858,
+    "sentence_index": 148,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec006",
+    "text": "Evaluation Metric: To overcome the shortcomings of reference-free metrics, we use GPT-4o openai2024gpt4ocard to compare the predictions generated by the model against a ground truth.",
+    "char_start": 21860,
+    "char_end": 22042,
+    "sentence_index": 149,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec006",
+    "text": "This method allows us to evaluate reasoning quality using specific metrics that focus on different aspects of alignment and accuracy.",
+    "char_start": 22043,
+    "char_end": 22176,
+    "sentence_index": 150,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec006",
+    "text": "We base our metric on the reference-free ROSCOE suite of metrics and propose a reference-based metric.",
+    "char_start": 22177,
+    "char_end": 22279,
+    "sentence_index": 151,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec006",
+    "text": "We show the details of the measures used in our metric in Table .",
+    "char_start": 22280,
+    "char_end": 22345,
+    "sentence_index": 152,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec006",
+    "text": "For instance, we use the Faithfulness-Step and Faithfulness-Token metrics to assess how well the reasoning aligns with the source.",
+    "char_start": 22346,
+    "char_end": 22476,
+    "sentence_index": 153,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec006",
+    "text": "The Faithfulness-Step metric scores alignment on a scale from 1 to 10, providing clear feedback on the accuracy of each reasoning step.",
+    "char_start": 22477,
+    "char_end": 22612,
+    "sentence_index": 154,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec006",
+    "text": "We also measure Informativeness-Step, which checks if all critical information is included.",
+    "char_start": 22613,
+    "char_end": 22704,
+    "sentence_index": 155,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec006",
+    "text": "By incorporating attributes like Hallucination and Redundancy, we can spot irrelevant or repetitive reasoning that reduces clarity.",
+    "char_start": 22705,
+    "char_end": 22836,
+    "sentence_index": 156,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec006",
+    "text": "The final scoring process averages all attribute scores to give a comprehensive evaluation of reasoning quality.",
+    "char_start": 22837,
+    "char_end": 22949,
+    "sentence_index": 157,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec006",
+    "text": "Additional details such as system prompt used for scoring are provided in Appendix (Section.",
+    "char_start": 22950,
+    "char_end": 23042,
+    "sentence_index": 158,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec006",
+    "text": ").",
+    "char_start": 23043,
+    "char_end": 23045,
+    "sentence_index": 159,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec007",
+    "text": "Our proposed approach introduces several key contributions to advance multimodal reasoning in LMMs.",
+    "char_start": 23047,
+    "char_end": 23146,
+    "sentence_index": 160,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec007",
+    "text": "First, we leverage curriculum learning to train the model progressively, starting with foundational tasks like summarization of approach and question based caption generation before advancing to detailed, multi-step reasoning.",
+    "char_start": 23147,
+    "char_end": 23373,
+    "sentence_index": 161,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec007",
+    "text": "This structured approach helps the model manage complexity, improve logical coherence, and generalize effectively to challenging scenarios.",
+    "char_start": 23374,
+    "char_end": 23513,
+    "sentence_index": 162,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec007",
+    "text": "Second, we scale inference efficiently with a simple yet effective Beam Search technique, which generates multiple beams in parallel and selects the most optimal one, ensuring both efficiency and high-quality outputs.",
+    "char_start": 23514,
+    "char_end": 23731,
+    "sentence_index": 163,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec007",
+    "text": "This method significantly reduces computational costs, achieving constant scaling compared to the linear scaling of traditional approaches in terms of model calls.",
+    "char_start": 23732,
+    "char_end": 23895,
+    "sentence_index": 164,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec008",
+    "text": "LMMs are powerful tools for understanding and generating content across different data types, such as text, images, and video.",
+    "char_start": 23897,
+    "char_end": 24023,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec008",
+    "text": "However, reasoning in such models, especially in complex multi-step scenarios, presents unique challenges.",
+    "char_start": 24024,
+    "char_end": 24130,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec008",
+    "text": "Models often struggle to handle step-by-step reasoning because reasoning requires not only understanding the input but also maintaining consistency and logical clarity across multiple steps.",
+    "char_start": 24131,
+    "char_end": 24321,
+    "sentence_index": 167,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec008",
+    "text": "This is where curriculum learning becomes an essential strategy.",
+    "char_start": 24322,
+    "char_end": 24386,
+    "sentence_index": 168,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec008",
+    "text": "Curriculum learning, inspired by human education systems, involves training a model progressively, starting from simpler tasks and gradually introducing more complex ones.",
+    "char_start": 24387,
+    "char_end": 24558,
+    "sentence_index": 169,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec008",
+    "text": "This approach has shown significant benefits in improving model performance across various tasks, particularly when the tasks require reasoning over multiple modalities.",
+    "char_start": 24559,
+    "char_end": 24728,
+    "sentence_index": 170,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec008",
+    "text": "For instance, curriculum learning has been successfully applied in multimodal learning such as Visual Question Answering (VQA) and captioning tasks .",
+    "char_start": 24729,
+    "char_end": 24878,
+    "sentence_index": 171,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec008",
+    "text": "These studies demonstrate that models trained with simpler examples first and later gradually increasing task difficulty can generalize better to more complex problems.",
+    "char_start": 24879,
+    "char_end": 25047,
+    "sentence_index": 172,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec008",
+    "text": "Curriculum learning is a powerful approach for enhancing reasoning capabilities in LMMs by adopting a progressive training strategy.",
+    "char_start": 25049,
+    "char_end": 25181,
+    "sentence_index": 173,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec008",
+    "text": "Starting with complex task and gradually introducing more difficult complex challenges, it helps models to build foundational skills incrementally.",
+    "char_start": 25182,
+    "char_end": 25329,
+    "sentence_index": 174,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec008",
+    "text": "In the case of multimodal models, this structured progression allows to manage complexity effectively, as they first learn to interpret basic relationships between modalities, such as connecting text with images, before tackling more intricate scenarios.",
+    "char_start": 25330,
+    "char_end": 25584,
+    "sentence_index": 175,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec008",
+    "text": "By ensuring a strong basis for logical reasoning, curriculum learning improves the coherence of multi-step tasks, enabling models to maintain consistency and alignment across steps.",
+    "char_start": 25585,
+    "char_end": 25766,
+    "sentence_index": 176,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec008",
+    "text": "In addition, curriculum learning addresses challenges like catastrophic forgetting, which can occur when models are directly fine-tuned on complex tasks, leading to overfitting and poor generalization.",
+    "char_start": 25767,
+    "char_end": 25968,
+    "sentence_index": 177,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec008",
+    "text": "By focusing initially on simpler tasks, models consolidate fundamental patterns before progressing to more advanced problems.",
+    "char_start": 25969,
+    "char_end": 26094,
+    "sentence_index": 178,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec008",
+    "text": "This approach mirrors human learning, where basic skills are mastered before tackling complex concepts, ensuring better generalization and adaptability.",
+    "char_start": 26095,
+    "char_end": 26247,
+    "sentence_index": 179,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec008",
+    "text": "Overall, curriculum learning establishes a robust framework for developing reasoning capabilities, making multimodal models more reliable and effective across a wide range of real-world applications.",
+    "char_start": 26248,
+    "char_end": 26447,
+    "sentence_index": 180,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec009",
+    "text": "Multi-step chain-of-thought reasoning is crucial for tackling complex tasks that require sequential decision-making and logical coherence.",
+    "char_start": 26449,
+    "char_end": 26587,
+    "sentence_index": 181,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec009",
+    "text": "Unlike single-step reasoning, which often overlooks intermediate steps, multi-step reasoning allows models to break down problems into smaller, manageable parts, ensuring transparency and consistency throughout the process.",
+    "char_start": 26588,
+    "char_end": 26811,
+    "sentence_index": 182,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec009",
+    "text": "This step-by-step approach mirrors how humans solve complex problems by systematically reasoning through each step.",
+    "char_start": 26812,
+    "char_end": 26927,
+    "sentence_index": 183,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec009",
+    "text": "For instance, answering a multifaceted question about an image might involve identifying objects, understanding their relationships, and synthesizing this information to form a coherent answer.",
+    "char_start": 26928,
+    "char_end": 27121,
+    "sentence_index": 184,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec009",
+    "text": "Embracing multi-step reasoning not only enhances the interpretability of multimodal models but also aligns them closer to human-like problem-solving, setting the stage for more robust and versatile AI systems.",
+    "char_start": 27122,
+    "char_end": 27331,
+    "sentence_index": 185,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec010",
+    "text": "Multi-step reasoning in chain-of-thought (CoT) frameworks enables models to break down complex tasks into incremental steps, mirroring the human approach to problem-solving.",
+    "char_start": 27333,
+    "char_end": 27506,
+    "sentence_index": 186,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec010",
+    "text": "This structured process ensures that each reasoning step is explicit and logical, improving transparency and accuracy.",
+    "char_start": 27507,
+    "char_end": 27625,
+    "sentence_index": 187,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec010",
+    "text": "Our multi-step reasoning comprises of following steps also depicted as an example in the box below:\n\nTask Understanding: The model begins by understanding the question and the context.",
+    "char_start": 27626,
+    "char_end": 27810,
+    "sentence_index": 188,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec010",
+    "text": "Task Summarization: The next step involves generating a summary of the visual data to ensure the model has a holistic understanding.",
+    "char_start": 27811,
+    "char_end": 27943,
+    "sentence_index": 189,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec010",
+    "text": "This stage prepares the model to focus on relevant action items to be taken to get the final answer.",
+    "char_start": 27944,
+    "char_end": 28044,
+    "sentence_index": 190,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec010",
+    "text": "Detailed Caption Generation: To narrow the scope further, the model generates a detailed caption, which identifies specific labels and their corresponding values in the chart.",
+    "char_start": 28045,
+    "char_end": 28220,
+    "sentence_index": 191,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec010",
+    "text": "This step ensures that the model accurately interprets the visual elements.",
+    "char_start": 28221,
+    "char_end": 28296,
+    "sentence_index": 192,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec010",
+    "text": "Logical Reasoning: The model then formulates a logical reasoning process to locate and interpret the required data.",
+    "char_start": 28297,
+    "char_end": 28412,
+    "sentence_index": 193,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec010",
+    "text": "This reasoning step breaks the task into sub-goals, ensuring a systematic approach.",
+    "char_start": 28413,
+    "char_end": 28496,
+    "sentence_index": 194,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec010",
+    "text": "Final Answer Generation: Finally, the model outputs the final answer based on the reasoning process and the extracted context.",
+    "char_start": 28497,
+    "char_end": 28623,
+    "sentence_index": 195,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec010",
+    "text": "Breaking down reasoning into these stages ensures that models process complex queries methodically, reducing errors and enhancing interpretability.",
+    "char_start": 28625,
+    "char_end": 28772,
+    "sentence_index": 196,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec010",
+    "text": "multi-step training reinforces the ability to handle each stage effectively, enabling LMMs to perform better on tasks that require step-by-step logical reasoning.",
+    "char_start": 28773,
+    "char_end": 28935,
+    "sentence_index": 197,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec010",
+    "text": "This approach not only improves accuracy but also provides a transparent pathway for verifying and refining the model's outputs.",
+    "char_start": 28936,
+    "char_end": 29064,
+    "sentence_index": 198,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec010",
+    "text": "[colback=white,colframe=black!45,\nfonttitle= , title=Multi-Step Training Example ,\nlisting options= basicstyle= ,breaklines=true ,\n]\n\nassets/9172.png\n\nHuman: What was the value of the middle-income share in 1971?",
+    "char_start": 29066,
+    "char_end": 29278,
+    "sentence_index": 199,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec010",
+    "text": "Answer the question using a single word or phrase.",
+    "char_start": 29279,
+    "char_end": 29329,
+    "sentence_index": 200,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec010",
+    "text": "Please generate a summary of the picture.",
+    "char_start": 29330,
+    "char_end": 29371,
+    "sentence_index": 201,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec010",
+    "text": "Assistant: I will examine the image to find the relevant data for the middle-income share in 1971 and present the answer in the specified format.",
+    "char_start": 29373,
+    "char_end": 29518,
+    "sentence_index": 202,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec010",
+    "text": "Human: Please generate a detailed caption for the image.",
+    "char_start": 29520,
+    "char_end": 29576,
+    "sentence_index": 203,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec010",
+    "text": "Assistant: The image displays a bar chart comparing the percentage of adults in the lower, middle, and upper-income tiers for the years 2015 and 1971.",
+    "char_start": 29578,
+    "char_end": 29728,
+    "sentence_index": 204,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec010",
+    "text": "It shows that in 1971, the middle-income share was 61\\%.",
+    "char_start": 29729,
+    "char_end": 29785,
+    "sentence_index": 205,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec010",
+    "text": "Human: Please generate a detailed reasoning to answer the question given the caption.",
+    "char_start": 29787,
+    "char_end": 29872,
+    "sentence_index": 206,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec010",
+    "text": "Assistant: To solve the problem, I will look for the specific percentage associated with the middle-income group in the year 1971 from the provided chart.",
+    "char_start": 29874,
+    "char_end": 30028,
+    "sentence_index": 207,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec010",
+    "text": "The image clearly shows that in 1971, the middle-income tier accounted for 61\\% of adults.",
+    "char_start": 30029,
+    "char_end": 30119,
+    "sentence_index": 208,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec010",
+    "text": "Human: Please generate the final answer based on reasoning steps.",
+    "char_start": 30121,
+    "char_end": 30186,
+    "sentence_index": 209,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec010",
+    "text": "Do not output anything else.",
+    "char_start": 30187,
+    "char_end": 30215,
+    "sentence_index": 210,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec010",
+    "text": "Assistant: 0.61\n\nHuman: How many did the share of the middle-class change from 1971 to 2015?",
+    "char_start": 30217,
+    "char_end": 30309,
+    "sentence_index": 211,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec010",
+    "text": "Answer the question using a single word or phrase.",
+    "char_start": 30310,
+    "char_end": 30360,
+    "sentence_index": 212,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec010",
+    "text": "Please generate a summary of the picture.",
+    "char_start": 30361,
+    "char_end": 30402,
+    "sentence_index": 213,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec010",
+    "text": "Assistant: To solve this problem, I will analyze the image data to determine the change in the share of adults living in middle-income households from 1971 to 2015.",
+    "char_start": 30404,
+    "char_end": 30568,
+    "sentence_index": 214,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec010",
+    "text": "I will compare the percentages provided for each year and calculate the difference.",
+    "char_start": 30569,
+    "char_end": 30652,
+    "sentence_index": 215,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec010",
+    "text": "Human: Please generate a detailed caption for the image.",
+    "char_start": 30654,
+    "char_end": 30710,
+    "sentence_index": 216,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec010",
+    "text": "Assistant: The image is a bar graph from Pew Research Center showing the share of adults in lower, middle, and upper-income households for the years 1971 and 2015.",
+    "char_start": 30712,
+    "char_end": 30875,
+    "sentence_index": 217,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec010",
+    "text": "For 1971, 61\\% were in the middle income, and for 2015, 50\\% were in the middle income.",
+    "char_start": 30876,
+    "char_end": 30963,
+    "sentence_index": 218,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec010",
+    "text": "Human: Please generate a detailed reasoning to answer the question given the caption.",
+    "char_start": 30965,
+    "char_end": 31050,
+    "sentence_index": 219,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec010",
+    "text": "Assistant: To find the change in the share of middle-class adults from 1971 to 2015, subtract the 2015 percentage from the 1971 percentage.",
+    "char_start": 31052,
+    "char_end": 31191,
+    "sentence_index": 220,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec010",
+    "text": "The middle-income share in 1971 was 61\\%, and in 2015 it was 50\\%.",
+    "char_start": 31192,
+    "char_end": 31258,
+    "sentence_index": 221,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec010",
+    "text": "Thus, the change is calculated as 61\\% - 50\\% = 11\\%.",
+    "char_start": 31259,
+    "char_end": 31312,
+    "sentence_index": 222,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec010",
+    "text": "The difference in share, expressed as a decimal, is 0.11.",
+    "char_start": 31313,
+    "char_end": 31370,
+    "sentence_index": 223,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec010",
+    "text": "Human: Please generate the final answer based on reasoning steps.",
+    "char_start": 31372,
+    "char_end": 31437,
+    "sentence_index": 224,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec010",
+    "text": "Do not output anything else.",
+    "char_start": 31438,
+    "char_end": 31466,
+    "sentence_index": 225,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec010",
+    "text": "Assistant: 0.11\n\nTo implement our curriculum learning strategy effectively, we divide the model training process into two stages, each designed to incrementally enhance the model's reasoning capabilities while ensuring a robust understanding of multimodal inputs.",
+    "char_start": 31468,
+    "char_end": 31731,
+    "sentence_index": 226,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec011",
+    "text": "This structured approach allows the model to acquire foundational reasoning skills in the first stage and progressively refine its ability to provide detailed, step-by-step answers in the second stage.",
+    "char_start": 31732,
+    "char_end": 31933,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec011",
+    "text": "Stage 1: Training for Summarization and Caption Generation: In the first stage, the model is trained to generate two critical components: (1) a summary of the approach needed to answer the question and (2) a detailed caption describing the relevant aspects of the input data, such as visual elements in an image.",
+    "char_start": 31935,
+    "char_end": 32247,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec011",
+    "text": "The training data for this stage is derived from 18K samples from the Cap-QA split of PixMo dataset and 57K samples from Geo170K dataset from G-LLaVa .",
+    "char_start": 32248,
+    "char_end": 32399,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec011",
+    "text": "Each sample includes a question paired with input data (e.g., an image or chart).",
+    "char_start": 32400,
+    "char_end": 32481,
+    "sentence_index": 230,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec011",
+    "text": "Cap-QA split of PixMo dataset contains examples having grounded captions based on input question whereas the Geo170K dataset contains question-answer pairs with their reasoning steps.",
+    "char_start": 32482,
+    "char_end": 32665,
+    "sentence_index": 231,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec011",
+    "text": "This stage ensures that the model learns to contextualize the input and outline a high-level reasoning plan before diving into detailed steps.",
+    "char_start": 32666,
+    "char_end": 32808,
+    "sentence_index": 232,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec011",
+    "text": "The focus in this stage is to help the model gather the structure of reasoning tasks, improving its ability to decouple the problem into simpler elements.",
+    "char_start": 32809,
+    "char_end": 32963,
+    "sentence_index": 233,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec011",
+    "text": "By focusing on structured training, the model develops the ability to handle multi-step tasks while maintaining a clear and organized flow of thought.",
+    "char_start": 32964,
+    "char_end": 33114,
+    "sentence_index": 234,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec011",
+    "text": "Stage 2: Training for Detailed Reasoning and Final Answer Generation: In the second stage, the model builds upon the foundation established in Stage 1.",
+    "char_start": 33116,
+    "char_end": 33267,
+    "sentence_index": 235,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec011",
+    "text": "Here, the model is trained not only to generate the summary and caption but also to provide detailed reasoning based on these components.",
+    "char_start": 33268,
+    "char_end": 33405,
+    "sentence_index": 236,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec011",
+    "text": "Finally, the model outputs the correct answer derived from the reasoning process.",
+    "char_start": 33406,
+    "char_end": 33487,
+    "sentence_index": 237,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec011",
+    "text": "For this stage, we use the original Llava-CoT dataset , which contains 99K structured samples comprising of various domains such as General VQA and Science-Targeted VQA from multiple sources.",
+    "char_start": 33488,
+    "char_end": 33679,
+    "sentence_index": 238,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec011",
+    "text": "The General VQA data sources includes ShareGPT4V , ChartQA , A-OKVQA , DocVQA , PISC , CLEVR whereas, Science-Targeted VQA sources consists GeoQA+ , AI2D , ScienceQA and CLEVR-Math respectively.",
+    "char_start": 33680,
+    "char_end": 33874,
+    "sentence_index": 239,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec011",
+    "text": "Each sample consists of a summary, caption, detailed reasoning, and the final answer.",
+    "char_start": 33875,
+    "char_end": 33960,
+    "sentence_index": 240,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec011",
+    "text": "The training process in this stage involves multi-step interactions, where the model progressively learns to break down the approach into incremental reasoning steps.",
+    "char_start": 33961,
+    "char_end": 34127,
+    "sentence_index": 241,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec011",
+    "text": "This incremental learning ensures that the model refines its logical flow and systematically integrates the information from summaries and captions into actionable reasoning steps.",
+    "char_start": 34128,
+    "char_end": 34308,
+    "sentence_index": 242,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec011",
+    "text": "In second stage, the multi-step training methodology is key to the model's success.",
+    "char_start": 34310,
+    "char_end": 34393,
+    "sentence_index": 243,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec011",
+    "text": "During Stage 1, the model learns to organize its thoughts and outline a strategy, effectively setting the stage for the detailed reasoning required in Stage 2.",
+    "char_start": 34394,
+    "char_end": 34553,
+    "sentence_index": 244,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec011",
+    "text": "By the time the model reaches Stage 2, it is already equipped with the ability to outline a structured approach, making it easier to focus on breaking down complex tasks into step-by-step solutions.",
+    "char_start": 34554,
+    "char_end": 34752,
+    "sentence_index": 245,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec011",
+    "text": "This approach improves the interpretability, accuracy, and robustness of the model, enabling it to excel in complex multimodal reasoning tasks.",
+    "char_start": 34753,
+    "char_end": 34896,
+    "sentence_index": 246,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec011",
+    "text": "Our results demonstrate that by leveraging datasets such as PixMo and Llava-CoT in a curriculum learning framework, the model can effectively transition from high-level problem understanding to detailed, step-by-step reasoning, achieving state-of-the-art performance in multi-step reasoning benchmarks.",
+    "char_start": 34897,
+    "char_end": 35199,
+    "sentence_index": 247,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec011",
+    "text": "Model Training: We leverage the PixMo and LLaVA-CoT-100k datasets to train our model using a curriculum learning strategy combined with a Supervised Fine-Tuning (SFT) approach.",
+    "char_start": 35201,
+    "char_end": 35377,
+    "sentence_index": 248,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec011",
+    "text": "For this work, we select Llama-3.2-11B-Vision-Instruct as our base model due to its strong foundation in multimodal reasoning and instruction-following capabilities.",
+    "char_start": 35378,
+    "char_end": 35543,
+    "sentence_index": 249,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec011",
+    "text": "The fine-tuning process involves full-parameter optimization, allowing the model to adapt effectively to the structured reasoning tasks provided by the PixMo and LLaVA-CoT-100k dataset.",
+    "char_start": 35544,
+    "char_end": 35729,
+    "sentence_index": 250,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec011",
+    "text": "Training is performed on a high-performance computing node equipped with 8 NVIDIA A100 (80GB) GPUs, ensuring efficient handling of the large-scale dataset and the computational requirements of the model.",
+    "char_start": 35730,
+    "char_end": 35933,
+    "sentence_index": 251,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec011",
+    "text": "During the initial stage of curriculum learning, the model is fine-tuned on the PixMo dataset to develop foundational reasoning skills, such as generating summaries and captions.",
+    "char_start": 35934,
+    "char_end": 36112,
+    "sentence_index": 252,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec011",
+    "text": "Further training details, such as the number of epochs, learning rate, optimizer settings, and batch size, are outlined in Appendix for reproducibility of our work.",
+    "char_start": 36113,
+    "char_end": 36277,
+    "sentence_index": 253,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec012",
+    "text": "Inference efficiency is a critical factor in deploying large multimodal models for real-world applications, particularly when handling complex reasoning tasks.",
+    "char_start": 36279,
+    "char_end": 36438,
+    "sentence_index": 254,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec012",
+    "text": "To address this, we adopt a Beam Search strategy that significantly improves inference efficiency and reasoning quality compared to existing approaches like LLava-CoT .",
+    "char_start": 36439,
+    "char_end": 36607,
+    "sentence_index": 255,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec012",
+    "text": "Our method is designed to balance computational complexity with output quality, enabling faster and more reliable inference.",
+    "char_start": 36608,
+    "char_end": 36732,
+    "sentence_index": 256,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec012",
+    "text": "Simplified Output Design: Unlike LLava-CoT , our approach does not require a highly structured output format.",
+    "char_start": 36734,
+    "char_end": 36843,
+    "sentence_index": 257,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec012",
+    "text": "This flexibility simplifies the reasoning process, allowing the model to focus on generating high-quality outputs without the overhead of rigid structural constraints.",
+    "char_start": 36844,
+    "char_end": 37011,
+    "sentence_index": 258,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec012",
+    "text": "This design choice makes our method more adaptable to a wide range of reasoning scenarios, improving generalization across tasks.",
+    "char_start": 37012,
+    "char_end": 37141,
+    "sentence_index": 259,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec012",
+    "text": "Improved Efficiency with Beam Search: The Beam Search technique allows us to generate multiple reasoning paths in parallel and select the most optimal one.",
+    "char_start": 37143,
+    "char_end": 37298,
+    "sentence_index": 260,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec012",
+    "text": "This approach enhances both the quality and consistency of the model's outputs.",
+    "char_start": 37299,
+    "char_end": 37378,
+    "sentence_index": 261,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec012",
+    "text": "By evaluating multiple candidates and selecting the best, we ensure that the final answer is logical and robust.",
+    "char_start": 37379,
+    "char_end": 37491,
+    "sentence_index": 262,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec012",
+    "text": "One of the key advantages of our method is its computational efficiency.",
+    "char_start": 37492,
+    "char_end": 37564,
+    "sentence_index": 263,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec012",
+    "text": "The inference time scaling of our approach has a complexity of $O(n)$, which is significantly more efficient than LLava-CoT's $O(n^2)$ scaling.",
+    "char_start": 37565,
+    "char_end": 37708,
+    "sentence_index": 264,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec012",
+    "text": "This linear complexity ensures that our method is scalable to larger datasets and more complex reasoning tasks without a proportional increase in computational cost.",
+    "char_start": 37709,
+    "char_end": 37874,
+    "sentence_index": 265,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec012",
+    "text": "[t]\n\nComparison of models based on Final Answer accuracy and Reasoning Steps performance on the proposed VRC-Bench.",
+    "char_start": 37876,
+    "char_end": 37991,
+    "sentence_index": 266,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec012",
+    "text": "The best results in each case (closed-source and open-source) are in bold.",
+    "char_start": 37992,
+    "char_end": 38066,
+    "sentence_index": 267,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec012",
+    "text": "Our LlamaV-o1 achieves superior performance compared to its open-source counterpart (Llava-CoT) while also being competitive against the closed-source models.",
+    "char_start": 38067,
+    "char_end": 38225,
+    "sentence_index": 268,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec012",
+    "text": "!\nl|cccccc|cccc\n\n& 6 c Close-Source & 4 c Open-Source\n\nModel & GPT-4o & Claude-3.5 & Gemini-2.0 & Gemini-1.5 & Gemini-1.5 & GPT-4o & Llama-3.2 & Mulberry & Llava-CoT & LlamaV-o1\n\n& & Sonnet & Flash & Pro & Flash & mini & Vision & & & (Ours)\n\nFinal Answer & 59.28 & 61.35 & 61.16 & 61.35 & 54.99 & 56.39 & 48.40 & 51.90 & 54.09 & 56.49\n\nSteps & 76.68 & 72.12 & 74.08 & 72.12 & 71.86 & 74.05 & 58.37 & 63.86 & 66.21 & 68.93\n\n[t]\n\nassets/category_scores.pdf\n\nThe comprehensive comparison of category-wise and overall performance scores achieved by various models on diverse reasoning tasks.",
+    "char_start": 38227,
+    "char_end": 38814,
+    "sentence_index": 269,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec012",
+    "text": "The evaluation spans multiple domains, including Math \\& Logic Reasoning, Scientific Reasoning, Complex Visual Perception, Chart \\& Diagram Understanding, Medical Imaging, Social \\& Cultural Context, Visual Reasoning, and OCR \\& Document Understanding.",
+    "char_start": 38815,
+    "char_end": 39067,
+    "sentence_index": 270,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec012",
+    "text": "The models assessed include GPT-4o, Claude-3.5-Sonnet, Gemini variants, LLAVA-CoT, and our proposed model.",
+    "char_start": 39068,
+    "char_end": 39174,
+    "sentence_index": 271,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec012",
+    "text": "Our model demonstrates consistently superior performance in critical categories such as Math \\& Logic Reasoning, Chart \\& Diagram Understanding, and Medical Imaging, achieving a balanced improvement across both step-by-step reasoning (Step Scores) and final answer accuracy (Final Answer Scores).",
+    "char_start": 39175,
+    "char_end": 39471,
+    "sentence_index": 272,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec012",
+    "text": "Compared to LLAVA-CoT, our approach excels in maintaining high accuracy across tasks while showcasing robustness and interpretability in multi-step reasoning challenges.",
+    "char_start": 39472,
+    "char_end": 39641,
+    "sentence_index": 273,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec013",
+    "text": "In this section, we evaluate the performance of our proposed model trained with a curriculum learning strategy.",
+    "char_start": 39643,
+    "char_end": 39754,
+    "sentence_index": 274,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec013",
+    "text": "We use Llama-3.2-11B-Vision-Instruct as the baseline model, leveraging its robust vision-language understanding as a foundation.",
+    "char_start": 39755,
+    "char_end": 39883,
+    "sentence_index": 275,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec013",
+    "text": "Training is conducted using the PixMo subset and LLaVA-CoT-100k datasets, carefully curated to support step-by-step reasoning tasks.",
+    "char_start": 39884,
+    "char_end": 40016,
+    "sentence_index": 276,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec013",
+    "text": "The curriculum learning framework ensures the model progresses from simpler tasks, such as generating summaries and captions, to more complex multi-step reasoning tasks involving detailed logic and final answer generation.",
+    "char_start": 40017,
+    "char_end": 40239,
+    "sentence_index": 277,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec013",
+    "text": "To assess the effectiveness of our approach, we evaluate the model on our newly proposed reasoning benchmark, designed to test multi-step chain-of-thought capabilities in multimodal contexts.",
+    "char_start": 40241,
+    "char_end": 40432,
+    "sentence_index": 278,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec013",
+    "text": "Additionally, we benchmark our model against six commonly used multimodal benchmarks employed in LLaVA-CoT , covering diverse domains such as visual reasoning, mathematical problem-solving, and scientific reasoning.",
+    "char_start": 40433,
+    "char_end": 40648,
+    "sentence_index": 279,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec013",
+    "text": "This comprehensive evaluation demonstrates the robustness of our method, highlighting significant improvements in both reasoning quality and inference efficiency compared to the baseline.",
+    "char_start": 40649,
+    "char_end": 40836,
+    "sentence_index": 280,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec014",
+    "text": "For our experiments, we use Llama-3.2-11B-Vision-Instruct as the baseline model, fine-tuned using the llama-recipes framework in a Supervised Fine-Tuning (SFT) manner.",
+    "char_start": 40838,
+    "char_end": 41005,
+    "sentence_index": 281,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec014",
+    "text": "This robust foundation enables us to implement our curriculum learning strategy effectively, training the model on reasoning tasks that progressively increase in complexity.",
+    "char_start": 41006,
+    "char_end": 41179,
+    "sentence_index": 282,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec014",
+    "text": "The training datasets include PixMo and LLaVA-CoT-100k, which we specifically tailored to support multi-step reasoning tasks and detailed chain-of-thought explanations.",
+    "char_start": 41180,
+    "char_end": 41348,
+    "sentence_index": 283,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec014",
+    "text": "For evaluation, we utilize a diverse set of benchmarks, including both our proposed reasoning benchmark and six established multimodal benchmarks: MMStar , MMBench , MMVet , MathVista , AI2D , and Hallusion .",
+    "char_start": 41350,
+    "char_end": 41558,
+    "sentence_index": 284,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec014",
+    "text": "These benchmarks comprehensively evaluate the model\u2019s capabilities across general visual question answering, mathematical and scientific reasoning, and handling language hallucinations and visual illusions.",
+    "char_start": 41559,
+    "char_end": 41765,
+    "sentence_index": 285,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec014",
+    "text": "Our proposed benchmark is designed to assess step-by-step reasoning and final answer as described in the Section , and evaluations are conducted using a fuzzy evaluation strategy where GPT-4o acts as the judge, ensuring robust assessments of generated outputs.",
+    "char_start": 41766,
+    "char_end": 42026,
+    "sentence_index": 286,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec014",
+    "text": "To maintain consistency and fairness, we adopt the VLMEvalKit framework, as used in LLaVA-CoT, to evaluate all models on six established multimodal benchmarks.",
+    "char_start": 42027,
+    "char_end": 42186,
+    "sentence_index": 287,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec014",
+    "text": "This open-source toolkit ensures reproducibility and allows for direct comparison of performance metrics across different models.",
+    "char_start": 42187,
+    "char_end": 42316,
+    "sentence_index": 288,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec014",
+    "text": "Our rigorous experimental setup highlights the effectiveness of our approach in advancing multimodal reasoning capabilities.",
+    "char_start": 42317,
+    "char_end": 42441,
+    "sentence_index": 289,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec015",
+    "text": "Our model demonstrates significant improvements over existing methods on our proposed reasoning benchmark, as shown in Table .",
+    "char_start": 42443,
+    "char_end": 42569,
+    "sentence_index": 290,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec015",
+    "text": "The evaluation compares final answer accuracy and step-by-step reasoning performance across state-of-the-art models.",
+    "char_start": 42570,
+    "char_end": 42686,
+    "sentence_index": 291,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec015",
+    "text": "While models like GPT-4o, Claude-3.5-Sonnet and Gemini-2.0-Flash exhibit strong reasoning capabilities, our approach achieves the better final answer accuracy (56.49) compared to GPT-4o-mini and LLava-CoT and competitive step scores (68.93\\%).",
+    "char_start": 42687,
+    "char_end": 42930,
+    "sentence_index": 292,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec015",
+    "text": "This highlights the model\u2019s ability to generate accurate outputs while maintaining logical coherence in multi-step tasks.",
+    "char_start": 42931,
+    "char_end": 43052,
+    "sentence_index": 293,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec015",
+    "text": "The structured curriculum learning strategy and effective inference design have been critical in achieving these results.",
+    "char_start": 43053,
+    "char_end": 43174,
+    "sentence_index": 294,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec015",
+    "text": "Figure illustrates the category-wise performance of our model compared to leading reasoning models in various domains from our benchmark such as Math \\& Logic, Scientific Reasoning, and Complex Visual Perception.",
+    "char_start": 43176,
+    "char_end": 43388,
+    "sentence_index": 295,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec015",
+    "text": "Our model outperforms others in several challenging categories, including Chart \\& Diagram Understanding (83.18\\%), Scientific Reasoning (86.75\\%) and OCR \\& Document Understanding (93.44\\%).",
+    "char_start": 43389,
+    "char_end": 43580,
+    "sentence_index": 296,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec015",
+    "text": "These improvements outline the model\u2019s ability to handle tasks requiring visual and logical reasoning in accordance.",
+    "char_start": 43581,
+    "char_end": 43697,
+    "sentence_index": 297,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec015",
+    "text": "The results also highlight balanced performance across all categories, reflecting the versatility of our approach.",
+    "char_start": 43698,
+    "char_end": 43812,
+    "sentence_index": 298,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec015",
+    "text": "Table summarizes the performance of various models on six established benchmarks: MMStar, MMBench, MMVet, MathVista, AI2D, and HallusionBench.",
+    "char_start": 43814,
+    "char_end": 43956,
+    "sentence_index": 299,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec015",
+    "text": "Among open-source models, our method achieves the highest average score of 67.33\\%, surpassing other prominent models like LLaVA-CoT (63.50).",
+    "char_start": 43957,
+    "char_end": 44098,
+    "sentence_index": 300,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec015",
+    "text": "Notably, our model demonstrates significant strengths in reasoning-intensive benchmarks such as MMVet (65.40\\%) and Hallusion (63.51\\%).",
+    "char_start": 44099,
+    "char_end": 44235,
+    "sentence_index": 301,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec015",
+    "text": "These results validate the effectiveness of our model in handling diverse and complex multimodal tasks.",
+    "char_start": 44236,
+    "char_end": 44339,
+    "sentence_index": 302,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec015",
+    "text": "The results demonstrate that our approach outperforms recent open-source visual reasoning methods while achieving favorable results against its close-source counterparts.",
+    "char_start": 44341,
+    "char_end": 44511,
+    "sentence_index": 303,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec015",
+    "text": "By leveraging curriculum learning and optimizing inference efficiency with Beam Search, our model effectively balances reasoning accuracy and computational complexity.",
+    "char_start": 44512,
+    "char_end": 44679,
+    "sentence_index": 304,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec015",
+    "text": "Our performance improvements in reasoning tasks are complemented by robust handling of logical errors and visual illusions, as evidenced in benchmarks like HallusionBench.",
+    "char_start": 44680,
+    "char_end": 44851,
+    "sentence_index": 305,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec015",
+    "text": "Fig.",
+    "char_start": 44852,
+    "char_end": 44856,
+    "sentence_index": 306,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec015",
+    "text": "presents a qualitative comparison between the recent Llava-CoT and our LlamaV-o1 on different examples from the VRC-Bench.",
+    "char_start": 44857,
+    "char_end": 44979,
+    "sentence_index": 307,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec015",
+    "text": "Our LlamaV-o1 achieves superior performance both in reasoning steps and the final answer, compared to Llava-CoT.",
+    "char_start": 44980,
+    "char_end": 45092,
+    "sentence_index": 308,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec015",
+    "text": "[t]\n\nPerformance comparison on six benchmark datasets (MMStar , MMBench , MMVet , MathVista , AI2D , and Hallusion ) along with their average scores.",
+    "char_start": 45094,
+    "char_end": 45243,
+    "sentence_index": 309,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec015",
+    "text": "The comparison includes both close-source and open-source models.",
+    "char_start": 45244,
+    "char_end": 45309,
+    "sentence_index": 310,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec015",
+    "text": "The best performing close-source model is GPT-4o with an average score of 71.8\\%.",
+    "char_start": 45310,
+    "char_end": 45391,
+    "sentence_index": 311,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec015",
+    "text": "Among open-source models, our proposed LlamaV-o1 achieves the best performance with an average score of 67.33\\% outperforming the recent Llava-CoT by 3.8\\%.",
+    "char_start": 45392,
+    "char_end": 45548,
+    "sentence_index": 312,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec015",
+    "text": "7pt\n!",
+    "char_start": 45550,
+    "char_end": 45555,
+    "sentence_index": 313,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec015",
+    "text": "lccccccc\n\nModel & MMStar & MMBench & MMVet & MathVista & AI2D & Hallusion & Average\n\n7 l Close-Source\n\nGPT-4o-0806 & 66.0 & 82.4 & 80.8 & 62.7 & 84.7 & 54.2 & 71.8\n\nClaude3.5-Sonnet-0620 & 64.2 & 75.4 & 68.7 & 61.6 & 80.2 & 49.9 & 66.7\n\nGemini-1.5-Pro & 56.4 & 71.5 & 71.3 & 57.7 & 79.1 & 45.6 & 63.6\n\nGPT-4o-mini-0718 & 54.9 & 76.9 & 74.6 & 52.4 & 77.8 & 46.1 & 63.8\n\n7 l Open-Source\n\nInternVL2-8B & 62.50 & 77.40 & 56.90 & 58.30 & 83.60 & 45.00 & 64.00\n\nOvis1.5-Gemma2-9B & 58.70 & 76.30 & 50.90 & 65.60 & 84.50 & 48.20 & 64.00\n\nMiniCPM-V2.6-8B & 57.10 & 75.70 & 56.30 & 60.60 & 82.10 & 48.10 & 63.30\n\nLlama-3.2-90B-Vision-Inst & 51.10 & 76.80 & 74.10 & 58.30 & 69.50 & 44.10 & 62.30\n\nVILA-1.5-40B & 53.20 & 75.30 & 44.40 & 49.50 & 77.80 & 40.90 & 56.90\n\nMulberry-7B & 61.30 & 75.34 & 43.90 & 57.49 & 78.95 & 54.10 & 62.78\n\nLlava-CoT & 57.60 & 75.00 & 60.30 & 54.80 & 85.70 & 47.80 & 63.50\n\n7 l Our Models\n\nLlama-3.2-11B-Vision-Inst (baseline) & 49.80 & 65.80 & 57.60 & 48.60 & 77.30 & 40.30 & 56.90\n\norange!25\nLlamaV-o1 (Ours) & 59.53 & 79.89 & 65.40 & 54.40 & 81.24 & 63.51 & 67.33\n\n[t]\n\nImpact of our proposed contributions on multimodal reasoning tasks across six benchmarks: MMStar, MMBench, MMVet, MathVista, AI2D, and Hallusion.",
+    "char_start": 45556,
+    "char_end": 46793,
+    "sentence_index": 314,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec015",
+    "text": "Starting with Curriculum Learning combined with Multi-Step CoT reasoning (2nd row), the model achieves a 9.14\\% absolute gain compared to base model Llama-3.2-11B-Vision-Inst , demonstrating its ability to handle complex multi-step reasoning effectively.",
+    "char_start": 46794,
+    "char_end": 47048,
+    "sentence_index": 315,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec015",
+    "text": "This baseline approach leverages structured training to improve performance across diverse tasks, including logical reasoning and visual understanding.",
+    "char_start": 47049,
+    "char_end": 47200,
+    "sentence_index": 316,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec015",
+    "text": "By incorporating Beam Search, the model's performance further improves (3rd row).",
+    "char_start": 47201,
+    "char_end": 47282,
+    "sentence_index": 317,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec015",
+    "text": "This enhancement is particularly noticeable in benchmarks such as MMVet (65.40\\% vs.",
+    "char_start": 47283,
+    "char_end": 47367,
+    "sentence_index": 318,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec015",
+    "text": "61.88\\%), MathVista (54.40\\% vs.",
+    "char_start": 47368,
+    "char_end": 47400,
+    "sentence_index": 319,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec015",
+    "text": "53.20\\%), and AI2D (81.24\\% vs.",
+    "char_start": 47401,
+    "char_end": 47432,
+    "sentence_index": 320,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec015",
+    "text": "80.18\\%), showcasing the model's ability to generalize better with more accurate reasoning.",
+    "char_start": 47433,
+    "char_end": 47524,
+    "sentence_index": 321,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec015",
+    "text": "Our final approach that combines curriculum learning with optimized inference strategies achieves an overall average gain of 10.43\\%, compared to the baseline.",
+    "char_start": 47525,
+    "char_end": 47684,
+    "sentence_index": 322,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec015",
+    "text": "4pt\n!",
+    "char_start": 47686,
+    "char_end": 47691,
+    "sentence_index": 323,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec015",
+    "text": "lccccccc\n\nModel & MMStar & MMBench & MMVet & MathVista & AI2D & Hallusion & Average\n\nLlama-3.2-11B-Vision-Inst ( baseline ) & 49.80 & 65.80 & 57.60 & 48.60 & 77.30 & 40.30 & 56.90\n\norange!10\n+ Curriculum with Multi-Step CoT Reasoning & 58.13 & 79.55 & 61.88 & 53.20 & 80.18 & 63.31 & 66.04\n\norange!15\n+ Beam Search & 59.53 & 79.89 & 65.40 & 54.40 & 81.24 & 63.51 & 67.33\n\n[t!]\n\nassets/qual_examples.pdf\n\nQualitative comparison between Llava-CoT and the proposed LlamaV-o1 on examples from the VRC-Bench.",
+    "char_start": 47692,
+    "char_end": 48195,
+    "sentence_index": 324,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec015",
+    "text": "First row: the example shows visual reasoning capabilities on an example chart.",
+    "char_start": 48196,
+    "char_end": 48275,
+    "sentence_index": 325,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec015",
+    "text": "Here, Llava-CoT makes mistakes (highlighted in red) for both the intermediate steps and the final answer.",
+    "char_start": 48276,
+    "char_end": 48381,
+    "sentence_index": 326,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec015",
+    "text": "In Comparison, our LlamaV-o1 provides an accurate description of the steps as well as the final answer.",
+    "char_start": 48382,
+    "char_end": 48485,
+    "sentence_index": 327,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec015",
+    "text": "Second row: While both Llava-CoT and our LlamaV-o1 provide accurate step descriptions on an example real-world VQA, Llava-CoT fails to infer the final answer.",
+    "char_start": 48486,
+    "char_end": 48644,
+    "sentence_index": 328,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec015",
+    "text": "Last row: Llava-CoT fails to accurately answer for the counting task, while also missing the intermediate counting steps.",
+    "char_start": 48645,
+    "char_end": 48766,
+    "sentence_index": 329,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec015",
+    "text": "In contrast, our LlamaV-o1 model performs better in intermediate reasoning steps while also providing the accurate final answer.",
+    "char_start": 48767,
+    "char_end": 48895,
+    "sentence_index": 330,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec016",
+    "text": "Impact of Proposed Components: The Table showcases the impact of our proposed components of LlamaV-o1 on improving performance in complex visual reasoning tasks across six multimodal benchmarks: MMStar, MMBench, MMVet, MathVista, AI2D, and Hallusion.",
+    "char_start": 48897,
+    "char_end": 49147,
+    "sentence_index": 331,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec016",
+    "text": "Starting with a curriculum learning strategy combined with multi-step Chain-of-Thought (CoT) reasoning, the model achieves an average score of 66.08\\%, demonstrating its ability to handle reasoning-intensive tasks effectively.",
+    "char_start": 49148,
+    "char_end": 49374,
+    "sentence_index": 332,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec016",
+    "text": "By incorporating Beam Search, which optimizes the selection of reasoning paths, the performance further improves, achieving the highest average score of 67.33\\%.",
+    "char_start": 49375,
+    "char_end": 49536,
+    "sentence_index": 333,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec016",
+    "text": "This improvement is particularly significant in benchmarks such as MMVet (65.40\\% vs.",
+    "char_start": 49537,
+    "char_end": 49622,
+    "sentence_index": 334,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec016",
+    "text": "61.88\\%), MMStar (59.53\\% vs.",
+    "char_start": 49623,
+    "char_end": 49652,
+    "sentence_index": 335,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec016",
+    "text": "58.13\\%), and AI2D (81.24\\% vs.",
+    "char_start": 49653,
+    "char_end": 49684,
+    "sentence_index": 336,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec016",
+    "text": "80.18\\%), which evaluate the model's logical, visual, and contextual reasoning abilities.",
+    "char_start": 49685,
+    "char_end": 49774,
+    "sentence_index": 337,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec016",
+    "text": "These results highlight the effectiveness of combining progressive training with optimized inference, enabling the model to generalize better across complex tasks and consistently deliver accurate and coherent reasoning.",
+    "char_start": 49775,
+    "char_end": 49995,
+    "sentence_index": 338,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec016",
+    "text": "This validates the importance of our proposed contributions in advancing multimodal reasoning systems.",
+    "char_start": 49996,
+    "char_end": 50098,
+    "sentence_index": 339,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec016",
+    "text": "[ht]\n\nComparison of inference scaling techniques on the MMVet benchmark, evaluated using a single NVIDIA A100 GPU.",
+    "char_start": 50100,
+    "char_end": 50214,
+    "sentence_index": 340,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec016",
+    "text": "Left: Llava-CoT with stage-level beam search shows improved MMVet scores with more beams but suffers from quadratic scaling, significantly increasing inference time.",
+    "char_start": 50215,
+    "char_end": 50380,
+    "sentence_index": 341,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec016",
+    "text": "Right: Performance of our approach utilizing Beam Search achieving higher MMVet scores with much lower inference time, due to its linear scaling efficiency.",
+    "char_start": 50381,
+    "char_end": 50537,
+    "sentence_index": 342,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec016",
+    "text": "For instance, our method scores 65.40 with four beams in 6.1 GPU hours, compared to Llava-CoT\u2019s 62.9 score requiring 46.1 GPU hours.",
+    "char_start": 50538,
+    "char_end": 50670,
+    "sentence_index": 343,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec016",
+    "text": "This demonstrates the efficiency and practicality of our approach for real-world applications.",
+    "char_start": 50671,
+    "char_end": 50765,
+    "sentence_index": 344,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec016",
+    "text": "0.49\n3pt\n!",
+    "char_start": 50767,
+    "char_end": 50777,
+    "sentence_index": 345,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec016",
+    "text": "l|ccc\n\nInference Scaling & \\# Beams & MMVet Score & Time (GPU Hours)\n\nNo Scaling & 1 & 60.3 & 3.8\n\nStage-level & 2 & 61.7 & 20.1\n\nStage-level & 3 & 62.3 & 38.5\n\nStage-level & 4 & 62.9 & 54.1\n\n0.49\n3pt\n!",
+    "char_start": 50778,
+    "char_end": 50980,
+    "sentence_index": 346,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec016",
+    "text": "l|cccc\n\nInference Scaling & \\# Beams & MMVet Score & Time (GPU Hours)\n\nNo Scaling & 1 & 63.63 & 2.7\n\nBeam Search & 2 & 64.26 & 4.8\n\nBeam Search & 3 & 64.92 & 5.7\n\nBeam Search & 4 & 65.40 & 6.1\n\nEffectiveness of Inference Scaling Techniques: The Table focuses on the efficiency and effectiveness of inference scaling techniques on the MMVet benchmark.",
+    "char_start": 50981,
+    "char_end": 51331,
+    "sentence_index": 347,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec016",
+    "text": "We compare the newly introduced stage-level beam search used in Llava-CoT with Beam Search in our proposed approach.",
+    "char_start": 51332,
+    "char_end": 51448,
+    "sentence_index": 348,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec016",
+    "text": "Both approaches are evaluated based on MMVet scores and inference time, measured on a single NVIDIA A100 GPU (80GB).",
+    "char_start": 51449,
+    "char_end": 51565,
+    "sentence_index": 349,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec016",
+    "text": "Stage-Level Beam Search (Llava-CoT): Increasing the number of beams improves the MMVet score incrementally (from 60.3\\% with 1 beam to 62.9\\% with 4 beams).",
+    "char_start": 51566,
+    "char_end": 51722,
+    "sentence_index": 350,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec016",
+    "text": "However, this improvement comes at a significantly higher computational cost due to linear scaling (time complexity of $O(n)$) based on model calls, with inference time rising from 3.8 GPU hours for 1 beam to 54.1 GPU hours for 4 beams.",
+    "char_start": 51723,
+    "char_end": 51959,
+    "sentence_index": 351,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec016",
+    "text": "This scaling inefficiency limits the practicality of the stage-level approach for real-world applications.",
+    "char_start": 51960,
+    "char_end": 52066,
+    "sentence_index": 352,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec016",
+    "text": "Beam Search (Ours): In contrast, our method achieves significantly better MMVet scores while maintaining a constant scaling (time complexity of $O(1)$) of inference time in terms of model calls.",
+    "char_start": 52067,
+    "char_end": 52261,
+    "sentence_index": 353,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec016",
+    "text": "With 1 beam, our model already outperforms Llava-CoT (63.63\\% vs.",
+    "char_start": 52262,
+    "char_end": 52327,
+    "sentence_index": 354,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec016",
+    "text": "60.3\\%).",
+    "char_start": 52328,
+    "char_end": 52336,
+    "sentence_index": 355,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec016",
+    "text": "As the number of beams increases, the MMVet score improves further, reaching 65.40 with 4 beams in just 4.2 GPU hours, a fraction of the computational cost of Llava-CoT.",
+    "char_start": 52337,
+    "char_end": 52506,
+    "sentence_index": 356,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec016",
+    "text": "This demonstrates that Beam Search is not only more efficient with higher accuracy but also suitable for real-world applications.",
+    "char_start": 52507,
+    "char_end": 52636,
+    "sentence_index": 357,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec017",
+    "text": "In this paper, we proposed a comprehensive approach for advancing multimodal reasoning by introducing a new benchmark, a novel metric, and an innovative model trained using curriculum learning.",
+    "char_start": 52638,
+    "char_end": 52831,
+    "sentence_index": 358,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec017",
+    "text": "Our model demonstrates significant improvements over existing methods, achieving state-of-the-art performance on challenging benchmarks while maintaining efficiency in inference.",
+    "char_start": 52832,
+    "char_end": 53010,
+    "sentence_index": 359,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec017",
+    "text": "The incorporation of curriculum learning enabled the model to develop foundational reasoning skills progressively, resulting in improved generalization and robustness across diverse tasks.",
+    "char_start": 53011,
+    "char_end": 53199,
+    "sentence_index": 360,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec017",
+    "text": "Our results highlight the effectiveness of our design choices, including the structured training strategy, efficient inference mechanism, and rigorous evaluation using both our benchmark and widely recognized datasets.",
+    "char_start": 53200,
+    "char_end": 53418,
+    "sentence_index": 361,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec017",
+    "text": "Our contributions aim to provide a capable multimodal reasoning model, emphasizing the importance of interpretable, step-by-step reasoning in improving AI's ability to handle complex, multi-step tasks.",
+    "char_start": 53419,
+    "char_end": 53620,
+    "sentence_index": 362,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec017",
+    "text": "plain\nneurips_2024\n\nWe designed a structured system prompt to guide closed-source models like GPT-4o , Claude , and Gemini in generating detailed, step-by-step reasoning for complex tasks.",
+    "char_start": 53622,
+    "char_end": 53810,
+    "sentence_index": 363,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec019",
+    "text": "The prompt requires the model to describe each action to be taken and explain how it is executed, ensuring a clear and logical progression throughout the reasoning process.",
+    "char_start": 53811,
+    "char_end": 53983,
+    "sentence_index": 364,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec019",
+    "text": "To account for varying levels of complexity, the prompt allows the model to take as many steps as necessary, ensuring that the solution is systematically derived.",
+    "char_start": 53984,
+    "char_end": 54146,
+    "sentence_index": 365,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec019",
+    "text": "Additionally, the prompt emphasizes the use of visual elements, guiding the model to reference provided images or diagrams explicitly in its reasoning steps.",
+    "char_start": 54147,
+    "char_end": 54304,
+    "sentence_index": 366,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec019",
+    "text": "The prompt is further designed to handle ambiguity effectively by instructing the model to respond with \"None of the choices provided\" when no valid options are available.",
+    "char_start": 54306,
+    "char_end": 54477,
+    "sentence_index": 367,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec019",
+    "text": "This ensures robustness and prevents the generation of forced or inaccurate conclusions.",
+    "char_start": 54478,
+    "char_end": 54566,
+    "sentence_index": 368,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec019",
+    "text": "By enforcing a logical flow, grounding the reasoning in visual inputs, and providing explicit instructions for ambiguous scenarios, this prompt enables consistent, interpretable, and reliable reasoning outputs across various multimodal tasks.",
+    "char_start": 54567,
+    "char_end": 54809,
+    "sentence_index": 369,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec019",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title= System Prompt used for the generation of reasoning steps\n]\n\nbreaklines=true, basicstyle=\n\nWhen answering the question based on the provided image(s),\nfollow a structured reasoning process and provide the final answer\nafter solving it step by step.",
+    "char_start": 54811,
+    "char_end": 55114,
+    "sentence_index": 370,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec019",
+    "text": "Use the following format for\nyour response:\n\nStep-by-Step Process:\nStep 1: Describe the action to be taken.",
+    "char_start": 55115,
+    "char_end": 55222,
+    "sentence_index": 371,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec019",
+    "text": "Action 1: Explain the execution of the first action.",
+    "char_start": 55223,
+    "char_end": 55275,
+    "sentence_index": 372,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec019",
+    "text": "Step 2: Describe the next action to be taken.",
+    "char_start": 55277,
+    "char_end": 55322,
+    "sentence_index": 373,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec019",
+    "text": "Action 2: Explain the execution of the second action.",
+    "char_start": 55323,
+    "char_end": 55376,
+    "sentence_index": 374,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec019",
+    "text": "Step 3: Describe the next action to be taken.",
+    "char_start": 55378,
+    "char_end": 55423,
+    "sentence_index": 375,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec019",
+    "text": "Action 3: Explain the execution of the second action.",
+    "char_start": 55424,
+    "char_end": 55477,
+    "sentence_index": 376,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec019",
+    "text": "...continue as needed...take as many steps you want.",
+    "char_start": 55479,
+    "char_end": 55531,
+    "sentence_index": 377,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec019",
+    "text": "Step n: Describe the final action to be taken.",
+    "char_start": 55533,
+    "char_end": 55579,
+    "sentence_index": 378,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec019",
+    "text": "Action n: Execute the final action leading to the conclusion.",
+    "char_start": 55580,
+    "char_end": 55641,
+    "sentence_index": 379,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec019",
+    "text": "Final Answer: Provide the final solution or conclusion derived from the reasoning process.",
+    "char_start": 55643,
+    "char_end": 55733,
+    "sentence_index": 380,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec019",
+    "text": "Ensure each step logically follows the previous one, and explicitly\ndetail how the image(s) guide the solution at every stage.",
+    "char_start": 55735,
+    "char_end": 55861,
+    "sentence_index": 381,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec019",
+    "text": "Also if\noptions are present and none of options are correct.",
+    "char_start": 55862,
+    "char_end": 55922,
+    "sentence_index": 382,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec019",
+    "text": "Please response None of the choices provided.",
+    "char_start": 55923,
+    "char_end": 55968,
+    "sentence_index": 383,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec020",
+    "text": "The following system prompt was used to evaluate the reasoning steps of the target model.",
+    "char_start": 55970,
+    "char_end": 56059,
+    "sentence_index": 384,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec020",
+    "text": "It defines a structured framework to assess the alignment, coherence, and quality of reasoning through multiple metrics, including faithfulness, informativeness, repetition, hallucination, redundancy, semantic coverage, reasoning alignment, commonsense, and completeness of steps.",
+    "char_start": 56060,
+    "char_end": 56340,
+    "sentence_index": 385,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec020",
+    "text": "Each metric is scored on a scale of 1-10, with detailed guidelines ensuring consistent and objective evaluations.",
+    "char_start": 56341,
+    "char_end": 56454,
+    "sentence_index": 386,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec020",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=System Prompt used to evaluate the reasoning steps\n]\n\nbreaklines=true, basicstyle=\n\nYou are a reasoning evaluator designed to assess the alignment, coherence, and quality of reasoning steps in text responses.",
+    "char_start": 56456,
+    "char_end": 56719,
+    "sentence_index": 387,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec020",
+    "text": "Your task is to evaluate reasoning steps between the *ground truth* and the *LLM response* using the following metrics:\n\n1.",
+    "char_start": 56720,
+    "char_end": 56843,
+    "sentence_index": 388,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec020",
+    "text": "**Faithfulness-Step (1-10):**\n- Definition: Measures how well the reasoning steps in the LLM response align with the source reasoning steps.",
+    "char_start": 56844,
+    "char_end": 56984,
+    "sentence_index": 389,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: All or almost all steps match or closely reflect the ground truth reasoning.",
+    "char_start": 56985,
+    "char_end": 57091,
+    "sentence_index": 390,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec020",
+    "text": "- 7-8: Most steps are aligned, with minor deviations.",
+    "char_start": 57092,
+    "char_end": 57145,
+    "sentence_index": 391,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec020",
+    "text": "- 5-6: Some steps align, but several are missing or significantly altered.",
+    "char_start": 57146,
+    "char_end": 57220,
+    "sentence_index": 392,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec020",
+    "text": "- 3-4: Few steps align correctly; most are off or missing.",
+    "char_start": 57221,
+    "char_end": 57279,
+    "sentence_index": 393,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec020",
+    "text": "- 1-2: The majority of steps are not aligned with the source.",
+    "char_start": 57280,
+    "char_end": 57341,
+    "sentence_index": 394,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec020",
+    "text": "2.",
+    "char_start": 57343,
+    "char_end": 57345,
+    "sentence_index": 395,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec020",
+    "text": "**Faithfulness-Token (1-10):**\n- Definition: Extends Faithfulness-Step to a token-level granularity, checking if the content within each reasoning step is true to the source.",
+    "char_start": 57346,
+    "char_end": 57520,
+    "sentence_index": 396,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: Token-level details mirror the ground truth closely.",
+    "char_start": 57521,
+    "char_end": 57603,
+    "sentence_index": 397,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec020",
+    "text": "- 7-8: Minor token-level deviations but largely faithful.",
+    "char_start": 57604,
+    "char_end": 57661,
+    "sentence_index": 398,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec020",
+    "text": "- 5-6: Noticeable inaccuracies in token-level details.",
+    "char_start": 57662,
+    "char_end": 57716,
+    "sentence_index": 399,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec020",
+    "text": "- 3-4: Several token-level discrepancies.",
+    "char_start": 57717,
+    "char_end": 57758,
+    "sentence_index": 400,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec020",
+    "text": "- 1-2: Most token-level details are incorrect or fabricated.",
+    "char_start": 57759,
+    "char_end": 57819,
+    "sentence_index": 401,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec020",
+    "text": "3.",
+    "char_start": 57821,
+    "char_end": 57823,
+    "sentence_index": 402,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec020",
+    "text": "**Informativeness-Step (Info-Step) (1-10):**\n- Definition: Measures how well the reasoning steps extract all relevant information from the source.",
+    "char_start": 57824,
+    "char_end": 57970,
+    "sentence_index": 403,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: Almost all critical information steps are present and accurate.",
+    "char_start": 57971,
+    "char_end": 58064,
+    "sentence_index": 404,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec020",
+    "text": "- 7-8: Most important points are included, with minor omissions.",
+    "char_start": 58065,
+    "char_end": 58129,
+    "sentence_index": 405,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec020",
+    "text": "- 5-6: Some key information is missing or underdeveloped.",
+    "char_start": 58130,
+    "char_end": 58187,
+    "sentence_index": 406,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec020",
+    "text": "- 3-4: Limited inclusion of critical content.",
+    "char_start": 58188,
+    "char_end": 58233,
+    "sentence_index": 407,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec020",
+    "text": "- 1-2: Very poor extraction of relevant information.",
+    "char_start": 58234,
+    "char_end": 58286,
+    "sentence_index": 408,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec020",
+    "text": "4.",
+    "char_start": 58288,
+    "char_end": 58290,
+    "sentence_index": 409,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec020",
+    "text": "**Repetition-Token (1-10):**\n- Definition: Identifies repeated or unnecessarily paraphrased reasoning steps within the hypothesis.",
+    "char_start": 58291,
+    "char_end": 58421,
+    "sentence_index": 410,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: No or minimal unnecessary repetition.",
+    "char_start": 58422,
+    "char_end": 58489,
+    "sentence_index": 411,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec020",
+    "text": "- 7-8: Minor repetition that doesn't impede clarity.",
+    "char_start": 58490,
+    "char_end": 58542,
+    "sentence_index": 412,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec020",
+    "text": "- 5-6: Noticeable repetition that doesn't add value.",
+    "char_start": 58543,
+    "char_end": 58595,
+    "sentence_index": 413,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec020",
+    "text": "- 3-4: Frequent repetition that disrupts coherence.",
+    "char_start": 58596,
+    "char_end": 58647,
+    "sentence_index": 414,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec020",
+    "text": "- 1-2: Excessive repetition reducing the quality of reasoning.",
+    "char_start": 58648,
+    "char_end": 58710,
+    "sentence_index": 415,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec020",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=System Prompt used to evaluate the reasoning steps continued...",
+    "char_start": 58712,
+    "char_end": 58830,
+    "sentence_index": 416,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec020",
+    "text": "]\n\nbreaklines=true, basicstyle=\n\n5.",
+    "char_start": 58831,
+    "char_end": 58866,
+    "sentence_index": 417,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec020",
+    "text": "**Hallucination (1-10):**\n- Definition: Detect irrelevant or invented reasoning steps not aligned with the source.",
+    "char_start": 58867,
+    "char_end": 58981,
+    "sentence_index": 418,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: No hallucinations; all reasoning is grounded in the source.",
+    "char_start": 58982,
+    "char_end": 59071,
+    "sentence_index": 419,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec020",
+    "text": "- 7-8: One or two minor hallucinations.",
+    "char_start": 59072,
+    "char_end": 59111,
+    "sentence_index": 420,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec020",
+    "text": "- 5-6: Several steps contain invented or irrelevant details.",
+    "char_start": 59112,
+    "char_end": 59172,
+    "sentence_index": 421,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec020",
+    "text": "- 3-4: Many hallucinations, but some grounding remains.",
+    "char_start": 59173,
+    "char_end": 59228,
+    "sentence_index": 422,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec020",
+    "text": "- 1-2: Mostly hallucinated reasoning.",
+    "char_start": 59229,
+    "char_end": 59266,
+    "sentence_index": 423,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec020",
+    "text": "6.",
+    "char_start": 59268,
+    "char_end": 59270,
+    "sentence_index": 424,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec020",
+    "text": "**Redundancy (1-10):**\n- Definition: Identify redundant reasoning steps that do not add value.",
+    "char_start": 59271,
+    "char_end": 59365,
+    "sentence_index": 425,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: No unnecessary steps; very concise.",
+    "char_start": 59366,
+    "char_end": 59431,
+    "sentence_index": 426,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec020",
+    "text": "- 7-8: Minor redundancy.",
+    "char_start": 59432,
+    "char_end": 59456,
+    "sentence_index": 427,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec020",
+    "text": "- 5-6: Some steps clearly unnecessary.",
+    "char_start": 59457,
+    "char_end": 59495,
+    "sentence_index": 428,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec020",
+    "text": "- 3-4: Many redundant steps.",
+    "char_start": 59496,
+    "char_end": 59524,
+    "sentence_index": 429,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec020",
+    "text": "- 1-2: Excessive redundancy that hampers clarity.",
+    "char_start": 59525,
+    "char_end": 59574,
+    "sentence_index": 430,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec020",
+    "text": "7.",
+    "char_start": 59576,
+    "char_end": 59578,
+    "sentence_index": 431,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec020",
+    "text": "**Semantic Coverage-Step (1-10):**\n- Definition: How well the hypothesis covers the essential semantic elements from the source reasoning steps.",
+    "char_start": 59579,
+    "char_end": 59723,
+    "sentence_index": 432,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: Almost complete semantic coverage of all important elements.",
+    "char_start": 59724,
+    "char_end": 59814,
+    "sentence_index": 433,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec020",
+    "text": "- 7-8: Good coverage but some minor elements are missing.",
+    "char_start": 59815,
+    "char_end": 59872,
+    "sentence_index": 434,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec020",
+    "text": "- 5-6: Partial coverage with noticeable gaps.",
+    "char_start": 59873,
+    "char_end": 59918,
+    "sentence_index": 435,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec020",
+    "text": "- 3-4: Significant semantic gaps.",
+    "char_start": 59919,
+    "char_end": 59952,
+    "sentence_index": 436,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec020",
+    "text": "- 1-2: Very poor coverage of essential meaning.",
+    "char_start": 59953,
+    "char_end": 60000,
+    "sentence_index": 437,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec020",
+    "text": "8.",
+    "char_start": 60002,
+    "char_end": 60004,
+    "sentence_index": 438,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec020",
+    "text": "**Reasoning Alignment (1-10):**\n- Definition: Overall alignment between the hypothesis and the reference reasoning chain.",
+    "char_start": 60005,
+    "char_end": 60126,
+    "sentence_index": 439,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: Very closely aligned, minimal divergence.",
+    "char_start": 60127,
+    "char_end": 60198,
+    "sentence_index": 440,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec020",
+    "text": "- 7-8: Mostly aligned, with some minor issues.",
+    "char_start": 60199,
+    "char_end": 60245,
+    "sentence_index": 441,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec020",
+    "text": "- 5-6: Some alignment, but also several misalignments.",
+    "char_start": 60246,
+    "char_end": 60300,
+    "sentence_index": 442,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec020",
+    "text": "- 3-4: Poor alignment, though occasional matches.",
+    "char_start": 60301,
+    "char_end": 60350,
+    "sentence_index": 443,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec020",
+    "text": "- 1-2: Fundamentally misaligned reasoning.",
+    "char_start": 60351,
+    "char_end": 60393,
+    "sentence_index": 444,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec020",
+    "text": "9.",
+    "char_start": 60395,
+    "char_end": 60397,
+    "sentence_index": 445,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec020",
+    "text": "**Commonsense (1-10):**\n- Definition: Check for missing commonsense reasoning required to solve the problem.",
+    "char_start": 60398,
+    "char_end": 60506,
+    "sentence_index": 446,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: Adequate commonsense reasoning present.",
+    "char_start": 60507,
+    "char_end": 60576,
+    "sentence_index": 447,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec020",
+    "text": "- 7-8: Minor commonsense gaps but mostly adequate.",
+    "char_start": 60577,
+    "char_end": 60627,
+    "sentence_index": 448,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec020",
+    "text": "- 5-6: Noticeable commonsense gaps.",
+    "char_start": 60628,
+    "char_end": 60663,
+    "sentence_index": 449,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec020",
+    "text": "- 3-4: Many commonsense steps missing.",
+    "char_start": 60664,
+    "char_end": 60702,
+    "sentence_index": 450,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec020",
+    "text": "- 1-2: Almost entirely lacking necessary commonsense.",
+    "char_start": 60703,
+    "char_end": 60756,
+    "sentence_index": 451,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec020",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=System Prompt used to evaluate the reasoning steps continued...",
+    "char_start": 60758,
+    "char_end": 60876,
+    "sentence_index": 452,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec020",
+    "text": "]\n\nbreaklines=true, basicstyle=\n\n10.",
+    "char_start": 60877,
+    "char_end": 60913,
+    "sentence_index": 453,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec020",
+    "text": "**Missing Step (1-10):**\n- Definition: Identify if any necessary reasoning steps are missing.",
+    "char_start": 60914,
+    "char_end": 61007,
+    "sentence_index": 454,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec020",
+    "text": "- Scoring Guidelines:\n- 9-10: No critical steps missing.",
+    "char_start": 61008,
+    "char_end": 61064,
+    "sentence_index": 455,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec020",
+    "text": "- 7-8: Minor missing steps that don't significantly affect the conclusion.",
+    "char_start": 61065,
+    "char_end": 61139,
+    "sentence_index": 456,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec020",
+    "text": "- 5-6: Some important steps absent, affecting the outcome.",
+    "char_start": 61140,
+    "char_end": 61198,
+    "sentence_index": 457,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec020",
+    "text": "- 3-4: Several crucial missing steps.",
+    "char_start": 61199,
+    "char_end": 61236,
+    "sentence_index": 458,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec020",
+    "text": "- 1-2: Major gaps; the reasoning chain is incomplete.",
+    "char_start": 61237,
+    "char_end": 61290,
+    "sentence_index": 459,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec020",
+    "text": "**Additional Instructions for Consistency:**\n\n- Always follow the above scoring guidelines strictly.",
+    "char_start": 61292,
+    "char_end": 61392,
+    "sentence_index": 460,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec020",
+    "text": "- Before scoring, re-read both the ground truth and the LLM response carefully.",
+    "char_start": 61393,
+    "char_end": 61472,
+    "sentence_index": 461,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec020",
+    "text": "- Compare the reasoning steps directly to determine where they align or diverge.",
+    "char_start": 61473,
+    "char_end": 61553,
+    "sentence_index": 462,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec020",
+    "text": "- Use the provided scoring benchmarks (anchor examples, if any) as a reference to maintain consistency across evaluations.",
+    "char_start": 61554,
+    "char_end": 61676,
+    "sentence_index": 463,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec020",
+    "text": "- Avoid subjective interpretation and adhere to the given thresholds.",
+    "char_start": 61677,
+    "char_end": 61746,
+    "sentence_index": 464,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec020",
+    "text": "- Once scores for all metrics are determined, compute the Overall Score as the average of all metric scores.",
+    "char_start": 61747,
+    "char_end": 61855,
+    "sentence_index": 465,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec020",
+    "text": "- Provide the final output as a Python dictionary with the structure only don't add a anything extra , beacuase your out will be used in code pipeline.",
+    "char_start": 61856,
+    "char_end": 62007,
+    "sentence_index": 466,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec020",
+    "text": "So single change in you output will crash whole system.",
+    "char_start": 62008,
+    "char_end": 62063,
+    "sentence_index": 467,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec020",
+    "text": ":\n\n# Example output : 'Faithfulness-Step': 8.0, 'Faithfulness-Token': 7.5, 'Informativeness-Step': 8.5, 'Repetition-Token': 9.0, 'Hallucination': 9.5, 'Redundancy': 8.0, 'Semantic Coverage-Step': 8.5, 'Reasoning Alignment': 8.0, 'Commonsense': 9.0, 'Missing Step': 8.5 , 'Overall Score': 8.65\n\n# Do not give output in following format :\n\n```python\n\n'Faithfulness-Step': 1.0,\n'Faithfulness-Token': 1.0,\n'Informativeness-Step': 1.0,\n'Repetition-Token': 9.0,\n'Hallucination': 1.0,\n'Redundancy': 9.0,\n'Semantic Coverage-Step': 1.0,\n'Reasoning Alignment': 1.0,\n'Commonsense': 1.0,\n'Missing Step': 1.0,\n'Overall Score': 2.6\n\n```\n\nTo further ensure the evaluation framework generates consistent and interpretable outputs, we designed the response format using a well-defined JSON schema.",
+    "char_start": 62064,
+    "char_end": 62844,
+    "sentence_index": 468,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec021",
+    "text": "This schema serves as a blueprint, enforcing strict adherence to a structured format while capturing detailed scores for each metric in a systematic and transparent manner.",
+    "char_start": 62845,
+    "char_end": 63017,
+    "sentence_index": 469,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec021",
+    "text": "By standardizing the output structure, the schema facilitates easier comparison between models, reduces ambiguity, and enhances the reproducibility of results.",
+    "char_start": 63018,
+    "char_end": 63177,
+    "sentence_index": 470,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec021",
+    "text": "The JSON schema is carefully tailored to accommodate the unique aspects of our evaluation process, such as step-by-step reasoning, metric-specific scores, and logical flow validation.",
+    "char_start": 63179,
+    "char_end": 63362,
+    "sentence_index": 471,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec021",
+    "text": "Each response is divided into key components, including reasoning steps, metric scores, and final answers, ensuring that all critical aspects of the model's performance are systematically captured.",
+    "char_start": 63363,
+    "char_end": 63560,
+    "sentence_index": 472,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec021",
+    "text": "This level of detail not only improves interpretability but also enables fine-grained analysis of strengths and weaknesses across models.",
+    "char_start": 63561,
+    "char_end": 63698,
+    "sentence_index": 473,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec021",
+    "text": "Additionally, the schema supports modularity, allowing seamless integration of new metrics or evaluation criteria as the benchmark evolves.",
+    "char_start": 63700,
+    "char_end": 63839,
+    "sentence_index": 474,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec021",
+    "text": "By adopting this structured approach, we ensure that the evaluation framework remains robust, scalable, and adaptable to future advancements in multimodal reasoning research.",
+    "char_start": 63840,
+    "char_end": 64014,
+    "sentence_index": 475,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec021",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=Response format provided to LLM's which supports structured-output\n]\n\nbreaklines=true, basicstyle=\n\nresponse_format =\n\"type\": \"json_schema\",\n\"json_schema\":\n\"name\": \"EvaluationScores\",\n\"strict\": True,\n\"schema\":\n\"type\": \"object\",\n\"properties\":\n\"Faithfulness-Step\": \"type\": \"number\" ,\n\"Faithfulness-Token\": \"type\": \"number\" ,\n\"Informativeness-Step\": \"type\": \"number\" ,\n\"Repetition-Token\": \"type\": \"number\" ,\n\"Hallucination\": \"type\": \"number\" ,\n\"Redundancy\": \"type\": \"number\" ,\n\"Semantic Coverage-Step\": \"type\": \"number\" ,\n\"Reasoning Alignment\": \"type\": \"number\" ,\n\"Commonsense\": \"type\": \"number\" ,\n\"Missing Step\": \"type\": \"number\" ,\n\"Overall Score\": \"type\": \"number\"\n,\n\"required\": [\n\"Faithfulness-Step\",\n\"Faithfulness-Token\",\n\"Informativeness-Step\",\n\"Repetition-Token\",\n\"Hallucination\",\n\"Redundancy\",\n\"Semantic Coverage-Step\",\n\"Reasoning Alignment\",\n\"Commonsense\",\n\"Missing Step\",\n\"Overall Score\"\n],\n\"additionalProperties\": False\n\nThe evaluate\\_steps function is designed to rigorously assess the quality of reasoning steps generated by models against ground truth data using the GPT-4o-mini model.",
+    "char_start": 64016,
+    "char_end": 65166,
+    "sentence_index": 476,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec022",
+    "text": "It takes the task question, ground truth reasoning, and model response as inputs and processes them within a structured conversation context.",
+    "char_start": 65167,
+    "char_end": 65308,
+    "sentence_index": 477,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec022",
+    "text": "By leveraging a predefined system prompt and parameters like deterministic temperature (0.0) and a maximum token limit of 500, the function ensures consistent and reliable evaluations.",
+    "char_start": 65309,
+    "char_end": 65493,
+    "sentence_index": 478,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec022",
+    "text": "The output provides clear feedback on alignment, logical flow, and coherence of reasoning steps, enabling precise analysis of model performance.",
+    "char_start": 65494,
+    "char_end": 65638,
+    "sentence_index": 479,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec022",
+    "text": "This automated and standardized approach enhances objectivity, reproducibility, and detailed insight into multimodal reasoning capabilities.",
+    "char_start": 65639,
+    "char_end": 65779,
+    "sentence_index": 480,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec022",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=Reasoning steps evaluation using gpt-4o as a judge\n]\n\nbreaklines=true, basicstyle=\n\ndef evaluate_steps(question , ground_truth, llm_response):\nmessages = [\n\"role\": \"system\", \"content\": system_prompt ,\n\n\"role\": \"user\",\n\"content\": [\n\"type\": \"text\", \"text\": question + \" \" + f\"Ground Truth : ground_truth \" + \" \" + f\"LLM Response : llm_response \" ,\n],\n\n]\nresponse = client.chat.completions.create(\nmodel=\"gpt-4o-mini\",\nmessages=messages,\nresponse_format=response_format,\nmax_tokens=500,\ntemperature = 0.0,\n)\nreturn response.choices[0].message.content\n\nTo objectively assess how well the model\u2019s final answer predictions align with the ground truth, we developed a comparison function that utilizes a secondary system prompt to evaluate response accuracy.",
+    "char_start": 65781,
+    "char_end": 66587,
+    "sentence_index": 481,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec023",
+    "text": "This function analyzes the semantic similarity between the ground truth and the model's output, assigning a binary score: 1 for a match and 0 for a mismatch.",
+    "char_start": 66588,
+    "char_end": 66745,
+    "sentence_index": 482,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec023",
+    "text": "By exclusively producing numeric scores, this approach ensures a precise and quantifiable evaluation of the model\u2019s performance, effectively complementing the structured framework outlined earlier.",
+    "char_start": 66746,
+    "char_end": 66943,
+    "sentence_index": 483,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec023",
+    "text": "[colback=gray!5, colframe=black!45,\nfonttitle= , title=Secondary system prompt to evaluate the final answer accuracy\n]\n\nbreaklines=true, basicstyle=\n\nsystem_prompt_2 = \"\"\"\nYou are a helpful Assistant.",
+    "char_start": 66945,
+    "char_end": 67145,
+    "sentence_index": 484,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec023",
+    "text": "Provide helpful\nresponse to the user's question.",
+    "char_start": 67146,
+    "char_end": 67194,
+    "sentence_index": 485,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec023",
+    "text": "\"\"\"\n\n[colback=gray!5, colframe=black!45,\nfonttitle= , title=Evaluate the Final Answer\n]\n\nbreaklines=true, basicstyle=\n\ndef compare_results(question, ground_truth, llm_response):\nmessages = [\n\"role\": \"system\", \"content\": system_prompt_2 ,\n\n\"role\": \"user\",\n\"content\": [\n\n\"type\": \"text\",\n\"text\": f\"\"\"\nEvaluate the following answer based on\nAccuracy:\nQuestion: question\nGround Truth: ground_truth\nModel Prediction: llm_response\nMatch the meaning of the ground truth with the\nmodel prediction and if it matches give a 1.",
+    "char_start": 67195,
+    "char_end": 67710,
+    "sentence_index": 486,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec023",
+    "text": "Otherwise 0.",
+    "char_start": 67711,
+    "char_end": 67723,
+    "sentence_index": 487,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec023",
+    "text": "Strictly return only the numeric score,\nwithout any additional commentary\n\"\"\"\n,\n],\n\n]\n\nresponse = client.chat.completions.create(\nmodel=\"gpt-4o-mini\",\nmessages=messages,\nmax_tokens=10,\ntemperature=0.0\n)\n\nreturn response.choices[0].message.content",
+    "char_start": 67724,
+    "char_end": 67970,
+    "sentence_index": 488,
+    "section_sentence_index": 6
+  }
+]

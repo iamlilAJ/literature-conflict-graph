@@ -1,0 +1,3206 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Effective evaluation of multi-hop tool use is critical for analyzing the understanding, reasoning, and function-calling capabilities of large language models (LLMs).",
+    "char_start": 0,
+    "char_end": 165,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, progress has been hindered by a lack of reliable evaluation datasets.",
+    "char_start": 166,
+    "char_end": 244,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this, we present ToolHop , a dataset comprising 995 user queries and 3,912 associated tools, specifically designed for rigorous evaluation of multi-hop tool use.",
+    "char_start": 245,
+    "char_end": 417,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "ToolHop ensures diverse queries, meaningful interdependencies, locally executable tools, detailed feedback, and verifiable answers through a novel query-driven data construction approach that includes tool creation, document refinement, and code generation.",
+    "char_start": 418,
+    "char_end": 675,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We evaluate 14 LLMs across five model families (i.e., LLaMA3.1, Qwen2.5, Gemini1.5, Claude3.5, and GPT), uncovering significant challenges in handling multi-hop tool-use scenarios.",
+    "char_start": 676,
+    "char_end": 856,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "The leading model, GPT-4o, achieves an accuracy of 49.04\\%, underscoring substantial room for improvement.",
+    "char_start": 857,
+    "char_end": 963,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Further analysis reveals variations in tool-use strategies for various families, offering actionable insights to guide the development of more effective approaches.",
+    "char_start": 964,
+    "char_end": 1128,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Code and data can be found in .",
+    "char_start": 1129,
+    "char_end": 1160,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "figures/instance.pdf\nAn illustration of multi-hop tool use.",
+    "char_start": 1162,
+    "char_end": 1221,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "The process entails decomposing a complex multi-hop query into multiple atomic sub-queries, sequentially invoking the appropriate tools, retrieving results from the tool feedback, and iterating until the final answer is derived.",
+    "char_start": 1222,
+    "char_end": 1450,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "This demonstrates the integration of comprehension, reasoning, and function-calling capabilities.",
+    "char_start": 1451,
+    "char_end": 1548,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "figures/example.pdf\nAn illustration of our proposed query-driven data construction scheme, comprising three key processes: tool creation, document refinement, and code generation.",
+    "char_start": 1550,
+    "char_end": 1729,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "This approach incrementally develops detailed tool document and code implementation for each atomic subquery within a multi-hop query.",
+    "char_start": 1730,
+    "char_end": 1864,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "The task of multi-hop tool use presents a significant challenge for large language models (LLMs) .",
+    "char_start": 1866,
+    "char_end": 1964,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "As illustrated in Figure , it requires LLMs to incrementally decompose a complex multi-hop query into atomic subqueries, invoke the appropriate tools, and iteratively retrieve results from the tool feedback until the final answer is reached.",
+    "char_start": 1965,
+    "char_end": 2206,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "This process demands advanced capabilities such as comprehension, reasoning, and function-calling , making the evaluation of multi-hop tool use essential for assessing these skills.",
+    "char_start": 2207,
+    "char_end": 2388,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Furthermore, such evaluations are pivotal for advancing LLMs toward generalized intelligence .",
+    "char_start": 2389,
+    "char_end": 2483,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Existing studies have made progress in evaluating tool use of LLMs.",
+    "char_start": 2485,
+    "char_end": 2552,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Some focus on evaluating single-step tool use in simulation environments, requiring manual calibration of correct tool-call results .",
+    "char_start": 2553,
+    "char_end": 2686,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Others examine the process of tool use, leveraging advanced models like GPT-4 to go beyond single-step evaluations and providing some valuable insights .",
+    "char_start": 2687,
+    "char_end": 2840,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "However, these works still fall short of offering a reliable evaluation of multi-hop tool use.",
+    "char_start": 2842,
+    "char_end": 2936,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Specifically, a key limitation of prior work lies in their reliance on tool-driven data construction methods, where a collection of tools is gathered and queries are simulated for them .",
+    "char_start": 2937,
+    "char_end": 3123,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "This approach fails to ensure that the collected tools are interdependent or that the queries involve genuine multi-hop reasoning.",
+    "char_start": 3124,
+    "char_end": 3254,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Furthermore, the absence of verifiable answers forces these studies to depend on process analysis using models, introducing model bias and evaluation errors .",
+    "char_start": 3255,
+    "char_end": 3413,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "To address these challenges, we introduce ToolHop , a novel dataset specifically designed to evaluate LLMs' multi-hop tool use capabilities.",
+    "char_start": 3415,
+    "char_end": 3555,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "ToolHop comprises 995 multi-hop queries and 3,912 locally executable tools, constructed using a query-driven data construction scheme.",
+    "char_start": 3556,
+    "char_end": 3690,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "This methodology involves tool creation, document refinement, and code generation, which can expand a single multi-hop query into a comprehensive multi-hop tool use test case.",
+    "char_start": 3691,
+    "char_end": 3866,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "An analysis of ToolHop demonstrates its effectiveness in accommodating diverse queries, ensuring meaningful interdependencies, supporting locally executable tools, and delivering detailed feedback alongside verifiable answers.",
+    "char_start": 3867,
+    "char_end": 4093,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "This design rigorously evaluates LLMs' multi-hop tool use capabilities.",
+    "char_start": 4094,
+    "char_end": 4165,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "We evaluate ToolHop on 14 LLMs from five different families (i.e., LLaMA3.1 , Qwen2.5 , Gemini1.5 , Claude3.5 , and GPT ).",
+    "char_start": 4167,
+    "char_end": 4289,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Our results reveal that while tools significantly improve model performance, even the top-performing model, GPT-4, achieves only 49.04\\% accuracy in multi-hop tool use, highlighting considerable room for improvement.",
+    "char_start": 4290,
+    "char_end": 4506,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Further studies reveal that different model families exhibit distinct patterns in tool use, leading to varied outcomes.",
+    "char_start": 4507,
+    "char_end": 4626,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "For instance, the Qwen2.5 family of models tends to emphasize parallel calls, which results in hallucinations, while the GPT family leverages tool feedback to improve their performance in tool usage.",
+    "char_start": 4627,
+    "char_end": 4826,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "These insights provide valuable guidance for developing more effective methods.",
+    "char_start": 4827,
+    "char_end": 4906,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Our contributions are as follows:\n\nWe introduce ToolHop, a test set of 995 multi-hop queries with 3,912 locally executable tools, designed to assess LLMs\u2019 ability to use tools in multi-hop scenarios.",
+    "char_start": 4908,
+    "char_end": 5107,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "It ensures diverse queries, meaningful interdependencies, locally executable tools, detailed feedback, and verifiable answers.",
+    "char_start": 5108,
+    "char_end": 5234,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "We propose a novel query-driven data construction process that can expand queries into multi-hop tool use data via tool creation, document refinement, and code generation.",
+    "char_start": 5235,
+    "char_end": 5406,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "We provide a comprehensive evaluation of 14 LLMs, identifying significant limitations in current tool-use capabilities and offering insights for future improvements.",
+    "char_start": 5407,
+    "char_end": 5572,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "In this section, we introduce ToolHop in detail.",
+    "char_start": 5574,
+    "char_end": 5622,
+    "sentence_index": 38,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Specifically, we first provide a formal definition of multi-hop tool use (Section ), then explain our proposed query-driven data construction scheme (Section ), and finally analyze the quality of the ToolHop dataset (Section ).",
+    "char_start": 5623,
+    "char_end": 5850,
+    "sentence_index": 39,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "Given a multi-hop query \\( q \\), which can be decomposed into subqueries \\( q_1, q_2, ..., q_l \\); and a collection of tools \\( T = (t_1, t_2, , t_l) \\), where each tool \\( t_i \\) is defined by a document \\( doc _i \\) and a code implementation \\( fun _i \\), the description document \\( doc _i \\) includes the tool name \\( n_i \\), a function description \\( d_i \\), and the corresponding parameters \\( p_i = (p_i^1, p_i^2, , p_i^k) \\).Each parameter \\( p_i^j \\) is characterized by its name \\( np_i^j \\), a description \\( dp_i^j \\), its type \\( tp_i^j \\), and whether it is required \\( rp_i^j \\).",
+    "char_start": 5852,
+    "char_end": 6446,
+    "sentence_index": 40,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "The goal of multi-hop tool use is for the model \\( M \\) to utilize the information in \\( T \\) to sequentially invoke the appropriate tools \\( t_1, t_2, ..., t_l \\), where each tool \\( t_i \\) is used to solve subquery \\( q_i \\) and produce an intermediate answer \\( a_i \\).",
+    "char_start": 6447,
+    "char_end": 6719,
+    "sentence_index": 41,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "The output \\( a_i \\) then serves as one of the inputs to the next tool \\( t_ i+1 \\), enforcing the need for the model to correctly understand complex dependencies between tools and accurately decompose the original query.",
+    "char_start": 6720,
+    "char_end": 6941,
+    "sentence_index": 42,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "The final answer \\( a \\) is obtained after executing the full sequence of tool calls.",
+    "char_start": 6942,
+    "char_end": 7027,
+    "sentence_index": 43,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "A visual illustration of this process is provided in Figure .",
+    "char_start": 7028,
+    "char_end": 7089,
+    "sentence_index": 44,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "As illustrated in Figure , we propose a novel query-driven data construction scheme that departs from traditional tool-driven approaches.",
+    "char_start": 7091,
+    "char_end": 7228,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "This scheme comprises three key stages that involves tool creation, document refinement, and code generation.",
+    "char_start": 7229,
+    "char_end": 7338,
+    "sentence_index": 46,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "Given a multi-hop user query \\( q \\), the scheme extends \\( q \\) to produce a sequence of corresponding tool documents \\( doc _ i..l \\) and their associated code implementations \\( fun _ i..l \\).",
+    "char_start": 7339,
+    "char_end": 7534,
+    "sentence_index": 47,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "Tool Creation\n\nThe query-driven data construction begins with the multi-hop user query \\( q \\), which serves as the foundation for building dynamic tools.",
+    "char_start": 7536,
+    "char_end": 7690,
+    "sentence_index": 48,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "The tool creation process accepts \\( q \\) and generates a preliminary set of tool documents \\( doc '_ 1..l \\).",
+    "char_start": 7691,
+    "char_end": 7801,
+    "sentence_index": 49,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "These documents are designed to be both relevant to \\( q \\) and interdependent.",
+    "char_start": 7802,
+    "char_end": 7881,
+    "sentence_index": 50,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "To achieve this, \\( q \\) is decomposed into a sequence of atomic subqueries \\( q_1, q_2, , q_l \\), where each subquery \\( q_i \\) depends on resolving the preceding ones (i.e., \\( q_ i-1 \\)).",
+    "char_start": 7883,
+    "char_end": 8073,
+    "sentence_index": 51,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "For each \\( q_i \\), a preliminary document \\( doc '_i \\) is created.",
+    "char_start": 8074,
+    "char_end": 8142,
+    "sentence_index": 52,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": ". These documents not only capture the input-output logic of \\(q_i\\), but are also structured to generalize to similar queries.",
+    "char_start": 8143,
+    "char_end": 8270,
+    "sentence_index": 53,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "By maintaining backward and forward dependencies between documents, this approach ensures both modularity and cohesion, simplifying the tool creation process.",
+    "char_start": 8271,
+    "char_end": 8429,
+    "sentence_index": 54,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "Document Refinement\n\nThe initial tool documents \\( doc '_i \\), derived directly from atomic queries, are typically rudimentary due to the limited information in \\( q_i \\).",
+    "char_start": 8431,
+    "char_end": 8602,
+    "sentence_index": 55,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "The document refinement process transforms \\( doc '_i \\) into a more comprehensive document \\( doc _i \\), designed to better support the evaluation of models in complex multi-hop scenarios.",
+    "char_start": 8603,
+    "char_end": 8792,
+    "sentence_index": 56,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "This process involves two key aspects.",
+    "char_start": 8794,
+    "char_end": 8832,
+    "sentence_index": 57,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "On the one hand, the tool's functionality is expanded by introducing features such as result filtering and customizable formats, all while maintaining compatibility with the original functionality.",
+    "char_start": 8833,
+    "char_end": 9030,
+    "sentence_index": 58,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "On the other hand, the number of parameters is increased, and their types are optimized.",
+    "char_start": 9031,
+    "char_end": 9119,
+    "sentence_index": 59,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "For instance, parameters initially represented as simple strings are replaced with structured types such as arrays or objects, enabling the tools to handle more complex inputs.",
+    "char_start": 9120,
+    "char_end": 9296,
+    "sentence_index": 60,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "These refinements ensure that the resulting tool documents are robust, versatile, and capable of addressing intricate cases.",
+    "char_start": 9297,
+    "char_end": 9421,
+    "sentence_index": 61,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "[!t]\n\nfigures/domain.pdf\nDistribution of user queries across 47 domains in the ToolHop dataset.",
+    "char_start": 9423,
+    "char_end": 9518,
+    "sentence_index": 62,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "[!t]\n\n0.85 !",
+    "char_start": 9520,
+    "char_end": 9532,
+    "sentence_index": 63,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "lccccc\n\n\\# Tools & Three & Four & Five & Six & Seven\n\n\\# Data & 428 & 353 & 136 & 10 & 68\n\nDistribution of the number of tools required to solve each query in ToolHop.",
+    "char_start": 9534,
+    "char_end": 9701,
+    "sentence_index": 64,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "[!t]\n\nfigures/param_num.pdf\nDistribution of the number of tool parameters before and after document refinement.",
+    "char_start": 9703,
+    "char_end": 9814,
+    "sentence_index": 65,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "Code Generation\n\nOnce refined tool documents \\( doc _i \\) are complete, the code generation process produces corresponding locally executable functions \\( fun _i \\).",
+    "char_start": 9816,
+    "char_end": 9981,
+    "sentence_index": 66,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "These functions allow external invocation of tools, enabling seamless multi-turn interactions between the model and tools.",
+    "char_start": 9982,
+    "char_end": 10104,
+    "sentence_index": 67,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "Code generation systematically maps document information to code.",
+    "char_start": 10106,
+    "char_end": 10171,
+    "sentence_index": 68,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "For instance, the tool name in $ doc _i$ is converted into the function name, while parameter specifications are used to define the function signature.",
+    "char_start": 10172,
+    "char_end": 10323,
+    "sentence_index": 69,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "To ensure the correctness of \\( fun _i \\), the atomic query \\( q_i \\) and its answer \\( a_i \\) are included as inputs, requiring the function to return \\( a_i \\) when executed with \\(q_i\\).",
+    "char_start": 10324,
+    "char_end": 10513,
+    "sentence_index": 70,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Additionally, a robust exception-handling mechanism is implemented, enabling tools to provide informative error messages for invalid inputs while maintaining normal operation.",
+    "char_start": 10514,
+    "char_end": 10689,
+    "sentence_index": 71,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "Moreover, the generated code is verified to ensure it functions as intended.",
+    "char_start": 10690,
+    "char_end": 10766,
+    "sentence_index": 72,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "Dataset Construction\nTo effectively implement our approach, we draw on queries from the MoreHopQA dataset , which consists of multi-hop questions that can be decomposed into at least three atomic queries with answers.",
+    "char_start": 10768,
+    "char_end": 10985,
+    "sentence_index": 73,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "Using this foundation, we generate 995 user queries and 3,912 corresponding locally executable tools, which collectively form the ToolHop dataset.",
+    "char_start": 10986,
+    "char_end": 11132,
+    "sentence_index": 74,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": "Examples of generated documents and code implementations are provided in Appendix and Appendix .",
+    "char_start": 11133,
+    "char_end": 11229,
+    "sentence_index": 75,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "To ensure that the ToolHop dataset rigorously evaluates the multi-hop tool-use capabilities of LLMs, we conduct a comprehensive analysis across five critical dimensions.",
+    "char_start": 11231,
+    "char_end": 11400,
+    "sentence_index": 76,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "This analysis validates ToolHop\u2019s ability to represent diverse and challenging multi-hop tool-use scenarios.",
+    "char_start": 11401,
+    "char_end": 11509,
+    "sentence_index": 77,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "A comparison between ToolHop and existing benchmarks related to tool use can be found in Appendix .",
+    "char_start": 11510,
+    "char_end": 11609,
+    "sentence_index": 78,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "[!t]\n\nfigures/param_type.pdf\nDistribution of tool parameter types before and after document refinement.",
+    "char_start": 11611,
+    "char_end": 11714,
+    "sentence_index": 79,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "Diverse Queries\n\nReal-world user needs vary widely, requiring an effective LLM to flexibly utilize tools to address queries spanning multiple domains.",
+    "char_start": 11716,
+    "char_end": 11866,
+    "sentence_index": 80,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "To evaluate such capabilities, a suitable dataset must encompass queries from a broad range of topics.",
+    "char_start": 11867,
+    "char_end": 11969,
+    "sentence_index": 81,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "ToolHop is explicitly designed to prioritize diversity in its multi-hop queries, reflecting real-world scenarios.",
+    "char_start": 11970,
+    "char_end": 12083,
+    "sentence_index": 82,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec006",
+    "text": "To verify this diversity, we use GPT-4o to categorize all queries in ToolHop into distinct domains.",
+    "char_start": 12085,
+    "char_end": 12184,
+    "sentence_index": 83,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec006",
+    "text": "Similar categories are merged to ensure clarity and independence.",
+    "char_start": 12185,
+    "char_end": 12250,
+    "sentence_index": 84,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec006",
+    "text": "As shown in Figure , the categorization reveals that ToolHop spans 47 unique domains, including topics such as movies and television, academic subjects, and family relationships.",
+    "char_start": 12251,
+    "char_end": 12429,
+    "sentence_index": 85,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec006",
+    "text": "This broad coverage ensures that ToolHop effectively evaluates LLM performance across diverse query types, enhancing its representativeness and practical applicability for real-world tool-use scenarios.",
+    "char_start": 12430,
+    "char_end": 12632,
+    "sentence_index": 86,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "Meaningful Interdependencies\nPrevious evaluation for tool use typically assemble tools from disparate sources and then generate user queries for them.",
+    "char_start": 12634,
+    "char_end": 12784,
+    "sentence_index": 87,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "However, these approaches fail to account for interdependencies between tools, often producing queries that inadequately represent multi-hop reasoning.",
+    "char_start": 12785,
+    "char_end": 12936,
+    "sentence_index": 88,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "To address this limitation, ToolHop employs a novel query-driven framework.",
+    "char_start": 12937,
+    "char_end": 13012,
+    "sentence_index": 89,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "It begins by formulating multi-hop queries and subsequently constructs the required tools based on each atomic query.",
+    "char_start": 13013,
+    "char_end": 13130,
+    "sentence_index": 90,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "This approach inherently preserves the multi-hop structure of queries and enforces meaningful interdependencies between tools.",
+    "char_start": 13131,
+    "char_end": 13257,
+    "sentence_index": 91,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "To validate the effectiveness of this approach, we analyze the distribution of tools associated with each query in ToolHop.",
+    "char_start": 13259,
+    "char_end": 13382,
+    "sentence_index": 92,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "As shown in Table , the number of tools required per query ranges from three to seven, which corresponds to the minimum number of reasoning hops required to resolve the queries, emphasizing the importance of multi-hop reasoning.",
+    "char_start": 13383,
+    "char_end": 13611,
+    "sentence_index": 93,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "This distribution underscores the complexity of queries handled by ToolHop and its capability to support scalable multi-hop tool use.",
+    "char_start": 13612,
+    "char_end": 13745,
+    "sentence_index": 94,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "Locally Executable Tools\n\nTools are a core component of the tool use task.",
+    "char_start": 13747,
+    "char_end": 13821,
+    "sentence_index": 95,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "ToolHop includes 3,912 locally deployable and directly executable tools, enabling zero-cost invocation and seamless interaction by LLMs.",
+    "char_start": 13822,
+    "char_end": 13958,
+    "sentence_index": 96,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "To better align the constructed tools with the diverse requirements of real-world applications, we enhance their complexity through a document refinement process.",
+    "char_start": 13959,
+    "char_end": 14121,
+    "sentence_index": 97,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "Figure shows that the average number of parameters per tool increased from 3.49 to 5.91 after refinement.",
+    "char_start": 14123,
+    "char_end": 14228,
+    "sentence_index": 98,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "This reflects an intentional shift toward more expressive tools, which better capture the complexity of real-world tasks.",
+    "char_start": 14229,
+    "char_end": 14350,
+    "sentence_index": 99,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "Concurrently, Figure illustrates a 12\\% reduction in simple string parameters, replaced by more structured types such as arrays, booleans, and objects, which enable richer and more precise tool interactions.",
+    "char_start": 14351,
+    "char_end": 14558,
+    "sentence_index": 100,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "Table and Table further demonstrate that the refinement process preserves the number and types of required parameters while increasing the diversity of optional parameters.",
+    "char_start": 14559,
+    "char_end": 14731,
+    "sentence_index": 101,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "[!t]\n\n0.85 !",
+    "char_start": 14733,
+    "char_end": 14745,
+    "sentence_index": 102,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "lcccccc\n\nRefinement & Zero & One & Two & Three & Four\n\nBefore & 2 & 2433 & 1250 & 202 & 25\n\nAfter & 2 & 2490 & 1198 & 200 & 22\n\nDistribution of the number of required parameters before and after document refinement.",
+    "char_start": 14747,
+    "char_end": 14962,
+    "sentence_index": 103,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "[!t]\n\n!",
+    "char_start": 14964,
+    "char_end": 14971,
+    "sentence_index": 104,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "lccccccc\n\nRefinement & string & boolean & array & integer & object & number\n\nBefore & 4758 & 2 & 404 & 333 & 24 & 114\n\nAfter & 4473 & 2 & 755 & 241 & 44 & 102\n\nDistribution of required tool parameter types before and after refinement.",
+    "char_start": 14973,
+    "char_end": 15207,
+    "sentence_index": 105,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec006",
+    "text": "Detailed Feedback\n\nEffective multi-turn interaction between LLMs and tools requires not only correct outputs for valid inputs but also meaningful error messages for invalid ones.",
+    "char_start": 15209,
+    "char_end": 15387,
+    "sentence_index": 106,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec006",
+    "text": "Our approach incorporates two key strategies to address this need.",
+    "char_start": 15388,
+    "char_end": 15454,
+    "sentence_index": 107,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec006",
+    "text": "On the one hand, we include atomic queries and their corresponding answers as part of the input during code generation, ensuring tools reliably produce correct outputs for solvable problems.",
+    "char_start": 15456,
+    "char_end": 15646,
+    "sentence_index": 108,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec006",
+    "text": "On the other hand, we integrate robust exception-handling mechanisms into the generated code.",
+    "char_start": 15647,
+    "char_end": 15740,
+    "sentence_index": 109,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec006",
+    "text": "Since the tools are locally executable, we can validate LLM-generated call instances using a compiler, providing detailed error reports and feedback to guide subsequent interactions.",
+    "char_start": 15741,
+    "char_end": 15923,
+    "sentence_index": 110,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec006",
+    "text": "Verifiable Answers\n\nA key limitation of earlier tool-driven datasets is the absence of predetermined answers, which makes validation difficult.",
+    "char_start": 15925,
+    "char_end": 16068,
+    "sentence_index": 111,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec006",
+    "text": "ToolHop overcomes this issue by predefining both queries and answers, enabling straightforward comparison with model outputs.",
+    "char_start": 16069,
+    "char_end": 16194,
+    "sentence_index": 112,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec006",
+    "text": "To ensure verifiability, we analyze the answer types for the second atomic subquery and the final query, which is presented in Figure .",
+    "char_start": 16196,
+    "char_end": 16331,
+    "sentence_index": 113,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec006",
+    "text": "The result demonstrates that ToolHop supports diverse and flexible answer types while standardizing final answers into objective entities.",
+    "char_start": 16332,
+    "char_end": 16470,
+    "sentence_index": 114,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec006",
+    "text": "This design simplifies validation, enhances robustness, and enables consistent performance evaluation.",
+    "char_start": 16471,
+    "char_end": 16573,
+    "sentence_index": 115,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec006",
+    "text": "[!t]\n\nfigures/answer.pdf\nDistribution of answer types for the second atomic subquery and final answers in ToolHop.",
+    "char_start": 16575,
+    "char_end": 16689,
+    "sentence_index": 116,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec007",
+    "text": "We use ToolHop to evaluate the representative families of LLMs for multi-hop tool use.",
+    "char_start": 16691,
+    "char_end": 16777,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec007",
+    "text": "In this section, we introduce the families of LLMs evaluated (Section ) and describe the implementation details of our experiments (Section ).",
+    "char_start": 16778,
+    "char_end": 16920,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec007",
+    "text": "[!t]\n\n!",
+    "char_start": 16922,
+    "char_end": 16929,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec007",
+    "text": "lllccccc\n\n2 * Source & 2 * Family & 2 * Version & 3 c Answer Correctness ($ $) & 2 c Invocation Error ($ $)\n(lr) 4-6 (lr) 7-8\n& & & Direct & Mandatory & Free & Query & Instance\n\n& & Avg.",
+    "char_start": 16931,
+    "char_end": 17117,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec007",
+    "text": "& 19.83 & 32.12 & 32.84 & 18.72 & 8.68\n\n6 * Open-Source & 2 * LLaMA3.1 & Instruct-8B & marron!18 13.17 & marron!60 12.76 & marron!57 13.47 & marron!69 41.61 & marron!39 21.10\n\n& &Instruct-70B & marron!3 18.79 & marron!39 19.10 & marron!60 12.76 & marron!51 35.08 & marron!18 14.24\n2-8\n\n& 4 * Qwen2.5 & Instruct-7B & marron!24 11.46 & marron!69 9.85 & marron!48 16.18 & marron!30 28.84 & teal!3 7.09\n\n& & Instruct-14B & marron!6 17.39 & marron!18 26.38 & marron!18 26.13 & teal!9 15.78 & teal!6 6.82\n\n& & Instruct-32B & teal!3 20.00 & marron!21 25.03 & marron!30 22.61 & teal!18 12.46 & teal!15 3.46\n\n& & Instruct-72B & marron!6 17.89 & teal!39 45.43 & teal!18 38.29 & teal!15 13.27 & teal!12 4.93\n\n8 * Closed-Source & 2 * Gemini1.5 & flash-002 & marron!3 18.59 & marron!9 29.35 & marron!1 32.76 & teal!15 13.59 & teal!6 6.69\n\n& & pro-002 & marron!3 18.89 & marron!3 31.16 & teal!3 33.07 & teal!12 14.57 & teal!6 6.61\n2-8\n\n& 2 * Claude3.5 & Haiku & teal!51 36.08 & teal!18 38.09 & teal!36 44.72 & marron!15 23.48 & marron!21 15.81\n\n& & Sonnet & teal!24 27.14 & teal!21 39.90 & teal!39 45.23 & marron!3 19.60 & marron!21 15.83\n2-8\n\n& 4 * GPT & 3.5-Turbo & marron!6 17.09 & teal!9 35.38 & teal!12 36.58 & teal!21 11.76 & teal!6 6.03\n\n& & 4o-mini & marron!1 19.40 & teal!24 40.20 & teal!33 43.42 & teal!21 11.66 & teal!15 3.58\n\n& & 4-Turbo & marron!3 18.59 & teal!45 47.94 & teal!42 46.83 & teal!24 10.95 & teal!12 4.97\n\n& & 4o & teal!12 23.12 & teal!51 49.04 & teal!45 47.74 & teal!27 9.45 & teal!12 4.31\n\nPerformance of various LLMs on ToolHop, including answer correctness and invocation error.",
+    "char_start": 17118,
+    "char_end": 18711,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec007",
+    "text": "`Direct,' `Mandatory,' and `Free' denote the direct answer, mandatory tool use, and free choice scenarios, respectively.",
+    "char_start": 18712,
+    "char_end": 18832,
+    "sentence_index": 122,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec007",
+    "text": "`Query' and `Instance' refer to the percentage of queries and tool invocation instances with errors, respectively.",
+    "char_start": 18833,
+    "char_end": 18947,
+    "sentence_index": 123,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec007",
+    "text": "` Avg.",
+    "char_start": 18948,
+    "char_end": 18954,
+    "sentence_index": 124,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec007",
+    "text": "' represents the average across all LLMs.",
+    "char_start": 18955,
+    "char_end": 18996,
+    "sentence_index": 125,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec007",
+    "text": "Values above the average are highlighted in teal teal , and those below are highlighted in marron maroon , with darker shades indicating larger deviations.",
+    "char_start": 18997,
+    "char_end": 19152,
+    "sentence_index": 126,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec008",
+    "text": "We use ToolHop to evaluate 14 LLMs from five families, including LLaMA3.1-Instruct-8B and LLaMA3.1-Instruct-70B from the LLaMA3.1 family, Qwen2.5-Instruct-7B , Qwen2.5-Instruct-14B , Qwen2.5-Instruct-32B , and Qwen2.5-Instruct-72B from the Qwen2.5 fmaily, Gemini1.5-flash-002 and Gemini1.5-pro-002 from the Gemini1.5 family, textbf Claude3.5-Haiku and Claude3.5-Sonnet from the Claude3.5 family, and GPT-3.5-Turbo , GPT-4o-mini , GPT-4-Turbo , and GPT-4o from the GPT family.",
+    "char_start": 19154,
+    "char_end": 19629,
+    "sentence_index": 127,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec008",
+    "text": "More details can be found in Appendix .",
+    "char_start": 19630,
+    "char_end": 19669,
+    "sentence_index": 128,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec009",
+    "text": "In the data construction stage, we use GPT-4o to assist with processing.",
+    "char_start": 19671,
+    "char_end": 19743,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec009",
+    "text": "Prompts are detailed in Appendix .",
+    "char_start": 19744,
+    "char_end": 19778,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec009",
+    "text": "For evaluation, open-source LLMs are tested using their chat templates with greedy decoding, while closed-source LLMs are evaluated via their APIs with a temperature setting of 0.",
+    "char_start": 19779,
+    "char_end": 19958,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec009",
+    "text": "To ensure consistency across evaluations, all tools are implemented through the models' function call interfaces.",
+    "char_start": 19959,
+    "char_end": 20072,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "In this section, we present the key evaluation dimensions (Section ) and observations (Section ).",
+    "char_start": 20074,
+    "char_end": 20171,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "Evaluating the capabilities of LLMs requires a comprehensive approach that assesses both their ability to provide correct answers and their effectiveness in invoking external tools.",
+    "char_start": 20173,
+    "char_end": 20354,
+    "sentence_index": 134,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "We analyze these dimensions through answer correctness and invocation error.",
+    "char_start": 20355,
+    "char_end": 20431,
+    "sentence_index": 135,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "Answer Correctness\nFor the accuracy of LLM responses, our query-driven data construction scheme enables direct comparison with predefined standard answers.",
+    "char_start": 20433,
+    "char_end": 20588,
+    "sentence_index": 136,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "We consider three evaluation scenarios: the direct answer scenario, where LLMs solve queries independently without external tools; the mandatory tool use scenario, where models are required to use provided tools extensively to maximize their tool-use capabilities; and the free choice scenario, where external tools are available but optional, allowing LLMs to balance independent problem-solving with tool use.",
+    "char_start": 20589,
+    "char_end": 21000,
+    "sentence_index": 137,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "Invocation Error\nIn the mandatory tool use scenario, we assess errors made when invoking tools, leveraging detailed feedback for each tool to identify errors.",
+    "char_start": 21002,
+    "char_end": 21160,
+    "sentence_index": 138,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "We focus on three types: tool hallucination, where models invoke tools not included in the provided toolset; parameter hallucination, where unprovided parameters are used for a given tool; and parameter missing, where required parameters for a tool are omitted.",
+    "char_start": 21161,
+    "char_end": 21422,
+    "sentence_index": 139,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "Errors are quantified from the percentage of queries containing incorrect calls relative to total queries , and the percentage of incorrect tool invocations relative to all tool use instances .",
+    "char_start": 21423,
+    "char_end": 21616,
+    "sentence_index": 140,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec012",
+    "text": "From the results presented in Table , we can make several notable observations.",
+    "char_start": 21618,
+    "char_end": 21697,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "Model performance under various inference frameworks can be found in Appendix .",
+    "char_start": 21698,
+    "char_end": 21777,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "While LLMs have significantly enhanced their ability to solve complex multi-hop queries with the use of tools, their multi-hop tool use capabilities still leave considerable room for improvement.",
+    "char_start": 21779,
+    "char_end": 21974,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "Comparing the direct answer scenario (i.e., Direct) versus the mandatory tool use scenario (i.e., Mandatory), we observe that the use of tools increases LLMs' answer correctness by an average of 12.29\\%.",
+    "char_start": 21975,
+    "char_end": 22178,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "Notably, the GPT family of models improves its accuracy by an average of 23.59\\% through tool use, underscoring how effective tool-use capabilities enhance their performance in solving complex multi-hop problems.",
+    "char_start": 22179,
+    "char_end": 22391,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "Despite these improvements, the overall accuracy in the mandatory tool use scenario remains limited.",
+    "char_start": 22392,
+    "char_end": 22492,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "Even the best-performing model, GPT-4o, achieves only 49.04\\% answer correctness in this scenario.",
+    "char_start": 22493,
+    "char_end": 22591,
+    "sentence_index": 147,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "Furthermore, 9.45\\% of queries exhibit hallucinations.",
+    "char_start": 22592,
+    "char_end": 22646,
+    "sentence_index": 148,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "The performance of LLaMA3.1-Instruct-8B reveals further challenges, with over 40\\% of queries containing invocation errors, underscoring the need for better documentation understanding.",
+    "char_start": 22647,
+    "char_end": 22832,
+    "sentence_index": 149,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": "The performance of different LLM families indicates that most are optimized for tool use, but they exhibit distinct characteristics when solving multi-hop queries.",
+    "char_start": 22834,
+    "char_end": 22997,
+    "sentence_index": 150,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "In both the mandatory tool use scenario and the free choice scenario (i.e., Free), LLMs generally opt to use tools, with answer correctness in these two conditions differing by only 0.62\\%.",
+    "char_start": 22998,
+    "char_end": 23187,
+    "sentence_index": 151,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": "This indicates that most LLMs are specifically optimized for tool use.",
+    "char_start": 23188,
+    "char_end": 23258,
+    "sentence_index": 152,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "However, different LLM families show varying strengths in their tool use.",
+    "char_start": 23259,
+    "char_end": 23332,
+    "sentence_index": 153,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec012",
+    "text": "For instance, Qwen2.5-Instruct-72B improves its answer correctness by 27.54\\% through tool use, while the Claude3.5 family excels in the direct answer scenario without tool reliance.",
+    "char_start": 23333,
+    "char_end": 23515,
+    "sentence_index": 154,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec012",
+    "text": "The underlying reasons for these differences are explored in depth in Section .",
+    "char_start": 23516,
+    "char_end": 23595,
+    "sentence_index": 155,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec012",
+    "text": "Examining the performance of different versions within each LLM family, larger models generally demonstrate better tool use to meet user needs, aligning with the scaling law .",
+    "char_start": 23597,
+    "char_end": 23772,
+    "sentence_index": 156,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec012",
+    "text": "Both open-source and closed-source LLMs show an increase in answer correctness and a decrease in invocation error in the mandatory tool use scenario as model size grows.",
+    "char_start": 23773,
+    "char_end": 23942,
+    "sentence_index": 157,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec012",
+    "text": "Notably, the correlation between invocation errors and answer correctness is stronger at the query level than at the instance level, suggesting that invocation errors in specific queries significantly impair problem-solving.",
+    "char_start": 23943,
+    "char_end": 24167,
+    "sentence_index": 158,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec012",
+    "text": "Interestingly, this pattern enables the inference of relative model sizes within families.",
+    "char_start": 24168,
+    "char_end": 24258,
+    "sentence_index": 159,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec012",
+    "text": "For instance, based on performance patterns, GPT-4o is likely a larger and more advanced version compared to other models in the GPT family.",
+    "char_start": 24259,
+    "char_end": 24399,
+    "sentence_index": 160,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec013",
+    "text": "From the results in Section , we observe significant variation in the performance across different families of LLMs.",
+    "char_start": 24401,
+    "char_end": 24517,
+    "sentence_index": 161,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec013",
+    "text": "To further investigate these differences, we analyze each family in detail and present the following key observations.",
+    "char_start": 24518,
+    "char_end": 24636,
+    "sentence_index": 162,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec013",
+    "text": "Examples illustrating these observations can be found in Appendix .",
+    "char_start": 24637,
+    "char_end": 24704,
+    "sentence_index": 163,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec013",
+    "text": "The LLaMA3.1 and Gemini1.5 families perform poorly in multi-hop tool use scenarios compared to other LLMs from the same source, primarily due to their incomplete support for tool use capabilities.",
+    "char_start": 24706,
+    "char_end": 24902,
+    "sentence_index": 164,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec013",
+    "text": "In the case of LLaMA3.1, the inability to output both natural language text and tool call instances simultaneously restricts its capacity to perform chain-of-thought (CoT) reasoning during tool use, hampering its understanding and analysis of user intent.",
+    "char_start": 24903,
+    "char_end": 25158,
+    "sentence_index": 165,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec013",
+    "text": "On the other hand, the Gemini1.5 family of models lack support for union-type parameters, which prevents them from handling tool lists that include complex parameter structures.",
+    "char_start": 25159,
+    "char_end": 25336,
+    "sentence_index": 166,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec013",
+    "text": "This limitation significantly reduces their effectiveness in such scenarios.",
+    "char_start": 25337,
+    "char_end": 25413,
+    "sentence_index": 167,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec013",
+    "text": "The enhancement of the Qwen2.5 family with parallel tool calls introduces a trade-off between efficiency and accuracy.",
+    "char_start": 25415,
+    "char_end": 25533,
+    "sentence_index": 168,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec013",
+    "text": "Compared to the LLaMA3.1 family, the Qwen2.5 family has improved its ability to utilize tools, particularly with the addition of parallel invocation, which is intended to increase the problem-solving efficiency.",
+    "char_start": 25534,
+    "char_end": 25745,
+    "sentence_index": 169,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec013",
+    "text": "However, in multi-hop tool use scenarios, forcing parallel invocation without first processing the results of previous tool calls leads to hallucinations in parameter value assignments, resulting in incorrect answers.",
+    "char_start": 25746,
+    "char_end": 25963,
+    "sentence_index": 170,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec013",
+    "text": "For instance, in the mandatory tool use scenario, the percentage of queries involving parallel tool calls is 70.1\\% for Qwen2.5-Instruct-14B and even higher at 75.08\\% for Qwen2.5-Instruct-32B, contributing to their relatively poor performance.",
+    "char_start": 25964,
+    "char_end": 26208,
+    "sentence_index": 171,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec013",
+    "text": "In contrast, Qwen2.5-Instruct-72B reduces the percentage of parallel calls to just 3.82\\%, significantly improving its performance.",
+    "char_start": 26209,
+    "char_end": 26340,
+    "sentence_index": 172,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec013",
+    "text": "The optimization of CoT reasoning in the Claude family of models gives them a distinct advantage in the direct answer scenario.",
+    "char_start": 26342,
+    "char_end": 26469,
+    "sentence_index": 173,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec013",
+    "text": "Even without explicit CoT prompts, the Claude3.5 family of models independently adopt a step-by-step CoT approach to decompose user queries and generate answers.",
+    "char_start": 26470,
+    "char_end": 26631,
+    "sentence_index": 174,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec013",
+    "text": "This method significantly improves their accuracy compared to other LLMs in such scenarios.",
+    "char_start": 26632,
+    "char_end": 26723,
+    "sentence_index": 175,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec013",
+    "text": "For instance, in the direct answer scenario, Claude3.5-Haiku applies CoT reasoning to 64.92\\% of queries, while Claude3.5-Sonnet does so for 8.5\\%.",
+    "char_start": 26724,
+    "char_end": 26871,
+    "sentence_index": 176,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec013",
+    "text": "Additionally, the Claude3.5 family of models do not fully rely on the answers returned by tools.",
+    "char_start": 26872,
+    "char_end": 26968,
+    "sentence_index": 177,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec013",
+    "text": "This allows them to produce correct responses using their own internal knowledge when tool invocations lead to errors.",
+    "char_start": 26969,
+    "char_end": 27087,
+    "sentence_index": 178,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec013",
+    "text": "Despite a relatively high tool invocation error rate, this ability explains why overall answer correctness remains high.",
+    "char_start": 27088,
+    "char_end": 27208,
+    "sentence_index": 179,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec013",
+    "text": "The GPT family of models demonstrates some ability to correct tool call behavior after an error occurs, but this heavily depends on the level of detail in the feedback provided.",
+    "char_start": 27210,
+    "char_end": 27387,
+    "sentence_index": 180,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec013",
+    "text": "Leveraging our query-driven data construction process, we offer detailed feedback when a tool call fails.",
+    "char_start": 27388,
+    "char_end": 27493,
+    "sentence_index": 181,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec013",
+    "text": "We calculate the percentage of queries with call errors in the mandatory tool use scenario where the GPT family of models ultimately provide the correct answer.",
+    "char_start": 27494,
+    "char_end": 27654,
+    "sentence_index": 182,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec013",
+    "text": "We compare this to the percentage of correct answers when only minimal feedback is given, such as a simple hint indicating the call failed (e.g., `Failed!').",
+    "char_start": 27655,
+    "char_end": 27812,
+    "sentence_index": 183,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec013",
+    "text": "As shown in Table , the GPT family of models exhibit a significant improvement in performance when detailed feedback is provided, successfully correcting their behavior to arrive at the correct answer.",
+    "char_start": 27813,
+    "char_end": 28014,
+    "sentence_index": 184,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec013",
+    "text": "However, when only basic error hints are provided, the correctness of their final answers drops by 20.66\\%.",
+    "char_start": 28015,
+    "char_end": 28122,
+    "sentence_index": 185,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec013",
+    "text": "This highlights not only the importance of detailed feedback but also the challenges in further enhancing the models' correction capabilities.",
+    "char_start": 28123,
+    "char_end": 28265,
+    "sentence_index": 186,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec013",
+    "text": "Based on these observations, we propose the following recommendations to enhance the model's tool use capabilities in the future:\n1) Develop a robust and adaptable tool-use model that can support a wide range of complex tools;\n2) Optimize the model\u2019s parallelism and other capabilities while prioritizing improvements in its understanding of user intent to avoid potential negative effects;\nand 3) Investigate effective strategies for leveraging rich tool feedback to enhance the model\u2019s error correction abilities.",
+    "char_start": 28267,
+    "char_end": 28782,
+    "sentence_index": 187,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec013",
+    "text": "[!t]\n\n!",
+    "char_start": 28784,
+    "char_end": 28791,
+    "sentence_index": 188,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec013",
+    "text": "lcccc\n\nVersion & w/ Feedback & w/o Feedback & $ _ C I $ & $ _ I C $\n\n3.5-Turbo & 36.75 & 21.37 & 20.51 & 5.13\n\n4o-mini & 38.53 & 11.93 & 29.36 & 2.75\n\n4-Turbo & 29.31 & 12.07 & 17.24 & 0.00\n\n4o & 47.87 & 24.47 & 25.53 & 2.13\n\nAnswer correctness of the GPT family of models in queries containing invocation error.",
+    "char_start": 28793,
+    "char_end": 29105,
+    "sentence_index": 189,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec013",
+    "text": "`w/ Feedback' and `w/o Feedback' represent cases where detailed feedback or only simple error reporting is provided, respectively.",
+    "char_start": 29106,
+    "char_end": 29236,
+    "sentence_index": 190,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec013",
+    "text": "`$ _ C I $' denotes the proportion of correct answers that become incorrect, while `$ _ I C $' represents the proportion of incorrect answers that become correct, when transitioning from detailed feedback to simple error reporting.",
+    "char_start": 29237,
+    "char_end": 29468,
+    "sentence_index": 191,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec014",
+    "text": "LLMs in Tool Use\n\nThe use of tools is a prominent hallmark of biological intelligence .",
+    "char_start": 29470,
+    "char_end": 29557,
+    "sentence_index": 192,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec014",
+    "text": "Equipping LLMs with the ability to use tools is therefore a key milestone in advancing their capabilities toward artificial general intelligence .",
+    "char_start": 29558,
+    "char_end": 29704,
+    "sentence_index": 193,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec014",
+    "text": "Tools broadly encompass APIs, online services, application software, and other models that can be represented in formats accessible to LLMs .",
+    "char_start": 29705,
+    "char_end": 29846,
+    "sentence_index": 194,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec014",
+    "text": "A critical factor in enhancing tool-use performance is constructing extensive datasets that detail tool use .",
+    "char_start": 29847,
+    "char_end": 29956,
+    "sentence_index": 195,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec014",
+    "text": "This involves generating diverse user queries and their corresponding tool sets.",
+    "char_start": 29957,
+    "char_end": 30037,
+    "sentence_index": 196,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec014",
+    "text": "Existing approaches often employ a tool-driven methodology, collecting tools from various sources and using models to simulate user queries .",
+    "char_start": 30038,
+    "char_end": 30179,
+    "sentence_index": 197,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec014",
+    "text": "However, these methods lack diversity, fail to ensure dependency consistency, and cannot reliably verify data correctness.",
+    "char_start": 30180,
+    "char_end": 30302,
+    "sentence_index": 198,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec014",
+    "text": "In this paper, we propose a query-driven data construction approach.",
+    "char_start": 30303,
+    "char_end": 30371,
+    "sentence_index": 199,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec014",
+    "text": "This method extends the range of locally executable tools through multi-hop queries, improving dataset quality and better supporting the development of LLM tool-use capabilities.",
+    "char_start": 30372,
+    "char_end": 30550,
+    "sentence_index": 200,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec014",
+    "text": "Evaluation of Tool Use\n\nEffectively evaluating the tool-use capabilities of LLMs is crucial for identifying their strengths and weaknesses.",
+    "char_start": 30552,
+    "char_end": 30691,
+    "sentence_index": 201,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec014",
+    "text": "Existing methods, such as manual verification or checking for the presence of a final answer , fall short in providing objective and reliable measures of performance.",
+    "char_start": 30692,
+    "char_end": 30858,
+    "sentence_index": 202,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec014",
+    "text": "Multi-dimensional approaches attempt to evaluate the process and outcomes of tool use but risk introducing model bias and inconsistencies.",
+    "char_start": 30859,
+    "char_end": 30997,
+    "sentence_index": 203,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec014",
+    "text": "In this paper, we focus on evaluating LLMs in multi-hop tool use scenarios.",
+    "char_start": 30998,
+    "char_end": 31073,
+    "sentence_index": 204,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec014",
+    "text": "Our query-driven data construction scheme predefines verifiable answers, ensuring accurate assessments and providing a robust framework for evaluation.",
+    "char_start": 31074,
+    "char_end": 31225,
+    "sentence_index": 205,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec015",
+    "text": "In this paper, we introduce ToolHop, a novel dataset designed to evaluate LLMs in multi-hop tool use.",
+    "char_start": 31227,
+    "char_end": 31328,
+    "sentence_index": 206,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec015",
+    "text": "ToolHop employs a query-driven data construction framework, encompassing tool creation, document refinement, and code generation.",
+    "char_start": 31329,
+    "char_end": 31458,
+    "sentence_index": 207,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec015",
+    "text": "This approach overcomes the limitations of previous methods, ensuring diverse queries, meaningful interdependencies, locally executable tools, detailed feedback, and verifiable answers.",
+    "char_start": 31459,
+    "char_end": 31644,
+    "sentence_index": 208,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec015",
+    "text": "Using ToolHop, we benchmark 14 LLMs across five families, providing a comprehensive evaluation of their tool-use capabilities.",
+    "char_start": 31645,
+    "char_end": 31771,
+    "sentence_index": 209,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec015",
+    "text": "Further studies illuminate the distinct characteristics of different LLM families, offering actionable insights to enhance their performance.",
+    "char_start": 31772,
+    "char_end": 31913,
+    "sentence_index": 210,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec015",
+    "text": "By setting a robust standard for multi-hop tool use evaluation, ToolHop lays the groundwork for advancing LLMs' ability to perform complex tool-based reasoning tasks.",
+    "char_start": 31914,
+    "char_end": 32080,
+    "sentence_index": 211,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec016",
+    "text": "While our dataset effectively evaluates the performance of LLMs in multi-hop tool use, one limitation of this work is the lack of an immediate strategy for enhancing these capabilities.",
+    "char_start": 32082,
+    "char_end": 32267,
+    "sentence_index": 212,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec016",
+    "text": "Nonetheless, the scalability of our data construction scheme represents a significant advantage, as it can be readily adapted to create training datasets aimed at addressing this challenge.",
+    "char_start": 32268,
+    "char_end": 32457,
+    "sentence_index": 213,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec016",
+    "text": "We hypothesize that targeted training using such datasets could markedly improve the ability of LLMs to perform multi-hop tool use tasks.",
+    "char_start": 32458,
+    "char_end": 32595,
+    "sentence_index": 214,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec016",
+    "text": "Additionally, we provide a detailed analysis of current tool-use characteristics in LLMs, offering valuable insights that can serve as a foundation for future research and advancements in this area.",
+    "char_start": 32596,
+    "char_end": 32794,
+    "sentence_index": 215,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec017",
+    "text": "The authors wish to thank the anonymous reviewers for their helpful comments.",
+    "char_start": 32796,
+    "char_end": 32873,
+    "sentence_index": 216,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec017",
+    "text": "This work was partially funded by National Natural Science Foundation of China (No.",
+    "char_start": 32874,
+    "char_end": 32957,
+    "sentence_index": 217,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec017",
+    "text": "62476061,62206057,62076069), Shanghai Rising-Star Program (23QA1400200), Natural Science Foundation of Shanghai (23ZR1403500), Program of Shanghai Academic Research Leader under grant 22XD1401100.",
+    "char_start": 32958,
+    "char_end": 33154,
+    "sentence_index": 218,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec017",
+    "text": "custom\n\n[H]\n\n!",
+    "char_start": 33156,
+    "char_end": 33170,
+    "sentence_index": 219,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec018",
+    "text": "lccccccc\n\n2 * Benchmarks & 2 * \\# Tools & 2 * \\# Instances & 2 * Multi-Tool?",
+    "char_start": 33172,
+    "char_end": 33248,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec018",
+    "text": "& Meaningful & Locally & Detailed & Verifiable\n\n& & & & Interdependencies?",
+    "char_start": 33249,
+    "char_end": 33323,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec018",
+    "text": "& Executable Tools?",
+    "char_start": 33324,
+    "char_end": 33343,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec018",
+    "text": "& Feedback?",
+    "char_start": 33344,
+    "char_end": 33355,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec018",
+    "text": "& Answers?",
+    "char_start": 33356,
+    "char_end": 33366,
+    "sentence_index": 224,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec018",
+    "text": "API-Bank & 73 & 314 & green!50!black & red & green!50!black & green!50!black & green!50!black\n\nToolAlpaca & 426 & 3938 & red & red & red & red & red\n\nRestBench & 94 & 157 & green!50!black & red & red & red & green!50!black\n\nToolBench & 16464 & 126484 & green!50!black & red & green!50!black & green!50!black & red\n\nMetaTool & 199 & 21127 & green!50!black & red & red & red & green!50!black\n\nTaskBench & 103 & 23271 & green!50!black & red & green!50!black & green!50!black & red\n\nT-Eval & 15 & 533 & green!50!black & red & green!50!black & green!50!black & green!50!black\n\nToolEyes & 568 & 382 & green!50!black & red & green!50!black & green!50!black & red\n\nUltraTool & 2032 & 5824 & green!50!black & red & red & red & red\n\nSeal-Tools & 4076 & 14076 & green!50!black & red & red & red & green!50!black\n\nAnyToolBench & - & 400 & green!50!black & red & green!50!black & green!50!black & red\n\nBFCL v3 (multi-turn) & - & 1000 & green!50!black & green!50!black & red & red & green!50!black\n\nToolHop & 3912 & 995 & green!50!black & green!50!black & green!50!black & green!50!black & green!50!black\n\nA comparison between ToolHop and existing benchmarks related to tool use.",
+    "char_start": 33368,
+    "char_end": 34533,
+    "sentence_index": 225,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec018",
+    "text": "To illustrate the necessity and advantages of ToolHop, Table presents a comparison between ToolHop and existing benchmarks related to tool use.",
+    "char_start": 34535,
+    "char_end": 34678,
+    "sentence_index": 226,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec018",
+    "text": "Most existing benchmarks (e.g., API-Bank) lack meaningful interdependencies between tools.",
+    "char_start": 34679,
+    "char_end": 34769,
+    "sentence_index": 227,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec018",
+    "text": "This limitation prevents them from evaluating a model\u2019s ability to perform multi-hop tool use, where the output of one tool serves as the input to another.",
+    "char_start": 34770,
+    "char_end": 34925,
+    "sentence_index": 228,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec018",
+    "text": "The only benchmark that includes meaningful interdependencies, BFCL v3 (multi-turn), lacks locally executable tools and detailed feedback.",
+    "char_start": 34926,
+    "char_end": 35064,
+    "sentence_index": 229,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec018",
+    "text": "Moreover, it only supports models that generate all tool calls at once, rather than allowing multi-turn interactions with the environment.",
+    "char_start": 35065,
+    "char_end": 35203,
+    "sentence_index": 230,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec018",
+    "text": "This makes it unsuitable for evaluating dynamic tool use, such as reasoning updates based on feedback.",
+    "char_start": 35204,
+    "char_end": 35306,
+    "sentence_index": 231,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec018",
+    "text": "In contrast, ToolHop is the only benchmark that incorporates all five key features: diverse queries, meaningful interdependencies, locally executable tools, detailed feedback, and verifiable answers.",
+    "char_start": 35308,
+    "char_end": 35507,
+    "sentence_index": 232,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec018",
+    "text": "These features make it a comprehensive and realistic dataset for evaluating model performance in multi-hop tool use scenarios.",
+    "char_start": 35508,
+    "char_end": 35634,
+    "sentence_index": 233,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec018",
+    "text": "Additionally, most existing datasets become obsolete within 1\u20132 months as models quickly surpass their challenges.",
+    "char_start": 35636,
+    "char_end": 35750,
+    "sentence_index": 234,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec018",
+    "text": "However, even the most advanced models continue to struggle with ToolHop.",
+    "char_start": 35751,
+    "char_end": 35824,
+    "sentence_index": 235,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec018",
+    "text": "To maintain its effectiveness over time, we actively expand the dataset with more difficult tasks, establishing it as a long-term and instructive benchmark for evaluating tool-use capabilities.",
+    "char_start": 35825,
+    "char_end": 36018,
+    "sentence_index": 236,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec019",
+    "text": "Our proposed query-driven data construction scheme involves tool creation, document refinement, and code generation.",
+    "char_start": 36020,
+    "char_end": 36136,
+    "sentence_index": 237,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec019",
+    "text": "The prompts used for each process are provided in Table , Table , and Table , respectively.",
+    "char_start": 36137,
+    "char_end": 36228,
+    "sentence_index": 238,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec019",
+    "text": "[H]\n\n!",
+    "char_start": 36230,
+    "char_end": 36236,
+    "sentence_index": 239,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec019",
+    "text": "m\n\nIdentify the appropriate tool to solve the given problem and provide an analysis of the tool design.",
+    "char_start": 36238,
+    "char_end": 36341,
+    "sentence_index": 240,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec019",
+    "text": "The output should be in JSON format, following the specified structure.",
+    "char_start": 36342,
+    "char_end": 36413,
+    "sentence_index": 241,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec019",
+    "text": "\\# Steps\n\n1.",
+    "char_start": 36415,
+    "char_end": 36427,
+    "sentence_index": 242,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec019",
+    "text": "**Analyze the Problem**: Understand the question and determine the type of information required to answer it.",
+    "char_start": 36428,
+    "char_end": 36537,
+    "sentence_index": 243,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec019",
+    "text": "2.",
+    "char_start": 36539,
+    "char_end": 36541,
+    "sentence_index": 244,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec019",
+    "text": "**Tool Design**: Design a tool that can solve the problem, considering the complexity and additional functionalities it might need.",
+    "char_start": 36542,
+    "char_end": 36673,
+    "sentence_index": 245,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec019",
+    "text": "3.",
+    "char_start": 36675,
+    "char_end": 36677,
+    "sentence_index": 246,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec019",
+    "text": "**Parameter Specification**: Define the parameters for the tool, ensuring they are comprehensive and flexible for various use cases.",
+    "char_start": 36678,
+    "char_end": 36810,
+    "sentence_index": 247,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec019",
+    "text": "4.",
+    "char_start": 36812,
+    "char_end": 36814,
+    "sentence_index": 248,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec019",
+    "text": "**Output Construction**: Format the output in JSON, including both the analysis and the tool schema.",
+    "char_start": 36815,
+    "char_end": 36915,
+    "sentence_index": 249,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec019",
+    "text": "\\# Notes\n\n- Ensure the tool is versatile enough to handle similar queries for different sports figures.",
+    "char_start": 36917,
+    "char_end": 37020,
+    "sentence_index": 250,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec019",
+    "text": "- Consider edge cases.",
+    "char_start": 37022,
+    "char_end": 37044,
+    "sentence_index": 251,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec019",
+    "text": "\\# Output Format\n\nThe output should be a JSON object with the following structure **without any other contents**:\n\n- \"analysis\": A detailed analysis of the ideas behind the tool design.",
+    "char_start": 37046,
+    "char_end": 37231,
+    "sentence_index": 252,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec019",
+    "text": "- \"tool\": A JSON schema characterizing the tool, including its name, description, and parameters.",
+    "char_start": 37233,
+    "char_end": 37330,
+    "sentence_index": 253,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec019",
+    "text": "\\# Example\n\n\\ Example\\\n\n**Question**: \\ Question\\\n\n**Output**:\n\nThe prompt for tool creation, where `\\ Example\\ ' and `\\ Question\\ ' represent the example and subquery, respectively.",
+    "char_start": 37332,
+    "char_end": 37514,
+    "sentence_index": 254,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec019",
+    "text": "[H]\n\n!",
+    "char_start": 37516,
+    "char_end": 37522,
+    "sentence_index": 255,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec019",
+    "text": "m\n\nRefine the design of a tool by enhancing its description and increasing the complexity of parameters (e.g., numbers and types) while maintaining compatibility with the original functionality.",
+    "char_start": 37524,
+    "char_end": 37718,
+    "sentence_index": 256,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec019",
+    "text": "\\# Steps\n\n1.",
+    "char_start": 37720,
+    "char_end": 37732,
+    "sentence_index": 257,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec019",
+    "text": "**Analyze the Current Tool**: Examine the existing tool's description and parameters to understand its functionality and limitations.",
+    "char_start": 37733,
+    "char_end": 37866,
+    "sentence_index": 258,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec019",
+    "text": "2.",
+    "char_start": 37868,
+    "char_end": 37870,
+    "sentence_index": 259,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec019",
+    "text": "**Identify Areas for Refinement**: Determine which aspects of the tool can be improved or expanded to better meet real-world requirements.",
+    "char_start": 37871,
+    "char_end": 38009,
+    "sentence_index": 260,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec019",
+    "text": "3.",
+    "char_start": 38011,
+    "char_end": 38013,
+    "sentence_index": 261,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec019",
+    "text": "**Refine the Description**: Enhance the tool's description to clearly articulate its refined functionality.",
+    "char_start": 38014,
+    "char_end": 38121,
+    "sentence_index": 262,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec019",
+    "text": "4.",
+    "char_start": 38123,
+    "char_end": 38125,
+    "sentence_index": 263,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec019",
+    "text": "**Add and Refine Parameters**: Introduce new parameters or refine existing ones to increase complexity and utility, ensuring they align with the original functionality.",
+    "char_start": 38126,
+    "char_end": 38294,
+    "sentence_index": 264,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec019",
+    "text": "5.",
+    "char_start": 38296,
+    "char_end": 38298,
+    "sentence_index": 265,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec019",
+    "text": "**Ensure Compatibility**: Verify that the refined version remains compatible with the original tool's purpose and structure.",
+    "char_start": 38299,
+    "char_end": 38423,
+    "sentence_index": 266,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec019",
+    "text": "\\# Output Format\n\nThe output should be in JSON format with the following structure **without any other contents**:\n\n\\\n\n\"analysis\": \"Analysis of ideas about refining the tool.\",\n\n\"refined\\_version\": the version after refinement, should be follow JSON SCHEMA format as the original tool\n\n\\\n\n\\# Notes\n\n- Ensure that any new parameters added are relevant and enhance the tool's functionality.",
+    "char_start": 38425,
+    "char_end": 38813,
+    "sentence_index": 267,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec019",
+    "text": "- Maintain backward compatibility with the original tool's design and purpose.",
+    "char_start": 38815,
+    "char_end": 38893,
+    "sentence_index": 268,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec019",
+    "text": "**Tool**:\n\n\\ Tool\\\n\nThe prompt for document refinement, where `\\ Tool\\ ' represents the preliminary document.",
+    "char_start": 38895,
+    "char_end": 39004,
+    "sentence_index": 269,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec019",
+    "text": "[H]\n\n!",
+    "char_start": 39006,
+    "char_end": 39012,
+    "sentence_index": 270,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec019",
+    "text": "m\n\nCreate a function implementation based on a provided tool document, question, and answer.",
+    "char_start": 39014,
+    "char_end": 39106,
+    "sentence_index": 271,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec019",
+    "text": "The function should strictly adhere to the tool's specifications, including the function name, parameter names, and types.",
+    "char_start": 39107,
+    "char_end": 39229,
+    "sentence_index": 272,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec019",
+    "text": "Ensure the function is fully realized and capable of returning different feedback based on the input parameters.",
+    "char_start": 39230,
+    "char_end": 39342,
+    "sentence_index": 273,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec019",
+    "text": "\\# Steps\n\n1.",
+    "char_start": 39344,
+    "char_end": 39356,
+    "sentence_index": 274,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec019",
+    "text": "**Understand the Tool Document**: Review the tool document to identify the function name, parameter names, and types.",
+    "char_start": 39357,
+    "char_end": 39474,
+    "sentence_index": 275,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec019",
+    "text": "2.",
+    "char_start": 39476,
+    "char_end": 39478,
+    "sentence_index": 276,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec019",
+    "text": "**Analyze the Question and Answer**: Determine how the function should be used to answer the question.",
+    "char_start": 39479,
+    "char_end": 39581,
+    "sentence_index": 277,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec019",
+    "text": "3.",
+    "char_start": 39583,
+    "char_end": 39585,
+    "sentence_index": 278,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec019",
+    "text": "**Implement the Function**:\n\n- Use the tool name as the function name.",
+    "char_start": 39586,
+    "char_end": 39656,
+    "sentence_index": 279,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec019",
+    "text": "- Define parameters exactly as specified in the tool document.",
+    "char_start": 39658,
+    "char_end": 39720,
+    "sentence_index": 280,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec019",
+    "text": "- Implement the function logic to produce the correct answer for the given question.",
+    "char_start": 39722,
+    "char_end": 39806,
+    "sentence_index": 281,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec019",
+    "text": "- Simulate additional return values as specified in the tool document.",
+    "char_start": 39808,
+    "char_end": 39878,
+    "sentence_index": 282,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec019",
+    "text": "4.",
+    "char_start": 39880,
+    "char_end": 39882,
+    "sentence_index": 283,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec019",
+    "text": "**Error Handling**: Develop a robust error handling mechanism to return valid error messages for incorrect inputs or other issues.",
+    "char_start": 39883,
+    "char_end": 40013,
+    "sentence_index": 284,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec019",
+    "text": "\\# Notes\n\n- Ensure parameter types and names match exactly with the tool document.",
+    "char_start": 40015,
+    "char_end": 40097,
+    "sentence_index": 285,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec019",
+    "text": "- Simulate additional return values as needed based on the tool's documentation.",
+    "char_start": 40099,
+    "char_end": 40179,
+    "sentence_index": 286,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec019",
+    "text": "- Implement comprehensive error handling to cover potential issues.",
+    "char_start": 40181,
+    "char_end": 40248,
+    "sentence_index": 287,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec019",
+    "text": "\\# Output format\n\nOutput the result in JSON format with the following structure **without any other contents**:\n\n\\\n\"analysis\": \"Detailed analysis of how the function was designed, including reasoning for parameter choices and exception handling.\",\n\n\"function\": \"The specific function design, including code and comments explaining each part.\"\n\n\\\n\n**Tool Document**:\n\n\\ document\\\n\n**Question**: \\ question\\\n\n**Answer**: \\ answer\\\n\nThe prompt for code generation, where `\\ document\\ ', `\\ question\\ ' and `\\ answer\\ ' represent the refined document, the subquery and the corresponding answer, respectively.",
+    "char_start": 40250,
+    "char_end": 40854,
+    "sentence_index": 288,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec020",
+    "text": "We conduct a domain analysis of the queries in ToolHop using GPT-4o, with the corresponding prompts provided in Table .",
+    "char_start": 40856,
+    "char_end": 40975,
+    "sentence_index": 289,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec020",
+    "text": "[H]\n\n!",
+    "char_start": 40977,
+    "char_end": 40983,
+    "sentence_index": 290,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec020",
+    "text": "m\n\nIdentify the domain of the given sentence by analyzing its content and context.",
+    "char_start": 40985,
+    "char_end": 41067,
+    "sentence_index": 291,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec020",
+    "text": "The domain should be a single, specific category that best describes the subject matter of the sentence.",
+    "char_start": 41068,
+    "char_end": 41172,
+    "sentence_index": 292,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec020",
+    "text": "\\# Steps\n\n1.",
+    "char_start": 41174,
+    "char_end": 41186,
+    "sentence_index": 293,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec020",
+    "text": "**Analyze the Sentence**: Break down the sentence to understand its components and context.",
+    "char_start": 41187,
+    "char_end": 41278,
+    "sentence_index": 294,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec020",
+    "text": "2.",
+    "char_start": 41280,
+    "char_end": 41282,
+    "sentence_index": 295,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec020",
+    "text": "**Identify Key Elements**: Look for specific terms or phrases that indicate the subject matter, such as names, dates, or specific topics.",
+    "char_start": 41283,
+    "char_end": 41420,
+    "sentence_index": 296,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec020",
+    "text": "3.",
+    "char_start": 41422,
+    "char_end": 41424,
+    "sentence_index": 297,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec020",
+    "text": "**Determine the Domain**: Based on the analysis, select the most appropriate domain that encapsulates the main focus of the sentence.",
+    "char_start": 41425,
+    "char_end": 41558,
+    "sentence_index": 298,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec020",
+    "text": "\\# Output Format\n\nThe output should be in JSON format with the following structure **without any other contents**:\n\n\\\n\n\"analysis\": \"Analysis of the given sentence.\",\n\n\"domain\": The domain of the sentence, as short as possible\n\n\\\n\n\\# Notes\n\n- Ensure the domain is specific and directly related to the main subject of the sentence.",
+    "char_start": 41560,
+    "char_end": 41889,
+    "sentence_index": 299,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec020",
+    "text": "- Consider the broader context if the sentence includes specific names or events.",
+    "char_start": 41891,
+    "char_end": 41972,
+    "sentence_index": 300,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec020",
+    "text": "Sentence: \\ sentence\\\n\nThe prompt for domain classification, where `\\ sentence\\ ' represents the multi-hop query.",
+    "char_start": 41974,
+    "char_end": 42087,
+    "sentence_index": 301,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec021",
+    "text": "We evaluate 14 LLMs from five families, spanning both open- and closed-source models, to provide a comprehensive analysis of their performance in multi-hop tool use.",
+    "char_start": 42089,
+    "char_end": 42254,
+    "sentence_index": 302,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec021",
+    "text": "LLaMA3.1 Family.",
+    "char_start": 42256,
+    "char_end": 42272,
+    "sentence_index": 303,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec021",
+    "text": "The LLaMA3.1 family, developed by Meta, includes open-source LLMs with model sizes of 8B, 70B, and 405B, and context lengths up to 128K.",
+    "char_start": 42273,
+    "char_end": 42409,
+    "sentence_index": 304,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec021",
+    "text": "These models are optimized for tasks such as long text summarization, multilingual dialogue, and code generation.",
+    "char_start": 42410,
+    "char_end": 42523,
+    "sentence_index": 305,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec021",
+    "text": "Due to computational constraints, this study evaluates LLaMA3.1-Instruct-8B and LLaMA3.1-Instruct-70B .",
+    "char_start": 42524,
+    "char_end": 42627,
+    "sentence_index": 306,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec021",
+    "text": "Qwen2.5 Family.",
+    "char_start": 42629,
+    "char_end": 42644,
+    "sentence_index": 307,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec021",
+    "text": "The Qwen2.5 family, developed by Alibaba, consists of open-source LLMs pre-trained on 18 trillion tokens.",
+    "char_start": 42645,
+    "char_end": 42750,
+    "sentence_index": 308,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec021",
+    "text": "These models are designed to excel in mathematics, programming, and knowledge representation, with versions ranging from 0.5B to 72B.",
+    "char_start": 42751,
+    "char_end": 42884,
+    "sentence_index": 309,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec021",
+    "text": "Our evaluation focuses on Qwen2.5-Instruct-7B , Qwen2.5-Instruct-14B , Qwen2.5-Instruct-32B , and Qwen2.5-Instruct-72B .",
+    "char_start": 42885,
+    "char_end": 43005,
+    "sentence_index": 310,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec021",
+    "text": "Gemini1.5 Family.",
+    "char_start": 43007,
+    "char_end": 43024,
+    "sentence_index": 311,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec021",
+    "text": "The Gemini1.5 family, developed by DeepMind, utilizes a mixture-of-experts architecture for advanced reasoning across large datasets.",
+    "char_start": 43025,
+    "char_end": 43158,
+    "sentence_index": 312,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec021",
+    "text": "This family includes flash and pro versions.",
+    "char_start": 43159,
+    "char_end": 43203,
+    "sentence_index": 313,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec021",
+    "text": "For this paper, we analyze Gemini1.5-flash-002 and Gemini1.5-pro-002 .",
+    "char_start": 43204,
+    "char_end": 43274,
+    "sentence_index": 314,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec021",
+    "text": "Claude3.5 Family.",
+    "char_start": 43276,
+    "char_end": 43293,
+    "sentence_index": 315,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec021",
+    "text": "The Claude3.5 family, developed by Anthropic, includes closed-source Haiku and Sonnet versions, which are known for advancements in instruction-following and nuanced reasoning.",
+    "char_start": 43294,
+    "char_end": 43470,
+    "sentence_index": 316,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec021",
+    "text": "This evaluation considers Claude3.5-Haiku and Claude3.5-Sonnet .",
+    "char_start": 43471,
+    "char_end": 43535,
+    "sentence_index": 317,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec021",
+    "text": "GPT Family.",
+    "char_start": 43537,
+    "char_end": 43548,
+    "sentence_index": 318,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec021",
+    "text": "The GPT family, developed by OpenAI, comprises closed-source LLMs designed for text generation, multimodal understanding, and tool use.",
+    "char_start": 43549,
+    "char_end": 43684,
+    "sentence_index": 319,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec021",
+    "text": "In this paper, we evaluate GPT-3.5-Turbo , GPT-4o-mini , GPT-4-Turbo , and GPT-4o .",
+    "char_start": 43685,
+    "char_end": 43768,
+    "sentence_index": 320,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec022",
+    "text": "[H]\n\nlllccccc\n\nSource & Family & Version & FC & ReAct & CodeAct\n\n2 * Tool-Use & ToolLLaMA-2 & 7B-v2 & - & 16.08 & -\n2-6\n& TL-CodeLLaMA-2 & 7B & - & - & 17.59\n\n6 * Open-Source & 2 * LLaMA3.1 & Instruct-8B & 13.47 & 38.59 & 25.63\n\n& &Instruct-70B & 12.76 & 57.79 & 44.19\n2-6\n& 4 * Qwen2.5 & Instruct-7B & 16.18 & 40.50 & 22.91\n\n& & Instruct-14B & 26.13 & 46.13 & 36.78\n\n& & Instruct-32B & 22.61 & 48.04 & 45.73\n\n& & Instruct-72B & 38.29 & 48.44 & 46.63\n\n8 * Closed-Source & 2 * Gemini1.5 & flash-002 & 32.76 & 4.82 & 5.13\n\n& & pro-002 & 33.07 & 22.61 & 7.24\n2-6\n& 2 * Claude3.5 & Haiku & 44.72 & 34.07 & 48.34\n\n& & Sonnet & 45.23 & 44.52 & 49.15\n2-6\n& 4 * GPT & 3.5-Turbo & 36.58 & 28.14 & 25.63\n\n& & 4o-mini & 43.42 & 47.14 & 40.80\n\n& & 4-Turbo & 46.83 & 53.67 & 42.61\n\n& & 4o & 47.74 & 54.17 & 44.92\n\nPerformance of various LLMs on ToolHop across different inference frameworks.",
+    "char_start": 43770,
+    "char_end": 44648,
+    "sentence_index": 321,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec022",
+    "text": "`FC' refers to answer correctness in the Free scenario using built-in function-calling templates.",
+    "char_start": 44649,
+    "char_end": 44746,
+    "sentence_index": 322,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec022",
+    "text": "In addition to using the built-in chat template, we also compare the performance of the models under other commonly used tool-use frameworks.",
+    "char_start": 44748,
+    "char_end": 44889,
+    "sentence_index": 323,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec022",
+    "text": "Table shows how different models perform with the ReAct and CodeAct inference frameworks, and compares these results to performance in the Free scenario.",
+    "char_start": 44890,
+    "char_end": 45043,
+    "sentence_index": 324,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec022",
+    "text": "The results show that while model performance varies across frameworks, none of them effectively solves the challenges presented by ToolHop in any setting, which further supports our conclusions.",
+    "char_start": 45044,
+    "char_end": 45239,
+    "sentence_index": 325,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec022",
+    "text": "We also observe the following:\n\nOpen-source models benefit more from the ReAct framework, as it enforces a step-by-step reasoning process before tool invocation, which improves planning ability.",
+    "char_start": 45241,
+    "char_end": 45435,
+    "sentence_index": 326,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec022",
+    "text": "In contrast, models using FC template often invoke tools directly without explicit reasoning, suggesting that open-source models still have room to improve their built-in function-calling capabilities.",
+    "char_start": 45436,
+    "char_end": 45637,
+    "sentence_index": 327,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec022",
+    "text": "Closed-source models are generally well-optimized for FC, and their performance remains more stable across different frameworks compared to open-source models.",
+    "char_start": 45638,
+    "char_end": 45797,
+    "sentence_index": 328,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec022",
+    "text": "However, different models still show preferences for specific frameworks.",
+    "char_start": 45798,
+    "char_end": 45871,
+    "sentence_index": 329,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec022",
+    "text": "For instance, the GPT series performs best with ReAct, while the Claude 3.5 series prefers CodeAct, likely due to differences in training data and methodology.",
+    "char_start": 45872,
+    "char_end": 46031,
+    "sentence_index": 330,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec023",
+    "text": "In Section and Section , we analyze the performance of different LLMs across various scenarios.",
+    "char_start": 46033,
+    "char_end": 46128,
+    "sentence_index": 331,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec023",
+    "text": "In this section, we present relevant examples from Figure to Figure .",
+    "char_start": 46129,
+    "char_end": 46198,
+    "sentence_index": 332,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec023",
+    "text": "[H]\n\nfigures/example-qwen.pdf\nThe Qwen2.5 family of LLMs emphasizes parallel tool calls in the mandatory tool use scenario, which can lead to hallucinations and incorrect answers.",
+    "char_start": 46200,
+    "char_end": 46379,
+    "sentence_index": 333,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec023",
+    "text": "[H]\n\nfigures/example-claude.pdf\nThe Claude 3.5 family of LLMs optimizes CoT reasoning in the direct answer scenario, enhancing their analytical and problem-solving capabilities.\"\n\n[H]\n\nfigures/example-gpt.pdf\nThe GPT family of LLMs improves performance by refining calling behavior through the use of detailed tool feedback.",
+    "char_start": 46381,
+    "char_end": 46705,
+    "sentence_index": 334,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec023",
+    "text": "[H]\n\nfigures/example-gpt-nof.pdf\nThe GPT fmaily of LLMs struggles to correct their calling behavior when provided with minimal feedback.",
+    "char_start": 46707,
+    "char_end": 46843,
+    "sentence_index": 335,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec024",
+    "text": "Our query-driven data construction scheme generates preliminary document prior to refinement.",
+    "char_start": 46845,
+    "char_end": 46938,
+    "sentence_index": 336,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec024",
+    "text": "Below, we provide examples of documents before and after refinement.",
+    "char_start": 46939,
+    "char_end": 47007,
+    "sentence_index": 337,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec024",
+    "text": "As shown, the refinement process enhances the tool's functionality, increases the number of parameters and introduces more diverse parameter types.",
+    "char_start": 47008,
+    "char_end": 47155,
+    "sentence_index": 338,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec024",
+    "text": "\"name\": \"album_release_date_finder\",\n\"description\": \"A tool designed to find the release date of music\nalbums.",
+    "char_start": 47157,
+    "char_end": 47267,
+    "sentence_index": 339,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec024",
+    "text": "It queries a database or API to retrieve accurate\ninformation about album release dates, accommodating variations in\nalbum titles and artist names.\",\n\"parameters\":\n\"type\": \"object\",\n\"properties\":\n\"album_name\":\n\"type\": \"string\",\n\"description\": \"The name of the album for which the\nrelease date is being queried.\"\n,\n\"artist_name\":\n\"type\": \"string\",\n\"description\": \"The name of the artist or band\nassociated with the album, to ensure accuracy in case\nof albums with similar names.\"\n,\n\"output_format\":\n\"type\": \"string\",\n\"enum\": [\n\"date\",\n\"text\"\n],\n\"description\": \"The format of the output.",
+    "char_start": 47268,
+    "char_end": 47853,
+    "sentence_index": 340,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec024",
+    "text": "Defaults to\ndate (the release date in YYYY-MM-DD format).\"\n\n,\n\"required\": [\n\"album_name\"\n]\n\n\"name\": \"album_release_date_finder\",\n\"description\": \"An advanced tool designed to find the release date\nof music albums.",
+    "char_start": 47854,
+    "char_end": 48066,
+    "sentence_index": 341,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec024",
+    "text": "It queries a comprehensive database or API to\nretrieve accurate information about album release dates,\naccommodating variations in album titles, artist names, album\nversions, release regions, and languages.",
+    "char_start": 48067,
+    "char_end": 48273,
+    "sentence_index": 342,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec024",
+    "text": "This tool ensures\nprecision and flexibility in retrieving album release information.\",\n\"parameters\":\n\"type\": \"object\",\n\"properties\":\n\"album_name\":\n\"type\": \"string\",\n\"description\": \"The name of the album for which the\nrelease date is being queried.\"\n,\n\"artist_name\":\n\"type\": \"string\",\n\"description\": \"The name of the artist or band\nassociated with the album, to ensure accuracy in case\nof albums with similar names.\"\n,\n\"album_version\":\n\"type\": \"string\",\n\"description\": \"The specific version of the album\n(e.g., deluxe, remastered) to refine the search.\"\n,\n\"release_region\":\n\"type\": \"string\",\n\"description\": \"The geographical region where the album\nwas released, which can affect the release date.\"\n,\n\"language\":\n\"type\": \"string\",\n\"description\": \"The language of the album, useful for\nalbums released in multiple languages.\"\n,\n\"output_format\":\n\"type\": \"string\",\n\"enum\": [\n\"date\",\n\"text\"\n],\n\"description\": \"The format of the output.",
+    "char_start": 48274,
+    "char_end": 49203,
+    "sentence_index": 343,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec024",
+    "text": "Defaults to\ndate (the release date in YYYY-MM-DD format).\"\n\n,\n\"required\": [\n\"album_name\"\n]\n\nOur query-driven data construction scheme translates the refined tool document into code, enabling it to function as a locally executable tool.",
+    "char_start": 49204,
+    "char_end": 49439,
+    "sentence_index": 344,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec025",
+    "text": "Below, we provide the code implementation of the refined document in Appendix .",
+    "char_start": 49440,
+    "char_end": 49519,
+    "sentence_index": 345,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec025",
+    "text": "The implementation fully realizes the defined functionality, provides valid feedback for correct parameter inputs, and incorporates a robust exception handling mechanism.",
+    "char_start": 49520,
+    "char_end": 49690,
+    "sentence_index": 346,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec025",
+    "text": "def album_release_date_finder(album_name: str, artist_name: str =\n'', album_version: str = '', release_region: str = '', language:\nstr = '', output_format: str = 'date') -> str:\n\"\"\"\nFinds the release date of a specified music album.",
+    "char_start": 49692,
+    "char_end": 49924,
+    "sentence_index": 347,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec025",
+    "text": "Parameters:\n- album_name (str): The name of the album for which the release\ndate is being queried.",
+    "char_start": 49926,
+    "char_end": 50024,
+    "sentence_index": 348,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec025",
+    "text": "- artist_name (str): The name of the artist or band associated with\nthe album.",
+    "char_start": 50025,
+    "char_end": 50103,
+    "sentence_index": 349,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec025",
+    "text": "- album_version (str): The specific version of the album (e.g.,\ndeluxe, remastered).",
+    "char_start": 50104,
+    "char_end": 50188,
+    "sentence_index": 350,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec025",
+    "text": "- release_region (str): The geographical region where the album was\nreleased.",
+    "char_start": 50189,
+    "char_end": 50266,
+    "sentence_index": 351,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec025",
+    "text": "- language (str): The language of the album.",
+    "char_start": 50267,
+    "char_end": 50311,
+    "sentence_index": 352,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec025",
+    "text": "- output_format (str): The format of the output, either 'date' or\n'text'.",
+    "char_start": 50312,
+    "char_end": 50385,
+    "sentence_index": 353,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec025",
+    "text": "Returns:\n- str: The release date of the album in the specified format.",
+    "char_start": 50387,
+    "char_end": 50457,
+    "sentence_index": 354,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec025",
+    "text": "\"\"\"\n# Simulated database/API response\nalbum_database =\n'Boy':\n'artist': 'U2',\n'release_date': '1980-10-20',\n'versions':\n'standard': '1980-10-20',\n'deluxe': '2008-07-21'\n,\n'regions':\n'US': '1980-10-20',\n'UK': '1980-10-20'\n,\n'languages':\n'English': '1980-10-20'\n\n# Error handling for required parameter\nif not album_name:\nreturn 'Error: The album_name parameter is required.'\n\n# Retrieve album information\nalbum_info = album_database.get(album_name)\nif not album_info:\nreturn 'Error: Album not found in the database.'\n\n# Check artist name if provided\nif artist_name and album_info['artist'] != artist_name:\nreturn 'Error: Artist name does not match the album record.'\n\n# Determine release date based on version, region, and language\nrelease_date = album_info['release_date']\nif album_version:\nrelease_date = album_info['versions'].get(album_version,\nrelease_date)\nif release_region:\nrelease_date = album_info['regions'].get(release_region,\nrelease_date)\nif language:\nrelease_date = album_info['languages'].get(language,\nrelease_date)\n\n# Format the output\nif output_format == 'text':\nreturn f'The album \" album_name \" by album_info[\"artist\"] was\nreleased on release_date .'\nreturn release_date\n\n# Example usage\nprint(album_release_date_finder(album_name='Boy', artist_name='U2',\noutput_format='date')) # Output: '1980-10-20'\nprint(album_release_date_finder(album_name='Boy', artist_name='U2',\noutput_format='text')) # Output: 'The album \"Boy\" by U2 was released\non 1980-10-20.'",
+    "char_start": 50458,
+    "char_end": 51932,
+    "sentence_index": 355,
+    "section_sentence_index": 10
+  }
+]

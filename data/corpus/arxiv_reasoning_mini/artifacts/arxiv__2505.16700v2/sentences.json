@@ -1,0 +1,2612 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "As Large Language Models (LLMs) evolve from passive text generators to active reasoning agents capable of interacting with external tools, the Model Context Protocol (MCP) has emerged as a key standardized framework for dynamic tool discovery and orchestration.",
+    "char_start": 0,
+    "char_end": 261,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Despite its widespread industry adoption, existing evaluation methods do not adequately assess tool utilization capabilities under this new paradigm.",
+    "char_start": 262,
+    "char_end": 411,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this gap, this paper introduces , the first comprehensive benchmark specifically designed to evaluate LLM performance within the MCP framework.",
+    "char_start": 412,
+    "char_end": 566,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "features a challenging dataset of 507 tasks spanning six domains: mathematical reasoning, web search, email, calendar, file management, and terminal operations.",
+    "char_start": 567,
+    "char_end": 727,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "It quantifies performance based on two primary criteria: answer correctness and operational accuracy.",
+    "char_start": 728,
+    "char_end": 829,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "To closely emulate real-world usage, our evaluation employs both authentic MCP tools and high-fidelity simulations of official tools.",
+    "char_start": 830,
+    "char_end": 963,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Unlike traditional benchmarks that rely on subjective human evaluation or binary success metrics, adopts objective, quantifiable measurements across multiple task domains, including computational resource efficiency and the number of successful tool-invocation rounds.",
+    "char_start": 964,
+    "char_end": 1232,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Our evaluation of leading closed-source and open-source LLMs reveals distinct capability profiles and highlights a significant trade-off between accuracy and efficiency.",
+    "char_start": 1233,
+    "char_end": 1402,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Our findings provide actionable insights for both LLM developers and tool creators, establishing a standardized methodology applicable to the broader LLM agent ecosystem.",
+    "char_start": 1403,
+    "char_end": 1573,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "All implementations, configurations, and datasets are publicly available at .",
+    "char_start": 1574,
+    "char_end": 1651,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The paradigm of Large Language Models (LLMs) is undergoing a fundamental shift, evolving from passive text generators into proactive reasoning agents capable of interacting with external tools and APIs chowdhery2022palmscalinglanguagemodeling,brown2020languagemodelsfewshotlearners .",
+    "char_start": 1653,
+    "char_end": 1936,
+    "sentence_index": 10,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "This evolution has been significantly accelerated by the advent of the Model Context Protocol (MCP), which provides a standardized framework for dynamic tool discovery and orchestration IntroducingModelContext,ModelContextProtocol,QwenLMQwenAgent2025 .",
+    "char_start": 1937,
+    "char_end": 2189,
+    "sentence_index": 11,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "As MCP adoption becomes widespread, the development of rigorous, standardized benchmarks to evaluate model performance within this new paradigm is critically important.",
+    "char_start": 2190,
+    "char_end": 2358,
+    "sentence_index": 12,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "However, existing evaluation methodologies are insufficient.",
+    "char_start": 2360,
+    "char_end": 2420,
+    "sentence_index": 13,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "While traditional benchmarks excel at assessing knowledge-based reasoning hendrycksMeasuringMassiveMultitask2021 zhongAGIEvalHumanCentricBenchmark2023 or instruction following wangMINTEvaluatingLLMs2024 shridharALFWorldAligningText2021 , they offer limited insight into tool-use capabilities.",
+    "char_start": 2421,
+    "char_end": 2713,
+    "sentence_index": 14,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Current tool-centric evaluations suffer from two primary limitations: 1) they struggle to differentiate between a model's genuine problem-solving via tools and mere recitation of pre-trained knowledge, 2) their reliance on simulated environments often fails to capture the complexities of real-world tool interactions.",
+    "char_start": 2714,
+    "char_end": 3032,
+    "sentence_index": 15,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To address these gaps, we introduce , the first comprehensive benchmark designed specifically to evaluate LLM performance in the MCP paradigm.",
+    "char_start": 3034,
+    "char_end": 3176,
+    "sentence_index": 16,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "As illustrated in fig:overview , our methodology is structured around three core stages.",
+    "char_start": 3177,
+    "char_end": 3265,
+    "sentence_index": 17,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "First, in the Data Construction phase, we curate a diverse MCP Pool using both real-world tools from platforms like Smithery and high-fidelity mock MCPs for common applications such as email and calendar management.",
+    "char_start": 3266,
+    "char_end": 3481,
+    "sentence_index": 18,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "This pool supports two distinct task categories: Precise Answer tasks (e.g., Math, Websearch), which have a single correct ground-truth value, and Fuzzy Match tasks (e.g., Filemanagement, Terminal), which require a correct sequence of operations.",
+    "char_start": 3482,
+    "char_end": 3728,
+    "sentence_index": 19,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Next, in the Test \\& Evaluation stage, we evaluate ten leading open- \\& closed-source LLMs.",
+    "char_start": 3730,
+    "char_end": 3821,
+    "sentence_index": 20,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Our novel framework moves beyond simple binary success metrics by assessing accuracy through two core methods: Answer Matching for Precise Answer tasks and Operation Matching for Fuzzy Match tasks.",
+    "char_start": 3822,
+    "char_end": 4019,
+    "sentence_index": 21,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Based on this, we quantify performance across multiple dimensions: Answer Accuracy ( RA ), Tool Selection Efficiency ( DTSR ), and Computational Resource Efficiency ( CRE ).",
+    "char_start": 4020,
+    "char_end": 4193,
+    "sentence_index": 22,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Our evaluation using reveals critical insights.",
+    "char_start": 4195,
+    "char_end": 4242,
+    "sentence_index": 23,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "For instance, while closed-source models significantly outperform open-source counterparts in mathematical reasoning, this gap narrows to less than 10\\% in web search tasks.",
+    "char_start": 4243,
+    "char_end": 4416,
+    "sentence_index": 24,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "More importantly, we identify a recurring failure pattern: models frequently select a semantically plausible but functionally incorrect tool, indicating a superficial understanding of the task requirements.",
+    "char_start": 4417,
+    "char_end": 4623,
+    "sentence_index": 25,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Based on these findings, we provide actionable recommendations for both LLM development and MCP tool design.",
+    "char_start": 4624,
+    "char_end": 4732,
+    "sentence_index": 26,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "[h]\n\nfig/overview.pdf\n\nOverview of .",
+    "char_start": 4734,
+    "char_end": 4770,
+    "sentence_index": 27,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Our main contributions are threefold:\n\nWe introduce , a comprehensive benchmark featuring two fundamental task types (Precise Answer and Fuzzy Match) across six critical domains: Mathematical Reasoning, Web Search, Email, Calendar, File Operations, and Terminal.",
+    "char_start": 4772,
+    "char_end": 5034,
+    "sentence_index": 28,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "We establish a high-fidelity evaluation environment by employing a combination of real-world MCP tools and meticulously replicated mock tools based on official specifications.",
+    "char_start": 5035,
+    "char_end": 5210,
+    "sentence_index": 29,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "We propose a novel, multi-dimensional evaluation framework for tool-augmented LLMs that utilizes purely objective and quantifiable metrics to assess accuracy, efficiency, and resourcefulness.",
+    "char_start": 5211,
+    "char_end": 5402,
+    "sentence_index": 30,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec003",
+    "text": "The Model Context Protocol (MCP) for Large Language Models (LLMs) is a unified interaction standard proposed by Anthropic to address systematic challenges in tool invocation.",
+    "char_start": 5404,
+    "char_end": 5578,
+    "sentence_index": 31,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "Early LLMs such as the GPT family relied only on static training data and were unable to access real-time information or interact with external systems, resulting in limited applications.",
+    "char_start": 5579,
+    "char_end": 5766,
+    "sentence_index": 32,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "wei2022chain demonstrated the role of structured reasoning in improving the performance of LLMs.",
+    "char_start": 5767,
+    "char_end": 5863,
+    "sentence_index": 33,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec004",
+    "text": "With the increase of complex scenarios such as multi-round dialog systems, developers try to connect to external via API liu2024autofeedback song2023restgpt qin2023toolllm tang2023toolalpaca to external data sources.",
+    "char_start": 5864,
+    "char_end": 6080,
+    "sentence_index": 34,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "Use the tool-enhanced LLM patil2024gorilla parisi2022talm lu2023chameleon to try to solve the web browsing schick2020exploiting spiegelwebmap chowdhury2024ai or code interpretation zhuang2023toolqa liu2023agentbench and other aspects of relevance, but Schick et al.",
+    "char_start": 6081,
+    "char_end": 6346,
+    "sentence_index": 35,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec004",
+    "text": "schick2023toolformer points out that this ``peer-to-peer'' integration leads to \\(N M\\) issues, limiting system expansion and increasing maintenance costs.",
+    "char_start": 6347,
+    "char_end": 6502,
+    "sentence_index": 36,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec004",
+    "text": "While platforms such as Hugging Face promote model sharing, and frameworks such as LangChain attempt to enhance model capabilities through Tool Calling, these solutions do not address the underlying problem.",
+    "char_start": 6503,
+    "char_end": 6710,
+    "sentence_index": 37,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "However, these solutions still fail to address the fundamental problem.",
+    "char_start": 6711,
+    "char_end": 6782,
+    "sentence_index": 38,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "hsieh2023tool noting that these approaches still lack a common context delivery mechanism.",
+    "char_start": 6783,
+    "char_end": 6873,
+    "sentence_index": 39,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "It is in this context that the Model Context Protocol (MCP) was formally introduced and open sourced.",
+    "char_start": 6874,
+    "char_end": 6975,
+    "sentence_index": 40,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "Evaluating the tool-use capabilities of LLMs has emerged as a critical research direction.",
+    "char_start": 6977,
+    "char_end": 7067,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "While traditional evaluation frameworks focused on language comprehension, the advent of tool-augmented AI wang2023interactive,schick2023toolformer has made specialized benchmarks for tool proficiency essential xu2023tool,liang2024taskmatrix,patil2024gorilla .",
+    "char_start": 7068,
+    "char_end": 7328,
+    "sentence_index": 42,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "The HELM framework, proposed by liang2022holistic , sought to establish multi-dimensional evaluation criteria but did not specifically address the efficiency and effectiveness of tool interaction protocols.",
+    "char_start": 7329,
+    "char_end": 7535,
+    "sentence_index": 43,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "Existing tool-use benchmarks exhibit several limitations: some struggle to handle complex scenarios such as long-context memory, multi-turn, or multi-tool calls li2023api,patil2024gorilla,xu2023tool,zhuang2023toolqa,tang2023toolalpaca,qin2023toolllm , while others rely on single-path, standardized answers that do not align with the diversity of real-world user needs wang2024mtu .",
+    "char_start": 7536,
+    "char_end": 7918,
+    "sentence_index": 44,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Furthermore, the dataset in luo2025mcpuniversebenchmarkinglargelanguage is limited to operational-matching tasks, and the one in liu2025mcpevalautomaticmcpbaseddeep is entirely synthetic, raising doubts about its real-world applicability.",
+    "char_start": 7919,
+    "char_end": 8157,
+    "sentence_index": 45,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "Consequently, these systems lack a comprehensive and systematic evaluation of a model's ability to utilize specific protocols like MCP.",
+    "char_start": 8158,
+    "char_end": 8293,
+    "sentence_index": 46,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "In this paper, we introduce , a large-scale instruction benchmark, to explore the performance of LLMs in a variety of real-world MCP usage scenarios.",
+    "char_start": 8294,
+    "char_end": 8443,
+    "sentence_index": 47,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "The benchmark is comprised of 507 instances meticulously crafted to span six distinct real-world domains.",
+    "char_start": 8445,
+    "char_end": 8550,
+    "sentence_index": 48,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "To comprehensively evaluate the diverse capabilities of LLM agents, we structured our dataset around two fundamental task archetypes: Precise Answer and Fuzzy Match.",
+    "char_start": 8551,
+    "char_end": 8716,
+    "sentence_index": 49,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "A detailed breakdown of the instance distribution and the specific tools associated with each domain is provided in tab:domains .",
+    "char_start": 8717,
+    "char_end": 8846,
+    "sentence_index": 50,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "The two task categories are defined as follows:\nPrecise Answer: This category includes tasks that require the model to return a single, definitive ground-truth value, such as a number, an algebraic expression, or a specific noun.",
+    "char_start": 8848,
+    "char_end": 9077,
+    "sentence_index": 51,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "As detailed in tab:domains , this category covers the Math and Websearch domains.",
+    "char_start": 9078,
+    "char_end": 9159,
+    "sentence_index": 52,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "To ensure robustness and relevance, the instances for these tasks were curated and adapted from established academic datasets.",
+    "char_start": 9160,
+    "char_end": 9286,
+    "sentence_index": 53,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "Each data point consists of a query and its unique, verifiable answer.",
+    "char_start": 9287,
+    "char_end": 9357,
+    "sentence_index": 54,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "Fuzzy Match: This category encompasses operational tasks where success is determined not by a simple textual response, but by the correct invocation of an external tool with the appropriate parameters.",
+    "char_start": 9358,
+    "char_end": 9559,
+    "sentence_index": 55,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "This is essential for evaluating an agent's ability to act upon instructions in domains like Email, Calendar, Filemanagement, and Terminal.",
+    "char_start": 9560,
+    "char_end": 9699,
+    "sentence_index": 56,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "For these tasks, each data point consists of a query paired with the ground-truth tool name and its corresponding arguments.",
+    "char_start": 9700,
+    "char_end": 9824,
+    "sentence_index": 57,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "The step-by-step methodology for generating these goal-oriented instances is illustrated in fig:datagene , with concrete examples available in app:0 .",
+    "char_start": 9825,
+    "char_end": 9975,
+    "sentence_index": 58,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "[!h]\n\n0.9\nlcccc\n\nTask Type & Data-Domain & Quantity & \\#Tools & Tools\n\n2 * Precise Answer & Math & 120 & 4 & Calculate, SolveEquation, Differentiate...",
+    "char_start": 9977,
+    "char_end": 10128,
+    "sentence_index": 59,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "& Websearch & 94 & 2 & Search, FetchContent\n\n4 * Fuzzy Match & Email & 119 & 17 & SendEmail, DraftEmail, ReadEmail...",
+    "char_start": 10130,
+    "char_end": 10247,
+    "sentence_index": 60,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "& Calendar & 28 & 4 & ListCalendars, ListEvents, CreateEvent...",
+    "char_start": 10249,
+    "char_end": 10312,
+    "sentence_index": 61,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "& Filemanagement & 91 & 13 & ReadTextFile, ReadMediaFile, ReadMultipleFiles...",
+    "char_start": 10314,
+    "char_end": 10392,
+    "sentence_index": 62,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "& Terminal & 63 & 9 & GetConfig, SetConfigValue, StartProcess...",
+    "char_start": 10394,
+    "char_end": 10458,
+    "sentence_index": 63,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "Data-Tool Statistics.",
+    "char_start": 10460,
+    "char_end": 10481,
+    "sentence_index": 64,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "Our methodology for the Precise Answer dataset prioritizes answer accuracy, real-world relevance, and challenging queries.",
+    "char_start": 10483,
+    "char_end": 10605,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "To achieve this, we chose to adapt and repurpose existing authoritative datasets for mathematics and web search, rather than generating synthetic data from scratch zhuang2023toolqa or deriving tasks solely from tool definitions styles2024workbenchbenchmarkdatasetagents .",
+    "char_start": 10606,
+    "char_end": 10877,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "This approach grounds our benchmark in previously validated problems.",
+    "char_start": 10878,
+    "char_end": 10947,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "The curation process involved several key steps:\n\nData Sourcing and Filtering: We began by selecting the most challenging queries from high-quality source datasets gou2024toratoolintegratedreasoningagent,fan2024hardmathbenchmarkdatasetchallenging,srivastava2023imitationgamequantifyingextrapolating,kazemi2025bigbenchextrahard,mialonGAIABenchmarkGeneral2023 .",
+    "char_start": 10949,
+    "char_end": 11308,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "To ensure our benchmark specifically tests tool-use rather than a model's internal knowledge\u2014a common issue of data contamination\u2014we used a powerful baseline model (Gemini 2.5 Flash Gemini25Pro ) as a filter.",
+    "char_start": 11309,
+    "char_end": 11517,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "Queries that the model could solve without external tools were discarded, isolating problems that genuinely necessitate tool invocation.",
+    "char_start": 11518,
+    "char_end": 11654,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "Ground-Truth Annotation: For the remaining queries, we manually annotated the scope of potentially applicable tools for each problem.",
+    "char_start": 11655,
+    "char_end": 11788,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "This annotation defines a set of valid tools without enforcing a single, rigid solution path.",
+    "char_start": 11789,
+    "char_end": 11882,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "Crucially, for this task category, our evaluation focuses solely on the correctness of the final standard answer; the specific tools used are not assessed, only the result.",
+    "char_start": 11883,
+    "char_end": 12055,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "Tool Implementation: To execute these tasks, we integrated verified, open-source MCP tools.",
+    "char_start": 12056,
+    "char_end": 12147,
+    "sentence_index": 74,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "Specifically, we utilized the calculator-mcp-server for mathematical operations and the duckduckgo-mcp-server for web search functionalities.",
+    "char_start": 12148,
+    "char_end": 12289,
+    "sentence_index": 75,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "[h]\n\n0.9\nfig/Datagene.pdf\n\nData Generation.",
+    "char_start": 12291,
+    "char_end": 12334,
+    "sentence_index": 76,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "The generation of the Fuzzy Match dataset involved two core stages: establishing a controlled tool environment and programmatically generating single- and multi-tool interaction scenarios.",
+    "char_start": 12336,
+    "char_end": 12524,
+    "sentence_index": 77,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "Tool Implementation and Environment\nTo ensure reproducible and monitorable experiments, we developed a high-fidelity, semi-sandboxed tool environment.",
+    "char_start": 12526,
+    "char_end": 12676,
+    "sentence_index": 78,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "For the Filemanagement and Terminal domains, we integrated robust, community-developed open-source MCP tools.",
+    "char_start": 12677,
+    "char_end": 12786,
+    "sentence_index": 79,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "For the Email and Calendar domains, we implemented our own mock tools, EmailMCP and CalendarMCP, which meticulously replicate the interfaces and parameter structures of their real-world counterparts (GmailMCP and macOS CalendarMCP, respectively).",
+    "char_start": 12787,
+    "char_end": 13033,
+    "sentence_index": 80,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "These mock tools interact with a controlled, local database, pre-populated with 100 email and 50 calendar entries, rather than executing live operations.",
+    "char_start": 13034,
+    "char_end": 13187,
+    "sentence_index": 81,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "This setup provides realistic tool interaction schemas while maintaining a controlled evaluation environment.",
+    "char_start": 13188,
+    "char_end": 13297,
+    "sentence_index": 82,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "The email data format is detailed in app:0 .",
+    "char_start": 13298,
+    "char_end": 13342,
+    "sentence_index": 83,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "Instance Generation Methodology\nOur approach employs a template-based programmatic method, similar to frameworks like Workbench styles2024workbenchbenchmarkdatasetagents and ToolQA zhuang2023toolqa , to generate question-and-action pairs.",
+    "char_start": 13344,
+    "char_end": 13582,
+    "sentence_index": 84,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "R 0.4\n\n1\nfig/digital.pdf\n\nMulti-Tool Data Distribution.",
+    "char_start": 13584,
+    "char_end": 13639,
+    "sentence_index": 85,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "For single-tool instances, we designed a unique template for each tool, from which five distinct tasks were generated.",
+    "char_start": 13641,
+    "char_end": 13759,
+    "sentence_index": 86,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "This process co-generates both the user query and the corresponding ground-truth tool invocation (toolname and toolargs), which forms the basis for our Fuzzy Match evaluation.",
+    "char_start": 13760,
+    "char_end": 13935,
+    "sentence_index": 87,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "Examples of these templates are provided in app:0 .",
+    "char_start": 13936,
+    "char_end": 13987,
+    "sentence_index": 88,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "For multi-tool instances, we adopted a more constrained approach to avoid the combinatorial explosion of exhaustive tool pairings.",
+    "char_start": 13989,
+    "char_end": 14119,
+    "sentence_index": 89,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "We identified the top three most frequently used tools within each domain and created chained-task templates app:0 by combining their respective single-tool templates.",
+    "char_start": 14120,
+    "char_end": 14287,
+    "sentence_index": 90,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "To ensure a unique and verifiable solution, the sequence of tool invocations in these multi-tool scenarios is strictly defined in the ground truth.",
+    "char_start": 14288,
+    "char_end": 14435,
+    "sentence_index": 91,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "The distribution of multi-tool questions per domain is shown in fig:digital .",
+    "char_start": 14436,
+    "char_end": 14513,
+    "sentence_index": 92,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "Models Evaluated\nOur evaluation encompasses a diverse suite of ten leading Large Language Models, accessed via the OpenRouter API for standardized interfacing.",
+    "char_start": 14515,
+    "char_end": 14674,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec010",
+    "text": "The selection includes six state-of-the-art closed-source models: openai/gpt-5 GPT5 , openai/gpt-4o HelloGPT4o , google/gemini-2.5-flash Gemini25Flash , google/gemini-2.5-pro Gemini25Pro , anthropic/claude-sonnet-4 ClaudeSonnet4 , and anthropic/claude-3.7-sonnet Claude37Sonnet ; and four prominent open-source models: qwen/qwen3-235b-a22b-2507 Qwen3 , deepseek/deepseek-chat-v3-0324 yangDeepSeekV3Advanced2024 , deepseek/deepseek-r1-0528 DeepSeekR1 , and meta-llama/llama-4-maverick Llama4Maverick .",
+    "char_start": 14675,
+    "char_end": 15175,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec010",
+    "text": "Implementation Details\nEach model was tasked with solving problems using a set of 49 MCP tools distributed across the six domains.",
+    "char_start": 15177,
+    "char_end": 15307,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "For every task, the model was provided with a system\\_message, the user question, and a list of available tools.",
+    "char_start": 15308,
+    "char_end": 15420,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "The models were required to complete each task within a maximum of K=10 interaction rounds; exceeding this limit was considered a task failure.",
+    "char_start": 15421,
+    "char_end": 15564,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "The required output format depended on the task type.",
+    "char_start": 15566,
+    "char_end": 15619,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "For Fuzzy Match tasks, the evaluation focused on the sequence of tool invocations generated by the model.",
+    "char_start": 15620,
+    "char_end": 15725,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "For Precise Answer tasks, models were instructed to enclose their final response within a designated tag: <answer>[YOUR FINAL ANSWER]</answer>, ensuring unambiguous extraction of the answer.",
+    "char_start": 15726,
+    "char_end": 15916,
+    "sentence_index": 100,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "To mitigate tool-related hallucinations Huang_2025 and improve reliability, the system\\_message included detailed, tool-specific instructions.",
+    "char_start": 15917,
+    "char_end": 16059,
+    "sentence_index": 101,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "The complete prompt templates, along with a comparative analysis of different prompting strategies (e.g., ReAct vs.",
+    "char_start": 16060,
+    "char_end": 16175,
+    "sentence_index": 102,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "concise), are available in app:1 .",
+    "char_start": 16176,
+    "char_end": 16210,
+    "sentence_index": 103,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec011",
+    "text": "Our evaluation framework employs distinct sets of metrics tailored to the unique success criteria of each task category.",
+    "char_start": 16212,
+    "char_end": 16332,
+    "sentence_index": 104,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec011",
+    "text": "Precise Answer Tasks\nFor this category, evaluation focuses exclusively on the final outcome, as the tool-use path to a correct answer is often non-unique and may involve self-correction from erroneous steps.",
+    "char_start": 16334,
+    "char_end": 16541,
+    "sentence_index": 105,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec011",
+    "text": "Consequently, we do not assess the intermediate tool invocation sequence.",
+    "char_start": 16542,
+    "char_end": 16615,
+    "sentence_index": 106,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec011",
+    "text": "Performance is measured along two dimensions:\n\nResult Accuracy (RA): A binary metric indicating whether the model's final, extracted answer matches the ground truth exactly.",
+    "char_start": 16616,
+    "char_end": 16789,
+    "sentence_index": 107,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec011",
+    "text": "Computational Resource Efficiency (CRE): A measure of the computational cost (e.g., token consumption) incurred to reach the solution.",
+    "char_start": 16790,
+    "char_end": 16924,
+    "sentence_index": 108,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec011",
+    "text": "We only require that the tools used by the model are from the valid set provided for the task, but we do not penalize alternative or redundant tool paths as long as the final answer is correct.",
+    "char_start": 16926,
+    "char_end": 17119,
+    "sentence_index": 109,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec011",
+    "text": "Fuzzy Match Tasks\nFor tasks where the goal is to perform a correct operation, we evaluate the tool invocation process itself.",
+    "char_start": 17121,
+    "char_end": 17246,
+    "sentence_index": 110,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec011",
+    "text": "Performance is assessed across three dimensions:\n\nResult Accuracy (RA): A binary metric indicating whether the model's final, decisive tool invocation (both tool name and parameters) exactly matches the ground-truth operation.",
+    "char_start": 17247,
+    "char_end": 17473,
+    "sentence_index": 111,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec011",
+    "text": "Dialogue Turn Success Rate (DTSR): Defined as the ratio of successful tool invocations to the total number of interaction turns.",
+    "char_start": 17474,
+    "char_end": 17602,
+    "sentence_index": 112,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec011",
+    "text": "A \"successful invocation\" is one where the model selects an applicable tool and provides correctly formatted parameters, measuring its step-by-step ability to extract information and construct valid calls.",
+    "char_start": 17603,
+    "char_end": 17808,
+    "sentence_index": 113,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "Computational Resource Efficiency (CRE): A measure of the computational cost, with values normalized using max-min scaling to allow for cross-model comparison.",
+    "char_start": 17809,
+    "char_end": 17968,
+    "sentence_index": 114,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec012",
+    "text": "Precise Answer Tasks\n\nAs shown in tab:main1 , closed-source models generally exhibit superior performance in this category.",
+    "char_start": 17970,
+    "char_end": 18093,
+    "sentence_index": 115,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec013",
+    "text": "The performance gap is most pronounced in mathematical reasoning.",
+    "char_start": 18094,
+    "char_end": 18159,
+    "sentence_index": 116,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec013",
+    "text": "The Websearch domain proved to be highly challenging for all models, with success rates universally below 30\\%.",
+    "char_start": 18160,
+    "char_end": 18271,
+    "sentence_index": 117,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec013",
+    "text": "This difficulty stems from the dual requirement of selecting the correct tool and formulating a precise query to extract the necessary information.",
+    "char_start": 18272,
+    "char_end": 18419,
+    "sentence_index": 118,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec013",
+    "text": "Among the models tested, Gemini-2.5-Pro emerged as the top performer with an accuracy of 29.8\\%, whereas the open-source Llama-4 recorded the lowest at 0.8\\%.",
+    "char_start": 18420,
+    "char_end": 18578,
+    "sentence_index": 119,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec013",
+    "text": "While closed-source models maintained an advantage in Websearch, the performance gap narrowed compared to other tasks, with an average success rate of 20.7\\% versus 10.8\\% for open-source models.",
+    "char_start": 18579,
+    "char_end": 18774,
+    "sentence_index": 120,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec013",
+    "text": "[!]\nComparison of model performance metrics across two domains of .",
+    "char_start": 18776,
+    "char_end": 18843,
+    "sentence_index": 121,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "Gemini-Flash and Gemini-Pro are based on Gemini 2.5 Flash and Gemini 2.5 Pro respectively.",
+    "char_start": 18844,
+    "char_end": 18934,
+    "sentence_index": 122,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec013",
+    "text": "Scores highlighted in FBDED0 red indicate the lowest score, while scores in D1E5D9 green are the highest.",
+    "char_start": 18935,
+    "char_end": 19040,
+    "sentence_index": 123,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec013",
+    "text": "0.66\nl|l|rrrrrrrrrr\n\n2 c| Task & 1 c GPT-5 & 1 c GPT-4o & 1 c Gemini-Flash & 1 c Gemini-Pro & 1 c Claude-3.7 & 1 c Claude-4 & 1 c Qwen3 & 1 c Deepseek-V3 & 1 c Deepseek-R1 & 1 c Llama-4\n\n2 * Math & ACC.",
+    "char_start": 19042,
+    "char_end": 19244,
+    "sentence_index": 124,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "& 0.607 & 0.486 & D1E5D9 0.612 & 0.539 & 0.466 & 0.423 & 0.408 & 0.287 & 0.365 & FBDED0 0.128\n\n& CRE.",
+    "char_start": 19245,
+    "char_end": 19346,
+    "sentence_index": 125,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "& 0.564 & 0.326 & 0.688 & 0.403 & 0.456 & FBDED0 0.000 & 0.785 & 1.000 & 0.965 & 0.644\n\n2 * Websearch & ACC.",
+    "char_start": 19347,
+    "char_end": 19455,
+    "sentence_index": 126,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "& 0.182 & 0.154 & 0.193 & D1E5D9 0.298 & 0.256 & 0.164 & 0.194 & 0.103 & 0.125 & FBDED0 0.008\n\n& CRE.",
+    "char_start": 19456,
+    "char_end": 19557,
+    "sentence_index": 127,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "& 0.245 & FBDED0 0.000 & 0.421 & 0.324 & 0.231 & 0.364 & 0.764 & 0.897 & D1E5D9 1.000 & 0.965\n\nFuzzy Match Tasks\nIn this category, model performance strongly correlates with task complexity.",
+    "char_start": 19558,
+    "char_end": 19748,
+    "sentence_index": 128,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Models achieved significantly higher accuracy on simpler operational tasks (Email, Calendar) compared to more complex domains requiring precise sequential logic (Filemanagement, Terminal).",
+    "char_start": 19749,
+    "char_end": 19937,
+    "sentence_index": 129,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "A critical finding, detailed in tab:main2 , is the significant disparity observed between Dialogue Turn Success Rate (DTSR) and final accuracy (ACC) in complex tasks.",
+    "char_start": 19938,
+    "char_end": 20104,
+    "sentence_index": 130,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "For instance, in the Filemanagement domain, GPT-4o achieved a high DTSR of 84.5\\% but an ACC of only 43\\%.",
+    "char_start": 20105,
+    "char_end": 20211,
+    "sentence_index": 131,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "This 40.7\\% gap highlights a crucial failure mode: models can syntactically execute tool calls correctly but fail to select the semantically appropriate tool to solve the problem.",
+    "char_start": 20212,
+    "char_end": 20391,
+    "sentence_index": 132,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "This suggests a superficial understanding of the task's core requirements.",
+    "char_start": 20392,
+    "char_end": 20466,
+    "sentence_index": 133,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "[!]\nComparison of model performance metrics across Four domains of\n\n0.63\nl|l|rrrrrrrrrr\n\n2 c| Task & 1 c GPT-5 & 1 c GPT-4o & 1 c Gemini-Flash & 1 c Gemini-Pro & 1 c Claude-3.7 & 1 c Claude-4 & 1 c Qwen3 & 1 c Deepseek-V3 & 1 c Deepseek-R1 & 1 c Llama-4\n\n3 * Email & ACC.",
+    "char_start": 20468,
+    "char_end": 20739,
+    "sentence_index": 134,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "& 0.749 & 0.632 & 0.742 & D1E5D9 0.825 & 0.765 & FBDED0 0.454 & 0.756 & 0.625 & 0.738 & 0.448\n\n& CRE.",
+    "char_start": 20740,
+    "char_end": 20841,
+    "sentence_index": 135,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "& 0.642 & D1E5D9 1.000 & 0.854 & 0.765 & 0.846 & 0.213 & 0.413 & 0.632 & 0.875 & FBDED0 0.000\n\n& DTSR.",
+    "char_start": 20842,
+    "char_end": 20944,
+    "sentence_index": 136,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec013",
+    "text": "& 0.806 & 0.765 & D1E5D9 0.936 & 0.855 & 0.784 & 0.645 & 0.802 & 0.743 & 0.932 & FBDED0 0.623\n\n3 * Calendar & ACC.",
+    "char_start": 20945,
+    "char_end": 21059,
+    "sentence_index": 137,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec013",
+    "text": "& 0.723 & 0.643 & 0.762 & D1E5D9 0.825 & 0.765 & 0.653 & 0.746 & 0.432 & 0.312 & FBDED0 0.286\n\n& CRE.",
+    "char_start": 21060,
+    "char_end": 21161,
+    "sentence_index": 138,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec013",
+    "text": "& 0.423 & 0.325 & 0.412 & 0.333 & 0.531 & FBDED0 0.000 & 0.352 & D1E5D9 1.000 & 0.862 & 0.742\n\n& DTSR.",
+    "char_start": 21162,
+    "char_end": 21264,
+    "sentence_index": 139,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec013",
+    "text": "& 0.802 & 0.695 & 0.783 & D1E5D9 0.886 & 0.823 & 0.663 & 0.769 & 0.502 & 0.612 & FBDED0 0.466\n\n3 * Filemanagement & ACC.",
+    "char_start": 21265,
+    "char_end": 21385,
+    "sentence_index": 140,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec013",
+    "text": "& 0.323 & 0.438 & 0.346 & D1E5D9 0.596 & 0.462 & 0.436 & 0.478 & 0.362 & 0.392 & FBDED0 0.254\n\n& CRE.",
+    "char_start": 21386,
+    "char_end": 21487,
+    "sentence_index": 141,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec013",
+    "text": "& 0.000 & 0.432 & 0.852 & 0.754 & 0.532 & 0.756 & FBDED0 0.412 & 0.751 & 0.651 & D1E5D9 1.000\n\n& DTSR.",
+    "char_start": 21488,
+    "char_end": 21590,
+    "sentence_index": 142,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec013",
+    "text": "& 0.522 & D1E5D9 0.845 & 0.543 & 0.623 & 0.588 & 0.623 & 0.563 & FBDED0 0.452 & 0.753 & 0.635\n\n3 * Terminal & ACC.",
+    "char_start": 21591,
+    "char_end": 21705,
+    "sentence_index": 143,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec013",
+    "text": "& 0.420 & 0.413 & 0.562 & D1E5D9 0.599 & 0.458 & 0.396 & 0.452 & FBDED0 0.325 & 0.366 & 0.421\n\n& CRE.",
+    "char_start": 21706,
+    "char_end": 21807,
+    "sentence_index": 144,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec013",
+    "text": "& 0.233 & 0.153 & 0.425 & D1E5D9 1.000 & 0.624 & 0.356 & 0.451 & 0.222 & 0.346 & FBDED0 0.000\n\n& DTSR.",
+    "char_start": 21808,
+    "char_end": 21910,
+    "sentence_index": 145,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec013",
+    "text": "& 0.453 & 0.566 & 0.608 & 0.665 & 0.496 & 0.455 & 0.469 & FBDED0 0.365 & D1E5D9 0.666 & 0.652\n\nTo further probe the models' planning capabilities, we conducted a targeted multi-tool experiment inspired by huang2023metatool .",
+    "char_start": 21911,
+    "char_end": 22135,
+    "sentence_index": 146,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec013",
+    "text": "We tested whether providing a hint about the number of required tools would improve performance.",
+    "char_start": 22136,
+    "char_end": 22232,
+    "sentence_index": 147,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec013",
+    "text": "The results in tab:toolchoose show that such prompts had minimal impact, yielding only a 2.5\\% to 5\\% improvement.",
+    "char_start": 22233,
+    "char_end": 22347,
+    "sentence_index": 148,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec013",
+    "text": "This indicates that the primary capability boundary for current models is not determining if a tool is needed, but rather deciding which specific tool to invoke and how to parameterize it correctly.",
+    "char_start": 22348,
+    "char_end": 22546,
+    "sentence_index": 149,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec013",
+    "text": "[!]\nMulti Tool Selection Result.",
+    "char_start": 22548,
+    "char_end": 22580,
+    "sentence_index": 150,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec013",
+    "text": "2/2 means that we suggest call two tools, and then the LLM call the correct two tools.",
+    "char_start": 22581,
+    "char_end": 22667,
+    "sentence_index": 151,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec013",
+    "text": "2/ means that we do not advise about tools, and the LLM called the correct two tools.",
+    "char_start": 22668,
+    "char_end": 22753,
+    "sentence_index": 152,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec013",
+    "text": "1/2 means that on the basis of suggestion, the LLM called two tools, but only one of them was correct.",
+    "char_start": 22754,
+    "char_end": 22856,
+    "sentence_index": 153,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec013",
+    "text": "1/1 means that, based on the suggestion, the LLM only call one tool and it is correct\n\n0.7\nl|l|rrrrrrrrrr\n\n2 c| Task & 1 c GPT-5 & 1 c GPT-4o & 1 c Gemini-Flash & 1 c Gemini-Pro & 1 c Claude-3.7 & 1 c Claude-4 & 1 c Qwen3 & 1 c Deepseek-V3 & 1 c Deepseek-R1 & 1 c Llama-4\n\n4 * ACC\n& 2/ & 0.465 & 0.418 & 0.500 & 0.511 & 0.523 & 0.441 & 0.465 & 0.383 & 0.372 & 0.232\n\n& 2/2 & 0.511 & 0.430 & 0.651 & 0.662 & 0.534 & 0.430 & 0.500 & 0.383 & 0.441 & 0.255\n\n& 1/1 & 0.023 & 0.047 & 0.023 & 0.000 & 0.023 & 0.047 & 0.058 & 0.023 & 0.058 & 0.070\n\n& 1/2 & 0.279 & 0.302 & 0.186 & 0.232 & 0.186 & 0.000 & 0.256 & 0.349 & 0.360 & 0.349\n\nOverall Performance\nThe holistic view presented in the radar charts fig:modelradar reveals a distinct trade-off between performance and efficiency across the model landscape.",
+    "char_start": 22857,
+    "char_end": 23659,
+    "sentence_index": 154,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec013",
+    "text": "While leading closed-source models demonstrate robust and well-rounded capabilities, certain open-source models achieve competitive accuracy, often at the cost of significantly higher computational resource (token) consumption.",
+    "char_start": 23660,
+    "char_end": 23887,
+    "sentence_index": 155,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec013",
+    "text": "Notably, Gemini-2.5-Pro stands out as a highly capable tool-user across diverse domains.",
+    "char_start": 23888,
+    "char_end": 23976,
+    "sentence_index": 156,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec013",
+    "text": "Among open-source models, Qwen demonstrates a commendable balance between task accuracy and resource efficiency.",
+    "char_start": 23977,
+    "char_end": 24089,
+    "sentence_index": 157,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec013",
+    "text": "[h]\n\n0.8\nfig/radar_chart.pdf\n\nModel Performance Comparison Across Tasks.",
+    "char_start": 24091,
+    "char_end": 24163,
+    "sentence_index": 158,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec013",
+    "text": "Longer edges indicate superior performance in each metric.",
+    "char_start": 24164,
+    "char_end": 24222,
+    "sentence_index": 159,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec014",
+    "text": "R 0.5\n\nfig/K-change.pdf\nImpact of Dialogue Rounds on Average Accuracy Across Domains.",
+    "char_start": 24224,
+    "char_end": 24309,
+    "sentence_index": 160,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec014",
+    "text": "In our main experiments, we impose a limit on the maximum number of interaction rounds ($K$) to balance task performance with computational efficiency.",
+    "char_start": 24311,
+    "char_end": 24462,
+    "sentence_index": 161,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "However, this constraint could potentially limit a model's capacity for complex reasoning, reflection, and self-correction.",
+    "char_start": 24463,
+    "char_end": 24586,
+    "sentence_index": 162,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "To investigate this trade-off and justify our choice of $K$, we conducted an analysis on a randomly selected 50\\% subset of our dataset.",
+    "char_start": 24587,
+    "char_end": 24723,
+    "sentence_index": 163,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "The results, illustrated in fig:k-change , demonstrate a clear trend.",
+    "char_start": 24725,
+    "char_end": 24794,
+    "sentence_index": 164,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec014",
+    "text": "As the maximum number of allowed rounds $K$ increases, the overall task accuracy for most models improves.",
+    "char_start": 24795,
+    "char_end": 24901,
+    "sentence_index": 165,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec014",
+    "text": "This is expected, as more rounds allow for more attempts and corrective actions.",
+    "char_start": 24902,
+    "char_end": 24982,
+    "sentence_index": 166,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec014",
+    "text": "However, we observe a point of diminishing returns.",
+    "char_start": 24983,
+    "char_end": 25034,
+    "sentence_index": 167,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec014",
+    "text": "For most models, the rate of accuracy improvement slows considerably when $K 10$, eventually beginning to plateau.",
+    "char_start": 25035,
+    "char_end": 25149,
+    "sentence_index": 168,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec014",
+    "text": "Therefore, considering the balance between maximizing solution accuracy and maintaining reasonable interaction latency, we selected $K=10$ as the standard setting for all our main experiments.",
+    "char_start": 25151,
+    "char_end": 25343,
+    "sentence_index": 169,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec015",
+    "text": "Our analysis identifies three primary categories of failures: Tool-Use Errors, Reasoning Errors, and Information Synthesis Errors.",
+    "char_start": 25345,
+    "char_end": 25475,
+    "sentence_index": 170,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec016",
+    "text": "Tool-Use Errors\nThis category concerns failures in the direct invocation and selection of tools.",
+    "char_start": 25477,
+    "char_end": 25573,
+    "sentence_index": 171,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec016",
+    "text": "Parameter Error.",
+    "char_start": 25574,
+    "char_end": 25590,
+    "sentence_index": 172,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec016",
+    "text": "Occurs when the model selects the correct tool but supplies improperly formatted or invalid arguments.",
+    "char_start": 25591,
+    "char_end": 25693,
+    "sentence_index": 173,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec016",
+    "text": "Examples include providing an invalid email address format or a malformed mathematical expression to a calculator (see app:2 ).",
+    "char_start": 25694,
+    "char_end": 25821,
+    "sentence_index": 174,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec016",
+    "text": "Inaccurate Tool Invocation.",
+    "char_start": 25822,
+    "char_end": 25849,
+    "sentence_index": 175,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec016",
+    "text": "Occurs when the model correctly identifies the need for a tool but selects one that is inappropriate for the given task.",
+    "char_start": 25850,
+    "char_end": 25970,
+    "sentence_index": 176,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "This often stems from a misinterpretation of a tool's functionality or its operational scope, such as using a basic arithmetic calculator for a problem requiring symbolic differentiation.",
+    "char_start": 25971,
+    "char_end": 26158,
+    "sentence_index": 177,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec016",
+    "text": "Reasoning Errors\nThis category includes failures in the model's high-level planning and logical deduction.",
+    "char_start": 26160,
+    "char_end": 26266,
+    "sentence_index": 178,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec016",
+    "text": "Tool Omission.",
+    "char_start": 26267,
+    "char_end": 26281,
+    "sentence_index": 179,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "The model incorrectly assesses its own capabilities and attempts to solve a problem from its parametric knowledge when it should have invoked an external tool.",
+    "char_start": 26282,
+    "char_end": 26441,
+    "sentence_index": 180,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "This is common in complex tasks where the model fails to decompose the problem into tool-solvable sub-problems (see app:2 ).",
+    "char_start": 26442,
+    "char_end": 26566,
+    "sentence_index": 181,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "Faulty Reasoning.",
+    "char_start": 26567,
+    "char_end": 26584,
+    "sentence_index": 182,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "The model generates illogical or factually incorrect conclusions, even when the underlying tool outputs are accurate.",
+    "char_start": 26585,
+    "char_end": 26702,
+    "sentence_index": 183,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "A typical case is when a tool returns a correct number, but the model's final answer violates the problem's logical constraints (e.g., providing a decimal for a quantity that must be an integer), indicating a failure to integrate tool outputs with the problem's semantic context.",
+    "char_start": 26703,
+    "char_end": 26982,
+    "sentence_index": 184,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "Redundant Tool Invocation.",
+    "char_start": 26983,
+    "char_end": 27009,
+    "sentence_index": 185,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "The model becomes trapped in a reasoning loop, repeatedly invoking the same or similar tools without making substantive progress app:2 .",
+    "char_start": 27010,
+    "char_end": 27146,
+    "sentence_index": 186,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "This behavior suggests deficiencies in its planning and state-tracking capabilities, as it fails to update its strategy based on new observations.",
+    "char_start": 27147,
+    "char_end": 27293,
+    "sentence_index": 187,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "Information Synthesis Errors\nThis category involves failures in processing and utilizing the information returned by tools.",
+    "char_start": 27295,
+    "char_end": 27418,
+    "sentence_index": 188,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "Tool-Result Integration Error.",
+    "char_start": 27419,
+    "char_end": 27449,
+    "sentence_index": 189,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "The model obtains a correct intermediate result from a tool but fails to integrate it into subsequent reasoning steps.",
+    "char_start": 27450,
+    "char_end": 27568,
+    "sentence_index": 190,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "For instance, a model might correctly solve an equation with a calculator but then fail to substitute the result back into a larger derivation.",
+    "char_start": 27569,
+    "char_end": 27712,
+    "sentence_index": 191,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "Information Extraction Failure.",
+    "char_start": 27713,
+    "char_end": 27744,
+    "sentence_index": 192,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec016",
+    "text": "The model successfully retrieves a large volume of information (e.g., from a web search) but fails to extract, filter, or summarize the core information relevant to the query.",
+    "char_start": 27745,
+    "char_end": 27920,
+    "sentence_index": 193,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec016",
+    "text": "This manifests as either presenting irrelevant content or providing a disorganized data dump instead of a synthesized answer.",
+    "char_start": 27921,
+    "char_end": 28046,
+    "sentence_index": 194,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec016",
+    "text": "Other Types\n\nthis type of error accounts for a relatively small proportion.",
+    "char_start": 28048,
+    "char_end": 28123,
+    "sentence_index": 195,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec016",
+    "text": "It mainly includes errors such as interaction termination due to excessive interaction rounds, incorrect result solutions, or the invocation of non-existent tools.",
+    "char_start": 28124,
+    "char_end": 28287,
+    "sentence_index": 196,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec016",
+    "text": "For tasks requiring precise answers, such as complex web searches or mathematical problems, Faulty Reasoning and Tool Omission are the most prevalent failures.",
+    "char_start": 28289,
+    "char_end": 28448,
+    "sentence_index": 197,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec016",
+    "text": "In the case of niche web queries, models often struggle to grasp the key points, leading to a reliance on their internal knowledge base which can result in factual hallucinations.",
+    "char_start": 28449,
+    "char_end": 28628,
+    "sentence_index": 198,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec016",
+    "text": "For mathematical tasks, models often misjudge their own capability boundaries and, viewing the reasoning as overly cumbersome, will attempt to solve problems without invoking the necessary tools.",
+    "char_start": 28629,
+    "char_end": 28824,
+    "sentence_index": 199,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec016",
+    "text": "Conversely, for tasks involving fuzzy matching or complex tool parameterization, direct execution errors are more frequent.",
+    "char_start": 28826,
+    "char_end": 28949,
+    "sentence_index": 200,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec016",
+    "text": "In these cases, Parameter Errors are the most common issue, particularly when a tool requires a large number of arguments, increasing the likelihood of incorrect data entry (e.g., placing a recipient's email in the subject line).",
+    "char_start": 28950,
+    "char_end": 29179,
+    "sentence_index": 201,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec016",
+    "text": "Furthermore, persistent instances of Inaccurate Tool Invocation in these scenarios suggest that LLMs retain fundamental misunderstandings about the specific application scope of certain tools.",
+    "char_start": 29180,
+    "char_end": 29372,
+    "sentence_index": 202,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec016",
+    "text": "[h]\n\n0.9\nfig/error_chart.pdf\n\nError Distribution by Task Type.",
+    "char_start": 29374,
+    "char_end": 29436,
+    "sentence_index": 203,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec017",
+    "text": "In this paper, we introduced , a comprehensive framework to systematically evaluate the tool-use capabilities of Large Language Models within the MCP paradigm.",
+    "char_start": 29438,
+    "char_end": 29597,
+    "sentence_index": 204,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec017",
+    "text": "By assessing ten leading models across six domains using a combination of real-world and high-fidelity mock tools.",
+    "char_start": 29598,
+    "char_end": 29712,
+    "sentence_index": 205,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec017",
+    "text": "Our findings reveal a critical gap between a model's syntactic ability to invoke a tool and the deeper semantic understanding required to solve problems effectively.",
+    "char_start": 29714,
+    "char_end": 29879,
+    "sentence_index": 206,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec017",
+    "text": "We consistently observed that while models can often execute a tool call, they struggle with the higher-level reasoning required for proactive and precise tool selection, multi-step planning, and effective information synthesis from tool outputs.",
+    "char_start": 29880,
+    "char_end": 30126,
+    "sentence_index": 207,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec017",
+    "text": "These core challenges point to clear directions for both model and tool development.",
+    "char_start": 30127,
+    "char_end": 30211,
+    "sentence_index": 208,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec017",
+    "text": "Implications for LLM Development\n\nImproving Proactive Tool Invocation: Current models exhibit a tendency to default to their parametric knowledge, failing to recognize their own capability boundaries.",
+    "char_start": 30213,
+    "char_end": 30413,
+    "sentence_index": 209,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec017",
+    "text": "Future training should focus on improving this self-awareness, encouraging models to view external tools as a primary resource rather than a last resort.",
+    "char_start": 30414,
+    "char_end": 30567,
+    "sentence_index": 210,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec017",
+    "text": "Fostering De-compositional Reasoning: We observed that models often attempt to solve complex problems with a single tool call, particularly in domains like advanced mathematics.Enhancing their ability to deconstruct tasks into a sequence of smaller, tool-solvable steps is crucial for tackling multi-stage problems.",
+    "char_start": 30568,
+    "char_end": 30883,
+    "sentence_index": 211,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec017",
+    "text": "Recommendations for MCP Tool Developers\n\nOptimizing Tool Descriptions: A tool's description is a critical interface for the LLM.",
+    "char_start": 30885,
+    "char_end": 31013,
+    "sentence_index": 212,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec017",
+    "text": "Descriptions must be both concise and precise, as overly verbose or ambiguous text significantly increases the model's cognitive load and leads to invocation errors.",
+    "char_start": 31014,
+    "char_end": 31179,
+    "sentence_index": 213,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec017",
+    "text": "Promoting Atomic Tool Design: Our results suggest that LLMs are more proficient at orchestrating a sequence of simple, single-purpose (\"atomic\") tools than understanding and correctly parameterizing a complex, multi-functional one.",
+    "char_start": 31180,
+    "char_end": 31411,
+    "sentence_index": 214,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec017",
+    "text": "Developers should favor creating granular tools that can be combined to solve complex tasks.",
+    "char_start": 31412,
+    "char_end": 31504,
+    "sentence_index": 215,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec018",
+    "text": "The authors confirm their adherence to the ICLR Code of Ethics.",
+    "char_start": 31506,
+    "char_end": 31569,
+    "sentence_index": 216,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "This research introduces MCP-RADAR, a benchmark for evaluating the tool-use capabilities of Large Language Models (LLMs), and does not propose a new model architecture.",
+    "char_start": 31570,
+    "char_end": 31738,
+    "sentence_index": 217,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec018",
+    "text": "Our primary goal is to foster transparency and guide the responsible development of AI agents by providing the community with objective, quantifiable evaluation metrics.",
+    "char_start": 31739,
+    "char_end": 31908,
+    "sentence_index": 218,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec018",
+    "text": "We acknowledge that advancing the capabilities of tool-using agents carries an inherent dual-use risk; more competent agents could potentially be repurposed for malicious activities.",
+    "char_start": 31910,
+    "char_end": 32092,
+    "sentence_index": 219,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec018",
+    "text": "Our work aims to mitigate such risks by providing a clear framework for identifying model weaknesses, such as the observed tendency for models to select incorrect tools, which can inform the development of safer and more reliable systems.",
+    "char_start": 32093,
+    "char_end": 32331,
+    "sentence_index": 220,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec018",
+    "text": "The datasets used in MCP-RADAR are constructed from established public benchmarks (e.g., MATH, GAIA) or generated programmatically.",
+    "char_start": 32333,
+    "char_end": 32464,
+    "sentence_index": 221,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec018",
+    "text": "The underlying LLMs evaluated may reflect societal biases present in their training data.",
+    "char_start": 32465,
+    "char_end": 32554,
+    "sentence_index": 222,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec018",
+    "text": "While our benchmark measures performance, it does not explicitly address or mitigate these biases, which remains a critical area for future research.",
+    "char_start": 32555,
+    "char_end": 32704,
+    "sentence_index": 223,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec018",
+    "text": "To prevent real-world harm during evaluation, operational tasks involving tools like email, calendar, and terminal commands were conducted in a semi-sandboxed environment, using custom-built mock servers that replicate tool functionality without executing real operations.",
+    "char_start": 32705,
+    "char_end": 32977,
+    "sentence_index": 224,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec018",
+    "text": "We believe the benefit of a standardized, objective evaluation framework for agentic models significantly contributes to the safe and ethical progression of AI.",
+    "char_start": 32978,
+    "char_end": 33138,
+    "sentence_index": 225,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec019",
+    "text": "We have taken extensive measures to ensure the reproducibility of our work.",
+    "char_start": 33140,
+    "char_end": 33215,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec019",
+    "text": "The complete implementation of the MCP-RADAR benchmark, including all configurations, evaluation scripts, and the full dataset, has been made publicly available at https://anonymous.4open.science/r/MCPRadar-B143.",
+    "char_start": 33216,
+    "char_end": 33428,
+    "sentence_index": 227,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec019",
+    "text": "The data generation process is described in detail in Section 3.",
+    "char_start": 33430,
+    "char_end": 33494,
+    "sentence_index": 228,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec019",
+    "text": "This includes the repurposing of existing public datasets for \"Precise Answer\" tasks (Section 3.1.1) and the template-based programmatic generation for \"Fuzzy Match\" tasks (Section 3.1.2).",
+    "char_start": 33495,
+    "char_end": 33683,
+    "sentence_index": 229,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec019",
+    "text": "Appendix A provides further examples of data templates and prompts.",
+    "char_start": 33684,
+    "char_end": 33751,
+    "sentence_index": 230,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec019",
+    "text": "The specific models evaluated are listed in Section 4.1, and the novel, quantifiable evaluation metrics (Result Accuracy, Dialogue Turn Success Rate, and Computational Resource Efficiency) are formally defined in Section 4.2.",
+    "char_start": 33752,
+    "char_end": 33977,
+    "sentence_index": 231,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec019",
+    "text": "Our experimental setup, including system prompts and the maximum interaction rounds, is detailed in Section 4.1.",
+    "char_start": 33979,
+    "char_end": 34091,
+    "sentence_index": 232,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec019",
+    "text": "The tools used in the benchmark are a combination of open-source MCP servers and custom-built mock tools designed to replicate official specifications, with sources and implementation details provided in https://anonymous.4open.science/r/MCPRadar-B143.",
+    "char_start": 34092,
+    "char_end": 34344,
+    "sentence_index": 233,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec019",
+    "text": "We believe these resources provide a comprehensive basis for replicating our results and extending this research.",
+    "char_start": 34345,
+    "char_end": 34458,
+    "sentence_index": 234,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec019",
+    "text": "unsrtnat\nsquare,numbers,comma\nREF\n\nFor precise answer type query:\n[\nenhanced,\nboxrule=1pt,\ncolback=pink!20,\ncolframe=red!70!black,\nbreakable,\n]\nlisting only\n\"unique_id\": \"db4fd70a-2d37-40ea-873f-9433dc5e301f\",\n\"Prompt\": \"As of May 2023, how many stops are between South Station and Windsor Gardens on MBTA\u2019s Franklin-Foxboro line (not included)?\",\n\"Answer\": \"10\"\n\nFor fuzzy match type query:\n[\ncolback=blue!4!white,\ncolframe=blue!50!black,\nbreakable\n]\nlisting only\n\"unique_id\": \"db4fd70a-2d37-40ea-873f-9433dc5e301f\",\n\"Prompt\": \"Please send Lucy@gamil.com an email for me, invite her to come over for dinner tomorrow.\",\n\"Toolname\": \"SendEmail\",\n\"Toolargs\": \"from\":(default)mock@localhost.com, \"to\": Lucy@gamil.com, \"subject\": \".\", \"body\": \"I hope this message finds you well.",
+    "char_start": 34460,
+    "char_end": 35235,
+    "sentence_index": 235,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec021",
+    "text": "I would like to warmly invite you to come over for dinner at my place tomorrow evening.\"\n\nEmaildata Format:\n\n\"email_id\":\"c98db9b0-347b-4357-b7fd-0075f944acb3\",\"status\":\"outbox\",\n\"to\":[\"Harmon@mail.com\"],\n\"subject\":\"hihihihihi\",\"body\":\"nice to meet you\",\n\"cc\":[],\"bcc\":[],\"attachments\":[],\n\"sent_datetime\":\"2025-08-19T09:43:46.979Z\",\"labels\":[\"important\"]\n\nSingle-Tool Template Format:\n\nEmail:\n\"Please email name to notify her/him to attend the meeting.\"\nCalendar:\n\"Please add something to the schedule.\"\nFilemanage:\n\"Please return the content in path file.\"\nTerminal:\n\"Start python scripts \"\n\nMulti-Tool Template Format Example:\n\nEmail:\n\"Please email name to notify her/him to attend the meeting\n\nand then mark the message as label \"\n\nIn this section, we demonstrate the impact of setting the prompt to concise mode versus ReAct format on experimental results.",
+    "char_start": 35236,
+    "char_end": 36096,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec022",
+    "text": "ReAct Version:\n\nYou are a professional mathematics assistant that must solve problems\nby following a loop of Thought -> Action -> Observation.",
+    "char_start": 36098,
+    "char_end": 36240,
+    "sentence_index": 237,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec022",
+    "text": "Your sole tool is calculator-mcp-server.",
+    "char_start": 36241,
+    "char_end": 36281,
+    "sentence_index": 238,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec022",
+    "text": "Tools\nYou can only use calculator-mcp-server.",
+    "char_start": 36283,
+    "char_end": 36328,
+    "sentence_index": 239,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec022",
+    "text": "calculator-mcp-server\ncalculate: Evaluates a mathematical expression and returns the result.",
+    "char_start": 36330,
+    "char_end": 36422,
+    "sentence_index": 240,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec022",
+    "text": "solve\\_equation: Solves algebraic equations for x and returns all solutions.",
+    "char_start": 36423,
+    "char_end": 36499,
+    "sentence_index": 241,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec022",
+    "text": "differentiate: Computes derivatives of expressions.",
+    "char_start": 36500,
+    "char_end": 36551,
+    "sentence_index": 242,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec022",
+    "text": "integrate: Computes indefinite integrals of expressions.",
+    "char_start": 36552,
+    "char_end": 36608,
+    "sentence_index": 243,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec022",
+    "text": "Instructions\nStrictly follow the ReAct loop: Thought -> Action -> Observation\nuntil the problem is solved.",
+    "char_start": 36610,
+    "char_end": 36716,
+    "sentence_index": 244,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec022",
+    "text": "Every action must be a call to the calculator-mcp-server tool.",
+    "char_start": 36718,
+    "char_end": 36780,
+    "sentence_index": 245,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec022",
+    "text": "The action format must be an exact JSON string.",
+    "char_start": 36782,
+    "char_end": 36829,
+    "sentence_index": 246,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec022",
+    "text": "The final answer must be enclosed in <answer> tags.",
+    "char_start": 36831,
+    "char_end": 36882,
+    "sentence_index": 247,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec022",
+    "text": "Format\nThought: You must describe your reasoning process in detail here.",
+    "char_start": 36884,
+    "char_end": 36956,
+    "sentence_index": 248,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec022",
+    "text": "Analyze the problem and determine what needs to be solved.",
+    "char_start": 36958,
+    "char_end": 37016,
+    "sentence_index": 249,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec022",
+    "text": "Plan the steps to solve the problem.",
+    "char_start": 37018,
+    "char_end": 37054,
+    "sentence_index": 250,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec022",
+    "text": "Decide which tool function to call and what its input parameters should be.",
+    "char_start": 37056,
+    "char_end": 37131,
+    "sentence_index": 251,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec022",
+    "text": "Action: Call the tool.",
+    "char_start": 37133,
+    "char_end": 37155,
+    "sentence_index": 252,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec022",
+    "text": "You must use the following JSON format.",
+    "char_start": 37156,
+    "char_end": 37195,
+    "sentence_index": 253,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec022",
+    "text": "JSON\n\n\"server\\_name\": \"calculator-mcp-server\",\n\"tool\\_name\": \"...\",\n\"inputs\": ...",
+    "char_start": 37197,
+    "char_end": 37278,
+    "sentence_index": 254,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec022",
+    "text": "Observation: The output result from the tool.",
+    "char_start": 37280,
+    "char_end": 37325,
+    "sentence_index": 255,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec022",
+    "text": "Example\nQuestion: What is the determinant of matrix [[4, 7], [2, 6]]?",
+    "char_start": 37327,
+    "char_end": 37396,
+    "sentence_index": 256,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec022",
+    "text": "Thought:\nThe question asks for the determinant of a matrix.",
+    "char_start": 37398,
+    "char_end": 37457,
+    "sentence_index": 257,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec022",
+    "text": "I must use the calculator-mcp-server tool to perform this calculation.",
+    "char_start": 37458,
+    "char_end": 37528,
+    "sentence_index": 258,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec022",
+    "text": "I will use the calculate function, and its expression parameter will be det([[4, 7], [2, 6]]).",
+    "char_start": 37529,
+    "char_end": 37623,
+    "sentence_index": 259,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec022",
+    "text": "Action:\n\nJSON\n\n\"server\\_name\": \"calculator-mcp-server\",\n\"tool\\_name\": \"calculate\",\n\n\"inputs\":\n\"expression\": \"det([[4, 7], [2, 6]])\"\n\nConcise Prompt:\n\n\"You are a specialized mathematics assistant.",
+    "char_start": 37625,
+    "char_end": 37820,
+    "sentence_index": 260,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec022",
+    "text": "\"\n\"You MUST ONLY use the calculator-mcp-server's tools to\nsolve math problems to solve all math problems.",
+    "char_start": 37821,
+    "char_end": 37926,
+    "sentence_index": 261,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec022",
+    "text": "\"\n\"Do NOT provide any direct answers without using tools.",
+    "char_start": 37927,
+    "char_end": 37984,
+    "sentence_index": 262,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec022",
+    "text": "\"\n\"Always analyze the problem first and then\ncall calculator-mcp-server's tools with the corresponding arguments.",
+    "char_start": 37985,
+    "char_end": 38098,
+    "sentence_index": 263,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec022",
+    "text": "\"\n\"Show your reasoning steps clearly and format answers using the tool's output.",
+    "char_start": 38099,
+    "char_end": 38179,
+    "sentence_index": 264,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec022",
+    "text": "\"\n\"You MUST format your final answer as: <answer>[YOUR FINAL ANSWER]</answer>\"\n\"Mathematical answers should be numbers or formatted in LaTeX, e.g., \\[\n\n31 & 50\n\n-18 & -29\n\n\\]\n\nWe randomly selected ten datasets from each domain and tested them with two different prompts.",
+    "char_start": 38180,
+    "char_end": 38450,
+    "sentence_index": 265,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec022",
+    "text": "The results are shown in tab:VS .",
+    "char_start": 38451,
+    "char_end": 38484,
+    "sentence_index": 266,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec022",
+    "text": "[!]\nPrompt Effect Comparison\n\n0.63\nl|rrrrrrrrrr\n\n1 c| Mean-Acc.",
+    "char_start": 38486,
+    "char_end": 38549,
+    "sentence_index": 267,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec022",
+    "text": "& 1 c GPT-5 & 1 c GPT-4o & 1 c Gemini-Flash & 1 c Gemini-Pro & 1 c Claude-3.7 & 1 c Claude-4 & 1 c Qwen3 & 1 c Deepseek-V3 & 1 c Deepseek-R1 & 1 c Llama-4\n\n1 * ReAct & 0.524 & 0.386 & 0.499 & 0.512 & 0.533 & 0.462 & 0.602 & 0.388 & 0.374 & 0.282\n\n1 * Concise & 0.501 & 0.461 & 0.536 & 0.614 & 0.529 & 0.421\n& 0.506 & 0.356 & 0.383 &0.258\n\n1 * $ $ & -0.023 & 0.075 & 0.037 & 0.102 & -0.004 & -0.041 & -0.096 & -0.032 & 0.009 & -0.024\n\nError Type:\n\nTool Omission\n\nUser: \"Suppose $f(x) = x^2,$ and $g(x)$ is a polynomial\nsuch that $f(g(x)) = 4x^2 + 4x + 1$.",
+    "char_start": 38550,
+    "char_end": 39104,
+    "sentence_index": 268,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec023",
+    "text": "Enter all possible polynomials $g(x),$ separated by commas.\"\n\nAssistant: \"We are given that: - $ f(x) = x^2 $ - $ g(x) $ is a\npolynomial - $ f(g(x)) = (g(x))^2 = 4x^2 + 4x + 1 $\nSo we need to find all polynomials $ g(x) $\nsuch that: $$ (g(x))^2 = 4x^2 + 4x + 1 $$\n\\#\\#\\# Step 1: Analyze the right-hand side\nNote that: $$ 4x^2 + 4x + 1 = (2x + 1)^2 $$\nSo, $$ (g(x))^2 = (2x + 1)^2 $$\nTaking square roots (keeping in mind that\npolynomials can be positive or negative),\nwe get: $$ g(x) = 2x + 1 $$ or $$ g(x) = -(2x + 1) = -2x - 1 $$ These are both polynomials,\nand squaring either gives: $$ (2x + 1)^2 = 4x^2 + 4x + 1 $$\n\\#\\#\\# Step 2: Are there any other polynomial solutions?",
+    "char_start": 39105,
+    "char_end": 39780,
+    "sentence_index": 269,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec023",
+    "text": "Suppose $ g(x) $ is a polynomial such that $ (g(x))^2 = (2x+1)^2 $.",
+    "char_start": 39781,
+    "char_end": 39848,
+    "sentence_index": 270,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec023",
+    "text": "Then: $$ (g(x))^2 - (2x+1)^2 = 0 -> (g(x) - (2x+1))(g(x) + (2x+1)) = 0 $$ So the polynomial equation implies that\n$ g(x) - (2x+1) = 0 $ or $ g(x) + (2x+1) = 0 $,\nsince a polynomial cannot be zero at all points unless\none of the factors is identically zero (as polynomials\nform an integral domain).",
+    "char_start": 39849,
+    "char_end": 40146,
+    "sentence_index": 271,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec023",
+    "text": "Thus, the **only**\npolynomial solutions are:\n$$ g(x) = 2x + 1 \\ \\ or \\ g(x) = -2x - 1 $$\n\\#\\#\\# Final Answer: <answer>2x + 1, -2x - 1</answer>\"\n\nRedundant Tool Invocation.",
+    "char_start": 40147,
+    "char_end": 40318,
+    "sentence_index": 272,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec023",
+    "text": "It repeatedly queries the same website address\n\nUser: I\u2019m researching species that became invasive after people\nwho kept them as pets released them.",
+    "char_start": 40319,
+    "char_end": 40467,
+    "sentence_index": 273,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec023",
+    "text": "There\u2019s a certain\nspecies of fish that was popularized as a pet by\nbeing the main character of the movie Finding Nemo.",
+    "char_start": 40468,
+    "char_end": 40586,
+    "sentence_index": 274,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec023",
+    "text": "According to the USGS, where was this fish found as\na nonnative species, before the year 2020?",
+    "char_start": 40587,
+    "char_end": 40681,
+    "sentence_index": 275,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec023",
+    "text": "I need\nthe answer formatted as the five-digit zip codes of\nthe places the species was found, separated by commas\nif there is more than one place.",
+    "char_start": 40682,
+    "char_end": 40827,
+    "sentence_index": 276,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec023",
+    "text": "Assistant: The species of fish popularized by the\nmovie *Finding Nemo* is the clown anemonefish (*Amphiprion ocellaris*).",
+    "char_start": 40829,
+    "char_end": 40950,
+    "sentence_index": 277,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec023",
+    "text": "\"tool\\_use\\_detail\": [[ \"type\": \"call\",\n\"content\": \"[Calling tool search with args 'query': 'Finding Nemo fish invasive species USGS', 'max\\_results': 5 ]\" ,\n\"type\": \"result\", \"content\": \"tool return result meta=None\ncontent=[TextContent(type='text', text=\\\"Found 5 search\nresults:1.",
+    "char_start": 40951,
+    "char_end": 41234,
+    "sentence_index": 278,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec023",
+    "text": "Nonindigenous Aquatic Species\nURL: https://nas.er.usgs.gov/\n***URL: https://www.usgs.gov/index.php/centers/\nwetland-and-aquatic-research-center/science/science-topics/\nnonindigenous-aquatic-species Summary:\nTheUSGSNonindigenous AquaticSpecies(NAS) database tracks\noccurrence data on non-native aquatic plant and\nanimalspeciesthroughout the United States, and provides\nthe public withspeciesprofiles, distribution maps, and\nonline/real-time queries for state/hydrologic basin-specificspecies.",
+    "char_start": 41235,
+    "char_end": 41726,
+    "sentence_index": 279,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec023",
+    "text": "3.",
+    "char_start": 41727,
+    "char_end": 41729,
+    "sentence_index": 280,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec023",
+    "text": "Invasive Species Experts Database | U.S.",
+    "char_start": 41730,
+    "char_end": 41770,
+    "sentence_index": 281,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec023",
+    "text": "Fish \\& Wildlife Service\n****URL: https://www.usgs.gov/index.php/centers/wetland-and-aquatic-\nresearch-center/science/science-topics/nonindigenous-aquatic-species\n\nParameter Errors\n\nUser: Please send an email to Jimmy inviting him to\ndinner tonight.",
+    "char_start": 41771,
+    "char_end": 42020,
+    "sentence_index": 282,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec023",
+    "text": "Assistant: \"email\\_id\":\"c98db9b0-347b-4357-b7fd-0075f944acb3\",\n\n\"status\":\"outbox\",\n\n\"to\":[],\n\n\"subject\":\"Jimmy@mail.com\",\n\n\"body\":\"\"Hey, want to come over for dinner tonight?\",\"cc\":[],\"bcc\":[],\n\n\"attachments\":[],\n\n\"sent\\_datetime\":\"2025-09-19T09:43:46.979Z\",\n\"labels\":[\"\"]\n\n[!h]\nImpact of Dialogue Rounds K on Average Accuracy Across Domains)\n\n0.7\nl|rrrrrrrrrr\n\n1 c| Dialogue\\ (K) & 1 c GPT-5 & 1 c GPT-4o & 1 c Gemini-Flash & 1 c Gemini-Pro & 1 c Claude-3.7 & 1 c Claude-4 & 1 c Qwen3 & 1 c Deepseek-V3 & 1 c Deepseek-R1 & 1 c Llama-4\n\n1 * K=5 & 0.355 & 0.296 & 0.321 & 0.365 & 0.332 & 0.210\n& 0.346 & 0.124 & 0.136 & 0.075\n\n1 * K=7 & 0.405 & 0.362 & 0.362 & 0.521 & 0.389 & 0.253\n& 0.485 & 0.226 & 0.264 & 0.096\n\n1 * K=9 & 0.432 & 0.452 & 0.501 & 0.586 & 0.466 & 0.375\n& 0.476 & 0.284 & 0.341 & 0.126\n\n1 * K=10 & 0.501 & 0.461 & 0.536 & 0.614 & 0.529 & 0.421\n& 0.506 & 0.356 & 0.383 &0.258\n\n1 * K=11 & 0.495 & 0.501 & 0.536 & 0.574 & 0.562 & 0.452\n& 0.475 & 0.366 & 0.423 & 0.303\n\n1 * K=13 & 0.517 & 0.488 & 0.565 & 0.635 & 0.516 & 0.488\n& 0.554 & 0.394 & 0.412 & 0.341\n\n1 * K=15 & 0.522 & 0.496 & 0.608 & 0.622 & 0.631 & 0.552\n\n& 0.562 & 0.396 & 0.418 & 0.332\n\nMCP-Pool\n\n\"mcp\\_pool\": [\n\n\\\n\n\"name\": \"FireCrawl\",\n\n\"description\": \"A Model Context Protocol (MCP) server implementation that integrates with Firecrawl for web scraping capabilities.\",\n\n\"tools\": [\n\n\\\n\n\"tool\\_name\": \"firecrawl\\_search\",\n\n\"tool\\_description\": \"Search the web and optionally extract content from search results.\",\n\n\"inputs\": [\n\n\\\n\n\"name\": \"query\",\n\n\"type\": \"string\",\n\n\"required\": true,\n\n\"description\": \"your search query\"\n\n\\\n\n]\n\n\\\n\n],\n\n\"run\\_config\": [\n\n\\\n\n\"command\": \"npx -y firecrawl-mcp\",\n\n\"env\": \\\n\n\"FIRECRAWL\\_API\\_KEY\": \"your key\"\n\n\\ ,\n\n\"port\": your port\n\n\\\n\n]\n\n\\\n\nEval-Result\n\n\"unique_id\": \"*****\",\n\"question\": \"Given a integer n(>0), make a pile of n levels of ...\",\n\"ground_truth\": \"def make_a_pile(n):\nreturn [n + 2*i for i in range(n)]\",\n\"prediction\": \"def make_a_pile(n):\npile = [] for i in range(n):\nif n\nelse: pile.append(n + 2*i)\nreturn pile\",\n\"success\": true,\n\"tool_usage\":\n\"tool_calls\": [\n\"name\": \"read_file\", \"arguments\": \" \\\"path\\\": .jsonl\\\" \" ,\n\"name\": \"write_file\", \"arguments\": \" \\\"path\\\": .jsonl\\\" \"\n],\n\"total_tool_count\": 2,\n\"tool_names\": [\"read_file\", \"write_file\"]\n,\n\"token_usage\":\n\"prompt_tokens\": 820,\n\"completion_tokens\": 610,\n\"total_tokens\": 1430\n\nLarge Language Models (LLMs) were utilized in two capacities during this research: dataset construction and manuscript preparation.",
+    "char_start": 42022,
+    "char_end": 44508,
+    "sentence_index": 283,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec025",
+    "text": "First, as detailed in Section 3.1, LLMs played an auxiliary role in the creation of the MCP-RADAR benchmark.",
+    "char_start": 44510,
+    "char_end": 44618,
+    "sentence_index": 284,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec025",
+    "text": "For the precise answer tasks, we utilized results from Gemini 2.5 Flash to help select queries from existing datasets that required tool invocation.",
+    "char_start": 44619,
+    "char_end": 44767,
+    "sentence_index": 285,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec025",
+    "text": "For the fuzzy match tasks, question-answer pairs were programmatically generated based on author-designed templates, a process inspired by LLM-based data generation methodologies.",
+    "char_start": 44768,
+    "char_end": 44947,
+    "sentence_index": 286,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec025",
+    "text": "Second, Gemini 2.5 Pro was employed as a writing assistant to polish the manuscript by improving grammar, refining phrasing, and enhancing overall clarity.",
+    "char_start": 44949,
+    "char_end": 45104,
+    "sentence_index": 287,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec025",
+    "text": "All core scientific contributions, including the research ideation, the design of the evaluation framework and metrics, experimental setup, and final analysis, were performed exclusively by the human authors.",
+    "char_start": 45106,
+    "char_end": 45314,
+    "sentence_index": 288,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec025",
+    "text": "The authors have carefully reviewed all machine-generated content and take full responsibility for the validity, integrity, and originality of this entire work.",
+    "char_start": 45315,
+    "char_end": 45475,
+    "sentence_index": 289,
+    "section_sentence_index": 5
+  }
+]

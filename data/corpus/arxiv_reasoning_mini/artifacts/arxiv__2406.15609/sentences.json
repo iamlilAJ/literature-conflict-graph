@@ -1,0 +1,2765 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Objective : Radiotherapy treatment planning is a time-consuming and potentially subjective process that requires the iterative adjustment of model parameters to balance multiple conflicting objectives.",
+    "char_start": 0,
+    "char_end": 201,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Recent advancements in frontier Artificial Intelligence (AI) models offer promising avenues for addressing the challenges in planning and clinical decision-making.",
+    "char_start": 202,
+    "char_end": 365,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "This study introduces GPT-RadPlan, an automated treatment planning framework that integrates radiation oncology knowledge with the reasoning capabilities of large multi-modal models, such as GPT-4Vision (GPT-4V) from OpenAI.",
+    "char_start": 366,
+    "char_end": 590,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Approach : Via in-context learning, we incorporate clinical requirements and a few (3 in our experiments) approved clinical plans with their optimization settings, enabling GPT-4V to acquire treatment planning domain knowledge.",
+    "char_start": 592,
+    "char_end": 819,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "The resulting GPT-RadPlan system is integrated into our in-house inverse treatment planning system through an application programming interface (API) .",
+    "char_start": 820,
+    "char_end": 971,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "For a given patient, GPT-RadPlan acts as both plan evaluator and planner, first assessing dose distributions and dose-volume histograms (DVHs), and then providing ``textual feedback'' on how to improve the plan to match the physician's requirements.",
+    "char_start": 972,
+    "char_end": 1221,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "In this manner, GPT-RadPlan iteratively refines the plan by adjusting planning parameters, such as weights and dose objectives , based on its suggestions.",
+    "char_start": 1222,
+    "char_end": 1376,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Main results : The efficacy of the automated planning system is showcased across 17 prostate cancer and 13 head \\& neck cancer VMAT plans with prescribed doses of 70.2 Gy and 72 Gy, respectively , where we compared GPT-RadPlan results to clinical plans produced by human experts.",
+    "char_start": 1378,
+    "char_end": 1657,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "In all cases, GPT-RadPlan either outperformed or matched the clinical plans, demonstrating superior target coverage and reducing organ-at-risk doses by 5 Gy on average (15\\% for prostate and 10-15\\% for head \\& neck) .",
+    "char_start": 1658,
+    "char_end": 1876,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "Significance : Consistently satisfying the the dose-volume objectives in the clinical protocol, GPT-RadPlan represents the first multimodal large language model agent that mimics the behaviors of human planners in radiation oncology clinics, achieving promising results in automating the treatment planning process without the need for additional training.",
+    "char_start": 1878,
+    "char_end": 2234,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Treatment planning of modern radiation therapy (RT) modalities, such as intensity modulated RT (IMRT) and volumetric modulated arc therapy (VMAT) is an inverse process solving an optimization problem based on dose prescriptions .",
+    "char_start": 2236,
+    "char_end": 2465,
+    "sentence_index": 10,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "This optimization problem is typically defined as a constrained optimization minimizing a weighted cost function that balances multiple conflicting objectives .",
+    "char_start": 2466,
+    "char_end": 2626,
+    "sentence_index": 11,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "The result is greatly impacted by the value of the optimization parameters (e.g., the objective weights in the cost function), often resulting in plans that cannot meet all objectives at once.",
+    "char_start": 2627,
+    "char_end": 2819,
+    "sentence_index": 12,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "A main challenge in treatment planning is translating the overall clinical goals into weighted objective functions and dose constraints yielding acceptable plans.",
+    "char_start": 2821,
+    "char_end": 2983,
+    "sentence_index": 13,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Human planners resort to a trial-and-error approach, whereby they iteratively adjust the optimization parameters based on the results from the optimization problem until the resulting plans meet the clinical requirements .",
+    "char_start": 2984,
+    "char_end": 3206,
+    "sentence_index": 14,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Treatment planning is potentially subjective, since changes in the treatment parameters are based on the experience of the planner .",
+    "char_start": 3207,
+    "char_end": 3339,
+    "sentence_index": 15,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Additionally, trial-and-error involves repeatedly using the computationally-expensive optimization algorithms over many iterations, with potentially multiple interactions between planner and radiation oncologists in between, making the entire process time-consuming and costly, and presenting a bottleneck in precision RT.",
+    "char_start": 3340,
+    "char_end": 3662,
+    "sentence_index": 16,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Multiple approaches such as knowledge-based planning or multi-criteria optimization have been investigated to reduce the load on human planners .",
+    "char_start": 3664,
+    "char_end": 3809,
+    "sentence_index": 17,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Knowledge-based approaches utilize prior experience to improve plans or derive good starting points for subsequent trial-and-error adjustment.",
+    "char_start": 3810,
+    "char_end": 3952,
+    "sentence_index": 18,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Some examples include selecting closest matching patients , or using models that predict achievable dose volume histograms (DVHs) .",
+    "char_start": 3953,
+    "char_end": 4084,
+    "sentence_index": 19,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Alternatively, the multi-criteria approach often involves a ``wish list'' containing objective functions with assigned priorities, which iteratively steers planning to meet as many objectives as possible ordered by their priority .",
+    "char_start": 4085,
+    "char_end": 4316,
+    "sentence_index": 20,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "With the recent success of deep learning, multiple neural network-based approaches have also been proposed to assist treatment planning, mostly based on U-net or generative adversarial frameworks .",
+    "char_start": 4318,
+    "char_end": 4515,
+    "sentence_index": 21,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Most works focus on predicting dose distributions that may be achievable based on previous clinical plans.",
+    "char_start": 4516,
+    "char_end": 4622,
+    "sentence_index": 22,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "As an input, these models take organ masks , possibly also including beam information .",
+    "char_start": 4623,
+    "char_end": 4710,
+    "sentence_index": 23,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Furthermore, these learning-based methods require large datasets and extensive training to ensure generalization across disease sites and device settings, making it difficult to integrate them into clinical workflow.",
+    "char_start": 4711,
+    "char_end": 4927,
+    "sentence_index": 24,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Adjusting the optimization parameters can be defined as a decision-making problem that can ideally be fully automated.",
+    "char_start": 4929,
+    "char_end": 5047,
+    "sentence_index": 25,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Framing treatment planning as a sequence of actions taken by a planner, reinforcement learning (RL) has been recently applied to mimic human planners in RT workflows .",
+    "char_start": 5048,
+    "char_end": 5215,
+    "sentence_index": 26,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "RL methods learn in a trial-and-error manner how to take actions maximizing a cumulative reward (i.e., a scalar based on dose metrics or target conformity).",
+    "char_start": 5216,
+    "char_end": 5372,
+    "sentence_index": 27,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Some initial studies demonstrate that RL agents can learn to modify optimization parameters such as weights and objective doses , while other works train agents that directly optimize machine parameters .",
+    "char_start": 5373,
+    "char_end": 5577,
+    "sentence_index": 28,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "In practice, RL-based approaches face multiple problems.",
+    "char_start": 5578,
+    "char_end": 5634,
+    "sentence_index": 29,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "First, designing reward functions of RL that balance between different\nobjectives \u2014 also known as the ``reward design problem'' - is notoriously difficult because agents are susceptible to reward hacking , which is when they exploit flaws or loopholes in the reward function to achieve high rewards in unintended ways, rather than learning the desired behavior.",
+    "char_start": 5635,
+    "char_end": 5996,
+    "sentence_index": 30,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": ". Indeed, it is not straightforward how to write a reward function to evaluate the treatment plan that requires balancing multiple clinical objectives.",
+    "char_start": 5997,
+    "char_end": 6148,
+    "sentence_index": 31,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "While RL agents can\nlearn from labeled examples, this is not possible with a single example; RL agents need to gather\nlarge amounts of labeled data to capture the nuances of different users\u2019 preferences and objectives, which\nhas shown to be costly .",
+    "char_start": 6149,
+    "char_end": 6398,
+    "sentence_index": 32,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Additionally, both learning and RL based methods do not generalize well to new users or new environments that have different objectives, necessitating re-design or re-collection of labeled data.",
+    "char_start": 6399,
+    "char_end": 6593,
+    "sentence_index": 33,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Our aim is to leverage multi-modal large language models (LLMs) to create an easier way for RT professionals to communicate their preferences and to facilitate the inverse treatment planning process.",
+    "char_start": 6595,
+    "char_end": 6794,
+    "sentence_index": 34,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "In the past few years, LLMs that are trained on internet-scale data have witnessed significant advancements and shown an impressive ability to learn in-context from a few examples .",
+    "char_start": 6795,
+    "char_end": 6976,
+    "sentence_index": 35,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Our key insight is that the scale of data that multi-modal LLMs have been trained on makes them great in-context learners , also allowing them to capture meaningful commonsense priors about human behavior as well as expertise on specific domains.",
+    "char_start": 6977,
+    "char_end": 7223,
+    "sentence_index": 36,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Given a few examples and/or a description demonstrating the radiation oncologist\u2019s objective, an LLM should be able to provide an accurate evaluation of a new plan and provide solutions for further improvement.",
+    "char_start": 7224,
+    "char_end": 7434,
+    "sentence_index": 37,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "In this work, we explore how to prompt multi-modal LLMs as a proxy reward function (evaluator) and agent (planner) for radiotherapy treatment planning.",
+    "char_start": 7436,
+    "char_end": 7587,
+    "sentence_index": 38,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Specifically, we propose a novel framework to fully automate the planning process using pre-trained multi-modal LLMs.",
+    "char_start": 7588,
+    "char_end": 7705,
+    "sentence_index": 39,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "The proposed GPT-RadPlan is capable of learning to mimic human planners without any domain-specific training, using only three clinical plans as a reference, in the form of optimized weights, DVH tables (the DVH in a tabular format where each row contains doses received for a given fraction of the volume of each of the organs) , and dose distribution images.",
+    "char_start": 7706,
+    "char_end": 8066,
+    "sentence_index": 40,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "GPT-RadPlan iteratively adjusts optimization parameters, directly assessing whether the plan meets the clinical requirements based on agreement with the clinical protocol.",
+    "char_start": 8067,
+    "char_end": 8238,
+    "sentence_index": 41,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "In this case, GPT-RadPlan acts both as an evaluator and planner, first determining which aspects of the plan can be improved on the clinical requirements, and subsequently suggesting new optimization weights to address the identified deficiencies.",
+    "char_start": 8239,
+    "char_end": 8486,
+    "sentence_index": 42,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "Through our experiments, we compare GPT-RadPlan's results to clinically approved treatment plans for prostate and head \\& neck cancer (HN) patients .",
+    "char_start": 8487,
+    "char_end": 8636,
+    "sentence_index": 43,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "There are two advantages to prompting multi-modal LLMs for treatment planning: (1) we can leverage LLM\u2019s in-context learning abilities and prior knowledge of treatment planning so that users only need to provide a handful of examples of desirable plans, and (2) we can specify our preferences intuitively using human language in text .",
+    "char_start": 8637,
+    "char_end": 8972,
+    "sentence_index": 44,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "[t!]\n\nimages/treatmentplan.png\nOverview of GPT-RadPlan workflow.",
+    "char_start": 8974,
+    "char_end": 9038,
+    "sentence_index": 45,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "a.",
+    "char_start": 9039,
+    "char_end": 9041,
+    "sentence_index": 46,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "Integration of multi-modal LLM-based RT treatment planning into the existing clinical workflow, using GPT-4V.",
+    "char_start": 9042,
+    "char_end": 9151,
+    "sentence_index": 47,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "GPT-RadPlan can be human-in-the-loop where the users can use human language to provide feedback on how to improve the current plan when needed, and iteratively adjust optimization weights.",
+    "char_start": 9152,
+    "char_end": 9340,
+    "sentence_index": 48,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "b.",
+    "char_start": 9341,
+    "char_end": 9343,
+    "sentence_index": 49,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "Modules for the application of GPT-4V at different steps of the RT workflow.",
+    "char_start": 9344,
+    "char_end": 9420,
+    "sentence_index": 50,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "Based on the independent evaluation of the dose distribution by an image AI expert, and the DVH assessment from the DVH AI expert, GPT-4V reviews the plan, providing feedback to the AI planner, and approves the plan after the plan is good enough .",
+    "char_start": 9421,
+    "char_end": 9668,
+    "sentence_index": 51,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "The planning module translates feedback from the evaluation module into concrete optimization parameters, enabling iterative refinement of the treatment plan.",
+    "char_start": 9669,
+    "char_end": 9827,
+    "sentence_index": 52,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec002",
+    "text": "GPT-4V's in-context learning capabilities facilitate this process without requiring additional model training, relying instead on input prompts and historical planning data.",
+    "char_start": 9828,
+    "char_end": 10001,
+    "sentence_index": 53,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "We opt for a two-loop optimization formulation consisting of (i) an inner loop performing inverse fluence optimization and (ii) an outer loop step optimizing the parameters of the inner loop.",
+    "char_start": 10003,
+    "char_end": 10194,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "As such, the inner loop performs traditional fluence map optimization, trying to obtain the optimal fluence map $x$ by minimizing a cost function composed of multiple weighted objectives for different targets and organs at risk, defined as\n\n_ x & _p w_ p ([Ax]_p - d_ t )^2 + _s w_ s ([Ax]_s - d_ s )([Ax]_s - d_ s ),\n\ns.t.",
+    "char_start": 10195,
+    "char_end": 10518,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "&D_ 95 ([Ax]_p)=d_p\n\n& x 0.",
+    "char_start": 10519,
+    "char_end": 10546,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "Here, $\\ w_p\\ _ p=1 ^ N_p $ and $\\ w_s\\ _ s=1 ^ N_s $ are the weights that balance the different objectives for $N_p$ PTV targets and $N_s$ organs at risk (OARs) , respectively.",
+    "char_start": 10548,
+    "char_end": 10725,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "$A$ represents the dose influence matrix, containing the dose per unit fluence delivered to voxels in the volume by beamlets, and $\\ d_p\\ _ p=1 ^ N_p $ and $\\ d_s\\ _ s=1 ^ N_s $ are the scalar objective doses for each structure.",
+    "char_start": 10726,
+    "char_end": 10954,
+    "sentence_index": 58,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "Essentially, the whole cost function penalizes squared deviations from the target objective doses, regardless of the positive or negative sign, while the OAR terms only penalize squared over-dosing for doses above $d_s$.",
+    "char_start": 10955,
+    "char_end": 11175,
+    "sentence_index": 59,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec004",
+    "text": "As such, $ $ represents the Heaviside function constraining the objective to only positive values.",
+    "char_start": 11176,
+    "char_end": 11274,
+    "sentence_index": 60,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec004",
+    "text": "The minimization is constrained for only positive $x$ values, and forcing that the $D_ 95 $ --- the minimum dose that covers at least 95\\% og the target volume --- equals the prescribed dose for the targets.",
+    "char_start": 11275,
+    "char_end": 11482,
+    "sentence_index": 61,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec004",
+    "text": "We design GPT-RadPlan to operate the outer loop, finding the optimal target and OAR weights that are used to minimize Equation .",
+    "char_start": 11484,
+    "char_end": 11612,
+    "sentence_index": 62,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec004",
+    "text": "GPT-RadPlan consists of three algorithmic components: a) an evaluation module that leverages GPT-4V prior knowledge as well as reference plans to evaluate the plan in the current iteration, b) a memory module that stores the plans and the corresponding optimization parameters in the previous iterations, c) a planning module that converts the text-based feedback from the evaluation module to PTV and OAR weights for inverse planning optimizer.",
+    "char_start": 11613,
+    "char_end": 12058,
+    "sentence_index": 63,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "As shown in Figure , GPT-RadPlan introduces LLM-based agents as the evaluator and planner.",
+    "char_start": 12060,
+    "char_end": 12150,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "The system incorporates three fundamental modules to facilitate the treatment planning process, enabling iterative reasoning, planning, and continuous interaction between the agents and the treatment planning system.",
+    "char_start": 12151,
+    "char_end": 12367,
+    "sentence_index": 65,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "The task concludes either when the patient-specific requirements in the physician's intent are successfully achieved or when the maximum iteration limit is reached.",
+    "char_start": 12368,
+    "char_end": 12532,
+    "sentence_index": 66,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "Algorithm illustrates the detailed algorithm which breakdowns the GPT-RadPlan step-by-step.",
+    "char_start": 12533,
+    "char_end": 12624,
+    "sentence_index": 67,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "The functionalities of each module are as follows:\n\n[t]\nGPT-RadPlan Auto-Plan Framework\n\nInput: Patient data ($P$), Reference plans ($R$), Clinical requirements ($C$), Max iterations ($N$)\n\nOutput: Optimized parameters $w$\n\n[1]\nInitialize EvaluationModule with reference cases and clinical objectives\nInitialize MemoryModule for storing historical trajectories\nInitialize PlanningModule for generating optimization parameters\nExtract initial dose distribution $I_0$ and DVH table $ _0$ from patient data\n\n$i = 1$ to $N$\nFeedback $F_i EvaluationModule .",
+    "char_start": 12625,
+    "char_end": 13177,
+    "sentence_index": 68,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "evaluate (I_ i-1 , _ i-1 )$ Evaluate current plan\nMemoryModule .",
+    "char_start": 13178,
+    "char_end": 13242,
+    "sentence_index": 69,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "store ($I_ i-1 , _ i-1 , F_i$) Store the current state in memory\n$w PlanningModule .",
+    "char_start": 13243,
+    "char_end": 13327,
+    "sentence_index": 70,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "plan (F_i, MemoryModule .",
+    "char_start": 13328,
+    "char_end": 13353,
+    "sentence_index": 71,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "getRecentTrajectory ())$\nAdjust parameters based on feedback and memory\n$I_i, _i innerLoopOptimization (w)$ Generate new plan using updated parameters\n$ EvaluationModule .",
+    "char_start": 13354,
+    "char_end": 13525,
+    "sentence_index": 72,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "isPlanSatisfactory (I_i, _i)$\nbreak Stop if the plan meets clinical objectives\n\n$w$\n\nEvaluation module\nThe evaluator assumes a central role within the workflow of GPT-RadPlan, assessing the level of agreement between the current plan and the physician's intent.",
+    "char_start": 13526,
+    "char_end": 13787,
+    "sentence_index": 73,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "It receives the present dose distribution images, DVHs, and dose statistics such as the precomputed minimum, maximum, and mean doses based on DVHs together with the physician's intent (in textual form as a list of requirements).",
+    "char_start": 13788,
+    "char_end": 14016,
+    "sentence_index": 74,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": "Functioning as a centralized coordinator, the evaluator engages in reasoning and providing suggestions on directions of improvement for the current plant.",
+    "char_start": 14017,
+    "char_end": 14171,
+    "sentence_index": 75,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec005",
+    "text": "Such suggestions from the evaluation module are then used to adjust the optimization parameters and then optimize the plan, allowing for a continuous cycle of plan improvement.",
+    "char_start": 14172,
+    "char_end": 14348,
+    "sentence_index": 76,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec005",
+    "text": "To properly evaluate both qualitative aspects about the dose distribution and quantitative values and DVHs of the treatment plan, we separately employ GPT-4V as a vision and DVH expert.",
+    "char_start": 14350,
+    "char_end": 14535,
+    "sentence_index": 77,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec005",
+    "text": "The vision expert interprets the dose distribution images, analyzing the regional color intensity based on the color bar , presence of hot or cold spots, and distribution and spillage around the PTV and OARs.",
+    "char_start": 14536,
+    "char_end": 14744,
+    "sentence_index": 78,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec005",
+    "text": "This analysis is done using dose images were automatically cropped around each structure, using the contours with a 5-pixel margin , as well as the full dose distribution in the sagittal, coronal, and axial axes.",
+    "char_start": 14745,
+    "char_end": 14957,
+    "sentence_index": 79,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec005",
+    "text": "On the other hand, the DVH expert will take the DVH and related dose statistics as input.",
+    "char_start": 14959,
+    "char_end": 15048,
+    "sentence_index": 80,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec005",
+    "text": "The DVH is first transformed into a table and then translated into a text sequence.",
+    "char_start": 15049,
+    "char_end": 15132,
+    "sentence_index": 81,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec005",
+    "text": "The corresponding physician's intent with prescribed dose and clinical requirements for the patient is also provided.",
+    "char_start": 15133,
+    "char_end": 15250,
+    "sentence_index": 82,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec005",
+    "text": "The model then reasons about the level of agreement of the DVH and metrics with the intent.",
+    "char_start": 15251,
+    "char_end": 15342,
+    "sentence_index": 83,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec005",
+    "text": "Aggregating the outputs of the vision expert and DVH expert, the GPT-4V provides final feedback on how to improve the current treatment plan.",
+    "char_start": 15343,
+    "char_end": 15484,
+    "sentence_index": 84,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec005",
+    "text": "For a treatment plan, we obtain its dose distribution images $I$ and the DVH $ $, the evaluator then evaluates them to derive feedback $F$ based on the prompt as $F = EvaluationModule (I, ).$\n\nMemory module The memory module serves to store crucial information needed during the planning process to aid the accumulation of useful knowledge and enhance the agent\u2019s decision-making capabilities.",
+    "char_start": 15486,
+    "char_end": 15879,
+    "sentence_index": 85,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec005",
+    "text": "Specifically, the memory module is used to store the plans and the corresponding optimization parameters from past iterations for the same patient .",
+    "char_start": 15880,
+    "char_end": 16028,
+    "sentence_index": 86,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec005",
+    "text": "The memory module also incorporates a mechanism for filtering redundant information.",
+    "char_start": 16029,
+    "char_end": 16113,
+    "sentence_index": 87,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec005",
+    "text": "If the planning process takes too many iterations , it retains only the most recent $L$ steps of dose distribution images, DVHs, feedback and the optimization parameters, forming a set in the order of steps $\\ (I_ t-L+1 , _ t-L+1 , F_ t-L+1 , w_ t-L+1 ), , (I_ t , _ t , F_ t , w_ t )\\ $.",
+    "char_start": 16114,
+    "char_end": 16402,
+    "sentence_index": 88,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "This assists the agent in comprehending the relationship between the optimization parameters and changes in the treatment plan.",
+    "char_start": 16403,
+    "char_end": 16530,
+    "sentence_index": 89,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec005",
+    "text": "Planning module\nThe planning module fulfills the vital function of converting the text-based feedback from the evaluation module to optimization parameters that can be processed by the treatment planning system.",
+    "char_start": 16532,
+    "char_end": 16743,
+    "sentence_index": 90,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec005",
+    "text": "The planning module receives the current iteration of the treatment plan and the feedback from the evaluation module and extracts pertinent details from the memory module, enabling learning from its historical trajectories.",
+    "char_start": 16744,
+    "char_end": 16967,
+    "sentence_index": 91,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec005",
+    "text": "To help with initialization and guide the parameter adjustment process, the planning module receives some reference examples of previously approved treatment plans from the same treatment site and clinical protocol , together with the optimization parameters used to obtain these plans.",
+    "char_start": 16969,
+    "char_end": 17255,
+    "sentence_index": 92,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec005",
+    "text": "This further facilitates the planning module's understanding of the relationship between the optimization parameters and changes in the treatment plan.",
+    "char_start": 17256,
+    "char_end": 17407,
+    "sentence_index": 93,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec005",
+    "text": "As a result, the model outputs the optimization parameters that will drive the inner optimization loop of the next iteration $w = PlanningModule (I_t, _t,F_t)$.",
+    "char_start": 17408,
+    "char_end": 17568,
+    "sentence_index": 94,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec005",
+    "text": "The example prompts can be found in Section of the supplementary.",
+    "char_start": 17569,
+    "char_end": 17634,
+    "sentence_index": 95,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "This study utilizes a dataset comprising imaging and treatment plans for 17 prostate cancer patients and 13 head \\& neck cancer patients who underwent VMAT.",
+    "char_start": 17636,
+    "char_end": 17792,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "Available data for each patient includes CT scans, delineated anatomical structures, and clinically approved treatment plans created via Eclipse ( version 15.6 , Varian Medical Systems, Palo Alto, CA).",
+    "char_start": 17793,
+    "char_end": 17994,
+    "sentence_index": 97,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "For the prostate cancer patients, all cases adhere to a clinical protocol designed to deliver the mean dose of 70.2 Gy to the PTV.",
+    "char_start": 17996,
+    "char_end": 18126,
+    "sentence_index": 98,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "Concurrently, the protocol stipulates specific dose constraints for the OARs, which include the bladder, rectum, and both femoral heads.",
+    "char_start": 18127,
+    "char_end": 18263,
+    "sentence_index": 99,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "These dose limits typically involve constraints on the mean OAR doses and DVH constraints, such as restricting no more than 34\\% of the rectum to receive in excess of 31 Gy.",
+    "char_start": 18264,
+    "char_end": 18437,
+    "sentence_index": 100,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "Treatment plans for the head \\& neck cancer patients follow a protocol that prescribes a dose of 70 Gy to the primary PTV (PTV70).",
+    "char_start": 18439,
+    "char_end": 18569,
+    "sentence_index": 101,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "Additionally, two nodal PTVs \u2014 PTV56 and PTV52 \u2014 receive prescribed doses of 56 Gy and 52 Gy, respectively.",
+    "char_start": 18570,
+    "char_end": 18677,
+    "sentence_index": 102,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "All these doses are prescribed to at least 95\\% of the target volume.",
+    "char_start": 18678,
+    "char_end": 18747,
+    "sentence_index": 103,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "Key OARs for this group are the brainstem, spinal cord, oral cavity, larynx, and both parotid glands.",
+    "char_start": 18748,
+    "char_end": 18849,
+    "sentence_index": 104,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "The dose constraints for these OARs include upper limits on the mean dose received, with several organs also subjected to maximum dose limits.",
+    "char_start": 18850,
+    "char_end": 18992,
+    "sentence_index": 105,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec007",
+    "text": "We develop an in-house two-loop optimization system, where GPT-RadPlan performs outer loop optimization of the optimizer weights, and the inner loop fluence map optimization is based on the open-source treatment planning system (TPS) matRad .",
+    "char_start": 18994,
+    "char_end": 19236,
+    "sentence_index": 106,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec007",
+    "text": "All plans utilize a CT, and the dose grid had a voxel size of $2.5 2.5 2.5 mm ^3$ resolution.",
+    "char_start": 19237,
+    "char_end": 19330,
+    "sentence_index": 107,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec007",
+    "text": "MatRad VMAT plans consist of 1 to 3 full co-planar arcs and are based on the SmartArc planning algorithm , using the interior-point optimization (IPOPT) package for the inverse optimization step.",
+    "char_start": 19331,
+    "char_end": 19526,
+    "sentence_index": 108,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec007",
+    "text": "Throughout our experiments, we compare the plans generated by GPT-RadPlan to plans optimized by multiple baseline methods and human-designed clinically approved plans .",
+    "char_start": 19528,
+    "char_end": 19696,
+    "sentence_index": 109,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec007",
+    "text": "These include the plans generated by certified physicists from our institution with multiple years of experience in developing treatment plans across various cancer types, including prostate and head \\& neck cases.",
+    "char_start": 19697,
+    "char_end": 19911,
+    "sentence_index": 110,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec007",
+    "text": "We also include plans obtained as a result of running an automated planning algorithm , referred to as Autoplan in the remainder of the manuscript, which is a knowledge-guided iterative algorithm based on a dose-anatomy guided voxelization scheme.",
+    "char_start": 19912,
+    "char_end": 20159,
+    "sentence_index": 111,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec007",
+    "text": "The Autoplan script first sets up all the treatment planning parameters automatically based on the prescription and disease sites.",
+    "char_start": 20160,
+    "char_end": 20290,
+    "sentence_index": 112,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec007",
+    "text": "The prediction model based on the dosimetric metric from the simple treatment plans (PTV-only plans) is then used to predict and initialize the personalized optimization constraints automatically for a new patient with the script.",
+    "char_start": 20291,
+    "char_end": 20521,
+    "sentence_index": 113,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec007",
+    "text": "The script includes a plan evaluator for quantitative plan assessment and the algorithm to automatically update treatment plan parameters in each iteration.",
+    "char_start": 20522,
+    "char_end": 20678,
+    "sentence_index": 114,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec007",
+    "text": "These perform experience-based adjustments, first checking the dose/volume with the preset constraints and subsequently modifying the weights and dose constraints based on difference between the results of the current iteration and the clinical requirements .",
+    "char_start": 20679,
+    "char_end": 20938,
+    "sentence_index": 115,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec007",
+    "text": "The third baseline, referred to as Bayesian Optimization (BO), where we adopted the plan quality metrics (PQM) mentioned in as the objective in the outer loop and used Optuna , a commonly used package designed for Bayesian optimization , to implement Bayesian optimization for optimizing parameters.",
+    "char_start": 20940,
+    "char_end": 21239,
+    "sentence_index": 116,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec007",
+    "text": "Since the original paper only presented this BO method and provided the model configuration for prostate cases, we only apply BO to our prostate cohort.",
+    "char_start": 21240,
+    "char_end": 21392,
+    "sentence_index": 117,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec007",
+    "text": "To compare plans, we use multiple dose metrics and indexes that are frequently used in the clinic.",
+    "char_start": 21394,
+    "char_end": 21492,
+    "sentence_index": 118,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec007",
+    "text": "These include the the mean dose , $D_ 95 $, homogeneity index (HI) and conformity index (CI) and for the targets, and the $D_ 5 $, $D_ 50 $, $V_ 15 $ and $V_ 30 $ for the OARs.",
+    "char_start": 21493,
+    "char_end": 21669,
+    "sentence_index": 119,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec007",
+    "text": "Here, we provide a brief description of each of these metrics.",
+    "char_start": 21671,
+    "char_end": 21733,
+    "sentence_index": 120,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec007",
+    "text": "First, we utilize the $D_ q $ --- where $q$ is a given percentage from 0\\% to 100\\% --- to denote the common maximum dose received by $q\\%$ of the target/organ volume.",
+    "char_start": 21734,
+    "char_end": 21901,
+    "sentence_index": 121,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec007",
+    "text": "Similarly, the $V_ d $ represents the percentage of the volume receiving at least a dose of $d$ Gy.",
+    "char_start": 21902,
+    "char_end": 22001,
+    "sentence_index": 122,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec007",
+    "text": "For targets, both a higher $D_ q $ close to the prescribed dose and a higher $V_ d $ close to 100\\% are desirable.",
+    "char_start": 22002,
+    "char_end": 22116,
+    "sentence_index": 123,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec007",
+    "text": "Conversely, for OARs, both the $D_ q $ and $V_ d $ metrics would ideally be as low as possible.",
+    "char_start": 22117,
+    "char_end": 22212,
+    "sentence_index": 124,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec007",
+    "text": "Specifically for the target, the HI indicates whether the PTV is uniformly covered with a dose close to the prescribed value.",
+    "char_start": 22214,
+    "char_end": 22339,
+    "sentence_index": 125,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec007",
+    "text": "In this study, we calculate the HI based on the $D_5$ and $D_ 95 $ values as\n\nHI = D_5 - D_ 95 d_p 100,\n\nwhere lower values close to 0 indicate ideal dose homogeneity.",
+    "char_start": 22340,
+    "char_end": 22507,
+    "sentence_index": 126,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec007",
+    "text": "The CI measures both the conformation of doses on target and the volume of surrounding tissue that is covered by the reference dose.",
+    "char_start": 22508,
+    "char_end": 22640,
+    "sentence_index": 127,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec007",
+    "text": "While multiple methods have been proposed to calculate this CI, we opt for the following definition\n\nCI = (TV_ 95,PTV )^2 TV TV_ 95,Body ,\n\nwhere $TV_ 95,PTV $ and $TV_ 95,Body $ denotes the total volumes receiving at least 95\\% of the prescribed dose for the PTV and the whole body, respectively, and $TV$ is the total target volume.",
+    "char_start": 22641,
+    "char_end": 22975,
+    "sentence_index": 128,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec007",
+    "text": "In the ideal scenario, the volume receiving the prescribed dose is confined to just the PTV, and the CI tends to 1 as the numerator and denominator become equal.",
+    "char_start": 22976,
+    "char_end": 23137,
+    "sentence_index": 129,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec007",
+    "text": "Based on these metrics, we perform multiple experiments to (i) determine the optimal architecture for GPT-RadPlan's evaluation module, and (ii) assess the quality of GPT-RadPlan's generated plans, comparing them to the available clinical plans.",
+    "char_start": 23139,
+    "char_end": 23383,
+    "sentence_index": 130,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec008",
+    "text": "To assess GPT-RadPlan capabilities in mimicking clinical human planners, we first perform a quantitative comparison between GPT-RadPlan generated plans and clinical plans based on the aforementioned metrics.",
+    "char_start": 23385,
+    "char_end": 23592,
+    "sentence_index": 131,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec009",
+    "text": "We also compare the types of plans based on the final DVH and dose distributions.",
+    "char_start": 23593,
+    "char_end": 23674,
+    "sentence_index": 132,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec009",
+    "text": "Table contains the average PTV metrics across all plans for both disease sites.",
+    "char_start": 23676,
+    "char_end": 23755,
+    "sentence_index": 133,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec009",
+    "text": "For the prostate cases, GPT-RadPlan outperforms all baselines including clinical human planners across all metrics, achieving a higher minimum dose, a $D_ 95 $ that exactly matches the prescribed dose, and significantly lower compared dose homogeneity and conformity.",
+    "char_start": 23756,
+    "char_end": 24023,
+    "sentence_index": 134,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec009",
+    "text": "In the head \\& neck cases, GPT-RadPlan matches or outperforms the baselines, showing higher minimum doses and better conformity.",
+    "char_start": 24024,
+    "char_end": 24152,
+    "sentence_index": 135,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec009",
+    "text": "Additionally, Table displays the organ-sparing metrics for the main OARs.",
+    "char_start": 24153,
+    "char_end": 24226,
+    "sentence_index": 136,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec009",
+    "text": "For both the prostate and head \\& neck cases, GPT-RadPlan produces treatment plans that generally deliver lower doses to OARs compared to the baselines, as reflected by improved values in most evaluation metrics.",
+    "char_start": 24227,
+    "char_end": 24439,
+    "sentence_index": 137,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec009",
+    "text": "[]\nPTV dose metrics .",
+    "char_start": 24441,
+    "char_end": 24462,
+    "sentence_index": 138,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec009",
+    "text": "Several dose metrics of the PTV target are displayed for all the GPT-RadPlan plans and baselines, including the mean and minimum doses, as well as the $D_ 95 $, the HI and the CI.",
+    "char_start": 24463,
+    "char_end": 24642,
+    "sentence_index": 139,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec009",
+    "text": "For all the metrics, we include the average values across plans and the standard deviation in brackets.",
+    "char_start": 24643,
+    "char_end": 24746,
+    "sentence_index": 140,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec009",
+    "text": "Values in bold represent the statistically best result for each PTV target, when the average minus the standard deviation is higher than the average plus the standard deviation of the second best value.",
+    "char_start": 24747,
+    "char_end": 24949,
+    "sentence_index": 141,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec009",
+    "text": "@ lllllll@\n\nTarget & Method & Mean dose [Gy] & Min dose [Gy] & $ D _ 95 $ [Gy] & HI & CI\n\n7 c Prostate plans\n\n4 * PTV70.2\n& Clinical & 72.47 (0.64) & 61.34 (2.21) & 70.04 (0.18) & 5.43 (1.04) & 0.883 (0.020)\n\n& Autoplan & 72.78 (0.52) & 61.83 (1.24) & 70.03 (0.28) & 6.01 (0.60) & 0.870 (0.011)\n\n& BO & 73.04 (1.65) & 60.66 (2.28) & 69.76 (0.46) & 5.05 (0.83) & 0.875 (0.016)\n\n& GPT-RadPlan & 70.94 (0.65) & 63.82 (2.19) & 70.21 (0.06) & 2.43 (1.11) & 0.912 (0.041)\n\n7 c Head \\& neck plans\n\n3 * PTV70\n& Clinical & 71.85 (0.26) & 60.57 (3.72) & 69.69 (0.14) & 5.05 (0.58) & 0.881 (0.048)\n\n& Autoplan & 72.05 (0.27) & 62.12 (2.73) & 69.82 (0.17) & 5.01 (0.47) & 0.871 (0.038)\n\n& GPT-RadPlan & 72.73 (0.30) & 62.73 (1.10) & 70.00 (0.01) & 7.12 (0.71) & 0.948 (0.005)\n\n3 * PTV56 & Clinical & 65.47 (3.53) & 41.40 (9.71) & 56.43 (2.09) & - & -\n\n& Autoplan & 67.58 (2.71) & 49.07 (10.9) & 57.45 (0.60) & - & -\n\n& GPT-RadPlan & 64.66 (4.51) & 49.62 (2.18) & 57.31 (1.39) - & -\n\n3 * PTV52 & Clinical & 54.58 (0.80) & 44.57 (2.01) & 52.14 (0.53) & - & -\n\n& Autoplan & 55.44 (0.44) & 44.08 (1.73) & 51.89 (0.46) & - & -\n\n& GPT-RadPlan & 54.26 (0.45) & 45.04 (3.09) & 52.42 (0.24) & - & -\n\n[]\nOAR dose metrics .",
+    "char_start": 24951,
+    "char_end": 26151,
+    "sentence_index": 142,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec009",
+    "text": "Multiple dose metrics capturing OAR sparing in prostate and head \\& neck plans are presented.",
+    "char_start": 26152,
+    "char_end": 26245,
+    "sentence_index": 143,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec009",
+    "text": "These include the mean dose, the $D_5$ and $D_ 50 $ (maximum common dose that 5\\% or 50\\% of the volume receives), and the $V_ 15 $ and $V_ 30 $ (representing which percentage of the volume receives 15 and 30 Gy, respectively).",
+    "char_start": 26246,
+    "char_end": 26473,
+    "sentence_index": 144,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec009",
+    "text": "For all the metrics, we include the average values across plans and the standard deviation in brackets.",
+    "char_start": 26474,
+    "char_end": 26577,
+    "sentence_index": 145,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec009",
+    "text": "In all cases, lower values are preferred.",
+    "char_start": 26578,
+    "char_end": 26619,
+    "sentence_index": 146,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec009",
+    "text": "@ lllllll@\n\nOrgan & Method & Mean dose [Gy] & $ D _ 5 $ [Gy] & $ D _ 50 $ [Gy] & $ V _ 15 $ [\\%] & $ V _ 30 $ [\\%]\n\n7 c Prostate plans\n\n4 * Bladder & Clinical & 24.48 (9.30) & 62.14 (10.79) & 18.87 (12.12) & 60.85 (29.52) & 34.45 (15.28)\n\n& Autoplan & 31.91 (1.11) & 59.48 (7.71) & 29.29 (0.87) & 94.67 (3.92) & 47.08 (2.72)\n\n& BO & 23.88 (6.45) & 64.26 (10.00) & 20.04 (5.50) & 54.13 (21.17) & 35.18 (12.11)\n\n& GPT-RadPlan & 17.02 (8.11) & 60.08 (14.39) & 9.18 (8.63) & 35.60 (17.07) & 22.62 (13.12)\n\n4 * Rectum & Clinical & 26.45 (5.64) & 63.64 (8.82) & 22.20 (5.71) & 71.91 (14.92) & 32.87 (10.54)\n\n& Autoplan & 25.73 (3.19) & 57.63 (8.76) & 21.13 (2.26) & 78.35 (10.45) & 27.07 (6.66)\n\n& BO & 22.39 (5.55) & 67.81 (6.44) & 22.13 (8.42) & 75.32 (13.17) & 28.14 (9.13)\n\n& GPT-RadPlan & 21.80 (6.60) & 58.88 (13.81) & 17.09 (7.99) & 50.44 (20.03) & 27.65 (16.43)\n\n7 c Head \\& neck plans\n\n3 * Brainstem & Clinical & 12.17 (4.29) & 30.95 (4.78) & 8.34 (5.75) & 33.36 (14.10) & 10.03 (11.03)\n\n& Autoplan & 9.85 (3.41) & 27.47 (5.84) & 6.24 (3.42) & 25.22 (9.81) & 5.67 (5.86)\n\n& GPT-RadPlan & 10.95 (4.89) & 26.91 (4.74) & 8.09 (7.51) & 32.98 (16.07) & 0.03 (0.11)\n\n3 * Larynx & Clinical & 42.80 (11.03) & 69.95 (4.30) & 39.85 (14.87) & 97.44 (3.24) & 64.06 (18.18)\n\n& Autoplan & 41.89 (9.95) & 69.08 (4.79) & 37.13 (13.30) & 99.94 (0.17) & 60.92 (15.95)\n\n& GPT-RadPlan & 34.15 (14.33) & 70.68 (5.75) & 26.96 (21.64) & 64.12 (26.95) & 42.46 (25.01)\n\n3 * Oral Cavity & Clinical & 34.86 (4.15) & 68.07 (8.83) & 33.62 (12.29) & 92.96 (5.28) & 50.00 (11.01)\n\n& Autoplan & 35.61 (4.92) & 68.08 (9.77) & 30.96 (4.59) & 97.39 (3.65) & 51.06 (13.87)\n\n& GPT-RadPlan & 25.41 (8.51) & 66.38 (15.18) & 18.24 (8.33) & 54.32 (25.66) & 27.89 (13.78)\n\n3 * Parotid Left & Clinical & 35.10 (13.93) & 63.18 (10.85) & 33.50 (21.21) & 71.64 (20.97) & 52.80 (24.12)\n\n& Autoplan & 31.70 (11.77) & 63.34 (10.52) & 30.12 (20.03) & 61.94 (16.5) & 44.58 (19.62)\n\n& GPT-RadPlan & 24.26 (12.65) & 57.76 (16.06) & 19.73 (18.61) & 42.99 (20.67) & 28.49 (21.04)\n\n3 * Parotid Right & Clinical & 34.32 (10.67) & 61.69 (11.30) & 32.22 (13.83) & 79.00 (21.05) & 52.65 (20.65)\n\n& Autoplan & 29.93 (9.81) & 61.17 (12.90) & 27.51 (14.09) & 62.63 (13.03) & 41.85 (17.51)\n\n& GPT-RadPlan & 21.66 (7.79) & 58.49 (15.56) & 13.66 (7.45) & 41.84 (19.71) & 25.60 (13.81)\n\n3 * Spinal Cord & Clinical & 17.36 (6.32) & 33.88 (5.15) & 18.84 (13.24) & 55.32 (13.69) & 24.83 (25.69)\n\n& Autoplan & 14.91 (3.04) & 32.07 (1.62) & 13.74 (9.21) & 53.00 (14.41) & 16.00 (7.62)\n\n& GPT-RadPlan & 16.27 (3.96) & 30.14 (0.24) & 17.76 (12.52) & 55.78 (14.19) & 1.34 (3.25)\n\n[t!]\n\n[]\n\nimages/prostate.png\nProstate DVHs\n\n[]\n\nimages/hn.png\nHead \\& neck DVHs\n\nDVH comparison .",
+    "char_start": 26621,
+    "char_end": 29327,
+    "sentence_index": 147,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec009",
+    "text": "Visual comparison of the DVHs for (left) GPT-RadPlan plans, and (right) clinical plans.",
+    "char_start": 29328,
+    "char_end": 29415,
+    "sentence_index": 148,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec009",
+    "text": "Solid lines show the mean values, while the shaded bands indicate the standard deviation.",
+    "char_start": 29416,
+    "char_end": 29505,
+    "sentence_index": 149,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec009",
+    "text": "For the OARs, better plans are usually characterized by lines that are close to the bottom left corner, implying greater OAR sparing.",
+    "char_start": 29506,
+    "char_end": 29639,
+    "sentence_index": 150,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec009",
+    "text": "[]\n\nimages/avg_dvh_cli.png\nAverage DVH comparison .",
+    "char_start": 29641,
+    "char_end": 29692,
+    "sentence_index": 151,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec009",
+    "text": "Visual comparison of the average DVH lines across all prostate (left) and lung (right) patients.",
+    "char_start": 29693,
+    "char_end": 29789,
+    "sentence_index": 152,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec009",
+    "text": "Solid lines represent GPT-RadPlan plans, while dashed lines indicate clinical plans.",
+    "char_start": 29790,
+    "char_end": 29874,
+    "sentence_index": 153,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec009",
+    "text": "Figures and further confirms GPT-RadPlan\u2019s superiority in sparing OARs.",
+    "char_start": 29876,
+    "char_end": 29947,
+    "sentence_index": 154,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec009",
+    "text": "In the prostate cases depicted in Figure , GPT-RadPlan achieves a sharper dose fall-off within the PTV (black line), resulting in more homogeneous delivery.",
+    "char_start": 29948,
+    "char_end": 30104,
+    "sentence_index": 155,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec009",
+    "text": "Additionally, GPT-RadPlan generates plans that considerably spare the rectum compared to their clinical counterparts, while maintaining comparable doses to the femoral heads and slightly decreasing average bladder doses.",
+    "char_start": 30105,
+    "char_end": 30325,
+    "sentence_index": 156,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec009",
+    "text": "In the head \\& neck cases illustrated in Figure , the clinical plans generally result in lower doses to all OARs, particularly for the larynx, oral cavity, and parotid glands, which often partially overlap with the target volumes.",
+    "char_start": 30326,
+    "char_end": 30556,
+    "sentence_index": 157,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec009",
+    "text": "While the shaded areas in the clinical plans may indicate dose spillage in some head \\& neck plans, the physician\u2019s intent only specifies a lower dose limit for PTV56 and PTV52, with no upper limit.",
+    "char_start": 30557,
+    "char_end": 30755,
+    "sentence_index": 158,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec009",
+    "text": "While the human planners primarily focused on enforcing this lower limit, GPT-RadPlan employs an optimization objective that penalizes both positive and negative deviations from the 56 Gy target, which likely explains the differences observed in the DVH distribution.",
+    "char_start": 30756,
+    "char_end": 31023,
+    "sentence_index": 159,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec009",
+    "text": "To statistically demonstrate the superiority of our method over clinical plans in reducing OAR mean doses, we performed a Wilcoxon signed-rank test, a non-parametric test for paired samples which is commonly used to prove whether paired measurements are different without assuming normal distribution of the data .",
+    "char_start": 31025,
+    "char_end": 31339,
+    "sentence_index": 160,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec009",
+    "text": "This test evaluates whether the median of the mean doses extracted from the different plans obtained from GPT-RadPlan are significantly lower than those of the clinical plans.",
+    "char_start": 31340,
+    "char_end": 31515,
+    "sentence_index": 161,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec009",
+    "text": "Specifically, a one-tailed test was conducted with the null hypothesis stating that GPT-RadPlan method does not achieve a lower mean dose compared to clinical plans.",
+    "char_start": 31516,
+    "char_end": 31681,
+    "sentence_index": 162,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec009",
+    "text": "The test provides p-values, and the null hypothesis is rejected when the p-value is less than the 0.05 significance level, which indicates that GPT-RadPlan achieves statistically significant improvements in mean dose reduction.",
+    "char_start": 31682,
+    "char_end": 31909,
+    "sentence_index": 163,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec009",
+    "text": "After running the Wilcoxon test, we obtain a p-value of 0.003 and 0.001 for the rectum and bladder, demonstrating that GPT-RadPlan delivers less dose to these organs.",
+    "char_start": 31910,
+    "char_end": 32076,
+    "sentence_index": 164,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec009",
+    "text": "Similar results are obtained for the head \\& neck cases, with p-values of 0.06, 0.006, 0.0001, 0.0001, 0.0003 and 0.729 for the brainstem, larynx, oral cavity, left and right parotid and spinal cord, respectively.",
+    "char_start": 32077,
+    "char_end": 32290,
+    "sentence_index": 165,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec009",
+    "text": "These values further confirm that GPT-RadPlan can reduce the dose to most OARs except for the brainstem and spinal cord.",
+    "char_start": 32291,
+    "char_end": 32411,
+    "sentence_index": 166,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec009",
+    "text": "Due to the overlapping standard deviations noted in Table and the wide shaded regions in Figure , GPT-RadPlan\u2019s superiority over clinical plans in sparing OARs remains uncertain.",
+    "char_start": 32413,
+    "char_end": 32591,
+    "sentence_index": 167,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec009",
+    "text": "The large standard deviations occur because the tumor targets in each patient are located in closer proximity to different OARs.",
+    "char_start": 32592,
+    "char_end": 32720,
+    "sentence_index": 168,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec009",
+    "text": "For instance, two head \\& neck patients each have a larger PTV overlapping either the left or right parotid gland, leading to a substantially higher dose received by the overlapping gland.",
+    "char_start": 32721,
+    "char_end": 32909,
+    "sentence_index": 169,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec009",
+    "text": "We demonstrate this and prove GPT-RadPlan's superiority in Figure , where the difference in dose metrics between GPT-RadPlan and clinical plans is calculated individually for each patient in the prostate (Figure ) and head \\& neck (Figure )cohorts .",
+    "char_start": 32910,
+    "char_end": 33159,
+    "sentence_index": 170,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec009",
+    "text": "The data show that GPT-RadPlan's metrics are lower, as the boxes generally sit above the red line, confirming that GPT-RadPlan is capable of achieving plans that deliver less dose on the same patient.",
+    "char_start": 33160,
+    "char_end": 33360,
+    "sentence_index": 171,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec009",
+    "text": "In general, the GPT-RadPlan plans reduce OAR doses while mantaining coverage in 82\\% of prostate patients, achieving an average reduction 5 Gy decrease in mean dose and 15\\% overall in OAR metrics as shown in .",
+    "char_start": 33361,
+    "char_end": 33571,
+    "sentence_index": 172,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec009",
+    "text": "Likewise, GPT-RadPlan improves OAR sparing in 75\\% of the head \\& neck cases, reducing the mean dose by 4-6 Gy or 10-15\\% for most of the OARs.",
+    "char_start": 33572,
+    "char_end": 33715,
+    "sentence_index": 173,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec009",
+    "text": "[t!]\n\n[]\n\nProstate patients\nimages/rel_prostate.png\n\n[]\n\nHead \\& neck patients\nimages/rel_hn.png\n\nDifferences between GPT-RadPlan and clinical plans.",
+    "char_start": 33717,
+    "char_end": 33866,
+    "sentence_index": 174,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec009",
+    "text": "For every relevant OAR, each box displays the relative difference between clinical and GPT-RadPlan plans of all the patients in the prostate or head \\& neck cohorts.",
+    "char_start": 33867,
+    "char_end": 34032,
+    "sentence_index": 175,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec009",
+    "text": "Each panel shows the relative difference between different OAR metrics, including (left) the mean dose, (center) the $D_ 50 $ and (right) the $V_ 15 $.",
+    "char_start": 34033,
+    "char_end": 34184,
+    "sentence_index": 176,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec009",
+    "text": "Positive values above the red line indicate that GPT-RadPlan plans result in lower metric values, which is preferred.",
+    "char_start": 34185,
+    "char_end": 34302,
+    "sentence_index": 177,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec009",
+    "text": "Regarding the non-clinical baselines, GPT-RadPlan also yields better plans than the BO and Autoplan, as demonstrated by the lower OAR metrics in Table .",
+    "char_start": 34304,
+    "char_end": 34456,
+    "sentence_index": 178,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec009",
+    "text": "In particular, Autoplan appears to perform better than BO, similar to clinical planners and closer to GPT-RadPlan.",
+    "char_start": 34457,
+    "char_end": 34571,
+    "sentence_index": 179,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec009",
+    "text": "For this reason, we have included additional results in Appendix .",
+    "char_start": 34572,
+    "char_end": 34638,
+    "sentence_index": 180,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec009",
+    "text": "As shown in , although Autoplan often yields plans that are slightly worse than GPT-RadPlan's results, often with higher OAR doses except for select organs such as the femoral heads or the brainstem.",
+    "char_start": 34639,
+    "char_end": 34838,
+    "sentence_index": 181,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec009",
+    "text": "The relative differences in Figure in the Appendix, showing overall values that fall above the red line, further confirm GPT-RadPlan's superiority.",
+    "char_start": 34839,
+    "char_end": 34986,
+    "sentence_index": 182,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec009",
+    "text": "To investigate how GPT-RadPlan acts over the multiple iterations, Figure compares the dose distributions and DVHs for a prostate and head \\& neck patient at different iteration steps.",
+    "char_start": 34988,
+    "char_end": 35171,
+    "sentence_index": 183,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec009",
+    "text": "Figure depicts such planning trajectories for one of the prostate patients, where GPT-RadPlan first ensures homogeneous PTV coverage (uniform red color) and subsequently reduces the dose delivered to the rectum and bladder (blue and red contours, respectively).",
+    "char_start": 35172,
+    "char_end": 35433,
+    "sentence_index": 184,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec009",
+    "text": "Likewise, Figure demonstrates the same behavior for a head \\& neck patient, where GPT-RadPlan first ensures target coverage (black, purple, and magenta contours), and then progressively minimizes the dose delivered to the oral cavity and larynx (grey and green contours), as well as the overall body dose.",
+    "char_start": 35434,
+    "char_end": 35739,
+    "sentence_index": 185,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec009",
+    "text": "Most importantly, GPT-RadPlan takes 3-6 iterations to obtain the final plan (around 2-3 hours without human supervision needed), which is comparable to human planners and lower than the 7-10 iterations for Autoplan and more than 50 iterations for the BO baseline.",
+    "char_start": 35740,
+    "char_end": 36003,
+    "sentence_index": 186,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec009",
+    "text": "[]\n\n[]\n\nimages/traj_prostate.png\nProstate case\n\n[]\n\nimages/traj_hn.png\nHead \\& neck case\n\nPlanning trajectories .",
+    "char_start": 36005,
+    "char_end": 36118,
+    "sentence_index": 187,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec009",
+    "text": "From left to right, each column shows the evolution of the dose distribution (2D slice centered at the iso-center) and the corresponding DVH.",
+    "char_start": 36119,
+    "char_end": 36260,
+    "sentence_index": 188,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec009",
+    "text": "The top figure (a) shows one of the prostate cases requiring only 3 steps to obtain a treatment plan that meets the clinical protocol requirements, while (b) depicts the trajectory for a head \\& neck case requiring 6 optimization steps.",
+    "char_start": 36261,
+    "char_end": 36497,
+    "sentence_index": 189,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec009",
+    "text": "As the iteration number increases, GPT-RadPlan first ensures homogeneous PTV coverage, subsequently reducing the dose delivered to the OARs.",
+    "char_start": 36498,
+    "char_end": 36638,
+    "sentence_index": 190,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec010",
+    "text": "The proposed GPT-RadPlan represents an advancement in the field of radiation oncology, offering a fully automated treatment planning framework that leverages the capabilities of state-of-the-art multi-modal LLMs, such as OpenAI GPT-4V.",
+    "char_start": 36640,
+    "char_end": 36875,
+    "sentence_index": 191,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec010",
+    "text": "Its ability to operate without the need for domain-specific datasets or extensive training potentially facilitates integrating GPT-RadPlan into various clinical workflows without requiring any adjustment to current clinical software and optimization algorithms.",
+    "char_start": 36876,
+    "char_end": 37137,
+    "sentence_index": 192,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec010",
+    "text": "Notably, the code we use is identical for both prostate and head \\& neck patients, with the only variation being in the input configuration file, which specifies the location of reference cases, the physician\u2019s intent in text form, and a few other machine parameters.",
+    "char_start": 37138,
+    "char_end": 37405,
+    "sentence_index": 193,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec010",
+    "text": "Moreover, being clinical software agnostic, GPT-RadPlan has the potential to be readily adopted across diverse disease sites and institutions, underscoring its broad applicability.",
+    "char_start": 37406,
+    "char_end": 37586,
+    "sentence_index": 194,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec010",
+    "text": "To our knowledge, this is the first time that an automated treatment planning system based on LLMs has been proposed and demonstrated to be feasible for direct application to clinical environments without requiring any extensive model training.",
+    "char_start": 37587,
+    "char_end": 37831,
+    "sentence_index": 195,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec010",
+    "text": "GPT-RadPlan has two advantages over any other learning-based method.",
+    "char_start": 37833,
+    "char_end": 37901,
+    "sentence_index": 196,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec010",
+    "text": "First, it does not require a large dataset or time-consuming training, leveraging LLM's in-context learning abilities instead with only a handful of approved clinical plans.",
+    "char_start": 37902,
+    "char_end": 38075,
+    "sentence_index": 197,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec010",
+    "text": "Second, it uses all the available information to evaluate and improve plans, including dose distribution, DVH, clinical preferences (as text) and quantitative metrics.",
+    "char_start": 38076,
+    "char_end": 38243,
+    "sentence_index": 198,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec010",
+    "text": "Moreover, users can potentially specify clinical preferences for a specific patient using human language (though we did not do it in our experiments , making GPT-RadPlan a versatile tool that can potentially be adapted to multiple disease sites and requirements using the same code and exclusively changing the prompt.",
+    "char_start": 38244,
+    "char_end": 38562,
+    "sentence_index": 199,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec010",
+    "text": "As such, GPT-RadPlan can optimize plans to directly satisfy prescribed clinical criteria as defined by radiation oncologists in the physician's intent, therefore avoiding the use of proxy metrics or crafted wish-lists.",
+    "char_start": 38563,
+    "char_end": 38781,
+    "sentence_index": 200,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec010",
+    "text": "The reduced need for human interventions during planning further enhances clinical workflow and improves the allocation of human resources, freeing radiation oncologists and dosimetrists to focus on other critical aspects of patient care.",
+    "char_start": 38782,
+    "char_end": 39020,
+    "sentence_index": 201,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec010",
+    "text": "GPT-RadPlan also offers several advantages in comparison to previous RL auto-planning methods .",
+    "char_start": 39022,
+    "char_end": 39117,
+    "sentence_index": 202,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec010",
+    "text": "In general, deep RL algorithms approximate policy functions and take actions in a 'black-box' manner, where decisions are hardly interpretable.",
+    "char_start": 39118,
+    "char_end": 39261,
+    "sentence_index": 203,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec010",
+    "text": "In contrast, GPT-RadPlan reflects on its previous results, suggesting improvements and acting based on these reflections.",
+    "char_start": 39262,
+    "char_end": 39383,
+    "sentence_index": 204,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec010",
+    "text": "As a result, GPT-RadPlan actions (i.e., weight adjustments) always have an explanation.",
+    "char_start": 39384,
+    "char_end": 39471,
+    "sentence_index": 205,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec010",
+    "text": "Moreover, compared to the previous RL studies requiring an entire week to train an RL agent for a specific disease site and protocol, GPT-RadPlan massively reduces computation times, being directly applicable after only minor prompt modifications.",
+    "char_start": 39472,
+    "char_end": 39719,
+    "sentence_index": 206,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec010",
+    "text": "Lastly, unlike RL agents requiring a reward that hardly captures all clinical objectives and human preferences, the proposed GPT-RadPlan agents directly evaluate plans based on the entire prescribed protocol fully capturing the physician's intent.",
+    "char_start": 39720,
+    "char_end": 39967,
+    "sentence_index": 207,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec010",
+    "text": "As demonstrated in the results, the plans generated by GPT-RadPlan uniformly cover PTV targets and spare OARs, providing a high level of consistency and quality that should contribute to better patient outcomes.",
+    "char_start": 39969,
+    "char_end": 40180,
+    "sentence_index": 208,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec010",
+    "text": "After multiple iterations, GPT-RadPlan can provide plans that satisfy all the criteria in the clinical protocol for prostate cases, matching the PTV coverage requirements while always irradiating OARs with lower mean doses and DVH constraints than those indicated in the protocol.",
+    "char_start": 40181,
+    "char_end": 40461,
+    "sentence_index": 209,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec010",
+    "text": "For head \\& neck plans, GPT-RadPlan\u2019s plans cannot satisfy all the clinical requirements simultaneously, as is also often observed in clinical practice.",
+    "char_start": 40462,
+    "char_end": 40614,
+    "sentence_index": 210,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec010",
+    "text": "This involves conflicting objectives, such as sparing two different organs or prioritizing the coverage of the PTVs rather than sparing a single OAR (e.g., the larynx).",
+    "char_start": 40615,
+    "char_end": 40783,
+    "sentence_index": 211,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec010",
+    "text": "Since the AI planner prioritizes dose objectives based on the order specified in the prompt, GPT-RadPlan could, in principle, allow for the exploration of the Pareto frontier by easily modifying these prompt priorities.",
+    "char_start": 40784,
+    "char_end": 41003,
+    "sentence_index": 212,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec010",
+    "text": "Future steps As possible next steps, instead of providing a few manually selected patients as a reference, GPT-RadPlan could be coupled to retrieval-augmented generation (RAG) that retrieves the most similar plans in a database to be used for assistance .",
+    "char_start": 41005,
+    "char_end": 41260,
+    "sentence_index": 213,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec010",
+    "text": "Future work could also explore GPT-RadPlan applications to proton treatments in the presence of setup, range or anatomical uncertainties , expanding the model capabilities as a treament planninf copilot to automatically select robustness settings or the anatomies or scenarios included during robust treatment planning .",
+    "char_start": 41261,
+    "char_end": 41581,
+    "sentence_index": 214,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec010",
+    "text": "This work proposed novel method to automate treatment planning using pre-trained LLMs that shows promising results in just two disease sites, introducing a new line of research that explores the advantages of applying LLMs to assist human clinicians.",
+    "char_start": 41582,
+    "char_end": 41832,
+    "sentence_index": 215,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec010",
+    "text": "To demonstrate generalization across disease sites, future work should focus on the clinical evaluation of GPT-RadPlan in more diverse clinical settings and benchmarks.",
+    "char_start": 41833,
+    "char_end": 42001,
+    "sentence_index": 216,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec010",
+    "text": "Limitations\nThis paper presents the novel idea of using LLMs as a copilot during treatment planning to mimic human planners decisions, but the TPS used to obtain clinical plans (Eclipse) is different from the one that GPT-RadPlan is coupled to.",
+    "char_start": 42003,
+    "char_end": 42247,
+    "sentence_index": 217,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec010",
+    "text": "Although the objectives and problem formulation are the same, subsequent studies must compare GPT-RadPlan with human clinical planners using the same TPS.",
+    "char_start": 42248,
+    "char_end": 42402,
+    "sentence_index": 218,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec010",
+    "text": "One limitation of GPT-RadPlan is its lack of direct alignment with physicians' preferences through model fine-tuning as we directly use the GPT-4V, which is not specifically trained for the task .",
+    "char_start": 42404,
+    "char_end": 42600,
+    "sentence_index": 219,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec010",
+    "text": "While it is true that OpenAI trained their models on large-scale datasets that may include detailed clinical information, we do not supply any specific information about optimal planning choices for the patients.",
+    "char_start": 42601,
+    "char_end": 42813,
+    "sentence_index": 220,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec010",
+    "text": "The model can only be made aware of clinical preferences via the physician's intent in the prompt, which limits the ability to specify trade-off preferences that could significantly differ between areas, e.g., the larynx and oropharynx.",
+    "char_start": 42814,
+    "char_end": 43050,
+    "sentence_index": 221,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec010",
+    "text": "Subsequent studies could further improve model performance by manually collecting radiation oncologists' plan evaluations and using these to fine-tune the LLMs and calibrating the LLMs , or using RT fine-tuned models to assist in the evaluation task .",
+    "char_start": 43051,
+    "char_end": 43302,
+    "sentence_index": 222,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec010",
+    "text": "Due to the dependence on input clinical protocols and reference cases, ambiguous or inadequate input could result in GPT-RadPlan generating suboptimal or potentially unsafe treatment plans.",
+    "char_start": 43303,
+    "char_end": 43492,
+    "sentence_index": 223,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec010",
+    "text": "Furthermore, the use of non-representative reference cases may introduce bias, limiting the generalization of the model across diverse patient populations or institutions.",
+    "char_start": 43493,
+    "char_end": 43664,
+    "sentence_index": 224,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec010",
+    "text": "While GPT-RadPlan provides interpretable feedback for parameter adjustments, its underlying decision-making remains partially opaque, which could hinder clinicians' ability to fully understand or trust its recommendations.",
+    "char_start": 43665,
+    "char_end": 43887,
+    "sentence_index": 225,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec010",
+    "text": "To mitigate these risks, continuous physician supervision is crucial to ensure adherence to safety and quality standards.",
+    "char_start": 43889,
+    "char_end": 44010,
+    "sentence_index": 226,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec010",
+    "text": "Regular calibration and testing of GPT-RadPlan using real-world feedback can help maintain its reliability and adapt it to diverse clinical settings.",
+    "char_start": 44011,
+    "char_end": 44160,
+    "sentence_index": 227,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec010",
+    "text": "In addition, incorporating automated validation mechanisms to flag outlier plans or deviations from clinical guidelines can serve as a robust safety net.",
+    "char_start": 44161,
+    "char_end": 44314,
+    "sentence_index": 228,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec010",
+    "text": "Future efforts should focus on fine-tuning GPT-RadPlan with localized datasets to enhance its adaptability, developing explainability frameworks for greater transparency, and integrating uncertainty quantification methods to identify high-risk predictions.",
+    "char_start": 44316,
+    "char_end": 44572,
+    "sentence_index": 229,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec010",
+    "text": "These steps will further improve the reliability and clinical utility of GPT-RadPlan.",
+    "char_start": 44573,
+    "char_end": 44658,
+    "sentence_index": 230,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec010",
+    "text": "Finally, a limitation of GPT-RadPlan is its inability to match the Pareto optimality guarantees of multicriteria optimization methods , which generate a Pareto optimal set of plans where no single objective (like tumor coverage or organ sparing) can be improved without compromising another.",
+    "char_start": 44660,
+    "char_end": 44951,
+    "sentence_index": 231,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec010",
+    "text": "Trial-and-error methods such GPT-RadPlan do not explore the Pareto front but rather converge to a solution that is clinically acceptable based on physician intent and specified preferences.",
+    "char_start": 44952,
+    "char_end": 45141,
+    "sentence_index": 232,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec010",
+    "text": "While, as demonstrated in the results, this final plan can perform well, GPT-RadPlan does not provide Pareto optimality guarantees or a clear view of the planning trade-offs.",
+    "char_start": 45142,
+    "char_end": 45316,
+    "sentence_index": 233,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec011",
+    "text": "In this study, we present a novel GPT-RadPlan framework to enhance the collaborative performance of radiotherapy treatment planning workflow based on GPT-4V.",
+    "char_start": 45318,
+    "char_end": 45475,
+    "sentence_index": 234,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec011",
+    "text": "Building upon the commonsense reasoning capabilities and domain knowledge on radiation oncology exhibited by GPT-4V, without any further fine-tuning or training on the GPT-4V, we effectively augment the planning and coordination abilities among multi-modal LLM agents through context-aware reasoning mechanisms and comprehensive feedback mechanisms, facilitating continuous interaction between the modules like planner and evaluator.",
+    "char_start": 45476,
+    "char_end": 45909,
+    "sentence_index": 235,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec011",
+    "text": "GPT-RadPlan demonstrates remarkable performance in prostate and head \\& neck planning.",
+    "char_start": 45910,
+    "char_end": 45996,
+    "sentence_index": 236,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec011",
+    "text": "Notably, it exhibits exceptional capabilities in learning from historical trajectories and mistakes in the past.",
+    "char_start": 45997,
+    "char_end": 46109,
+    "sentence_index": 237,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec011",
+    "text": "We believe that with further enhancements in multi-modal LLMs, using these for treatment planning will provide new opportunities for further advancement.",
+    "char_start": 46110,
+    "char_end": 46263,
+    "sentence_index": 238,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec011",
+    "text": "unsrt\nllm_opt\n\nRadiotherapy treatment planning involves an evaluator that evaluates the inverse optimized plan, and a planner that produces the parameters for the next iteration.",
+    "char_start": 46265,
+    "char_end": 46443,
+    "sentence_index": 239,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec012",
+    "text": "We adopt multimodal LLMs to evaluate and produce new parameters by prompting them to perform the corresponding tasks.",
+    "char_start": 46444,
+    "char_end": 46561,
+    "sentence_index": 240,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec012",
+    "text": "Specifically, for the evaluation, a multimodal LLM is used to compare each protocol with the current plan and produce the final assessment.",
+    "char_start": 46562,
+    "char_end": 46701,
+    "sentence_index": 241,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec012",
+    "text": "Similarly, we prompt a multimodal LLM to produce new parameters based on the plan in the current iteration as well as feedback from the evaluator.",
+    "char_start": 46702,
+    "char_end": 46848,
+    "sentence_index": 242,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec012",
+    "text": "[!t]\n[Evaluator prompt]\nPlease act as an impartial and objective professional radiation oncologist.",
+    "char_start": 46850,
+    "char_end": 46949,
+    "sentence_index": 243,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec012",
+    "text": "Your job is to evaluate the quality of radiation therapy treatment plans based on their dose volume histogram.",
+    "char_start": 46950,
+    "char_end": 47060,
+    "sentence_index": 244,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec012",
+    "text": "You should consider the following protocol:\n\n<Clinical Protocol>\n\nHere is the dose-volume histograms of the candidate plans for evaluation; each entry in the dose-volume histograms (DVH) table indicates the percentage of volume receiving a dose higher than a certain Gy (specified in the first column).",
+    "char_start": 47061,
+    "char_end": 47363,
+    "sentence_index": 245,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec012",
+    "text": "<DVH table>\n\nWe also provide the statistics of the above DVH table for ease of evaluation.",
+    "char_start": 47365,
+    "char_end": 47455,
+    "sentence_index": 246,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec012",
+    "text": "<DVH statistics>\n\nYou should also evaluate the plan based on the dose distribution, considering the anatomy of the patient.",
+    "char_start": 47457,
+    "char_end": 47580,
+    "sentence_index": 247,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec012",
+    "text": "For your evaluation, you should consider the following factors:\n\nHomogeneity and conformity: A good plan should have a conformal and homogeneous dose (red in the image) within the PTV.",
+    "char_start": 47581,
+    "char_end": 47765,
+    "sentence_index": 248,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec012",
+    "text": "There should be no hot spots or cold spots.",
+    "char_start": 47766,
+    "char_end": 47809,
+    "sentence_index": 249,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec012",
+    "text": "Dose spillage.",
+    "char_start": 47810,
+    "char_end": 47824,
+    "sentence_index": 250,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec012",
+    "text": "A good plan should NOT have high (red) dose spillage outside of the PTV.",
+    "char_start": 47825,
+    "char_end": 47897,
+    "sentence_index": 251,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec012",
+    "text": "The does distribution must show a sharp gradient outside the PTV/target.",
+    "char_start": 47898,
+    "char_end": 47970,
+    "sentence_index": 252,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec012",
+    "text": "<Images>\n\nNow, based on the protocol, the images and the DVH, please evaluate the plans.",
+    "char_start": 47972,
+    "char_end": 48060,
+    "sentence_index": 253,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec012",
+    "text": "Avoid any positional biases and ensure that the order in which the responses are presented does not influence your decision.",
+    "char_start": 48061,
+    "char_end": 48185,
+    "sentence_index": 254,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec012",
+    "text": "Be as objective as possible.",
+    "char_start": 48186,
+    "char_end": 48214,
+    "sentence_index": 255,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec012",
+    "text": "Your answer must:\n\n(Evidence) Extract the corresponding entries from the DVH table based on the factors to consider.",
+    "char_start": 48215,
+    "char_end": 48331,
+    "sentence_index": 256,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec012",
+    "text": "(Interpretation) Based on the extracted entries from DVH table, interpret them as: \\ percentage\\ \\% of volume encompassing the dose more than \\ dose\\ Gy for \\ organ\\ .",
+    "char_start": 48332,
+    "char_end": 48499,
+    "sentence_index": 257,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec012",
+    "text": "(Analysis) Combine the interpretation and the factors, analyze whether each of the numerical factors are met.",
+    "char_start": 48500,
+    "char_end": 48609,
+    "sentence_index": 258,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec012",
+    "text": "Based on the analysis on DVH tables, you need to produce a final evaluation.",
+    "char_start": 48611,
+    "char_end": 48687,
+    "sentence_index": 259,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec012",
+    "text": "When all factors are satisfied, you should always answer no improvement is needed.",
+    "char_start": 48688,
+    "char_end": 48770,
+    "sentence_index": 260,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec012",
+    "text": "If improvements are required, please provide suggestions on where to improve.",
+    "char_start": 48771,
+    "char_end": 48848,
+    "sentence_index": 261,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec012",
+    "text": "Please ensure to follow the format below to return the evaluation results:\n\n<FINAL> Decision: [The plan does/doesn't need to be improved.] Reasons: [list all factors that are not satisfied with detailed reasons, e.g.",
+    "char_start": 48849,
+    "char_end": 49065,
+    "sentence_index": 262,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec012",
+    "text": "protocol X on (PTV/rectum/bladder/fh/body) is not satisfied because ...] </FINAL>\n\nThe final answer in the end must strictly follow the format above.",
+    "char_start": 49066,
+    "char_end": 49215,
+    "sentence_index": 263,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec012",
+    "text": "[!t]\n[Planner prompt]\nPlease act as a professional radiation oncologist who is impartial and objective.",
+    "char_start": 49217,
+    "char_end": 49320,
+    "sentence_index": 264,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec012",
+    "text": "Your job is to provide a set of parameters to optimize the treatment plan.",
+    "char_start": 49321,
+    "char_end": 49395,
+    "sentence_index": 265,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec012",
+    "text": "Treatment planning involves a balancing act between competing clinical goals.",
+    "char_start": 49396,
+    "char_end": 49473,
+    "sentence_index": 266,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec012",
+    "text": "The desirable dose\ndistribution is determined by an optimization algorithm minimizing a cost function with multiple competing objectives.",
+    "char_start": 49474,
+    "char_end": 49611,
+    "sentence_index": 267,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec012",
+    "text": "Each objective is the difference between the current dose and the prescribed dose of a certain organ (PTV, brainstem, etc.).",
+    "char_start": 49612,
+    "char_end": 49736,
+    "sentence_index": 268,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec012",
+    "text": "The parameters decide the importance of each objective.",
+    "char_start": 49737,
+    "char_end": 49792,
+    "sentence_index": 269,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec012",
+    "text": "You are provided with a set of good reference plans, the DVH, and their corresponding parameters, to learn what the parameters of good plans should look like.",
+    "char_start": 49794,
+    "char_end": 49952,
+    "sentence_index": 270,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec012",
+    "text": "Reference treatment plan DVH:\n\n<Reference plan DVH>\n\nReference treatment plan parameters:\n\n<Reference plan parameters>\n\nIn the following, you are provided with the dose volume histograms (DVHs) of the treatment plans in the previous iterations as well as the parameter weights used to generate the plans.",
+    "char_start": 49954,
+    "char_end": 50258,
+    "sentence_index": 271,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec012",
+    "text": "Here are suggestions from the evaluator on improving the historical treatment plan:\n\n<suggestions on improving the plan>\n\nNow, based on the historical treatment plan as well as the suggestion on what to improve, you need to generate a new set of\nparameters to rebalance the objectives of the optimization:\n\nPlease ensure to conclude with the following one-line dictionary format (without name):\n\n\"PTV70\": <weight>, \"PTV56\": <weight>, \"PTV52\": <weight>, \"Brainstem\": <weight>, \"SpinalCord\": <weight>, \"ParotidLeft\": <weight>, \"ParotidRight\": <weight>,\n\"OralCavity\": <weight>, \"Larynx\": <weight>, \"Body\": <weight>\n\nThe final answer in the end must strictly follow this format in one single line to get a valid Python dictionary that I can directly parse it using Python.",
+    "char_start": 50260,
+    "char_end": 51028,
+    "sentence_index": 272,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec013",
+    "text": "In this section, we present metrics and figures to further evaluate the OAR sparing capabilities of GPT-RadPlan with respect to clinical plans (Section ).",
+    "char_start": 51030,
+    "char_end": 51184,
+    "sentence_index": 273,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec013",
+    "text": "We also include additional plots comparing the proposed method to the non-clinical Autoplan baseline in Section .",
+    "char_start": 51185,
+    "char_end": 51298,
+    "sentence_index": 274,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec014",
+    "text": "As observed in Table , GPT-RadPlan delivers a lower mean dose to the PTV that is closer to prescription, especially in prostate treatments.",
+    "char_start": 51300,
+    "char_end": 51439,
+    "sentence_index": 275,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec014",
+    "text": "To discard lower total average doses as a potential cause of observing lower OAR mean doses and metrics, we have rescaled the GPT-RadPlan plan doses so that the mean PTV dose matches that of clinical plans.",
+    "char_start": 51440,
+    "char_end": 51646,
+    "sentence_index": 276,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec014",
+    "text": "Based on these rescaled doses, Table shows the recalculated OAR metrics.",
+    "char_start": 51647,
+    "char_end": 51719,
+    "sentence_index": 277,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec014",
+    "text": "These are the same metrics and calculations as in Table .",
+    "char_start": 51720,
+    "char_end": 51777,
+    "sentence_index": 278,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec014",
+    "text": "With an average 4 Gy difference for prostate plans and 6 Gy difference for head \\& neck plans, these results confirm GPT-RadPlan's OAR sparing capabilities.",
+    "char_start": 51778,
+    "char_end": 51934,
+    "sentence_index": 279,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec014",
+    "text": "[h]\nOAR dose metrics after dose scaling .",
+    "char_start": 51936,
+    "char_end": 51977,
+    "sentence_index": 280,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec014",
+    "text": "Multiple dose metrics capturing OAR sparing in prostate and head \\& neck plans are presented, after scaling the GPT-RadPlan doses so that the mean PTV doses match those of the clinical plans.",
+    "char_start": 51978,
+    "char_end": 52169,
+    "sentence_index": 281,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec014",
+    "text": "These include the mean dose, the $D_5$ and $D_ 50 $ (maximum common dose that 5\\% or 50\\% of the volume receives), and the $V_ 15 $ and $V_ 30 $ (representing which percentage of the volume receives 15 and 30 Gy, respectively).",
+    "char_start": 52170,
+    "char_end": 52397,
+    "sentence_index": 282,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec014",
+    "text": "For all the metrics, we include the average values across plans and the standard deviation in brackets.",
+    "char_start": 52398,
+    "char_end": 52501,
+    "sentence_index": 283,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec014",
+    "text": "In all cases, lower values are preferred.",
+    "char_start": 52502,
+    "char_end": 52543,
+    "sentence_index": 284,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec014",
+    "text": "@ lllllll@\n\nOrgan & Method & Mean dose [Gy] & $ D _ 5 $ [Gy] & $ D _ 50 $ [Gy] & $ V _ 15 $ [\\%] & $ V _ 30 $ [\\%]\n\n7 c Prostate plans\n\n2 * Bladder & Clinical & 24.48 (9.30) & 62.14 (10.79) & 18.87 (12.12) & 60.85 (29.52) & 34.45 (15.28)\n\n& GPT-RadPlan & 17.41 (8.34) & 61.42 (14.77) & 9.41 (8.85) & 36.41 (17.52) & 23.13 (13.46)\n\n2 * Rectum & Clinical & 26.45 (5.64) & 63.64 (8.82) & 22.20 (5.71) & 71.91 (14.92) & 32.87 (10.54)\n\n& GPT-RadPlan & 22.27 (6.68) & 60.18 (14.13) & 17.44 (8.06) & 51.52 (20.39) & 28.21 (16.64)\n\n7 c Head \\& neck plans\n\n2 * Brainstem & Clinical & 12.17 (4.29) & 30.95 (4.78) & 8.34 (5.75) & 33.36 (14.10) & 10.03 (11.03)\n\n& GPT-RadPlan & 10.8 (4.82) & 26.57 (4.65) & 7.98 (7.41) & 32.54 (15.84) & 0.03 (0.1)\n\n2 * Larynx & Clinical & 42.80 (11.03) & 69.95 (4.30) & 39.85 (14.87) & 97.44 (3.24) & 64.06 (18.18)\n\n& GPT-RadPlan & 33.78 (14.36) & 69.82 (5.77) & 26.71 (21.6) & 63.42 (26.83) & 42.04 (24.98)\n\n2 * Oral Cavity & Clinical & 34.86 (4.15) & 68.07 (8.83) & 33.62 (12.29) & 92.96 (5.28) & 50.00 (11.01)\n\n& GPT-RadPlan & 25.12 (8.45) & 65.58 (14.99) & 18.04 (8.26) & 53.74 (25.5) & 27.59 (13.65)\n\n2 * Parotid Left & Clinical & 35.10 (13.93) & 63.18 (10.85) & 33.50 (21.21) & 71.64 (20.97) & 52.80 (24.12)\n\n& GPT-RadPlan & 23.99 (12.54) & 57.08 (15.96) & 19.51 (18.42) & 42.5 (20.52) & 28.18 (20.87)\n\n2 * Parotid Right & Clinical & 34.32 (10.67) & 61.69 (11.30) & 32.22 (13.83) & 79.00 (21.05) & 52.65 (20.65)\n\n& GPT-RadPlan & 21.41 (7.74) & 57.8 (15.47) & 13.51 (7.41) & 41.36 (19.55) & 25.33 (13.72)\n\n2 * Spinal Cord & Clinical & 17.36 (6.32) & 33.88 (5.15) & 18.84 (13.24) & 55.32 (13.69) & 24.83 (25.69)\n\n& GPT-RadPlan & 16.07 (3.93) & 29.77 (0.3) & 17.56 (12.37) & 55.12 (14.1) & 1.33 (3.22)\n\nFurthermore, to help visualize the individual plan-by-plan differences between GPT-RadPlan and clinical plans from Figure , we have included additional Figure and Figure , where each bar shows the same relative error for every OAR and plan in the prostate and head \\& neck cohorts, respectively.",
+    "char_start": 52545,
+    "char_end": 54568,
+    "sentence_index": 285,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec014",
+    "text": "Positive values indicate higher clinical plan metrics.",
+    "char_start": 54569,
+    "char_end": 54623,
+    "sentence_index": 286,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec014",
+    "text": "Since the majority of the bars show positive values, we can further confirm that GPT-RadPlan achieves greater OAR sparing in both prostate and head \\& neck plans.",
+    "char_start": 54624,
+    "char_end": 54786,
+    "sentence_index": 287,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec014",
+    "text": "[h]\n\nimages/diff_bars_prostate.png\nRelative difference between GPT-RadPlan and clinical prostate plans.",
+    "char_start": 54788,
+    "char_end": 54891,
+    "sentence_index": 288,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec014",
+    "text": "For every relevant OAR, each plot depicts the relative difference between clinical and GPT-RadPlan plans for 3 different metrics (mean dose, $D_ 50 $ and $V_ 15 $.",
+    "char_start": 54892,
+    "char_end": 55055,
+    "sentence_index": 289,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec014",
+    "text": "Each white and gray block (each pair of bars) shows the results for a separate plan.",
+    "char_start": 55056,
+    "char_end": 55140,
+    "sentence_index": 290,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec014",
+    "text": "Positive values indicate GPT-RadPlan superiority over clinical plans.",
+    "char_start": 55141,
+    "char_end": 55210,
+    "sentence_index": 291,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec014",
+    "text": "[h]\n\nimages/diff_bars_hn.png\nRelative difference between GPT-RadPlan and clinical heand and neck plans.",
+    "char_start": 55212,
+    "char_end": 55315,
+    "sentence_index": 292,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec014",
+    "text": "For every relevant OAR, each plot depicts the relative difference between clinical and GPT-RadPlan plans for 3 different metrics (mean dose, $D_ 50 $ and $V_ 15 $.",
+    "char_start": 55316,
+    "char_end": 55479,
+    "sentence_index": 293,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec014",
+    "text": "Each white and gray block with 6 bars shows the results for each of the plans individually.",
+    "char_start": 55480,
+    "char_end": 55571,
+    "sentence_index": 294,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec014",
+    "text": "Positive values indicate GPT-RadPlan superiority over clinical plans.",
+    "char_start": 55572,
+    "char_end": 55641,
+    "sentence_index": 295,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec015",
+    "text": "To further demonstrate GPT-RadPlan's superiority to Autoplan, we have included the same plots and comparison used for comparison with clinical plans.",
+    "char_start": 55643,
+    "char_end": 55792,
+    "sentence_index": 296,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec015",
+    "text": "Figure compares the average DVH curves for both planning methodologies, which indicate a slightly more homogeneous PTV coverage in GPT-RadPlan plans, and overall improved OAR sparing, except for the femoral heads in prostate plans.",
+    "char_start": 55793,
+    "char_end": 56024,
+    "sentence_index": 297,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec015",
+    "text": "For head \\& neck plans, Autoplan results in lower volumes of the brainstem and spinal cord receiving doses in the 10-20Gy range, although the maximum doses are ultimately higher.",
+    "char_start": 56025,
+    "char_end": 56203,
+    "sentence_index": 298,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec015",
+    "text": "Figure further compares individual relative differences between plans, demonstrating that GPT-RadPlan outperforms Autoplan in most situations as shown by the positive values above the red line, except for the brainstem and spinal cord as shown in Figure .",
+    "char_start": 56205,
+    "char_end": 56460,
+    "sentence_index": 299,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec015",
+    "text": "[h]\n\nimages/avg_dvh_ap.png\nAverage DVH comparison between GPT-RadPlan and Autoplan .",
+    "char_start": 56462,
+    "char_end": 56546,
+    "sentence_index": 300,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec015",
+    "text": "Visual comparison of the average DVH lines across all prostate (left) and lung (right) patients.",
+    "char_start": 56547,
+    "char_end": 56643,
+    "sentence_index": 301,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec015",
+    "text": "Solid lines represent GPT-RadPlan plans, while dashed lines indicate Autoplan plans.",
+    "char_start": 56644,
+    "char_end": 56728,
+    "sentence_index": 302,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec015",
+    "text": "[h]\n\n[]\n\nProstate patients\nimages/rel_prostate_ap.png\n\n[]\n\nHead \\& neck patients\nimages/rel_hn_ap.png\n\nDifferences between GPT-RadPlan and Autoplan plans.",
+    "char_start": 56730,
+    "char_end": 56884,
+    "sentence_index": 303,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec015",
+    "text": "For every relevant OAR, each box displays the relative difference between plans obtained using the Autoplan and GPT-RadPlan algorithms.",
+    "char_start": 56885,
+    "char_end": 57020,
+    "sentence_index": 304,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec015",
+    "text": "Each panel shows the relative difference between different OAR metrics, including (left) the mean dose, (center) the $D_ 50 $ and (right) the $V_ 15 $.",
+    "char_start": 57021,
+    "char_end": 57172,
+    "sentence_index": 305,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec015",
+    "text": "Positive values above the red line indicate that GPT-RadPlan plans result in lower metric values, which is preferred.",
+    "char_start": 57173,
+    "char_end": 57290,
+    "sentence_index": 306,
+    "section_sentence_index": 10
+  }
+]

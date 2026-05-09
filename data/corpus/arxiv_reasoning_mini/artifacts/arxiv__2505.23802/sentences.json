@@ -1,0 +1,2657 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large Language Models (LLMs) have shown impressive performance on medical knowledge benchmarks, achieving $ $99\\% accuracy on standardized exams like MedQA .",
+    "char_start": 0,
+    "char_end": 157,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "This has sparked interest in deploying them in healthcare settings: supporting clinical decision-making such as diagnosis and treatment , optimizing clinical workflows including documentation and scheduling , and enhancing patient education and communication .",
+    "char_start": 158,
+    "char_end": 418,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, there is a large gap between performance on medical knowledge benchmarks and readiness for real-world deployment due to three key limitations in these existing benchmarks :\n(1) Questions do not match real-world settings -- Existing benchmarks rely on synthetic vignettes or narrowly-scoped exam questions, failing to capture key aspects of real diagnostic processes such as extracting relevant details from patient records .",
+    "char_start": 420,
+    "char_end": 853,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "(2) Limited use of real-world data -- Only 5\\% of LLM evaluations use real-world electronic health record (EHR) data .",
+    "char_start": 854,
+    "char_end": 972,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "EHRs contain ambiguities, inconsistencies, and domain-specific shorthand that synthetic data cannot replicate.",
+    "char_start": 973,
+    "char_end": 1083,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "(3) Limited task diversity -- Around 64\\% of LLM evaluations in healthcare focus only on medical licensing exams and diagnostic tasks , ignoring essential hospital operations such as administrative tasks (e.g., generating prior authorization letters, identifying billing codes), clinical documentation (e.g., writing progress notes or discharge instructions), and patient communication (e.g., asynchronous messaging through electronic patient portals) .",
+    "char_start": 1084,
+    "char_end": 1537,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Recent work on HealthBench arora2025healthbench has advanced the evaluation of LLMs in medicine by scoring 5000 single-turn, free-text dialogues in which the model acts independently, much like a direct-to-patient advice line, without follow-up questions or human oversight.",
+    "char_start": 1539,
+    "char_end": 1813,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Its physician-authored rubrics reward exhaustive, risk-averse responses that maximize safety and completeness, offering a valuable stress test for fully autonomous chatbots.",
+    "char_start": 1814,
+    "char_end": 1987,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "However, this design does not capture the iterative, context-aware interactions clinicians expect from an assistive co-pilot, nor does it assess performance on structured tasks that dominate everyday workflows (e.g., order review, note generation, literature summarization).",
+    "char_start": 1988,
+    "char_end": 2262,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "To address these limitations, we introduce \\ (Holistic Evaluation of Large Language Models for Medical Tasks), an extensible evaluation framework for assessing LLM performance in completing medical tasks (Figure ).",
+    "char_start": 2264,
+    "char_end": 2478,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec001",
+    "text": "Inspired by the HELM project's standardized cross-domain evaluations , using \\, we evaluate nine LLMs using 35 distinct benchmarks covering all 22 subcategories of medical tasks, focusing on clinicians' day-to-day activities beyond just taking licensing exams.",
+    "char_start": 2479,
+    "char_end": 2739,
+    "sentence_index": 10,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec001",
+    "text": "We assess performance using benchmark-appropriate metrics (i.e., exact match for closed-ended benchmarks, LLM-jury where three LLMs evaluate responses using tailored rubrics for open-ended benchmarks with demonstrated agreement to clinician ratings) as well as estimated computational cost to provide practical deployment insights.",
+    "char_start": 2740,
+    "char_end": 3071,
+    "sentence_index": 11,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec001",
+    "text": "Our primary contributions are:\n\n0.5em\n[label= .,nosep,leftmargin=*]\nClinician\u2011validated taxonomy: A five-category, 22-subcategory, 121-task taxonomy developed with 29 clinicians.",
+    "char_start": 3072,
+    "char_end": 3250,
+    "sentence_index": 12,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec001",
+    "text": "Clinicians achieved a 96.7\\% agreement rate when mapping subcategories to appropriate categories, validating the clear and discrete nature of the taxonomy.",
+    "char_start": 3251,
+    "char_end": 3406,
+    "sentence_index": 13,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec001",
+    "text": "We present the complete taxonomy in the Results and Appendix sections.",
+    "char_start": 3407,
+    "char_end": 3477,
+    "sentence_index": 14,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec001",
+    "text": "A benchmark suite with full taxonomy coverage:\nA collection of 35 benchmarks spanning all 22 subcategories of medical tasks.",
+    "char_start": 3478,
+    "char_end": 3602,
+    "sentence_index": 15,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec001",
+    "text": "This includes 17 existing benchmarks, five re-formulated benchmarks based on existing datasets, and 13 new benchmarks.",
+    "char_start": 3603,
+    "char_end": 3721,
+    "sentence_index": 16,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec001",
+    "text": "For privacy and regulatory compliance, as well as to prevent inclusion in LLM training data, 14 datasets are not publicly released.",
+    "char_start": 3722,
+    "char_end": 3853,
+    "sentence_index": 17,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec001",
+    "text": "Comparative evaluation of models along with cost-performance analysis: A systematic evaluation shows that reasoning models achieve the highest overall performance.",
+    "char_start": 3854,
+    "char_end": 4017,
+    "sentence_index": 18,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec001",
+    "text": "The \\ framework addresses a critical need in the testing and evaluation of AI for medical use by providing consistent, real-world evaluation standards for medical (and healthcare) applications of LLMs.",
+    "char_start": 4019,
+    "char_end": 4220,
+    "sentence_index": 19,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec001",
+    "text": "This framework benefits three key stakeholder groups: (1) Healthcare systems evaluating LLMs for specific tasks, (2) AI developers identifying performance gaps across medical tasks, and (3) Researchers developing methods to reproducibly measure LLM capabilities on medical tasks.",
+    "char_start": 4221,
+    "char_end": 4500,
+    "sentence_index": 20,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec001",
+    "text": "To foster collaborative improvement of such AI evaluation, we provide an openly accessible\nleaderboard\nwith current benchmarking results and share the codebase , with documentation for contributing new datasets, evaluation metrics, and benchmarking custom models.",
+    "char_start": 4501,
+    "char_end": 4764,
+    "sentence_index": 21,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec001",
+    "text": "By standardizing terminology and evaluation methods across the task taxonomy, \\ establishes a foundation for reproducible and real-world assessment of AI capabilities in medicine.",
+    "char_start": 4765,
+    "char_end": 4944,
+    "sentence_index": 22,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec001",
+    "text": "[t]\n\nfigures/MedHELM-Overall.pdf\nThis figure illustrates: (a) a clinician-validated taxonomy organizing 121 medical tasks into five categories and 22 subcategories; (b) a suite of benchmarks that map existing benchmarks to this taxonomy and introduces new benchmarks for complete coverage; and (c) an evaluation comparing reasoning and non-reasoning LLMs, with model rankings, LLM jury based evaluation of open-ended benchmarks, and cost-performance analysis\n\nIn a structured review process, 29 clinicians evaluated the initial taxonomy comprising five categories, 21 subcategories, and 98 tasks.",
+    "char_start": 4946,
+    "char_end": 5542,
+    "sentence_index": 23,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec003",
+    "text": "When asked to assign each subcategory to its appropriate top-level category, clinicians correctly matched 96.7\\% of subcategories to their intended categories.",
+    "char_start": 5543,
+    "char_end": 5702,
+    "sentence_index": 24,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec003",
+    "text": "The clinicians rated the comprehensiveness of the proposed tasks at a mean of 4.21/5 (n = 29) and provided 107 comments with suggestions for improvement.",
+    "char_start": 5703,
+    "char_end": 5856,
+    "sentence_index": 25,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec003",
+    "text": "Based on this feedback, we refined task definitions and expanded the taxonomy to its final form: five categories, 22 subcategories, and 121 tasks.",
+    "char_start": 5857,
+    "char_end": 6003,
+    "sentence_index": 26,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec003",
+    "text": "An overview of the final taxonomy is shown in Figure , with the complete list provided in Appendix .",
+    "char_start": 6004,
+    "char_end": 6104,
+    "sentence_index": 27,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec003",
+    "text": "[t]\n\nfigures/hierarchy-view.pdf\nOverview of the final taxonomy comprising five main categories and 22 subcategories.",
+    "char_start": 6106,
+    "char_end": 6222,
+    "sentence_index": 28,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec003",
+    "text": "-0.8em\n\nOur 35 benchmarks span all 22 subcategories, providing full coverage over categories and subcategories in our taxonomy (Table ).",
+    "char_start": 6224,
+    "char_end": 6360,
+    "sentence_index": 29,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "The benchmark suite comprises 17 existing benchmarks, five re-formulated benchmarks derived from previously unevaluated medical datasets, and 13 new benchmarks, out of which 12 are EHR-based.",
+    "char_start": 6361,
+    "char_end": 6552,
+    "sentence_index": 30,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "The suite includes 13 open-ended benchmarks (requiring free-text generation) and 22 closed-ended benchmarks (with predefined answer choices).",
+    "char_start": 6553,
+    "char_end": 6694,
+    "sentence_index": 31,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "Access levels are designated as 14 public, seven gated (i.e.",
+    "char_start": 6695,
+    "char_end": 6755,
+    "sentence_index": 32,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "requiring approval), and 14 private.",
+    "char_start": 6756,
+    "char_end": 6792,
+    "sentence_index": 33,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec004",
+    "text": "Clinical Decision Support is the most represented category with ten benchmarks, followed by Patient Communication (eight), Clinical Note Generation and Medical Research Assistance (six), and Administration \\& Workflow (five).",
+    "char_start": 6794,
+    "char_end": 7019,
+    "sentence_index": 34,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "The distribution of benchmarks across subcategories is uneven, with 15 subcategories containing a single benchmark and the remaining seven subcategories containing between two and five benchmarks each.",
+    "char_start": 7020,
+    "char_end": 7221,
+    "sentence_index": 35,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "Pairwise Win-Rate and Average Scores\nTable compares models using win-rate and macro-average performance metrics (defined in the table caption).",
+    "char_start": 7223,
+    "char_end": 7366,
+    "sentence_index": 36,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec006",
+    "text": "DeepSeek R1 performed best, winning 66\\% of head-to-head comparisons with a macro-average of 0.75 and low win standard deviation (0.10).",
+    "char_start": 7367,
+    "char_end": 7503,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec006",
+    "text": "o3-mini followed with a 64\\% win rate and the highest macro-average (0.77), driven by strong performance in benchmarks in the clinical decision support category.",
+    "char_start": 7504,
+    "char_end": 7665,
+    "sentence_index": 38,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec006",
+    "text": "The Claude models achieved 63-64\\% win rates and identical macro-averages (0.73).",
+    "char_start": 7667,
+    "char_end": 7748,
+    "sentence_index": 39,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec006",
+    "text": "GPT-4o achieved a 57\\% win rate, while Gemini 2.0 Flash (42\\%) and GPT-4o mini (39\\%) performed lower.",
+    "char_start": 7749,
+    "char_end": 7851,
+    "sentence_index": 40,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec006",
+    "text": "Open-source Llama 3.3 Instruct achieved a 30\\% win rate.",
+    "char_start": 7852,
+    "char_end": 7908,
+    "sentence_index": 41,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec006",
+    "text": "Gemini 1.5 Pro ranked lowest with 24\\% wins but had the lowest win standard deviation (0.08), showing the most consistent competitive performance.",
+    "char_start": 7909,
+    "char_end": 8055,
+    "sentence_index": 42,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec006",
+    "text": "[ht]\n\nlccccc\n\nModel (snapshot) & Win-rate$ $ & Win SD$ $ & Macro-avg$ $ & SD$ $\n\nDeepSeek R1 & 0.66 & 0.10 & 0.75 & 0.22\n\no3-mini (2025-01-31) & 0.64 & 0.16 & 0.77 & 0.18\n\nClaude 3.7 Sonnet (20250219) & 0.64 & 0.13 & 0.73 & 0.21\n\nClaude 3.5 Sonnet (20241022) & 0.63 & 0.14 & 0.73 & 0.21\n\nGPT-4o (2024-05-13) & 0.57 & 0.17 & 0.73 & 0.18\n\nGemini 2.0 Flash & 0.42 & 0.17 & 0.70 & 0.21\n\nGPT-4o mini (2024-07-18) & 0.39 & 0.18 & 0.71 & 0.20\n\nLlama 3.3 Instruct (70B) & 0.30 & 0.13 & 0.69 & 0.22\n\nGemini 1.5 Pro (001) & 0.24 & 0.08 & 0.67 & 0.21\n\nComparison of performance of frontier models across 35 MedHELM benchmarks,\nsorted by descending win\u2011rate.",
+    "char_start": 8057,
+    "char_end": 8703,
+    "sentence_index": 43,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec006",
+    "text": "Bold indicates the best value in\neach column.",
+    "char_start": 8704,
+    "char_end": 8749,
+    "sentence_index": 44,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec006",
+    "text": "Win-rate represents the proportion of pairwise\ncomparisons where each model achieved superior performance across all\n35 benchmarks (possible range: 0-1).",
+    "char_start": 8750,
+    "char_end": 8903,
+    "sentence_index": 45,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec006",
+    "text": "Win standard deviation (SD) measures how consistently a model wins (lower values = more consistent).",
+    "char_start": 8904,
+    "char_end": 9004,
+    "sentence_index": 46,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec006",
+    "text": "Macro-avg is the average performance score across all 35 benchmarks.",
+    "char_start": 9005,
+    "char_end": 9073,
+    "sentence_index": 47,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "SD shows how much performance varies across different benchmarks (lower values = more consistent across benchmarks).",
+    "char_start": 9074,
+    "char_end": 9190,
+    "sentence_index": 48,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "-1.0em\n\nPerformance by Benchmark\nWe present every model's normalized score from each of the 35 benchmarks as a heatmap in Figure , where darker green indicates higher performance.",
+    "char_start": 9192,
+    "char_end": 9371,
+    "sentence_index": 49,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "Models perform worse on benchmarks such as MedCalc-Bench (calculating medical values from patient notes), EHRSQL (generating SQL queries from natural language instructions for clinical research, originally intended as a code generation dataset), and MIMIC-IV Billing Code (assigning ICD-10 codes to clinical notes).",
+    "char_start": 9372,
+    "char_end": 9687,
+    "sentence_index": 50,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "The best performance is seen for the NoteExtract benchmark (extracting specific information from clinical notes).",
+    "char_start": 9688,
+    "char_end": 9801,
+    "sentence_index": 51,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "Broader category-level trends are described below.",
+    "char_start": 9802,
+    "char_end": 9852,
+    "sentence_index": 52,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "[t]\n\nfigures/category_heatmap_0531.png\nHeatmap of normalized scores (0\u20131) for each model (rows) across 35 benchmarks (columns).",
+    "char_start": 9854,
+    "char_end": 9981,
+    "sentence_index": 53,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "Scores are normalized for visualization purposes; the official leaderboard reports the original (unnormalized) scores.",
+    "char_start": 9982,
+    "char_end": 10100,
+    "sentence_index": 54,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "Dark green indicates high performance; dark red indicates low performance.",
+    "char_start": 10101,
+    "char_end": 10175,
+    "sentence_index": 55,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "The statistical significance of model differences varies by benchmark, with an analysis of minimum detectable effects shown in Appendix .",
+    "char_start": 10176,
+    "char_end": 10313,
+    "sentence_index": 56,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "Metrics include EM as exact match, Jury Score as the average normalized score from three frontier LLMs, MedCalc Accuracy as exact match or thresholded match depending on question type, MedFlagAcc as binary accuracy for detecting presence of errors, EHRSQLExeAcc as execution accuracy of generated code against a target output, and MIMICBillingF1 as the F1 score on ICD-10 codes extracted from a medical note.",
+    "char_start": 10314,
+    "char_end": 10722,
+    "sentence_index": 57,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "Performance by Category\n\nFigure presents performance scores by the five top-level categories in the taxonomy.",
+    "char_start": 10724,
+    "char_end": 10833,
+    "sentence_index": 58,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "Most models achieve their highest mean scores in Clinical Note Generation \\ and Patient Communication \\& Education .",
+    "char_start": 10834,
+    "char_end": 10950,
+    "sentence_index": 59,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "They exhibit moderate performance in Medical Research Assistance \\ and Clinical Decision Support \\ and obtain generally lower scores in Administration \\& Workflow .",
+    "char_start": 10951,
+    "char_end": 11115,
+    "sentence_index": 60,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "Performance variations across categories\nreflect distinct task-based challenges: free-text generation tasks\n(Clinical Note Generation, Patient Communication) leverage models'\nnatural language strengths, while structured reasoning tasks (Clinical\nDecision Support, Administration) require domain-specific knowledge\nintegration and logical inference.",
+    "char_start": 11116,
+    "char_end": 11464,
+    "sentence_index": 61,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "These patterns have important\nimplications for selective deployment strategies in healthcare\nsettings.",
+    "char_start": 11465,
+    "char_end": 11567,
+    "sentence_index": 62,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "At the model level, DeepSeek R1 and o3-mini lead across most categories, with DeepSeek R1 excelling in Clinical Note Generation (0.85, tied with o3-mini) and Patient Communication \\& Education (0.89), while o3-mini leads in Clinical Decision Support (0.76) and Medical Research Assistance (0.75).",
+    "char_start": 11569,
+    "char_end": 11865,
+    "sentence_index": 63,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "The Claude Sonnet series (3.5 and 3.7) demonstrates consistent performance with scores of 0.82-0.83 in Clinical Note Generation and 0.83-0.84 in Patient Communication \\& Education .",
+    "char_start": 11866,
+    "char_end": 12047,
+    "sentence_index": 64,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "The GPT series (4o and 4o-mini) shows moderate consistency with scores of 0.79-0.80 in Clinical Note Generation and 0.81-0.82 in Patient Communication \\& Education .",
+    "char_start": 12048,
+    "char_end": 12213,
+    "sentence_index": 65,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "The Gemini models exhibit greater variation, with scores of 0.74-0.78 in Clinical Note Generation and 0.76-0.81 in Patient Communication \\& Education , where Gemini 2.0 Flash substantially outperforms 1.5 Pro.",
+    "char_start": 12214,
+    "char_end": 12423,
+    "sentence_index": 66,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "The open-source Llama 3.3 performs well in Patient Communication \\& Education (0.81) but shows the lowest score in Administration \\& Workflow (0.53), indicating areas for future improvement.",
+    "char_start": 12424,
+    "char_end": 12614,
+    "sentence_index": 67,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "[t]\n\nfigures/category_heatmap_aggregated_0531.png\nMean normalized scores (0-1 scale) across the five categories for all evaluated models.",
+    "char_start": 12616,
+    "char_end": 12753,
+    "sentence_index": 68,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "Darker green represents higher scores.",
+    "char_start": 12754,
+    "char_end": 12792,
+    "sentence_index": 69,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Models are ordered by mean win rate from top (highest) to bottom (lowest), while categories are arranged left to right.",
+    "char_start": 12793,
+    "char_end": 12912,
+    "sentence_index": 70,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "-0.8em\n\nFor our 13 open-ended benchmarks, we implemented an LLM-jury evaluation approach.",
+    "char_start": 12914,
+    "char_end": 13003,
+    "sentence_index": 71,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "To assess this method's validity, we collected independent clinician ratings on a subset of model outputs.",
+    "char_start": 13004,
+    "char_end": 13110,
+    "sentence_index": 72,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "We used 31 instances from ACI-Bench and 25 from MEDIQA-QA to compare clinician-assigned scores to the jury\u2019s aggregated ratings as described in the methods.",
+    "char_start": 13111,
+    "char_end": 13267,
+    "sentence_index": 73,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "Table reports intraclass correlation coefficient (ICC(3,k)) values (after rater-wise $z$-scoring) for the LLM-jury versus clinicians, alongside ROUGE-L (text overlap metric) and BERTScore-F (semantic similarity metric) baselines, and the average clinician\u2013clinician agreement.",
+    "char_start": 13268,
+    "char_end": 13544,
+    "sentence_index": 74,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "Overall, the LLM-jury achieves an ICC of 0.47, which beats the average clinician--clinician agreement (ICC = 0.43) and automated baselines including ROUGE-L (0.36) and BERTScore-F (0.44).",
+    "char_start": 13546,
+    "char_end": 13733,
+    "sentence_index": 75,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "These results demonstrate that our LLM-jury mirrors clinician judgment better than standard lexical metrics, establishing its validity as a stand-in for clinician raters.",
+    "char_start": 13734,
+    "char_end": 13904,
+    "sentence_index": 76,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "[htbp]\n\n!",
+    "char_start": 13906,
+    "char_end": 13915,
+    "sentence_index": 77,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "l|c|c|c|c\n\nBenchmark & LLM & ROUGE-L & BERTScore-F & Clinician\n\nCombined & 0.474 (0.100, 0.690) & 0.361 (0, 0.630) & 0.441 (0.050, 0.670) & 0.426 (0.295, 0.585)\n\nACI-Bench & 0.305 (0, 0.670) & 0.445 (0, 0.730) & 0.250 (0, 0.640) & 0.458 (0.201, 0.945)\n\nMEDIQA & 0.625 (0.150, 0.830) & 0.343 (0, 0.710) & 0.668 (0.250, 0.850) & 0.520 (0.500, 0.534)\n\nAgreement of LLM-jury and of automated metrics with clinician ratings\nThe table entries are ICC(3,$k$) coefficients after $z$-scoring within rater (ICC3k-$z$); 95\\,\\% confidence intervals are shown in parentheses.",
+    "char_start": 13916,
+    "char_end": 14478,
+    "sentence_index": 78,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Higher ICC indicates better agreement with clinician ratings.",
+    "char_start": 14479,
+    "char_end": 14540,
+    "sentence_index": 79,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "The last column gives the average clinician\u2013clinician agreement for each dataset.",
+    "char_start": 14541,
+    "char_end": 14622,
+    "sentence_index": 80,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "We estimated the cost (USD) of evaluating each model based on publicly listed pricing as of 05/12/2025, using the total input tokens and maximum output tokens consumed during benchmark runs and LLM-jury evaluation.",
+    "char_start": 14624,
+    "char_end": 14838,
+    "sentence_index": 81,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "These costs are an upper-bound estimate, since models may generate fewer tokens than the maximum allowed output.",
+    "char_start": 14839,
+    "char_end": 14951,
+    "sentence_index": 82,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "We plotted the mean win-rate against the cost (Figure , with a detailed breakdown in Table , and inference costs in Appendix ).",
+    "char_start": 14952,
+    "char_end": 15079,
+    "sentence_index": 83,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "As expected, non-reasoning models\u2014GPT-4o mini (\\$805) and Gemini 2.0 Flash (\\$815)\u2014incurred the lowest costs and achieved win-rates of 0.39 and 0.42, respectively.",
+    "char_start": 15080,
+    "char_end": 15243,
+    "sentence_index": 84,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "Open-source Llama 3.3 Instruct (\\$940) had a 0.30 win-rate, while Gemini 1.5 Pro (\\$1,130) reached 0.24.",
+    "char_start": 15244,
+    "char_end": 15348,
+    "sentence_index": 85,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "Reasoning models incurred higher costs, DeepSeek R1 (\\$1,806) and o3-mini (\\$1,722), with win-rates of 0.66 and 0.64, respectively.",
+    "char_start": 15349,
+    "char_end": 15480,
+    "sentence_index": 86,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "Claude 3.5 Sonnet (\\$1,571) and Claude 3.7 Sonnet (\\$1,537) provide a good cost-performance balance, achieving $ 0.63$ win-rate at reduced costs.",
+    "char_start": 15481,
+    "char_end": 15626,
+    "sentence_index": 87,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "[t]\n\nfigures/cost_vs_win_rate.png\nScatter plot of mean win-rate (y-axis) versus estimated computational cost (x-axis) for each of the nine models across 35 benchmarks.",
+    "char_start": 15628,
+    "char_end": 15795,
+    "sentence_index": 88,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "Each point represents a model, with the position indicating the relationship between performance (y-axis) and total cost of evaluation, including benchmark runs and evaluation by LLM-jury (x-axis).",
+    "char_start": 15796,
+    "char_end": 15993,
+    "sentence_index": 89,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "Costs represent upper-bound estimates based on maximum output token usage.",
+    "char_start": 15994,
+    "char_end": 16068,
+    "sentence_index": 90,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "-0.8em\n\n[ht]\n\n!",
+    "char_start": 16070,
+    "char_end": 16085,
+    "sentence_index": 91,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "lcccccccc\n\nModel & Model Creator & Window Size & Access\n& Benchmark Tokens & Jury Tokens\n& Benchmark Cost & Jury Cost & Total Cost\n\nClaude 3.5 Sonnet (20241022)\n& Anthropic & 200 , 000 & Closed\n& 245 , 958 , 343 & 45 , 868 , 483\n& \\$778.67 & \\$792.21 & \\$1 , 570.88\n\nClaude 3.7 Sonnet (20250219)\n& Anthropic & 200 , 000 & Closed\n& 242 , 510 , 517 & 42 , 326 , 449\n& \\$768.26 & \\$768.38 & \\$1 , 536.64\n\nGemini 1.5 Pro (001)\n& Google & 1 , 000 , 000 & Closed\n& 277 , 273 , 571 & 42 , 864 , 352\n& \\$359.33 & \\$771.73 & \\$1 , 131.06\n\nGemini 2.0 Flash\n& Google & 1 , 000 , 000 & Closed\n& 276 , 777 , 154 & 42 , 864 , 352\n& \\$43.04 & \\$771.73 & \\$814.77\n\nGPT-4o (2024-05-13)\n& OpenAI & 128 , 000 & Closed\n& 248 , 731 , 118 & 41 , 929 , 516\n& \\$647.28 & \\$765.91 & \\$1 , 413.19\n\nGPT-4o mini (2024-07-18)\n& OpenAI & 128 , 000 & Closed\n& 248 , 731 , 118 & 41 , 929 , 516\n& \\$38.83 & \\$765.91 & \\$804.74\n\nLlama 3.3 Instruct (70B)\n& Meta AI & 128 , 000 & Open\n& 242 , 895 , 608 & 42 , 121 , 933\n& \\$172.45 & \\$767.13 & \\$939.58\n\nDeepSeek R1\n& DeepSeek & 128 , 000 & Open\n& 334 , 133 , 126 & 68 , 364 , 208\n& \\$848.21 & \\$957.96 & \\$1 , 806.17\n\no3-mini (2025-01-31)\n& OpenAI & 128 , 000 & Closed\n& 337 , 967 , 189 & 68 , 617 , 978\n& \\$762.50 & \\$959.54 & \\$1 , 722.04\n\nComparison of LLMs by architecture, access type, and token usage metrics across MedHELM.",
+    "char_start": 16086,
+    "char_end": 17431,
+    "sentence_index": 92,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Benchmark tokens denote total input/output tokens in completing the medical task represented by the benchmark; jury tokens are tokens used for open\u2011ended evaluations via the LLM-jury.",
+    "char_start": 17432,
+    "char_end": 17615,
+    "sentence_index": 93,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "The total cost reflects the estimated per-model expense of running a MedHELM evaluation across 35 benchmarks and represents an upper bound based on maximum output token usage.",
+    "char_start": 17616,
+    "char_end": 17791,
+    "sentence_index": 94,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "For nine models and 35 benchmarks in the current MedHELM suite, one update to the leaderboard is estimated to cost $11,739.07$.",
+    "char_start": 17792,
+    "char_end": 17919,
+    "sentence_index": 95,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "-0.5em\n\nWe present a framework for assessing LLM performance for real-world medical tasks.",
+    "char_start": 17921,
+    "char_end": 18011,
+    "sentence_index": 96,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "Our clinician-validated taxonomy provides a structure for summarizing models' strengths and limitations across medical tasks.",
+    "char_start": 18012,
+    "char_end": 18137,
+    "sentence_index": 97,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "High clinician agreement (96.7\\%) in assigning subcategories to categories suggests the taxonomy effectively captures how healthcare professionals conceptualize their work.",
+    "char_start": 18138,
+    "char_end": 18310,
+    "sentence_index": 98,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "Our benchmark suite reveals nuances in model capabilities that are not seen with current medical knowledge benchmarks alone.",
+    "char_start": 18311,
+    "char_end": 18435,
+    "sentence_index": 99,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "The higher performance in communication tasks than administrative ones may stem from administrative workflows using data not seen during training, warranting caution in healthcare AI implementation for back-office tasks without quantifying task-specific performance.",
+    "char_start": 18436,
+    "char_end": 18702,
+    "sentence_index": 100,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec009",
+    "text": "This framework addresses the primary limitations of current benchmarks, such as the lack of using real-world data, use of evaluation setups that do not match real-world settings, and limited task diversity.",
+    "char_start": 18703,
+    "char_end": 18909,
+    "sentence_index": 101,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec009",
+    "text": "The cost-performance trade-off shows that while reasoning models have superior performance, their substantially higher costs may not justify their deployment for all tasks.",
+    "char_start": 18910,
+    "char_end": 19082,
+    "sentence_index": 102,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": "In a resource-constrained setting, models such as Claude 3.5 Sonnet offer a balance, achieving a win-rate of 0.63 at a lower cost.",
+    "char_start": 19083,
+    "char_end": 19213,
+    "sentence_index": 103,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "Finally, our LLM-jury based approach addresses a critical gap in current evaluation approaches.",
+    "char_start": 19214,
+    "char_end": 19309,
+    "sentence_index": 104,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "By beating clinician-clinician agreement, this approach enables scalable evaluation of open-ended model outputs without requiring extensive clinician time, a scarce and expensive resource.",
+    "char_start": 19310,
+    "char_end": 19498,
+    "sentence_index": 105,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "Several limitations remain.",
+    "char_start": 19500,
+    "char_end": 19527,
+    "sentence_index": 106,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "While our LLM-jury approach was validated on only two benchmarks, expanding clinician annotations across more benchmarks would strengthen the clinician\u2013LLM agreement estimates.",
+    "char_start": 19528,
+    "char_end": 19704,
+    "sentence_index": 107,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "In addition, the uneven distribution of benchmarks across subcategories (15 of 22 contain only one benchmark) limits our ability to draw robust performance conclusions in underrepresented areas.",
+    "char_start": 19705,
+    "char_end": 19899,
+    "sentence_index": 108,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Moreover, our current rubrics operate at the benchmark level, but instance-level rubrics could provide better evaluation, particularly for subjective or context-dependent medical tasks where gold standard responses may not exist.",
+    "char_start": 19900,
+    "char_end": 20129,
+    "sentence_index": 109,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "Such approaches would further scale LLM-jury evaluation beyond reliance on gold standard responses croxford2025llmjudge .",
+    "char_start": 20130,
+    "char_end": 20251,
+    "sentence_index": 110,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec009",
+    "text": "Administration \\& Workflow emerged as the weakest performance area for all models.",
+    "char_start": 20252,
+    "char_end": 20334,
+    "sentence_index": 111,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec009",
+    "text": "Understanding the underlying causes of this poor performance, whether stemming from training data limitations, task complexity, or distributional shifts, is essential for safe deployment in healthcare operations.",
+    "char_start": 20335,
+    "char_end": 20547,
+    "sentence_index": 112,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec009",
+    "text": "In conclusion, \\ provides a comprehensive framework for assessing LLM performance across real-world medical tasks through our clinician-validated taxonomy spanning five categories, 22 subcategories, and 121 tasks.",
+    "char_start": 20549,
+    "char_end": 20762,
+    "sentence_index": 113,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec009",
+    "text": "Our benchmark suite of 35 datasets reveals that most models perform best in Clinical Note Generation \\ and Patient Communication \\& Education , moderately in Medical Research Assistance \\ and Clinical Decision Support , and worst in Administration \\& Workflow .",
+    "char_start": 20763,
+    "char_end": 21024,
+    "sentence_index": 114,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec009",
+    "text": "Reasoning models DeepSeek R1 and o3-mini led overall with win-rates of 0.66 and 0.64, respectively, though Claude models offer competitive performance (win-rate of $ 0.63$) at lower computational cost.",
+    "char_start": 21025,
+    "char_end": 21226,
+    "sentence_index": 115,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec009",
+    "text": "Through our public leaderboard and shared codebase , \\ establishes infrastructure for ongoing collaborative assessment as models evolve, advancing medical AI evaluation that better reflects the complexity of real-world medical practice.",
+    "char_start": 21227,
+    "char_end": 21463,
+    "sentence_index": 116,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Motivation and related work.",
+    "char_start": 21465,
+    "char_end": 21493,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Most LLM evaluations in medicine still rely on closed\u2011form question\u2011answering over exam\u2011style datasets such as MedQA and MedMCQA , with only $ $5\\% incorporating real EHR data and very few addressing free\u2011text generation tasks or cost\u2011aware metrics medqa,medmcqa,wornow2025contextcluesevaluatinglong .",
+    "char_start": 21494,
+    "char_end": 21795,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Large\u2011scale Natural Language Processing (NLP) meta\u2011benchmarks ( HELM , BIG\u2011Bench ) demonstrate the value of task diversity and multi\u2011metric scoring liang2023holistic, bigbench , while biomedical efforts like ClinicBench liu2024large or MMedBench qiu2024towards ) each advance a single dimension (e.g.\\ multimodality or cost-aware metrics) without clinician\u2011validated scope or extensible tooling.",
+    "char_start": 21796,
+    "char_end": 22191,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "Recent work on HealthBench arora2025healthbench addresses some of these limitations by incorporating physician-developed rubrics for 5,000 health conversations, but lacks a comprehensive taxonomy of medical tasks and is done with synthetic data.",
+    "char_start": 22192,
+    "char_end": 22437,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Our goal is to close these gaps by co\u2011designing, with clinicians, a taxonomy\u2011guided benchmark suite that (i) spans the full spectrum of real medical work, (ii) uses both public and private medical record data, and (iii) uses evaluation protocols that align with clinician judgment.",
+    "char_start": 22438,
+    "char_end": 22719,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec011",
+    "text": "Early attempts ( BigBIO , ClinicBench) at creating a taxonomy of tasks in medical settings either harmonize datasets into broad categories without clinician input or collapse heterogeneous skills under a single ``generation'' label bigbio,liu2024large .",
+    "char_start": 22721,
+    "char_end": 22974,
+    "sentence_index": 122,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec011",
+    "text": "To ensure our benchmarks accurately reflect the complexity of medical practice, we developed a taxonomy that mirrors how clinicians conceptualize their daily work.",
+    "char_start": 22975,
+    "char_end": 23138,
+    "sentence_index": 123,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec011",
+    "text": "By defining a hierarchical structure, we guarantee that each benchmark maps to a concrete medical activity.",
+    "char_start": 23139,
+    "char_end": 23246,
+    "sentence_index": 124,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "Our taxonomy consists of three levels:\n\nCategory: A broad domain of medical activity (e.g., Clinical Decision Support ).",
+    "char_start": 23247,
+    "char_end": 23367,
+    "sentence_index": 125,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "Subcategory: A group of related tasks within a Category (e.g., Supporting Diagnostic Decisions ).",
+    "char_start": 23368,
+    "char_end": 23465,
+    "sentence_index": 126,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "Task: A discrete action taken during the delivery of medical care (e.g., Generate differential diagnoses ).",
+    "char_start": 23466,
+    "char_end": 23573,
+    "sentence_index": 127,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": "This structure enables systematic coverage of the medical care landscape while maintaining clear boundaries between distinct activities that care providers perform.",
+    "char_start": 23575,
+    "char_end": 23739,
+    "sentence_index": 128,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec012",
+    "text": "We based our taxonomy on tasks identified in a JAMA review .",
+    "char_start": 23741,
+    "char_end": 23801,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec012",
+    "text": "Working with a clinician (MK), we reorganized these tasks into functional themes that reflect real-world activities, resulting in 98 distinct tasks organized into 21 subcategories within five categories:\n\nClinical Decision Support\nClinical Documentation\nPatient Communication \\& Education\nMedical Research Assistance\nAdministration \\& Workflow\n\nTwo principles guided our taxonomy development:\n\nMedical relevance: Each task maps directly to actions routinely performed by care providers.",
+    "char_start": 23802,
+    "char_end": 24288,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec012",
+    "text": "Clear boundaries: Categories and subcategories were defined to minimize overlap while preserving meaningful functional distinctions.",
+    "char_start": 24289,
+    "char_end": 24421,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "To validate our initial taxonomy, we designed a two-part survey completed by 29 practicing clinicians across 14 medical specialties.",
+    "char_start": 24423,
+    "char_end": 24555,
+    "sentence_index": 132,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "More information on participating clinicians can be found in Appendix .",
+    "char_start": 24556,
+    "char_end": 24627,
+    "sentence_index": 133,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "The survey assessed both categorical organization and real-world relevance:\n\nIn the first section, clinicians assigned each of our 21 subcategories to one of the 5 main categories.",
+    "char_start": 24628,
+    "char_end": 24808,
+    "sentence_index": 134,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "This exercise tested whether our taxonomy structure matched how clinicians naturally organize medical tasks.",
+    "char_start": 24809,
+    "char_end": 24917,
+    "sentence_index": 135,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "In the second section, clinicians evaluated the comprehensiveness of our taxonomy on a 5-point scale, where a score of 5 means that our categorization covered all routine medical tasks and a score of 1 means it covered very few.",
+    "char_start": 24919,
+    "char_end": 25147,
+    "sentence_index": 136,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec013",
+    "text": "They also provided feedback through an open dialogue box where they could suggest missing tasks and recommend terminology improvements.",
+    "char_start": 25148,
+    "char_end": 25283,
+    "sentence_index": 137,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec013",
+    "text": "This systematic validation approach evaluated both the taxonomy's organizational logic and its comprehensiveness in representing actual medical tasks.",
+    "char_start": 25284,
+    "char_end": 25434,
+    "sentence_index": 138,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec013",
+    "text": "Based on the comments, we refined definitions and expanded the taxonomy to have 5 categories, 22 subcategories, and 121 tasks.",
+    "char_start": 25436,
+    "char_end": 25562,
+    "sentence_index": 139,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "To construct a comprehensive suite of 35 benchmarks spanning our taxonomy, we employed a three-tiered dataset curation strategy:\n\n[leftmargin=1.5em]\nExisting benchmarks : We incorporated existing benchmarks from public or gated sources (e.g., MedQA, MIMIC-IV Billing Code, ACI-Bench) to ensure broad subcategory coverage.",
+    "char_start": 25564,
+    "char_end": 25885,
+    "sentence_index": 140,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec015",
+    "text": "Reformulated benchmarks : We transformed previously unevaluated medical data collections into \"reformulated benchmarks\" by applying standardized prompt templates and specifying evaluation metrics.",
+    "char_start": 25886,
+    "char_end": 26082,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec015",
+    "text": "This approach addressed subcategories where datasets existed but lacked LLM-ready evaluation benchmarks.",
+    "char_start": 26083,
+    "char_end": 26187,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec015",
+    "text": "New benchmarks : To address the under\u2011representation of Administration \\& Workflow , we partnered with Stanford Healthcare to curate private datasets for tasks that are routinely done in health systems but for which benchmark datasets do not exist (e.g.\\, referral triage, scheduling).",
+    "char_start": 26188,
+    "char_end": 26473,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec015",
+    "text": "Each benchmark is labeled by source type (existing / reformulated / new) and access level (public / gated / private), with the provenance documented in the \\ repository.",
+    "char_start": 26475,
+    "char_end": 26644,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec016",
+    "text": "To transform each curated dataset into a \\ benchmark, we defined three components for every item in the dataset:\n\nContext: the raw input presented to the LLM (e.g.\\, a clinical note, patient message, or structured EHR record).",
+    "char_start": 26646,
+    "char_end": 26872,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "Prompt: a standardized instruction template to elicit consistent, task-appropriate responses (e.g.\\, \u201cAnswer in 2\u20133 sentences\u201d for open-ended summaries, or MCQ framing for multiple-choice questions).",
+    "char_start": 26873,
+    "char_end": 27072,
+    "sentence_index": 146,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "Evaluation Metric: a pre-specified scoring method matched to the task type:\n[nosep,leftmargin=1em]\nExact-match accuracy for single\u2010token or numeric outputs (e.g.\\, selecting the correct option in MedQA).",
+    "char_start": 27073,
+    "char_end": 27276,
+    "sentence_index": 147,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "Micro-F1 for multi-label classification tasks (e.g.\\, ICD-10 code assignment).",
+    "char_start": 27277,
+    "char_end": 27355,
+    "sentence_index": 148,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "LLM-jury ensemble for open-ended text generation: we use a three-model Likert-scale protocol assessing medical accuracy, completeness and clarity, and secondary metrics, ROUGE and BERTScore, to capture lexical and semantic overlap.",
+    "char_start": 27356,
+    "char_end": 27587,
+    "sentence_index": 149,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "Gold Standard Response (Optional): the reference output (numeric result, classification label, or sample text) against which the model's response is scored (e.g., \"4\" in response to \"What's a patient's HAS-BLED score?\").",
+    "char_start": 27589,
+    "char_end": 27809,
+    "sentence_index": 150,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "While most benchmarks include a gold standard, our framework accommodates benchmarks without one, such as NoteExtract, providing flexibility for future evaluation needs.",
+    "char_start": 27810,
+    "char_end": 27979,
+    "sentence_index": 151,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "Table illustrates these components for the HeadQA benchmark (subcategory: Providing Clinical Knowledge Support) and the MedDialog benchmark (subcategory: Patient-Provider Messaging).",
+    "char_start": 27981,
+    "char_end": 28163,
+    "sentence_index": 152,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "We found quality issues in some of the gold standard responses for reformulated benchmarks.",
+    "char_start": 28165,
+    "char_end": 28256,
+    "sentence_index": 153,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "For example, gold standard responses in the MIMIC-RRS benchmark occasionally contained information from a patient's EHR that was not passed into the model's context.",
+    "char_start": 28257,
+    "char_end": 28422,
+    "sentence_index": 154,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec016",
+    "text": "To assess the impact of these low-quality gold standard responses, we conducted a sensitivity analysis by filtering \"problematic\" gold standard responses using an LLM judge and recalculating metrics (Appendix ).",
+    "char_start": 28423,
+    "char_end": 28634,
+    "sentence_index": 155,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec016",
+    "text": "Model rankings remained unchanged, as instances with \"problematic\" and \"non-problematic\" gold standard responses received similar jury scores.",
+    "char_start": 28635,
+    "char_end": 28777,
+    "sentence_index": 156,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec016",
+    "text": "This stability exists because our LLM-jury (prompt in Appendix ) uses gold standard responses only when needed.",
+    "char_start": 28778,
+    "char_end": 28889,
+    "sentence_index": 157,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec016",
+    "text": "[ht]\n\n1.2\n2pt\n|l|p 4.5cm |p 4.3cm |p 2.4cm |\n\ngray!10 Benchmark & Context & Prompt & Evaluation\\\n\nHeadQA &\nQuestion: In the stools of a 6-year-old boy with diarrhea and abdominal pain, a packet of parasite eggs surrounded by a transparent membrane is observed.",
+    "char_start": 28891,
+    "char_end": 29151,
+    "sentence_index": 158,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec016",
+    "text": "Which treatment do you consider most appropriate?",
+    "char_start": 29152,
+    "char_end": 29201,
+    "sentence_index": 159,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec016",
+    "text": "@ ll@\nA.",
+    "char_start": 29203,
+    "char_end": 29211,
+    "sentence_index": 160,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec016",
+    "text": "Praziquantel & B.",
+    "char_start": 29212,
+    "char_end": 29229,
+    "sentence_index": 161,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec016",
+    "text": "Azithromycin\n\nC.",
+    "char_start": 29230,
+    "char_end": 29246,
+    "sentence_index": 162,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec016",
+    "text": "Metronidazole & D.",
+    "char_start": 29247,
+    "char_end": 29265,
+    "sentence_index": 163,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec016",
+    "text": "Albendazole\n\n&\nYou are a highly knowledgeable AI assistant specializing in biomedical sciences.",
+    "char_start": 29266,
+    "char_end": 29361,
+    "sentence_index": 164,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "Your task is to answer multiple-choice questions accurately based on the options provided.",
+    "char_start": 29362,
+    "char_end": 29452,
+    "sentence_index": 165,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec016",
+    "text": "Select the correct answer by outputting only the letter corresponding to your choice (A, B, C, or D).",
+    "char_start": 29453,
+    "char_end": 29554,
+    "sentence_index": 166,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec016",
+    "text": "Question: \\ Context\\\n\nAnswer:\n&\nExact Match\n\nAnswer: D\n\nMedDialog &\nPatient: I have had this pain in my left arm down to almost my wrist.",
+    "char_start": 29556,
+    "char_end": 29693,
+    "sentence_index": 167,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec016",
+    "text": "It first started where I would have a sharp pain between my armpit and boob.",
+    "char_start": 29694,
+    "char_end": 29770,
+    "sentence_index": 168,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec016",
+    "text": "It doesn't hurt all the time but has become more often lately.",
+    "char_start": 29771,
+    "char_end": 29833,
+    "sentence_index": 169,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec016",
+    "text": "It\u2019s an aching throbbing feeling but also a numbing weak feeling to where I lose my strength in my arm.",
+    "char_start": 29834,
+    "char_end": 29937,
+    "sentence_index": 170,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec016",
+    "text": "After a while it will pass but I don't know if it's something serious.",
+    "char_start": 29938,
+    "char_end": 30008,
+    "sentence_index": 171,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec016",
+    "text": "Need help.",
+    "char_start": 30009,
+    "char_end": 30019,
+    "sentence_index": 172,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec016",
+    "text": "Doctor: Hi, take this seriously, it could be a lump compressing on your nerves, or any infection.",
+    "char_start": 30021,
+    "char_end": 30118,
+    "sentence_index": 173,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec016",
+    "text": "You need an examination by a doctor to exactly judge what your symptoms mean and what is their cause.",
+    "char_start": 30119,
+    "char_end": 30220,
+    "sentence_index": 174,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec016",
+    "text": "I recommend you consult your doctor at the earliest.",
+    "char_start": 30221,
+    "char_end": 30273,
+    "sentence_index": 175,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec016",
+    "text": "&\nGenerate a one sentence summary of this patient-doctor conversation.",
+    "char_start": 30274,
+    "char_end": 30344,
+    "sentence_index": 176,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "&\nLLM Jury\n\nAccuracy: 4.88\n\nCase study of HeadQA and MedDialog, two benchmarks under MedHELM\n\nWe evaluated 9 state-of-the-art LLMs (Table ) under a uniform prompting and decoding regimen.",
+    "char_start": 30345,
+    "char_end": 30532,
+    "sentence_index": 177,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec018",
+    "text": "All models were queried via their respective APIs or local endpoints with sampling temperature set to 0 for deterministic outputs.",
+    "char_start": 30533,
+    "char_end": 30663,
+    "sentence_index": 178,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec018",
+    "text": "All experiments were conducted on a PHI-compliant shared cluster maintaining full HIPAA compliance.",
+    "char_start": 30664,
+    "char_end": 30763,
+    "sentence_index": 179,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "To quantify task performance, we computed:\n[nosep]\nPairwise win-rate: For each of the 35 benchmarks, we compared each model against every other; a ``win'' is assigned if a model's normalized score $ $ its rival's.",
+    "char_start": 30765,
+    "char_end": 30978,
+    "sentence_index": 180,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "We then averaged wins over all pairings.",
+    "char_start": 30979,
+    "char_end": 31019,
+    "sentence_index": 181,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec019",
+    "text": "Macro-average score: The overall performance score calculated by averaging results across all 35 benchmarks, with each benchmark weighted equally regardless of size (0\u20131 scale).",
+    "char_start": 31020,
+    "char_end": 31197,
+    "sentence_index": 182,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec020",
+    "text": "For open-ended benchmarks, early pipelines used a single \u201cLLM\u2011as\u2011Judge\u201d to score outputs gu2025surveyllmasajudge,Samuylova2025LLMJudge , but high variance and bias spurred the \u201cLLM\u2011as\u2011Jury\u201d paradigm, aggregating $k$ independent judgments for closer expert agreement madaan2024quantifyingvarianceevaluationbenchmarks,verga2024replacingjudgesjuriesevaluating .",
+    "char_start": 31199,
+    "char_end": 31557,
+    "sentence_index": 183,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec020",
+    "text": "Extensions like G\u2011Eval introduce chain-of-thought (CoT) self\u2011critique per juror, and tools such as SelfCheckGPT and FActScore target hallucination and factuality deepeval2024,manakul2023selfcheckgptzeroresourceblackboxhallucination,min2023factscorefinegrainedatomicevaluation .",
+    "char_start": 31558,
+    "char_end": 31835,
+    "sentence_index": 184,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec020",
+    "text": "\\ adopts a three\u2011member jury without CoT to balance reliability and runtime.",
+    "char_start": 31836,
+    "char_end": 31912,
+    "sentence_index": 185,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec020",
+    "text": "Evaluation using LLM-Jury\nWe selected a three-member jury based on\nprior research demonstrating that odd-numbered panels reduce tie\nscenarios while maintaining reliability .",
+    "char_start": 31914,
+    "char_end": 32087,
+    "sentence_index": 186,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec020",
+    "text": "The jury composition (GPT-4o, Claude 3.7 Sonnet, LLaMA 3.3 70B) was chosen to represent diverse\nmodel architectures and training approaches, minimizing systematic\nbias from any single provider.",
+    "char_start": 32088,
+    "char_end": 32281,
+    "sentence_index": 187,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec020",
+    "text": "We prompted each judge to score the model-generated responses on a 1\u20135 Likert scale according to three axes adopted from :\n[nosep]\nAccuracy: Factual correctness and adherence to medical guidelines.",
+    "char_start": 32282,
+    "char_end": 32479,
+    "sentence_index": 188,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec020",
+    "text": "Completeness: Thoroughness in addressing all aspects of the query.",
+    "char_start": 32480,
+    "char_end": 32546,
+    "sentence_index": 189,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec020",
+    "text": "Clarity: Organization, readability, and easy to understand language.",
+    "char_start": 32547,
+    "char_end": 32615,
+    "sentence_index": 190,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec020",
+    "text": "For the NoteExtract benchmark, which requires restructuring free-form clinical care plans into a specified format without a gold standard response, we modified our evaluation approach.",
+    "char_start": 32617,
+    "char_end": 32801,
+    "sentence_index": 191,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec020",
+    "text": "We replaced the \"completeness\" criterion with \"structure,\" which assessed whether model responses properly reorganized the input text according to the requested format.",
+    "char_start": 32802,
+    "char_end": 32970,
+    "sentence_index": 192,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec020",
+    "text": "The final LLM-jury score for each response is the mean of all nine ratings (3 judges \u00d7 3 axes).",
+    "char_start": 32971,
+    "char_end": 33066,
+    "sentence_index": 193,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec020",
+    "text": "Clinician Rating\nTo validate the LLM-jury approach, we collected clinician ratings on a subset of two open-ended benchmarks (MEDIQA and ACI-Bench).",
+    "char_start": 33068,
+    "char_end": 33215,
+    "sentence_index": 194,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec020",
+    "text": "We selected these benchmarks because they were publicly available (facilitating annotation) and represent different categories (Patient Communication and Education and Clinical Note Generation, respectively).",
+    "char_start": 33216,
+    "char_end": 33424,
+    "sentence_index": 195,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec020",
+    "text": "20 clinicians across various specialties each scored a subset of responses on the same three axes, with at least two clinicians per instance.",
+    "char_start": 33425,
+    "char_end": 33566,
+    "sentence_index": 196,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec020",
+    "text": "Clinician\u2013LLM Agreement Metrics\nWe assessed agreement between the LLM-jury and clinicians via two intraclass correlation coefficients (ICC), after applying z-score normalization to each rater\u2019s composite (mean of the three axis ratings) to remove scale biases:\n\\[\nz_ ij = x_ ij - x _i s_i \\,,\n\\]\nwhere \\(x_ ij \\) is rater \\(i\\)\u2019s composite on instance \\(j\\).",
+    "char_start": 33568,
+    "char_end": 33926,
+    "sentence_index": 197,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec020",
+    "text": "ICC(3,k)\\(_ z \\) : We treat the clinicians' mean and LLM jury mean as two fixed raters in a two-way mixed-effects model, thus, we compute\n\\[\nICC (3,k)\n= MS_ cases - MS_ MS_ cases , k=2,\n\\]\nto quantify absolute agreement.",
+    "char_start": 33928,
+    "char_end": 34148,
+    "sentence_index": 198,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec020",
+    "text": "Average Clinician\u2013Clinician ICC\\(_ z \\) : For every pair of clinicians who scored at least two common instances, we z-normalize each rater\u2019s composite scores and compute ICC(3,k=2).",
+    "char_start": 34149,
+    "char_end": 34330,
+    "sentence_index": 199,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec020",
+    "text": "We then average these pairwise ICCs (and bootstrap a 95 \\% CI) to give a representative inter-clinician agreement baseline.",
+    "char_start": 34331,
+    "char_end": 34454,
+    "sentence_index": 200,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec020",
+    "text": "Together, these metrics measure (i) the fidelity of LLM-jury to expert clinician rating and (ii) whether LLM\u2013Clinician alignment approaches inter-clinician agreement.",
+    "char_start": 34456,
+    "char_end": 34622,
+    "sentence_index": 201,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec020",
+    "text": "ROUGE and BERTScore were also computed for all open-ended benchmarks with gold\nstandard responses but used only as secondary metrics due to their limited alignment with\nclinical judgment.",
+    "char_start": 34624,
+    "char_end": 34811,
+    "sentence_index": 202,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec021",
+    "text": "We tracked token usage for both benchmark prompts and jury evaluations across all models by counting input tokens and assuming the maximum allowed output tokens.",
+    "char_start": 34813,
+    "char_end": 34974,
+    "sentence_index": 203,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec021",
+    "text": "This approach was necessary because, for o3-mini, it is not possible to fully observe the token usage as the thinking tokens don't appear in the final output.",
+    "char_start": 34975,
+    "char_end": 35133,
+    "sentence_index": 204,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec021",
+    "text": "As a result, our cost estimates represent an upper bound.",
+    "char_start": 35134,
+    "char_end": 35191,
+    "sentence_index": 205,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec021",
+    "text": "Using published per-1M-token pricing as of 05/12/2025, we estimated the total cost per model.",
+    "char_start": 35192,
+    "char_end": 35285,
+    "sentence_index": 206,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec021",
+    "text": "Cost\u2013performance trade-offs were visualized by plotting mean win-rate against estimated total evaluation cost, highlighting models that optimize accuracy per dollar spent.",
+    "char_start": 35286,
+    "char_end": 35457,
+    "sentence_index": 207,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec021",
+    "text": "By integrating clinician\u2011validated taxonomy design, a balanced mix of public and private datasets, and LLM\u2011jury evaluation, our benchmark addresses the three structural gaps identified in earlier work\u2014task diversity, medical grounding, and metric fidelity\u2014while providing transparent cost accounting for real\u2011world deployment decisions.",
+    "char_start": 35459,
+    "char_end": 35795,
+    "sentence_index": 208,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec022",
+    "text": "Overview 1\nClinical Decision Support 2\n\nDefinition\nSubcategories and Tasks\n\nClinical Note Generation 3\n\nDefinition\nSubcategories and Tasks\n\nPatient Communication and Education 5\n\nDefinition\nSubcategories and Tasks\n\nMedical Research Assistance 7\n\nDefinition\nSubcategories and Tasks\n\nAdministration and Workflow 9\n\nDefinition\nSubcategories and Tasks\n\nTotal Categories: 5\nEntities per Category:\n\nDefinition: A description of the category.",
+    "char_start": 35797,
+    "char_end": 36232,
+    "sentence_index": 209,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec024",
+    "text": "Inclusion criteria: Guidelines determining which subcategories (and tasks) belong in the category.",
+    "char_start": 36233,
+    "char_end": 36331,
+    "sentence_index": 210,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec024",
+    "text": "Task performer: Individuals responsible for executing tasks under the category.",
+    "char_start": 36332,
+    "char_end": 36411,
+    "sentence_index": 211,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec024",
+    "text": "Subcategories: Each category contains multiple subcategories.",
+    "char_start": 36412,
+    "char_end": 36473,
+    "sentence_index": 212,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec024",
+    "text": "Tasks: Each subcategory comprises several tasks.",
+    "char_start": 36474,
+    "char_end": 36522,
+    "sentence_index": 213,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec024",
+    "text": "Category\n- Definition\n- Inclusion criteria\n- Task performer\n- Sub category\n- Task\n- Task\n- Task\n- Sub category\n- Task\n- Task\n- Task\n\nDefinition: Analyzing patient-specific data to provide evidence-based recommendations to clinicians.",
+    "char_start": 36524,
+    "char_end": 36757,
+    "sentence_index": 214,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec025",
+    "text": "Inclusion criteria: Actions generating actionable insights based on patient data and medical evidence.",
+    "char_start": 36759,
+    "char_end": 36861,
+    "sentence_index": 215,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec025",
+    "text": "Task performer: Healthcare professionals (clinicians, nurses, and other practitioners).",
+    "char_start": 36863,
+    "char_end": 36950,
+    "sentence_index": 216,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec025",
+    "text": "Subcategories and Tasks:\n\nSupporting Diagnostic Decisions\n\nRecognize disease patterns from symptoms/vitals\nInterpret diagnostic tests (ECG, spirometry)\nGenerate follow-up questions\nGenerate differential diagnoses\nInterpret lab results\nDetect image findings\nPerform medical calculations\nEvaluate social determinants of health\nTrack lab trends\nProcess intake information\n\nPlanning Treatments\n\nCheck drug interactions\nMatch protocols / screen contraindications\nSuggest clinical pathways\nPredict treatment response\nMake collaborative decisions\nEvaluate treatment accessibility\n\nPredicting Risks and Outcomes\n\nPredict deterioration, readmission, disease progression\nPredict outcomes, adverse events, discharge readiness\nPredict need for procedures or referrals\nManage preventive screening\n\nProviding Clinical Knowledge Support\n\nApply guidelines and best practices\nAnswer medical knowledge questions\nTrack protocol compliance\nAssess care quality\n\nDefinition: Creating structured records of patient care.",
+    "char_start": 36952,
+    "char_end": 37949,
+    "sentence_index": 217,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec026",
+    "text": "Inclusion criteria: Actions producing or modifying official clinical records.",
+    "char_start": 37951,
+    "char_end": 38028,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec026",
+    "text": "Task performer: Providers, scribes, and documentation specialists.",
+    "char_start": 38030,
+    "char_end": 38096,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec026",
+    "text": "Subcategories and Tasks:\n\nDocumenting Patient Visits\n\nGenerate progress, consultation, ED, admission, and discharge notes\nSynthesize external/internal records\nSummarize clinical documents\nGenerate team assessments\n\nRecording Procedures\n\nGenerate OR, bedside, specialized procedure notes\n\nDocumenting Diagnostic Reports\n\nGenerate imaging, pathology, test, and genomic reports\n\nDocumenting Care Plans\n\nDocument treatment plans, care protocols, nursing plans, advance planning\n\nDefinition: Transmitting health information to enable patient understanding.",
+    "char_start": 38098,
+    "char_end": 38649,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec027",
+    "text": "Inclusion criteria: Acts that support informed patient participation.",
+    "char_start": 38651,
+    "char_end": 38720,
+    "sentence_index": 221,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec027",
+    "text": "Task performer: Providers, coordinators, educators.",
+    "char_start": 38722,
+    "char_end": 38773,
+    "sentence_index": 222,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec027",
+    "text": "Subcategories and Tasks:\n\nProviding Education Resources\n\nSimplify disease info, risk factors, treatment\nExplain insurance and billing\n\nDelivering Personalized Instructions\n\nGenerate medication, procedure, and home care instructions\nExplain follow-up and recovery\n\nPatient-Provider Messaging\n\nTriage messages, analyze symptoms\nHandle refills, appointments, questions\nShare results, draft responses\n\nEnhancing Accessibility\n\nGenerate visual aids, translate content, make content accessible\n\nFacilitating Engagement\n\nSend reminders, preventive care, track goals\nCollect feedback, support counseling and groups\n\nDefinition: Analyzing clinical data and literature to advance medical knowledge.",
+    "char_start": 38775,
+    "char_end": 39463,
+    "sentence_index": 223,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec028",
+    "text": "Inclusion criteria: Actions transforming data into scientific evidence.",
+    "char_start": 39465,
+    "char_end": 39536,
+    "sentence_index": 224,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec028",
+    "text": "Task performer: Researchers and epidemiologists.",
+    "char_start": 39538,
+    "char_end": 39586,
+    "sentence_index": 225,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec028",
+    "text": "Subcategories and Tasks:\n\nConducting Literature Research\n\nScreen reviews, summarize papers\nAnalyze citations, synthesize evidence, identify gaps\n\nAnalyzing Research Data\n\nAnalyze trials, compare treatments, assess outcomes\nConduct cohort studies\n\nRecording Research Processes\n\nSupport protocols, grants, manuscripts, statistics\n\nEnsuring Research Quality\n\nValidate methods, assess bias, handle regulatory needs\n\nManaging Enrollment\n\nScreen and match patients, track and document recruitment\n\nDefinition: Orchestrating clinical operations from scheduling to billing.",
+    "char_start": 39588,
+    "char_end": 40153,
+    "sentence_index": 226,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec029",
+    "text": "Inclusion criteria: Actions managing logistics, resources, and flow.",
+    "char_start": 40155,
+    "char_end": 40223,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec029",
+    "text": "Task performer: Administrators, staff, billing specialists.",
+    "char_start": 40225,
+    "char_end": 40284,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec029",
+    "text": "Subcategories and Tasks:\n\nScheduling Resources and Staff\n\nSchedule staff, manage inventory, equipment, and facilities\nMonitor institutional metrics\n\nOverseeing Financial Activities\n\nGenerate/document billing, insurer communication\nAnalyze revenue/costs, estimate out-of-pocket costs\n\nOrganizing Workflow Processes\n\nSchedule appointments, process referrals/documents\nHandle information requests\n\nCare Coordination and Planning\n\nEvaluate admissions, coordinate providers\nManage post-discharge planning and transitions\n\nWe validated our task taxonomy through a survey of 29 clinicians representing 14 medical specialties across 4 institutions.",
+    "char_start": 40286,
+    "char_end": 40926,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec030",
+    "text": "Tables and provide detailed breakdowns of participant specialties and affiliations.",
+    "char_start": 40927,
+    "char_end": 41010,
+    "sentence_index": 230,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec030",
+    "text": "[htbp]\n\nll\n\nAffiliation & Number of Participants\n\nStanford University & 26\n\nMayo Clinic & 1\n\nOregon Health \\& Science University & 1\n\nFlourish Research & 1\n\nNumber of participants per affiliation.",
+    "char_start": 41012,
+    "char_end": 41208,
+    "sentence_index": 231,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec030",
+    "text": "[htbp]\n\nll\n\nSpeciality & Number of Participants\n\nInternal Medicine & 9\n\nRadiology & 2\n\nOtolaryngology & 2\n\nNeurology & 2\n\nFamily Medicine & 2\n\nDermatology & 2\n\nAnesthesiology & 2\n\nRadiation Oncology & 2\n\nEmergency Medicine & 1\n\nOphthalmology & 1\n\nPsychiatry & 1\n\nPathology & 1\n\nPediatrics & 1\n\nNuclear Medicine & 1\n\nNumber of participants per speciality.",
+    "char_start": 41210,
+    "char_end": 41564,
+    "sentence_index": 232,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec031",
+    "text": "-1.5em\n[!htbp]\n\n1.3\n3pt\n!",
+    "char_start": 41566,
+    "char_end": 41591,
+    "sentence_index": 233,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec031",
+    "text": "|p 2.8cm |p 3.2cm |p 7.7cm |p 2cm |p 2cm |\n\ngray!10 Category & Dataset Name & Dataset Description & Access Level & Curation\\\n\n10 * Clinical Decision\\\n& MedCalc-Bench & A dataset which consists of a patient note, a question requesting to compute a specific medical value, and a ground truth answer.",
+    "char_start": 41592,
+    "char_end": 41889,
+    "sentence_index": 234,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& CLEAR & A dataset that evaluates medical condition detection from patient notes using yes/no/maybe classifications.",
+    "char_start": 41890,
+    "char_end": 42028,
+    "sentence_index": 235,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec031",
+    "text": "& Private & Formulated\n\n& MTSamples & A dataset that provides transcribed medical reports and prompts models to generate appropriate treatment plans.",
+    "char_start": 42029,
+    "char_end": 42178,
+    "sentence_index": 236,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec031",
+    "text": "& Public & Formulated\n\n& Medec & A dataset containing medical narratives with error detection and correction pairs.",
+    "char_start": 42179,
+    "char_end": 42294,
+    "sentence_index": 237,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& EHRSHOT & A dataset given a patient record of EHR codes, classifying if an event will occur at a future date or not.",
+    "char_start": 42295,
+    "char_end": 42434,
+    "sentence_index": 238,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& HeadQA & A collection of biomedical multiple-choice questions for testing medical knowledge.",
+    "char_start": 42435,
+    "char_end": 42549,
+    "sentence_index": 239,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& Medbullets & A USMLE-style medical question dataset with multiple-choice answers and explanations.",
+    "char_start": 42550,
+    "char_end": 42671,
+    "sentence_index": 240,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& MedAlign & A dataset that asks models to answer questions/follow instructions over longitudinal EHR.",
+    "char_start": 42672,
+    "char_end": 42795,
+    "sentence_index": 241,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& ADHD-Behavior & A dataset that classifies whether a clinical note contains a clinician recommendation for parent training in behavior management, which is the first-line evidence-based treatment for young children with ADHD.",
+    "char_start": 42796,
+    "char_end": 43042,
+    "sentence_index": 242,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& ADHD-MedEffects & A dataset that classifies whether a clinical note contains documentation of side effect monitoring (recording of absence or presence of medication side effects), as recommended in clinical practice guidelines.",
+    "char_start": 43043,
+    "char_end": 43289,
+    "sentence_index": 243,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n6 * Clinical Note\\\n& DischargeMe & A dataset that provides discharge text as well as the radiology report text collected from MIMIC-IV data such that models can generate discharge instructions and brief hospital course information generation.",
+    "char_start": 43290,
+    "char_end": 43549,
+    "sentence_index": 244,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& ACI-Bench & A dataset of patient-doctor conversations paired with structured clinical notes.",
+    "char_start": 43550,
+    "char_end": 43664,
+    "sentence_index": 245,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& MTSamples Procedures & A dataset that provides a patient note regarding an operation, with the objective to document the procedure.",
+    "char_start": 43665,
+    "char_end": 43819,
+    "sentence_index": 246,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec031",
+    "text": "& Public & Formulated\n\n& MIMIC-RRS & A dataset containing radiology reports with findings sections from MIMIC-III paired with their corresponding impression sections, used for generating radiology report summaries.",
+    "char_start": 43820,
+    "char_end": 44034,
+    "sentence_index": 247,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec031",
+    "text": "& Gated & Formulated\n\n& MIMIC-BHC & A summarization task using a curated collection of preprocessed discharge notes paired with their corresponding brief hospital course (BHC) summaries.",
+    "char_start": 44035,
+    "char_end": 44221,
+    "sentence_index": 248,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& NoteExtract & A dataset containing free form text of a clinical health worker care plan, with the associated goal being to restructure that text into a given format.",
+    "char_start": 44222,
+    "char_end": 44409,
+    "sentence_index": 249,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n8 * Patient\\ \\ Education\n& MedicationQA & A dataset containing open text question-answer pairs regarding consumer health questions about medication.",
+    "char_start": 44410,
+    "char_end": 44575,
+    "sentence_index": 250,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& PatientInstruct & A dataset containing case details used to generate customized post-procedure patient instructions.",
+    "char_start": 44576,
+    "char_end": 44715,
+    "sentence_index": 251,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& MedDialog & A collection of doctor-patient conversations with corresponding summaries.",
+    "char_start": 44716,
+    "char_end": 44821,
+    "sentence_index": 252,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& MedConfInfo & A dataset of clinical notes from adolescent patients used to identify sensitive protected health information that should be restricted from parental access.",
+    "char_start": 44822,
+    "char_end": 45015,
+    "sentence_index": 253,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& MEDIQA-QA & A dataset including a medical question, a set of candidate answers,relevance annotations for ranking, and additional context to evaluate understandingand retrieval capabilities in a medical setting.",
+    "char_start": 45016,
+    "char_end": 45245,
+    "sentence_index": 254,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& MentalHealth & A dataset containing a counselor and mental health patient conversation, where the objective is to generate an empathetic counselor response.",
+    "char_start": 45246,
+    "char_end": 45425,
+    "sentence_index": 255,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& PrivacyDetection & A dataset that determines if a message leaks any confidential information from the patient & Private & New\n\n& ProxySender & A dataset that determines if a message was sent by a proxy user & Private & New\n\n6 * Medical Research\\\n& PubMedQA & A dataset that provides pubmed abstracts and asks associated questions yes/no/maybe questions.",
+    "char_start": 45426,
+    "char_end": 45798,
+    "sentence_index": 256,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& EHRSQL & A dataset that generates an SQL query that would be used in clinical research given a natural language instruction.",
+    "char_start": 45799,
+    "char_end": 45946,
+    "sentence_index": 257,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n& BMT-Status & A dataset containing patient notes with associated questions and answers related to bone marrow transplantation.",
+    "char_start": 45947,
+    "char_end": 46095,
+    "sentence_index": 258,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& RaceBias & A collection of LLM outputs in response to medical questions with race-based biases, with the objective being to classify whether the output contains racially biased content.",
+    "char_start": 46096,
+    "char_end": 46300,
+    "sentence_index": 259,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec031",
+    "text": "& Public & Formulated\n\n& N2C2-CT & A dataset that provides clinical notes and asks the model to classify whether the patient is a valid candidate for a provided clinical trial.",
+    "char_start": 46301,
+    "char_end": 46477,
+    "sentence_index": 260,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& MedHallu & A dataset of PubMed articles and associated questions, with the objective being to classify whether the answer is factual or hallucinated.",
+    "char_start": 46478,
+    "char_end": 46649,
+    "sentence_index": 261,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec031",
+    "text": "& Public & Existing\n\n5 * Administration\\ Workflow\n& HospiceReferral & A dataset evaluating performance in identifying appropriate patient referrals to hospice care.",
+    "char_start": 46650,
+    "char_end": 46814,
+    "sentence_index": 262,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& MIMIC-IV Billing Code & A dataset pairing clinical notes from MIMIC-IV with corresponding ICD-10 billing codes.",
+    "char_start": 46815,
+    "char_end": 46945,
+    "sentence_index": 263,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec031",
+    "text": "& Gated & Existing\n\n& ClinicReferral & A dataset containing manually curated answers to questions regarding patient referrals to the Sequoia clinic.",
+    "char_start": 46946,
+    "char_end": 47094,
+    "sentence_index": 264,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& CDI-QA & A dataset built from Clinical Document Integrity (CDI) notes, to assess the ability to answer verification questions from previous notes.",
+    "char_start": 47095,
+    "char_end": 47260,
+    "sentence_index": 265,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec031",
+    "text": "& Private & New\n\n& ENT-Referral & A dataset designed to evaluate performance in identifying appropriate patient referrals to Ear, Nose, and Throat specialists.",
+    "char_start": 47261,
+    "char_end": 47420,
+    "sentence_index": 266,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec031",
+    "text": "& Private & New\n\nOverview of all 35 benchmarks included in MedHELM, categorized by category, access level and curation status.",
+    "char_start": 47421,
+    "char_end": 47547,
+    "sentence_index": 267,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec032",
+    "text": "We assessed the quality of gold standard responses for reformulated benchmarks.",
+    "char_start": 47549,
+    "char_end": 47628,
+    "sentence_index": 268,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec032",
+    "text": "Using GPT-4o-mini as a classifier, we identified reasonable versus unreasonable gold standard responses with the following prompt:\nEvaluate the following text: \\ prompt\\ \\ context\\ against the following\nreference: \\ gold standard response\\ .",
+    "char_start": 47629,
+    "char_end": 47870,
+    "sentence_index": 269,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec032",
+    "text": "Return a score of 0 if the gold standard response appears\nto be using outside information that is not present in the input text\nand is not expected to be external knowledge known by a clinician,\nand thus is an unreasonable gold standard response to the question.",
+    "char_start": 47871,
+    "char_end": 48133,
+    "sentence_index": 270,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec032",
+    "text": "Give a score of 1 if the reference is a reasonable response to the\nprompt.",
+    "char_start": 48134,
+    "char_end": 48208,
+    "sentence_index": 271,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec032",
+    "text": "Only give a score of 0 if the reference does not make sense\nwith the prompt or the question couldn't be answered in this way\nwithout additional information.",
+    "char_start": 48209,
+    "char_end": 48365,
+    "sentence_index": 272,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec032",
+    "text": "Only return the score, no other text.",
+    "char_start": 48366,
+    "char_end": 48403,
+    "sentence_index": 273,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec032",
+    "text": "As shown in Figure , 3 out of 5 reformulated benchmarks have less than 5\\% detected error in the gold standard response.",
+    "char_start": 48405,
+    "char_end": 48525,
+    "sentence_index": 274,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec032",
+    "text": "For the remaining 2 benchmarks (MIMIC-RRS and MTSamples-Procedures), our evaluation methodology proved robust to gold standard response imperfections, with consistent mean scores between flagged and accepted answers.",
+    "char_start": 48526,
+    "char_end": 48742,
+    "sentence_index": 275,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec032",
+    "text": "This resilience stems from our LLM-jury prompt design, which instructs judges to reference gold standards only when necessary.",
+    "char_start": 48743,
+    "char_end": 48869,
+    "sentence_index": 276,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec032",
+    "text": "[!htbp]\n\nfigures/answer_ablation.png\nWe filter the question-answer pairs into a positive and negative group via LLM-based filtering.",
+    "char_start": 48871,
+    "char_end": 49003,
+    "sentence_index": 277,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec032",
+    "text": "We see that the mean score of both groups remains relatively consistent, indicating stability in judging.",
+    "char_start": 49004,
+    "char_end": 49109,
+    "sentence_index": 278,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec033",
+    "text": "We calculate the minimum detectable effect at the benchmark level with the following formulation, where b is the benchmark, ij are two models to compare in a paired evaluation selected from all 9 models in $M$, $ _b^ ij $ is the standard deviation of the difference between the two selected model outputs for every question in the benchmark, and $n_b$ is the number of questions in the benchmark.",
+    "char_start": 49111,
+    "char_end": 49507,
+    "sentence_index": 279,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec033",
+    "text": "$ SD _b$ is the standard deviation over the total pairwise MDE scores for the given benchmark, $b$.",
+    "char_start": 49508,
+    "char_end": 49607,
+    "sentence_index": 280,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec033",
+    "text": "Additionally, we set $ =0.05$ and $ =0.20$\n\\[\nMDE _b = 1 | M | _ (i, j) M (z_ 1- 2 + z_ 1- ) _ b ^ (i,j) n_b\nSD _b\n\\]\n\nTable shows the MDE for each benchmark and supports that the differences identified between model performance are significant.",
+    "char_start": 49608,
+    "char_end": 49853,
+    "sentence_index": 281,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec033",
+    "text": "[!htbp]\n\nl|c\n\nBenchmark & MDE\n\nPatientInstruct & $0.008 0.002$\n\nMIMIC-RRS & $0.018 0.005$\n\nCLEAR & $0.054 0.003$\n\nENT-Referral & $0.045 0.005$\n\nNoteExtract & $0.009 0.011$\n\nCDI-QA & $0.050 0.007$\n\nN2C2 & $0.087 0.010$\n\nMentalHealth & $0.032 0.011$\n\nPrivacyDetection & $0.040 0.013$\n\nProxySender & $0.074 0.009$\n\nMIMIC-IV-BHC & $0.019 0.006$\n\nADHD-Behavior & $0.056 0.008$\n\nClinicReferral & $0.050 0.011$\n\nDischargeMe & $0.008 0.002$\n\nMedConfInfo & $0.031 0.004$\n\nEHRSHOT & $0.033 0.004$\n\nMIMIC-IV Billing Code & $0.015 0.003$\n\nBMT-Status & $0.079 0.009$\n\nHospiceReferral & $0.042 0.005$\n\nADHD-MedEffects & $0.032 0.009$\n\nMedAlign & $0.041 0.005$\n\nEHRSQL & $0.034 0.009$\n\nMTSamples Procedures & $0.020 0.010$\n\nACI-Bench & $0.012 0.002$\n\nMedicationQA & $0.012 0.004$\n\nMedCalc-Bench & $0.037 0.005$\n\nMEDIQA & $0.018 0.008$\n\nMedBullets & $0.079 0.006$\n\nMedDialog & $0.007 0.002$\n\nMTSamples & $0.011 0.002$\n\nMedec & $0.052 0.011$\n\nPubMedQA & $0.037 0.004$\n\nHeadQA & $0.030 0.007$\n\nMedHallu & $0.030 0.004$\n\nRaceBias & $0.092 0.016$\n\nMinimum Detectable Effect (MDE) values for various benchmarks\n\nWhile each jury prompt is customized for the given benchmark, we include the ACI-Bench jury prompt to serve as an example of how our LLM-Jury prompt is structured.",
+    "char_start": 49855,
+    "char_end": 51109,
+    "sentence_index": 282,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec034",
+    "text": "You are a medical expert tasked with evaluating the quality of a\ngenerated clinical note based on a doctor-patient conversation.",
+    "char_start": 51111,
+    "char_end": 51239,
+    "sentence_index": 283,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec034",
+    "text": "Your goal is to assess how well the note captures the clinical information from the conversation and\ncompare it to the reference note (gold standard) in terms of accruacy, completeness and clarity.",
+    "char_start": 51240,
+    "char_end": 51437,
+    "sentence_index": 284,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec034",
+    "text": "The conversation will be provided in these tags:\n<conversation> QUESTION </conversation>\nThe generated note will be provided in these tags:\n<response> RESPONSE </response>\nThe reference note will be provided in these tags:\n<gold_response> GOLD_RESPONSE </gold_response>\nCarefully review the <response> based on the <conversation> and compare it to the <gold_response> when needed.",
+    "char_start": 51438,
+    "char_end": 51818,
+    "sentence_index": 285,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec034",
+    "text": "For each of the following criteria, rate the response on a scale of 1 to 5 (1 = very poor, 5 = excellent),\nand provide a short justification for your score.",
+    "char_start": 51819,
+    "char_end": 51975,
+    "sentence_index": 286,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec034",
+    "text": "Evaluation Criteria:\nAccuracy (1-5) - Does the note provide correct clinical information based on the conversation?",
+    "char_start": 51976,
+    "char_end": 52091,
+    "sentence_index": 287,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec034",
+    "text": "Completeness (1-5) - Does the note include all important medical details from the conversation?",
+    "char_start": 52092,
+    "char_end": 52187,
+    "sentence_index": 288,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec034",
+    "text": "Clarity (1-5) - Is the note written clearly and organized in a standard clinical format for clinicians\nOutput Format:\nOutput the evaluation as a single valid JSON object matching the following structure:\n\"accuracy\": \"score\":0,\"explanation\":\"Explain why this score was given.\" ,\n\"completeness\": \"score\":0,\"explanation\":\"Explain why this score was given.\" ,\n\"clarity\": \"score\":0,\"explanation\":\"Explain why this score was given.\"\nEnsure the output is valid JSON:\n- Use **double quotes** (\") for all keys and string values.",
+    "char_start": 52188,
+    "char_end": 52707,
+    "sentence_index": 289,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec034",
+    "text": "- When quoting text or sections inside the explanations, use escaped double quotes (\\\") to\nmaintain valid JSON formatting.",
+    "char_start": 52708,
+    "char_end": 52830,
+    "sentence_index": 290,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec034",
+    "text": "- Do not include any additional information in the output.",
+    "char_start": 52831,
+    "char_end": 52889,
+    "sentence_index": 291,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec035",
+    "text": "Table summarizes the per-token inference costs of the LLMs used in MedHELM as of 05/12/2025.",
+    "char_start": 52891,
+    "char_end": 52983,
+    "sentence_index": 292,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec035",
+    "text": "[htpb]\n\nlcccc\n\n2 * Model & 2 * Release Date & 2 c Cost (per million tokens)\n\n(lr) 3-4\n& & Input Tokens & Output Tokens\n\nhttps://openai.com/api/pricing/ GPT-4o & 05/13/2024 & \\$2.50 & \\$10.00\n\nhttps://openai.com/api/pricing/ GPT-4o Mini & 07/18/2024 & \\$0.15 & \\$0.60\n\nhttps://azuremarketplace.microsoft.com/en-us/marketplace/apps/metagenai.llama-3-3-70b-instruct-offer?tab=PlansAndPrice Llama 3.3 Instruct (70B) & 12/06/2024 & \\$0.71 & \\$0.71\n\nhttps://cloud.google.com/vertex-ai/generative-ai/pricing Gemini 2.0 Flash & 02/01/2025 & \\$0.15 & \\$0.60\n\nhttps://cloud.google.com/vertex-ai/generative-ai/pricing Gemini 1.5 Pro (001) & 05/24/2024 & \\$1.25 & \\$5.00\n\nhttps://aws.amazon.com/bedrock/pricing/ Claude 3.5 Sonnet & 10/22/2024 & \\$3.00 & \\$15.00\n\nhttps://aws.amazon.com/bedrock/pricing/ Claude 3.7 Sonnet & 02/19/2025 & \\$3.00 & \\$15.00\n\nhttps://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/ o3-mini & 01/31/2025 & \\$1.20 & \\$4.84\n\nhttps://ai.azure.com/explore/models/DeepSeek-R1/version/1/registry/azureml-deepseek DeepSeek R1 & 01/20/2025 & \\$1.20 & \\$4.84\n\nPer-token inference costs of LLMs used in MedHELM.",
+    "char_start": 52985,
+    "char_end": 54130,
+    "sentence_index": 293,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec035",
+    "text": "sn-bibliography",
+    "char_start": 54132,
+    "char_end": 54147,
+    "sentence_index": 294,
+    "section_sentence_index": 2
+  }
+]

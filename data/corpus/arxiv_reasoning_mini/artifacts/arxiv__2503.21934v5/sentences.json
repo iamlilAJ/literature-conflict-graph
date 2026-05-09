@@ -1,0 +1,2927 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Recent math benchmarks for large language models (LLMs) such as MathArena indicate that state-of-the-art reasoning models achieve impressive performance on mathematical competitions like AIME, with the leading model, , achieving scores comparable to top human competitors.",
+    "char_start": 0,
+    "char_end": 272,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, these benchmarks evaluate models solely based on final numerical answers, neglecting rigorous reasoning and proof generation which are essential for real-world mathematical tasks.",
+    "char_start": 273,
+    "char_end": 461,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this, we introduce a comprehensive evaluation of full-solution reasoning for challenging mathematical problems.",
+    "char_start": 462,
+    "char_end": 584,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Using expert human annotators, we evaluated several state-of-the-art reasoning models on the six problems from the 2025 USAMO within hours of their release.",
+    "char_start": 585,
+    "char_end": 741,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Our results reveal that all tested models struggled significantly: only achieves a non-trivial score of $25\\%$, while all other models achieve less than $5\\%$.",
+    "char_start": 742,
+    "char_end": 901,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Through detailed analysis of reasoning traces, we identify the most common failure modes and find several unwanted artifacts arising from the optimization strategies employed during model training.",
+    "char_start": 902,
+    "char_end": 1099,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Overall, our results suggest that current LLMs are inadequate for rigorous mathematical reasoning tasks, highlighting the need for substantial improvements in reasoning and proof generation capabilities.",
+    "char_start": 1100,
+    "char_end": 1303,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "The advancement of reasoning models has significantly improved the mathematical capabilities of large language models (LLMs).",
+    "char_start": 1305,
+    "char_end": 1430,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Evaluation efforts like MathArena matharena demonstrate that these models achieve impressive performance on mathematical competitions such as AIME and HMMT.",
+    "char_start": 1431,
+    "char_end": 1587,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "However, these competitions only evaluate final numerical answers and do not require rigorous proof-based reasoning essential for most mathematical tasks.",
+    "char_start": 1588,
+    "char_end": 1742,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Current benchmarks that mitigate this issue either rely on formal verification tools like Lean minif2f,fimo,putnambench or focus on the evaluation of constructive proofs mathconstruct .",
+    "char_start": 1744,
+    "char_end": 1929,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "While these approaches are useful, the former does not take advantage of LLMs' strong natural language generation capabilities, and the latter covers only a limited subset of proofs.",
+    "char_start": 1930,
+    "char_end": 2112,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Only frieder2024 evaluate LLMs on full-solution reasoning, but their evaluation is focused on just two older non-reasoning models, therefore not presenting their analysis as a benchmark, and contains problems where some could appear in the training data.",
+    "char_start": 2113,
+    "char_end": 2367,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Therefore, it remains uncertain whether current reasoning LLMs can reliably address complex mathematical questions requiring rigorous reasoning, which are crucial in real-world mathematical contexts.",
+    "char_start": 2368,
+    "char_end": 2567,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "To overcome these limitations, we conduct the first evaluation of natural language proofs by LLMs on challenging problems from the 2025 USA Mathematical Olympiad (USAMO).",
+    "char_start": 2569,
+    "char_end": 2739,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "The USAMO represents one of the highest tiers of high school mathematics competitions in the United States, demanding detailed proofs and explanations analogous to the International Mathematical Olympiad (IMO).",
+    "char_start": 2740,
+    "char_end": 2950,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Participants qualify through prior competitions, including the AIME, but USAMO problems require significantly more rigorous and well-explained solutions.",
+    "char_start": 2951,
+    "char_end": 3104,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Overall, we find that current LLMs struggle significantly on USAMO problems, with the best-performing model achieving an average score of less than $25\\%$.",
+    "char_start": 3106,
+    "char_end": 3261,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Our evaluation reveals several critical failure modes, including flawed logic, unjustified assumptions, and a lack of creativity.",
+    "char_start": 3262,
+    "char_end": 3391,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "These findings underscore the substantial limitations of current LLMs in generating rigorous mathematical proofs.",
+    "char_start": 3393,
+    "char_end": 3506,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "In this report, we first outline our methodology in sec:meth , present detailed results and identify critical weaknesses in sec:results , and discuss several qualitative observations in sec:discussion .",
+    "char_start": 3507,
+    "char_end": 3709,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "-1mm\n\n-1mm\nThis section outlines the methodology used for evaluating the mathematical reasoning capabilities of the selected LLMs.",
+    "char_start": 3711,
+    "char_end": 3841,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec003",
+    "text": "Our approach prioritized accuracy, fairness, and transparency throughout each step, involving careful preparation and grading procedures.",
+    "char_start": 3842,
+    "char_end": 3979,
+    "sentence_index": 22,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec003",
+    "text": "[t]\n\nfigures/figure_1.pdf\n-2mm\nTwo problems of USAMO 2025.",
+    "char_start": 3981,
+    "char_end": 4039,
+    "sentence_index": 23,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec003",
+    "text": "The other problems are available in app:problems\n\n-0.2in\n\n-1mm\n\n-1mm\nWe selected the USAMO 2025, a highly prestigious mathematics competition comprising six proof-based problems administered over two days, as our benchmark.",
+    "char_start": 4040,
+    "char_end": 4263,
+    "sentence_index": 24,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec004",
+    "text": "This competition aligns perfectly with our evaluation objectives, as the questions are challenging, require detailed proofs for full credit, and are uncontaminated.",
+    "char_start": 4264,
+    "char_end": 4428,
+    "sentence_index": 25,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec004",
+    "text": "In fig:problems , we present two problems from the competition, with the remaining four available in app:problems .",
+    "char_start": 4429,
+    "char_end": 4544,
+    "sentence_index": 26,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec004",
+    "text": "For evaluation, we provided each model with the problems, prompting them explicitly to produce comprehensive and detailed proofs formatted in .",
+    "char_start": 4546,
+    "char_end": 4689,
+    "sentence_index": 27,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec004",
+    "text": "The full prompt instructions and details of used hyperparameters are available in app:exp_prompt .",
+    "char_start": 4690,
+    "char_end": 4788,
+    "sentence_index": 28,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec004",
+    "text": "To reduce variance, each model solved every problem four separate times.",
+    "char_start": 4789,
+    "char_end": 4861,
+    "sentence_index": 29,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "Solutions, excluding thought traces, were anonymized and converted into PDF format for grading.",
+    "char_start": 4862,
+    "char_end": 4957,
+    "sentence_index": 30,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "Both and were evaluated after our initial grading and were therefore not fully anonymous when presented to the judges.",
+    "char_start": 4958,
+    "char_end": 5076,
+    "sentence_index": 31,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "-1mm\n\n-1mm\nOur grading team consisted of four experts, each having substantial mathematical problem-solving experience as former national IMO team members or having participated in final-stage team selection processes for their countries.",
+    "char_start": 5077,
+    "char_end": 5315,
+    "sentence_index": 32,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec005",
+    "text": "Prior to the grading, judges received instructions detailing evaluation goals and methodologies.",
+    "char_start": 5316,
+    "char_end": 5412,
+    "sentence_index": 33,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec005",
+    "text": "These guidelines are accessible in our GitHub repository.",
+    "char_start": 5413,
+    "char_end": 5470,
+    "sentence_index": 34,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec005",
+    "text": "A trial run with three USAMO 2024 problems was conducted to familiarize evaluators with the grading approach and resolve ambiguities.",
+    "char_start": 5471,
+    "char_end": 5604,
+    "sentence_index": 35,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "Small misunderstandings were clarified during this session.",
+    "char_start": 5605,
+    "char_end": 5664,
+    "sentence_index": 36,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec005",
+    "text": "-1mm\n\n-1mm\n\nEach of the six problems from USAMO 2025 was independently evaluated by two evaluators, with each judge responsible for grading three unique problems.",
+    "char_start": 5666,
+    "char_end": 5828,
+    "sentence_index": 37,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec006",
+    "text": "This double grading method, modeled after the IMO's evaluation process, ensures consistency in our grading and decreases personal biases.",
+    "char_start": 5829,
+    "char_end": 5966,
+    "sentence_index": 38,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec006",
+    "text": "Since the official USAMO does not release standard solutions or grading schemes, we carefully developed a standardized grading scheme for each problem, drawing from reliable mathematical community resources, particularly the Art of Problem Solving (AoPS) forums.",
+    "char_start": 5968,
+    "char_end": 6230,
+    "sentence_index": 39,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec006",
+    "text": "All solutions from these sources were verified by our evaluators for accuracy before creating the grading scheme.",
+    "char_start": 6231,
+    "char_end": 6344,
+    "sentence_index": 40,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec006",
+    "text": "Following USAMO conventions, each solution was graded out of a maximum of seven points with partial credit given for significant and meaningful progress.",
+    "char_start": 6345,
+    "char_end": 6498,
+    "sentence_index": 41,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec006",
+    "text": "The finalized grading schemes are available in our GitHub repository and displayed on our website.",
+    "char_start": 6499,
+    "char_end": 6597,
+    "sentence_index": 42,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec006",
+    "text": "An example can be found in app:exp_grading .",
+    "char_start": 6598,
+    "char_end": 6642,
+    "sentence_index": 43,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec006",
+    "text": "Judges independently reviewed each assigned solution against the pre-established grading scheme.",
+    "char_start": 6644,
+    "char_end": 6740,
+    "sentence_index": 44,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec006",
+    "text": "When a solution did not perfectly align with the scheme, the approach was awarded points where appropriate.",
+    "char_start": 6741,
+    "char_end": 6848,
+    "sentence_index": 45,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec006",
+    "text": "Each judge documented their reasoning, including justification for each partial credit awarded.",
+    "char_start": 6849,
+    "char_end": 6944,
+    "sentence_index": 46,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec006",
+    "text": "These notes are also accessible on our website, with an example provided in app:exp_grading .",
+    "char_start": 6945,
+    "char_end": 7038,
+    "sentence_index": 47,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "Evaluators also documented prominent failure modes observed during grading, defined as the first instance of incorrect or inadequately explained reasoning.",
+    "char_start": 7040,
+    "char_end": 7195,
+    "sentence_index": 48,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "Specifically, mistakes were categorized into four classes:\n\n-2mm\n[leftmargin=25pt]\n0.01em\nLogic: Errors due to logical fallacies or unjustified leaps disrupting the reasoning.",
+    "char_start": 7196,
+    "char_end": 7371,
+    "sentence_index": 49,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "Assumption: Errors coming from the introduction of unproven or incorrect assumptions that undermined subsequent steps.",
+    "char_start": 7372,
+    "char_end": 7490,
+    "sentence_index": 50,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "Creativity: Errors resulting from fundamentally incorrect solution strategies due to the inability to identify the correct approach.",
+    "char_start": 7491,
+    "char_end": 7623,
+    "sentence_index": 51,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "Algebra/Arithmetic: Errors arising from critical algebraic or arithmetic miscalculations.",
+    "char_start": 7624,
+    "char_end": 7713,
+    "sentence_index": 52,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "We show examples of these errors in app:error_mode_examples .",
+    "char_start": 7715,
+    "char_end": 7776,
+    "sentence_index": 53,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "Additionally, noteworthy behaviors or trends in model-generated solutions were systematically logged for further analysis.",
+    "char_start": 7778,
+    "char_end": 7900,
+    "sentence_index": 54,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "These observations were used to identify common pitfalls and areas for improvement in the models' reasoning capabilities and are presented in sec:discussion .",
+    "char_start": 7901,
+    "char_end": 8059,
+    "sentence_index": 55,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "-1mm\n\n-1mm\n[t]\n\nMain results of our evaluation.",
+    "char_start": 8061,
+    "char_end": 8108,
+    "sentence_index": 56,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec007",
+    "text": "Listed scores are averaged over four runs.",
+    "char_start": 8109,
+    "char_end": 8151,
+    "sentence_index": 57,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "We measure cost in USD, and report the average score across all generations and graders for each problem.",
+    "char_start": 8152,
+    "char_end": 8257,
+    "sentence_index": 58,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec007",
+    "text": "-1mm\n!",
+    "char_start": 8258,
+    "char_end": 8264,
+    "sentence_index": 59,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "l\nx 1 1\nx 1 1\nx 1 1\nx 1 1\nx 1 1\nx 1 1\nx 2 1\nx 3 2\n\nModel & P1 (/7) & P2 (/7) & P3 (/7) & P4 (/7) & P5 (/7) & P6 (/7) & Total (/42) & Cost\n\n& 6.5 & 0.0 & 0.1 & 3.5 & 0.0 & 0.0 & 10.1 & dd N/A\n\n& 0.5 & 0.0 & 0.0 & 1.5 & 0.0 & 0.0 & 2.0 & 2.03\n\n& 2.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 2.0 & dd N/A\n\n& 1.5 & 0.0 & 0.0 & 0.0 & 0.2 & 0.0 & 1.8 & dd N/A\n\n& 0.5 & 0.5 & 0.0 & 0.0 & 0.0 & 0.6 & 1.5 & 9.03\n\n& 1.2 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 1.2 & 0.42\n\n& 0.5 & 0.0 & 0.0 & 0.0 & 0.2 & 0.4 & 1.2 & 203.44\n\n& 0.5 & 0.1 & 0.0 & 0.0 & 0.0 & 0.2 & 0.9 & 1.11\n\n-5mm\n\nWe now present the results of our evaluation.",
+    "char_start": 8266,
+    "char_end": 8865,
+    "sentence_index": 60,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec007",
+    "text": "In subsec:main_results , we detail our primary findings, demonstrating that only achieves a score above $5\\%$.",
+    "char_start": 8866,
+    "char_end": 8976,
+    "sentence_index": 61,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "In subsec:failure_modes , we analyze common failure patterns in depth, identifying typical mistakes and trends in the models' reasoning.",
+    "char_start": 8977,
+    "char_end": 9113,
+    "sentence_index": 62,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "Finally, in subsec:automated , we try and fail to automatically grade the models' solutions by giving a judge model the grading scheme and a ground-truth solution.",
+    "char_start": 9114,
+    "char_end": 9277,
+    "sentence_index": 63,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec007",
+    "text": "-1mm\n\n-1mm\n\nWe evaluate eight state-of-the-art reasoning models on the 2025 USAMO problems.",
+    "char_start": 9278,
+    "char_end": 9369,
+    "sentence_index": 64,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "Specifically, we chose qwq32b , r1 , deepmind2025geminipro , gemini-1.5 , o1 , o3 , xai2025grok3 and anthropic2024claude .",
+    "char_start": 9370,
+    "char_end": 9492,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "For brevity, we use a shorthand notation for each model in the main text, and we refer to app:exp_abb for the full model names.",
+    "char_start": 9493,
+    "char_end": 9620,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "The chosen hyperparameters and prompt can be found in app:exp_prompt .",
+    "char_start": 9621,
+    "char_end": 9691,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec008",
+    "text": "We provide a detailed, per-problem breakdown of model performance in tab:main_results , with average scores computed across four evaluation runs.",
+    "char_start": 9693,
+    "char_end": 9838,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec008",
+    "text": "Each USAMO problem is scored out of 7 points, with a total maximum score of 42 points per run.",
+    "char_start": 9839,
+    "char_end": 9933,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec008",
+    "text": "The table also includes the total cost of running each model over all problems and evaluation runs.",
+    "char_start": 9934,
+    "char_end": 10033,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec008",
+    "text": "If the model is free, we indicate this with \"N/A\".",
+    "char_start": 10034,
+    "char_end": 10084,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec008",
+    "text": "While current state-of-the-art LLMs achieve performance comparable to top human competitors on numerical-answer-focused competitions such as AIME and HMMT, our evaluation uncovers a significant gap in their ability to generate rigorous proofs.",
+    "char_start": 10086,
+    "char_end": 10329,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "Only managed to score above $5\\%$, achieving an average score of $24.4\\%$ across all problems.",
+    "char_start": 10330,
+    "char_end": 10424,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "This model's performance is particularly noteworthy, as it can solve a problem correctly (scoring 6/7 or above) in six of its 24 attempts.",
+    "char_start": 10425,
+    "char_end": 10563,
+    "sentence_index": 74,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "The highest average score achieved by any other model falls below $5\\%$, indicating substantial limitations in handling the complexity and rigor of USAMO problems.",
+    "char_start": 10564,
+    "char_end": 10727,
+    "sentence_index": 75,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "Notably, among nearly $175$ evaluated solutions from all models except , the only perfect $7/7$ score was a single attempt on Problem 1.",
+    "char_start": 10728,
+    "char_end": 10864,
+    "sentence_index": 76,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "Although the USAMO presents more difficult problems compared to previously tested competitions, the complete failure of almost all models to successfully solve more than one problem underscores that current LLMs remain inadequate for rigorous olympiad-level mathematical reasoning tasks.",
+    "char_start": 10866,
+    "char_end": 11153,
+    "sentence_index": 77,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "Furthermore, while achieved a non-trivial score, it still struggled significantly, with an average score of only $24.4\\%$ across all problems.",
+    "char_start": 11154,
+    "char_end": 11296,
+    "sentence_index": 78,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "This limitation suggests that existing optimization methods like GRPO grpo may currently be insufficient for tasks requiring detailed logical precision.",
+    "char_start": 11297,
+    "char_end": 11449,
+    "sentence_index": 79,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec009",
+    "text": "The most frequent failure mode among human participants is the inability to find a correct solution.",
+    "char_start": 11451,
+    "char_end": 11551,
+    "sentence_index": 80,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "Typically, human participants have a clear sense of whether they solved a problem correctly.",
+    "char_start": 11552,
+    "char_end": 11644,
+    "sentence_index": 81,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec009",
+    "text": "In contrast, all evaluated LLMs consistently claimed to have solved the problems.",
+    "char_start": 11645,
+    "char_end": 11726,
+    "sentence_index": 82,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec009",
+    "text": "This discrepancy poses a significant challenge for mathematical applications of LLMs as mathematical results derived using these models cannot be trusted without rigorous human validation.",
+    "char_start": 11727,
+    "char_end": 11915,
+    "sentence_index": 83,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec009",
+    "text": "To further investigate this limitation, we conducted a thorough analysis of the errors identified during the grading process using the categories defined in sec:meth .",
+    "char_start": 11916,
+    "char_end": 12083,
+    "sentence_index": 84,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec009",
+    "text": "[t]\n\nfigures/errors.pdf\n-4mm\nDistribution of first encountered failure mode.",
+    "char_start": 12084,
+    "char_end": 12160,
+    "sentence_index": 85,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec009",
+    "text": "-2mm\n\nFigure illustrates the distribution of these error categories as determined by our judges.",
+    "char_start": 12161,
+    "char_end": 12257,
+    "sentence_index": 86,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec009",
+    "text": "The most common errors were related to flawed logic, with solutions frequently using unjustified reasoning steps, incorrect rationale, or misinterpretations of previous progress.",
+    "char_start": 12258,
+    "char_end": 12436,
+    "sentence_index": 87,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "Another significant issue was the models' tendency to treat certain critical proof steps as trivial or standard procedure without proper justification.",
+    "char_start": 12437,
+    "char_end": 12588,
+    "sentence_index": 88,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "Notably, , despite being one of the best reasoning models, frequently skipped essential proof steps by labeling them as \"trivial\", even when their validity was crucial.",
+    "char_start": 12589,
+    "char_end": 12757,
+    "sentence_index": 89,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "Another important observation is the lack of creativity in the models' reasoning.",
+    "char_start": 12759,
+    "char_end": 12840,
+    "sentence_index": 90,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "Each model often attempted the same (and wrong) solution strategy across all attempts, failing to explore alternative approaches.",
+    "char_start": 12841,
+    "char_end": 12970,
+    "sentence_index": 91,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "One exception to this observation was , which attempted multiple strategies in the same run, but as a consequence only shallowly explored each one, failing to reach a valid conclusion.",
+    "char_start": 12971,
+    "char_end": 13155,
+    "sentence_index": 92,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "An example of this behavior is shown in app:flthink .",
+    "char_start": 13156,
+    "char_end": 13209,
+    "sentence_index": 93,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec009",
+    "text": "However, the models generally demonstrated strong performance in algebraic and arithmetic computations, successfully performing symbolic manipulations without external computational support.",
+    "char_start": 13211,
+    "char_end": 13401,
+    "sentence_index": 94,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec009",
+    "text": "Still, showed a notably higher frequency of algebraic or arithmetic errors, indicating a clear area for targeted improvement in this model.",
+    "char_start": 13402,
+    "char_end": 13541,
+    "sentence_index": 95,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "We explored the feasibility of replacing human graders with LLM-based evaluators, selecting and as grading models.",
+    "char_start": 13543,
+    "char_end": 13657,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "Both models were provided with a grading scheme developed by our evaluators, along with a verified solution and an example evaluation for reference.",
+    "char_start": 13658,
+    "char_end": 13806,
+    "sentence_index": 97,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "In app:exp_prompt , we provide the full prompt used for this evaluation.",
+    "char_start": 13807,
+    "char_end": 13879,
+    "sentence_index": 98,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "As detailed in tab:llm_judge , neither model accurately graded the solutions, consistently overestimating their quality.",
+    "char_start": 13881,
+    "char_end": 14001,
+    "sentence_index": 99,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "Specifically, the models frequently awarded points for incorrect or unjustified reasoning, inflating the scores by a factor of up to $20$.",
+    "char_start": 14002,
+    "char_end": 14140,
+    "sentence_index": 100,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Notably, and received significantly lower scores from the automated evaluation compared to other models.",
+    "char_start": 14142,
+    "char_end": 14246,
+    "sentence_index": 101,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "We hypothesize this discrepancy arises because both tend to generate multiple solutions per attempt, or present the solutions in a chaotic manner, potentially confusing the LLM-based judges and resulting in lower scores.",
+    "char_start": 14247,
+    "char_end": 14467,
+    "sentence_index": 102,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "Conversely, achieved considerably higher scores, likely because it often generates simpler solution attempts, which are easier for the automated judges to interpret.",
+    "char_start": 14468,
+    "char_end": 14633,
+    "sentence_index": 103,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "[t]\n\nResults of automated grading executed by and .",
+    "char_start": 14635,
+    "char_end": 14686,
+    "sentence_index": 104,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "The table shows the average total score which is at most $42$.",
+    "char_start": 14687,
+    "char_end": 14749,
+    "sentence_index": 105,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "-1mm\n\nl\nx 2 1\nx 2 1\nx 2 1\nx 2 1\n\nModel & Ours & &\n\n& 10.1 & 19.6 & 19.3\n\n& 2.0 & 19.3 & 14.9\n\n& 2.0 & 15.1 & 9.1\n\n& 1.8 & 10.5 & 14.1\n\n& 1.5 & 19.0 & 18.4\n\n& 1.2 & 23.8 & 18.8\n\n& 1.2 & 19.3 & 21.0\n\n& 0.9 & 19.5 & 17.1\n\n-1mm\n\n-1mm\n\nDuring the evaluation, judges also documented common issues and noteworthy behaviors exhibited by the models.",
+    "char_start": 14750,
+    "char_end": 15090,
+    "sentence_index": 106,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec011",
+    "text": "In this section, we discuss some of the most prominent issues that we observed.",
+    "char_start": 15091,
+    "char_end": 15170,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec011",
+    "text": "-1mm\nAnswer Boxing\nCurrent reinforcement learning optimization techniques rely on extracting rewards from a clearly identifiable final answer.",
+    "char_start": 15172,
+    "char_end": 15314,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec011",
+    "text": "To facilitate accurate reward extraction, models are typically instructed to enclose their final answers within a boxed\\ \\ environment.",
+    "char_start": 15315,
+    "char_end": 15450,
+    "sentence_index": 109,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec011",
+    "text": "However, this requirement often produces unintended artifacts in the solutions for the USAMO problems.",
+    "char_start": 15451,
+    "char_end": 15553,
+    "sentence_index": 110,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec011",
+    "text": "Specifically, even though most of the evaluated problems do not require a final boxed answer, many models consistently provided answers within a boxed environment.",
+    "char_start": 15554,
+    "char_end": 15717,
+    "sentence_index": 111,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec011",
+    "text": "In a particularly notable instance from problem 5, confused itself by dismissing the possibility of a non-integer solution, despite no such restriction existing in the problem statement.",
+    "char_start": 15718,
+    "char_end": 15904,
+    "sentence_index": 112,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec011",
+    "text": "Consequently, it incorrectly insisted that the final answer was $2$, even though it had otherwise correctly deduced that all even numbers satisfy the given conditions (see app:qwq_boxing ).",
+    "char_start": 15905,
+    "char_end": 16094,
+    "sentence_index": 113,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "This behavior illustrates how alignment techniques like GRPO grpo inadvertently encourage models to treat every mathematical problem as requiring an explicitly boxed final answer, negatively affecting their overall reasoning.",
+    "char_start": 16095,
+    "char_end": 16320,
+    "sentence_index": 114,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec011",
+    "text": "-1mm\nGeneralizing Patterns\nModels frequently exhibited a tendency to overgeneralize patterns observed in smaller numerical cases to larger, untested cases.",
+    "char_start": 16322,
+    "char_end": 16477,
+    "sentence_index": 115,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec011",
+    "text": "While this heuristic approach might be effective for problems that only require a numerical answer, it is fundamentally flawed for problems that demand rigorous proof.",
+    "char_start": 16478,
+    "char_end": 16645,
+    "sentence_index": 116,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec011",
+    "text": "Models often incorrectly asserted that these patterns observed for small cases would hold generally, without providing a formal proof for such a claim (see app:pattern ).",
+    "char_start": 16646,
+    "char_end": 16816,
+    "sentence_index": 117,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec011",
+    "text": "Non-Existent Citations One of the most frequent and concerning mistakes made by is the generation of citations to sources that do not exist.",
+    "char_start": 16818,
+    "char_end": 16958,
+    "sentence_index": 118,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec011",
+    "text": "This issue is especially prevalent in problems where the model struggles significantly and fails to produce a correct solution.",
+    "char_start": 16959,
+    "char_end": 17086,
+    "sentence_index": 119,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec011",
+    "text": "In such cases, it often fabricates references to theorems or lemmas that appear plausible but, to the best of our knowledge, are not real.",
+    "char_start": 17087,
+    "char_end": 17225,
+    "sentence_index": 120,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec011",
+    "text": "For example, in P6, all four generations include citations to works that we were unable to verify or locate.",
+    "char_start": 17226,
+    "char_end": 17334,
+    "sentence_index": 121,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec011",
+    "text": "We suspect this behavior stems from the model's training with internet access: when it is unable to use internet in thought process, it appears to generate a convincing-sounding citation instead.",
+    "char_start": 17335,
+    "char_end": 17530,
+    "sentence_index": 122,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec011",
+    "text": "An illustration of this phenomenon is provided in app:hallucinations .",
+    "char_start": 17531,
+    "char_end": 17601,
+    "sentence_index": 123,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec011",
+    "text": "This tendency is particularly troubling, as it can result in the spread of misinformation which seem to use credible academic sources.",
+    "char_start": 17602,
+    "char_end": 17736,
+    "sentence_index": 124,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "-1mm\nSolution Structure and Clarity\nThere was significant variation in the clarity and structural coherence of the solutions provided by different models.",
+    "char_start": 17738,
+    "char_end": 17892,
+    "sentence_index": 125,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "Models such as and generally presented their solutions clearly, logically, and in an easily interpretable manner.",
+    "char_start": 17893,
+    "char_end": 18006,
+    "sentence_index": 126,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "Conversely, models like and frequently produced chaotic and barely interpretable responses, sometimes confusing multiple unrelated ideas within a single solution.",
+    "char_start": 18007,
+    "char_end": 18169,
+    "sentence_index": 127,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": "Further, also had signicant issues with the clear presentation of results, sometimes boxing entire proofs are letting its thought process slip through in its final answer ( app:boxing_solutions ).",
+    "char_start": 18170,
+    "char_end": 18366,
+    "sentence_index": 128,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec011",
+    "text": "The noticeable clarity in models trained by OpenAI suggests that additional training focused on solution coherence substantially improved their readability, an aspect evidently less emphasized in other models.",
+    "char_start": 18367,
+    "char_end": 18576,
+    "sentence_index": 129,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec012",
+    "text": "In this study, we comprehensively analyzed the performance of eight state-of-the-art LLMs on problems from the USAMO 2025 competition.",
+    "char_start": 18578,
+    "char_end": 18712,
+    "sentence_index": 130,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec012",
+    "text": "Using a rigorous human evaluation setup, we found that all evaluated models performed very poorly, with even the best-performing model achieving an average accuracy of less than $25\\%$.",
+    "char_start": 18713,
+    "char_end": 18898,
+    "sentence_index": 131,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec012",
+    "text": "Through detailed examination of the models' reasoning traces, we identified several critical failure modes, including significant artifacts arising from the optimization strategies employed during model training.",
+    "char_start": 18899,
+    "char_end": 19111,
+    "sentence_index": 132,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec012",
+    "text": "These findings underscore the substantial limitations of current LLMs in the rigorous mathematical reasoning required for high-level olympiad competitions, highlighting the need for substantial improvements in proof generation capabilities.",
+    "char_start": 19112,
+    "char_end": 19352,
+    "sentence_index": 133,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "This work has received funding from the Swiss National Science Foundation (SNSF) [200021\\_207967], the Ministry of Education and Science of Bulgaria (support for INSAIT, part of the Bulgarian National Roadmap for Research Infrastructure), and the Swiss State Secretariat for Education, Research and Innovation (SERI).",
+    "char_start": 19354,
+    "char_end": 19671,
+    "sentence_index": 134,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "^^JLASTBODYPAGE ^^J\n\npaper_files/references\nplainnat\n\n^^JLASTREFERENCESPAGE ^^J\n\nincludeappendix\n\nHere we describe any additional information related to our evaluation setup and details.",
+    "char_start": 19673,
+    "char_end": 19859,
+    "sentence_index": 135,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec015",
+    "text": "For brevity and visual clarity, we have shortened the model names as follows:\n\no3-mini (high) as\no1-pro (high) as\nDeepSeek R1 as\nQwQ-32B as\nGemini-2.0-Flash-Thinking-Exp as\nClaude-3.7-Sonnet-Thinking as\nGrok 3 Beta (Think) as\nGemini-2.5-Pro-Exp-03-25 as\n\nModel Hyperparameters For , , , and , we used the default hyperparameters provided by their official API.",
+    "char_start": 19861,
+    "char_end": 20221,
+    "sentence_index": 136,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec016",
+    "text": "For and , we used the high reasoning setting, which provides the highest available reasoning budget.",
+    "char_start": 20222,
+    "char_end": 20322,
+    "sentence_index": 137,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec016",
+    "text": "For and , we set the maximum reasoning token limit to $32000$.",
+    "char_start": 20323,
+    "char_end": 20385,
+    "sentence_index": 138,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec016",
+    "text": "As recommended by the authors of and , we used a temperature of $0.6$ and a top-$p$ value of $0.95$.",
+    "char_start": 20387,
+    "char_end": 20487,
+    "sentence_index": 139,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "Additionally, for , we set top-$k$ to $40$.",
+    "char_start": 20488,
+    "char_end": 20531,
+    "sentence_index": 140,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec016",
+    "text": "These hyperparameters sets correspond to the default hyperparameters used by the official HuggingFace models See and .",
+    "char_start": 20532,
+    "char_end": 20650,
+    "sentence_index": 141,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec016",
+    "text": "The token limit was set to $32000$.",
+    "char_start": 20651,
+    "char_end": 20686,
+    "sentence_index": 142,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec016",
+    "text": "We use the TogetherAPI for both these models.",
+    "char_start": 20687,
+    "char_end": 20732,
+    "sentence_index": 143,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec016",
+    "text": "Prompt Every problem was ran with the following user prompt:\n\nPrompt\nGive a thorough answer to the following question.",
+    "char_start": 20734,
+    "char_end": 20852,
+    "sentence_index": 144,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec016",
+    "text": "Your answer will be graded by human judges based on accuracy, correctness, and your ability to prove the result.",
+    "char_start": 20853,
+    "char_end": 20965,
+    "sentence_index": 145,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "You should include all steps of the proof.",
+    "char_start": 20966,
+    "char_end": 21008,
+    "sentence_index": 146,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "Do not skip important steps, as this will reduce your grade.",
+    "char_start": 21009,
+    "char_end": 21069,
+    "sentence_index": 147,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "It does not suffice to merely state the result.",
+    "char_start": 21070,
+    "char_end": 21117,
+    "sentence_index": 148,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "Use LaTeX to format your answer.",
+    "char_start": 21118,
+    "char_end": 21150,
+    "sentence_index": 149,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "problem\n\nJudge Prompt To judge model solutions, we used the same hyperparameters for generation as before.",
+    "char_start": 21152,
+    "char_end": 21258,
+    "sentence_index": 150,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "Additionally, we use the following prompt:\n\nJudge Prompt\n# Instruction\n\nYou are an expert mathematician that grades solutions of high-school olympiad-level problems.",
+    "char_start": 21259,
+    "char_end": 21424,
+    "sentence_index": 151,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "You will be given a mathematical problem, as well as a grading scheme that you should adhere to.",
+    "char_start": 21425,
+    "char_end": 21521,
+    "sentence_index": 152,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "Your task is to accurately grade a solution according to that grading scheme.",
+    "char_start": 21522,
+    "char_end": 21599,
+    "sentence_index": 153,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "# Problem and Scheme\n\n##Problem statement\n\nproblem_statement\n\n## Grading scheme\n\ngrading_scheme\n\n# Example\n\nHere how an example grading can look like:\n\n## Example solution:\n\ncorrect_solution\n\n## Example grading\n\nexample_grading\n\n# Evaluation\n\nProduce a scoring using the same format for the following solution.",
+    "char_start": 21601,
+    "char_end": 21911,
+    "sentence_index": 154,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec016",
+    "text": "Reason carefully about the contents of the solution and make sure that all steps of the proof are included and rigorous.",
+    "char_start": 21912,
+    "char_end": 22032,
+    "sentence_index": 155,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec016",
+    "text": "## Formatting instructions\n\nFollow a JSON-style formatting as the above example, namely:\n\n- The categories should be in the same order\n- The awarded number of points for each category should follow after the 'points' key\n- The reasoning for each decision should be explained after the 'desc' key.",
+    "char_start": 22034,
+    "char_end": 22330,
+    "sentence_index": 156,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec016",
+    "text": "- Output only the JSON response.",
+    "char_start": 22331,
+    "char_end": 22363,
+    "sentence_index": 157,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec016",
+    "text": "Here is the solution you should grade:\nsolution\n\nBoth the grading scheme and example grading are provided in json format.",
+    "char_start": 22365,
+    "char_end": 22486,
+    "sentence_index": 158,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec016",
+    "text": "Examples of these can be found in app:exp_grading .",
+    "char_start": 22487,
+    "char_end": 22538,
+    "sentence_index": 159,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec017",
+    "text": "Example Grading Scheme The grading scheme for each problem was developed by our expert judges.",
+    "char_start": 22540,
+    "char_end": 22634,
+    "sentence_index": 160,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec017",
+    "text": "The grading scheme for Problem 1 is shown below:\n\nGrading Scheme\n\n\"id\": \"1\",\n\"points\": 7,\n\"scheme\": [\n\n\"title\": \"Initial closed form expression for each digit\",\n\"points\": 1,\n\"desc\": \"Uses the base-2n representation of $n^k$ to find a closed form expression of each digit $a_i= n^k (2n)^i mod\\ (2n)$\"\n,\n\n\"title\": \"Interchanging the floor and mod\",\n\"points\": 3,\n\"desc\": \"Transforms the digit expression into a easily boundable one by interchanging the floor and modulo operations.\"\n,\n\n\"title\": \"Bounding the expression\",\n\"points\": 2,\n\"desc\": \"Correctly bounds the aforementioned expression, usually by showing the numerator is divisible by n, so that $a_i>= n 2^i \\|.$\"\n,\n\n\"title\": \"Finishing\",\n\"points\": 1,\n\"desc\": \"Chooses a provably sufficiently large $N$.",
+    "char_start": 22635,
+    "char_end": 23392,
+    "sentence_index": 161,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec017",
+    "text": "The point is not awarded if it has not proven that n^k has at most k digits.\"\n\n]\n\nExample Grading An example grading for Problem 1 is shown below for a (human-generated) completely correct solution:\n\nExample Grading\n\n\"points\": 7,\n\"details\": [\n\n\"title\": \"Initial closed form expression for each digit\",\n\"points\": 1,\n\"desc\": \"Correctly uses the base-2n representation of n^k to find a closed form expression of each digit $a_i= n^k (2n)^i mod (2n)$\"\n,\n\n\"title\": \"Interchanging the floor and mod\",\n\"points\": 3,\n\"desc\": \"Transforms the digit expression into a easily boundable one by interchanging the floor and modulo operations.\"\n,\n\n\"title\": \"Bounding the expression\",\n\"points\": 2,\n\"desc\": \"Correctly bounds the aforementioned expression, usually by showing the numerator is divisible by n, so that $a_i>= n 2^i $.\"\n,\n\n\"title\": \"Finishing\",\n\"points\": 1,\n\"desc\": \"Chooses a provably sufficiently large $N$ and has proven that $n^k$ has more than $k$ digits.\"\n\n]\n\nWe show the six problems from the USAMO 2025 competition in this section.",
+    "char_start": 23393,
+    "char_end": 24426,
+    "sentence_index": 162,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "Problem 1\nLet $k$ and $d$ be positive integers.",
+    "char_start": 24428,
+    "char_end": 24475,
+    "sentence_index": 163,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "Prove that there exists a positive integer $N$ such that for every odd integer $n>N$, the digits in the base-$2n$ representation of $n^k$ are all greater than $d$.",
+    "char_start": 24476,
+    "char_end": 24639,
+    "sentence_index": 164,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec018",
+    "text": "Problem 2\nLet $n$ and $k$ be positive integers with $k<n$.",
+    "char_start": 24641,
+    "char_end": 24699,
+    "sentence_index": 165,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec018",
+    "text": "Let $P(x)$ be a polynomial of degree $n$ with real coefficients, nonzero constant term, and no repeated roots.",
+    "char_start": 24700,
+    "char_end": 24810,
+    "sentence_index": 166,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "Suppose that for any real numbers $a_0,\\,a_1,\\, ,\\,a_k$ such that the polynomial $a_kx^k+ +a_1x+a_0$ divides $P(x)$, the product $a_0a_1 a_k$ is zero.",
+    "char_start": 24811,
+    "char_end": 24961,
+    "sentence_index": 167,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "Prove that $P(x)$ has a nonreal root.",
+    "char_start": 24962,
+    "char_end": 24999,
+    "sentence_index": 168,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "Problem 3\nAlice the architect and Bob the builder play a game.",
+    "char_start": 25001,
+    "char_end": 25063,
+    "sentence_index": 169,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec018",
+    "text": "First, Alice chooses two points $P$ and $Q$ in the plane and a subset $ S $ of the plane, which are announced to Bob.",
+    "char_start": 25064,
+    "char_end": 25181,
+    "sentence_index": 170,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec018",
+    "text": "Next, Bob marks infinitely many points in the plane, designating each a city.",
+    "char_start": 25182,
+    "char_end": 25259,
+    "sentence_index": 171,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec018",
+    "text": "He may not place two cities within distance at most one unit of each other, and no three cities he places may be collinear.",
+    "char_start": 25260,
+    "char_end": 25383,
+    "sentence_index": 172,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec018",
+    "text": "Finally, roads are constructed between the cities as follows: for each pair $A,\\,B$ of cities, they are connected with a road along the line segment $AB$ if and only if the following condition holds:\n\nFor every city $C$ distinct from $A$ and $B$, there exists $R S $ such\nthat $ PQR$ is directly similar to either $ ABC$ or $ BAC$.",
+    "char_start": 25384,
+    "char_end": 25715,
+    "sentence_index": 173,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec018",
+    "text": "Alice wins the game if (i) the resulting roads allow for travel between any pair of cities via a finite sequence of roads and (ii) no two roads cross.",
+    "char_start": 25717,
+    "char_end": 25867,
+    "sentence_index": 174,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec018",
+    "text": "Otherwise, Bob wins.",
+    "char_start": 25868,
+    "char_end": 25888,
+    "sentence_index": 175,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec018",
+    "text": "Determine, with proof, which player has a winning strategy.",
+    "char_start": 25889,
+    "char_end": 25948,
+    "sentence_index": 176,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec018",
+    "text": "Note: $ UVW$ is directly similar to $ XYZ$ if there exists a sequence of rotations, translations, and dilations sending $U$ to $X$, $V$ to $Y$, and $W$ to $Z$.",
+    "char_start": 25950,
+    "char_end": 26109,
+    "sentence_index": 177,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec018",
+    "text": "Problem 4\nLet $H$ be the orthocenter of acute triangle $ABC$, let $F$ be the foot of the altitude from $C$ to $AB$, and let $P$ be the reflection of $H$ across $BC$.",
+    "char_start": 26111,
+    "char_end": 26276,
+    "sentence_index": 178,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec018",
+    "text": "Suppose that the circumcircle of triangle $AFP$ intersects line $BC$ at two distinct points $X$ and $Y$.",
+    "char_start": 26277,
+    "char_end": 26381,
+    "sentence_index": 179,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec018",
+    "text": "Prove that $C$ is the midpoint of $XY$.",
+    "char_start": 26382,
+    "char_end": 26421,
+    "sentence_index": 180,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec018",
+    "text": "Problem 5\nDetermine, with proof, all positive integers $k$ such that$$ 1 n+1 _ i=0 ^n n i ^k$$is an integer for all positive integers $n.$\n\nProblem 6\nLet $m$ and $n$ be positive integers with $m n$.",
+    "char_start": 26423,
+    "char_end": 26621,
+    "sentence_index": 181,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec018",
+    "text": "There are $m$ cupcakes of different flavors arranged around a circle and $n$ people who like cupcakes.",
+    "char_start": 26622,
+    "char_end": 26724,
+    "sentence_index": 182,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec018",
+    "text": "Each person assigns a nonnegative real number score to each cupcake, depending on how much they like the cupcake.",
+    "char_start": 26725,
+    "char_end": 26838,
+    "sentence_index": 183,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec018",
+    "text": "Suppose that for each person $P$, it is possible to partition the circle of $m$ cupcakes into $n$ groups of consecutive cupcakes so that the sum of $P$'s scores of the cupcakes in each group is at least $1$.",
+    "char_start": 26839,
+    "char_end": 27046,
+    "sentence_index": 184,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec018",
+    "text": "Prove that it is possible to distribute the $m$ cupcakes to the $n$ people so that each person $P$ receives cupcakes of total score at least $1$ with respect to $P$.",
+    "char_start": 27047,
+    "char_end": 27212,
+    "sentence_index": 185,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec019",
+    "text": "Here, generalizes over all indices $j$, when it has proven it for a single one - a clear leap in logic.",
+    "char_start": 27214,
+    "char_end": 27317,
+    "sentence_index": 186,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec021",
+    "text": "...",
+    "char_start": 27319,
+    "char_end": 27322,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec021",
+    "text": "Since $P(x)$ has at least $n$ distinct real roots and $k < n$, we have at least $n-(k-1) 2$ choices for $s_k$.",
+    "char_start": 27323,
+    "char_end": 27433,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec021",
+    "text": "If we choose $s_k = r_m$ and then $s_k = r_l$ (where $r_m, r_l \\ s_1, s_2, , s_ k-1 \\ $), we get:\n\nFor $s_k = r_m$: $ _j = T_j + r_m T_ j-1 $\nFor $s_k = r_l$: $ _j = T_j + r_l T_ j-1 $\n\nIf both of these result in $ _j = 0$ for the same $j$, then:\n$T_j + r_m T_ j-1 = 0$ and $T_j + r_l T_ j-1 = 0$\n\nSubtracting, we get: $(r_m - r_l) T_ j-1 = 0$\n\nSince $r_m r_l$ (as the roots of $P(x)$ are distinct), we must have $T_ j-1 = 0$.",
+    "char_start": 27434,
+    "char_end": 27860,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec021",
+    "text": "Continuing this logic, we would find that all $T_j = 0$, which is impossible, especially since $T_0 = 1$.",
+    "char_start": 27862,
+    "char_end": 27967,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec021",
+    "text": "Therefore, we can always find a choice of $s_k$ such that all $ _j 0$ for $j=1,2, ,k$, which means all coefficients of our divisor are nonzero.",
+    "char_start": 27969,
+    "char_end": 28112,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec021",
+    "text": "...",
+    "char_start": 28113,
+    "char_end": 28116,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec022",
+    "text": "On problem 3, which is a game between 2 players - Alice and Bob, (and most other models) argued that Bob should win from the beginning while it can be proven that Alice has an optimal strategy.",
+    "char_start": 28118,
+    "char_end": 28311,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec022",
+    "text": "We will show that regardless of how Alice chooses the two fixed points $P,Q R ^2$ and the \"template-set\" $ S R ^2,$ Bob can place his cities so that the resulting road network fails to meet at least one of the two winning conditions for Alice.",
+    "char_start": 28313,
+    "char_end": 28556,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec022",
+    "text": "(Alice wins only if the road network is both connected and drawn with no two roads crossing.) In other words, Bob has a winning strategy.",
+    "char_start": 28557,
+    "char_end": 28694,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec022",
+    "text": "...",
+    "char_start": 28695,
+    "char_end": 28698,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec023",
+    "text": "On problem 4, many assumption errors are made, like this one from , where it assumes (not explicitly) that $C$ is external to the circumcircle of $AFP$, which is incorrect.",
+    "char_start": 28700,
+    "char_end": 28872,
+    "sentence_index": 197,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec023",
+    "text": "...",
+    "char_start": 28874,
+    "char_end": 28877,
+    "sentence_index": 198,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec023",
+    "text": "A key step is to prove the following claim:\n\n----------------------------\n$\nCA is tangent to = (AFP).",
+    "char_start": 28878,
+    "char_end": 28979,
+    "sentence_index": 199,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec023",
+    "text": "$\n----------------------------\n\nOnce we have tangency, the radius drawn to the tangency point is perpendicular to the tangent line.",
+    "char_start": 28980,
+    "char_end": 29111,
+    "sentence_index": 200,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec023",
+    "text": "Since that radius (from the center of $ $) lies on the perpendicular bisector of any chord, we will see that the perpendicular from the center of $ $ to $BC$ must pass through $C$.",
+    "char_start": 29112,
+    "char_end": 29292,
+    "sentence_index": 201,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec023",
+    "text": "...",
+    "char_start": 29294,
+    "char_end": 29297,
+    "sentence_index": 202,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec024",
+    "text": "Here, incorrectly computes a sum of combinations and arrives at the incorrect conclusion.",
+    "char_start": 29299,
+    "char_end": 29388,
+    "sentence_index": 203,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec024",
+    "text": "The correct value of the sum is 3,395,016, which is divisible by 8.",
+    "char_start": 29389,
+    "char_end": 29456,
+    "sentence_index": 204,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec024",
+    "text": "...",
+    "char_start": 29458,
+    "char_end": 29461,
+    "sentence_index": 205,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec024",
+    "text": "4.",
+    "char_start": 29462,
+    "char_end": 29464,
+    "sentence_index": 206,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec024",
+    "text": "**Case $ k = 4 $**:\n- Testing small values of $ n $ (up to $ n = 6 $) shows the expression is an integer.",
+    "char_start": 29465,
+    "char_end": 29570,
+    "sentence_index": 207,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec024",
+    "text": "However, for $ n = 7 $:\n- The sum $ _ i=0 ^7 7 i ^4 = 1,894,391 $.",
+    "char_start": 29571,
+    "char_end": 29637,
+    "sentence_index": 208,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec024",
+    "text": "- The expression $ 1,894,391 8 = 236,798.875 $ is not an integer.",
+    "char_start": 29638,
+    "char_end": 29703,
+    "sentence_index": 209,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec024",
+    "text": "- Thus, $ k = 4 $ fails for $ n = 7 $.",
+    "char_start": 29704,
+    "char_end": 29742,
+    "sentence_index": 210,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec024",
+    "text": "...",
+    "char_start": 29743,
+    "char_end": 29746,
+    "sentence_index": 211,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec025",
+    "text": "struggling on problem 6\n\nBelow, we see attempting multiple strategies in the same run, leading to a confusing solution that fails to reach a valid conclusion.",
+    "char_start": 29748,
+    "char_end": 29906,
+    "sentence_index": 212,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec025",
+    "text": "Consider a bipartite graph.",
+    "char_start": 29908,
+    "char_end": 29935,
+    "sentence_index": 213,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec025",
+    "text": "People on one side, cupcakes on the other side.",
+    "char_start": 29936,
+    "char_end": 29983,
+    "sentence_index": 214,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec025",
+    "text": "Let's consider a different network flow approach.",
+    "char_start": 29984,
+    "char_end": 30033,
+    "sentence_index": 215,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec025",
+    "text": "Source $S$, Sink $T$.",
+    "char_start": 30034,
+    "char_end": 30055,
+    "sentence_index": 216,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec025",
+    "text": "Nodes $P_1, , P_n$.",
+    "char_start": 30056,
+    "char_end": 30075,
+    "sentence_index": 217,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec025",
+    "text": "Nodes $C_1, , C_m$.",
+    "char_start": 30076,
+    "char_end": 30095,
+    "sentence_index": 218,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec025",
+    "text": "For each person $P_i$, consider the partitions.",
+    "char_start": 30096,
+    "char_end": 30143,
+    "sentence_index": 219,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec025",
+    "text": "Let's fix one partition for each person $P_i$, say $G_ i,1 , , G_ i,n $.",
+    "char_start": 30144,
+    "char_end": 30216,
+    "sentence_index": 220,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec025",
+    "text": "Nodes $G_ i,k $ for $i=1, , n, k=1, , n$.",
+    "char_start": 30217,
+    "char_end": 30258,
+    "sentence_index": 221,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec025",
+    "text": "Edge $S P_i$ capacity 1.",
+    "char_start": 30259,
+    "char_end": 30283,
+    "sentence_index": 222,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec025",
+    "text": "Edge $P_i G_ i,k $ capacity 1.",
+    "char_start": 30284,
+    "char_end": 30314,
+    "sentence_index": 223,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec025",
+    "text": "Edge $G_ i,k C_j$ if $C_j G_ i,k $ capacity 1.",
+    "char_start": 30315,
+    "char_end": 30361,
+    "sentence_index": 224,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec025",
+    "text": "Edge $C_j T$ capacity 1.",
+    "char_start": 30362,
+    "char_end": 30386,
+    "sentence_index": 225,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec025",
+    "text": "We want to show max flow is $n$.",
+    "char_start": 30387,
+    "char_end": 30419,
+    "sentence_index": 226,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec025",
+    "text": "Assume for contradiction that it is impossible to distribute the cupcakes as required.",
+    "char_start": 30421,
+    "char_end": 30507,
+    "sentence_index": 227,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec025",
+    "text": "We will use Hall's Marriage Theorem, but need to define the sets correctly.",
+    "char_start": 30508,
+    "char_end": 30583,
+    "sentence_index": 228,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec025",
+    "text": "For each person $P_i$, let $ G _i$ be the set of all consecutive groups of cupcakes that give score at least 1 to person $P_i$.",
+    "char_start": 30584,
+    "char_end": 30711,
+    "sentence_index": 229,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec025",
+    "text": "We need to select $A_i G _i$ such that $A_i A_j = $.",
+    "char_start": 30712,
+    "char_end": 30764,
+    "sentence_index": 230,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec025",
+    "text": "Let's reconsider the network flow approach.",
+    "char_start": 30766,
+    "char_end": 30809,
+    "sentence_index": 231,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec025",
+    "text": "Construct a network as follows:\nSource $S$, Sink $T$.",
+    "char_start": 30810,
+    "char_end": 30863,
+    "sentence_index": 232,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec025",
+    "text": "Nodes for people $P_1, , P_n$.",
+    "char_start": 30864,
+    "char_end": 30894,
+    "sentence_index": 233,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec025",
+    "text": "Nodes for cupcakes $C_1, , C_m$.",
+    "char_start": 30895,
+    "char_end": 30927,
+    "sentence_index": 234,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec025",
+    "text": "For each person $P_i$ and each cupcake $C_j$, create an edge from $P_i$ to $C_j$.",
+    "char_start": 30928,
+    "char_end": 31009,
+    "sentence_index": 235,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec025",
+    "text": "Edge $S P_i$ capacity 1 for $i=1, , n$.",
+    "char_start": 31010,
+    "char_end": 31049,
+    "sentence_index": 236,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec025",
+    "text": "Edge $P_i C_j$ capacity 1 for $i=1, , n, j=1, , m$.",
+    "char_start": 31050,
+    "char_end": 31101,
+    "sentence_index": 237,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec025",
+    "text": "Edge $C_j T$ capacity 1 for $j=1, , m$.",
+    "char_start": 31102,
+    "char_end": 31141,
+    "sentence_index": 238,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec025",
+    "text": "Cost on edge $(P_i, C_j)$ is $-s_ ij $.",
+    "char_start": 31142,
+    "char_end": 31181,
+    "sentence_index": 239,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec025",
+    "text": "Cost on other edges is 0.",
+    "char_start": 31182,
+    "char_end": 31207,
+    "sentence_index": 240,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec025",
+    "text": "We want to send flow of value $n$ from $S$ to $T$ with minimum cost.",
+    "char_start": 31208,
+    "char_end": 31276,
+    "sentence_index": 241,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec025",
+    "text": "If we can send flow of value $n$, then we have selected $n$ paths from $S$ to $T$.",
+    "char_start": 31277,
+    "char_end": 31359,
+    "sentence_index": 242,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec025",
+    "text": "Each path is $S P_i C_j T$.",
+    "char_start": 31360,
+    "char_end": 31387,
+    "sentence_index": 243,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec025",
+    "text": "Let $x_ ij $ be the flow on edge $(P_i, C_j)$.",
+    "char_start": 31388,
+    "char_end": 31434,
+    "sentence_index": 244,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec025",
+    "text": "Then $ _ j=1 ^m x_ ij 1, _ i=1 ^n x_ ij 1, _ i=1 ^n _ j=1 ^m x_ ij = n$.",
+    "char_start": 31435,
+    "char_end": 31507,
+    "sentence_index": 245,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec025",
+    "text": "This is not right.",
+    "char_start": 31508,
+    "char_end": 31526,
+    "sentence_index": 246,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec025",
+    "text": "Consider a different graph.",
+    "char_start": 31528,
+    "char_end": 31555,
+    "sentence_index": 247,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec025",
+    "text": "Bipartite graph with people $P_1, , P_n$ on one side, and cupcakes $C_1, , C_m$ on the other side.",
+    "char_start": 31556,
+    "char_end": 31654,
+    "sentence_index": 248,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec025",
+    "text": "Edge between $P_i$ and $C_j$.",
+    "char_start": 31655,
+    "char_end": 31684,
+    "sentence_index": 249,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec025",
+    "text": "We want to select a matching $M$ such that for each $P_i$, $ _ C_j M and (P_i, C_j) M s_ ij 1$.",
+    "char_start": 31685,
+    "char_end": 31780,
+    "sentence_index": 250,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec025",
+    "text": "This is not matching.",
+    "char_start": 31781,
+    "char_end": 31802,
+    "sentence_index": 251,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec025",
+    "text": "Let's use Hall's Theorem.",
+    "char_start": 31804,
+    "char_end": 31829,
+    "sentence_index": 252,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec025",
+    "text": "For each person $P_i$, let $ F _i$ be the family of sets of consecutive cupcakes $F$ such that $ _ C_j F s_ ij 1$.",
+    "char_start": 31830,
+    "char_end": 31944,
+    "sentence_index": 253,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec025",
+    "text": "We want to choose $A_i F _i$ for each $i=1, , n$ such that $A_i A_j = $ for $i j$.",
+    "char_start": 31945,
+    "char_end": 32027,
+    "sentence_index": 254,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec025",
+    "text": "For any subset of people $X \\ P_1, , P_n\\ $, let $ F (X) = _ P_i X F _i$.",
+    "char_start": 32028,
+    "char_end": 32101,
+    "sentence_index": 255,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec025",
+    "text": "We need to show that for any $X \\ P_1, , P_n\\ $, we can choose $|X|$ disjoint sets from $ F (X)$.",
+    "char_start": 32102,
+    "char_end": 32199,
+    "sentence_index": 256,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec025",
+    "text": "This is not Hall's theorem directly.",
+    "char_start": 32200,
+    "char_end": 32236,
+    "sentence_index": 257,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec025",
+    "text": "We need to show that there exist disjoint sets $A_1, , A_n$ such that $A_i$ is a consecutive group from some partition for $P_i$ and score for $P_i$ from $A_i$ is at least 1.",
+    "char_start": 32238,
+    "char_end": 32412,
+    "sentence_index": 258,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec025",
+    "text": "Since for each person $P_i$, there is a partition into $n$ groups $G_ i,1 , , G_ i,n $ with score $ 1$.",
+    "char_start": 32413,
+    "char_end": 32516,
+    "sentence_index": 259,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec025",
+    "text": "Let's consider these groups as possible choices.",
+    "char_start": 32517,
+    "char_end": 32565,
+    "sentence_index": 260,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec025",
+    "text": "For each person $P_i$, we have $n$ choices $G_ i,1 , , G_ i,n $.",
+    "char_start": 32566,
+    "char_end": 32630,
+    "sentence_index": 261,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec025",
+    "text": "We need to select one choice $A_i \\ G_ i,1 , , G_ i,n \\ $ for each $i$ such that $A_i A_j = $ for $i j$.",
+    "char_start": 32631,
+    "char_end": 32735,
+    "sentence_index": 262,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec025",
+    "text": "Consider a bipartite graph.",
+    "char_start": 32736,
+    "char_end": 32763,
+    "sentence_index": 263,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec025",
+    "text": "People $P_1, , P_n$ on one side, and $n^2$ groups $G_ i,j $ on the other side.",
+    "char_start": 32764,
+    "char_end": 32842,
+    "sentence_index": 264,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec025",
+    "text": "Edge from $P_i$ to $G_ ij $.",
+    "char_start": 32843,
+    "char_end": 32871,
+    "sentence_index": 265,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec025",
+    "text": "We need to find a matching of size $n$ such that each $P_i$ is matched to some $G_ i,j_i $, and $G_ 1,j_1 , , G_ n,j_n $ are disjoint.",
+    "char_start": 32872,
+    "char_end": 33006,
+    "sentence_index": 266,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec025",
+    "text": "Final Answer:\nWe will prove this by contradiction.",
+    "char_start": 33008,
+    "char_end": 33058,
+    "sentence_index": 267,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec025",
+    "text": "Suppose it is impossible to distribute the cupcakes such that each person $P_i$ receives cupcakes of total score at least $1$.",
+    "char_start": 33059,
+    "char_end": 33185,
+    "sentence_index": 268,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec025",
+    "text": "For each person $P_i$, we are given that there exists a partition of the circle of $m$ cupcakes into $n$ consecutive groups $G_ i,1 , G_ i,2 , , G_ i,n $ such that for each $k=1, , n$, $ _ C_j G_ i,k s_ ij 1$.",
+    "char_start": 33186,
+    "char_end": 33395,
+    "sentence_index": 269,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec025",
+    "text": "Consider a bipartite graph $B = (U V, E)$ where $U = \\ P_1, , P_n\\ $ and $V = _ i=1 ^n \\ G_ i,1 , G_ i,2 , , G_ i,n \\ $.",
+    "char_start": 33397,
+    "char_end": 33517,
+    "sentence_index": 270,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec025",
+    "text": "We add an edge between $P_i U$ and $G V$ if and only if $G \\ G_ i,1 , G_ i,2 , , G_ i,n \\ $.",
+    "char_start": 33518,
+    "char_end": 33610,
+    "sentence_index": 271,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec025",
+    "text": "We want to show that there exists a matching of size $n$ in $B$.",
+    "char_start": 33611,
+    "char_end": 33675,
+    "sentence_index": 272,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec025",
+    "text": "By Hall's Marriage Theorem, we need to show that for any subset $X U$, $|N(X)| |X|$, where $N(X) = _ P_i X \\ G_ i,1 , G_ i,2 , , G_ i,n \\ $.",
+    "char_start": 33676,
+    "char_end": 33816,
+    "sentence_index": 273,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec025",
+    "text": "For any $X U$, $|N(X)| = | _ P_i X \\ G_ i,1 , G_ i,2 , , G_ i,n \\ | _ P_i X |\\ G_ i,1 , G_ i,2 , , G_ i,n \\ | = _ P_i X n = n|X|$.",
+    "char_start": 33817,
+    "char_end": 33947,
+    "sentence_index": 274,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec025",
+    "text": "This does not help.",
+    "char_start": 33948,
+    "char_end": 33967,
+    "sentence_index": 275,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec025",
+    "text": "Let's consider a different approach using flows.",
+    "char_start": 33969,
+    "char_end": 34017,
+    "sentence_index": 276,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec025",
+    "text": "Consider the network constructed earlier...",
+    "char_start": 34018,
+    "char_end": 34061,
+    "sentence_index": 277,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec025",
+    "text": "Further investigation is needed to construct the correct argument.",
+    "char_start": 34062,
+    "char_end": 34128,
+    "sentence_index": 278,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec025",
+    "text": "Final Answer: The final answer is $ Yes $\n\nHere, we show confusing itself by requiring an integer answer, even though the solution is the set of all even integers.",
+    "char_start": 34130,
+    "char_end": 34293,
+    "sentence_index": 279,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec026",
+    "text": "...",
+    "char_start": 34295,
+    "char_end": 34298,
+    "sentence_index": 280,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec026",
+    "text": "### Conclusion:\nThe expression is an integer for all $ n $ if and only if $ k $ is even.",
+    "char_start": 34299,
+    "char_end": 34387,
+    "sentence_index": 281,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec026",
+    "text": "Therefore, the solution is all positive even integers.",
+    "char_start": 34388,
+    "char_end": 34442,
+    "sentence_index": 282,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec026",
+    "text": "### Final Answer:\nThe positive integers $ k $ are all even numbers.",
+    "char_start": 34444,
+    "char_end": 34511,
+    "sentence_index": 283,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec026",
+    "text": "Thus, the solution is $ 2m $ for any positive integer $ m $.",
+    "char_start": 34512,
+    "char_end": 34572,
+    "sentence_index": 284,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec026",
+    "text": "However, since the problem requires a boxed answer and the minimal solution is typically expected, the answer is $ 2 $.",
+    "char_start": 34573,
+    "char_end": 34692,
+    "sentence_index": 285,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec026",
+    "text": "But strictly speaking, the correct answer is all even positive integers.",
+    "char_start": 34693,
+    "char_end": 34765,
+    "sentence_index": 286,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec026",
+    "text": "Given the problem's requirements, the boxed answer is:\n\n$ 2 $\n\nHere, chooses an explicit polynomial to test out on problem 2, but then decides to generalize its conclusion to all polynomials.",
+    "char_start": 34766,
+    "char_end": 34957,
+    "sentence_index": 287,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec027",
+    "text": "Now, let us choose specific real roots for $P(x)$.",
+    "char_start": 34959,
+    "char_end": 35009,
+    "sentence_index": 288,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec027",
+    "text": "Let $r_i = i$ for $i = 1, 2, , n$.",
+    "char_start": 35010,
+    "char_end": 35044,
+    "sentence_index": 289,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec027",
+    "text": "Let $P(x) = c(x-1)(x-2) (x-n)$ for some nonzero real number $c$.",
+    "char_start": 35045,
+    "char_end": 35109,
+    "sentence_index": 290,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec027",
+    "text": "Then $P(x)$ is a polynomial of degree $n$ with real coefficients, nonzero constant term, and no repeated roots.",
+    "char_start": 35110,
+    "char_end": 35221,
+    "sentence_index": 291,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec027",
+    "text": "Consider the divisor $Q(x) = (x-1)(x-2) (x-k) = _ i=0 ^k a_ix^i$.",
+    "char_start": 35222,
+    "char_end": 35287,
+    "sentence_index": 292,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec027",
+    "text": "Then $r_1=1, r_2=2, , r_k=k$.",
+    "char_start": 35288,
+    "char_end": 35317,
+    "sentence_index": 293,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec027",
+    "text": "For this choice, $a_i = (-1)^ k-i e_ k-i (1, 2, , k)$.",
+    "char_start": 35318,
+    "char_end": 35372,
+    "sentence_index": 294,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec027",
+    "text": "Since $1, 2, , k$ are all positive, $e_j(1, 2, , k) > 0$ for $j = 1, 2, , k$.",
+    "char_start": 35373,
+    "char_end": 35450,
+    "sentence_index": 295,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec027",
+    "text": "Also $e_0(1, 2, , k) = 1 > 0$.",
+    "char_start": 35451,
+    "char_end": 35481,
+    "sentence_index": 296,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec027",
+    "text": "Thus, for $i = 0, 1, , k$, $a_i = (-1)^ k-i e_ k-i (1, 2, , k) 0$.",
+    "char_start": 35482,
+    "char_end": 35548,
+    "sentence_index": 297,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec027",
+    "text": "Therefore, for this divisor $Q(x) = a_kx^k + + a_0$, the product $a_0a_1 a_k 0$.",
+    "char_start": 35549,
+    "char_end": 35629,
+    "sentence_index": 298,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec027",
+    "text": "However, the given condition states that for any real numbers $a_0,\\,a_1,\\, ,\\,a_k$ such that $a_kx^k+ +a_1x+a_0$ divides $P(x)$, the product $a_0a_1 a_k$ is zero.",
+    "char_start": 35630,
+    "char_end": 35793,
+    "sentence_index": 299,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec027",
+    "text": "This is a contradiction.",
+    "char_start": 35794,
+    "char_end": 35818,
+    "sentence_index": 300,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec027",
+    "text": "Hence, our assumption that $P(x)$ has only real roots must be false.",
+    "char_start": 35819,
+    "char_end": 35887,
+    "sentence_index": 301,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec027",
+    "text": "Therefore, $P(x)$ has a nonreal root.",
+    "char_start": 35888,
+    "char_end": 35925,
+    "sentence_index": 302,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec027",
+    "text": "Final Answer: The final answer is $ P(x) has a nonreal root $\n\nA common failure mode of was its tendency to generate fake citations to support its points.",
+    "char_start": 35927,
+    "char_end": 36081,
+    "sentence_index": 303,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec028",
+    "text": "One of the best examples is the case below, where the model hallucinates a paper with an emoji in the title.",
+    "char_start": 36082,
+    "char_end": 36190,
+    "sentence_index": 304,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec028",
+    "text": "We will use the following lemma, which is a known result in fair division theory.",
+    "char_start": 36192,
+    "char_end": 36273,
+    "sentence_index": 305,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec028",
+    "text": "This result can be found, for example, as Lemma 7 in \"Fair partitioning of | figures/meat-on-bone.png |\" by Cardinal, Langerman, Palvolgyi (2021), or Theorem 2 in \"Fair division of a discrete item\" by Algaba et al.",
+    "char_start": 36274,
+    "char_end": 36488,
+    "sentence_index": 306,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec028",
+    "text": "(2019).",
+    "char_start": 36489,
+    "char_end": 36496,
+    "sentence_index": 307,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec028",
+    "text": "These papers attribute the proof technique to Gale (1993) and Scarf (1967).",
+    "char_start": 36497,
+    "char_end": 36572,
+    "sentence_index": 308,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec028",
+    "text": "**Fair Partition Lemma:** Let $v_1, , v_m R ^n_ 0 $.",
+    "char_start": 36574,
+    "char_end": 36626,
+    "sentence_index": 309,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec028",
+    "text": "Suppose that for each $i \\ 1, , n\\ $, there exists a partition of $\\ 1, , m\\ $ into $n$ sets $J_ i,1 , , J_ i,n $ such that $( _ j J_ i,k v_j)_i 1$ for all $k \\ 1, , n\\ $.",
+    "char_start": 36627,
+    "char_end": 36798,
+    "sentence_index": 310,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec028",
+    "text": "Then there exists a partition of $\\ 1, , m\\ $ into $n$ sets $K_1, , K_n$ such that $( _ j K_i v_j)_i 1$ for all $i \\ 1, , n\\ $.",
+    "char_start": 36799,
+    "char_end": 36926,
+    "sentence_index": 311,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec029",
+    "text": "The majority of models also struggled with presenting clear and structured solutions, making evaluation and understanding significantly more difficult.",
+    "char_start": 36928,
+    "char_end": 37079,
+    "sentence_index": 312,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec029",
+    "text": "In the instance below, boxed an entire solution at the end of its generation.",
+    "char_start": 37080,
+    "char_end": 37157,
+    "sentence_index": 313,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec029",
+    "text": "...",
+    "char_start": 37159,
+    "char_end": 37162,
+    "sentence_index": 314,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec029",
+    "text": "The representation is $(2, 16, 11)_ 22 $.",
+    "char_start": 37163,
+    "char_end": 37204,
+    "sentence_index": 315,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec029",
+    "text": "The digits are $a_0=11, a_1=16, a_2=2$.",
+    "char_start": 37205,
+    "char_end": 37244,
+    "sentence_index": 316,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec029",
+    "text": "All are greater than $d=1$.",
+    "char_start": 37245,
+    "char_end": 37272,
+    "sentence_index": 317,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec029",
+    "text": "The proof holds.",
+    "char_start": 37273,
+    "char_end": 37289,
+    "sentence_index": 318,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec029",
+    "text": "Final Answer: The final answer is | Let B = $2n$.",
+    "char_start": 37291,
+    "char_end": 37340,
+    "sentence_index": 319,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec029",
+    "text": "We want to show that there exists a positive integer $N$ such that for every odd ...",
+    "char_start": 37341,
+    "char_end": 37425,
+    "sentence_index": 320,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec029",
+    "text": "|\n| ...",
+    "char_start": 37426,
+    "char_end": 37433,
+    "sentence_index": 321,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec029",
+    "text": "As shown above, this implies $a_i > d$ for all digits $a_i$ in the base-$2n$ representation of $n^k$.",
+    "char_start": 37434,
+    "char_end": 37535,
+    "sentence_index": 322,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec029",
+    "text": "|\n| This completes the proof.",
+    "char_start": 37536,
+    "char_end": 37565,
+    "sentence_index": 323,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec029",
+    "text": "|\n\n^^JLASTPAGE ^^J",
+    "char_start": 37566,
+    "char_end": 37584,
+    "sentence_index": 324,
+    "section_sentence_index": 12
+  }
+]

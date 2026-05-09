@@ -1,0 +1,4016 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Function-calling agents---large language models that invoke tools and APIs---require high-quality, domain-specific training data spanning executable environments, backing databases, and diverse multi-turn trajectories.",
+    "char_start": 0,
+    "char_end": 218,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "We introduce EigenData , an integrated, self-evolving platform that automates the full data lifecycle through a multi-agent architecture.",
+    "char_start": 219,
+    "char_end": 356,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "A top-level orchestrator, EigenCore , coordinates three specialized sub-systems: DatabaseAgent for realistic domain database construction, CodingAgent for verified executable environment generation with iterative test-debug loops, and DataAgent for multi-turn trajectory synthesis with self-evolving prompt optimization.",
+    "char_start": 357,
+    "char_end": 677,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Cross-component feedback ensures consistency across all artifacts.",
+    "char_start": 678,
+    "char_end": 744,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We apply EigenData to audit and repair the Berkeley Function-Calling Leaderboard (BFCL-V3), identifying systematic errors in function schemas, implementations, and reference trajectories, automatically correcting them through coordinated schema refinement, code-level bug fixes, and trajectory modification, and introducing an outcome-aware evaluation protocol that assesses task success via database-state correctness rather than turn-level trajectory matching.",
+    "char_start": 745,
+    "char_end": 1207,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "We demonstrate that the repaired benchmark, coupled with outcome-aware metrics, produces model rankings substantially better correlated with human judgments of functional correctness.",
+    "char_start": 1208,
+    "char_end": 1391,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Function-calling agents\u2014LLMs that can invoke tools and APIs\u2014are rapidly becoming a universal abstraction to automate workflows across domains such as travel booking, customer support, logistics, and enterprise operations barres2025tau2benchevaluatingconversationalagents,li2025tooldecathlonbenchmarkinglanguage,luo2025mcpuniversebenchmarkinglargelanguage,wu2025mcpmarkbenchmarkstresstestingrealistic,tbench_2025,drouin2024workarenacapablewebagents,zhou2024webarenarealisticwebenvironment,ye2025maslabunifiedcomprehensivecodebase,tang2025eigen .",
+    "char_start": 1393,
+    "char_end": 1937,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "In realistic deployments, achieving high performance requires in-domain post-training on representative trajectories\u2014whether through supervised fine-tuning (SFT) kimiteam2025kimik2openagentic,li2025simulatingenvironmentsreasoningmodels,prabhakar2025apigenmtagenticpipelinemultiturn,liu2024apigenautomatedpipelinegenerating or reinforcement learning (RL) with outcome-based rewards zhuang2025workforceagentr1incentivizingreasoningcapability,deepseekai2025deepseekv32pushingfrontieropen,li2025simulatingenvironmentsreasoningmodels,su2025toolorchestraelevatingintelligenceefficient,lu2025scaling .",
+    "char_start": 1938,
+    "char_end": 2532,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "In these settings, data and evaluation are the primary bottlenecks yehudai2025surveyevaluationllmbasedagents : models cannot be meaningfully improved beyond the quality, coverage, and faithfulness of the datasets and metrics used to train and assess them.",
+    "char_start": 2533,
+    "char_end": 2788,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Today, most high-quality function-calling agent data still depend on human annotation barres2025tau2benchevaluatingconversationalagents,luo2025mcpuniversebenchmarkinglargelanguage .",
+    "char_start": 2790,
+    "char_end": 2971,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Annotators must understand domain-specific schemas, reason about multi-step tool use, and maintain global consistency across complex tasks.",
+    "char_start": 2972,
+    "char_end": 3111,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "This process is slow and expensive; as we push for more realistic and diverse scenarios, we face a sharp tradeoff between quality and scale under limited time and budget.",
+    "char_start": 3112,
+    "char_end": 3282,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Meanwhile, real-world interaction logs are noisy and incomplete, making them difficult to convert into clean training signal.",
+    "char_start": 3283,
+    "char_end": 3408,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "As a result, even widely used benchmarks and training corpora often contain schema inconsistencies, ambiguous user intents, and labels that do not faithfully capture task success anthropic_claude_opus_45_system_card_2025,futurehouse2025hle,openai2025swebenchverified .",
+    "char_start": 3409,
+    "char_end": 3677,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "To mitigate annotation costs, several works have turned to rule-based or scripted synthetic data generation, including function-calling benchmarks such as BFCL patilberkeley,patil2023gorilla and TOUCAN xu2025toucan , as well as automated pipelines like ToolACE toolace2024 .",
+    "char_start": 3679,
+    "char_end": 3953,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "These pipelines can produce large amounts of data, but they are brittle.",
+    "char_start": 3954,
+    "char_end": 4026,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "In practice, they often exhibit (i) schema bugs, where function definitions or implementations are incorrect or inconsistent; (ii) ambiguous or underspecified user intents, where multiple outcomes are plausible but only one is labeled ; and (iii) weak evaluation metrics, typically based on turn-level function-call matching rather than on the actual consequences of agent actions.",
+    "char_start": 4027,
+    "char_end": 4408,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Such issues can both mislead model selection and obscure genuine progress: an agent may achieve high function-match scores while failing to produce the correct database state or to satisfy user goals.",
+    "char_start": 4409,
+    "char_end": 4609,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "We argue that closing this gap requires not merely better data generators, but an end-to-end infrastructure that can synthesize entire training environments---including executable tool implementations, backing databases, and diverse multi-turn trajectories---while also auditing, repairing, and iteratively refining existing datasets and evaluation protocols.",
+    "char_start": 4611,
+    "char_end": 4970,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "To this end, we introduce EigenData , an integrated, self-evolving platform for function-calling data that spans the full lifecycle from environment construction to trajectory generation and quality assurance.",
+    "char_start": 4971,
+    "char_end": 5180,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "At its core, EigenData is coordinated by EigenCore , a top-level orchestration module that receives human requests---ranging from ``generate training data for a hotel-booking agent'' to ``audit the BFCL benchmark''---and decomposes them into sub-tasks dispatched to three specialized sub-systems:\n\nDatabaseAgent constructs the domain databases that underpin tool-use environments (Section ).",
+    "char_start": 5182,
+    "char_end": 5573,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Given a domain specification (e.g., schema descriptions, sample constraints, or natural-language requirements), it generates realistic, internally consistent database instances---including relational tables, JSON stores, or key-value structures---that serve as the ground-truth state against which agent trajectories are evaluated.",
+    "char_start": 5574,
+    "char_end": 5905,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "CodingAgent produces the executable code layer: environment implementations (e.g., Python simulation environments, REST APIs, or MCP servers) that expose tool interfaces backed by the generated databases, as well as auxiliary scripts such as format-conversion utilities and evaluation harnesses (Section ).",
+    "char_start": 5907,
+    "char_end": 6213,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "CodingAgent employs a multi-agent, iterative test-debug workflow---generating code, synthesizing unit and integration tests, and invoking a judge-based refinement loop---to ensure that every produced artifact is functionally correct before it enters the data pipeline.",
+    "char_start": 6214,
+    "char_end": 6482,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "DataAgent is the multi-agent data-generation engine described in detail in Section .",
+    "char_start": 6484,
+    "char_end": 6568,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Operating on the environments and databases produced by the preceding sub-systems, it orchestrates a hierarchy of specialized worker agents to synthesize, evaluate, and iteratively refine high-quality multi-turn function-calling trajectories for both SFT and RL.",
+    "char_start": 6569,
+    "char_end": 6831,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "A complete generation workflow from scratch proceeds as follows: the DatabaseAgent first constructs the domain database; the CodingAgent then generates the executable environment that exposes tool APIs backed by that database; and finally, the DataAgent uses both artifacts to produce diverse, verified training trajectories.",
+    "char_start": 6833,
+    "char_end": 7158,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "EigenCore manages this pipeline end to end, handling dependency resolution, cross-component consistency checks, and iterative feedback among sub-systems.",
+    "char_start": 7159,
+    "char_end": 7312,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Importantly, each sub-system can also be invoked independently---for instance, the DataAgent alone can audit and repair an existing benchmark that already provides environments and databases, which is the focus of the case study in this paper.",
+    "char_start": 7313,
+    "char_end": 7556,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "In this paper, we present the full EigenData architecture and instantiate it on the BFCL-V3 function-calling benchmark, with a focus on benchmark auditing, repair, and extension that demonstrates the DataAgent sub-system in coordination with the CodingAgent and DatabaseAgent.",
+    "char_start": 7558,
+    "char_end": 7834,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Corrected BFCL-V3 is stored at: https://github.com/eigen-ai-labs/eigendata-corrected-bfcl-v3 Specifically, we use EigenData to (1) systematically audit and categorize errors in function schemas, implementations, reference trajectories, and user intents; and (2) repair these errors and disambiguate intents.",
+    "char_start": 7835,
+    "char_end": 8142,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "In parallel, we introduce an outcome-aware evaluation protocol---inspired by Tau-style benchmarks barres2025tau2benchevaluatingconversationalagents ---that goes beyond turn-level function matching to explicitly assess whether (i) the predicted database changes match ground truth, (ii) key functions have been correctly invoked, and (iii) critical information has been correctly handled and conveyed.",
+    "char_start": 8143,
+    "char_end": 8543,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We show that this repaired and extended benchmark, coupled with outcome-based metrics, reveals qualitatively different failure modes and leads to substantially different model rankings than the original BFCL-V3 evaluation.",
+    "char_start": 8544,
+    "char_end": 8766,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "To make EigenData accessible to practitioners, we have released a command-line interface (CLI) that exposes the platform's core capabilities---including data generation, schema refinement, auditing, and repair---through a unified, scriptable workflow.",
+    "char_start": 8768,
+    "char_end": 9019,
+    "sentence_index": 33,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "The CLI and its documentation are available at: .",
+    "char_start": 9020,
+    "char_end": 9069,
+    "sentence_index": 34,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "Function-Calling Benchmarks and Synthetic Data.",
+    "char_start": 9071,
+    "char_end": 9118,
+    "sentence_index": 35,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "The rapid growth of tool-augmented LLMs has spurred a wave of benchmarks: BFCL patilberkeley,patil2023gorilla evaluates single- and multi-turn function calling, AgentBench liu2023agentbench provides eight agent evaluation environments, and domain-specific suites such as WebArena zhou2024webarenarealisticwebenvironment , SWE-bench jimenez2024swebench , $ ^2$-Bench barres2025tau2benchevaluatingconversationalagents , and Tool Decathlon li2025tooldecathlonbenchmarkinglanguage target web navigation, software engineering, conversational agents, and long-horizon tasks, respectively.",
+    "char_start": 9119,
+    "char_end": 9701,
+    "sentence_index": 36,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "To address the cost of human annotation, several pipelines automate function-calling data production: APIGen liu2024apigenautomatedpipelinegenerating and APIGen-MT prabhakar2025apigenmtagenticpipelinemultiturn generate verifiable datasets through simulated agent--human interplay; ToolACE toolace2024 uses tool self-evolution to synthesize diverse APIs; TOUCAN xu2025toucan scales to 1.5M trajectories from real-world MCP environments; and MAG-V sengupta2024magv applies multi-agent generation with verification.",
+    "char_start": 9702,
+    "char_end": 10214,
+    "sentence_index": 37,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "While effective at scale, these pipelines typically operate as fixed, linear workflows without the iterative self-correction, cross-component feedback, or end-to-end environment construction (databases, code, trajectories) that EigenData provides.",
+    "char_start": 10215,
+    "char_end": 10462,
+    "sentence_index": 38,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Multi-Agent Systems for Code Generation and Evaluation.",
+    "char_start": 10464,
+    "char_end": 10519,
+    "sentence_index": 39,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Multi-agent architectures have shown promise for complex software tasks: ChatDev qian2024chatdev models software development as multi-role conversation, AgentCoder huang2024agentcoder combines programmer, test designer, and executor agents with iterative refinement, and MASLab ye2025maslabunifiedcomprehensivecodebase provides a unified codebase for LLM-based multi-agent systems.",
+    "char_start": 10520,
+    "char_end": 10901,
+    "sentence_index": 40,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "In parallel, LLM-based evaluation has matured since MT-Bench zheng2023judgingllmasajudge demonstrated high agreement with human preferences, with subsequent work exploring agent-level assessment yu2025aisjudgeaisrise and comprehensive evaluation taxonomies yehudai2025surveyevaluationllmbasedagents .",
+    "char_start": 10902,
+    "char_end": 11202,
+    "sentence_index": 41,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "EigenData's CodingAgent extends multi-agent code generation with a judge-based fault-attribution mechanism and two-stage testing (unit then workflow), while its DataAgent introduces hierarchical orchestration with LLM-as-judge quality control and programmatic verification functions that can serve as reward models for reinforcement learning cheng2025agentr1,zhuang2025workforceagentr1incentivizingreasoningcapability .",
+    "char_start": 11203,
+    "char_end": 11622,
+    "sentence_index": 42,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Prompt Optimization and Self-Evolving Agents.",
+    "char_start": 11624,
+    "char_end": 11669,
+    "sentence_index": 43,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Automated prompt refinement has evolved from evolutionary search fernando2023promptbreeder to declarative pipeline compilation khattab2023dspy and hierarchical multi-agent optimization liu2025hierarchicalmultiagentworkflowszeroshot .",
+    "char_start": 11670,
+    "char_end": 11903,
+    "sentence_index": 44,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Recent work on self-evolving agents extends this paradigm to entire agent workflows, where systems iteratively improve not just prompts but also tool selection, coordination strategies, and quality criteria li2025simulatingenvironmentsreasoningmodels .",
+    "char_start": 11904,
+    "char_end": 12156,
+    "sentence_index": 45,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "EigenData's two-phase self-evolving process (Section ) draws on these ideas: Phase 1 optimizes prompts on a small pilot batch through iterative judge feedback, and Phase 2 scales with continuous quality monitoring, combining the efficiency of pilot-based tuning with the robustness of production-time verification.",
+    "char_start": 12157,
+    "char_end": 12471,
+    "sentence_index": 46,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "[t]\n\nfigures/eigendata_overview.jpg\nOverview of the EigenData platform.",
+    "char_start": 12473,
+    "char_end": 12544,
+    "sentence_index": 47,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "EigenCore receives user requests and orchestrates three specialized sub-systems: DatabaseAgent for domain database construction, CodingAgent for environment and tool generation, and DataAgent for multi-turn trajectory synthesis.",
+    "char_start": 12545,
+    "char_end": 12773,
+    "sentence_index": 48,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "Artifacts flow left to right through the canonical pipeline, with cross-component feedback enabling targeted repair without full-pipeline restarts.",
+    "char_start": 12774,
+    "char_end": 12921,
+    "sentence_index": 49,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "We present EigenData , an integrated platform for automated agentic data generation that spans the full lifecycle from environment construction to trajectory synthesis and quality assurance.",
+    "char_start": 12923,
+    "char_end": 13113,
+    "sentence_index": 50,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "EigenData is organized around a top-level orchestration module, EigenCore (Section ), which receives human requests and coordinates three specialized sub-systems: DatabaseAgent (Section ) for domain database construction, CodingAgent (Section ) for executable environment and tool generation, and DataAgent (Section ) for multi-turn trajectory synthesis.",
+    "char_start": 13114,
+    "char_end": 13468,
+    "sentence_index": 51,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "Each sub-system is itself a multi-agent system composed of specialized worker agents; EigenCore manages their interplay, enforces cross-component consistency, and supports both end-to-end generation from scratch and targeted operations on existing artifacts.",
+    "char_start": 13469,
+    "char_end": 13727,
+    "sentence_index": 52,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "In contrast to single-LLM prompting or static pipelines liu2024apigenautomatedpipelinegenerating,prabhakar2025apigenmtagenticpipelinemultiturn , our multi-agent architecture---inspired by recent advances in collaborative agent systems qian2024chatdev,ye2025maslabunifiedcomprehensivecodebase ---enables dynamic workflow planning, prompt self-evolution, complex task decomposition, and self-correction, yielding realistic, diverse, and domain-specific data that meets rigorous quality criteria.",
+    "char_start": 13729,
+    "char_end": 14222,
+    "sentence_index": 53,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "Moreover, the framework is designed to be domain-agnostic: by simply providing domain documentation or APIs as context, the same pipeline can be applied to different domains effortlessly, adapting its behavior to the nuances of each new task.",
+    "char_start": 14223,
+    "char_end": 14465,
+    "sentence_index": 54,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "EigenCore is the user-facing entry point and top-level controller of the EigenData platform as illustrated in Figure .",
+    "char_start": 14467,
+    "char_end": 14585,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "It accepts natural-language requests that may range from narrow tasks (``repair the schemas in BFCL category X'') to broad directives (``generate a complete training environment and 1 , 000 trajectories for an airline-booking agent''), and decomposes each request into a dependency-aware execution plan over the three sub-systems.",
+    "char_start": 14586,
+    "char_end": 14916,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Request Understanding and Task Decomposition.",
+    "char_start": 14918,
+    "char_end": 14963,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Upon receiving a user request, EigenCore first invokes a Request Analysis module that classifies the request type (e.g., full-pipeline generation, environment-only construction, data auditing, benchmark extension) and extracts key parameters such as target domain, scale, quality constraints, and any user-supplied artifacts (existing databases, schemas, or code).",
+    "char_start": 14964,
+    "char_end": 15328,
+    "sentence_index": 58,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Based on this analysis, EigenCore produces a task graph ---a directed acyclic graph of sub-tasks with explicit data dependencies.",
+    "char_start": 15329,
+    "char_end": 15458,
+    "sentence_index": 59,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "For example, a from-scratch generation request yields the canonical three-stage pipeline: DatabaseAgent $ $ CodingAgent $ $ DataAgent, whereas a benchmark-repair request may invoke only the DataAgent on existing artifacts.",
+    "char_start": 15459,
+    "char_end": 15681,
+    "sentence_index": 60,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "Cross-Component Coordination.",
+    "char_start": 15683,
+    "char_end": 15712,
+    "sentence_index": 61,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "EigenCore manages the flow of artifacts between sub-systems, ensuring that outputs from one stage (e.g., the database schema produced by DatabaseAgent) are validated and correctly consumed by the next (e.g., CodingAgent's environment generator).",
+    "char_start": 15713,
+    "char_end": 15958,
+    "sentence_index": 62,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "When downstream stages detect inconsistencies---such as a generated environment referencing database fields that do not exist---EigenCore routes structured feedback to the responsible upstream sub-system and triggers targeted re-generation, avoiding full-pipeline restarts.",
+    "char_start": 15959,
+    "char_end": 16232,
+    "sentence_index": 63,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "Human-in-the-Loop Interface.",
+    "char_start": 16234,
+    "char_end": 16262,
+    "sentence_index": 64,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "EigenCore supports interactive operation, allowing users to inspect intermediate artifacts, approve or reject sub-system outputs, adjust parameters, and steer the generation process.",
+    "char_start": 16263,
+    "char_end": 16445,
+    "sentence_index": 65,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "This is particularly valuable during the initial setup of a new domain, where user oversight can rapidly calibrate the system's behavior.",
+    "char_start": 16446,
+    "char_end": 16583,
+    "sentence_index": 66,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "For large-scale batch generation, EigenCore operates autonomously once the user approves the initial configuration.",
+    "char_start": 16584,
+    "char_end": 16699,
+    "sentence_index": 67,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "As illustrated in Figure , EigenCore coordinates three specialized sub-systems---DatabaseAgent, CodingAgent, and DataAgent---each responsible for a distinct layer of the training-environment stack.",
+    "char_start": 16701,
+    "char_end": 16898,
+    "sentence_index": 68,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "Their interaction follows a dependency-driven artifact pipeline, and EigenCore can selectively invoke any subset depending on the user's request.",
+    "char_start": 16899,
+    "char_end": 17044,
+    "sentence_index": 69,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "To assemble a complete task specification, EigenCore employs a multi-turn conversational interface that progressively elicits the required command parameters (e.g., target domain name, MCP server URL, and final sample count) across successive turns.",
+    "char_start": 17045,
+    "char_end": 17294,
+    "sentence_index": 70,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Three agents implement this interface: an ExtractionAgent and a ConversationAgent drive the interactive collection loop, while a RequestBuilder synthesizes the final directive once all parameters have been supplied.",
+    "char_start": 17295,
+    "char_end": 17510,
+    "sentence_index": 71,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "Each turn begins with the ExtractionAgent , which receives the user's message, the conversation history, the parameters accumulated thus far, and the schema of available commands.",
+    "char_start": 17512,
+    "char_end": 17691,
+    "sentence_index": 72,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "The agent determines whether the message specifies a concrete command: if so, it identifies the command, extracts any supplied arguments (e.g., domain name, sample count), and assigns the turn status collecting ; if the message pertains to the system but the intended command remains ambiguous, the status is no-task ; if the message falls outside system functionality (e.g., a general knowledge question), the status is chitchat .",
+    "char_start": 17692,
+    "char_end": 18123,
+    "sentence_index": 73,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "The ConversationAgent then generates a response conditioned on this status---serving as a general-purpose assistant in chitchat state, prompting the user to clarify their intent in no-task state, or soliciting the specific missing parameters in collecting state (e.g., ``How many samples would you like to generate?'').",
+    "char_start": 18124,
+    "char_end": 18443,
+    "sentence_index": 74,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "This two-agent loop iterates until all required parameters have been supplied, at which point the status transitions to ready .",
+    "char_start": 18444,
+    "char_end": 18571,
+    "sentence_index": 75,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Once all required parameters are present, EigenCore invokes the RequestBuilder , which consumes the full set of accumulated parameters and the conversation history to produce a single, well-structured natural-language instruction that unambiguously captures the user's intent (e.g., ``Generate 200 multi-turn airline booking dialogs with function calls, using the provided MCP server schema'').",
+    "char_start": 18573,
+    "char_end": 18967,
+    "sentence_index": 76,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "The ConversationAgent presents this synthesized request to the user for final confirmation.",
+    "char_start": 18968,
+    "char_end": 19059,
+    "sentence_index": 77,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "Once confirmed, EigenCore exits the conversational loop and routes the completed specification to the appropriate sub-system: DatabaseAgent for domain-database construction, CodingAgent for environment generation, DataAgent for trajectory synthesis, or any combination thereof as determined by the task graph produced during request analysis.",
+    "char_start": 19060,
+    "char_end": 19402,
+    "sentence_index": 78,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "[t]\n\nfigures/database_agent.png\nInternal architecture of the DatabaseAgent.",
+    "char_start": 19404,
+    "char_end": 19479,
+    "sentence_index": 79,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "The pipeline proceeds from input specification through schema design, validation, data population (with constraint-aware sampling, distribution modeling, and edge-case injection), and consistency verification.",
+    "char_start": 19480,
+    "char_end": 19689,
+    "sentence_index": 80,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "A targeted regeneration loop handles any constraint violations detected during verification.",
+    "char_start": 19690,
+    "char_end": 19782,
+    "sentence_index": 81,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "The DatabaseAgent is responsible for constructing the domain databases that serve as the ground-truth state for tool-use environments as illustrated by Figure .",
+    "char_start": 19784,
+    "char_end": 19944,
+    "sentence_index": 82,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "High-quality databases are critical: they determine the space of possible user queries, constrain valid tool-call sequences, and provide the reference state against which agent trajectories are evaluated.",
+    "char_start": 19945,
+    "char_end": 20149,
+    "sentence_index": 83,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "Manually creating realistic databases for each new domain is labor-intensive and error-prone; the DatabaseAgent automates this process.",
+    "char_start": 20150,
+    "char_end": 20285,
+    "sentence_index": 84,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "The DatabaseAgent accepts domain specifications in multiple forms, from high-level natural-language descriptions (e.g., ``an airline database with flights, passengers, bookings, and seat assignments'') to detailed schema definitions with constraints, cardinalities, and example records.",
+    "char_start": 20287,
+    "char_end": 20573,
+    "sentence_index": 85,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "When the specification is underspecified, the DatabaseAgent infers reasonable defaults by leveraging the LLM's world knowledge about the target domain, then presents the inferred schema to the user (via EigenCore) for confirmation before proceeding to data population.",
+    "char_start": 20574,
+    "char_end": 20842,
+    "sentence_index": 86,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec009",
+    "text": "A SchemaDesignAgent translates the input specification into a formal database schema---defining tables (or collections), columns, data types, primary and foreign keys, uniqueness constraints, and value ranges.",
+    "char_start": 20844,
+    "char_end": 21053,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "The agent reasons about domain semantics to ensure referential integrity (e.g., every booking references a valid flight and passenger) and realistic data distributions (e.g., flight prices vary by route, class, and season).",
+    "char_start": 21054,
+    "char_end": 21277,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "The proposed schema is validated by a SchemaValidationAgent that checks for structural soundness, constraint satisfiability, and coverage of the tool APIs that will be built on top of it.",
+    "char_start": 21278,
+    "char_end": 21465,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec010",
+    "text": "A DataPopulationAgent generates synthetic records that conform to the validated schema.",
+    "char_start": 21467,
+    "char_end": 21554,
+    "sentence_index": 90,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec010",
+    "text": "Rather than producing uniformly random data, it employs domain-aware generation strategies:\n\nConstraint-aware sampling : Generates records that satisfy all inter-table constraints (e.g., departure times precede arrival times; seat assignments do not exceed aircraft capacity).",
+    "char_start": 21555,
+    "char_end": 21831,
+    "sentence_index": 91,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec010",
+    "text": "Distribution modeling : Produces realistic value distributions informed by domain priors (e.g., most hotel bookings are 1--3 nights; flight prices follow route-dependent distributions).",
+    "char_start": 21832,
+    "char_end": 22017,
+    "sentence_index": 92,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec010",
+    "text": "Edge-case injection : Deliberately includes boundary conditions and rare-but-valid scenarios (e.g., sold-out flights, canceled bookings, waitlisted passengers) to ensure that downstream training data covers failure modes.",
+    "char_start": 22018,
+    "char_end": 22239,
+    "sentence_index": 93,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec011",
+    "text": "After population, a ConsistencyVerificationAgent performs end-to-end validation: executing referential-integrity checks, verifying that all constraints hold, and running a suite of representative queries to confirm that the database supports the intended tool-use scenarios.",
+    "char_start": 22241,
+    "char_end": 22515,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec011",
+    "text": "Any violations trigger targeted regeneration of the offending records rather than full repopulation.",
+    "char_start": 22516,
+    "char_end": 22616,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec011",
+    "text": "The final output is a self-contained database artifact (e.g., a JSON file, SQLite database, or structured collection) along with its schema documentation, ready for consumption by the CodingAgent.",
+    "char_start": 22617,
+    "char_end": 22813,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec012",
+    "text": "[t]\nCodingAgent: Two-Stage Iterative Test-Debug Pipeline\n\n[1]\nDomain specification $ S $, database $ D $, max iterations $M$, max cycles $N$\nVerified environment module, test suites, (optional) MCP server\n\nPlanner analyzes $ S $ and $ D $ $ $ execution plan with function list and dependency graph\nFileGenerationAgent generates module skeleton and class structure\n\n--- Stage 1: Unit Testing (per function) ---\neach function $f$ in execution plan\n$ T _f $ TestingAgent .generate\\_unit\\_tests($f$) happy path, errors, edge cases, types\n$ f $ CodingAgent .generate($f$, $ S $, $ D $)\ncycle $c = 1$ $N$\niteration $i = 1$ $M$\nresult $ $ run\\_tests($ f $, $ T _f$)\nresult = Pass\nbreak both loops function $f$ passes\n\n$ f $ CodingAgent .fix($ f $, result.feedback)\n\nresult $ $ Pass\nfault $ $ JudgeAgent .attribute(result, $ f $, $ T _f$)\nfault = Tests\n$ T _f $ TestingAgent .regenerate($f$, fault.feedback) fix faulty tests\n\n$ f $ rollback($f$); incorporate judge feedback retry code from scratch\n\n--- Stage 2: Workflow Testing (dependency groups) ---\neach dependency group $G$ in dependency graph\n$ T _G $ TestingAgent .generate\\_workflow\\_tests($G$) integration tests\n\nresult $ $ run\\_tests($G$, $ T _G$)\nresult $ $ Pass\nidentify responsible function(s) $ G$ or wrong tests; apply targeted fixes\n\nresult = Pass max workflow iterations reached\n\nReviewAgent performs batch code review over all functions final quality gate\nreview rejects any function (strict mode)\nrefine rejected functions and re-validate\n\nenvironment module, test suites, MCP server (optional), auxiliary scripts\n\nThe CodingAgent produces the executable software layer of the training environment (Algorithm ): the tool implementations, simulation environments, and auxiliary scripts that expose domain functionality as callable APIs.",
+    "char_start": 22815,
+    "char_end": 24611,
+    "sentence_index": 97,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "Given a domain specification and a database (typically produced by the DatabaseAgent), it generates code that is functionally correct, tested, and ready for use by the DataAgent's trajectory-generation pipeline.",
+    "char_start": 24612,
+    "char_end": 24823,
+    "sentence_index": 98,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec013",
+    "text": "The CodingAgent is itself a multi-agent system organized around an EnhancedOrchestrator that coordinates several specialized agents through an iterative generate-test-debug workflow, extending multi-agent code generation paradigms huang2024agentcoder,qian2024chatdev :\n\nPlanner : Analyzes the domain specification and database schema to determine the set of functions to implement, their signatures, dependencies, and the overall module structure.",
+    "char_start": 24825,
+    "char_end": 25272,
+    "sentence_index": 99,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec013",
+    "text": "It produces an execution plan that the orchestrator follows.",
+    "char_start": 25273,
+    "char_end": 25333,
+    "sentence_index": 100,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec013",
+    "text": "FileGenerationAgent : Generates complete Python modules from natural-language specifications.",
+    "char_start": 25335,
+    "char_end": 25428,
+    "sentence_index": 101,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec013",
+    "text": "For environment files, it produces stateful classes that load the domain database and expose tool functions (e.g., search\\_flights , book\\_hotel , cancel\\_reservation ).",
+    "char_start": 25429,
+    "char_end": 25598,
+    "sentence_index": 102,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec013",
+    "text": "For MCP (Model Context Protocol) servers, it generates FastMCP-based servers with REST endpoints, session isolation, and auto-expiration.",
+    "char_start": 25599,
+    "char_end": 25736,
+    "sentence_index": 103,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec013",
+    "text": "It can also generate format-conversion scripts and evaluation harnesses.",
+    "char_start": 25737,
+    "char_end": 25809,
+    "sentence_index": 104,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec013",
+    "text": "CodingAgent (inner) : The core code-generation agent that implements individual functions.",
+    "char_start": 25811,
+    "char_end": 25901,
+    "sentence_index": 105,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec013",
+    "text": "It operates in multiple modes--- generate (implement from scratch), correct (fix bugs), and refine (improve working code)---and produces code that follows a consistent error-handling convention: public methods return structured error dictionaries while private methods propagate exceptions.",
+    "char_start": 25902,
+    "char_end": 26192,
+    "sentence_index": 106,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec013",
+    "text": "TestingAgent : Automatically generates unit tests and integration (workflow) tests from function schemas and specifications.",
+    "char_start": 26194,
+    "char_end": 26318,
+    "sentence_index": 107,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec013",
+    "text": "Unit tests cover individual function correctness (happy paths, error cases, edge cases, type validation), while workflow tests verify that related functions integrate correctly (e.g., that book\\_flight correctly updates the state queried by get\\_booking ).",
+    "char_start": 26319,
+    "char_end": 26575,
+    "sentence_index": 108,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec013",
+    "text": "JudgeAgent : When tests fail, the JudgeAgent determines whether the fault lies in the generated code or in the generated tests---a critical distinction, since LLM-generated tests can themselves be incorrect.",
+    "char_start": 26577,
+    "char_end": 26784,
+    "sentence_index": 109,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec013",
+    "text": "Based on the judge's verdict, either the code or the tests are regenerated with targeted feedback.",
+    "char_start": 26785,
+    "char_end": 26883,
+    "sentence_index": 110,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec013",
+    "text": "ReviewAgent : A quality gate that performs batch code review across all generated functions, checking for consistent patterns, proper state management, and adherence to specifications.",
+    "char_start": 26885,
+    "char_end": 27069,
+    "sentence_index": 111,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec013",
+    "text": "In strict mode, rejected functions are automatically refined until they pass review.",
+    "char_start": 27070,
+    "char_end": 27154,
+    "sentence_index": 112,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec014",
+    "text": "The CodingAgent's central mechanism is a two-stage testing pipeline with judge-based refinement (Algorithm ):\n\nStage 1: Unit Testing.",
+    "char_start": 27156,
+    "char_end": 27289,
+    "sentence_index": 113,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec014",
+    "text": "For each function, the system (1) generates unit tests from the function schema, (2) generates or refines the implementation, (3) runs the tests, and (4) if tests fail, enters a judge-based debug loop.",
+    "char_start": 27290,
+    "char_end": 27491,
+    "sentence_index": 114,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec014",
+    "text": "This loop has a nested structure: an outer cycle (up to $N$ iterations) governs the unit tests, and an inner cycle (up to $M$ iterations) governs the code implementation.",
+    "char_start": 27492,
+    "char_end": 27662,
+    "sentence_index": 115,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec014",
+    "text": "In the inner cycle, the CodingAgent iteratively revises the implementation to pass the current unit tests.",
+    "char_start": 27663,
+    "char_end": 27769,
+    "sentence_index": 116,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec014",
+    "text": "If the inner cycle exhausts $M$ attempts without success, the JudgeAgent intervenes to determine fault attribution---deciding whether the failure lies in the code or in the tests themselves.",
+    "char_start": 27770,
+    "char_end": 27960,
+    "sentence_index": 117,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec014",
+    "text": "If the tests are deemed faulty, the outer cycle advances: the tests are regenerated with judge feedback, and the inner cycle restarts against the corrected tests.",
+    "char_start": 27961,
+    "char_end": 28123,
+    "sentence_index": 118,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec014",
+    "text": "This process continues for up to $N$ outer cycles per function.",
+    "char_start": 28124,
+    "char_end": 28187,
+    "sentence_index": 119,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec014",
+    "text": "Stage 2: Workflow Testing.",
+    "char_start": 28189,
+    "char_end": 28215,
+    "sentence_index": 120,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec014",
+    "text": "After all individual functions pass their unit tests, the system groups functions by their call dependencies and generates integration tests for each group.",
+    "char_start": 28216,
+    "char_end": 28372,
+    "sentence_index": 121,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec014",
+    "text": "These tests verify that functions interact correctly---for example, that state mutations from one function are correctly observed by another.",
+    "char_start": 28373,
+    "char_end": 28514,
+    "sentence_index": 122,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec014",
+    "text": "Failures trigger targeted fixes to the responsible functions.",
+    "char_start": 28515,
+    "char_end": 28576,
+    "sentence_index": 123,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec015",
+    "text": "The CodingAgent produces several artifacts:\n\nEnvironment module : A Python class or module that loads the domain database and exposes tool functions with consistent interfaces.",
+    "char_start": 28578,
+    "char_end": 28754,
+    "sentence_index": 124,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec015",
+    "text": "Test suites : Unit and workflow test files that serve as regression tests and documentation.",
+    "char_start": 28755,
+    "char_end": 28847,
+    "sentence_index": 125,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec015",
+    "text": "MCP server (optional): A FastMCP server wrapping the environment with HTTP endpoints, session management, and transport options (stdio, HTTP, SSE), enabling direct integration with agent frameworks.",
+    "char_start": 28848,
+    "char_end": 29046,
+    "sentence_index": 126,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "All artifacts are validated end to end before being passed to the DataAgent: the environment is instantiated against the database, tests are executed, and the tool interfaces are verified to match the specifications that the DataAgent will use for trajectory generation.",
+    "char_start": 29048,
+    "char_end": 29318,
+    "sentence_index": 127,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec016",
+    "text": "The EnhancedOrchestrator exposes the generate-test-debug loop described above through four high-level workflow modes, each tailored to a common development scenario:\n\nSchema-Implement.",
+    "char_start": 29320,
+    "char_end": 29504,
+    "sentence_index": 128,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec016",
+    "text": "Given a set of refined function schemas (signatures, docstrings, and behavioral specifications), the orchestrator drives the CodingAgent through a full implementation pass: the Planner decomposes the schemas into an ordered implementation plan respecting inter-function dependencies; the inner CodingAgent generates each function; the TestingAgent produces unit and workflow tests; and the iterative judge-based debug loop (Stage 1 then Stage 2) runs until all tests pass.",
+    "char_start": 29505,
+    "char_end": 29977,
+    "sentence_index": 129,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec016",
+    "text": "The ReviewAgent performs a final quality gate before emitting the complete environment module.",
+    "char_start": 29978,
+    "char_end": 30072,
+    "sentence_index": 130,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec016",
+    "text": "This is the primary mode for producing a new environment from scratch.",
+    "char_start": 30073,
+    "char_end": 30143,
+    "sentence_index": 131,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec016",
+    "text": "Code-Repair.",
+    "char_start": 30145,
+    "char_end": 30157,
+    "sentence_index": 132,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec016",
+    "text": "When an existing implementation exhibits test failures or specification violations, the code-repair workflow focuses the loop on diagnosis and repair.",
+    "char_start": 30158,
+    "char_end": 30308,
+    "sentence_index": 133,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec016",
+    "text": "The orchestrator loads the current code and re-runs the test suites; for each failure, the JudgeAgent performs fault attribution to distinguish genuine code bugs from incorrect tests.",
+    "char_start": 30309,
+    "char_end": 30492,
+    "sentence_index": 134,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec016",
+    "text": "The CodingAgent then applies targeted fixes---patching only the affected functions---while the debug loop ensures that repairs do not introduce regressions.",
+    "char_start": 30493,
+    "char_end": 30649,
+    "sentence_index": 135,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec016",
+    "text": "Code-Patch.",
+    "char_start": 30651,
+    "char_end": 30662,
+    "sentence_index": 136,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec016",
+    "text": "The code-patch workflow handles incremental schema evolution: when function signatures, return types, or behavioral contracts are refined (e.g., a new optional parameter is added, or an error-handling convention is updated), the orchestrator diffs the old and new schemas, identifies the affected functions, and dispatches the CodingAgent in refine mode to update only those implementations.",
+    "char_start": 30663,
+    "char_end": 31054,
+    "sentence_index": 137,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec016",
+    "text": "The TestingAgent then regenerates or augments the affected tests to align with the updated schema, and the debug loop re-validates the patched code against both the original and revised specifications.",
+    "char_start": 31055,
+    "char_end": 31256,
+    "sentence_index": 138,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec016",
+    "text": "This avoids costly full re-implementation when schemas undergo incremental refinement.",
+    "char_start": 31257,
+    "char_end": 31343,
+    "sentence_index": 139,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "Env-to-MCP.",
+    "char_start": 31345,
+    "char_end": 31356,
+    "sentence_index": 140,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec016",
+    "text": "The env-to-mcp workflow converts an existing environment module into a standardized Model Context Protocol (MCP) server.",
+    "char_start": 31357,
+    "char_end": 31477,
+    "sentence_index": 141,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec016",
+    "text": "The FileGenerationAgent wraps each tool function as a FastMCP endpoint with appropriate request/response schemas, session isolation, and transport configuration (stdio, HTTP, or SSE).",
+    "char_start": 31478,
+    "char_end": 31661,
+    "sentence_index": 142,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec016",
+    "text": "The TestingAgent generates integration tests that exercise the MCP endpoints end to end, verifying that the server faithfully reproduces the behavior of the underlying environment.",
+    "char_start": 31662,
+    "char_end": 31842,
+    "sentence_index": 143,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec016",
+    "text": "This mode enables seamless onboarding of environments into MCP-compatible agent frameworks without manual server authoring.",
+    "char_start": 31843,
+    "char_end": 31966,
+    "sentence_index": 144,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec016",
+    "text": "Format-Transform.",
+    "char_start": 31968,
+    "char_end": 31985,
+    "sentence_index": 145,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "The format-transform workflow converts existing trajectory datasets into alternative tool-calling formats required by different model providers.",
+    "char_start": 31986,
+    "char_end": 32130,
+    "sentence_index": 146,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "Given a representative sample of the source dataset and a target format specification, the orchestrator dispatches the FileGenerationAgent and CodingAgent (inner) to synthesize a deterministic Python conversion script that maps dialogue turns, tool calls, and tool outputs into the target schema.",
+    "char_start": 32131,
+    "char_end": 32427,
+    "sentence_index": 147,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "The TestingAgent generates validation cases to ensure that the transformed outputs conform to the required structural conventions (e.g., field layout, argument nesting, and tool-call encoding).",
+    "char_start": 32428,
+    "char_end": 32621,
+    "sentence_index": 148,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "Once validated, the script is executed in batch across the dataset to produce the converted representation (e.g., OpenAI Harmony, Anthropic Messages API, Qwen, or DeepSeek), avoiding costly LLM-based rewriting while ensuring deterministic and structurally consistent conversions.",
+    "char_start": 32622,
+    "char_end": 32901,
+    "sentence_index": 149,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec017",
+    "text": "[t]\n\ntest_0.jpg\nInternal architecture of the DataAgent.",
+    "char_start": 32903,
+    "char_end": 32958,
+    "sentence_index": 150,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec017",
+    "text": "The Orchestration Layer (top) coordinates planning, prompt engineering, and quality evaluation through a self-optimizing feedback loop.",
+    "char_start": 32959,
+    "char_end": 33094,
+    "sentence_index": 151,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec017",
+    "text": "The Execution Layer (bottom) comprises specialized worker agents organized into three stages: seed and plan generation, dialogue synthesis, and processing and validation.",
+    "char_start": 33095,
+    "char_end": 33265,
+    "sentence_index": 152,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec017",
+    "text": "A two-phase self-evolving process first optimizes prompts on a small batch (Phase 1), then scales to full production with continuous monitoring (Phase 2).",
+    "char_start": 33266,
+    "char_end": 33420,
+    "sentence_index": 153,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec017",
+    "text": "The DataAgent is the trajectory-generation engine of EigenData.",
+    "char_start": 33422,
+    "char_end": 33485,
+    "sentence_index": 154,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec017",
+    "text": "Operating on the environments and databases produced by the DatabaseAgent and CodingAgent (or on existing artifacts for auditing and repair tasks), it orchestrates a hierarchy of specialized worker agents to synthesize, evaluate, and iteratively refine high-quality multi-turn function-calling data for both SFT and RL.",
+    "char_start": 33486,
+    "char_end": 33805,
+    "sentence_index": 155,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec017",
+    "text": "The DataAgent comprises two internal layers: an Orchestration Layer for planning, scheduling, and quality control, and an Execution Layer of worker agents that perform domain-specific generation and analysis tasks.",
+    "char_start": 33806,
+    "char_end": 34020,
+    "sentence_index": 156,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec018",
+    "text": "At the core of the DataAgent is an Orchestration Layer , which coordinates the interactions among a set of high-level agents, guiding the generation process through iterative refine-and-evaluate cycles.",
+    "char_start": 34022,
+    "char_end": 34224,
+    "sentence_index": 157,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec018",
+    "text": "Drawing inspiration from recent hierarchical agent frameworks liu2025hierarchicalmultiagentworkflowszeroshot,wong2025coachcollaborativeagentscontextual , the Orchestrator first invokes a Workflow Planner Agent to devise a structured workflow as well as the models to be used in each part for data generation.",
+    "char_start": 34226,
+    "char_end": 34534,
+    "sentence_index": 158,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec018",
+    "text": "The planner analyzes the user's request and domain specifications to plan an optimal generation workflow.",
+    "char_start": 34535,
+    "char_end": 34640,
+    "sentence_index": 159,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec018",
+    "text": "It decides which execution agents to invoke, in what order and with which model, effectively decomposing the data generation task into a sequence of sub-tasks.",
+    "char_start": 34641,
+    "char_end": 34800,
+    "sentence_index": 160,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec018",
+    "text": "The planner accounts for domain complexity and resource dependencies (ensuring, for example, that if a database query is needed, the corresponding agent is included).",
+    "char_start": 34801,
+    "char_end": 34967,
+    "sentence_index": 161,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec018",
+    "text": "This results in a dynamic, context-aware workflow tailored to the target domain.",
+    "char_start": 34968,
+    "char_end": 35048,
+    "sentence_index": 162,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "Next, a Prompt Engineer Agent is tasked with producing effective prompts for each worker agent in context.",
+    "char_start": 35050,
+    "char_end": 35156,
+    "sentence_index": 163,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "It auto-generates detailed instructions for the downstream agents, incorporating domain knowledge (e.g.",
+    "char_start": 35157,
+    "char_end": 35260,
+    "sentence_index": 164,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec018",
+    "text": "domain guidelines, function specifications, or provided ontologies) and human requests.",
+    "char_start": 35261,
+    "char_end": 35348,
+    "sentence_index": 165,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec018",
+    "text": "Crucially, the Prompt Engineer can revise its prompts over multiple rounds, informed by feedback from a Judge Agent , ensuring that instructions yield outputs meeting the desired accuracy, style, and compliance criteria.",
+    "char_start": 35349,
+    "char_end": 35569,
+    "sentence_index": 166,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "The Judge Agent serves as an automated evaluator that critiques intermediate outputs along various dimensions -- including factual accuracy, relevance to the domain, coherence of conversation, adherence to formatting requirements, and overall realism.",
+    "char_start": 35571,
+    "char_end": 35822,
+    "sentence_index": 167,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "By leveraging large language models as judges zheng2023judgingllmasajudge , we obtain multi-dimensional quality assessments that have been shown to correlate well with human evaluations of dialog quality yu2025aisjudgeaisrise .",
+    "char_start": 35823,
+    "char_end": 36050,
+    "sentence_index": 168,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "The Judge's feedback is fed back into the loop, allowing the Orchestrator and Prompt Engineer to adjust subsequent prompts or agent behaviors.",
+    "char_start": 36051,
+    "char_end": 36193,
+    "sentence_index": 169,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec018",
+    "text": "This forms a self-optimizing feedback loop (potentially augmented with human-in-the-loop oversight when available) in which the system ``self-verifies'' and improves its outputs each iteration.",
+    "char_start": 36194,
+    "char_end": 36387,
+    "sentence_index": 170,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec018",
+    "text": "The orchestration layer therefore acts as a conductor, ensuring that all agents work in concert and that a high quality threshold is met before the process terminates.",
+    "char_start": 36388,
+    "char_end": 36555,
+    "sentence_index": 171,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec019",
+    "text": "At the execution layer, EigenData orchestrates a sequence of specialized lower-level worker agents.",
+    "char_start": 36557,
+    "char_end": 36656,
+    "sentence_index": 172,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec019",
+    "text": "Each agent is responsible for a distinct stage of the generation process, transforming the data step by step from abstract scenario seeds to finalized dialog records.",
+    "char_start": 36657,
+    "char_end": 36823,
+    "sentence_index": 173,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec019",
+    "text": "In this work, we define a default collection of worker agents for the workflow planner to choose from, while preserving full modularity and extensibility.",
+    "char_start": 36824,
+    "char_end": 36978,
+    "sentence_index": 174,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec019",
+    "text": "The DataAgent framework allows new agents to be added as needed, and the workflow planner dynamically configures the multi-agent architecture based on user requirements:\n\nRandomPoolAgent : Generates a diverse pool of initial user scenarios and profiles.",
+    "char_start": 36979,
+    "char_end": 37232,
+    "sentence_index": 175,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec019",
+    "text": "This agent creates varied starting conditions (user personas, goals, environmental contexts, constraint sets) to ensure broad coverage of possible dialogues.",
+    "char_start": 37233,
+    "char_end": 37390,
+    "sentence_index": 176,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec019",
+    "text": "For example, in a customer service domain, RandomPoolAgent might output a range of customer types and inquiry topics as seeds for conversations.",
+    "char_start": 37391,
+    "char_end": 37535,
+    "sentence_index": 177,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec019",
+    "text": "UserIntentAgent : Using a scenario from the pool (and any available domain data like databases or APIs), this agent synthesizes a concrete user intent for the dialogue.",
+    "char_start": 37537,
+    "char_end": 37705,
+    "sentence_index": 178,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec019",
+    "text": "It may produce a detailed goal or task the user wants to accomplish, incorporating domain specifics.",
+    "char_start": 37706,
+    "char_end": 37806,
+    "sentence_index": 179,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "For instance, given a banking domain, the UserIntentAgent might formulate a user goal such as \u201cdispute a credit card charge via the banking app,\u201d including necessary details that will drive the ensuing conversation.",
+    "char_start": 37807,
+    "char_end": 38022,
+    "sentence_index": 180,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "ToolGraphComposerAgent : Given the available tools (APIs, functions, or services), this agent constructs a high-level tool-usage plan in the form of a compositional graph.",
+    "char_start": 38024,
+    "char_end": 38195,
+    "sentence_index": 181,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec019",
+    "text": "The graph specifies the sequence, dependencies, and data flows among tools, ensuring that the overall workflow is both executable and aligned with domain constraints.",
+    "char_start": 38196,
+    "char_end": 38362,
+    "sentence_index": 182,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec019",
+    "text": "It also performs sanity checks (e.g., missing parameters, incompatible outputs/inputs) and proposes alternative plans when conflicts arise.",
+    "char_start": 38363,
+    "char_end": 38502,
+    "sentence_index": 183,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec019",
+    "text": "ToolGraphExecutorAgent : This agent executes the composed tool graph step-by-step, invoking tools, collecting intermediate results, and propagating outputs downstream.",
+    "char_start": 38504,
+    "char_end": 38671,
+    "sentence_index": 184,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec019",
+    "text": "It monitors execution failures, retries with revised parameters when possible, and records structured traces of the tool-calling process.",
+    "char_start": 38672,
+    "char_end": 38809,
+    "sentence_index": 185,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec019",
+    "text": "These traces serve both as supervision signals and as grounding evidence for the dialogue generation process.",
+    "char_start": 38810,
+    "char_end": 38919,
+    "sentence_index": 186,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec019",
+    "text": "UserIntentFromGraphAgent : Using the executed tool graph and its traces, this agent reconstructs a coherent, user-centered narrative that explains why each tool call occurs and what the user is trying to achieve.",
+    "char_start": 38921,
+    "char_end": 39133,
+    "sentence_index": 187,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec019",
+    "text": "It transforms system-level workflows into realistic, goal-driven user intents and sub-goals, ensuring that subsequent dialogues are grounded in actual executable behaviors rather than abstract high-level descriptions.",
+    "char_start": 39134,
+    "char_end": 39351,
+    "sentence_index": 188,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec019",
+    "text": "UserSimulatorAgent : Simulates the user\u2019s behavior and dialogue turns based on the user intent and persona.",
+    "char_start": 39353,
+    "char_end": 39460,
+    "sentence_index": 189,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec019",
+    "text": "The UserSimulator generates realistic user utterances step-by-step, responding to the assistant and following the user\u2019s goal.",
+    "char_start": 39461,
+    "char_end": 39587,
+    "sentence_index": 190,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec019",
+    "text": "It maintains context and persona consistency (e.g.",
+    "char_start": 39588,
+    "char_end": 39638,
+    "sentence_index": 191,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec019",
+    "text": "a polite customer vs.",
+    "char_start": 39639,
+    "char_end": 39660,
+    "sentence_index": 192,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec019",
+    "text": "a frustrated one) and can handle increasing complexity over multi-turn interactions, ensuring the conversation flow remains natural from the user's side.",
+    "char_start": 39661,
+    "char_end": 39814,
+    "sentence_index": 193,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec019",
+    "text": "TrajectoryAgent : Orchestrates the assistant\u2019s side of the conversation, interacting with the UserSimulatorAgent to produce a full multi-turn multi-step function calling dialogue.",
+    "char_start": 39816,
+    "char_end": 39995,
+    "sentence_index": 194,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec019",
+    "text": "The TrajectoryAgent uses the refined prompts and has access to domain tools or functions.",
+    "char_start": 39996,
+    "char_end": 40085,
+    "sentence_index": 195,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec019",
+    "text": "If the domain provides an API or function (e.g., database lookup) that the assistant should call, the TrajectoryAgent will incorporate those function call actions into the dialogue at appropriate turns.",
+    "char_start": 40086,
+    "char_end": 40288,
+    "sentence_index": 196,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec019",
+    "text": "This agent ensures the assistant\u2019s responses are goal-directed and that any tool usage is executed correctly within the conversation.",
+    "char_start": 40289,
+    "char_end": 40422,
+    "sentence_index": 197,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec019",
+    "text": "The output of this stage is a complete raw trajectory of the dialogue, including all user and assistant turns and any intermediate tool interactions.",
+    "char_start": 40423,
+    "char_end": 40572,
+    "sentence_index": 198,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec019",
+    "text": "DialogConversionAgent : Converts the raw trajectory into a standardized dialogue format for the final dataset.",
+    "char_start": 40574,
+    "char_end": 40684,
+    "sentence_index": 199,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec019",
+    "text": "This involves stripping out low-level execution details and formatting the conversation into the desired structure (for example, JSON or ChatML with clearly marked user/assistant messages, function call outputs, etc.).",
+    "char_start": 40685,
+    "char_end": 40903,
+    "sentence_index": 200,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec019",
+    "text": "The DialogConversionAgent ensures that the final data is in an easily consumable format for model training or evaluation, including any necessary annotations (such as tags for function calls or system messages) as required by the target schema.",
+    "char_start": 40904,
+    "char_end": 41148,
+    "sentence_index": 201,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec019",
+    "text": "VerificationAgent : Performs a thorough validation on the dialogue.",
+    "char_start": 41150,
+    "char_end": 41217,
+    "sentence_index": 202,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec019",
+    "text": "The VerificationAgent checks dialogue quality and correctness one last time: it verifies that the conversation is coherent and logically consistent, that any domain-specific requirements are satisfied, and that all tool calls or API usages in the conversation have valid results.",
+    "char_start": 41218,
+    "char_end": 41497,
+    "sentence_index": 203,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec019",
+    "text": "It also confirms that the formatting is correct and that no content violates the guidelines or domain rules.",
+    "char_start": 41498,
+    "char_end": 41606,
+    "sentence_index": 204,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec019",
+    "text": "This automated verification (with dedicated checkers for tool outputs and content consistency) provides robust quality assurance, often catching issues that might be missed by human annotators.",
+    "char_start": 41607,
+    "char_end": 41800,
+    "sentence_index": 205,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec019",
+    "text": "VerificationFunctionAgent : Automatically constructs a programmatic verification function based on the dialogue trajectory and domain constraints.",
+    "char_start": 41802,
+    "char_end": 41948,
+    "sentence_index": 206,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec019",
+    "text": "This function can be used for downstream evaluation or reinforcement learning as a reward model.",
+    "char_start": 41949,
+    "char_end": 42045,
+    "sentence_index": 207,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec019",
+    "text": "It encodes correctness criteria, success conditions, tool-call validity, and failure signatures.",
+    "char_start": 42046,
+    "char_end": 42142,
+    "sentence_index": 208,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec019",
+    "text": "For example, it may generate a scoring function that checks whether all required domain steps were completed, whether tool arguments align with constraints, and whether the user goal was achieved.",
+    "char_start": 42143,
+    "char_end": 42339,
+    "sentence_index": 209,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec019",
+    "text": "This creates a self-contained evaluation artifact tied specifically to the generated dialogue instance.",
+    "char_start": 42340,
+    "char_end": 42443,
+    "sentence_index": 210,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec019",
+    "text": "ModifyAgent : Applies targeted modifications to the dialogue based on external requests or issues detected by the VerificationAgent.",
+    "char_start": 42445,
+    "char_end": 42577,
+    "sentence_index": 211,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec019",
+    "text": "It can fix formatting errors, rewrite inconsistent turns, adjust persona styles, regenerate problematic sections, or update tool calls that fail validation.",
+    "char_start": 42578,
+    "char_end": 42734,
+    "sentence_index": 212,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec019",
+    "text": "This agent enables iterative refinement until the dialogue satisfies all quality, schema, and domain criteria, effectively closing the loop in a self-improving data generation pipeline.",
+    "char_start": 42735,
+    "char_end": 42920,
+    "sentence_index": 213,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec019",
+    "text": "DialogAnalyzerAgent : Given an existing dialogue and a set of function schema changes, this agent identifies which conversation turns require regeneration and which can be preserved.",
+    "char_start": 42922,
+    "char_end": 43104,
+    "sentence_index": 214,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec019",
+    "text": "It algorithmically segments the conversation into safe zones (turns prior to the first affected call, replayed verbatim), affected turns (turns that invoke a renamed or schema-mismatched function), and candidate zones (turns following an affected call that may depend on the now-invalidated tool output); dialogues that contain no affected function calls are marked for passthrough, bypassing all downstream agents.",
+    "char_start": 43105,
+    "char_end": 43520,
+    "sentence_index": 215,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec019",
+    "text": "For affected dialogues, the agent additionally invokes the LLM to extract the user's intent and produce continuation guidance that enables the TrajectoryAgent to resume the conversation coherently from the truncation point.",
+    "char_start": 43521,
+    "char_end": 43744,
+    "sentence_index": 216,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec020",
+    "text": "To balance quality and efficiency, the DataAgent operates in a two-phase generation regime.",
+    "char_start": 43746,
+    "char_end": 43837,
+    "sentence_index": 217,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec020",
+    "text": "Phase 1: Self-Evolving Prompt Optimization.",
+    "char_start": 43838,
+    "char_end": 43881,
+    "sentence_index": 218,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec020",
+    "text": "The orchestrator generates a small batch of sample dialogues (e.g.",
+    "char_start": 43882,
+    "char_end": 43948,
+    "sentence_index": 219,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec020",
+    "text": "5\u201320) using initial prompts, then engages the Judge and other high-level agents in iterative refinement on this batch.",
+    "char_start": 43949,
+    "char_end": 44067,
+    "sentence_index": 220,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec020",
+    "text": "Through a few iterations, the prompts and agent behaviors are tuned until the sample dialogues satisfy the quality criteria.",
+    "char_start": 44068,
+    "char_end": 44192,
+    "sentence_index": 221,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec020",
+    "text": "This corresponds to an initial coarse-to-fine optimization of the prompt and workflow, analogous to recent self-referential prompt evolution fernando2023promptbreeder and declarative pipeline compilation khattab2023dspy methods that first refine prompts then produce final answers.",
+    "char_start": 44193,
+    "char_end": 44474,
+    "sentence_index": 222,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec020",
+    "text": "Phase 2: Full-Scale Generation.",
+    "char_start": 44476,
+    "char_end": 44507,
+    "sentence_index": 223,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec020",
+    "text": "Once the prompt strategy is optimized, the orchestrator uses the refined prompts to generate the full dataset at scale.",
+    "char_start": 44508,
+    "char_end": 44627,
+    "sentence_index": 224,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec020",
+    "text": "The Execution Layer are run to produce the complete set of dialogues, while monitoring mechanisms (including the Judge and VerificationAgent) continue to evaluate quality on the fly.",
+    "char_start": 44628,
+    "char_end": 44810,
+    "sentence_index": 225,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec020",
+    "text": "If any drift or new error pattern is observed during bulk generation, the system can pause and invoke the refinement loop again to address it.",
+    "char_start": 44811,
+    "char_end": 44953,
+    "sentence_index": 226,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec020",
+    "text": "After generation, a final validation pass is applied by the VerificationAgent to ensure all dialogues meet the release standards.",
+    "char_start": 44954,
+    "char_end": 45083,
+    "sentence_index": 227,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec020",
+    "text": "This two-phase approach focuses human or computational critique on a small pilot batch to avoid large-scale errors, then confidently expands to the entire data request.",
+    "char_start": 45085,
+    "char_end": 45253,
+    "sentence_index": 228,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec020",
+    "text": "By integrating hierarchical control, specialized agents, and iterative self-evolving, the DataAgent is able to automatically synthesize high-quality, realistic conversational datasets.",
+    "char_start": 45254,
+    "char_end": 45438,
+    "sentence_index": 229,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec020",
+    "text": "The general-purpose design, with pluggable domain resources and no task-specific training required, allows it to be readily adapted to a wide range of domains and dialogue styles from open-domain chat to task-oriented dialogs, while consistently maintaining rigorous quality control throughout the data generation process.",
+    "char_start": 45439,
+    "char_end": 45761,
+    "sentence_index": 230,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "[t]\n\nfigures/test_48_0.jpg\nRepresentative workflows instantiated by the DataAgent's Workflow Planner.",
+    "char_start": 45763,
+    "char_end": 45864,
+    "sentence_index": 231,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "Each row shows a distinct pipeline: Data Audit systematically diagnoses quality issues and failure modes; Schema Polish iteratively refines API specifications via verification--modification loops; Data Repair performs targeted trajectory repair by segmenting conversations into safe, affected, and candidate zones; Data Generation Without Tool Graphs produces multi-turn conversations top-down from sampled user intents; Data Generation With Tool Graphs generates grounded conversations bottom-up from executed tool-call plans; Schema-Triggered Patch incrementally reconstructs only the trajectory portions affected by schema evolution.",
+    "char_start": 45865,
+    "char_end": 46501,
+    "sentence_index": 232,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec021",
+    "text": "We now illustrate several representative workflows that the DataAgent's high-level planner may instantiate for different data-generation objectives (see Figure ).",
+    "char_start": 46503,
+    "char_end": 46665,
+    "sentence_index": 233,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec021",
+    "text": "Data Audit.",
+    "char_start": 46667,
+    "char_end": 46678,
+    "sentence_index": 234,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec021",
+    "text": "This workflow systematically audits an existing dataset to expose quality issues, coverage gaps, and model failure modes.",
+    "char_start": 46679,
+    "char_end": 46800,
+    "sentence_index": 235,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec021",
+    "text": "The VerificationAgent inspects each trajectory against the function schema and domain business rules, going beyond a binary pass/fail decision to perform structured error analysis: it identifies (i) turns that violate domain constraints, (ii) incorrect or unsafe tool usage, (iii) unmet user goals, and (iv) contradictions or hallucinations.",
+    "char_start": 46801,
+    "char_end": 47142,
+    "sentence_index": 236,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec021",
+    "text": "In parallel, it analyzes the distribution and coverage of functions used across the dataset compared to the full list of available functions.",
+    "char_start": 47143,
+    "char_end": 47284,
+    "sentence_index": 237,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec021",
+    "text": "The output is a structured report that annotates individual trajectories with richly labeled diagnostics and summarizes dataset-level issues, anomalies, coverage gaps, and quality metrics---directly useful for dataset debugging, reliability benchmarking, and robustness training.",
+    "char_start": 47285,
+    "char_end": 47564,
+    "sentence_index": 238,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec021",
+    "text": "Schema Polish.",
+    "char_start": 47566,
+    "char_end": 47580,
+    "sentence_index": 239,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec021",
+    "text": "In domains with underspecified or evolving APIs, EigenData supports iterative refinement of tool schemas.",
+    "char_start": 47581,
+    "char_end": 47686,
+    "sentence_index": 240,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec021",
+    "text": "When the VerificationAgent detects recurring errors in function calls (e.g., missing arguments, ambiguous parameter semantics, or incorrect output assumptions), it attributes the failure to specific schema deficiencies.",
+    "char_start": 47687,
+    "char_end": 47906,
+    "sentence_index": 241,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec021",
+    "text": "These structured diagnostics are then passed to the ModifyAgent , which rewrites or augments the schema\u2014adding constraints, clarifying parameter descriptions, or documenting edge cases.",
+    "char_start": 47907,
+    "char_end": 48092,
+    "sentence_index": 242,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec021",
+    "text": "The updated schema is reinserted into the pipeline and revalidated, gradually converging toward executable, unambiguous specifications.",
+    "char_start": 48093,
+    "char_end": 48228,
+    "sentence_index": 243,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec021",
+    "text": "Data Repair.",
+    "char_start": 48230,
+    "char_end": 48242,
+    "sentence_index": 244,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec021",
+    "text": "When trajectories are known to contain quality issues but the specific problematic turns are not identified in advance, EigenData applies targeted repair rather than regenerating entire conversations.",
+    "char_start": 48243,
+    "char_end": 48443,
+    "sentence_index": 245,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec021",
+    "text": "The VerificationAgent first performs a structured analysis of the dialogue, producing a list of problematic turn indices that flag where domain constraints are violated, tool calls are incorrect, or reasoning is inconsistent (e.g., an assistant turn that invokes a function with invalid arguments or a response that contradicts prior context).",
+    "char_start": 48444,
+    "char_end": 48787,
+    "sentence_index": 246,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec021",
+    "text": "A DialogAnalyzerAgent then uses these indices to segment the conversation into safe zones (unaffected turns, preserved verbatim), affected turns (turns at the flagged indices that must be regenerated), and candidate zones (turns following an affected turn whose validity may depend on the repaired output).",
+    "char_start": 48788,
+    "char_end": 49094,
+    "sentence_index": 247,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec021",
+    "text": "The TrajectoryAgent performs a surgical replay, threading safe-zone turns through unchanged while regenerating affected and candidate turns against the live tool environment.",
+    "char_start": 49095,
+    "char_end": 49269,
+    "sentence_index": 248,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec021",
+    "text": "The repaired dialogue then passes through the standard DialogConversionAgent -- VerificationAgent -- ModifyAgent pipeline for format compliance and a final consistency check, yielding polished trajectories with minimal deviation from otherwise valid conversations.",
+    "char_start": 49270,
+    "char_end": 49534,
+    "sentence_index": 249,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec021",
+    "text": "Data Generation Without Tool Graphs.",
+    "char_start": 49536,
+    "char_end": 49572,
+    "sentence_index": 250,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec021",
+    "text": "For open-ended or conversational domains, EigenData operates in a primarily top-down mode.",
+    "char_start": 49573,
+    "char_end": 49663,
+    "sentence_index": 251,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec021",
+    "text": "The RandomPoolAgent first samples diverse scenario factors (personas, goals, constraints, contexts), and the UserIntentAgent instantiates a concrete task from one scenario.",
+    "char_start": 49664,
+    "char_end": 49836,
+    "sentence_index": 252,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec021",
+    "text": "Dialogue is then generated through interaction between the UserSimulatorAgent and the TrajectoryAgent , producing a realistic multi-turn exchange.",
+    "char_start": 49837,
+    "char_end": 49983,
+    "sentence_index": 253,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec021",
+    "text": "The DialogConversionAgent formats the conversation, while the VerificationAgent ensures coherence, safety, and formatting compliance.",
+    "char_start": 49984,
+    "char_end": 50117,
+    "sentence_index": 254,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec021",
+    "text": "Minor issues are corrected by the ModifyAgent .",
+    "char_start": 50118,
+    "char_end": 50165,
+    "sentence_index": 255,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec021",
+    "text": "Finally, the VerificationFunctionAgent synthesizes an executable reward/verification function, enabling reinforcement learning and evaluation on the generated instance.",
+    "char_start": 50166,
+    "char_end": 50334,
+    "sentence_index": 256,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec021",
+    "text": "Data Generation With Tool Graphs.",
+    "char_start": 50336,
+    "char_end": 50369,
+    "sentence_index": 257,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec021",
+    "text": "For goal-oriented domains with executable tools, EigenData generates grounded, bottom-up conversations.",
+    "char_start": 50370,
+    "char_end": 50473,
+    "sentence_index": 258,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec021",
+    "text": "The RandomPoolAgent samples user profiles and contexts.",
+    "char_start": 50474,
+    "char_end": 50529,
+    "sentence_index": 259,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec021",
+    "text": "The ToolGraphComposerAgent constructs a compositional plan over available APIs, and the ToolGraphExecutorAgent executes the plan, completing parameters, handling failures, and recording traces.",
+    "char_start": 50530,
+    "char_end": 50723,
+    "sentence_index": 260,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec021",
+    "text": "The UserIntentFromGraphAgent converts these traces into a coherent, goal-driven narrative aligned with the executed workflow.",
+    "char_start": 50724,
+    "char_end": 50849,
+    "sentence_index": 261,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec021",
+    "text": "The UserSimulatorAgent and TrajectoryAgent then generate the full dialog, where tool interactions emerge naturally during conversation.",
+    "char_start": 50850,
+    "char_end": 50985,
+    "sentence_index": 262,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec021",
+    "text": "The DialogConversionAgent standardizes the trajectory, while the VerificationAgent validates logical consistency, tool correctness, and formatting.",
+    "char_start": 50986,
+    "char_end": 51133,
+    "sentence_index": 263,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec021",
+    "text": "If necessary, the ModifyAgent performs selective repairs.",
+    "char_start": 51134,
+    "char_end": 51191,
+    "sentence_index": 264,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec021",
+    "text": "Finally, the VerificationFunctionAgent constructs a programmatic checker tied to the underlying tool graph, enabling precise, reproducible evaluation.",
+    "char_start": 51192,
+    "char_end": 51342,
+    "sentence_index": 265,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec021",
+    "text": "Schema-Triggered Patch.",
+    "char_start": 51344,
+    "char_end": 51367,
+    "sentence_index": 266,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec021",
+    "text": "When a deployed function schema evolves---for instance, a function is renamed, a new required parameter is introduced, or an argument type is revised---existing trajectories that invoke the affected functions become misaligned with the updated specification.",
+    "char_start": 51368,
+    "char_end": 51626,
+    "sentence_index": 267,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec021",
+    "text": "Rather than discarding and regenerating the entire dataset, the schema-triggered patch workflow applies targeted reconstruction at the trajectory level, confining regeneration cost strictly to the affected portions of the corpus.",
+    "char_start": 51627,
+    "char_end": 51856,
+    "sentence_index": 268,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec021",
+    "text": "The orchestrator accepts a user-supplied function mapping (e.g., renaming cancel\\_reservation to cancel\\_booking ) and first filters the full dataset to identify only the dialogues that contain calls to the modified functions, forwarding all others unchanged.",
+    "char_start": 51857,
+    "char_end": 52116,
+    "sentence_index": 269,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec021",
+    "text": "For each affected dialogue, a DialogAnalyzerAgent decomposes the conversation into a structured segment map that classifies turns as a safe zone (turns prior to the first affected call, replayed verbatim), an affected turn (turns that directly invoke the changed function or call it with arguments that violate the updated schema), or a candidate zone (turns following an affected call whose content may depend on the now-invalidated tool output).",
+    "char_start": 52117,
+    "char_end": 52564,
+    "sentence_index": 270,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec021",
+    "text": "The TrajectoryAgent then performs a surgical replay, threading safe-zone turns through unchanged while regenerating affected and candidate turns against the live tool environment using the updated schema.",
+    "char_start": 52565,
+    "char_end": 52769,
+    "sentence_index": 271,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec021",
+    "text": "The repaired trajectories re-enter the standard DialogConversionAgent -- VerificationAgent -- ModifyAgent pipeline for format compliance and consistency checks, making schema evolution an incremental, cost-proportional operation rather than a full-pipeline restart.",
+    "char_start": 52770,
+    "char_end": 53035,
+    "sentence_index": 272,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec022",
+    "text": "We now describe the canonical end-to-end workflow for generating a complete training environment and dataset from a domain specification---the pipeline that EigenCore orchestrates when a user requests from-scratch generation.",
+    "char_start": 53037,
+    "char_end": 53262,
+    "sentence_index": 273,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec022",
+    "text": "Step 1: Database Construction (DatabaseAgent).",
+    "char_start": 53264,
+    "char_end": 53310,
+    "sentence_index": 274,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec022",
+    "text": "Given the domain specification, the DatabaseAgent designs the database schema, populates it with realistic synthetic records, and validates internal consistency.",
+    "char_start": 53311,
+    "char_end": 53472,
+    "sentence_index": 275,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec022",
+    "text": "The output is a self-contained database artifact (e.g., a JSON file or SQLite database) together with its formal schema.",
+    "char_start": 53473,
+    "char_end": 53593,
+    "sentence_index": 276,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "Step 2: Environment Generation (CodingAgent).",
+    "char_start": 53595,
+    "char_end": 53640,
+    "sentence_index": 277,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec022",
+    "text": "The CodingAgent receives the database and domain specification and generates the executable environment: a Python module (or MCP server) that exposes tool functions backed by the database.",
+    "char_start": 53641,
+    "char_end": 53829,
+    "sentence_index": 278,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec022",
+    "text": "It iteratively tests and debugs the implementation until all unit and workflow tests pass, producing a verified environment along with its test suite and function schemas.",
+    "char_start": 53830,
+    "char_end": 54001,
+    "sentence_index": 279,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec022",
+    "text": "Step 3: Trajectory Synthesis (DataAgent).",
+    "char_start": 54003,
+    "char_end": 54044,
+    "sentence_index": 280,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec022",
+    "text": "The DataAgent loads the verified environment and database, and uses its hierarchical multi-agent pipeline to generate diverse, high-quality multi-turn trajectories.",
+    "char_start": 54045,
+    "char_end": 54209,
+    "sentence_index": 281,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec022",
+    "text": "Through its self-evolving two-phase process (Section ), it first optimizes prompts on a small pilot batch, then scales to full production with continuous quality monitoring.",
+    "char_start": 54210,
+    "char_end": 54383,
+    "sentence_index": 282,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec022",
+    "text": "Cross-Component Feedback.",
+    "char_start": 54385,
+    "char_end": 54410,
+    "sentence_index": 283,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec022",
+    "text": "Throughout the pipeline, EigenCore monitors for cross-component inconsistencies.",
+    "char_start": 54411,
+    "char_end": 54491,
+    "sentence_index": 284,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec022",
+    "text": "If the DataAgent's VerificationAgent detects that a tool function behaves incorrectly (e.g., returns unexpected results for valid inputs), EigenCore can route the issue back to the CodingAgent for targeted repair.",
+    "char_start": 54492,
+    "char_end": 54705,
+    "sentence_index": 285,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec022",
+    "text": "Similarly, if the CodingAgent discovers that the database lacks records needed for meaningful tool-use scenarios, EigenCore can request the DatabaseAgent to augment the data.",
+    "char_start": 54706,
+    "char_end": 54880,
+    "sentence_index": 286,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec022",
+    "text": "This feedback mechanism ensures that the three sub-systems converge toward a consistent, high-quality output without requiring manual intervention.",
+    "char_start": 54881,
+    "char_end": 55028,
+    "sentence_index": 287,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec023",
+    "text": "BFCL (Berkeley Function-Calling Leaderboard) patilberkeley is one of the most widely adopted benchmarks for evaluating large language models' function-calling capabilities.",
+    "char_start": 55030,
+    "char_end": 55202,
+    "sentence_index": 288,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec023",
+    "text": "It assesses a model's ability to correctly select functions, generate valid arguments, and conduct multi-step tool calling across diverse domains.",
+    "char_start": 55203,
+    "char_end": 55349,
+    "sentence_index": 289,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec023",
+    "text": "Given its prominence as a standard evaluation suite for tool-use reliability and compositional reasoning in LLMs patilberkeley , BFCL serves as a representative case study for examining the quality of existing benchmarks and demonstrating how EigenData can be applied to audit, repair, and extend them.",
+    "char_start": 55350,
+    "char_end": 55652,
+    "sentence_index": 290,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec023",
+    "text": "In this case study, EigenCore (Section ) orchestrates the full audit-and-repair pipeline, dispatching sub-tasks to the appropriate sub-systems: the DataAgent (Section ) drives error analysis and trajectory repair through its VerificationAgent and ModifyAgent ; the CodingAgent (Section ) diagnoses and fixes implementation bugs in the benchmark's executable functions; and the DatabaseAgent (Section ) validates and corrects any underlying data inconsistencies.",
+    "char_start": 55654,
+    "char_end": 56115,
+    "sentence_index": 291,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec023",
+    "text": "Cross-component feedback (Section ) ensures that fixes in one layer propagate to all dependent artifacts.",
+    "char_start": 56116,
+    "char_end": 56221,
+    "sentence_index": 292,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec023",
+    "text": "We focus specifically on the multi-turn subset of BFCL, which evaluates multi-step tool-use trajectories requiring sequential reasoning and state tracking---the most challenging and practically relevant setting for real-world agent deployment.",
+    "char_start": 56223,
+    "char_end": 56466,
+    "sentence_index": 293,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec024",
+    "text": "To audit the quality of BFCL's multi-turn evaluation suite, EigenCore dispatches a coordinated analysis across all three sub-systems.",
+    "char_start": 56468,
+    "char_end": 56601,
+    "sentence_index": 294,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec024",
+    "text": "The DataAgent 's VerificationAgent examines ground-truth trajectories and evaluation logic via the Data Audit workflow (Section ); the CodingAgent 's TestingAgent and JudgeAgent exercise the benchmark's executable functions against synthesized edge cases (Section ); and the DatabaseAgent 's ConsistencyVerificationAgent cross-checks backing data for constraint violations (Section ).",
+    "char_start": 56602,
+    "char_end": 56986,
+    "sentence_index": 295,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec024",
+    "text": "This multi-agent audit reveals three categories of errors that compromise the reliability of BFCL as a benchmark.",
+    "char_start": 56987,
+    "char_end": 57100,
+    "sentence_index": 296,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec024",
+    "text": "Function Schema Errors (affecting 39 entries, 19.5\\%).",
+    "char_start": 57102,
+    "char_end": 57156,
+    "sentence_index": 297,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec024",
+    "text": "We identify 39 entries where the function schemas provided to models contain incorrect or incomplete specifications.",
+    "char_start": 57157,
+    "char_end": 57273,
+    "sentence_index": 298,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec024",
+    "text": "These include: (1) parameter type mismatches , where a parameter is declared as one type but the reference implementation or ground truth expects another---for instance, close\\_ticket declares ticket\\_id as integer , yet the initial configuration stores ticket IDs as strings and the ground truth passes the string \"ticket\\_001\" (Figure ); (2) missing required parameters , where the ground-truth trajectory assumes the model should infer values without any discovery mechanism; and (3) ambiguous or contradictory parameter descriptions that admit multiple valid interpretations---such as setCruiseControl using \"m/h\" for input but \"km/h\" for output (Figure ), or get\\_order\\_history documenting a response key \"order\\_history\" while the implementation returns \"history\" (Figure ).",
+    "char_start": 57274,
+    "char_end": 58055,
+    "sentence_index": 299,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec024",
+    "text": "Appendix provides additional examples.",
+    "char_start": 58056,
+    "char_end": 58094,
+    "sentence_index": 300,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec024",
+    "text": "Function Implementation Errors (affecting 91 entries, 45.5\\%).",
+    "char_start": 58096,
+    "char_end": 58158,
+    "sentence_index": 301,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec024",
+    "text": "The executable functions backing BFCL's evaluation contain implementation bugs that cause correct model outputs to be scored as failures.",
+    "char_start": 58159,
+    "char_end": 58296,
+    "sentence_index": 302,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec024",
+    "text": "We find 91 affected entries spanning three recurring patterns: (1) logic errors , such as the setHeadlights function where the \"auto\" mode---a schema-valid enum value---falls into the else branch and silently turns headlights off instead of providing automatic behavior (Figure ), or tail(lines=0) returning the entire file instead of nothing due to Python's content[-0:] semantics (Figure ); (2) input handling defects , including get\\_zipcode\\_based\\_on\\_city which silently returns an invalid zipcode \"00000\" for unrecognized or differently-cased city names instead of raising an error (Figure ); and (3) state management bugs , such as send\\_message storing messages without a sender field, making it impossible to distinguish senders when deleting or viewing messages (Figure ).",
+    "char_start": 58297,
+    "char_end": 59080,
+    "sentence_index": 303,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec024",
+    "text": "Because the evaluation pipeline executes these functions to determine correctness, these bugs silently penalize models that produce valid outputs, inflating error rates and distorting cross-model comparisons.",
+    "char_start": 59081,
+    "char_end": 59289,
+    "sentence_index": 304,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec024",
+    "text": "Trajectory and Evaluation Errors (affecting 82 entries, 41.9\\%).",
+    "char_start": 59291,
+    "char_end": 59355,
+    "sentence_index": 305,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec024",
+    "text": "The ground-truth trajectories used as references exhibit 82 errors across three sub-categories: (1) overly rigid evaluation , which penalizes functionally or semantically equivalent but syntactically different function call sequences---for example, rename-then-move versus the ground truth's move-then-rename, despite producing identical filesystem states (Figure ), or requiring integer-formatted tire pressures ( 32 ) when the API returns floats ( 32.0 ) (Figure ); (2) incorrect ground-truth labels , where the reference trajectory itself contains erroneous outputs, such as a ground truth that word-sorts a single-line file instead of line-sorting it (Figure ), or du() being called with human\\_readable=True but the ground truth writing the non-human-readable format (Figure ); and (3) missing alternative solution paths , where a model that achieves the correct final state through a different but valid sequence of calls is marked as incorrect.",
+    "char_start": 59356,
+    "char_end": 60307,
+    "sentence_index": 306,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec024",
+    "text": "In total, these errors affect 143 out of 200 entries ( 71.5\\% ) in BFCL's multi-turn evaluation suite, undermining the reliability of model rankings derived from the original benchmark.",
+    "char_start": 60309,
+    "char_end": 60494,
+    "sentence_index": 307,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec024",
+    "text": "Table summarizes the error distribution.",
+    "char_start": 60495,
+    "char_end": 60535,
+    "sentence_index": 308,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec024",
+    "text": "[htbp]\n\nSummary of errors identified in BFCL multi-turn base evaluation suite (200 entries).",
+    "char_start": 60537,
+    "char_end": 60629,
+    "sentence_index": 309,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec024",
+    "text": "lcc\n\nError Category & Entries Affected & \\% of Cases\n\nFunction Schema Errors & 39 & 19.5\\%\n\nFunction Implementation Errors & 91 & 45.5\\%\n\nTrajectory / Evaluation Errors & 82 & 41.0\\%\n\nTotal (deduplicated) & 143 & 71.5\\%\n\n[htbp]\n\n[\ncolback=red!3,\ncolframe=red!60!black,\nfonttitle= ,\ntitle= Schema Error: Schema declares integer , ground truth passes string ( close\\_ticket ) ,\nboxrule=0.6pt,\narc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_173 , Turn 3 Domain: Ticket API\n\nUser prompt: ``I noticed there's a ticket linked with this booking that I no longer find necessary.",
+    "char_start": 60631,
+    "char_end": 61233,
+    "sentence_index": 310,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec024",
+    "text": "Can you cancel it on my behalf?''\n\nSchema definition ( ticket\\_api.json ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\n\"name\": \"close_ticket\",\n\"parameters\":\n\"ticket_id\": \"type\": \"integer\",\n\"description\": \"ID of the ticket to be closed.\"\n\nGround truth call:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nclose_ticket(ticket_id='ticket_001') # passes a string!",
+    "char_start": 61234,
+    "char_end": 61598,
+    "sentence_index": 311,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec024",
+    "text": "Initial config (ticket IDs stored as strings):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\n\"ticket_queue\": [ \"id\": \"ticket_001\", \"status\": \"Open\", ...",
+    "char_start": 61600,
+    "char_end": 61754,
+    "sentence_index": 312,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec024",
+    "text": "]\n\nProblem: The schema specifies ticket\\_id as integer , but the initial config stores ticket IDs as the string \"ticket\\_001\" and the ground truth passes a string.",
+    "char_start": 61755,
+    "char_end": 61918,
+    "sentence_index": 313,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec024",
+    "text": "The implementation's lookup ( ticket[\"id\"] == ticket\\_id ) compares by equality, so passing an integer---as the schema dictates---would never match the string key.",
+    "char_start": 61919,
+    "char_end": 62082,
+    "sentence_index": 314,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec024",
+    "text": "A model that follows the schema strictly produces a type-correct call that fails at runtime.",
+    "char_start": 62083,
+    "char_end": 62175,
+    "sentence_index": 315,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec024",
+    "text": "Example of a function schema error in BFCL.",
+    "char_start": 62177,
+    "char_end": 62220,
+    "sentence_index": 316,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec024",
+    "text": "The schema declares ticket\\_id as integer , but the ground truth and backing data use the string \"ticket\\_001\" ---a model following the schema cannot succeed.",
+    "char_start": 62221,
+    "char_end": 62379,
+    "sentence_index": 317,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec024",
+    "text": "[htbp]\n\n[\ncolback=orange!3,\ncolframe=orange!70!black,\nfonttitle= ,\ntitle= Implementation Error: setHeadlights(\"auto\") silently turns headlights OFF ,\nboxrule=0.6pt,\narc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_50 File: vehicle\\_control.py:314--329\n\nUser prompt: ``It's getting a bit darker out here, so please flip on the headlights for visibility.''\n\nImplementation:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndef setHeadlights(self, mode: str):\nif mode not in [\"on\", \"off\", \"auto\"]:\nreturn \"error\": \"Invalid headlight mode.\"\nif mode == \"on\":\nself.headLightStatus = \"on\"\nreturn \"headlightStatus\": \"on\"\nelse: # Both \"off\" AND \"auto\" fall here!",
+    "char_start": 62381,
+    "char_end": 63063,
+    "sentence_index": 318,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec024",
+    "text": "self.headLightStatus = \"off\"\nreturn \"headlightStatus\": \"off\"\n\nProblem: The schema declares \"auto\" as a valid enum value, but the else branch treats both \"off\" and \"auto\" identically---turning headlights off .",
+    "char_start": 63064,
+    "char_end": 63272,
+    "sentence_index": 319,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec024",
+    "text": "A model that reasonably interprets darkening conditions and calls setHeadlights(mode=\"auto\") would get headlightStatus=\"off\" instead of \"on\" , causing a state mismatch and test failure.",
+    "char_start": 63273,
+    "char_end": 63458,
+    "sentence_index": 320,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec024",
+    "text": "The ground truth avoids this by calling setHeadlights(mode=\"on\") , masking the bug.",
+    "char_start": 63459,
+    "char_end": 63542,
+    "sentence_index": 321,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec024",
+    "text": "Example of a function implementation error in BFCL.",
+    "char_start": 63544,
+    "char_end": 63595,
+    "sentence_index": 322,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec024",
+    "text": "The \"auto\" headlight mode---a schema-valid option---silently falls into the \"off\" branch due to a missing elif , penalizing models that make a reasonable choice.",
+    "char_start": 63596,
+    "char_end": 63757,
+    "sentence_index": 323,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec024",
+    "text": "[htbp]\n\n[\ncolback=blue!3,\ncolframe=blue!60!black,\nfonttitle= ,\ntitle= Trajectory Error: Ground truth contains wrong sorted content ( multi\\_turn\\_base\\_4 ) ,\nboxrule=0.6pt,\narc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_4 , Turn 2 Domain: File System + Twitter API\n\nUser prompt: ``Share the sorted result as the message body on social media, ensuring to tag `currenttechtrend' and mention Julia.''\n\nFile content (single line, from initial config):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nInitial report content Unsorted data More unsorted data\n\nsort() implementation (line-sorts, not word-sorts):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nsorted_content = \" \".join(sorted(content.splitlines()))\n# Single line -> returns unchanged:\n# \"Initial report content Unsorted data More unsorted data\"\n\nGround truth tweet (incorrectly word-sorted):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\npost_tweet(\ncontent='Initial report content More unsorted data Unsorted data',\nmentions=['@Julia'], tags=['#currenttechtrend'])\n\nProblem: The sort() function sorts lines , not words.",
+    "char_start": 63759,
+    "char_end": 64873,
+    "sentence_index": 324,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec024",
+    "text": "Since the file has a single line, the output is unchanged.",
+    "char_start": 64874,
+    "char_end": 64932,
+    "sentence_index": 325,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec024",
+    "text": "But the ground truth contains word-sorted content---a different string.",
+    "char_start": 64933,
+    "char_end": 65004,
+    "sentence_index": 326,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec024",
+    "text": "A model that faithfully uses the sort() output would post the correct (unchanged) content but fail the evaluation because the ground truth itself is wrong.",
+    "char_start": 65005,
+    "char_end": 65160,
+    "sentence_index": 327,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec024",
+    "text": "Example of a trajectory error in BFCL.",
+    "char_start": 65162,
+    "char_end": 65200,
+    "sentence_index": 328,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec024",
+    "text": "The ground truth contains word-sorted content, but the sort() function sorts lines---producing unchanged output for a single-line file.",
+    "char_start": 65201,
+    "char_end": 65336,
+    "sentence_index": 329,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec024",
+    "text": "The reference answer is provably incorrect.",
+    "char_start": 65337,
+    "char_end": 65380,
+    "sentence_index": 330,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec025",
+    "text": "EigenCore orchestrates the repair pipeline by routing each error category to the appropriate sub-system and enforcing cross-component consistency through its feedback loop (Section ).",
+    "char_start": 65382,
+    "char_end": 65565,
+    "sentence_index": 331,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec025",
+    "text": "Schema errors are handled by the DataAgent 's schema-polish workflow, implementation bugs by the CodingAgent 's iterative debug loop, and trajectory errors by the DataAgent 's modification workflow---with EigenCore ensuring that a schema fix propagates to both the corresponding implementation and all affected trajectories.",
+    "char_start": 65566,
+    "char_end": 65890,
+    "sentence_index": 332,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec025",
+    "text": "We select 200 representative multi-turn cases (BFCL-v3 set) for detailed repair and re-evaluation.",
+    "char_start": 65891,
+    "char_end": 65989,
+    "sentence_index": 333,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec025",
+    "text": "Function Schema Repair.",
+    "char_start": 65991,
+    "char_end": 66014,
+    "sentence_index": 334,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec025",
+    "text": "We apply EigenData 's Schema Polish workflow (Section ) to systematically correct deficient schemas.",
+    "char_start": 66015,
+    "char_end": 66115,
+    "sentence_index": 335,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec025",
+    "text": "The VerificationAgent first cross-references each function schema against its reference implementation and ground-truth trajectory usage, detecting recurring mismatches such as parameter type conflicts, missing constraints, and ambiguous descriptions.",
+    "char_start": 66116,
+    "char_end": 66367,
+    "sentence_index": 336,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec025",
+    "text": "These structured diagnostics are passed to the ModifyAgent , which rewrites the schema---correcting type declarations, adding missing parameter constraints, and clarifying descriptions to resolve ambiguity.",
+    "char_start": 66368,
+    "char_end": 66574,
+    "sentence_index": 337,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec025",
+    "text": "The updated schema is reinserted into the pipeline and revalidated by the VerificationAgent , iterating until the specification is consistent with both its implementation and its downstream usage in trajectories.",
+    "char_start": 66575,
+    "char_end": 66787,
+    "sentence_index": 338,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec025",
+    "text": "Function Implementation Repair.",
+    "char_start": 66789,
+    "char_end": 66820,
+    "sentence_index": 339,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec025",
+    "text": "For implementation bugs, we leverage EigenData 's CodingAgent (Section ) to diagnose and correct the faulty executable functions.",
+    "char_start": 66821,
+    "char_end": 66950,
+    "sentence_index": 340,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec025",
+    "text": "The repair proceeds in three stages.",
+    "char_start": 66951,
+    "char_end": 66987,
+    "sentence_index": 341,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec025",
+    "text": "First, the TestingAgent executes the existing test suite and collects structured failure traces---stack traces, assertion mismatches, and input--output pairs that trigger incorrect behavior.",
+    "char_start": 66988,
+    "char_end": 67178,
+    "sentence_index": 342,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec025",
+    "text": "Second, the JudgeAgent analyzes these traces to attribute each failure to either a genuine implementation bug or a test-side issue (e.g., an overly strict assertion or an incorrect expected value), preventing repairs from chasing false positives.",
+    "char_start": 67179,
+    "char_end": 67425,
+    "sentence_index": 343,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec025",
+    "text": "Third, for confirmed implementation bugs, the FileGenerationAgent rewrites the defective function body while preserving the corrected schema contract established in the schema-repair step.",
+    "char_start": 67426,
+    "char_end": 67614,
+    "sentence_index": 344,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec025",
+    "text": "Each rewritten function is revalidated by the TestingAgent against both the original test cases and additional edge cases synthesized by the pipeline---including boundary inputs, null/empty arguments, and adversarial orderings identified during the error-analysis phase.",
+    "char_start": 67615,
+    "char_end": 67885,
+    "sentence_index": 345,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec025",
+    "text": "This iterative debug loop (up to $M$ iterations per cycle, $N$ cycles per function) continues until all identified implementation bugs are resolved, yielding regression coverage beyond what the original benchmark's fixed test cases offer.",
+    "char_start": 67886,
+    "char_end": 68124,
+    "sentence_index": 346,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec025",
+    "text": "Trajectory and Evaluation Repair.",
+    "char_start": 68126,
+    "char_end": 68159,
+    "sentence_index": 347,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec025",
+    "text": "We employ EigenData 's Data Repair workflow to repair ground-truth trajectories.",
+    "char_start": 68160,
+    "char_end": 68240,
+    "sentence_index": 348,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec025",
+    "text": "The VerificationAgent scans each reference trajectory and marks spans containing incorrect function calls, invalid argument values, or logically inconsistent reasoning.",
+    "char_start": 68241,
+    "char_end": 68409,
+    "sentence_index": 349,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec025",
+    "text": "Rather than regenerating entire conversations, the ModifyAgent rewrites only the problematic segments, preserving valid reasoning and context.",
+    "char_start": 68410,
+    "char_end": 68552,
+    "sentence_index": 350,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec025",
+    "text": "The repaired trajectory is then rechecked through a verification--modification--verification loop until all issues are resolved.",
+    "char_start": 68553,
+    "char_end": 68681,
+    "sentence_index": 351,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec025",
+    "text": "For evaluation, the VerificationFunctionAgent synthesizes state-based checking functions that assess whether the final system state matches the expected outcome, rather than requiring exact trajectory matching.",
+    "char_start": 68682,
+    "char_end": 68892,
+    "sentence_index": 352,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec025",
+    "text": "This allows the evaluation to accept functionally equivalent call sequences, and for cases where multiple valid solution paths exist, the verification function encodes all acceptable completion criteria.",
+    "char_start": 68893,
+    "char_end": 69096,
+    "sentence_index": 353,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec026",
+    "text": "We evaluate five frontier models on the repaired 200-case subset (BFCL-v3) using both automated metrics and human evaluation to assess the consistency and reliability of the corrected benchmark.",
+    "char_start": 69098,
+    "char_end": 69292,
+    "sentence_index": 354,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec026",
+    "text": "Automated Evaluation.",
+    "char_start": 69294,
+    "char_end": 69315,
+    "sentence_index": 355,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec026",
+    "text": "Table reports results across five automated metrics of increasing strictness: Config Match checks whether the model's function call configuration (function name and parameter schema) matches the reference; Key Function verifies that critical function calls are present; LLM-as-Judge uses a separate language model to assess trajectory correctness; Config$+$Func requires both configuration and key function match; and All Three demands simultaneous satisfaction of configuration match, key function match, and LLM-as-Judge approval.",
+    "char_start": 69316,
+    "char_end": 69848,
+    "sentence_index": 356,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec026",
+    "text": "[htbp]\n\nAutomated evaluation results on the repaired BFCL multi-turn subset (200 cases).",
+    "char_start": 69850,
+    "char_end": 69938,
+    "sentence_index": 357,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec026",
+    "text": "Models are sorted by the strictest metric (All Three).",
+    "char_start": 69939,
+    "char_end": 69993,
+    "sentence_index": 358,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec026",
+    "text": "Best results per column are bolded .",
+    "char_start": 69994,
+    "char_end": 70030,
+    "sentence_index": 359,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec026",
+    "text": "1.15\n5pt\nl\n> p 1.8cm\n> p 1.8cm\n> p 1.8cm\n> p 1.8cm\n> p 1.8cm\n\nModel\n& Config Match\n& Key Func.",
+    "char_start": 70032,
+    "char_end": 70126,
+    "sentence_index": 360,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec026",
+    "text": "& LLM Judge\n& Config $+$ Func\n& All Three\n\nbestrow\nGemini-3-Pro & 65.5 & 71.0 & 59.0 & 53.0 & 42.5\n\nClaude-4.5-Sonnet & 57.5 & 57.5 & 52.0 & 43.0 & 38.0\n\nlightgray\nGLM-4.6 & 50.5 & 58.5 & 49.0 & 39.5 & 32.5\n\nGPT-5.2 & 50.5 & 54.0 & 45.0 & 40.0 & 32.5\n\nlightgray\nDeepSeek-V3.2 & 45.0 & 44.0 & 40.0 & 29.5 & 22.5\n\nAverage & 53.8 & 57.0 & 49.0 & 41.0 & 33.6\n\n2pt\n\nHuman Evaluation.",
+    "char_start": 70127,
+    "char_end": 70505,
+    "sentence_index": 361,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec026",
+    "text": "To assess the reliability of automated metrics and further validate the corrected benchmark, we conduct a human evaluation study on five representative models, collecting approximately 40 evaluation cases per model.",
+    "char_start": 70507,
+    "char_end": 70722,
+    "sentence_index": 362,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec026",
+    "text": "To construct realistic evaluation scenarios, annotators first select several target environments and optionally configure complex settings (e.g., API availability, tool configurations, or multi-tool environments).",
+    "char_start": 70724,
+    "char_end": 70937,
+    "sentence_index": 363,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec026",
+    "text": "These configurations initialize the evaluation context.",
+    "char_start": 70938,
+    "char_end": 70993,
+    "sentence_index": 364,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec026",
+    "text": "An LLM-assisted interface then supports annotators in generating diverse and challenging multi-turn user queries: given the selected environment and configuration, the LLM proposes candidate task descriptions and follow-up interactions, which annotators refine or extend to produce realistic multi-step requests.",
+    "char_start": 70994,
+    "char_end": 71306,
+    "sentence_index": 365,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec026",
+    "text": "This process enables the creation of complex agentic tasks involving tool usage, state tracking, and iterative reasoning.",
+    "char_start": 71307,
+    "char_end": 71428,
+    "sentence_index": 366,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec026",
+    "text": "For each generated task, the same prompt sequence is executed across all evaluated models.",
+    "char_start": 71429,
+    "char_end": 71519,
+    "sentence_index": 367,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec026",
+    "text": "Annotators are presented with the resulting trajectories and final outputs from each model and determine whether the model successfully fulfills the user's intent under the given environment.",
+    "char_start": 71520,
+    "char_end": 71711,
+    "sentence_index": 368,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec026",
+    "text": "Each model output is labeled as Pass or Fail : a Pass indicates that the model correctly uses available tools to produce a functionally valid solution satisfying the user's request, regardless of differences in intermediate reasoning steps or tool invocation order; a Fail indicates that the model produces an incorrect result, an incomplete solution, or invalid tool interactions that prevent successful task completion.",
+    "char_start": 71712,
+    "char_end": 72133,
+    "sentence_index": 369,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec026",
+    "text": "Crucially, unlike automated evaluation, which typically relies on trajectory matching against predefined references, our human evaluation does not use reference trajectories at all.",
+    "char_start": 72135,
+    "char_end": 72316,
+    "sentence_index": 370,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec026",
+    "text": "Annotators judge task success based solely on whether the model correctly uses available tools to accomplish the user's intent within the given environment.",
+    "char_start": 72317,
+    "char_end": 72473,
+    "sentence_index": 371,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec026",
+    "text": "This reference-free design captures valid alternative reasoning paths and tool usage strategies that automated trajectory-based metrics systematically miss, providing a more faithful measure of practical tool-use capability in realistic multi-turn scenarios.",
+    "char_start": 72474,
+    "char_end": 72732,
+    "sentence_index": 372,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec026",
+    "text": "Table reports the results alongside each model's ranking on the original BFCL multi-turn leaderboard.",
+    "char_start": 72733,
+    "char_end": 72834,
+    "sentence_index": 373,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec026",
+    "text": "https://gorilla.cs.berkeley.edu/leaderboard.html\n\n[htbp]\n\nHuman evaluation results on the repaired BFCL environment.",
+    "char_start": 72835,
+    "char_end": 72951,
+    "sentence_index": 374,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec026",
+    "text": "Annotators judge whether each model trajectory constitutes a functionally correct task completion without reference trajectories.",
+    "char_start": 72952,
+    "char_end": 73081,
+    "sentence_index": 375,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec026",
+    "text": "Pass rates are compared against the strictest automated metric (All Three) on the repaired benchmark and against the original BFCL multi-turn leaderboard scores.",
+    "char_start": 73082,
+    "char_end": 73243,
+    "sentence_index": 376,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec026",
+    "text": "Models are sorted by human pass rate.",
+    "char_start": 73244,
+    "char_end": 73281,
+    "sentence_index": 377,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec026",
+    "text": "1.15\n6pt\nl c c c c c\n\nModel\n& Pass\n& Fail\n& Pass Rate (\\%)\n& Repaired BFCL\nAll Three (\\%)\n& Original\nBFCL MT (\\%)\n\nbestrow\nGemini-3-Pro & 33 & 8 & 80.5 & 42.5 & 63.12\n\nClaude-4.5-Sonnet & 28 & 13 & 68.3 & 38.0 & 61.37\n\nlightgray\nGPT-5.2 & 26 & 14 & 65.0 & 32.5 & 28.12\n\nGLM-4.6 & 23 & 19 & 54.8 & 32.5 & 68.00\n\nlightgray\nDeepSeek-V3.2 & 10 & 33 & 23.3 & 22.5 & 44.88\n\nAnalysis.",
+    "char_start": 73283,
+    "char_end": 73660,
+    "sentence_index": 378,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec026",
+    "text": "Several findings emerge from comparing automated and human evaluations.",
+    "char_start": 73661,
+    "char_end": 73732,
+    "sentence_index": 379,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec026",
+    "text": "First, the model ranking is broadly consistent between the repaied automated metric (All Three) and human judgment, with Gemini-3-Pro leading in both settings and DeepSeek-V3.2 trailing substantially.",
+    "char_start": 73733,
+    "char_end": 73933,
+    "sentence_index": 380,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec026",
+    "text": "This suggests that the repaired benchmark's automated metrics are reasonably well-calibrated after EigenData -guided corrections.",
+    "char_start": 73934,
+    "char_end": 74063,
+    "sentence_index": 381,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec026",
+    "text": "Second, comparing the repaired All Three metric against the original BFCL leaderboard scores reveals striking rank inversions that expose the severity of benchmark artifacts prior to repair.",
+    "char_start": 74065,
+    "char_end": 74255,
+    "sentence_index": 382,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec026",
+    "text": "Most notably, GPT-5.2 scores only 28.12\\% on the original BFCL but achieves 65.0\\% human pass rate---a 36.9 percentage-point gap indicating that pre-repair benchmark errors were disproportionately penalizing this model.",
+    "char_start": 74256,
+    "char_end": 74475,
+    "sentence_index": 383,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec026",
+    "text": "Conversely, GLM-4.6 attains the highest original BFCL score (68.00\\%) yet ranks fourth in human evaluation (54.8\\%), suggesting it benefited from benchmark-specific patterns that do not reflect genuine capability.",
+    "char_start": 74476,
+    "char_end": 74689,
+    "sentence_index": 384,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec026",
+    "text": "Crucially, the repaired All Three metric corrects these distortions: its model ranking (Gemini-3-Pro $>$ Claude-4.5-Sonnet $>$ GPT-5.2 $ $ GLM-4.6 $>$ DeepSeek-V3.2) aligns with the human-evaluation ranking, whereas the original leaderboard ordering does not.",
+    "char_start": 74690,
+    "char_end": 74949,
+    "sentence_index": 385,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec026",
+    "text": "This demonstrates that EigenData 's repair pipeline removes systematic biases that previously inflated or deflated model scores, yielding automated metrics whose relative ordering faithfully reflects human judgments of functional correctness.",
+    "char_start": 74950,
+    "char_end": 75192,
+    "sentence_index": 386,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec026",
+    "text": "Third, the sub-metric decomposition in Table reveals that multi-turn function calling involves multiple independent failure modes.",
+    "char_start": 75194,
+    "char_end": 75324,
+    "sentence_index": 387,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec026",
+    "text": "The average pass rate drops from 57.0\\% (Key Function) and 53.8\\% (Config Match) individually to 41.0\\% when both are required (Config$+$Func), and further to 33.6\\% under the full All Three criterion.",
+    "char_start": 75325,
+    "char_end": 75526,
+    "sentence_index": 388,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec026",
+    "text": "This 23.4 percentage-point gap between the easiest individual metric and the conjunction indicates that models frequently satisfy one evaluation axis while failing another: a model may invoke the correct functions but with malformed configurations, or produce well-formed calls that miss key functions in the workflow.",
+    "char_start": 75527,
+    "char_end": 75845,
+    "sentence_index": 389,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec026",
+    "text": "Notably, the LLM-as-Judge metric (49.0\\% average) falls between the individual and conjunction criteria, suggesting that semantic-level assessment captures a complementary signal---detecting cases where both the configuration and function selection are individually plausible but the overall trajectory is logically incoherent.",
+    "char_start": 75846,
+    "char_end": 76173,
+    "sentence_index": 390,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec026",
+    "text": "This multi-dimensional failure profile underscores why single-axis evaluation can mask genuine capability gaps, and validates the design of the All Three metric as a stringent but informative composite.",
+    "char_start": 76174,
+    "char_end": 76376,
+    "sentence_index": 391,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec026",
+    "text": "Taken together, these results demonstrate that EigenData 's end-to-end auditing and repair pipeline---coordinated by EigenCore across the DatabaseAgent , CodingAgent , and DataAgent ---produces benchmarks that are both more reliable (fewer false negatives from schema mismatches and implementation bugs) and more discriminative (better correlation with human judgments of functional correctness).",
+    "char_start": 76378,
+    "char_end": 76774,
+    "sentence_index": 392,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec027",
+    "text": "We have presented EigenData, an integrated, self-evolving platform for function-calling data that coordinates three specialized sub-systems---DatabaseAgent, CodingAgent, and DataAgent---through a top-level orchestrator (EigenCore) to cover the full lifecycle from environment construction to trajectory generation and quality assurance.",
+    "char_start": 76776,
+    "char_end": 77112,
+    "sentence_index": 393,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec027",
+    "text": "The platform's multi-agent architecture enables dynamic workflow planning, iterative self-correction, and cross-component feedback, distinguishing it from existing linear data-generation pipelines.",
+    "char_start": 77113,
+    "char_end": 77310,
+    "sentence_index": 394,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec027",
+    "text": "We have demonstrated EigenData's capabilities through a case study on BFCL-V3, where our automated audit identified systematic errors affecting 71.5\\% of multi-turn entries across function schemas, implementations, and reference trajectories.",
+    "char_start": 77312,
+    "char_end": 77554,
+    "sentence_index": 395,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec027",
+    "text": "The repair pipeline, which routes each error category to the appropriate sub-system with cross-component consistency enforcement, produced a corrected benchmark variant that resolves the rank inversions present in the original leaderboard---most notably, models that were under- or over-estimated are now correctly ranked.",
+    "char_start": 77555,
+    "char_end": 77877,
+    "sentence_index": 396,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec027",
+    "text": "On the repaired benchmark, the automated All Three metric aligns with human evaluation in model ranking.",
+    "char_start": 77878,
+    "char_end": 77982,
+    "sentence_index": 397,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec027",
+    "text": "These findings validate EigenData's end-to-end auditing approach and motivate the outcome-aware, state-based evaluation protocol enabled by EigenData's VerificationFunctionAgent.",
+    "char_start": 77983,
+    "char_end": 78161,
+    "sentence_index": 398,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec027",
+    "text": "Limitations.",
+    "char_start": 78163,
+    "char_end": 78175,
+    "sentence_index": 399,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec027",
+    "text": "Several limitations of the current work should be noted.",
+    "char_start": 78176,
+    "char_end": 78232,
+    "sentence_index": 400,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec027",
+    "text": "First, our BFCL case study focuses on 200 multi-turn cases; scaling the repair and evaluation to the full benchmark remains future work.",
+    "char_start": 78233,
+    "char_end": 78369,
+    "sentence_index": 401,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec027",
+    "text": "Second, while we introduce outcome-aware evaluation through synthesized verification functions, a systematic comparison with other evaluation paradigms (e.g., reward-model-based or simulation-based assessment) is deferred to future work.",
+    "char_start": 78370,
+    "char_end": 78607,
+    "sentence_index": 402,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec027",
+    "text": "Third, the current system relies on frontier LLMs for all agent roles; an analysis of cost--quality tradeoffs across model tiers would strengthen practical deployment guidance.",
+    "char_start": 78608,
+    "char_end": 78784,
+    "sentence_index": 403,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec027",
+    "text": "unsrtnat\nreferences\n\nThis appendix provides additional concrete examples of errors identified in the BFCL multi-turn base evaluation suite (Section 4.1).",
+    "char_start": 78786,
+    "char_end": 78939,
+    "sentence_index": 404,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec028",
+    "text": "Examples are organized by error category and each is presented in a self-contained box showing the relevant schema, code, ground truth, and explanation.",
+    "char_start": 78940,
+    "char_end": 79092,
+    "sentence_index": 405,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=red!3,\ncolframe=red!60!black,\nfonttitle= ,\ntitle= Schema Error: Speed unit \"m/h\" contradicts response unit \"km/h\" ( setCruiseControl ) ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_79 , Turn 2 Domain: Vehicle Control API\n\nUser prompt: ``Could you adjust the cruise control to 65 mph ''\n\nSchema definition ( vehicle\\_control.json ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\n\"name\": \"setCruiseControl\",\n\"parameters\":\n\"speed\": \"type\": \"float\",\n\"description\": \"The speed to set in m/h.\"\n,\n\"response\":\n\"currentSpeed\": \"type\": \"float\",\n\"description\": \"Current speed in km/h.\"\n\nGround truth call:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nsetCruiseControl(speed=65, activate=True, distanceToNextVehicle=100)\n\nProblem: The input parameter description uses \"m/h\" (ambiguous---miles/hour or meters/hour?), while the response describes speed in \"km/h\" .",
+    "char_start": 79094,
+    "char_end": 80017,
+    "sentence_index": 406,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec028",
+    "text": "The user says ``65 mph'', but the schema offers two contradictory unit systems.",
+    "char_start": 80018,
+    "char_end": 80097,
+    "sentence_index": 407,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec028",
+    "text": "If \"m/h\" means miles per hour but the output is in km/h, there is an implicit unit conversion that is never documented.",
+    "char_start": 80098,
+    "char_end": 80217,
+    "sentence_index": 408,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec028",
+    "text": "If \"m/h\" means km/h, the abbreviation is wrong.",
+    "char_start": 80218,
+    "char_end": 80265,
+    "sentence_index": 409,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec028",
+    "text": "Schema error: contradictory unit specifications between input parameter ( \"m/h\" ) and response ( \"km/h\" ).",
+    "char_start": 80267,
+    "char_end": 80373,
+    "sentence_index": 410,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=red!3,\ncolframe=red!60!black,\nfonttitle= ,\ntitle= Schema Error: Documented response key \"order\\_history\" vs.\\ actual key \"history\" ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nFunction: get\\_order\\_history Domain: Trading Bot API\n\nSchema ( trading\\_bot.json ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\n\"name\": \"get_order_history\",\n\"response\":\n\"properties\":\n\"order_history\": \"type\": \"array\",\n\"description\": \"List of orders ID in the order history.\"\n\nImplementation ( trading\\_bot.py:554 ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nreturn \"history\": list(self.orders.keys())\n\nProblem: The schema documents the response key as \"order\\_history\" , but the implementation returns \"history\" .",
+    "char_start": 80375,
+    "char_end": 81117,
+    "sentence_index": 411,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec028",
+    "text": "Any model or downstream code that parses the response using the schema-documented key would fail to find the data.",
+    "char_start": 81118,
+    "char_end": 81232,
+    "sentence_index": 412,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec028",
+    "text": "Schema error: the documented response key \"order\\_history\" does not match the actual implementation key \"history\" .",
+    "char_start": 81234,
+    "char_end": 81349,
+    "sentence_index": 413,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=orange!3,\ncolframe=orange!70!black,\nfonttitle= ,\ntitle= Implementation Error: tail(lines=0) returns ALL lines instead of empty ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nFile: gorilla\\_file\\_system.py:563--585\n\nImplementation:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndef tail(self, file_name: str, lines: int = 10):\ncontent = file._read().splitlines()\nif lines > len(content):\nlines = len(content)\nlast_lines = content[-lines:] # content[-0:] == content[0:]!",
+    "char_start": 81351,
+    "char_end": 81862,
+    "sentence_index": 414,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec028",
+    "text": "return \"last_lines\": \" \".join(last_lines)\n\nProblem: In Python, content[-0:] is equivalent to content[0:] , which returns the entire list.",
+    "char_start": 81863,
+    "char_end": 82000,
+    "sentence_index": 415,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec028",
+    "text": "So tail(file, lines=0) returns all lines instead of no lines.",
+    "char_start": 82001,
+    "char_end": 82062,
+    "sentence_index": 416,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec028",
+    "text": "This is a classic off-by-one / boundary condition error.",
+    "char_start": 82063,
+    "char_end": 82119,
+    "sentence_index": 417,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec028",
+    "text": "A model calling tail with lines=0 would receive unexpected results.",
+    "char_start": 82120,
+    "char_end": 82187,
+    "sentence_index": 418,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec028",
+    "text": "Implementation error: tail(lines=0) returns the entire file due to Python's [-0:] slice semantics.",
+    "char_start": 82189,
+    "char_end": 82287,
+    "sentence_index": 419,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=orange!3,\ncolframe=orange!70!black,\nfonttitle= ,\ntitle= Implementation Error: get\\_zipcode\\_based\\_on\\_city --- silent failure on unknown cities ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nFile: vehicle\\_control.py:618--649 Affected entries: 38 calls across 20 entries\n\nImplementation:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndef get_zipcode_based_on_city(self, city: str):\nif city == \"Rivermist\":\nreturn \"zipcode\": \"83214\"\nelif city == \"San Francisco\":\nreturn \"zipcode\": \"94016\"\n# ...",
+    "char_start": 82289,
+    "char_end": 82826,
+    "sentence_index": 420,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec028",
+    "text": "more elif chains ...",
+    "char_start": 82827,
+    "char_end": 82847,
+    "sentence_index": 421,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec028",
+    "text": "else:\nreturn \"zipcode\": \"00000\" # Silent failure!",
+    "char_start": 82848,
+    "char_end": 82897,
+    "sentence_index": 422,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec028",
+    "text": "Problem: (1) Case-sensitive exact matching means \"san francisco\" or \"SAN FRANCISCO\" returns \"00000\" .",
+    "char_start": 82899,
+    "char_end": 83000,
+    "sentence_index": 423,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec028",
+    "text": "(2) Unknown cities silently return the invalid zipcode \"00000\" instead of an error, which then propagates to estimate\\_distance producing incorrect distance calculations.",
+    "char_start": 83001,
+    "char_end": 83171,
+    "sentence_index": 424,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec028",
+    "text": "The function should either normalize case or return an error for unknown cities.",
+    "char_start": 83172,
+    "char_end": 83252,
+    "sentence_index": 425,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec028",
+    "text": "Implementation error: case-sensitive matching and silent failure with an invalid default zipcode \"00000\" .",
+    "char_start": 83254,
+    "char_end": 83360,
+    "sentence_index": 426,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=orange!3,\ncolframe=orange!70!black,\nfonttitle= ,\ntitle= Implementation Error: send\\_message stores messages without sender ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nFile: message\\_api.py:187--196 Affected entries: 28 entries\n\nImplementation:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndef send_message(self, receiver_id: str, message: str):\nmessage_id = self._generate_id() # Returns \"new_id\": int !",
+    "char_start": 83362,
+    "char_end": 83812,
+    "sentence_index": 427,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec028",
+    "text": "self.inbox.append( receiver_id: message ) # No sender field\nself.message_count += 1\nreturn \"sent_status\": True, \"message_id\": message_id\n\n\\_generate\\_id ( message\\_api.py:104 ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndef _generate_id(self):\nreturn \"new_id\": new_id # Returns a dict, not an int\n\nProblem: Two compounding bugs: (1) Messages are stored as \\ receiver\\_id: message\\ with no sender field, so delete\\_message cannot distinguish between messages from different senders to the same receiver, and view\\_messages\\_sent returns all messages regardless of sender.",
+    "char_start": 83813,
+    "char_end": 84389,
+    "sentence_index": 428,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec028",
+    "text": "(2) \\_generate\\_id returns a dict \\ \"new\\_id\": 12345\\ instead of a plain integer, producing a nested dict in the response.",
+    "char_start": 84390,
+    "char_end": 84512,
+    "sentence_index": 429,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec028",
+    "text": "Implementation error: send\\_message omits the sender field and \\_generate\\_id returns a dict instead of an integer.",
+    "char_start": 84514,
+    "char_end": 84629,
+    "sentence_index": 430,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=blue!3,\ncolframe=blue!60!black,\nfonttitle= ,\ntitle= Trajectory Error: Move-then-rename vs.\\ rename-then-move ( multi\\_turn\\_base\\_10 ) ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_10 , Turn 1 Domain: File System API\n\nUser prompt: ``Let's move over the project's proposal document into this `Projects' folder, but we'll go ahead and rename it to `final\\_proposal\\_2024'.''\n\nGround truth (move first, then rename):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nmv(source='proposal.docx', destination='Projects')\ncd(folder='Projects')\nmv(source='proposal.docx', destination='final_proposal_2024')\n\nEqually valid alternative (rename first, then move):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nmv(source='proposal.docx', destination='final_proposal_2024')\nmv(source='final_proposal_2024', destination='Projects')\n\nProblem: Both approaches produce identical filesystem state: Projects/final\\_proposal\\_2024 with the correct content.",
+    "char_start": 84631,
+    "char_end": 85635,
+    "sentence_index": 431,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec028",
+    "text": "However, the evaluation requires the ground truth's execution result strings to appear in the model's output.",
+    "char_start": 85636,
+    "char_end": 85745,
+    "sentence_index": 432,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec028",
+    "text": "The alternative produces different intermediate strings, causing a false failure.",
+    "char_start": 85746,
+    "char_end": 85827,
+    "sentence_index": 433,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec028",
+    "text": "The same pattern affects multi\\_turn\\_base\\_24 .",
+    "char_start": 85828,
+    "char_end": 85876,
+    "sentence_index": 434,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec028",
+    "text": "Trajectory error: overly rigid evaluation penalizes a valid rename-then-move strategy that produces identical final state.",
+    "char_start": 85878,
+    "char_end": 86000,
+    "sentence_index": 435,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=blue!3,\ncolframe=blue!60!black,\nfonttitle= ,\ntitle= Trajectory Error: Float vs.\\ integer formatting in tweet ( multi\\_turn\\_base\\_75 ) ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_75 , Turn 1 Domain: Vehicle Control + Twitter API\n\nUser prompt: ``Share a quick update about the tire pressures on Twitter, using the format `Front Left Tire: XXX PSI, '\\,''\n\ncheck\\_tire\\_pressure() returns (float values):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\n\"frontLeftTirePressure\": 32.0, \"frontRightTirePressure\": 32.0,\n\"rearLeftTirePressure\": 30.0, \"rearRightTirePressure\": 30.0\n\nGround truth tweet (integer formatting):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\npost_tweet(content='Front Left Tire: 32 PSI, Front Right Tire:\n32 PSI, Rear Left Tire: 30 PSI, Rear Right Tire: 30 PSI')\n\nProblem: The API returns float values ( 32.0 , 30.0 ), but the ground truth uses integer formatting ( 32 , 30 ).",
+    "char_start": 86002,
+    "char_end": 86969,
+    "sentence_index": 436,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec028",
+    "text": "A model faithfully using the API return values would construct \"Front Left Tire: 32.0 PSI, \" .",
+    "char_start": 86970,
+    "char_end": 87064,
+    "sentence_index": 437,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec028",
+    "text": "The state checker compares tweet content exactly, so 32.0 vs 32 causes a mismatch despite conveying identical information.",
+    "char_start": 87065,
+    "char_end": 87187,
+    "sentence_index": 438,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec028",
+    "text": "Trajectory error: exact string matching penalizes float formatting ( 32.0 ) when the ground truth uses integers ( 32 ).",
+    "char_start": 87189,
+    "char_end": 87308,
+    "sentence_index": 439,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[\ncolback=blue!3,\ncolframe=blue!60!black,\nfonttitle= ,\ntitle= Trajectory Error: du() format mismatch --- no valid solution exists ( multi\\_turn\\_base\\_28 ) ,\nboxrule=0.6pt, arc=2pt,\nleft=5pt, right=5pt, top=4pt, bottom=4pt\n]\n\nEntry: multi\\_turn\\_base\\_28 , Turn 2 Domain: File System API\n\nUser prompt: ``Log the storage usage of the current directory to usage.txt.",
+    "char_start": 87310,
+    "char_end": 87682,
+    "sentence_index": 440,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec028",
+    "text": "The content should be the number followed by the word bytes and nothing else.''\n\nGround truth:\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\ndu(human_readable=True) # Returns \"205.00 B\"\ntouch(file_name='usage.txt')\necho(content='205 bytes', file_name='usage.txt') # Writes \"205 bytes\"\n\ndu() implementation ( gorilla\\_file\\_system.py:550--561 ):\n[style=jsonstyle, aboveskip=4pt, belowskip=4pt]\nif human_readable:\nsize_str = f\" total_size:.2f unit \" # -> \"205.00 B\"\nelse:\nsize_str = f\" total_size bytes\" # -> \"205 bytes\"\n\nProblem: The ground truth calls du(human\\_readable=True) which returns \"205.00 B\" , but then writes \"205 bytes\" (the non-human-readable format).",
+    "char_start": 87683,
+    "char_end": 88349,
+    "sentence_index": 441,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec028",
+    "text": "A model using du(human\\_readable=True) and faithfully writing its output would write \"205.00 B\" (state mismatch).",
+    "char_start": 88350,
+    "char_end": 88463,
+    "sentence_index": 442,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec028",
+    "text": "A model using du() without the flag gets \"205 bytes\" (correct file content), but fails the response check because the ground truth expects the human\\_readable=True return value.",
+    "char_start": 88464,
+    "char_end": 88641,
+    "sentence_index": 443,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec028",
+    "text": "No solution can satisfy both checks simultaneously.",
+    "char_start": 88642,
+    "char_end": 88693,
+    "sentence_index": 444,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec028",
+    "text": "Trajectory error: the ground truth calls du(human\\_readable=True) but writes the non-human-readable output, making it impossible to pass both state and response checks.",
+    "char_start": 88695,
+    "char_end": 88863,
+    "sentence_index": 445,
+    "section_sentence_index": 40
+  }
+]

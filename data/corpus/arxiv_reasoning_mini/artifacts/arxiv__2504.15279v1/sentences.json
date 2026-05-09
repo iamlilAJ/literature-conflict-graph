@@ -1,0 +1,2585 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Visual reasoning is a core component of human intelligence and a critical capability for advanced multimodal models.",
+    "char_start": 0,
+    "char_end": 116,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Yet current reasoning evaluations of multimodal large language models (MLLMs) often rely on text descriptions and allow language-based reasoning shortcuts, failing to measure genuine vision-centric reasoning.",
+    "char_start": 117,
+    "char_end": 325,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this, we introduce VisuLogic: a benchmark of 1,000 human-verified problems across six categories (e.g., quantitative shifts, spatial relations, attribute comparisons).",
+    "char_start": 326,
+    "char_end": 504,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "These various types of questions can be evaluated to assess the visual reasoning capabilities of MLLMs from multiple perspectives.",
+    "char_start": 505,
+    "char_end": 635,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We evaluate leading MLLMs on this benchmark and analyze their results to identify common failure modes.",
+    "char_start": 636,
+    "char_end": 739,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Most models score below 30\\% accuracy\u2014only slightly above the 25\\% random baseline and far below the 51.4\\% achieved by humans\u2014revealing significant gaps in visual reasoning.",
+    "char_start": 740,
+    "char_end": 914,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Furthermore, we provide a supplementary training dataset and a reinforcement-learning baseline to support further progress.",
+    "char_start": 915,
+    "char_end": 1038,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Code, data, and baselines are available at https://visulogic-benchmark.github.io/VisuLogic https://visulogic-benchmark.github.io/VisuLogic .",
+    "char_start": 1039,
+    "char_end": 1179,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "[h]\n\nimages/overview4.pdf\nComposition of the VisuLogic benchmark and performance of representative MLLMs.",
+    "char_start": 1181,
+    "char_end": 1286,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "The left figure shows the distribution of the 6 categories and their subcategories in VisuLogic.",
+    "char_start": 1287,
+    "char_end": 1383,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The right figure shows accuracies (\\%) achieved by MLLMs and by human on each category of VisuLogic.",
+    "char_start": 1384,
+    "char_end": 1484,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "-1em\n\nReasoning, as fundamental component of human intelligence, has become a critical criterion in evaluating progress toward Artificial General Intelligence (AGI) .",
+    "char_start": 1486,
+    "char_end": 1652,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Recent advancements in Large Language Models (LLMs) have demonstrated substantial improvements in reasoning capabilities across complex domains such as mathematics , logical reasoning and coding .",
+    "char_start": 1653,
+    "char_end": 1849,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Techniques like Chain-of-Thought (CoT) prompting and test-time compute scaling (e.g., OpenAI o1 and Deepseek-R1 ) have significantly enhanced the reasoning performance of LLMs .",
+    "char_start": 1850,
+    "char_end": 2027,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Along with the rapid development of language reasoning research for LLMs, considerable progress has been made in improving multimodal reasoning capability of Multimodal Large Language Models (MLLMs).",
+    "char_start": 2028,
+    "char_end": 2227,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "[t]\n\n[b] 1\n\nimages/caption-examples-sub2.pdf\nPipeline of ``MLLM description$ $LLM'' for Question in MMMU .",
+    "char_start": 2229,
+    "char_end": 2335,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "It is trivial that SOTA MLLMs extract key visual details, thereby enabling the LLM to answer questions solely based on language reasoning.",
+    "char_start": 2336,
+    "char_end": 2474,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "[b] 1\n\nimages/caption-examples-sub1.pdf\nPipeline of ``MLLM description$ $LLM'' for Question in VisuLogic.",
+    "char_start": 2476,
+    "char_end": 2581,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Even SOTA MLLMs struggle to describe images precisely, leading to ambiguous interpretations.",
+    "char_start": 2582,
+    "char_end": 2674,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Comparison of the ``MLLM description$ $LLM'' pipeline on two benchmarks.",
+    "char_start": 2676,
+    "char_end": 2748,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "In MMMU, detailed descriptions lead to correct solutions, while in VisuLogic, critical visual cues ( e.g.",
+    "char_start": 2749,
+    "char_end": 2854,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": ", symmetry, rotation) can be easily lost,\ncausing the LLM to misinterpret the image.",
+    "char_start": 2855,
+    "char_end": 2939,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "This highlights that textual reasoning alone is insufficient, underscoring the benchmark\u2019s demand for robust and in-depth visual reasoning.",
+    "char_start": 2940,
+    "char_end": 3079,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "-0.5em\n\n[t]\n\nimages/examples_cross_benchmarks.pdf\nComparison of questions from different Benchmarks.",
+    "char_start": 3081,
+    "char_end": 3181,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Compared to MathVista , MathVision , and MMMU , VisuLogic focuses more explicitly on assessing pure visual reasoning capabilities.",
+    "char_start": 3182,
+    "char_end": 3312,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "-0.5em\n\nThese methods, which often incorporate reinforcement learning techniques to enhance the reasoning capabilities of MLLMs, have achieved some early successes .",
+    "char_start": 3314,
+    "char_end": 3479,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "However, they typically rely on existing multi-modal benchmarks that struggle to accurately capture a model\u2019s core visual reasoning ability.",
+    "char_start": 3480,
+    "char_end": 3620,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "For example, VLM-R1 assesses \u201cvisual reasoning\u201d with referring expression comprehension tasks , yet these tasks primarily focus on object localization, demanding only basic perceptual skills rather than more advanced visual cognitive processes.",
+    "char_start": 3621,
+    "char_end": 3865,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Meanwhile, several works adopt mathematical problem-solving benchmarks that include diagrams\u2014such as MathVista , MathVerse , and MathVision \u2014to evaluate visual reasoning.",
+    "char_start": 3866,
+    "char_end": 4036,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "In practice, however, as observes, many MLLMs translate these visual clues into\ntextual descriptions and then rely on standard language reasoning.",
+    "char_start": 4037,
+    "char_end": 4183,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "This approach can incorrectly attribute language-driven results to visual reasoning, resulting in a misleading assessment of the model's visual reasoning capabilities .",
+    "char_start": 4184,
+    "char_end": 4352,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Consequently, designing new benchmarks that explicitly focus on vision-centric reasoning\u2014rather than conflating it with text-based reasoning\u2014remains critical for advancing MLLMs\u2019 visual reasoning capacities.",
+    "char_start": 4353,
+    "char_end": 4560,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "To address this limitation, we propose VisuLogic, a novel benchmark specifically designed to evaluate visual reasoning abilities in multimodal models without mixing them with purely text-based reasoning (see Figure ).",
+    "char_start": 4562,
+    "char_end": 4779,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "VisuLogic comprises carefully constructed tasks that span multiple reasoning categories (see Figure ).",
+    "char_start": 4780,
+    "char_end": 4882,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "As shown in Figure , these tasks are classified into six key types, such as Quantitative Reasoning, which requires understanding and deducing shifts in the quantity of certain elements within an image.",
+    "char_start": 4883,
+    "char_end": 5084,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "In contrast to existing benchmarks, as demonstrated in Figure , state-of-the-art (SOTA) MLLMs often omit crucial visual details when describing VisuLogic problems, making it difficult for them to rely solely on a text-based inference shortcut.",
+    "char_start": 5085,
+    "char_end": 5328,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Indeed, even humans would find it challenging to capture every essential visual cue in a single description, so effectively tackling VisuLogic demands more robust, vision-centric reasoning.",
+    "char_start": 5329,
+    "char_end": 5518,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "By reducing reliance on textual inference shortcuts, VisuLogic thus provides a stringent evaluation of MLLMs\u2019 genuine visual reasoning capabilities.",
+    "char_start": 5519,
+    "char_end": 5667,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "We conducted a comprehensive evaluation and systematic analysis to assess current models\u2019 visual reasoning capabilities.",
+    "char_start": 5669,
+    "char_end": 5789,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "When leading text-only LLMs were supplied with detailed descriptions in place of raw images, their accuracy\u2014Doubao-1.5-Pro (26.6\\%), Claude-3.7-Sonnet (25.9\\%) and Qwen2.5-72B-Instruct (28.0\\%)\u2014barely exceeded the random-chance baseline of 24.9\\%.",
+    "char_start": 5790,
+    "char_end": 6037,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "This clearly demonstrates that textual reasoning alone are insufficient for solving our VisuLogic tasks.",
+    "char_start": 6038,
+    "char_end": 6142,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "Even state-of-the-art multimodal arge language models (MLLMs)\u2014including GPT-4o , Doubao-1.5-Vision-Pro, Gemini-2.0-Pro-Exp and InternVL3-78B \u2014achieve only 26.3\\%, 28.1\\%, 28.0\\% and 27.7\\%, respectively, whereas human participants reached 51.4\\%.",
+    "char_start": 6143,
+    "char_end": 6389,
+    "sentence_index": 41,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "The substantial gap between these results and human performance underscores the challenge of robust visual reasoning in current MLLMs.",
+    "char_start": 6390,
+    "char_end": 6524,
+    "sentence_index": 42,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "Furthermore, we applied a simple reinforcement-learning (RL) fine-tuning step on our supplementary training dataset: this boosted the baseline model\u2019s accuracy from 25.5\\% to 31.1\\%, outperforming both open-source and closed-source counterparts.",
+    "char_start": 6526,
+    "char_end": 6771,
+    "sentence_index": 43,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "These findings illustrate the promise of the RL technique for strengthening MLLMs\u2019 visual reasoning capabilities.",
+    "char_start": 6772,
+    "char_end": 6885,
+    "sentence_index": 44,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "In summary, our contributions are as follows:\n[leftmargin=1em]\n-0.7em\nWe propose a challenging visual reasoning benchmark that is inherently difficult to articulate using language, providing a more rigorous evaluation of the visual reasoning capabilities of MLLMs.",
+    "char_start": 6887,
+    "char_end": 7151,
+    "sentence_index": 45,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "-0.4em\nWe conduct comprehensive experiments to evaluate and analyze the benchmark, including extensive evaluations and comparative studies of various MLLMs under different setting.",
+    "char_start": 7152,
+    "char_end": 7332,
+    "sentence_index": 46,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "-0.4em\nWe identify the RL technique as a promising direction for improving the visual reasoning capabilities of MLLMs.",
+    "char_start": 7333,
+    "char_end": 7451,
+    "sentence_index": 47,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "Furthermore, we release both the training code and data to facilitate future research.",
+    "char_start": 7452,
+    "char_end": 7538,
+    "sentence_index": 48,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "Multi-modal Large Language Models.",
+    "char_start": 7540,
+    "char_end": 7574,
+    "sentence_index": 49,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "Recent years have witnessed substantial advancements in Multi-modal Large Language Models (MLLMs).",
+    "char_start": 7575,
+    "char_end": 7673,
+    "sentence_index": 50,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Early works like BLIP and Flamingo introduce lightweight parameters between vision transformer (ViT) and LLMs, laying the groundwork for multimodal perception.",
+    "char_start": 7674,
+    "char_end": 7833,
+    "sentence_index": 51,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "Subsequent efforts, such as LLaVA and MiniGPT-4 , integrate instruction tuning, further enhancing the performance of MLLMs.",
+    "char_start": 7834,
+    "char_end": 7957,
+    "sentence_index": 52,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "Proprietary models like GPT-4o and Gemini-Pro have advanced MLLM performance on complex multimodal tasks, while open-source models such as Qwen-VL series and InternVL series achieve competitive results through optimized architectural design, dataset expansion and training paradigm improvements.",
+    "char_start": 7958,
+    "char_end": 8253,
+    "sentence_index": 53,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "Meanwhile, some related studies further advance the ability of large models by incorporating new modalities (e.g., audio , point clouds , video ) and by supporting more tasks (e.g., grounding , computer usage ).",
+    "char_start": 8254,
+    "char_end": 8465,
+    "sentence_index": 54,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "Notably, limited research attempts to enhance the reasoning capabilities of MLLMs.",
+    "char_start": 8466,
+    "char_end": 8548,
+    "sentence_index": 55,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "Some pioneering works, such as R1-Onevision , LMM-R1 , MM-EUREKA , R1-V , Visual-rft , Visualprm , OThink-MR1 , VLM-R1 , and Open-r1-Video have explored the visual reasoning capabilities of MLLMs through Reinforcement Learning (RL), but they are still in the nascent stage.",
+    "char_start": 8549,
+    "char_end": 8822,
+    "sentence_index": 56,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": "Multimodal Benchmarks.",
+    "char_start": 8824,
+    "char_end": 8846,
+    "sentence_index": 57,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "With the development of MLLMs, multimodal benchmarks have also evolved significantly .",
+    "char_start": 8847,
+    "char_end": 8933,
+    "sentence_index": 58,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "Early benchmarks primarily address visual perception tasks through simple tasks like visual question answering (VQA) , image captioning and referring expression comprehension .",
+    "char_start": 8934,
+    "char_end": 9110,
+    "sentence_index": 59,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "Subsequent works expand the capability coverage of benchmarks into more specialized domains: OCRBench , Chartqa and DocVQA assess textual content extraction; AgentBench and ToolEyes test tool usage capabilities; and egocentric perception benchmarks quantify first-person scene interpretation.",
+    "char_start": 9111,
+    "char_end": 9403,
+    "sentence_index": 60,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "Despite the progress, they ignore the evaluation of visual reasoning abilities .",
+    "char_start": 9404,
+    "char_end": 9484,
+    "sentence_index": 61,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "Recently, some benchmarks have made explorations in examining MLLMs' visual reasoning abilities, but methodological deficiencies still cause limitations to assess the intrinsic visual reasoning capabilities .",
+    "char_start": 9485,
+    "char_end": 9693,
+    "sentence_index": 62,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "InfiMM-Eval test reasoning abilities around daily life, lacking deep-level reasoning scenarios.",
+    "char_start": 9694,
+    "char_end": 9789,
+    "sentence_index": 63,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "MMMU and Emma provide benchmarks demanding advanced reasoning abilities in fields such as chemistry and physics, but they ignore questions around the images' fundamental visual components (e.g., shapes, elements).",
+    "char_start": 9790,
+    "char_end": 10003,
+    "sentence_index": 64,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "While mathematical benchmarks evaluate mathematical reasoning with geometric and diagram problems included, they focus on math capabilities but disregard logical analysis about the vision information.",
+    "char_start": 10004,
+    "char_end": 10204,
+    "sentence_index": 65,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "LogicVista provides a multimodal logical reasoning benchmark, its visual questions lack analytical depth\u2014dominated by single-hop, superficial queries in limited data scope.",
+    "char_start": 10205,
+    "char_end": 10377,
+    "sentence_index": 66,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "Unlike previous works, we introduce a challenging benchmark focused specifically on the domain of visual logical reasoning.",
+    "char_start": 10378,
+    "char_end": 10501,
+    "sentence_index": 67,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec004",
+    "text": "In this section, we first describe the VisuLogic data-curation pipeline, which comprises three key stages: data collection, quality control, and the detailed taxonomy.",
+    "char_start": 10503,
+    "char_end": 10670,
+    "sentence_index": 68,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec004",
+    "text": "We then report the benchmark's construction statistics, including total size, answer-option distributions, and category-level proportions.",
+    "char_start": 10671,
+    "char_end": 10809,
+    "sentence_index": 69,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec004",
+    "text": "Finally, we introduce a supplementary training dataset\u2014consisting of questions analogous to those in VisuLogic\u2014designed to bolster future research and facilitate community engagement.",
+    "char_start": 10810,
+    "char_end": 10993,
+    "sentence_index": 70,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Data Collection.",
+    "char_start": 10995,
+    "char_end": 11011,
+    "sentence_index": 71,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "We construct the VisuLogic dataset by sourcing all questions from publicly available online resources in compliance with relevant licenses and regulations.",
+    "char_start": 11012,
+    "char_end": 11167,
+    "sentence_index": 72,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "As shown in Figure , our automated data processing pipeline comprises three stages: 1) Fetching : We employ Playwright https://github.com/microsoft/playwright to systematically scrape raw web content, supplemented by custom parsing scripts that extract question\u2013answer pairs.",
+    "char_start": 11168,
+    "char_end": 11443,
+    "sentence_index": 73,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "2) Cleaning : We remove noise, irrelevant content, and extraneous HTML markup ( e.g.",
+    "char_start": 11444,
+    "char_end": 11528,
+    "sentence_index": 74,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": ", <div> ) to ensure the integrity of the textual data.",
+    "char_start": 11529,
+    "char_end": 11583,
+    "sentence_index": 75,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec005",
+    "text": "3) Structuring : We standardize the cleaned text and images by structuring all information (such as question text, metadata) in JSON Lines (JSONL) format.",
+    "char_start": 11584,
+    "char_end": 11738,
+    "sentence_index": 76,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec005",
+    "text": "[tbp]\n\nimages/data-pipeline.pdf\n-1em\nData curation pipeline of VisuLogic.",
+    "char_start": 11739,
+    "char_end": 11812,
+    "sentence_index": 77,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec005",
+    "text": "The pipeline includes Data Collection, Quality Control and Data Taxonomy.",
+    "char_start": 11813,
+    "char_end": 11886,
+    "sentence_index": 78,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec005",
+    "text": "-1em\n\n0.5em\n\nQuality Control.",
+    "char_start": 11888,
+    "char_end": 11917,
+    "sentence_index": 79,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec005",
+    "text": "To ensure the reliability of the benchmark dataset, we employ a three-stage data validation procedure: 1) Image Verification : Each image referenced in the questions is checked for existence and correct formatting; any item that fails to meet the criteria is removed following human review.",
+    "char_start": 11918,
+    "char_end": 12208,
+    "sentence_index": 80,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec005",
+    "text": "2) Duplicate Removal : We eliminate redundant entries at both the text and image levels by (i) detecting lexical overlap among text segments and (ii) applying perceptual hashing (pHash) to identify visually similar images.",
+    "char_start": 12209,
+    "char_end": 12431,
+    "sentence_index": 81,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec005",
+    "text": "3) Manual Checking : After automated filtering, we perform a thorough human-led review of every remaining entry to confirm its validity and ensure dataset reliability.",
+    "char_start": 12432,
+    "char_end": 12599,
+    "sentence_index": 82,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec005",
+    "text": "0.5em\n\nData Taxonomy.",
+    "char_start": 12601,
+    "char_end": 12622,
+    "sentence_index": 83,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec005",
+    "text": "We categorize all collected data into a taxonomy of six primary classes based on expert human annotation of the reasoning skills each question requires.",
+    "char_start": 12623,
+    "char_end": 12775,
+    "sentence_index": 84,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec005",
+    "text": "Annotators first tag questions according to the targeted reasoning competency; these annotated tags are then analyzed and merged into five primary categories.",
+    "char_start": 12776,
+    "char_end": 12934,
+    "sentence_index": 85,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec005",
+    "text": "A subsequent human review ensures that every question is accurately classified, with any ambiguous instances consolidated under the ``Other'' category.",
+    "char_start": 12935,
+    "char_end": 13086,
+    "sentence_index": 86,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec005",
+    "text": "Specifically, we define each category as follows.",
+    "char_start": 13087,
+    "char_end": 13136,
+    "sentence_index": 87,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec005",
+    "text": "Quantitative Reasoning focuses on changes in the number or count of graphical elements (for example, points, lines and angles) and on arithmetic relationships among shapes.",
+    "char_start": 13137,
+    "char_end": 13309,
+    "sentence_index": 88,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "Spatial Reasoning requires mentally reconstructing three-dimensional shapes from two-dimensional figures, folding or unfolding surfaces, and integrating three-dimensional structures.",
+    "char_start": 13310,
+    "char_end": 13492,
+    "sentence_index": 89,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec005",
+    "text": "Positional Reasoning examines transformations such as translation, rotation and reflection of objects while preserving their fundamental elements.",
+    "char_start": 13493,
+    "char_end": 13639,
+    "sentence_index": 90,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec005",
+    "text": "Attribute Reasoning involves intrinsic properties of shapes, including symmetry (axial or central), curvature and measures of openness or closedness.",
+    "char_start": 13640,
+    "char_end": 13789,
+    "sentence_index": 91,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec005",
+    "text": "Stylistic Reasoning entails alterations in stylistic features such as overlay, subtraction and assessments of shape similarity or difference.",
+    "char_start": 13790,
+    "char_end": 13931,
+    "sentence_index": 92,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec005",
+    "text": "Other encompasses questions that fall outside the preceding categories, including those involving letters, alphanumeric symbols or other specialized characters.",
+    "char_start": 13932,
+    "char_end": 14092,
+    "sentence_index": 93,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "Following data curation and validation, VisuLogic comprises 1,000 single-choice questions.",
+    "char_start": 14094,
+    "char_end": 14184,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "Figure (left) illustrates the category distribution: Quantitative Reasoning (35.3\\%), Spatial Reasoning (23.1\\%), Positional Reasoning (13.6\\%), Attribute Reasoning (8.2\\%), Stylistic Reasoning (9.0\\%), and Other (10.8\\%).",
+    "char_start": 14185,
+    "char_end": 14407,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "Correct answer options are evenly balanced, with the proportions distributed as follows: A (23.1\\%), B ( 26.7\\%), C (25.2\\%), and D (25.0\\%).",
+    "char_start": 14408,
+    "char_end": 14549,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec007",
+    "text": "To facilitate further investigation of visual reasoning, we provide an auxiliary training set of 4,296 question\u2013answer pairs drawn from the same domains and subjected to identical validation procedures to prevent overlap with the benchmark.",
+    "char_start": 14551,
+    "char_end": 14791,
+    "sentence_index": 97,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec007",
+    "text": "The training split mirrors the primary taxonomy, with category proportions of Quantitative Reasoning (30.7\\%), Spatial Reasoning (25.5\\%), Positional Reasoning (13.0\\%), Attribute Reasoning (8.8\\%), Stylistic Reasoning (9.9\\%), and Other (12.1\\%).",
+    "char_start": 14792,
+    "char_end": 15039,
+    "sentence_index": 98,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec007",
+    "text": "[t]\n\nimages/examples_in_benchmarks.pdf\nQuestion examples of different categories in our VisuLogic Benchmark.",
+    "char_start": 15041,
+    "char_end": 15149,
+    "sentence_index": 99,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec007",
+    "text": "VisuLogic contains 6 categories of questions, which require models' abilities in visual logic reasoning.",
+    "char_start": 15150,
+    "char_end": 15254,
+    "sentence_index": 100,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec007",
+    "text": "[h]\n\nimages/model_output_example.pdf\nSolution examples generated by different models.",
+    "char_start": 15256,
+    "char_end": 15341,
+    "sentence_index": 101,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec007",
+    "text": "Reference solution and outputs generated by GPT-4o , Qwen2.5VL-72B-Instruct , InternVL2.5-38B , and InternVL2.5-38B with RL.",
+    "char_start": 15342,
+    "char_end": 15466,
+    "sentence_index": 102,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec007",
+    "text": "Additionally, the image description and solution from LLMs (o3-mini) are also illustrated.",
+    "char_start": 15467,
+    "char_end": 15557,
+    "sentence_index": 103,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec007",
+    "text": "-0.5em\n\nWe employ the REINFORCE Leave-One-Out (RLOO) algorithm in our reinforcement learning training phase.",
+    "char_start": 15559,
+    "char_end": 15667,
+    "sentence_index": 104,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "As a critic-model-free algorithm,rloo is at a low computational cost while maintaining more robustness to noise and KL constraints.",
+    "char_start": 15668,
+    "char_end": 15799,
+    "sentence_index": 105,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "In specific, at per training step, the actor model generate $ k $ online samples for one prompt $x$, which are signed as $y_ (i) $, and RLOO estimate the advantage by\n\nA_ (i) = R (y_ (i) , x )- 1 k-1 _ j i R (y_ (j) , x )\n\nAn unbiased estimation of prompt's expected return is constructed by $ RLOO_k $ through individual analysis of each $ y(i) $ combined with $ k-1 $ esidual samples.",
+    "char_start": 15800,
+    "char_end": 16186,
+    "sentence_index": 106,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "Then we adopt the PPO loss and KL divergence loss to update parameters.",
+    "char_start": 16187,
+    "char_end": 16258,
+    "sentence_index": 107,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "PPO loss is calculated by(TODO : add Variable interpretation)\n\nL_ PPO ( )=- E _t\n\nThe KL divergence loss between policy model $ _ $ and the reference policy model $ _ ref $ is added as a regularization term.",
+    "char_start": 16259,
+    "char_end": 16466,
+    "sentence_index": 108,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "The total loss is a linear combination of PPO loss and KL loss:\n\nL( )=L_ PPO ( )+ _ KL D _ KL ( _ , _ ref )\n\nwhere $ $ is the weight hyperparameter to control the regulation to the actor model.",
+    "char_start": 16467,
+    "char_end": 16660,
+    "sentence_index": 109,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Inspired by Deepseek-R1 , we design our rule-based reward system that mainly consists of two types of rewards\n\nFormat rewards: To clarify model's outputs, we design a format rule that forces model to put its thinking process between \u2018<think>\u2019 and \u2018</think>\u2019 tags and put its final answer between \u2018<answer>\u2019 and \u2018</answer>\u2019 tags.",
+    "char_start": 16662,
+    "char_end": 16990,
+    "sentence_index": 110,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "Regular expression is applied to judge whether outputs conform to the format rule.",
+    "char_start": 16991,
+    "char_end": 17073,
+    "sentence_index": 111,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "Accuracy rewards: The accuracy reward is decided by the response's correctness.",
+    "char_start": 17074,
+    "char_end": 17153,
+    "sentence_index": 112,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "The model should generate the response in right format, then the answer is extracted and judged whether it is matched to the correct option.",
+    "char_start": 17154,
+    "char_end": 17294,
+    "sentence_index": 113,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "[ht]\n\nCross-Modal performance with CoT prompts on VisuLogic.",
+    "char_start": 17296,
+    "char_end": 17356,
+    "sentence_index": 114,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "The table shows the evaluation scores of baseline references, LLMs, and MLLMs, which illustrates a gap between humans' and models' capabilities.",
+    "char_start": 17357,
+    "char_end": 17501,
+    "sentence_index": 115,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "Top performers per category are bolded , with secondary leaders underlined .",
+    "char_start": 17502,
+    "char_end": 17578,
+    "sentence_index": 116,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "!\n@ l|c|cccccc@\n\nModels & Overall & Quantity & Spatiality & Position & Attribute & Style & Other\n\n8 c References\n\nHuman & 51.4 & 45.3 & 52.7 & 71.1 & 50.0 & 47.5 & 44.2\n\nRandom & 24.9 & 25.7 & 25.4 & 22.7 & 23.4 & 24.3 & 26.1\n\n8 c Open Source LLM (MLLM Description$ $LLM)\n\nDeepseek-R1 & 26.6 & 27.7 & 23.5 & 24.0 & 27.8 & 23.0 & 35.0\n\nQwen2.5-72B-Instruct & 28.0 & 30.2 & 24.4 & 27.5 & 26.5 & 26.8 & 30.8\n\nQwQ-32B & 22.8 & 24.6 & 20.1 & 25.4 & 19.0 & 20.7 & 24.0\n\n8 c Close Source LLM (MLLM Description$ $LLM)\n\nGPT-4 (20240613) & 23.6 & 21.2 & 22.5 & 21.3 & 25.6 & 23.3 & 35.2\n\no3-mini (20250131) & 24.6 & 27.8 & 18.8 & 24.5 & 21.7 & 25.6 & 28.4\n\nGemini-2.0-Flash-Thinking (20250121) & 23.4 & 23.2 & 26.0 & 16.9 & 17.1 & 21.1 & 33.3\n\nClaude-3.7-Sonnet (20250219) & 25.9 & 26.6 & 22.5 & 25.0 & 28.0 & 25.6 & 30.6\n\nDoubao-1.5-Pro-32k (20250115) & 26.6 & 30.0 & 22.5 & 25.0 & 25.6 & 30.0 & 24.1\n\n8 c Close Source MLLMs\n\nGPT-4o-mini (20240718) & 24.3 & 27.2 & 23.4 & 23.5 & 18.3 & 31.1 & 16.7\n\nGPT-4o (20240806) & 26.3 & 28.6 & 24.7 & 27.2 & 26.8 & 20.0 & 25.9\n\nKimi-latest & 25.9 & 24.9 & 29.4 & 26.5 & 28.0 & 16.7 & 26.9\n\nDoubao-1.5-Vision-Pro-32k (20250115) & 28.1 & 28.1 & 23.8 & 29.1 & 25.1 & 32.1 & 35.0\n\nGemini-2.0-Pro (20250205) & 28.0 & 29.7 & 24.2 & 27.9 & 30.5 & 22.2 & 33.3\n\nClaude-3.7-Sonnet (20250219) & 24.8 & 22.7 & 27.3 & 27.9 & 28.0 & 22.2 & 22.2\n\n8 c Open Source MLLMs\n\nLLaVA-v1.5-7B & 24.6 & 26.1 & 24.2 & 23.5 & 17.1 & 31.1 & 22.2\n\nLLaVA-OneVision-7B (SI) & 25.3 & 22.4 & 27.3 & 33.1 & 23.2 & 25.6 & 22.2\n\nShareGPT4V & 23.4 & 24.9 & 22.1 & 23.5 & 19.5 & 28.9 & 19.4\n\nMiniCPM-o-2.6 & 25.3 & 25.6 & 23.0 & 27.3 & 21.9 & 24.5 & 29.9\n\nGLM-4v-9B & 24.3 & 22.4 & 23.7 & 28.3 & 26.0 & 24.1 & 25.3\n\nOvis2-8B & 25.6 & 26.1 & 23.8 & 27.2 & 28.0 & 25.6 & 24.1\n\nmPLUG-Owl3-7B-241101 & 18.9 & 21.5 & 15.2 & 16.2 & 20.7 & 18.9 & 20.4\n\nQwen2.5-VL-7B-Instruct & 26.0 & 27.6 & 20.9 & 25.2 & 23.2 & 37.8 & 25.0\n\nQwen2.5VL-72B-Instruct & 26.2 & 25.2 & 23.8 & 27.2 & 25.6 & 25.6 & 34.3\n\nQvQ-72B-Preview & 23.0 & 24.2 & 17.0 & 24.4 & 21.0 & 24.4 & 30.6\n\nInternVL2.5-38B & 25.5 & 24.4 & 26.4 & 27.2 & 23.2 & 25.6 & 26.9\n\nInternVL2.5-78B & 27.3 & 26.6 & 26.0 & 26.5 & 26.8 & 31.1 & 30.6\n\nInternVL3-38B & 27.1 & 28.7 & 27.6 & 26.1 & 21.4 & 23.9 & 28.5\n\nInternVL3-78B & 27.7 & 27.7 & 26.1 & 31.6 & 26.3 & 21.3 & 32.3\n\nQwen2.5-VL-7B-Instruct-SFT & 25.5 & 24.4 & 26.4 & 27.2 & 23.2 & 25.6 & 26.9\n\nQwen2.5-VL-7B-Instruct-RL & 28.0 & 26.6 & 33.8 & 29.4 & 23.2 & 18.9 & 29.6\n\nInternVL2.5-38B-SFT & 27.9 & 30.6 & 29.4 & 20.6 & 25.6 & 30.0 & 25.0\n\nInternVL2.5-38B-RL & 31.1 & 31.2 & 31.2 & 26.5 & 30.5 & 30.0 & 38.9\n\n[ht]\nInfluence of Chain-of-Thought on model performance.",
+    "char_start": 17580,
+    "char_end": 20238,
+    "sentence_index": 117,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Positive value changes are highlighted in red red , negative changes in reduce-color green , and statistically insignificant variations (delta < 1\\%) are denoted in gray-self gray .",
+    "char_start": 20239,
+    "char_end": 20420,
+    "sentence_index": 118,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "With CoT prompts, MLLMs only exhibit tiny improvements in visual reasoning.",
+    "char_start": 20421,
+    "char_end": 20496,
+    "sentence_index": 119,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "!\nlllllllll\n\nModels & CoT & Overall & Quantity & Spatiality & Position & Attribute & Style & Other\n\n2 * GPT-4o (20240806) & & 26.3 & 28.6 & 24.7 & 27.2 & 26.8 & 20.0 & 25.9\n\n& & $26.0_ gray-self (-0.3) $ & $26.9_ reduce-color (-1.7) $ & $24.2_ gray-self (-0.5) $ & $26.5_ gray-self (-0.7) $ & $23.2_ reduce-color (-3.6) $ & $24.0_ red (+4.0) $ & $29.6_ red (+3.7) $\n\n2 * Kimi-latest & & 25.9 & 24.9 & 29.4 & 26.5 & 28.0 & 16.7 & 26.9\n\n& & $25.1_ gray-self (-0.8) $ & $22.9_ reduce-color (-2.0) $ & $22.5_ reduce-color (-6.9) $ & $25.0_ reduce-color (-1.5) $ & $19.5_ reduce-color (-7.5) $ & $35.6_ red (+18.9) $ & $24.1_ reduce-color (-2.8) $\n\n2 * GPT-4o-mini (20240718) & & 24.3 & 27.2 & 23.4 & 23.5 & 18.3 & 31.1 & 16.7\n\n& & $23.1_ reduce-color (-1.2) $ & $23.8_ reduce-color (-3.4) $ & $22.9_ gray-self (-0.5) $ & $24.3_ gray-self (+0.8) $ & $17.1_ reduce-color (-1.2) $ & $30.0_ reduce-color (-1.1) $ & $18.5_ red (+1.8) $\n\n2 * Qwen2.5-VL-Instruct-7B & & 26.0 & 27.6 & 20.9 & 25.2 & 23.2 & 37.8 & 25.0\n\n& & $25.9_ gray-self (-0.1) $ & $25.5_ reduce-color (-2.1) $ & $22.8_ red (+1.9) $ & $26.4_ red (+1.2) $ & $25.3_ red (+2.1) $ & $20.6_ reduce-color (-17.2) $ & $38.2_ red (+13.2) $\n\n2 * InternVL2.5-38B & & 24.9 & 24.1 & 26.4 & 27.2 & 23.2 & 25.6 & 22.2\n\n& & $25.0_ gray-self (+0.1) $ & $24.6_ gray-self (+0.5) $ & $25.5_ gray-self (-0.9) $ & $22.1_ reduce-color (-5.1) $ & $22.0_ reduce-color (-1.2) $ & $26.7_ red (+1.1) $ & $29.6_ red (+7.4) $\n\n[ht]\nInfluence of hint prompts on model performance.",
+    "char_start": 20498,
+    "char_end": 22005,
+    "sentence_index": 120,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "MLLMs exhibit measurable performance enhancements with hint integration, yet retain significant gaps against human performance.",
+    "char_start": 22006,
+    "char_end": 22133,
+    "sentence_index": 121,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "In comparison, humans achieve task mastery on VisuLogic with hints.",
+    "char_start": 22134,
+    "char_end": 22201,
+    "sentence_index": 122,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "Value changes are color-coded with red red indicating positive shifts and reduce-color green denoting negative variations.",
+    "char_start": 22202,
+    "char_end": 22324,
+    "sentence_index": 123,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "!\nlllllllll\n\nModels & Hint & Overall & Quantity & Spatiality & Position & Attribute & Style & Other\n\n2 * Human & & 51.4 & 45.3 & 52.7 & 71.1 & 50.0 & 47.5 & 44.2\n\n& & $83.6_ red (+32.2) $ & $85.1_ red (+39.8) $ & $68.5_ red (+15.8) $ & $100.0_ red (+28.9) $ & $95.7_ red (+45.7) $ & $78.6_ red (+31.1) $ & $90.5_ red (+46.3) $\n\n2 * GPT-4o (20240806) & & 26.3 & 28.6 & 24.7 & 27.2 & 26.8 & 20.0 & 25.9\n\n& & $30.0_ red (+3.7) $ & $25.4_ reduce-color (-3.2) $ & $31.5_ red (+6.8) $ & $29.2_ red (+2.0) $ & $28.6_ red (+1.8) $ & $30.8_ red (+10.8) $ & $42.9_ red (+17.0) $\n\n2 * Claude-3.7-Sonnet (20250219) & & 24.8 & 22.7 & 27.3 & 27.9 & 28.0 & 22.2 & 22.2\n\n& & $33.5_ red (+8.7) $ & $37.3_ red (+14.6) $ & $33.3_ red (+6.0) $ & $37.5_ red (+9.6) $ & $23.8_ reduce-color (-4.2) $ & $15.4_ reduce-color (-6.8) $ & $38.1_ red (+15.9) $\n\n2 * Gemini-2.0-Pro (20250205) & & 28.0 & 29.7 & 24.2 & 27.9 & 30.5 & 22.2 & 33.3\n\n& & $36.5_ red (+8.5) $ & $44.8_ red (+15.1) $ & $33.3_ red (+9.1) $ & $25.0_ reduce-color (-2.9) $ & $38.1_ red (+7.6) $ & $15.4_ reduce-color (-6.8) $ & $42.9_ red (+9.6) $\n\n2 * Doubao-1.5-Vision-Pro-32k (20250115) & & 28.1 & 28.1 & 23.8 & 29.1 & 25.1 & 32.1 & 35.0\n\n& & $37.0_ red (+8.9) $ & $46.3_ red (+18.2) $ & $25.9_ red (+2.1) $ & $54.2_ red (+25.1) $ & $33.3_ red (+8.2) $ & $23.1_ reduce-color (-9.0) $ & $28.6_ reduce-color (-6.4) $\n\n-0.5em\n\n[h]\n\nimages/hint_example.pdf\nHint prompts visualization.",
+    "char_start": 22326,
+    "char_end": 23750,
+    "sentence_index": 124,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "Hint prompts examples, which supply solution guidance for MLLMs, are shown in the image, with solution-critical elements highlighted in red red .",
+    "char_start": 23751,
+    "char_end": 23896,
+    "sentence_index": 125,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "-0.5em\n\nIn this section, we present a comprehensive evaluation of the VisuLogic benchmark.",
+    "char_start": 23898,
+    "char_end": 23988,
+    "sentence_index": 126,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "We first describe the experimental setup in Section , followed by overall performance results in Section .",
+    "char_start": 23989,
+    "char_end": 24095,
+    "sentence_index": 127,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": "We then analyze systematic errors in Section and provide qualitative insights in Section .",
+    "char_start": 24096,
+    "char_end": 24186,
+    "sentence_index": 128,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec012",
+    "text": "References Performance.",
+    "char_start": 24188,
+    "char_end": 24211,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec012",
+    "text": "To fully investigate models' performance, we establish two reference points: 1) Human Performance : We invited 100 graduate students majoring in science and engineering to solve 10 randomly sampled VisuLogic questions each, allowing 2\u20135 minutes per question.",
+    "char_start": 24212,
+    "char_end": 24470,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec012",
+    "text": "The aggregate accuracy over all participants constitutes the human benchmark.",
+    "char_start": 24471,
+    "char_end": 24548,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec012",
+    "text": "2) Random Selection : We simulate random guessing by sampling answers uniformly over 10 independent runs and report the average accuracy as the random baseline.",
+    "char_start": 24549,
+    "char_end": 24709,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec012",
+    "text": "0.5em\nEvaluated Models.",
+    "char_start": 24711,
+    "char_end": 24734,
+    "sentence_index": 133,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec012",
+    "text": "We evaluate a total of 28 models on VisuLogic, comprising 8 large language models (LLMs) and 20 multimodal large language models (MLLMs).",
+    "char_start": 24735,
+    "char_end": 24872,
+    "sentence_index": 134,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec012",
+    "text": "For open-source LLMs, we test Deepseek-R1 , Qwen2.5-72B-Instruct and Qwen-QwQ , and for close-source LLMs we evaluate GPT-4 , o3-mini , Gemini-2.0-Flash-Thinking , Claude-3.7-Sonnet and Doubao-1.5-Pro-32k .",
+    "char_start": 24873,
+    "char_end": 25079,
+    "sentence_index": 135,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec012",
+    "text": "Open-source MLLMs include Qwen2.5-VL-7B-Instruct , Qwen2.5-VL-72B-Instruct , QvQ-72B-Preview , InternVL2.5-38B , InternVL2.5-78B , InternVL3-38B , InternVL3-78B , LLaVA-v1.5-7B , LLaVA-OneVision-7B (SI) , ShareGPT4V , MiniCPM-o-2.6 , GLM-4v-9B , Ovis2-8B and mPLUG-Owl3-7B , while close-source MLLMs consist of GPT-4o , GPT-4o-mini , Kimi-latest , Doubao-1.5-Vision-Pro-32k , Gemini-2.0-Pro and Claude-3.7-Sonnet .",
+    "char_start": 25080,
+    "char_end": 25494,
+    "sentence_index": 136,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec012",
+    "text": "We further include two reinforcement-learning baselines built on Qwen2.5-VL-7B-Instruct and InternVL2.5-38B , respectively, trained via our rule-based RL procedure on our supplementary training dataset.",
+    "char_start": 25496,
+    "char_end": 25698,
+    "sentence_index": 137,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec012",
+    "text": "Fully supervised fine-tuning (SFT) experiments on the same datasets serve as controls to isolate the effect of RL optimization.",
+    "char_start": 25699,
+    "char_end": 25826,
+    "sentence_index": 138,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec012",
+    "text": "All model hyperparameters, training regimes, and implementation details are provided in the Appendix.",
+    "char_start": 25827,
+    "char_end": 25928,
+    "sentence_index": 139,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec012",
+    "text": "0.5em\n\nLLM Evaluation Protocol.",
+    "char_start": 25930,
+    "char_end": 25961,
+    "sentence_index": 140,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec012",
+    "text": "For language-only models, we generate an auxiliary image description using GPT-4o and prepend it to the question.",
+    "char_start": 25962,
+    "char_end": 26075,
+    "sentence_index": 141,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "Specifically, each question is formatted as `` Following is a detailed caption describing an image: [IMAGE DESCRIPTION].",
+    "char_start": 26076,
+    "char_end": 26196,
+    "sentence_index": 142,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "Based on the provided description, select the best answer from the four options: ''.",
+    "char_start": 26197,
+    "char_end": 26281,
+    "sentence_index": 143,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "This combined prompt is fed directly into the target LLMs for inference.",
+    "char_start": 26282,
+    "char_end": 26354,
+    "sentence_index": 144,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "Prompts Setting.",
+    "char_start": 26356,
+    "char_end": 26372,
+    "sentence_index": 145,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "We apply three distinct prompting paradigms to investigate model reasoning capabilities:\n1) Non-CoT prompt evaluation : Models receive a concise instruction: Answer the question using a single word or phrase, following this format: Answer: boxed\\ \\$LETTER\\ .",
+    "char_start": 26373,
+    "char_end": 26631,
+    "sentence_index": 146,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "2) CoT prompt evaluation : We prompt models to articulate intermediate reasoning steps: Solve the complex visual logical reasoning problem through step-by-step reasoning.",
+    "char_start": 26632,
+    "char_end": 26802,
+    "sentence_index": 147,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "Think about the reasoning process first and answer the question following this format: Answer: boxed\\ \\$LETTER\\ .",
+    "char_start": 26803,
+    "char_end": 26916,
+    "sentence_index": 148,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "3) Hint prompts evaluation : Leveraging GPT-4o, we generate question-specific hints derived from the reference solutions.",
+    "char_start": 26917,
+    "char_end": 27038,
+    "sentence_index": 149,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": "As shown in Figure , solution-related hints are provided alongside the CoT prompt to guide reasoning without revealing the final answer directly.",
+    "char_start": 27039,
+    "char_end": 27184,
+    "sentence_index": 150,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "Notably, unless otherwise specified, CoT prompt evaluation is employed by default for assessing model performance.",
+    "char_start": 27185,
+    "char_end": 27299,
+    "sentence_index": 151,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec013",
+    "text": "LLM Performance.",
+    "char_start": 27301,
+    "char_end": 27317,
+    "sentence_index": 152,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec013",
+    "text": "Table reports that all evaluated LLMs attain rather low accuracy on VisuLogic.",
+    "char_start": 27318,
+    "char_end": 27396,
+    "sentence_index": 153,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec013",
+    "text": "The best-performing LLM, Qwen2.5-72B-Instruct , reaches only 28.0\\%, while GPT-4 and Deepseek-R1 achieve 23.6\\% and 26.6\\%, respectively.",
+    "char_start": 27397,
+    "char_end": 27534,
+    "sentence_index": 154,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec013",
+    "text": "These findings underscore that reasoning based solely on textual descriptions is insufficient to capture the rich visual information required by our benchmark, causing failures to resolve visual logical reasoning problems.",
+    "char_start": 27535,
+    "char_end": 27757,
+    "sentence_index": 155,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec013",
+    "text": "0.5em\n\nMLLM Performance.",
+    "char_start": 27759,
+    "char_end": 27783,
+    "sentence_index": 156,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec013",
+    "text": "As shown in Table , current multimodal LLMs also perform poorly on VisuLogic.",
+    "char_start": 27784,
+    "char_end": 27861,
+    "sentence_index": 157,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec013",
+    "text": "The highest score is 28.1\\% by Doubao-1.5-Vision-Pro-32k , which remains a substantial 23.3 points below human performance.",
+    "char_start": 27862,
+    "char_end": 27985,
+    "sentence_index": 158,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec013",
+    "text": "Advanced models such as GPT-4o and Gemini-2.0-Pro attain only 26.3\\% and 28.0\\%, respectively, revealing a marked gap between existing MLLMs and human-level visual reasoning.",
+    "char_start": 27986,
+    "char_end": 28160,
+    "sentence_index": 159,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec013",
+    "text": "Overall, these results indicate that current MLLMs have serious deficiencies in visual reasoning and that significant advances are still required.",
+    "char_start": 28161,
+    "char_end": 28307,
+    "sentence_index": 160,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec013",
+    "text": "0.5em\n\nEffectiveness of CoT Prompts.",
+    "char_start": 28309,
+    "char_end": 28345,
+    "sentence_index": 161,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec013",
+    "text": "Contrary to expectations, chain-of-thought (CoT) prompting yields minimal improvements in visual reasoning.",
+    "char_start": 28346,
+    "char_end": 28453,
+    "sentence_index": 162,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec013",
+    "text": "As detailed in Table , GPT-4o-mini benefits most, with only a 1.2-point gain under CoT compared to direct-answer prompts; all other models exhibit gains below 1.0 point.",
+    "char_start": 28454,
+    "char_end": 28623,
+    "sentence_index": 163,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec013",
+    "text": "We speculate that this limited effect likely stems from current CoT training being based only on pure-text corpora; future works should explore CoT techniques tailored to multimodal data to better support visual reasoning tasks.",
+    "char_start": 28624,
+    "char_end": 28852,
+    "sentence_index": 164,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec013",
+    "text": "0.5em\n\nEffectiveness of Hint Prompts.",
+    "char_start": 28854,
+    "char_end": 28891,
+    "sentence_index": 165,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec013",
+    "text": "Table shows that hint prompts can boost model performance\u2014 Claude-3.7-Sonnet , Gemini-2.0-Pro , and Doubao-1.5-Vision-Pro-32k all improve by over 8 points, reaching accuracies above 35\\%.",
+    "char_start": 28892,
+    "char_end": 29079,
+    "sentence_index": 166,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec013",
+    "text": "However, even with explicit guidance, models still fail to construct coherent, reliable reasoning chains.",
+    "char_start": 29080,
+    "char_end": 29185,
+    "sentence_index": 167,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec013",
+    "text": "This suggests that simply augmenting training data with similar tasks is insufficient (which can help MLLMs come up with specific directions for solving the problem); future efforts must focus on enhancing the reliability and correctness of reasoning procedures of MLLMs to achieve more accurate reasoning inference.",
+    "char_start": 29186,
+    "char_end": 29502,
+    "sentence_index": 168,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec013",
+    "text": "0.5em\nImpact of Model Scaling.",
+    "char_start": 29504,
+    "char_end": 29534,
+    "sentence_index": 169,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec013",
+    "text": "In Table , we observe a positive correlation between parameter size and model performance.",
+    "char_start": 29535,
+    "char_end": 29625,
+    "sentence_index": 170,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec013",
+    "text": "With in the same model series, Qwen2.5-VL-72B-Instruct achieves 26.2 \\% outperforming Qwen2.5VL-7B-Instruct (26.0\\%) by 0.2\\%.",
+    "char_start": 29626,
+    "char_end": 29752,
+    "sentence_index": 171,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec013",
+    "text": "Furthermore, InternVL2.5-78B (27.3\\%) surpasses InternVL2.5-38B (25.5\\%) by a margin of 1.8\\%.",
+    "char_start": 29753,
+    "char_end": 29847,
+    "sentence_index": 172,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec013",
+    "text": "0.5em\n\nOpen-Source vs Close-Source.",
+    "char_start": 29849,
+    "char_end": 29884,
+    "sentence_index": 173,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec013",
+    "text": "Table further compares open- and closed-source models.",
+    "char_start": 29885,
+    "char_end": 29939,
+    "sentence_index": 174,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec013",
+    "text": "The top open-source MLLM, InternVL3-78B , attains 27.7\\%, trailing the closed-source leader ( Doubao-1.5-Vision-Pro-32k , 28.1\\%) by only 0.4\\% points and outperforming other proprietary competitors such as GPT-4o and Claude-3.7-Sonnet .",
+    "char_start": 29940,
+    "char_end": 30177,
+    "sentence_index": 175,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec013",
+    "text": "Overall, both open- and closed-source models exhibit uniformly low performance, highlighting a widespread neglect of visual reasoning objectives in current multimodal model training and data collection.",
+    "char_start": 30178,
+    "char_end": 30380,
+    "sentence_index": 176,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec013",
+    "text": "0.5em\n\nBehaviors of RL Trained models.",
+    "char_start": 30382,
+    "char_end": 30420,
+    "sentence_index": 177,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec013",
+    "text": "As shown in Table , MLLMs with reinforcement learning optimization can yield obvious improvements in visual reasoning performance.",
+    "char_start": 30421,
+    "char_end": 30551,
+    "sentence_index": 178,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec013",
+    "text": "Qwen2.5-VL-7B-Instruct-RL attains 28.0\\%, a 2.0 percentage point boost over its non-RL counterpart.",
+    "char_start": 30552,
+    "char_end": 30651,
+    "sentence_index": 179,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec013",
+    "text": "More strikingly, InternVL2.5-38B-RL reaches 31.1\\%, surpassing the original non-RL model by 5.6\\% and establishing a new state-of-the-art on VisuLogic.",
+    "char_start": 30652,
+    "char_end": 30803,
+    "sentence_index": 180,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec013",
+    "text": "Furthermore, compared to supervised fine-tuning (SFT) on identical datasets, RL-enhanced models demonstrate substantially larger performance gains, underscoring the promise of targeted RL methods for advancing multimodal visual reasoning.",
+    "char_start": 30804,
+    "char_end": 31042,
+    "sentence_index": 181,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec014",
+    "text": "We systematically analyze model capabilities by examining error distributions across reasoning categories for different models.",
+    "char_start": 31044,
+    "char_end": 31171,
+    "sentence_index": 182,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec014",
+    "text": "Figure presents the error rates of LLMs, MLLMs, and human participants over six distinct reasoning categories.",
+    "char_start": 31172,
+    "char_end": 31282,
+    "sentence_index": 183,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec014",
+    "text": "Figure reveals that LLMs struggle most with Spatial Reasoning questions, indicating that text-only descriptions are insufficient to infer three-dimensional structures or spatial transformations.",
+    "char_start": 31284,
+    "char_end": 31478,
+    "sentence_index": 184,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec014",
+    "text": "In contrast, their performance on Quantitative Reasoning tasks is comparatively stronger, suggesting that quantitative relationships are more readily conveyed through language.",
+    "char_start": 31479,
+    "char_end": 31655,
+    "sentence_index": 185,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec014",
+    "text": "As shown in Figure , Stylistic Reasoning presents the greatest difficulty for MLLMs, with error rates exceeding 75\\%\u2014worse than random guessing (25\\% accuracy).",
+    "char_start": 31657,
+    "char_end": 31817,
+    "sentence_index": 186,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec014",
+    "text": "This result underscores a fundamental limitation of current MLLM architectures in capturing subtle visual cues such as overlays, contours, and shape variations.",
+    "char_start": 31818,
+    "char_end": 31978,
+    "sentence_index": 187,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec014",
+    "text": "Figure reveals that human error patterns form a distinct cluster, separate from both LLMs and MLLMs.",
+    "char_start": 31980,
+    "char_end": 32080,
+    "sentence_index": 188,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec014",
+    "text": "Human participants maintain error rates below 30\\% on Positional Reasoning tasks, reflecting robust position-based visual inference.",
+    "char_start": 32081,
+    "char_end": 32213,
+    "sentence_index": 189,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec014",
+    "text": "By contrast, both model classes struggle with positional reasoning, highlighting a fundamental divergence in visual\u2013cognitive processes between humans and MLLMs.",
+    "char_start": 32214,
+    "char_end": 32375,
+    "sentence_index": 190,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec015",
+    "text": "LLM Failures.",
+    "char_start": 32377,
+    "char_end": 32390,
+    "sentence_index": 191,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec015",
+    "text": "As shown in Figure (h), text-only LLMs that rely on externally generated image captions often omit critical visual details required for multi-step logical deduction\u2014such as the counts, shapes, and progression patterns of the black and white dots in Figure (a).",
+    "char_start": 32391,
+    "char_end": 32651,
+    "sentence_index": 192,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec015",
+    "text": "Consequently, their reasoning diverges from the correct solution and frequently yields hallucinations or irrelevant responses.",
+    "char_start": 32652,
+    "char_end": 32778,
+    "sentence_index": 193,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec015",
+    "text": "MLLM Failures.",
+    "char_start": 32780,
+    "char_end": 32794,
+    "sentence_index": 194,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec015",
+    "text": "Figure also presents cases in which MLLMs correctly describe static visual content yet fail to infer the evolving relationships among shapes, instead resorting to superficial cues like object counts.",
+    "char_start": 32795,
+    "char_end": 32994,
+    "sentence_index": 195,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec015",
+    "text": "While these models can recognize individual shapes and tally items, they struggle to reason over inter-element relations, which limits their ability to solve complex visual-logic problems.",
+    "char_start": 32995,
+    "char_end": 33183,
+    "sentence_index": 196,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec015",
+    "text": "RL-Based Improvements.",
+    "char_start": 33185,
+    "char_end": 33207,
+    "sentence_index": 197,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec015",
+    "text": "As illustrated in Figure (g), reinforcement learning (RL) encourages deeper, stepwise logical reasoning.",
+    "char_start": 33208,
+    "char_end": 33312,
+    "sentence_index": 198,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec015",
+    "text": "The RL-enhanced model successfully captures state transitions (e.g., the movements of chess pieces in Figure (a)) and accurately predicts subsequent configurations.",
+    "char_start": 33313,
+    "char_end": 33477,
+    "sentence_index": 199,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec015",
+    "text": "Moreover, it learns to iteratively revise intermediate hypotheses\u2014akin to trial-and-error\u2014until a coherent deduction emerges (see additional examples in the Appendix).",
+    "char_start": 33478,
+    "char_end": 33645,
+    "sentence_index": 200,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec015",
+    "text": "These findings highlight the potential of RL methods to bolster performance on visual reasoning tasks.",
+    "char_start": 33646,
+    "char_end": 33748,
+    "sentence_index": 201,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec015",
+    "text": "[tbp]\n-0.5cm\n\n0.325\n\nimages/error_distribute_6-1.pdf\nLLMs' error distribution.",
+    "char_start": 33749,
+    "char_end": 33827,
+    "sentence_index": 202,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec015",
+    "text": "0.329\n\nimages/error_distribute_6-2_new.pdf\nMLLMs' error distribution.",
+    "char_start": 33829,
+    "char_end": 33898,
+    "sentence_index": 203,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec015",
+    "text": "0.327\n\nimages/error_distribute_6-3_new2.pdf\nHumans' error distribution.",
+    "char_start": 33900,
+    "char_end": 33971,
+    "sentence_index": 204,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec015",
+    "text": "Error distribution analysis.",
+    "char_start": 33973,
+    "char_end": 34001,
+    "sentence_index": 205,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec015",
+    "text": "The figure demonstrates distinct error type allocations across Humans, LLMs and MLLMs, revealing differences among their cognition patterns.",
+    "char_start": 34002,
+    "char_end": 34142,
+    "sentence_index": 206,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec015",
+    "text": "-0.5em\n\nIn this paper, we present VisuLogic, a novel benchmark designed to evaluate the visual reasoning capabilities of Multi-modal Large Language Models (MLLMs).",
+    "char_start": 34144,
+    "char_end": 34307,
+    "sentence_index": 207,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec016",
+    "text": "The benchmark consists of 1,000 vision-centric reasoning tasks distributed across six distinct categories.",
+    "char_start": 34308,
+    "char_end": 34414,
+    "sentence_index": 208,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec016",
+    "text": "We conduct comprehensive evaluation of several advanced LLMs and MLLMs on this benchmark and provide an in-depth analysis of their performance.",
+    "char_start": 34415,
+    "char_end": 34558,
+    "sentence_index": 209,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec016",
+    "text": "Our findings reveal that even the most advanced models fall short of human performance, highlighting substantial opportunities for advancement in visual logical reasoning.",
+    "char_start": 34559,
+    "char_end": 34730,
+    "sentence_index": 210,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec016",
+    "text": "Through further experiments, we find that reinforcement learning (RL) is a promising approach for enhancing the vision reasoning capabilities of MLLMs.",
+    "char_start": 34731,
+    "char_end": 34882,
+    "sentence_index": 211,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec016",
+    "text": "To promote further research and innovation, we open-source the evaluation code, training scripts, and datasets associated with this work.",
+    "char_start": 34883,
+    "char_end": 35020,
+    "sentence_index": 212,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec016",
+    "text": "abbrv\n\nref\n\nIn the appendix, we provide additional details and supplementary information to further elaborate on sections mentioned above.",
+    "char_start": 35022,
+    "char_end": 35160,
+    "sentence_index": 213,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec017",
+    "text": "In Section , we analyze the statistical features of the dataset, meanwhile providing examples of questions ranging from different categories.",
+    "char_start": 35161,
+    "char_end": 35302,
+    "sentence_index": 214,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec017",
+    "text": "Section contains experiments details, including the evaluation of LLMs, the evaluation of hint prompts and RL experiments.",
+    "char_start": 35303,
+    "char_end": 35425,
+    "sentence_index": 215,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec017",
+    "text": "Some examples of model outputs are also illustrated.",
+    "char_start": 35426,
+    "char_end": 35478,
+    "sentence_index": 216,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "As shown in Figure , the text length of questions in VisuLogic is mostly concentrated around 40 tokens (calculated by Llama-3.1's and InternVL2.5's tokenizer).",
+    "char_start": 35480,
+    "char_end": 35639,
+    "sentence_index": 217,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec019",
+    "text": "We also analyze the distribution of image sizes, as shown in Figure .",
+    "char_start": 35640,
+    "char_end": 35709,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec019",
+    "text": "The image widths range from 200 to 700 pixels, with an average of 592.3 pixels, while the heights range from 90 to 825 pixels, with an average of 327.9 pixels.",
+    "char_start": 35710,
+    "char_end": 35869,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec019",
+    "text": "[h]\n\nimages/appendix_image_hw_distibution.pdf\nImage size distribution.",
+    "char_start": 35871,
+    "char_end": 35941,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec019",
+    "text": "The size of images is limited to within the same order of magnitude.",
+    "char_start": 35942,
+    "char_end": 36010,
+    "sentence_index": 221,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec019",
+    "text": "[ht]\n\nimages/appendix_benchmark_len_comparison.pdf\nDistribution of text token length in VisuLogic.",
+    "char_start": 36012,
+    "char_end": 36110,
+    "sentence_index": 222,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec020",
+    "text": "To provide a thoroughly presentation of our benchmark, we include more examples of questions from different categories in the Figure and Figure .",
+    "char_start": 36112,
+    "char_end": 36257,
+    "sentence_index": 223,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec020",
+    "text": "images/appendix_examples_in_benchmarks_1.pdf\nMore examples in of Quantitative Reasoning, Spatial Reasoning, Positional Reasoning.",
+    "char_start": 36259,
+    "char_end": 36388,
+    "sentence_index": 224,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec020",
+    "text": "images/appendix_examples_in_benchmarks_2.pdf\nMore examples in of Attribute Reasoning, Stylistic Reasoning, and Other.",
+    "char_start": 36390,
+    "char_end": 36507,
+    "sentence_index": 225,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec021",
+    "text": "Caption generation for LLMs Evaluation.",
+    "char_start": 36509,
+    "char_end": 36548,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "In our experiment, we employ large language models (LLMs) for comparative analysis.",
+    "char_start": 36550,
+    "char_end": 36633,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec022",
+    "text": "Specifically, when setting up the LLM-based experiment, we initially utilize GPT-4o to generate captions for images with the following prompt: Please describe the fine-grained content of the image or figure based on this question, including scenes, objects, relationships, and any text present.",
+    "char_start": 36634,
+    "char_end": 36928,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec022",
+    "text": "Please note that you do not need to answer this question directly, just describe the information of this picture .",
+    "char_start": 36929,
+    "char_end": 37043,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec022",
+    "text": "Additional examples of generated image captions are presented in Figure and Figure .",
+    "char_start": 37044,
+    "char_end": 37128,
+    "sentence_index": 230,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec022",
+    "text": "More Examples of Captions.",
+    "char_start": 37130,
+    "char_end": 37156,
+    "sentence_index": 231,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec022",
+    "text": "We provide additional image captions for six categories, as illustrated in Figures and .",
+    "char_start": 37157,
+    "char_end": 37245,
+    "sentence_index": 232,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec022",
+    "text": "Even SOTA MLLM (GPT-4o) encounters difficulties in accurately describing the details of images from VisuLogic.",
+    "char_start": 37246,
+    "char_end": 37356,
+    "sentence_index": 233,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec022",
+    "text": "[h]\n\nimages/appendix_benchmark_des_len_comparison.pdf\nDistribution of tokens length in LLM evaluation settings, including image description.",
+    "char_start": 37358,
+    "char_end": 37498,
+    "sentence_index": 234,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec022",
+    "text": "[h]\n\nimages/appendix_image_caption1.pdf\nPart of image caption in LLM evaluation.",
+    "char_start": 37500,
+    "char_end": 37580,
+    "sentence_index": 235,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec022",
+    "text": "[h]\n\nimages/appendix_image_caption2.pdf\nPart of image caption in LLM evaluation.",
+    "char_start": 37582,
+    "char_end": 37662,
+    "sentence_index": 236,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec023",
+    "text": "We provide more solutions generated from different LLMs/MLLMs on our benchmark, as shown in Figure , Figure and Figure .",
+    "char_start": 37664,
+    "char_end": 37784,
+    "sentence_index": 237,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec023",
+    "text": "For the majority of questions, almost all models fail to provide accurate solutions.",
+    "char_start": 37785,
+    "char_end": 37869,
+    "sentence_index": 238,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec023",
+    "text": "Sometimes even when the final answer is correct, methodological wrong may persist.",
+    "char_start": 37870,
+    "char_end": 37952,
+    "sentence_index": 239,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec023",
+    "text": "images/appendix_model_output1.pdf\nSolution examples generated by different models.",
+    "char_start": 37954,
+    "char_end": 38036,
+    "sentence_index": 240,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec023",
+    "text": "Reference solution and outputs generated by GPT-4o, Qwen2.5VL-72B-Instruct, Gemini-2.0-pro-exp-02-05, Doubao-1.5-Vision-Pro-32K and Claude-3.7-sonnet-thinking.",
+    "char_start": 38037,
+    "char_end": 38196,
+    "sentence_index": 241,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec023",
+    "text": "Additionally, the image caption and solution from LLMs (Qwen2.5-72B-Instruct) are also illustrated.",
+    "char_start": 38197,
+    "char_end": 38296,
+    "sentence_index": 242,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec023",
+    "text": "images/appendix_model_output2.pdf\nSolution examples generated by different models.",
+    "char_start": 38298,
+    "char_end": 38380,
+    "sentence_index": 243,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec023",
+    "text": "Reference solution and outputs generated by GPT-4o, Kimi-latest, Gemini-2.0-pro-exp-02-05 and Doubao-1.5-Vision-Pro-32K.",
+    "char_start": 38381,
+    "char_end": 38501,
+    "sentence_index": 244,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "Additionally, the image caption and solution from LLMs (Qwen2.5-72B-Instruct) are also illustrated.",
+    "char_start": 38502,
+    "char_end": 38601,
+    "sentence_index": 245,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "images/appendix_model_output3.pdf\nSolution examples generated by different models.",
+    "char_start": 38603,
+    "char_end": 38685,
+    "sentence_index": 246,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "Reference solution and outputs generated by GPT-4o, Qwen2.5VL-72B, Gemini-2.0-pro-exp-02-05 and Doubao-1.5-Vision-Pro-32k.",
+    "char_start": 38686,
+    "char_end": 38808,
+    "sentence_index": 247,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "Additionally, the image caption and solution from LLMs (o3-mini) are also illustrated.",
+    "char_start": 38809,
+    "char_end": 38895,
+    "sentence_index": 248,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec024",
+    "text": "We first generate hint prompts with GPT-4o, combining reference solutions with question data as inputs.",
+    "char_start": 38897,
+    "char_end": 39000,
+    "sentence_index": 249,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec024",
+    "text": "All outputs undergo manual validation to prevent solution leakage.",
+    "char_start": 39001,
+    "char_end": 39067,
+    "sentence_index": 250,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec024",
+    "text": "More examples are shown in Figure .",
+    "char_start": 39068,
+    "char_end": 39103,
+    "sentence_index": 251,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec024",
+    "text": "After that, we input the hint prompts along with the same CoT prompt in CoT experiments ( Solve the complex visual logical reasoning problem through step-by-step reasoning.",
+    "char_start": 39104,
+    "char_end": 39276,
+    "sentence_index": 252,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec024",
+    "text": "Think about the reasoning process first and answer the question following this format: Answer: boxed\\ \\$LETTER\\ .",
+    "char_start": 39277,
+    "char_end": 39390,
+    "sentence_index": 253,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec024",
+    "text": ") to MLLMs.",
+    "char_start": 39391,
+    "char_end": 39402,
+    "sentence_index": 254,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec024",
+    "text": "[h]\n\nimages/hint_examples_2.pdf\nExamples of hint prompts.",
+    "char_start": 39404,
+    "char_end": 39461,
+    "sentence_index": 255,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec024",
+    "text": "Hint prompts are provided to guide reasoning without revealing the final answer directly.",
+    "char_start": 39462,
+    "char_end": 39551,
+    "sentence_index": 256,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec025",
+    "text": "Comparative SFT Experiments.",
+    "char_start": 39553,
+    "char_end": 39581,
+    "sentence_index": 257,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec025",
+    "text": "To verify the effectiveness of RL method, we arrange the comparative SFT experiments on the same dataset as RL experiments.",
+    "char_start": 39583,
+    "char_end": 39706,
+    "sentence_index": 258,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec025",
+    "text": "The instruction consists of questions and Non-CoT prompts, and the responses are formatted direct answers.",
+    "char_start": 39707,
+    "char_end": 39813,
+    "sentence_index": 259,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec025",
+    "text": "RL Algorithm.",
+    "char_start": 39815,
+    "char_end": 39828,
+    "sentence_index": 260,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec025",
+    "text": "We employ REINFORCE Leave-One-Out (RLOO) in our reinforcement learning training phase.",
+    "char_start": 39829,
+    "char_end": 39915,
+    "sentence_index": 261,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec025",
+    "text": "As a critic-model-free algorithm,rloo is at a low computational cost while maintaining more robustness to noise and KL constraints.",
+    "char_start": 39916,
+    "char_end": 40047,
+    "sentence_index": 262,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec025",
+    "text": "Reward Modeling.",
+    "char_start": 40049,
+    "char_end": 40065,
+    "sentence_index": 263,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec025",
+    "text": "Inspired by Deepseek-R1 , we design our rule-based reward system that mainly consists of two types of rewards:\n\nFormat rewards: To clarify model's outputs, we design a format rule that forces model to put its thinking process between \u2018<think>\u2019 and \u2018</think>\u2019 tags and put its final answer between \u2018<answer>\u2019 and \u2018</answer>\u2019 tags.",
+    "char_start": 40066,
+    "char_end": 40395,
+    "sentence_index": 264,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec025",
+    "text": "Regular expression is applied to judge whether outputs conform to the format rule.",
+    "char_start": 40396,
+    "char_end": 40478,
+    "sentence_index": 265,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec025",
+    "text": "Accuracy rewards: The accuracy reward is decided by the response's correctness.",
+    "char_start": 40479,
+    "char_end": 40558,
+    "sentence_index": 266,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec025",
+    "text": "The model should generate the response in right format, then the answer is extracted and judged whether it is matched to the correct option.",
+    "char_start": 40559,
+    "char_end": 40699,
+    "sentence_index": 267,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec025",
+    "text": "Hyperparameter settings.",
+    "char_start": 40701,
+    "char_end": 40725,
+    "sentence_index": 268,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec025",
+    "text": "Our two RL models are trained with the hyperparameter configuration detailed in Table .",
+    "char_start": 40726,
+    "char_end": 40813,
+    "sentence_index": 269,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec025",
+    "text": "And the hyperparameters used in SFT training stage are listed in Table .",
+    "char_start": 40814,
+    "char_end": 40886,
+    "sentence_index": 270,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec025",
+    "text": "[h]\n\nHyperparameter Settings for SFT Training Stage.",
+    "char_start": 40888,
+    "char_end": 40940,
+    "sentence_index": 271,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec025",
+    "text": "1.5\nc | cc\n\n& Qwen2.5-VL-7B-Instruct-SFT & InternVL2.5-38B-SFT\n\npretrain model & Qwen2.5-VL-7B-Instruct & InternVL2.5-38B\n\nlearning rate & 0.5e-5 & 2e-5\n\nbatch size & 64 & 128\n\noptimizer & AdamW & AdamW\n\nlr scheduler & cosine & cosine\n\nimage strategy & image\\_max\\_pixels=262144 & max\\_dynamic\\_patch=6\n\nwarmup ratio & 0.1 & 0.03\n\nmax epochs & 1 & 1\n\nbf16 & True & True\n\n[h]\n\nHyperparameter Settings for RL Training Stage.",
+    "char_start": 40941,
+    "char_end": 41363,
+    "sentence_index": 272,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec025",
+    "text": "1.5\nc | cc\n\n& Qwen2.5-VL-7B-Instruct-RL & InternVL2.5-38B-RL\n\npretrain model & Qwen2.5-VL-7B-Instruct & InternVL2.5-38B\n\nRL Algorithm & rloo & rloo\n\ntrain batch size & 128 & 64\n\nrollout batch\\_size & 256 & 128\n\ntemperature & 1 & 1\n\nn samples per prompt & 16 & 8\n\nprompt max len & 1024 & 4096\n\ngenerate max len & 3000 & 3000\n\nbf16 & True & True\n\nactor learning rate & 1e-6 & 1e-6\n\ninit kl coef & 0 & 0\n\nOther Details.",
+    "char_start": 41364,
+    "char_end": 41780,
+    "sentence_index": 273,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec025",
+    "text": "The training environment consists of CentOS Linux release 7.6.1810 operating system with CUDA 12.1.",
+    "char_start": 41781,
+    "char_end": 41880,
+    "sentence_index": 274,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec025",
+    "text": "For Qwen2.5-VL-7B-Instruct-RL, we train for 80 steps on 1$ $8 A800 GPUs and for InternVL2.5-38B-RL we train for 100 steps on 6$ $8 A800 GPUs.",
+    "char_start": 41881,
+    "char_end": 42022,
+    "sentence_index": 275,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec026",
+    "text": "As mentioned above, we apply format rewards in RL experiments.",
+    "char_start": 42024,
+    "char_end": 42086,
+    "sentence_index": 276,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec026",
+    "text": "Thus, to fully investigate the models' latent reasoning abilities, we utilize implement training-aligned prompts during evaluation in VisuLogic, which is shown as follows: Solve the complex visual logical reasoning problem through step-by-step reasoning.",
+    "char_start": 42087,
+    "char_end": 42341,
+    "sentence_index": 277,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec026",
+    "text": "Think about the reasoning process first and answer the question following this format: <think> THINKING </think><answer> ANSWER </answer> .",
+    "char_start": 42342,
+    "char_end": 42481,
+    "sentence_index": 278,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec027",
+    "text": "Figures , , , , and demonstrate qualitative differences in model outputs between baseline and RL optimized models.",
+    "char_start": 42483,
+    "char_end": 42597,
+    "sentence_index": 279,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec027",
+    "text": "It illustrates reinforcement learning (RL) training enables the model to perform fundamental-level analysis of reasoning tasks embedded in graphical representations.",
+    "char_start": 42598,
+    "char_end": 42763,
+    "sentence_index": 280,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_7b_1.pdf\nComparison of model outputs before and after RL training stage for Qwen2.5-VL-7B.",
+    "char_start": 42765,
+    "char_end": 42878,
+    "sentence_index": 281,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_7b_2.pdf\nComparison of model outputs before and after RL training stage for Qwen2.5-VL-7B.",
+    "char_start": 42880,
+    "char_end": 42993,
+    "sentence_index": 282,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_7b_3.pdf\nComparison of model outputs before and after RL training stage for Qwen2.5-VL-7B.",
+    "char_start": 42995,
+    "char_end": 43108,
+    "sentence_index": 283,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_38b_1.pdf\nComparison of model outputs before and after RL training stage for InternVL-2.5-38B.",
+    "char_start": 43110,
+    "char_end": 43227,
+    "sentence_index": 284,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_38b_2.pdf\nComparison of model outputs before and after RL training stage for InternVL-2.5-38B.",
+    "char_start": 43229,
+    "char_end": 43346,
+    "sentence_index": 285,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/RL_example_38b_3.pdf\nComparison of model outputs before and after RL training stage for InternVL-2.5-38B.",
+    "char_start": 43348,
+    "char_end": 43465,
+    "sentence_index": 286,
+    "section_sentence_index": 7
+  }
+]

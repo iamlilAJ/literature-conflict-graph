@@ -1,0 +1,2090 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "As a classic vision task, anomaly detection has been widely applied in industrial inspection and medical imaging.",
+    "char_start": 0,
+    "char_end": 113,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "In this task, data scarcity is often a frequently-faced issue.",
+    "char_start": 114,
+    "char_end": 176,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To solve it, the few-shot anomaly detection (FSAD) scheme is attracting increasing attention.",
+    "char_start": 177,
+    "char_end": 270,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "In recent years, beyond traditional visual paradigm,\nVision-Language Model (VLM) has been extensively explored to boost this field.",
+    "char_start": 271,
+    "char_end": 402,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "However, in currently-existing VLM-based FSAD schemes, almost all perform anomaly inference only by pairwise feature matching, ignoring structural dependencies and global consistency.",
+    "char_start": 404,
+    "char_end": 587,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "To further redound to FSAD via VLM,\nwe propose a Heterogeneous Hypergraph Vision-Language Reasoning ( H$_ 2 $VLR ) framework.",
+    "char_start": 589,
+    "char_end": 714,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "It re-formulates the FSAD as a high-order inference problem of visual-semantic relations, by jointly modeling visual regions and semantic concepts in a unified hypergraph.",
+    "char_start": 715,
+    "char_end": 886,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Experimental comparisons verify the effectiveness and advantages of H$_ 2 $VLR.",
+    "char_start": 888,
+    "char_end": 967,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "It could often achieve state-of-the-art (SOTA) performance on representative industrial and medical benchmarks.",
+    "char_start": 968,
+    "char_end": 1079,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "Our code will be released upon acceptance.",
+    "char_start": 1080,
+    "char_end": 1122,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Anomaly detection is a fundamental problem in computer vision, aiming to identify deviations from normal patterns in visual data.",
+    "char_start": 1124,
+    "char_end": 1253,
+    "sentence_index": 10,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "It plays a vital role in safety-critical applications such as industrial inspection and medical imaging, where undetected anomalies may lead to severe economic loss or clinical risk One2normal2024 .",
+    "char_start": 1254,
+    "char_end": 1452,
+    "sentence_index": 11,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "In these domains, reliable anomaly detection is essential for ensuring system robustness and decision safety.",
+    "char_start": 1453,
+    "char_end": 1562,
+    "sentence_index": 12,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "[ht]\n\nFig1_3methods.png\nVLM-based FSAD scheme comparison: (a) conventional visual-semantic feature alignment, (b) graph-based feature representation enhancement, (c) our hypergraph scheme, H$_2$VLR.",
+    "char_start": 1564,
+    "char_end": 1762,
+    "sentence_index": 13,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "In practice, visual anomaly detection is severely constrained by the scarcity of anomalous samples.",
+    "char_start": 1764,
+    "char_end": 1863,
+    "sentence_index": 14,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Anomalies are inherently rare, diverse, and often unpredictable, making it costly and impractical to collect sufficient training data UniVAD2025 .",
+    "char_start": 1864,
+    "char_end": 2010,
+    "sentence_index": 15,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "As a result, conventional data-driven anomaly detection methods struggle to generalize under limited supervision AdaptCLIP2026 .",
+    "char_start": 2011,
+    "char_end": 2139,
+    "sentence_index": 16,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "These challenges have driven an increasing interest in few-shot anomaly detection (FSAD), which performs anomaly detection and localization with limited normal samples UniNet2025 .",
+    "char_start": 2140,
+    "char_end": 2320,
+    "sentence_index": 17,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "To mitigate data scarcity, recent FSAD approaches increasingly exploit vision-language models (VLMs) such as CLIP CLIP2021 , which provide strong visual\u2013semantic alignment through large-scale pre-training FAPrompt2025 .",
+    "char_start": 2322,
+    "char_end": 2541,
+    "sentence_index": 18,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "By matching visual features with textual descriptions of normality or abnormality, these methods shift anomaly detection from task-specific training to cross-modal correspondence WinCLIP2023, PromptAD2024 .",
+    "char_start": 2542,
+    "char_end": 2748,
+    "sentence_index": 19,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "As illustrated in Fig.",
+    "char_start": 2749,
+    "char_end": 2771,
+    "sentence_index": 20,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "(a), most existing methods adopt prompt-based or patch-level similarity matching, achieving encouraging generalization to unseen categories.",
+    "char_start": 2772,
+    "char_end": 2912,
+    "sentence_index": 21,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "However, such approaches are fundamentally based on independent pairwise matching between isolated visual regions and semantic concepts AnomalyCLIP2023, AACLIP2025 .",
+    "char_start": 2914,
+    "char_end": 3079,
+    "sentence_index": 22,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This formulation assumes that anomalies can be detected through local similarity deviations, while ignoring the structural dependencies and contextual consistency across regions.",
+    "char_start": 3080,
+    "char_end": 3258,
+    "sentence_index": 23,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "As a result, subtle anomalies characterized by coordinated or structural deviations are often overlooked.",
+    "char_start": 3259,
+    "char_end": 3364,
+    "sentence_index": 24,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Several recent methods attempt to improve visual representations by incorporating graph-based aggregation or memory-driven refinement KAG-prompt2025 , as shown in Fig.",
+    "char_start": 3366,
+    "char_end": 3533,
+    "sentence_index": 25,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "(b).",
+    "char_start": 3534,
+    "char_end": 3538,
+    "sentence_index": 26,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Although these strategies enrich feature representations, their inference stage still relies on independent pairwise matching.",
+    "char_start": 3539,
+    "char_end": 3665,
+    "sentence_index": 27,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Consequently, the reasoning process remains localized and fails to model high-order spatial\u2013semantic relations explicitly.",
+    "char_start": 3666,
+    "char_end": 3788,
+    "sentence_index": 28,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "This limitation prevents existing methods from fully capturing the global structural consistency required for reliable anomaly detection under extreme data scarcity.",
+    "char_start": 3789,
+    "char_end": 3954,
+    "sentence_index": 29,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "To overcome these limitations, we propose the H$_ 2 $VLR, a hypergraph-based cross-modal reasoning framework that reformulates FSAD as a high-order relational inference problem.",
+    "char_start": 3956,
+    "char_end": 4133,
+    "sentence_index": 30,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Instead of evaluating anomalies through isolated similarity scores, H$_ 2 $VLR jointly models visual regions and semantic concepts as heterogeneous nodes within a unified hypergraph, enabling collective reasoning over cross-modal structures.",
+    "char_start": 4134,
+    "char_end": 4375,
+    "sentence_index": 31,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "By explicitly capturing high-order dependencies and global contextual consistency, H$_ 2 $VLR provides robust anomaly detection and precise localization in low-shot settings.",
+    "char_start": 4376,
+    "char_end": 4550,
+    "sentence_index": 32,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Our main contributions are summarized as follows.",
+    "char_start": 4551,
+    "char_end": 4600,
+    "sentence_index": 33,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "(I) Beyond traditional pairwise matching, we propose the H$_ 2 $VLR, a heterogeneous hypergraph Vision-Language reasoning framework for few-shot anomaly detection.",
+    "char_start": 4602,
+    "char_end": 4765,
+    "sentence_index": 34,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "(II) We design a group of semantic inducing and hypergraph modeling schemes for H$_ 2 $VLR.",
+    "char_start": 4767,
+    "char_end": 4858,
+    "sentence_index": 35,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "(III) We design a high-order relation reasoning strategy on visual-semantic feature hypergraph for the effective detection and location inference of image anomaly regions.",
+    "char_start": 4860,
+    "char_end": 5031,
+    "sentence_index": 36,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "FSAD aims to characterize normality from extremely limited reference samples and identify deviations at inference time.",
+    "char_start": 5033,
+    "char_end": 5152,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Early FSAD primarily follows a reconstruction paradigm ($e.g.$, MemAE MemAE2019 , HTDG HTDG2021 ) to learn normal appearance from few references, while later works shift to feature-matching and memory-augmented paradigms ($e.g.$, PaDiM PaDiM2021 , PatchCore PatchCore2022 ) that detect anomalies through nearest-neighbor retrieval in pretrained representations.",
+    "char_start": 5153,
+    "char_end": 5514,
+    "sentence_index": 38,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Recently, many efforts have explored enhanced generalization through transferable learning paradigms.",
+    "char_start": 5516,
+    "char_end": 5617,
+    "sentence_index": 39,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Some meta learning-based methods, such as RegAD RegAD2022 , enable category-agnostic adaptation through learned comparison mechanisms.",
+    "char_start": 5618,
+    "char_end": 5752,
+    "sentence_index": 40,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "Moreover, some Vision-Language models, such as WinCLIP WinCLIP2023 and AnomalyCLIP AnomalyCLIP2023 , introduce semantic supervision through cross-modal alignment.",
+    "char_start": 5753,
+    "char_end": 5915,
+    "sentence_index": 41,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "In parallel, some graph-enhanced and diffusion-based models ($e.g.$, DiffAD DiffAD2023 ) incorporate structural cues or generative priors to better model normal distributions.",
+    "char_start": 5916,
+    "char_end": 6091,
+    "sentence_index": 42,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "VLMs enable semantic-aware FSAD by introducing text as a supervisory signal, alleviating the need for category-specific training.",
+    "char_start": 6093,
+    "char_end": 6222,
+    "sentence_index": 43,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "PromptAD PromptAD2024 leverages textual prompts to condition anomaly scoring, improving cross-category transfer via visual-semantic alignment.",
+    "char_start": 6223,
+    "char_end": 6365,
+    "sentence_index": 44,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Moreover, DictAS DictAS2025 formulates class-generalizable few-shot anomaly segmentation as dictionary lookup from a few normal references, without target-domain retraining.",
+    "char_start": 6366,
+    "char_end": 6539,
+    "sentence_index": 45,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "However, existing approaches such as AnomalyCLIP and AdaptCLIP AnomalyCLIP2023,AdaptCLIP2026 rely on traditional similarity matching between visual and textual representations, preventing the consistency of abnormal structures, for lacking explicit high-order relational modeling.",
+    "char_start": 6541,
+    "char_end": 6821,
+    "sentence_index": 46,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Hypergraph learning generalizes traditional graphs by allowing hyper-edges to connect multiple nodes, effectively capturing high-order correlations beyond simplistic pairwise constraints.",
+    "char_start": 6823,
+    "char_end": 7010,
+    "sentence_index": 47,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "For example, the early research Learning with Hypergraph Zhou2006 establishes a unified spectral learning framework that enables clustering and classification directly on hypergraph structures.",
+    "char_start": 7011,
+    "char_end": 7204,
+    "sentence_index": 48,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "The recent advances in geometric deep learning, $e.g.$, HGNN HGNN2019 , HyperGCN HyperGCN2019 , and unified frameworks like UniGNN UniGNN2021 or AllSet AllSet2022 , have enabled efficient message-passing for complex structural learning.",
+    "char_start": 7206,
+    "char_end": 7442,
+    "sentence_index": 49,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "In computer vision, some paradigms like HgVT HgVT2025 and HSL HSL2022 further leverage hypergraphs to model spatial-semantic dependencies.",
+    "char_start": 7443,
+    "char_end": 7581,
+    "sentence_index": 50,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Currently, most hypergraph learning approaches focus on single-modality representations in supervised or closed-set scenarios, with a limited applicability to anomaly detection under few-shot conditions.",
+    "char_start": 7582,
+    "char_end": 7785,
+    "sentence_index": 51,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "In particular, how to utilize hypergraph-based reasoning to capture the cross-modal interactions between visual regions and textual prompts still remains largely unexplored.",
+    "char_start": 7786,
+    "char_end": 7959,
+    "sentence_index": 52,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "$VLR\n\n[htbp]\n\nFig2_main.jpg\nOverview of the proposed H$_2$VLR framework.",
+    "char_start": 7961,
+    "char_end": 8033,
+    "sentence_index": 53,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "It generates the final prediction by fusing a coarse Base Map from the Semantic Alignment Branch (SAB) with a structure-aware Residual Map from the Hypergraph Reasoning Branch (HRB), effectively synergizing the global semantic priors with high-order topological constraints.",
+    "char_start": 8034,
+    "char_end": 8308,
+    "sentence_index": 54,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "Different from the standard graphs limited to pairwise relations, we formulate a cross-modal hypergraph $ H = (N, E)$ to capture high-order dependencies among visual regions within a unified vision--language space.",
+    "char_start": 8310,
+    "char_end": 8524,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "We define a heterogeneous node set $N = N_v N_t$, where $N_v = \\ p_ q,j \\ $ denotes query visual tokens and $N_t = \\ T_k^ (i) \\ $ represents support-conditioned prompt embeddings.",
+    "char_start": 8525,
+    "char_end": 8704,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Its structural connectivity is governed by the incidence matrix $ H R ^ K M $, where $ H _ n,e =1$ if node $n$ is associated with hyperedge $e$.",
+    "char_start": 8705,
+    "char_end": 8849,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "As shown in Fig.",
+    "char_start": 8851,
+    "char_end": 8867,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": ", we propose the H$_ 2 $VLR, a unified cross-modal hypergraph framework for few-shot anomaly detection.",
+    "char_start": 8868,
+    "char_end": 8971,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "Instead of relying on independent image\u2013text similarity estimation, it explicitly models the high-order interactions between adaptive textual semantics and multi-scale visual structures.",
+    "char_start": 8972,
+    "char_end": 9158,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "Firstly, a heterogeneous semantic-guided hypergraph is constructed to embed visual patches and dynamically-generated textual prompts into a shared relational space, where hyperedges encode cross-modal and structural dependencies.",
+    "char_start": 9159,
+    "char_end": 9388,
+    "sentence_index": 61,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "A hypergraph message passing mechanism is then applied to perform semantic-constrained relational reasoning, enabling structurally meaningful deviations to be emphasized while suppressing unreliable responses.",
+    "char_start": 9389,
+    "char_end": 9598,
+    "sentence_index": 62,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "Finally, the refined relational features are incorporated into anomaly inference to yield noise-robust image-level scores and pixel-level precise localization.",
+    "char_start": 9599,
+    "char_end": 9758,
+    "sentence_index": 63,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "This formulation provides a compact yet principled pathway from adaptive semantics to high-order structural reasoning and reliable anomaly decision.",
+    "char_start": 9759,
+    "char_end": 9907,
+    "sentence_index": 64,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "The primary challenge in few-shot industrial inspection lies in the limited expressiveness of generic vision\u2013language priors, where static textual templates often fail to capture category-specific appearance variations and anomaly patterns.",
+    "char_start": 9909,
+    "char_end": 10149,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "To address this issue, we propose Dynamic Semantic Induction (DSI), which conditions textual semantics on the visual statistics of the support images $ S $, yielding task-adaptive textual representations.",
+    "char_start": 10150,
+    "char_end": 10354,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "As shown in the Stage 1 of Fig.",
+    "char_start": 10355,
+    "char_end": 10386,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": ", we firstly employ the $ E _ image $\nto extract visual representations from the support samples.",
+    "char_start": 10387,
+    "char_end": 10484,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "Specifically, the support set is summarized by an aggregated global feature $ G _s R ^d$, together with a set of patch-level tokens $ P _s R ^ L d $, which preserves local structural information.",
+    "char_start": 10485,
+    "char_end": 10680,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "Rather than directly using these features for similarity matching, $ G _s$ serves as a conditioning signal, adapting the textual prompt space to current task.",
+    "char_start": 10681,
+    "char_end": 10839,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "To bridge visual and linguistic representations, a learnable mapper projects the global support feature into a sequence of support-aware context tokens, $ C _ S = _ ( G _s)$.",
+    "char_start": 10841,
+    "char_end": 11015,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "These tokens are injected into a predefined G+S+L (Global\u2013Special\u2013Local) prompt template set $ t ^ 0 = t _n^0 t _a^0$ via an element-wise multiplication $ $, yielding category-adaptive textual embeddings:\n\nT _k^ (i) = E _ text ( t _k^ 0,(i) C _ S ), k \\ n, a\\ ,\n\nwhere $ E _ text $ denotes the text encoder and $i$ indicates the prompt template numbers within same semantic category.",
+    "char_start": 11016,
+    "char_end": 11399,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "These induced prompts are further aggregated into normal and abnormal semantic centers, $C_k = Avg (\\ T _k^ (i) \\ )$, forming a semantic repository $ R = \\ T _n, T _a, C _n, C _a \\ $.",
+    "char_start": 11400,
+    "char_end": 11583,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "To further regularize the induced semantic space, we impose a margin-based alignment during semantic induction.",
+    "char_start": 11585,
+    "char_end": 11696,
+    "sentence_index": 74,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "Let $ sim ( , )$ denote cosine similarity.",
+    "char_start": 11697,
+    "char_end": 11739,
+    "sentence_index": 75,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "For the $j$-th patch token, $ p _ s,j P _s$, it requires\n\nsim ( p _ s,j , C_n) + sim ( p _ s,j , C_a), > 0,\n\nwhere $ $ denotes a margin hyperparameter, anchoring normal visual patterns to normal semantic center, aiming to enforce it separating from the abnormal manifold.",
+    "char_start": 11740,
+    "char_end": 12011,
+    "sentence_index": 76,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "Building upon the induced semantic repository $ R $, we construct a\ncross-modal hypergraph $ H =(N,E)$ to enable high-order relational reasoning,\nbeyond traditional patch-level matching.",
+    "char_start": 12013,
+    "char_end": 12199,
+    "sentence_index": 77,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "Following the definition in Section ,\nit jointly encodes the structural and semantic dependencies of visual regions in a unified vision-language space.",
+    "char_start": 12200,
+    "char_end": 12351,
+    "sentence_index": 78,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "In detail, we further define a heterogeneous node set $N$ (as defined in Section Preliminaries).",
+    "char_start": 12353,
+    "char_end": 12449,
+    "sentence_index": 79,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "In addition, the normal and abnormal semantic centers, $ C _n$ and $ C _a$, are computed by aggregating\nthe corresponding prompt embeddings, and then serve as global semantic references.",
+    "char_start": 12450,
+    "char_end": 12636,
+    "sentence_index": 80,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "While hypergraph is constructed over heterogeneous nodes, hypergraph reasoning is performed exclusively on visual nodes to aggregate semantic\u2013contextual evidence.",
+    "char_start": 12637,
+    "char_end": 12799,
+    "sentence_index": 81,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "The hyperedge set, $E$ is constructed via a dual-guidance strategy.",
+    "char_start": 12801,
+    "char_end": 12868,
+    "sentence_index": 82,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "First, structure-preserving hyperedges are formed by connecting each visual patch $p_ q,j $ to the top-$K$ nearest neighbors in the visual feature space via cosine similarity, enforcing local structural\ncoherence.",
+    "char_start": 12869,
+    "char_end": 13082,
+    "sentence_index": 83,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "Second, semantic-guided hyperedges are instantiated by correlating visual patches with prompt embeddings.",
+    "char_start": 13083,
+    "char_end": 13188,
+    "sentence_index": 84,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "Specifically, for each prompt node $ T _k^ (i) $, we compute cross-modal affinities\n$ A_ j,k ^ (i) = sim ( p _ q,j , T _k^ (i) )$ and associate $ T _k^ (i) $ by the top-$K$ most relevant patches, yielding high-order semantic groupings to link local visual patterns with support-conditioned semantics.",
+    "char_start": 13189,
+    "char_end": 13489,
+    "sentence_index": 85,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "In this case, our hypergraph topology could be represented by an incidence matrix $ H \\ 0,1\\ ^ |N| |E| $, where $ H _ n,e =1$ indicates that node $n$ belongs to hyperedge $e$.",
+    "char_start": 13491,
+    "char_end": 13666,
+    "sentence_index": 86,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "In implementation, semantic-guided hyperedges are instantiated via a hard top-$K$ membership rule: for a semantic hyperedge indexed by $ T _k^ (i) $, only the corresponding top-$K$ visual patches are connected.",
+    "char_start": 13667,
+    "char_end": 13877,
+    "sentence_index": 87,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "This yields a compact and stable incidence structure, without incurring additional hard-assignment matrices.",
+    "char_start": 13878,
+    "char_end": 13986,
+    "sentence_index": 88,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "During inference, it restricts message passing only in the visual subgraph induced by $ H $.",
+    "char_start": 13987,
+    "char_end": 14079,
+    "sentence_index": 89,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "Moreover, prompt embeddings and semantic centers influence hypergraph reasoning only through hyperedge construction.",
+    "char_start": 14080,
+    "char_end": 14196,
+    "sentence_index": 90,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "Based on the heterogeneous incidence structure $ H $ and the prompt-induced edge weights $ $, a high-order reasoning module is designed to explicitly infer anomalies as the violations of semantic\u2013structural consistency, rather than traditional patch-level deviations.",
+    "char_start": 14198,
+    "char_end": 14465,
+    "sentence_index": 91,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "In few-shot scenarios, local appearance variations are often ambiguous, making a direct similarity-based decision unreliable.",
+    "char_start": 14466,
+    "char_end": 14591,
+    "sentence_index": 92,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Hypergraph reasoning addresses this limitation by propagating anomaly evidence across semantically aligned and structurally coherent regions, enabling context-aware anomaly inference.",
+    "char_start": 14592,
+    "char_end": 14775,
+    "sentence_index": 93,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "Let $ X ^ (0) R ^ |N_v| d $ denote the stacked query patch features, where the $j$-th row corresponds to the visual node feature $p_ q,j $ in $N_v$.",
+    "char_start": 14777,
+    "char_end": 14925,
+    "sentence_index": 94,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "Given the incidence matrix $ H $, we adopt a hypergraph convolution operator that follows a node-hyperedge-node aggregation scheme.",
+    "char_start": 14926,
+    "char_end": 15057,
+    "sentence_index": 95,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "The node-degree and hyperedge-degree matrices are defined as:\n\nD _ v (j, j) = _ e=1 ^ |E| H _ j, e , D _ e (e, e) = _ j=1 ^ |N_ v | H _ j, e .",
+    "char_start": 15058,
+    "char_end": 15200,
+    "sentence_index": 96,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "Then, the message passing at layer $ $ is formulated by\n\nX ^ ( +1) = ( D _ v ^ - 1 2 H diag ( ) D _ e ^ -1 H ^ X ^ ( ) W ^ ( ) ),\n\nwhere $ $ is the hyperedge weights induced during semantic-guided hyperedge construction, $ W ^ ( ) $ is a learnable projection matrix and $ (.)$ denotes a non-linear activation.",
+    "char_start": 15202,
+    "char_end": 15511,
+    "sentence_index": 97,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "This operation aggregates information from both structural neighborhoods and semantic-guided groupings, allowing each patch to be contextualized by its high-order relations.",
+    "char_start": 15512,
+    "char_end": 15685,
+    "sentence_index": 98,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "By stacking multiple hypergraph reasoning layers, local patch representations are progressively refined through the interactions with semantically consistent and structurally related regions.",
+    "char_start": 15686,
+    "char_end": 15877,
+    "sentence_index": 99,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "As a result, anomalous regions will emerge as those that cannot be coherently explained by their hypergraph neighborhoods, rather than merely exhibiting the low similarity to normal semantics.",
+    "char_start": 15878,
+    "char_end": 16070,
+    "sentence_index": 100,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "The finally-refined features $ X ^ (L) $ serve as the basis for anomaly saliency estimation and residual fusion.",
+    "char_start": 16071,
+    "char_end": 16183,
+    "sentence_index": 101,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "Given a query image $ Q $, we extract patch tokens $ P_G $ by the frozen image encoder $ E _ image $, and compute an init anomaly estimation $ M _ base $ through the S emantic A lignment B ranch (SAB).",
+    "char_start": 16185,
+    "char_end": 16386,
+    "sentence_index": 102,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "Specifically, a text-driven anomaly map $ M _ txt $ is obtained by the cosine similarity between query patches and the induced semantic repository $ R $.",
+    "char_start": 16387,
+    "char_end": 16540,
+    "sentence_index": 103,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "Meanwhile, a visual-driven map $ M _ vis $ is computed via the KNN matching with the support feature gallery.",
+    "char_start": 16541,
+    "char_end": 16650,
+    "sentence_index": 104,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "These two complementary cues are combined together to form the base anomaly map\n\nM _ base = M _ txt + (1 - ) M _ vis [0, 1]^ H W ,\n\nwhich provides a reliable semantic prior while remaining the sensitive to patch-level ambiguity.",
+    "char_start": 16651,
+    "char_end": 16879,
+    "sentence_index": 105,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "To incorporate the structural consistency beyond local patch evidence, we design the H ypergraph R easoning B ranch (HRB).",
+    "char_start": 16881,
+    "char_end": 17003,
+    "sentence_index": 106,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "The same query patch features are embedded into a semantic-guided heterogeneous hypergraph, and refined through the $L$ layers of hypergraph reasoning, yielding the final contextualized visual node representations $ X ^ (L) R ^ |N_v| d $.",
+    "char_start": 17004,
+    "char_end": 17242,
+    "sentence_index": 107,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "An anomaly head is applied to $ X ^ (L) $ to produce node-level probabilities $ s _q (0, 1)^ |N_v| $, which are reshaped and interpolated to the spatial resolution of $ M _ base $, resulting in a structure-aware anomaly map $ M _ hg (0, 1)^ H W $.",
+    "char_start": 17243,
+    "char_end": 17490,
+    "sentence_index": 108,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec008",
+    "text": "Rather than acting as an independent predictor, HRB is designed to refine the base estimation by modeling high-order structural deviations, leading to the hypergraph residual\n\nM _ res = ( M _ hg - ) [-1, 1] ^ H W ,\n\nwhere $ $ denotes the centering bias corresponding to decision boundary, and $ $ controls the residual magnitude.",
+    "char_start": 17491,
+    "char_end": 17820,
+    "sentence_index": 109,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec008",
+    "text": "Then, the hypergraph residual is applied as a pixel-wise correction to the base anomaly estimation.",
+    "char_start": 17822,
+    "char_end": 17921,
+    "sentence_index": 110,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec008",
+    "text": "For each spatial location $(i,j)$, its correct response is projected into the valid range $[0,1]$ to ensure numerical stability:\n\nM ^*_ i,j = \\ 1, ( 0, M _ base + \\, M _ res ) \\ ,\n\nwhere $ M ^*_ i,j $ denotes the final anomaly score at pixel $(i,j)$ and $ $ controls the contribution of hypergraph reasoning.",
+    "char_start": 17922,
+    "char_end": 18230,
+    "sentence_index": 111,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec008",
+    "text": "The final anomaly map $ M ^*$ is directly used for pixel-level localization.",
+    "char_start": 18231,
+    "char_end": 18307,
+    "sentence_index": 112,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec008",
+    "text": "For image-level detection, $ M ^*$ is further summarized by a learnable Soft Histogram Pooling Head, and then fed into a lightweight MLP to produce image-level logits.",
+    "char_start": 18308,
+    "char_end": 18475,
+    "sentence_index": 113,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec008",
+    "text": "[h]\n\n1.15\n\nlccccc\n\nDataset & PromptAD\\,(CVPR'24) & KAG-prompt\\,(AAAI'25) & DictAS\\,(ICCV'25) & IIPAD\\,(ICLR'25) & H$_ 2 $VLR\n\n& PromptAD2024 & KAG-prompt2025 & DictAS2025 & IIPAD & (Ours)\n\nMVTec & (92.17,94.67,95.14) & (91.50,93.98,94.66) & ( 93.16 , 94.97 , 95.93 ) & (91.22,93.24,93.91) & ( 94.98 , 97.18 , 97.96 )\n\nVisA & (80.23, 87.33 , 89.09 ) & (83.19,86.37,88.63) & (83.82,87.28,88.97) & ( 84.50 ,85.64,86.88) & ( 88.03 , 92.08 , 93.48 )\n\nBTAD & (90.20,88.58,89.07) & (90.63,91.33,91.59) & ( 93.73 , 94.19 , 94.32 ) & (93.50,93.84,94.13) & ( 94.61 , 95.19 , 95.88 )\n\nMPDD & (72.45,76.74,84.86) & (74.53,79.84,83.22) & (76.37,80.18,85.41) & ( 78.64 , 81.92 , 85.77 ) & ( 79.18 , 84.22 , 89.83 )\n\nBeltAD & (63.64,61.86,70.66) & (62.47,62.85,64.33) & (65.29,65.50,66.39) & ( 67.24 , 68.29 , 70.73 ) & ( 67.51 , 67.42 , 74.69 )\n\nAverage & (79.74,81.84,85.76) & (80.46,82.87,84.49) & (82.47,84.42,86.20) & ( 83.02 , 84.59 , 86.28 ) & ( 84.86 , 87.22 , 90.37 )\n\nBrainMRI & (76.65,76.31,77.33) & (80.02,80.42,82.35) & ( 84.11 ,84.80,85.74) & (82.72, 85.48 , 86.09 ) & ( 85.58 , 85.79 , 88.11 )\n\nLiverCT & (63.13,63.04,62.99) & (62.46,64.40,65.09) & (64.97,65.45,65.88) & ( 67.05 , 67.32 , 67.99 ) & ( 69.46 , 70.03 , 69.78 )\n\nBUSI & ( 86.21 ,85.67,83.71) & (81.10,83.41,84.55) & (86.15, 87.29 , 89.80 ) & (83.75,85.30,88.84) & ( 90.21 , 90.13 , 93.38 )\n\nAverage & (75.33,75.01,74.68) & (74.53,76.08,77.33) & ( 78.41 ,79.18,80.47) & (77.84, 79.37 , 80.97 ) & ( 81.75 , 81.98 , 83.76 )\n\nImage-level anomaly classification performance (AUROC) on industrial (top) and medical (bottom) benchmarks.",
+    "char_start": 18477,
+    "char_end": 20069,
+    "sentence_index": 114,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec008",
+    "text": "The best and second-best results are in red and blue .",
+    "char_start": 20070,
+    "char_end": 20124,
+    "sentence_index": 115,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec008",
+    "text": "Each triplet $(a, b, c)$ represents the AUROC scores for 1, 2, and 4-shot settings, respectively.",
+    "char_start": 20125,
+    "char_end": 20222,
+    "sentence_index": 116,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec008",
+    "text": "[h]\n\n1.15\n\nlccccc\n\nDataset & PromptAD\\,(CVPR'24) & KAG-prompt\\,(AAAI'25) & DictAS\\,(ICCV'25) & IIPAD\\,(ICLR'25) & H$_ 2 $VLR\n\n& PromptAD2024 & KAG-prompt2025 & DictAS2025 & IIPAD & (Ours)\n\nMVTec & ( 95.17 ,95.77,96.23) & (92.60,94.13,94.65) & (94.98, 95.83 , 96.42 ) & (94.42,95.21,95.83) & ( 96.00 , 97.29 , 97.81 )\n\nVisA & (95.10,96.55,97.03) & (95.56,95.74,95.83) & (93.88,94.53,95.54) & ( 96.79 , 97.12 , 97.36 ) & ( 96.46 , 97.18 , 97.41 )\n\nBTAD & (96.18,96.24,96.36) & (96.07,96.13,96.45) & (96.41, 97.05 , 97.16 ) & ( 96.55 ,96.82,97.14) & ( 96.83 , 97.38 , 97.64 )\n\nMPDD & (94.73,95.52,96.30) & (95.23,95.79,96.34) & ( 96.34 , 97.10 , 97.59 ) & (96.19,96.50,97.34) & ( 96.68 , 97.15 , 97.61 )\n\nBeltAD & (76.82,75.05,83.91) & (79.88,80.07,84.75) & (79.31,79.75, 85.24 ) & ( 81.14 , 81.23 ,83.83) & ( 83.02 , 80.23 , 87.93 )\n\nAverage & (91.60,91.83,93.97) & (91.87,92.37,93.60) & (92.18,92.85, 94.39 ) & ( 93.02 , 93.38 ,94.30) & ( 93.80 , 93.85 , 95.68 )\n\nBrainMRI & (92.13,92.39,93.76) & (92.50,93.41,94.96) & (94.88,95.07,95.39) & ( 95.22 , 95.48 , 96.91 ) & ( 96.56 , 96.73 , 97.32 )\n\nLiverCT & ( 97.71 , 97.56 ,97.32) & (96.55,96.96,97.14) & (96.87,97.39,97.56) & (97.35,97.54, 97.60 ) & ( 97.79 , 97.95 , 97.68 )\n\nBUSI & (86.06,84.42,85.28) & (88.02,88.71,89.49) & ( 88.14 , 89.58 ,90.05) & (87.96,88.87, 91.52 ) & ( 90.06 , 89.82 , 92.58 )\n\nAverage & (91.97,91.46,92.12) & (92.36,93.03,93.86) &(93.30, 94.01 ,94.33) & ( 93.51 ,93.96, 95.34 ) & ( 94.80 , 94.83 , 95.86 )\n\nPixel-level anomaly classification performance (AUROC) on industrial (top) and medical (bottom) benchmarks.",
+    "char_start": 20224,
+    "char_end": 21815,
+    "sentence_index": 117,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec008",
+    "text": "The best and second-best results are in red and blue .",
+    "char_start": 21816,
+    "char_end": 21870,
+    "sentence_index": 118,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec008",
+    "text": "Each triplet $(a, b, c)$ represents the AUROC scores for 1, 2, and 4-shot settings, respectively.",
+    "char_start": 21871,
+    "char_end": 21968,
+    "sentence_index": 119,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec009",
+    "text": "We optimize this end-to-end framework, $i.e.$, H$_2$VLR, using a compound objective function with three terms:\n\nL _ total = L _ align + _ str L _ struct + _ seg L _ seg .",
+    "char_start": 21970,
+    "char_end": 22140,
+    "sentence_index": 120,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec009",
+    "text": "Loss term 1 : base semantic alignment.",
+    "char_start": 22142,
+    "char_end": 22180,
+    "sentence_index": 121,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec009",
+    "text": "To initialize discriminative node features, we employ a composite alignment loss $ L _ align = L _ v2t + L _ tri + L _ eam $.",
+    "char_start": 22181,
+    "char_end": 22306,
+    "sentence_index": 122,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec009",
+    "text": "Specifically, $ L _ v2t $ and $ L _ tri $ align visual tokens with semantic centers and regularize the embedding space, respectively.",
+    "char_start": 22307,
+    "char_end": 22440,
+    "sentence_index": 123,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec009",
+    "text": "Moreover, following PromptAD PromptAD2024 , the Explicit Anomaly Margin (EAM) loss strictly enforces the decision boundary:\n\nL _ eam = E _ z ,\n\nwhere $ z $ denotes the patch features from training batch.",
+    "char_start": 22441,
+    "char_end": 22644,
+    "sentence_index": 124,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec009",
+    "text": "Loss term 2 : hypergraph structural regularization.",
+    "char_start": 22646,
+    "char_end": 22697,
+    "sentence_index": 125,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec009",
+    "text": "A structural constraint is adopted to propagate sparse supervision across the inferred topology.",
+    "char_start": 22698,
+    "char_end": 22794,
+    "sentence_index": 126,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec009",
+    "text": "Let $ s _q$ be the node-level anomaly scores.",
+    "char_start": 22795,
+    "char_end": 22840,
+    "sentence_index": 127,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec009",
+    "text": "This hypergraph branch is supervised by\n\nL _ str = L _ int ( s _q, Y _ node ) + \\, s _q^ L _ H s _q,\n\nwhere $ L _ int $ combines Focal Focal2020 and BCE losses against the downsampled ground truth $ Y _ node $, and $ L _ H $ is the Laplacian matrix derived from incidence structure.",
+    "char_start": 22841,
+    "char_end": 23123,
+    "sentence_index": 128,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec009",
+    "text": "The quadratic term, weighted by coefficient $ $, could enforce manifold smoothness, by penalizing the score discrepancies in structurally-correlated patches.",
+    "char_start": 23124,
+    "char_end": 23281,
+    "sentence_index": 129,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec009",
+    "text": "Loss term 3 : semantic-guided segmentation.",
+    "char_start": 23283,
+    "char_end": 23326,
+    "sentence_index": 130,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec009",
+    "text": "The final map $ M ^*$ is supervised by Dice Dice2016 and Focal losses.",
+    "char_start": 23327,
+    "char_end": 23397,
+    "sentence_index": 131,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec009",
+    "text": "To suppress background noise, we incorporate a semantic-weighted penalty:\n\nL _ seg = L _ dice + L _ focal + E ,\n\nwhere $ W _ sem = 1 + (1 - M _ txt )$ means that it utilizes the text-driven prior $ M _ txt $ to down-weight the false positives in semantically irrelevant regions.",
+    "char_start": 23398,
+    "char_end": 23676,
+    "sentence_index": 132,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "Datasets.",
+    "char_start": 23678,
+    "char_end": 23687,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "We comprehensively evaluate H$_ 2 $VLR on 5 industrial benchmarks (MVTec MVTec , VisA VisA , BTAD BTAD , MPDD MPDD , self-constructed BeltAD) and 3 medical datasets (BrainMRI BrainMRI , LiverCT LiverAD , BUSI BUSI ).",
+    "char_start": 23688,
+    "char_end": 23904,
+    "sentence_index": 134,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "Evaluation Metrics.",
+    "char_start": 23906,
+    "char_end": 23925,
+    "sentence_index": 135,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "Following the common practice in anomaly detection, we report the Area Under the ROC Curve at both image level (I-AUC) and pixel level (P-AUC), to evaluate detection and localization performance, respectively.",
+    "char_start": 23926,
+    "char_end": 24135,
+    "sentence_index": 136,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "Implementation Details.",
+    "char_start": 24137,
+    "char_end": 24160,
+    "sentence_index": 137,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "H$ _2 $VLR is implemented in PyTorch with a frozen OpenCLIP (ViT-B/16+) backbone OpenCLIP .",
+    "char_start": 24161,
+    "char_end": 24252,
+    "sentence_index": 138,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "Optimization is performed by SGD for 100 epochs ($lr$ $2 10^ -3 $, batch size 400).",
+    "char_start": 24253,
+    "char_end": 24336,
+    "sentence_index": 139,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "The image resolution for training and evaluation is $240 240$.",
+    "char_start": 24337,
+    "char_end": 24399,
+    "sentence_index": 140,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec011",
+    "text": "Objective weights are configured as $ _ str $ $0.02$ and $ _ seg $ $1.0$.",
+    "char_start": 24400,
+    "char_end": 24473,
+    "sentence_index": 141,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec011",
+    "text": "The hypergraph is with $K=8$ and $L=2$.",
+    "char_start": 24474,
+    "char_end": 24513,
+    "sentence_index": 142,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec011",
+    "text": "All experiments are conducted on a single NVIDIA RTX 4090 GPU.",
+    "char_start": 24514,
+    "char_end": 24576,
+    "sentence_index": 143,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec011",
+    "text": "[t]\nFig3_VisCom.jpg\nThe few-shot anomaly detection visualization of H$_ 2 $VLR, compared to four representative methods.",
+    "char_start": 24578,
+    "char_end": 24698,
+    "sentence_index": 144,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "Quantitative Comparison.",
+    "char_start": 24700,
+    "char_end": 24724,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "We compare H$_ 2 $VLR with the four recently-representative methods, including PromptAD PromptAD2024 , KAG-prompt KAG-prompt2025 , DictAS DictAS2025 , and IIPAD IIPAD .",
+    "char_start": 24725,
+    "char_end": 24893,
+    "sentence_index": 146,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "For fair comparison, all methods are re-trained using official codes under a unified setting.",
+    "char_start": 24894,
+    "char_end": 24987,
+    "sentence_index": 147,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "The quantitative results for image-level and pixel-level anomaly detection are summarized in Tab.",
+    "char_start": 24988,
+    "char_end": 25085,
+    "sentence_index": 148,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "and Tab.",
+    "char_start": 25086,
+    "char_end": 25094,
+    "sentence_index": 149,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": ", respectively.",
+    "char_start": 25095,
+    "char_end": 25110,
+    "sentence_index": 150,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "In Tab.",
+    "char_start": 25112,
+    "char_end": 25119,
+    "sentence_index": 151,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": ", it could be seen that H$_2$VLR could surpass almost other methods in most cases.",
+    "char_start": 25120,
+    "char_end": 25202,
+    "sentence_index": 152,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "For example, under the 4-shot condition, it achieves the highest AUROC on almost all datasets, acquiring the 97.96\\% on MVTec, and the 93.38\\% on BUSI.",
+    "char_start": 25203,
+    "char_end": 25354,
+    "sentence_index": 153,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec012",
+    "text": "Similarly, in Tab.",
+    "char_start": 25355,
+    "char_end": 25373,
+    "sentence_index": 154,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec012",
+    "text": ", it also shows that our H$_2$VLR could often outperform other ones.",
+    "char_start": 25374,
+    "char_end": 25442,
+    "sentence_index": 155,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec012",
+    "text": "For example, also under the 4-shot, it still obtains the highest AUROC 97.32\\% on BrainMRI.",
+    "char_start": 25443,
+    "char_end": 25534,
+    "sentence_index": 156,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec012",
+    "text": "Moreover, on both tables, we further observe that H$_2$VLR could obtain better performance on industrial datasets than on medical ones.",
+    "char_start": 25535,
+    "char_end": 25670,
+    "sentence_index": 157,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec012",
+    "text": "For example, on five industrial datasets (Tab.",
+    "char_start": 25671,
+    "char_end": 25717,
+    "sentence_index": 158,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec012",
+    "text": "), it acquires a group of average results (84.86, 87.22, 90.37), clearly superior to the average results (81.75, 81.98, 83.76) obtained on three medical datasets.",
+    "char_start": 25718,
+    "char_end": 25880,
+    "sentence_index": 159,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec012",
+    "text": "Additionally, we further compare H$_ 2 $VLR with four representative methods under 8/16-shot and full-samples, as shown in Tab.",
+    "char_start": 25882,
+    "char_end": 26009,
+    "sentence_index": 160,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec012",
+    "text": ".\nIt is easy to see that our 1-shot performance could even surpass the RegAD (8-shot) and AA-CLIP (16-shot) almost on all benchmarks.",
+    "char_start": 26010,
+    "char_end": 26143,
+    "sentence_index": 161,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec012",
+    "text": "Furthermore, with only 4-shot, our H$_ 2 $VLR even outperforms the OneNIP OneNIP2024 with full-samples on these three industrial datasets.",
+    "char_start": 26144,
+    "char_end": 26282,
+    "sentence_index": 162,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec012",
+    "text": "For instance, H$_ 2 $VLR achieves an I-AUC 97.96\\% on MVTec, exceeding the 97.93\\% by OneNIP (full-samples).",
+    "char_start": 26283,
+    "char_end": 26391,
+    "sentence_index": 163,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec012",
+    "text": "The possible reasons to explain our H$_ 2 $VLR superiority could be attributed to the VLM ($i.e.$, CLIP), as well as our hypergraph scheme.",
+    "char_start": 26392,
+    "char_end": 26531,
+    "sentence_index": 164,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec012",
+    "text": "[h]\n\n!",
+    "char_start": 26533,
+    "char_end": 26539,
+    "sentence_index": 165,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec012",
+    "text": "7pt\nlcccc\n\nMethods & Shots & MVTec & VisA & BTAD\n\n2 * Ours & 1 & 94.98 / 96.00 & 88.03 / 96.46 & 94.61 / 96.83\n\n& 4 & 97.96 / 97.81 & 93.48 / 97.41 & 95.88 / 97.64\n\nRegAD & 8 & 91.22 / 92.45 & 79.78 / 84.91 & 90.72 / 92.26\n\nAA-CLIP & 16 & 89.72 / 91.20 & 84.07 / 93.85 & 90.92 / 94.47\n\nUniAD & full & 96.50 / 95.11 & 90.88 / 96.18 & 92.25 / 92.93\n\nOneNIP & full & 97.93 / 96.58 & 92.51 / 97.49 & 92.79 / 98.15\n\nQuantitative comparison of I-AUC and P-AUC on industrial benchmarks with many-shot and full-shot methods.",
+    "char_start": 26540,
+    "char_end": 27056,
+    "sentence_index": 166,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec012",
+    "text": "Visualization Comparison.",
+    "char_start": 27058,
+    "char_end": 27083,
+    "sentence_index": 167,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec012",
+    "text": "To intuitively show the anomaly detection and localization capability of H$_ 2 $VLR, we present a group of visual results on three representative datasets, in Fig.",
+    "char_start": 27084,
+    "char_end": 27247,
+    "sentence_index": 168,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec012",
+    "text": ".\nBy the one-to-one comparison with GT annotations,\nwe could obviously observe that H$_ 2 $VLR could achieve more precise anomaly detection and location results than any other method, even with less noise, almost on each dataset.",
+    "char_start": 27248,
+    "char_end": 27477,
+    "sentence_index": 169,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec012",
+    "text": "These comparisons are exactly consistent with the quantitative results presented in Tab.",
+    "char_start": 27478,
+    "char_end": 27566,
+    "sentence_index": 170,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec012",
+    "text": "and Tab.",
+    "char_start": 27567,
+    "char_end": 27575,
+    "sentence_index": 171,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec012",
+    "text": ", consistently verifying the effectiveness and advantages of our H$_ 2 $VLR.",
+    "char_start": 27576,
+    "char_end": 27652,
+    "sentence_index": 172,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec013",
+    "text": "Module Ablation.",
+    "char_start": 27654,
+    "char_end": 27670,
+    "sentence_index": 173,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec013",
+    "text": "We experimentally verify the effectiveness of individual components in H$_ 2 $VLR, including the basic Semantic Alignment Branch (SAB), Dynamic Semantic Induction (DSI), Semantic-Guided Hypergraph Modeling (SGHM), and High-Order Structural Reasoning (HSR).",
+    "char_start": 27671,
+    "char_end": 27927,
+    "sentence_index": 174,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec013",
+    "text": "Their experiment results are reported in Tab.",
+    "char_start": 27928,
+    "char_end": 27973,
+    "sentence_index": 175,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec013",
+    "text": ".\n\n[h]\n\n!",
+    "char_start": 27974,
+    "char_end": 27983,
+    "sentence_index": 176,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec013",
+    "text": "7pt\nccccccc\n(lr) 1-4 (lr) 5-7\nSAB & DSI & SGHM & HSR & I-AUC & P-AUC & Mean\n\n& & & & 83.15 & 93.21 & 88.18\n\n& & & & 85.61 & 94.85 & 90.23\n\n& & & & 87.12 & 95.83 & 91.46\n\n& & & & 88.03 & 96.46 & 92.32\n\nIncremental module ablation with 1-shot setting on VisA.",
+    "char_start": 27984,
+    "char_end": 28241,
+    "sentence_index": 177,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec013",
+    "text": "Baseline is only with SAB.",
+    "char_start": 28242,
+    "char_end": 28268,
+    "sentence_index": 178,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec013",
+    "text": "The best metric is marked in red .",
+    "char_start": 28269,
+    "char_end": 28303,
+    "sentence_index": 179,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec013",
+    "text": "It is clearly observed that all modules are effective, and they can always progressively contribute to obvious performance gain.",
+    "char_start": 28305,
+    "char_end": 28433,
+    "sentence_index": 180,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec013",
+    "text": "Specifically, when DSI is applied, it yields a performance gain of 2.46\\% (from 83.15\\% to 85.61\\%) on I-AUC, validating its effectiveness.",
+    "char_start": 28434,
+    "char_end": 28573,
+    "sentence_index": 181,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec013",
+    "text": "Moreover, once SGHM and HSR are incrementally adopted, the I-AUC could even further rise from 87.12\\% to 88.03\\%.",
+    "char_start": 28574,
+    "char_end": 28687,
+    "sentence_index": 182,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec013",
+    "text": "[h]\n\nFig4_abl_hypergraph.jpg\nThe performance sensitivity to $K$ and $L$, 1-shot, on VisA.",
+    "char_start": 28689,
+    "char_end": 28778,
+    "sentence_index": 183,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec013",
+    "text": "Hypergraph Parameters.",
+    "char_start": 28780,
+    "char_end": 28802,
+    "sentence_index": 184,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec013",
+    "text": "We further evaluate the performance sensitivity to the local topological granularity (by neighbor number $K$) and structural reasoning depth ($L$) in hypergraph.",
+    "char_start": 28803,
+    "char_end": 28964,
+    "sentence_index": 185,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec013",
+    "text": "Their roles are to jointly govern the trade-off between semantic coverage and feature discriminability.",
+    "char_start": 28965,
+    "char_end": 29068,
+    "sentence_index": 186,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec013",
+    "text": "As visualized in Fig.",
+    "char_start": 29070,
+    "char_end": 29091,
+    "sentence_index": 187,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec013",
+    "text": ", we could see two obvious findings.",
+    "char_start": 29092,
+    "char_end": 29128,
+    "sentence_index": 188,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec013",
+    "text": "One is that when $K=8$, it will make H$_ 2 $VLR to acquire a peak performance of 92.25\\% (including I-AUC, P-AUC, and their Mean), in Fig.",
+    "char_start": 29129,
+    "char_end": 29267,
+    "sentence_index": 189,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec013",
+    "text": "(a).",
+    "char_start": 29268,
+    "char_end": 29272,
+    "sentence_index": 190,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec013",
+    "text": "The other is that when $L=2$, H$_ 2 $VLR could obtain its I-AUC and P-AUC performance peaks, in Fig.",
+    "char_start": 29273,
+    "char_end": 29373,
+    "sentence_index": 191,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec013",
+    "text": "(b).",
+    "char_start": 29374,
+    "char_end": 29378,
+    "sentence_index": 192,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec013",
+    "text": "They imply that the optimal $K$ and $L$ should be set to 8 and 2, respectively.",
+    "char_start": 29379,
+    "char_end": 29458,
+    "sentence_index": 193,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec013",
+    "text": "Other Primary Parameters.",
+    "char_start": 29460,
+    "char_end": 29485,
+    "sentence_index": 194,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec013",
+    "text": "Additionally, we also evaluate some other primary hyperparameters, including the $ $ in Eq.",
+    "char_start": 29486,
+    "char_end": 29577,
+    "sentence_index": 195,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec013",
+    "text": "( ) and the $ $ in Eq.",
+    "char_start": 29578,
+    "char_end": 29600,
+    "sentence_index": 196,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec013",
+    "text": "( ), as reported in Fig.",
+    "char_start": 29601,
+    "char_end": 29625,
+    "sentence_index": 197,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec013",
+    "text": ".\n\n[h]\n\nFig5_abl_weight.jpg\nThe performance sensitivity to $ $ and $ $, 1-shot, on VisA.",
+    "char_start": 29626,
+    "char_end": 29714,
+    "sentence_index": 198,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec013",
+    "text": "In this figure, it is also easy to see two important observations.",
+    "char_start": 29716,
+    "char_end": 29782,
+    "sentence_index": 199,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec013",
+    "text": "One is that when $ =0.5$, our H$_ 2 $VLR could often obtain its peak performance of I-AUC and P-AUC ($i.e.$, their mean value 92.25\\%).",
+    "char_start": 29783,
+    "char_end": 29918,
+    "sentence_index": 200,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec013",
+    "text": "Moreover, the other is that when $ =0.4$, H$_ 2 $VLR could reach to its peak performance of I-AUC and P-AUC (meanwhile, their mean value is also 92.25\\%).",
+    "char_start": 29919,
+    "char_end": 30073,
+    "sentence_index": 201,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec013",
+    "text": "Totally, this group of experiments implies that the optimal $ $ and $ $ should be 0.5 and 0.4, respectively.",
+    "char_start": 30074,
+    "char_end": 30182,
+    "sentence_index": 202,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec013",
+    "text": "[h]\n\n1.3\n\n!",
+    "char_start": 30184,
+    "char_end": 30195,
+    "sentence_index": 203,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec013",
+    "text": "3pt\nl|cc|l|cc\n\n$ _ seg $ & MVTec & VisA & $ _ str $ & MVTec & VisA\n\n0.5 & 93.37 / 95.14 & 87.10 / 95.25& 0 & 94.82 / 95.91 & 87.97 / 96.41\n\n0.7 & 94.13 / 95.55 & 87.48 / 95.79 & 0.02 & 94.98 / 96.00 & 88.03 / 96.46\n\n1.0 & 94.98 / 96.00 & 88.03 / 96.46 & 0.04 & 94.87 / 95.96 & 88.01 / 96.44\n\n1.5 & 93.69 / 95.82 & 87.62 / 96.11 & 1.0 & 94.85 / 95.94 & 88.01 / 96.43\n\nThe impact of $ _ seg $ and $ _ str $ on H$_2$VLR performance.",
+    "char_start": 30196,
+    "char_end": 30625,
+    "sentence_index": 204,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec013",
+    "text": "Special Loss Parameters.",
+    "char_start": 30627,
+    "char_end": 30651,
+    "sentence_index": 205,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec013",
+    "text": "To evaluate the sensitivity of primary parameters to performance, we specially test the $ _ seg $ and $ _ str $ in Eq.",
+    "char_start": 30652,
+    "char_end": 30770,
+    "sentence_index": 206,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec013",
+    "text": "( ), as shown in Tab.",
+    "char_start": 30771,
+    "char_end": 30792,
+    "sentence_index": 207,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec013",
+    "text": ". In this table, we still easily observe two important findings.",
+    "char_start": 30793,
+    "char_end": 30857,
+    "sentence_index": 208,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec013",
+    "text": "One is that when $ _ seg =1.0$, our H$_ 2 $VLR could reach to its optimal performance.",
+    "char_start": 30859,
+    "char_end": 30945,
+    "sentence_index": 209,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec013",
+    "text": "For example, when $ _ seg =0.7$, its I-AUC / P-AUC is only 94.13 / 95.55 on MVTec, while they rise to the highest 94.98 / 96.00 when $ _ seg =1.0$.",
+    "char_start": 30946,
+    "char_end": 31093,
+    "sentence_index": 210,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec013",
+    "text": "The other is that when $ _ str =0.02$, H$_ 2 $VLR could acquire its optimal performance 88.03 / 96.46 on VisA.",
+    "char_start": 31094,
+    "char_end": 31204,
+    "sentence_index": 211,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec013",
+    "text": "This group of experiments means that the best $ _ seg $ and $ _ str $ should usually be set to 1.0 and 0.02, respectively.",
+    "char_start": 31205,
+    "char_end": 31327,
+    "sentence_index": 212,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec013",
+    "text": "Parameters and Inference Speed.",
+    "char_start": 31329,
+    "char_end": 31360,
+    "sentence_index": 213,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec013",
+    "text": "In addition, as shown in Tab.",
+    "char_start": 31361,
+    "char_end": 31390,
+    "sentence_index": 214,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec013",
+    "text": ", we finally evaluate the computational overhead of our H$_2$VLR and four other representative methods.",
+    "char_start": 31391,
+    "char_end": 31494,
+    "sentence_index": 215,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec013",
+    "text": "[h]\n\n1.3\n!",
+    "char_start": 31496,
+    "char_end": 31506,
+    "sentence_index": 216,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec013",
+    "text": "5pt\nllclc\n\nMethods & Models & Image Size & Params (M) $ $ & IPS $ $\n\nPromptAD & ViT-B-16+240 & $240 240$ & 208.4 + 0.1 & 208\n\nKAG-prompt & ViT-H-14@224 & $224 224$ & 932.0 + 78.7 & 7\n\nDictAS & ViT-L/14@336 & $336 336$ & 427.6 + 21.4 & 40\n\nIIPAD & ViT-L/14@336 & $224 224$ & 427.6 + 8.9 & 44\n\nEBF5FF Ours & ViT-B-16+240 & $240 240$ & 208.4 + 2.3 & 33\n\nComparison of model parameters and inference speed.",
+    "char_start": 31507,
+    "char_end": 31909,
+    "sentence_index": 217,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec013",
+    "text": "By adopting the ViT-B backbone, it is observed that our H$_2$VLR framework maintains a light-weight network structure, only additionally increasing $2.3$M learnable parameters on backbone (208.4M), although more than the parameter increasing quantity (0.1M) of PromptAD.",
+    "char_start": 31911,
+    "char_end": 32181,
+    "sentence_index": 218,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec013",
+    "text": "However, in terms of total parameters, its size (210.7M) is far less than those in other methods ($e.g.$, the 436.5M for IIPAD).",
+    "char_start": 32182,
+    "char_end": 32310,
+    "sentence_index": 219,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec013",
+    "text": "Moreover, in terms of detection speed ($i.e.$, IPS, inference images per second), the peformance metric (33 images, adaptive to real-time applications) of H$_2$VLR seems moderate, far superior to the 7 images by KAG-prompt, although far lower than the 208 images by PromptAD.",
+    "char_start": 32312,
+    "char_end": 32587,
+    "sentence_index": 220,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec013",
+    "text": "Nevertheless, in terms of anomaly detection performance, our H$_2$VLR is often the SOTA one (Tab.",
+    "char_start": 32588,
+    "char_end": 32685,
+    "sentence_index": 221,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec013",
+    "text": "and Tab.",
+    "char_start": 32686,
+    "char_end": 32694,
+    "sentence_index": 222,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec013",
+    "text": ").",
+    "char_start": 32695,
+    "char_end": 32697,
+    "sentence_index": 223,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec013",
+    "text": "This group of comparisons implies that our H$_2$VLR could obtain SOTA detection performance and real-time inference speed, only by an relatively-low learnable parameter scale.",
+    "char_start": 32698,
+    "char_end": 32873,
+    "sentence_index": 224,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec014",
+    "text": "In this work, we propose the H$_ 2 $VLR, a Heterogeneous hypergraph Vision-Language Reasoning framework for few-shot anomaly detection.",
+    "char_start": 32875,
+    "char_end": 33010,
+    "sentence_index": 225,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec014",
+    "text": "Beyond traditional pairwise matching strategies, it could explicitly models the high-order relations of visual-semantic anomaly features on a unified hypergraph.",
+    "char_start": 33011,
+    "char_end": 33172,
+    "sentence_index": 226,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec014",
+    "text": "This new strategy enables our method to effectively capture the global structural consistency and spatial\u2013semantic dependencies of anomaly features.",
+    "char_start": 33173,
+    "char_end": 33321,
+    "sentence_index": 227,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec014",
+    "text": "The experimental evaluations on eight industrial or medical benchmarks demonstrate that our H$_ 2 $VLR framework with semantic inducing, hypergraph modeling and high-order reasoning is effective.",
+    "char_start": 33322,
+    "char_end": 33517,
+    "sentence_index": 228,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec014",
+    "text": "It could often consistently achieves SOTA detection performance in the real-world few-shot learning scenarios of anomaly detection.",
+    "char_start": 33518,
+    "char_end": 33649,
+    "sentence_index": 229,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec014",
+    "text": "In the future, more complex scenario adaptivity ($e.g.$, 3D anomaly) of our method is worth of exploration.",
+    "char_start": 33650,
+    "char_end": 33757,
+    "sentence_index": 230,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec014",
+    "text": "named\nijcai26",
+    "char_start": 33759,
+    "char_end": 33772,
+    "sentence_index": 231,
+    "section_sentence_index": 6
+  }
+]

@@ -1,0 +1,1568 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Graphical User Interface (GUI) Agents, powered by multimodal large language models (MLLMs), have shown great potential for task automation on computing devices such as computers and mobile phones.",
+    "char_start": 0,
+    "char_end": 196,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, existing agents face challenges in multi-step reasoning and reliance on textual annotations, limiting their effectiveness.",
+    "char_start": 197,
+    "char_end": 328,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce InfiGUIAgent , an MLLM-based GUI Agent trained with a two-stage supervised fine-tuning pipeline.",
+    "char_start": 329,
+    "char_end": 438,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Stage 1 enhances fundamental skills such as GUI understanding and grounding, while Stage 2 integrates hierarchical reasoning and expectation-reflection reasoning skills using synthesized data to enable native reasoning abilities of the agents.",
+    "char_start": 439,
+    "char_end": 682,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "InfiGUIAgent achieves competitive performance on several GUI benchmarks, highlighting the impact of native reasoning skills in enhancing GUI interaction for automation tasks.",
+    "char_start": 683,
+    "char_end": 857,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Resources are\navailable at .",
+    "char_start": 858,
+    "char_end": 886,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Graphical User Interface (GUI) Agents have emerged as powerful tools for automating tasks on computing devices, including mobile phones and computers.",
+    "char_start": 888,
+    "char_end": 1038,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "These agents can understand and interact with GUIs to execute complex operations, significantly enhancing user productivity and expanding the scope of automated task completion 202412.2294,hong2024cogagent,zhang2023you,qi2024webrl,xie2024osworld,vu2024gptvoicetasker,yu2024exact,wen2023autodroid .",
+    "char_start": 1039,
+    "char_end": 1336,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Recent developments in multimodal large language models (MLLMs) Bai2023QwenVLAF,li2024ariaopenmultimodalnative,team2024gemini,dai2022modelmultiplemodalitiessparsely have significantly advanced the potential of GUI Agents.",
+    "char_start": 1338,
+    "char_end": 1559,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "MLLMs possess powerful visual understanding capabilities and can reason based on visual information, making them a promising foundation for building sophisticated GUI Agents.",
+    "char_start": 1560,
+    "char_end": 1734,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "These models can interpret complex interface elements and adapt to a wide range of tasks, leading to more efficient and robust automation hong2024cogagent, jiang2023iluvui, you2025ferret, nong2024mobileflow, vu2024gptvoicetasker .",
+    "char_start": 1735,
+    "char_end": 1965,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "However, current MLLM-based GUI Agents face several critical challenges.",
+    "char_start": 1967,
+    "char_end": 2039,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "A key limitation lies in their reasoning capabilities zhang2023you, qi2024webrl, yu2024exact .",
+    "char_start": 2040,
+    "char_end": 2134,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "While many existing GUI Agents can perform basic single-step reasoning, they struggle to effectively leverage information from previous steps.",
+    "char_start": 2135,
+    "char_end": 2277,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "This lack of reflection on past experiences can lead to repetitive errors during task execution.",
+    "char_start": 2278,
+    "char_end": 2374,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Another significant challenge lies in the reliance on the additional information of the GUIs.",
+    "char_start": 2376,
+    "char_end": 2469,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Many prior GUI Agent implementations rely on accessibility trees or Set-of-Marks yang2023setofmarkpromptingunleashesextraordinary , to represent or augment the GUI's visual information.",
+    "char_start": 2470,
+    "char_end": 2655,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "However, GUIs are inherently visual, and representing them primarily through text can lead to information loss or redundancy.",
+    "char_start": 2656,
+    "char_end": 2781,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Augmenting visual input with textual descriptions can also increase computational overhead.",
+    "char_start": 2782,
+    "char_end": 2873,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Furthermore, the availability and consistency of these textual representations vary across platforms, hindering practical deployment.",
+    "char_start": 2874,
+    "char_end": 3007,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "To address these limitations, we propose Infi\\-GUIAgent , which is a MLLM-based GUI Agent trained through a two-stage supervised fine-tuning (SFT) methods with robust fundamental capabilities and native reasoning abilities.",
+    "char_start": 3009,
+    "char_end": 3232,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "In stage 1, we collect data covering multiple tasks, such as vision-language understanding, GUI-specific QA, and tool use to improve fundamental capabilities such as GUI understanding and instruction grounding of the agents.",
+    "char_start": 3233,
+    "char_end": 3457,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "In stage 2, we recognized two essential reasoning skills for GUI Agents: (1) Hierarchical reasoning, and (2) Expectation-reflection reasoning, and integrate these skills into the SFT data synthesized by MLLMs based on existing trajectories.",
+    "char_start": 3458,
+    "char_end": 3698,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Our main contributions are threefold:\n\nWe propose a two-stage supervised fine-tuning pipeline to comprehensively improve both the fundamental abilities and advanced reasoning abilities of GUI Agents.",
+    "char_start": 3699,
+    "char_end": 3898,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "We synthesize SFT data with two advanced reasoning skills: hierarchical reasoning and expectation-reflection reasoning, enabling the agents to natively perform complex reasoning.",
+    "char_start": 3899,
+    "char_end": 4077,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "We build Infi\\-GUIAgent by supervised fine-tuning a model using our SFT data and conduct experiments on several GUI benchmarks, demonstrating that our model achieves competitive performance.",
+    "char_start": 4078,
+    "char_end": 4268,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec003",
+    "text": "Large Language Models (LLMs) floridi2020gpt, Touvron2023LLaMAOA, Bai2023QwenTR,xiao2021lawformer have significantly enhanced the capabilities of AI systems in tackling a wide range of tasks hu2024infiagentdabench, li2024inficodereval , thanks to their exceptional ability to process complex semantic and contextual information.",
+    "char_start": 4270,
+    "char_end": 4597,
+    "sentence_index": 26,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec004",
+    "text": "The remarkable power of LLMs has also inspired exploration into their potential for processing multimodal data, such as images.",
+    "char_start": 4598,
+    "char_end": 4725,
+    "sentence_index": 27,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec004",
+    "text": "Typically, the architecture of Multimodal Large Language Models (MLLMs) consists of three main components: a pre-trained large language model, a trained modality encoder, and a modality interface that connects the LLM with the encoded modality features.",
+    "char_start": 4726,
+    "char_end": 4979,
+    "sentence_index": 28,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec004",
+    "text": "Various vision encoders, such as ViT Dosovitskiy2020AnII , CLIP radford2021learning , and ConvNeXt liu2022convnet , extract visual features, which are integrated using techniques like adapter networks Liu2023VisualIT , cross-attention layers Alayrac2022FlamingoAV , and visual expert modules wang2023cogvlm .",
+    "char_start": 4980,
+    "char_end": 5288,
+    "sentence_index": 29,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "These methods have facilitated the development of high-performing MLLMs, such as Qwen-VL Bai2023QwenVLAF , GPT-4 Vision openai2023gpt4v , BLIP-2 li2023blip and InfiMM liu2024infimm , thus opening new avenues for LLMs in processing GUI tasks.",
+    "char_start": 5289,
+    "char_end": 5530,
+    "sentence_index": 30,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec005",
+    "text": "Agents are AI systems that perceive their environments, make decisions, and take actions to complete specific tasks.",
+    "char_start": 5532,
+    "char_end": 5648,
+    "sentence_index": 31,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec005",
+    "text": "LLMs reaching human-level intelligence have greatly enhanced the ability to build agents.",
+    "char_start": 5649,
+    "char_end": 5738,
+    "sentence_index": 32,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec005",
+    "text": "For GUI tasks, LLMs that read HTML code to perceive GUIs are developed wen2023autodroid .",
+    "char_start": 5739,
+    "char_end": 5828,
+    "sentence_index": 33,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec005",
+    "text": "However, various works have shown that learning to interact with the visual form of the GUIs can show superior performance 202412.2294 .",
+    "char_start": 5829,
+    "char_end": 5965,
+    "sentence_index": 34,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec005",
+    "text": "Therefore, MLLM-based GUI Agents are developed.",
+    "char_start": 5966,
+    "char_end": 6013,
+    "sentence_index": 35,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "ILuvUI jiang2023iluvui fine-tuned LLaVA to enhance general GUI understanding, while AppAgent zhang2023appagent explored app usage through autonomous interactions.",
+    "char_start": 6014,
+    "char_end": 6176,
+    "sentence_index": 36,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec005",
+    "text": "CogAgent hong2024cogagent integrated high-resolution vision encoders, and Ferret-UI-anyres you2025ferret employed an any-resolution approach.",
+    "char_start": 6177,
+    "char_end": 6318,
+    "sentence_index": 37,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec005",
+    "text": "Building upon these works, our study focuses on developing a more lightweight agent with a simplified architecture for GUI tasks, aiming to improve ease of deployment.",
+    "char_start": 6319,
+    "char_end": 6486,
+    "sentence_index": 38,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec005",
+    "text": "[ht]\n\nimages/method.pdf\n\nInfiGUIAgent is trained in two stages.",
+    "char_start": 6487,
+    "char_end": 6550,
+    "sentence_index": 39,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec005",
+    "text": "Stage 1 cultivates fundamental abilities using diverse datasets covering GUI understanding (element recognition and layout comprehension), question answering, instruction grounding, general knowledge, and tool usage.",
+    "char_start": 6551,
+    "char_end": 6767,
+    "sentence_index": 40,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "Stage 2 introduces native advanced reasoning, employed during both training and inference.",
+    "char_start": 6768,
+    "char_end": 6858,
+    "sentence_index": 41,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "This stage follows a cyclical process at each step, consisting of Reflection , Hierarchical Reasoning (strategic and tactical layers), Action , and Expectation .",
+    "char_start": 6859,
+    "char_end": 7020,
+    "sentence_index": 42,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "Each step receives the overall task, the history of previous screenshots and reasoning, and the current environment as input.",
+    "char_start": 7021,
+    "char_end": 7146,
+    "sentence_index": 43,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "Reflection assesses the previous action's outcome against its expectation, while Expectation predicts the outcome of the current action for subsequent reflection.",
+    "char_start": 7147,
+    "char_end": 7309,
+    "sentence_index": 44,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec006",
+    "text": "In this section, we introduce our two-stage supervised fine-tuning strategy for building InfiGUIAgent , as shown in Figure .",
+    "char_start": 7311,
+    "char_end": 7435,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec006",
+    "text": "In stage 1, we focus on improving fundamental abilities such as understanding and grounding, particularly considering the complexity of GUIs.",
+    "char_start": 7436,
+    "char_end": 7577,
+    "sentence_index": 46,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec006",
+    "text": "In stage 2, we move on to improve the native reasoning abilities of agents for handling complicated GUI tasks.",
+    "char_start": 7578,
+    "char_end": 7688,
+    "sentence_index": 47,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec007",
+    "text": "Training datasets used in stage 1 of supervised fine-tuning.",
+    "char_start": 7690,
+    "char_end": 7750,
+    "sentence_index": 48,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec007",
+    "text": "lllr\n\nDataset & Platform & Category & \\# of Samples\n\n4 l GUI-related Datasets\n\nGUIEnv chen2024guicourse & Webpage & Grounding & 150,000\n\nRICO Semantic Annotation sunkara2022towards & Mobile & Grounding & 150,000\n\nSeeClick-Web cheng2024seeclick & Webpage & Grounding & 100,000\n\nRICO SCA li2020ricosca & Mobile & Grounding & 100,000\n\nWidget Caption li2020widget & Mobile & Grounding & 70,000\n\nGUIChat chen2024guicourse & Webpage & QA & 40,000\n\nScreenQA hsiao2022screenqa & Mobile & QA & 17,000\n\nUIBert Reference Expression bai2021uibert & Mobile \\& Mobile & Grounding & 16,000\n\nScreen2Words wang2021screen2words & Mobile & Understanding & 12,000\n\nComplex QA yin2023lumos & Mobile & QA & 11,000\n\nScreen Annotation baechler2024screenai & Mobile & Understanding & 5,400\n\nOmniAct-Single Click kapoor2024omniact & Webpage \\& Desktop & Grounding & 4,800\n\n4 l Non-GUI Datasets\n\nLLaVA-OneVision llavaonevision & - & General & 250,000\n\nPixMo allenai2024molmopixmo & - & General & 68,800\n\nGlaive-function-calling glaive2024function & - & Tool Usage & 5,000\n\nConsidering the complexity of GUIs, which involve diverse data formats such as HTML code, high-resolution interfaces cluttered with small icons and text, general MLLMs lack fundamental abilities in both understanding GUI and grounding the actions.",
+    "char_start": 7752,
+    "char_end": 9045,
+    "sentence_index": 49,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec007",
+    "text": "To address this, we first collected a range of existing visual-language and GUI datasets for supervised fine-tuning in stage 1.",
+    "char_start": 9046,
+    "char_end": 9173,
+    "sentence_index": 50,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec007",
+    "text": "We gathered data covering several GUI tasks from multiple sources to ensure a comprehensive capabilities improvement (see Table ).",
+    "char_start": 9174,
+    "char_end": 9304,
+    "sentence_index": 51,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec007",
+    "text": "The datasets can be categorized into five parts:\n\n[leftmargin=*]\n0em\n0em\n0em\n0em\n0em\nGUI Understanding.",
+    "char_start": 9305,
+    "char_end": 9408,
+    "sentence_index": 52,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec007",
+    "text": "Datasets focusing on GUI element recognition, layout comprehension, and semantic interpretation, including Screen2Words wang2021screen2words and Screen Annotation baechler2024screenai .",
+    "char_start": 9409,
+    "char_end": 9594,
+    "sentence_index": 53,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec007",
+    "text": "Grounding.",
+    "char_start": 9595,
+    "char_end": 9605,
+    "sentence_index": 54,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec007",
+    "text": "Datasets capture various user interaction sequences and operation patterns, including GUIEnv chen2024guicourse , RICO Semantic Annotation sunkara2022towards , SeeClick-Web cheng2024seeclick , RICO SCA li2020ricosca , Widget Caption li2020widget , UIBert Reference Expression bai2021uibert and OmniAct-Single Click kapoor2024omniact .",
+    "char_start": 9606,
+    "char_end": 9939,
+    "sentence_index": 55,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec007",
+    "text": "Question Answering.",
+    "char_start": 9940,
+    "char_end": 9959,
+    "sentence_index": 56,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec007",
+    "text": "Datasets contain GUI-specific QA tasks, including GUIChat chen2024guicourse , ScreenQA hsiao2022screenqa and Complex QA yin2023lumos .",
+    "char_start": 9960,
+    "char_end": 10094,
+    "sentence_index": 57,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "General Knowledge.",
+    "char_start": 10095,
+    "char_end": 10113,
+    "sentence_index": 58,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec007",
+    "text": "Multimodal datasets maintain model's general capabilities, including LLaVA-OneVision llavaonevision and PixMo allenai2024molmopixmo .",
+    "char_start": 10114,
+    "char_end": 10247,
+    "sentence_index": 59,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "Tool Usage.",
+    "char_start": 10248,
+    "char_end": 10259,
+    "sentence_index": 60,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec007",
+    "text": "Datasets cover general tool using, including Glaive-function-calling glaive2024function .",
+    "char_start": 10260,
+    "char_end": 10349,
+    "sentence_index": 61,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "Due to the diversity of our data sources, we implemented comprehensive format standardization across all datasets.",
+    "char_start": 10351,
+    "char_end": 10465,
+    "sentence_index": 62,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "Additionally, we adopted the Reference-Augmented Annotation format (see Section ) to enhance the model's ability to ground visual elements with textual descriptions, enabling precise spatial referencing while maintaining natural language flow.",
+    "char_start": 10466,
+    "char_end": 10709,
+    "sentence_index": 63,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec008",
+    "text": "Given the diversity of our data sources, we implemented comprehensive preprocessing steps to standardize the data format across all datasets.",
+    "char_start": 10711,
+    "char_end": 10852,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "We normalized the coordinate system by following , mapping all spatial coordinates to a relative scale of [0, 1000].",
+    "char_start": 10853,
+    "char_end": 10969,
+    "sentence_index": 65,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "This standardization facilitates consistent representation of both point and box annotations in JSON format, with points expressed as \\(\\ \"x\" : x, \"y\" : y\\ \\) and bounding boxes as \\(\\ \"x1\" : x_1, \"y1\" : y_1, \"x2\" : x_2, \"y2\" : y_2\\ \\).",
+    "char_start": 10970,
+    "char_end": 11206,
+    "sentence_index": 66,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "In this coordinate system, the origin \\(\\ \"x\" : 0, \"y\" : 0\\ \\) is located at the screen's top-left corner, with the x-axis extending rightward and the y-axis downward.",
+    "char_start": 11207,
+    "char_end": 11374,
+    "sentence_index": 67,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec008",
+    "text": "The bottom-right corner corresponds to coordinates \\(\\ \"x\" : 1000, \"y\" : 1000\\ \\).",
+    "char_start": 11375,
+    "char_end": 11457,
+    "sentence_index": 68,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec008",
+    "text": "To enhance data quality, we implemented two additional preprocessing steps:\n[leftmargin=*]\n0em\nInstruction Enhancement.",
+    "char_start": 11458,
+    "char_end": 11577,
+    "sentence_index": 69,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec008",
+    "text": "For datasets with ambiguous instructions, we developed standardized instruction templates to establish clear correspondence between commands and their expected outcomes.",
+    "char_start": 11578,
+    "char_end": 11747,
+    "sentence_index": 70,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec008",
+    "text": "Response Refinement.",
+    "char_start": 11748,
+    "char_end": 11768,
+    "sentence_index": 71,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec008",
+    "text": "For entries with complex or inconsistent response formats, we utilized Qwen2-VL-72B Bai2023QwenVLAF to reformulate responses while preserving their semantic content.",
+    "char_start": 11769,
+    "char_end": 11934,
+    "sentence_index": 72,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "Each reformulation underwent validation to ensure accuracy and consistency.",
+    "char_start": 11935,
+    "char_end": 12010,
+    "sentence_index": 73,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec009",
+    "text": "To better leverage the spatial information available in our collected datasets and enhance the model's visual-language understanding of GUIs, we implemented a reference-augmented annotation format.",
+    "char_start": 12012,
+    "char_end": 12209,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec009",
+    "text": "This format enables bidirectional referencing between GUI elements and textual responses.",
+    "char_start": 12210,
+    "char_end": 12299,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec009",
+    "text": "Specifically, we adopted the following structured notation:\n\n[h]\nimages/ref_format.pdf\n\nThe format consists of several key components: the reference type (either \"box\" for rectangular regions or \"point\" for specific locations), coordinate specifications (x1, y1, x2, y2 for boxes or x, y for points), optional annotative notes, and the corresponding textual content.",
+    "char_start": 12300,
+    "char_end": 12666,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "To generate training data in this format, we prompted Qwen2-VL-72B Bai2023QwenVLAF to seamlessly integrate GUI spatial information with original responses, maintaining natural language flow while preserving precise spatial references.",
+    "char_start": 12667,
+    "char_end": 12901,
+    "sentence_index": 77,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec010",
+    "text": "UI action reasoning datasets used in the training process\n\nllr\n\nDataset & Platform & \\# of Samples\n\nGUIAct chen2024guicourse & Webpage \\& Mobile & 10,000\n\nAMEX amex & Mobile & 3,000\n\nAndroid in the Zoo zhang2024android & Mobile & 2,000\n\nComposition: Stage 1-aligned & - & 30,000\n\nBuilding upon the foundational capabilities such as understanding and grounding, GUI Agents must also master advanced reasoning skills to effectively handle complex tasks.",
+    "char_start": 12903,
+    "char_end": 13354,
+    "sentence_index": 78,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec010",
+    "text": "We identify two crucial reasoning skills : (1) Hierarchical reasoning, which enables planning and task decomposition, helping agents structure complex tasks into manageable subtasks and execute them efficiently huang2023reasoninglargelanguagemodels,zhang2024llmmastermindsurveystrategic,huang2024understanding , and (2) Expectation-reflection reasoning, which fosters adaptive self-correction and reflection shinn2023reflexionlanguageagentsverbal,yao2023reactsynergizingreasoningacting,hu2024leveragingprintdebuggingimprove , enabling agents to learn from past actions and improve decision-making consistency.",
+    "char_start": 13355,
+    "char_end": 13964,
+    "sentence_index": 79,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec010",
+    "text": "These reasoning skills are integrated into the training datasets of agents, so that they can reason with these skills natively without any extra prompting.",
+    "char_start": 13965,
+    "char_end": 14120,
+    "sentence_index": 80,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec010",
+    "text": "To achieve this, we generate SFT data incorporating these reasoning skills based on existing trajectory data (see Table ) and continue fine-tuning the model from stage 1.",
+    "char_start": 14121,
+    "char_end": 14291,
+    "sentence_index": 81,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec011",
+    "text": "Effective execution of GUI tasks demands both overarching strategic planning and meticulous tactical execution.",
+    "char_start": 14293,
+    "char_end": 14404,
+    "sentence_index": 82,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec011",
+    "text": "To achieve this, we synthesize trajectory data with a hierarchical reasoning with two distinct layers:\n[leftmargin=*]\n0em\n0em\n0em\n0em\n0em\nStrategic Layer.",
+    "char_start": 14405,
+    "char_end": 14559,
+    "sentence_index": 83,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec011",
+    "text": "Strategic layer is responsible for high-level task decomposition and sub-goal planning.",
+    "char_start": 14560,
+    "char_end": 14647,
+    "sentence_index": 84,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec011",
+    "text": "This layer analyzes the overall task objective and determines the sequence of subtasks needed for completion.",
+    "char_start": 14648,
+    "char_end": 14757,
+    "sentence_index": 85,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec011",
+    "text": "Tactical Layer.",
+    "char_start": 14758,
+    "char_end": 14773,
+    "sentence_index": 86,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec011",
+    "text": "Tactical layer handles the selection and grounding of concrete actions.",
+    "char_start": 14774,
+    "char_end": 14845,
+    "sentence_index": 87,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec011",
+    "text": "Based on the strategic layer's planning, agent select appropriate GUI operations and adjusts their parameters to match the target.",
+    "char_start": 14846,
+    "char_end": 14976,
+    "sentence_index": 88,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec012",
+    "text": "To enhance action consistency and foster autonomous self-correction, we incorporate Expectation-reflection reasoning into the training datasets.",
+    "char_start": 14978,
+    "char_end": 15122,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec012",
+    "text": "This iterative process enhances the agent's ability to adapt and learn from its actions through a structured reflection cycle:\n[leftmargin=*]\n0em\n0em\n0em\n0em\n0em\nReasoning.",
+    "char_start": 15123,
+    "char_end": 15295,
+    "sentence_index": 90,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec012",
+    "text": "After reflection (except the first step), the agents conduct hierarchical reasoning.",
+    "char_start": 15296,
+    "char_end": 15380,
+    "sentence_index": 91,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec012",
+    "text": "Action.",
+    "char_start": 15381,
+    "char_end": 15388,
+    "sentence_index": 92,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec012",
+    "text": "After the reasoning, the agent takes the action.",
+    "char_start": 15389,
+    "char_end": 15437,
+    "sentence_index": 93,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec012",
+    "text": "Expectation.",
+    "char_start": 15438,
+    "char_end": 15450,
+    "sentence_index": 94,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec012",
+    "text": "Following each action, the agent generates expected outcomes which are used to be verified at the next step.",
+    "char_start": 15451,
+    "char_end": 15559,
+    "sentence_index": 95,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec012",
+    "text": "Reflection.",
+    "char_start": 15560,
+    "char_end": 15571,
+    "sentence_index": 96,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec012",
+    "text": "The agent evaluates whether its actions achieved the expected results and generating a textual summary of the reflection.",
+    "char_start": 15572,
+    "char_end": 15693,
+    "sentence_index": 97,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "[t]\n\n!",
+    "char_start": 15695,
+    "char_end": 15701,
+    "sentence_index": 98,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "ll\n\nCategory & Operations\n\nSingle-point operations & tap , click , hover , select\n\nTwo-point operations & swipe , select\\_text\n\nDirectional operations & scroll\n\nText input & input , point\\_input\n\nParameterless operations & remember , enter , home , back\n\nState settings & set\\_task\\_status\n\nCategorization of actions in the action space.",
+    "char_start": 15702,
+    "char_end": 16039,
+    "sentence_index": 99,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec013",
+    "text": "We formulate the GUI interaction as a process where an agent interacts with a mobile environment.",
+    "char_start": 16041,
+    "char_end": 16138,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec013",
+    "text": "Let $s_t S $ denote the environment state at step $t$, where $ S $ represents the state space.",
+    "char_start": 16139,
+    "char_end": 16233,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec013",
+    "text": "The agent can observe the state through a screenshot observation $o_t$ and performs actions $a_t A $, where $ A $ is the action space.",
+    "char_start": 16234,
+    "char_end": 16368,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec013",
+    "text": "The environment transitions from $s_t$ to $s_ t+1 $ following $s_ t+1 P( |s_t, a_t)$, where $P$ represents the transition probability function.",
+    "char_start": 16369,
+    "char_end": 16512,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec013",
+    "text": "The agent receives a task goal $g$ and maintains access to a history window of size $n$.",
+    "char_start": 16514,
+    "char_end": 16602,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec013",
+    "text": "At each step $t$, the agent's input consists of:\n[leftmargin=*]\n0em\nGoal $g$\nCurrent observation $o_t$\nHistorical context $H_t = \\ (o_i, r_i, a_i)\\ _ i=t-n ^ t-1 $, where $r_i$ represents the reasoning process\n\nBased on these inputs, the agent generates a reasoning process $r_t$ and predicts an action $a_t$.",
+    "char_start": 16603,
+    "char_end": 16912,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec013",
+    "text": "The interaction follows a standard protocol using function calls and responses:\n\n[h]\nimages/functioncall_format.pdf\n\nGiven the diverse action spaces across collected datasets, we categorized and standardized the actions by unifying their names and parameters, merging similar operations where appropriate.",
+    "char_start": 16913,
+    "char_end": 17218,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec014",
+    "text": "The resulting action space $ A $ consists of independent, composable operations that can be flexibly combined based on task requirements, as shown in Table .",
+    "char_start": 17219,
+    "char_end": 17376,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec014",
+    "text": "This modular design allows for dynamic action space configuration while maintaining a consistent interface across different platforms and scenarios.",
+    "char_start": 17377,
+    "char_end": 17525,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec015",
+    "text": "To construct high-quality reasoning data to stimulate the model's native reasoning capabilities, we leverage more capable MLLMs (e.g.",
+    "char_start": 17527,
+    "char_end": 17660,
+    "sentence_index": 109,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec015",
+    "text": "Qwen2-VL-72B) to generate structured reasoning processes based on existing interaction trajectories.",
+    "char_start": 17661,
+    "char_end": 17761,
+    "sentence_index": 110,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec015",
+    "text": "The construction process involves several key components:\n\n[leftmargin=*]\n0em\nScreenshot Description.",
+    "char_start": 17762,
+    "char_end": 17863,
+    "sentence_index": 111,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec015",
+    "text": "For each observation $o_t$ in the trajectory, we generate a detailed description $d_t$.",
+    "char_start": 17864,
+    "char_end": 17951,
+    "sentence_index": 112,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec015",
+    "text": "This step addresses the limitation that some MLLM models do not support interleaved image-text input formats well.",
+    "char_start": 17952,
+    "char_end": 18066,
+    "sentence_index": 113,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec015",
+    "text": "To establish clear correspondence between observations (screenshots) and steps, we generate detailed descriptions to replace the screenshots, which helps facilitate the subsequent reasoning process construction.",
+    "char_start": 18067,
+    "char_end": 18278,
+    "sentence_index": 114,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec015",
+    "text": "Reflection.",
+    "char_start": 18280,
+    "char_end": 18291,
+    "sentence_index": 115,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec015",
+    "text": "Given the previous expectation $e_ t-1 $ and current observation $o_t$, we generate a reflection $f_t$ that evaluates the outcome of the previous action.",
+    "char_start": 18292,
+    "char_end": 18445,
+    "sentence_index": 116,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec015",
+    "text": "Strategic Layer.",
+    "char_start": 18447,
+    "char_end": 18463,
+    "sentence_index": 117,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec015",
+    "text": "The strategic reasoning consists of two parts: First, a summary is generated based on the n-step history $H_t = \\ (o_i, r_i, a_i)\\ _ i=t-n ^ t-1 $ and current observation $o_t$.",
+    "char_start": 18464,
+    "char_end": 18641,
+    "sentence_index": 118,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec015",
+    "text": "Then, the planning component is generated with access to the actual action $a_t$ to ensure alignment with the trajectory.",
+    "char_start": 18642,
+    "char_end": 18763,
+    "sentence_index": 119,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec015",
+    "text": "Tactical Layer.",
+    "char_start": 18765,
+    "char_end": 18780,
+    "sentence_index": 120,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec015",
+    "text": "This layer's reasoning is constructed using the generated reflection $f_t$ and strategic layer output.",
+    "char_start": 18781,
+    "char_end": 18883,
+    "sentence_index": 121,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec015",
+    "text": "The actual action $a_t$ from the trajectory is incorporated to ensure the tactical reasoning leads to appropriate action selection.",
+    "char_start": 18884,
+    "char_end": 19015,
+    "sentence_index": 122,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec015",
+    "text": "Expectation.",
+    "char_start": 19017,
+    "char_end": 19029,
+    "sentence_index": 123,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec015",
+    "text": "For each state-action pair $(s_t, a_t)$, we generate an expectation $e_t$ based on current observation $o_t$, reasoning process $r_t$, and action $a_t$.",
+    "char_start": 19030,
+    "char_end": 19182,
+    "sentence_index": 124,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec015",
+    "text": "Notably, we deliberately avoid using the next state $s_ t+1 $ in this generation process.",
+    "char_start": 19183,
+    "char_end": 19272,
+    "sentence_index": 125,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec015",
+    "text": "Although using $s_ t+1 $ could improve the agent's accuracy in modeling state transitions, while using $s_ t+1 $ could lead to perfect expectations, such an approach might impair the agent's ability to handle expectation mismatches during deployment.",
+    "char_start": 19273,
+    "char_end": 19523,
+    "sentence_index": 126,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "While we avoid using $s_ t+1 $ in expectation generation to maintain robustness, we also explore the possibility of improving state transition modeling through a parallel next-state prediction task.",
+    "char_start": 19525,
+    "char_end": 19723,
+    "sentence_index": 127,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec015",
+    "text": "Using the trajectory data, we construct additional training examples where the agent learns to predict the next state description $d_ t+1 $ given the current observation $o_t$ and action $a_t$.",
+    "char_start": 19724,
+    "char_end": 19917,
+    "sentence_index": 128,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec015",
+    "text": "This auxiliary task helps the agent learn state transition dynamics, while keeping the expectation generation process independent of future states.",
+    "char_start": 19918,
+    "char_end": 20065,
+    "sentence_index": 129,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec016",
+    "text": "[t]\n\nl ccccccc\n\n2 * Model & 6 c Accuracy (\\%) & 2 * Avg.",
+    "char_start": 20067,
+    "char_end": 20123,
+    "sentence_index": 130,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec017",
+    "text": "(lr) 2-7\n& 2 c Mobile & 2 c Desktop & 2 c Web &\n\n(lr) 2-3 (lr) 4-5 (lr) 6-7\n& Text & Icon & Text & Icon & Text & Icon &\n\n8 l Proprietary Models\n\nGPT-4o gpt-4o-2024-08-06 version gpt4o & 30.5 & 23.2 & 20.6 & 19.4 & 11.1 & 7.8 & 18.8\n\nGemini-1.5-pro gemini-1.5-pro-002 version team2024gemini & 76.2 & 54.1 & 65.5 & 39.3 & 52.2 & 32.0 & 53.2\n\n8 l Open-source Models\n\nQwen2-VL-2B wang2024qwen2 & 24.2 & 10.0 & 1.4 & 9.3 & 8.7 & 2.4 & 9.3\n\nQwen2-VL-7B wang2024qwen2 & 61.3 & 39.3 & 52.0 & 45.0 & 33.0 & 21.8 & 42.9\n\nCogAgent hong2024cogagent & 67.0 & 24.0 & 74.2 & 20.0 & 70.4 & 28.6 & 47.4\n\nSeeClick cheng2024seeclick & 78.0 & 52.0 & 72.2 & 30.0 & 55.7 & 32.5 & 53.4\n\nUGround-7B gou2024navigating & 82.8 & 60.3 & 82.5 & 63.6 & 80.4 & 70.4 & 73.3\n\nShowUI-2B lin2024showui & 92.3 & 75.5 & 76.3 & 61.1 & 81.7 & 63.6 & 75.1\n\n8 l Ours\n\nInfiGUIAgent-2B & 88.6 & 74.7 & 85.6 & 65.0 & 79.1 & 64.6 & 76.3\n\nPerformances on various platforms (Mobile, Desktop, Web) on Screenshot.",
+    "char_start": 20125,
+    "char_end": 21089,
+    "sentence_index": 131,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec017",
+    "text": "All experiments were conducted using raw screenshot information.",
+    "char_start": 21090,
+    "char_end": 21154,
+    "sentence_index": 132,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec017",
+    "text": "Results marked in bold represent the best performance, and those underlined indicate the second-best performance.",
+    "char_start": 21155,
+    "char_end": 21268,
+    "sentence_index": 133,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec017",
+    "text": "[t]\n\n!",
+    "char_start": 21270,
+    "char_end": 21276,
+    "sentence_index": 134,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec017",
+    "text": "l cccc\n\n2 * Model & 4 c Success Rate\n\n(lr) 2-5\n& Easy & Middle & Hard & Overall\n\nQwen2-VL-2B wang2024qwen2 & 0.00 & 0.00 & 0.00 & 0.00\n\nQwen2-VL-7B wang2024qwen2 & 0.00 & 0.00 & 0.05 & 0.05\n\nQwen2-VL-72B wang2024qwen2 & 0.08 & 0.00 & 0.05 & 0.05\n\nLLaVa-OV-7B li2024llavaonevisioneasyvisualtask & 0.00 & 0.00 & 0.00 & 0.00\n\nShowUI-2B lin2024showui & 0.18 & 0.00 & 0.00 & 0.07\n\n5 l Ours\n\nInfiGUIAgent-2B & 0.25 & 0.00 & 0.00 & 0.09\n\nPerformances on AndroidWorld.",
+    "char_start": 21277,
+    "char_end": 21737,
+    "sentence_index": 135,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec018",
+    "text": "In stage 1, we sample 1M samples in total as illustrated in Table .",
+    "char_start": 21739,
+    "char_end": 21806,
+    "sentence_index": 136,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec018",
+    "text": "In stage 2, we synthesized 45K samples based on trajectories from datasets shown in Table .",
+    "char_start": 21807,
+    "char_end": 21898,
+    "sentence_index": 137,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec018",
+    "text": "We continual supervised fine-tune Qwen2-VL-2B bai2023qwen .",
+    "char_start": 21899,
+    "char_end": 21958,
+    "sentence_index": 138,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec018",
+    "text": "We leverage ZeRO0 rajbhandari2020zeromemoryoptimizationstraining technology to enable full parameter fine-tuning of the model across 8 A800 80GB GPUs.",
+    "char_start": 21959,
+    "char_end": 22109,
+    "sentence_index": 139,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec019",
+    "text": "ScreenSpot.",
+    "char_start": 22111,
+    "char_end": 22122,
+    "sentence_index": 140,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec019",
+    "text": "ScreenSpot cheng2024seeclick is an evaluation benchmark for GUI grounding, consisting of over 1,200 instructions from iOS, Android, macOS, Windows, and Web environments, with annotated element types.",
+    "char_start": 22123,
+    "char_end": 22322,
+    "sentence_index": 141,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec019",
+    "text": "AndroidWorld.",
+    "char_start": 22324,
+    "char_end": 22337,
+    "sentence_index": 142,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec019",
+    "text": "AndroidWorld rawles2024androidworld is a fully functional Android environment that provides reward signals for 116 programmatic tasks across 20 real-world Android apps.",
+    "char_start": 22338,
+    "char_end": 22506,
+    "sentence_index": 143,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec019",
+    "text": "We find that Android World uses Set-of-Marks (SoM) to enhance the agent's grounding ability.",
+    "char_start": 22507,
+    "char_end": 22599,
+    "sentence_index": 144,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec019",
+    "text": "However, when humans operate smartphones, their brains do not label elements on the screen.",
+    "char_start": 22600,
+    "char_end": 22691,
+    "sentence_index": 145,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec019",
+    "text": "Over-reliance on SoM can lead to insufficient focus on pixel-level grounding ability.",
+    "char_start": 22692,
+    "char_end": 22777,
+    "sentence_index": 146,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec019",
+    "text": "Therefore, in our experiments, agents respond to the raw image rather than the annotated image.",
+    "char_start": 22778,
+    "char_end": 22873,
+    "sentence_index": 147,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec020",
+    "text": "ScreenSpot.",
+    "char_start": 22875,
+    "char_end": 22886,
+    "sentence_index": 148,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec020",
+    "text": "Table provides the results of different models across three platforms (Mobile, Desktop and Web) and two element types (Text and Icon) on ScreenSpot cheng2024seeclick .",
+    "char_start": 22887,
+    "char_end": 23054,
+    "sentence_index": 149,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec020",
+    "text": "InfiGUIAgent-2B achieves highest accuracy of 76.3\\%, surpassing several strong baselines such as ShowUI lin2024showui (75.1\\%) and UGround-7B gou2024navigating (73.3\\%), which is even with larger parameters size.",
+    "char_start": 23055,
+    "char_end": 23267,
+    "sentence_index": 150,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec020",
+    "text": "AndroidWorld.",
+    "char_start": 23269,
+    "char_end": 23282,
+    "sentence_index": 151,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec020",
+    "text": "Table compares the success rates of InfiGUIAgent with open-source models on AndroidWorld rawles2024androidworld .",
+    "char_start": 23283,
+    "char_end": 23396,
+    "sentence_index": 152,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec020",
+    "text": "InfiGUIAgent-2B achieves an overall success rate of 0.09, outperforming open-source models of similar size, such as ShowUI-2B lin2024showui (0.07), and model with much more parameters such as LLaVa-OV-7B li2024llavaonevisioneasyvisualtask (0.00) and Qwen2-VL-72B Bai2023QwenVLAF (0.05).",
+    "char_start": 23397,
+    "char_end": 23683,
+    "sentence_index": 153,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec021",
+    "text": "In this work, we propose InfiGUIAgent , a novel MLLM-based GUI Agents.",
+    "char_start": 23685,
+    "char_end": 23755,
+    "sentence_index": 154,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec021",
+    "text": "By constructing comprehensive training datasets with two-stage supervised fine-tuning, we enhance the model's ability to understand, reason, and interact with GUIs.",
+    "char_start": 23756,
+    "char_end": 23920,
+    "sentence_index": 155,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec021",
+    "text": "Our evaluation, conducted using raw screenshots without relying on additional GUI metadata, demonstrates the model's applicability to real-world scenarios.",
+    "char_start": 23921,
+    "char_end": 24076,
+    "sentence_index": 156,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec021",
+    "text": "Experimental results show that our model performs well on GUI tasks and surpass several open-source baselines.",
+    "char_start": 24077,
+    "char_end": 24187,
+    "sentence_index": 157,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec021",
+    "text": "custom\n\nWe demonstrate the fundamental abilities trained in Stage 1 through three cases: GUI Understanding (Figure ), Grounding (Figure ), and Question Answering (Figure ).",
+    "char_start": 24189,
+    "char_end": 24361,
+    "sentence_index": 158,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec023",
+    "text": "[ht]\n\nimages/case_understanding1.pdf\nCase of GUI Understanding.",
+    "char_start": 24363,
+    "char_end": 24426,
+    "sentence_index": 159,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec023",
+    "text": "[ht]\n\nimages/case_grounding1.pdf\nCase of Grounding.",
+    "char_start": 24428,
+    "char_end": 24479,
+    "sentence_index": 160,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec023",
+    "text": "[ht]\n\nimages/case_QA1.pdf\nCase of Question Answering.",
+    "char_start": 24481,
+    "char_end": 24534,
+    "sentence_index": 161,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec024",
+    "text": "[t]\n\nimages/infiGUIAgentcases_3.pdf\nCase of Native Advanced Reasoning.",
+    "char_start": 24536,
+    "char_end": 24606,
+    "sentence_index": 162,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec024",
+    "text": "The agent's goal is to reply to a message\n\n[t]\n\nimages/infiGUIAgentcases_1.pdf\nCase of Native Advanced Reasoning.",
+    "char_start": 24607,
+    "char_end": 24720,
+    "sentence_index": 163,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec024",
+    "text": "The agent's goal is to create a new contact.",
+    "char_start": 24721,
+    "char_end": 24765,
+    "sentence_index": 164,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec024",
+    "text": "[t]\n\nimages/infiGUIAgentcases_2.pdf\nCase of Native Advanced Reasoning.",
+    "char_start": 24767,
+    "char_end": 24837,
+    "sentence_index": 165,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec024",
+    "text": "The agent's goal is to create a new contact.",
+    "char_start": 24838,
+    "char_end": 24882,
+    "sentence_index": 166,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec024",
+    "text": "We provide two representative cases to demonstrate the reasoning and interaction process of InfiGUIAgent .",
+    "char_start": 24884,
+    "char_end": 24990,
+    "sentence_index": 167,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec024",
+    "text": "Reply to a Message Figure illustrates a step where the agent needs to reply to a specific message in a messaging application.",
+    "char_start": 24992,
+    "char_end": 25117,
+    "sentence_index": 168,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec024",
+    "text": "The reasoning process involves identifying the \"Start chat\" button and grounding the action to initiate the reply process.",
+    "char_start": 25118,
+    "char_end": 25240,
+    "sentence_index": 169,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec024",
+    "text": "Creating a New Contact Figure and Figure demonstrate sequential steps for creating a new contact.",
+    "char_start": 25242,
+    "char_end": 25339,
+    "sentence_index": 170,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec024",
+    "text": "In the first step (Step K), the agent navigates to the \"Contacts\" section by reasoning and grounding the action to the corresponding tab.",
+    "char_start": 25340,
+    "char_end": 25477,
+    "sentence_index": 171,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec024",
+    "text": "In the following step (Step K+1), the agent initiates the contact creation process by identifying and tapping the \"Create new contact\" button.",
+    "char_start": 25478,
+    "char_end": 25620,
+    "sentence_index": 172,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec024",
+    "text": "These sequential steps highlight the agent's hierarchical reasoning and grounding abilities.",
+    "char_start": 25621,
+    "char_end": 25713,
+    "sentence_index": 173,
+    "section_sentence_index": 11
+  }
+]

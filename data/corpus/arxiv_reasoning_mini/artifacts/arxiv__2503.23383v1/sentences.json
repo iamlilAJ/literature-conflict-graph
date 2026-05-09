@@ -1,0 +1,1424 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "We introduce (Tool-Integrated Reinforcement Learning), a framework designed to train large language models (LLMs) to autonomously utilize computational tools through scaling reinforcement learning directly from base models (i.e., models without post-training).",
+    "char_start": 0,
+    "char_end": 260,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Unlike approaches based on supervised fine-tuning, enables models to discover optimal strategies for tool utilization via unrestricted exploration.",
+    "char_start": 261,
+    "char_end": 408,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Experiments with Qwen2.5-Math base models demonstrate substantial improvements, with -7B achieving 43.3\\% accuracy on AIME24\u2014surpassing RL without tool integration by 14\\% and the best existing Tool-Integrated Reasoning (TIR) model by 17\\% .",
+    "char_start": 409,
+    "char_end": 650,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Further analysis reveals several emergent cognitive behaviors \u2014such as strategic tool invocation, self-regulation of ineffective code generation, and dynamic adaptation between computational and analytical reasoning.",
+    "char_start": 651,
+    "char_end": 867,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "These capabilities emerge without explicit instruction , solely through reward-driven learning.",
+    "char_start": 868,
+    "char_end": 963,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "We open-source our implementation, datasets, and models at .",
+    "char_start": 964,
+    "char_end": 1024,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Recent advances in large language models (LLMs) have demonstrated remarkable reasoning capabilities through reinforcement learning (RL).",
+    "char_start": 1026,
+    "char_end": 1162,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Models such as o1, R1 and Kimi exhibit emergent abilities including backtracking, self-correction, and reflection when trained with large-scale RL Openo1, guo2025deepseek, kimiteam2025kimik15scalingreinforcement .",
+    "char_start": 1163,
+    "char_end": 1376,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Several open-source efforts have shown similar promising results .",
+    "char_start": 1377,
+    "char_end": 1443,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Traditional reasoning in language models has relied on pure natural language approaches such as Chain-of-Thought (CoT) .",
+    "char_start": 1445,
+    "char_end": 1565,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "While effective for many tasks, these methods falter when facing complex calculations, equation solving, or processes requiring precise computation .",
+    "char_start": 1566,
+    "char_end": 1715,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Despite research into code generation models, few approaches successfully bridge the gap between LLMs' reasoning capabilities and computational tools' execution power through reinforcement learning.",
+    "char_start": 1716,
+    "char_end": 1914,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Tool-Integrated Reasoning (TIR), explored prior to recent RL scaling breakthroughs, enables models to invoke external tools by writing code, executing it through interpreters, and iteratively generating reasoning informed by code outputs.",
+    "char_start": 1915,
+    "char_end": 2153,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Implementations like ToRA, MathCoder, and Qwen2.5-Math-Instruct-TIR demonstrate TIR's effectiveness in enhancing mathematical problem-solving .",
+    "char_start": 2154,
+    "char_end": 2297,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Despite these advances, existing TIR approaches face critical limitations.",
+    "char_start": 2299,
+    "char_end": 2373,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Most studies distill trajectories from stronger models and perform Supervised Fine-Tuning (SFT), restricting models to predetermined tool usage patterns and limiting exploration of optimal strategies.",
+    "char_start": 2374,
+    "char_end": 2574,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "While some work, like Qwen-Math, applies RL to SFT-trained models, limited implementation transparency obscures understanding of tool integration within RL frameworks.",
+    "char_start": 2575,
+    "char_end": 2742,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "To address these challenges, we introduce (Tool-Integrated Reinforcement Learning), a framework that scales reinforcement learning directly from base models without the constraints of prior supervised fine-tuning.",
+    "char_start": 2744,
+    "char_end": 2957,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Unlike previous approaches that incrementally improve SFT-trained models, enables RL training from scratch, allowing models to discover optimal tool utilization strategies through extensive exploration.",
+    "char_start": 2958,
+    "char_end": 3160,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "This scaling approach yields qualitatively different behaviors than methods that build upon predetermined patterns.",
+    "char_start": 3161,
+    "char_end": 3276,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Our experiments with Qwen2.5-Math base models at both 1.5B and 7B scales demonstrate substantial performance improvements over both traditional RL without code interpreters and Qwen2.5-Math-Instruct in TIR environments .",
+    "char_start": 3278,
+    "char_end": 3498,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Notably, our 7B model achieves a 43.3\\% accuracy on AIME problems, comparable to some 32B models trained with reinforcement learning .",
+    "char_start": 3499,
+    "char_end": 3633,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Through extensive analysis, we uncover several key insights about tool-integrated learning dynamics:\n\nCode usage evolution: As training progresses, the proportion of problems the model solves using code increases steadily, accompanied by a growing percentage of syntactically correct and executable code.",
+    "char_start": 3635,
+    "char_end": 3939,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This demonstrates the model's autonomous acquisition of effective tool utilization strategies.",
+    "char_start": 3940,
+    "char_end": 4034,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Self-regulation of ineffective code: Without explicit instruction, models learn to identify and reduce the generation of ineffective code patterns, suggesting an emerging form of metacognition about tool utility.",
+    "char_start": 4035,
+    "char_end": 4247,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Tool call frequency trade-offs: Increasing the maximum allowed tool calls per problem significantly enhances performance but introduces severe computational overhead, revealing a critical efficiency-effectiveness trade-off in tool-integrated learning.",
+    "char_start": 4248,
+    "char_end": 4499,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "These findings reveal how fosters diverse cognitive behaviors, including obtaining feedback from code execution, cross-checking between computational and analytical approaches, and adaptively selecting reasoning strategies based on problem characteristics.",
+    "char_start": 4501,
+    "char_end": 4757,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "The emergence of these behaviors through reward-driven learning, rather than imitation of human-designed patterns, suggests tool-integrated reinforcement learning represents a promising direction for enhancing LLMs' reasoning capabilities.",
+    "char_start": 4758,
+    "char_end": 4997,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "To support further research, we open-source our implementation and trained models, enabling the community to build upon and extend for advancing tool-augmented language models.",
+    "char_start": 4999,
+    "char_end": 5175,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec003",
+    "text": "We constructed our dataset from Olympic-level mathematical competitions questions sourced from NuminaMATH , MATH , and DeepScaleR .",
+    "char_start": 5177,
+    "char_end": 5308,
+    "sentence_index": 29,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec004",
+    "text": "The initial filtering removed proof-based problems and questions with ambiguous verification criteria, yielding 75,149 verifiable questions.",
+    "char_start": 5309,
+    "char_end": 5449,
+    "sentence_index": 30,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec004",
+    "text": "We then applied LIMR , a reinforcement learning data distillation technique, to extract high-quality samples with balanced difficulty distribution.",
+    "char_start": 5450,
+    "char_end": 5597,
+    "sentence_index": 31,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "This process resulted in a final dataset of 28,740 questions, which serves as the foundation for all subsequent experiments.",
+    "char_start": 5598,
+    "char_end": 5722,
+    "sentence_index": 32,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec005",
+    "text": "[t]\n1.5mm\n\n[colback=grey!20!white,colframe=grey!70!black,title= Problem ]\n\nDetermine how many zeros immediately follow the decimal point in the decimal representation of $ 1 (6 10)^ 10 .$\n\n-4.5mm\n2\n[colback=cot!20!white,colframe=cot!95!black,width=7.9cm,title= black (a) CoT example , after= 4pt ]\n-1mm\n\nTo determine how many zeros immediately follow the decimal point in the decimal representation of \\( 1 (6 10)^ 10 \\), we first simplify the expression.",
+    "char_start": 5724,
+    "char_end": 6179,
+    "sentence_index": 33,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec005",
+    "text": "Given expression: \\( 1 (6 10)^ 10 \\)\n\nSimplifying the denominator:\n\n\\[(6 10)^ 10 = (60)^ 10 = (6^ 10 10^ 10 )\\]\n\nSo, the expression becomes:\n\n\\[ 1 6^ 10 10^ 10 \\]\n\nThis can be further simplified as:\n\n\\[ 1 6^ 10 1 10^ 10 \\]\n\nThe term \\( 1 10^ 10 \\) is the one that directly affects the number of zeros immediately following the decimal point.",
+    "char_start": 6181,
+    "char_end": 6522,
+    "sentence_index": 34,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec005",
+    "text": "0.6mm\n\nThis is because \\( 1 10^ 10 \\) is equivalent to moving the decimal point ten places to the left of 1, resulting in a number with nine zeros immediately following the decimal point (and a 1 in the 10th position).",
+    "char_start": 6524,
+    "char_end": 6742,
+    "sentence_index": 35,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "0.6mm\n\nThe term \\( 1 6^ 10 \\) will affect the digits that follow the nine zeros, but it does not change the number of zeros immediately following the decimal point.",
+    "char_start": 6744,
+    "char_end": 6908,
+    "sentence_index": 36,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec005",
+    "text": "0.6mm\n\nTherefore, the number of zeros immediately following the decimal point in the decimal representation of \\( 1 (6 10)^ 10 \\) is \\( 9 \\).",
+    "char_start": 6910,
+    "char_end": 7051,
+    "sentence_index": 37,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec005",
+    "text": "0mm\n\n[colback=tir!20!white,colframe=tir!95!black,width=8cm,title= black (b) TIR example , after= 4pt ]\n\nTo determine how many zeros immediately follow the decimal point in the decimal representation of \\( 1 (6 10)^ 10 \\), we can break down the problem into the following steps:\n\n1.",
+    "char_start": 7053,
+    "char_end": 7334,
+    "sentence_index": 38,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec005",
+    "text": "Calculate the value of \\(6 10\\).",
+    "char_start": 7335,
+    "char_end": 7367,
+    "sentence_index": 39,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec005",
+    "text": "2.",
+    "char_start": 7369,
+    "char_end": 7371,
+    "sentence_index": 40,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "Raise the result to the power of 10.",
+    "char_start": 7372,
+    "char_end": 7408,
+    "sentence_index": 41,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "3.",
+    "char_start": 7410,
+    "char_end": 7412,
+    "sentence_index": 42,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "Find the decimal representation of the reciprocal of this value.",
+    "char_start": 7413,
+    "char_end": 7477,
+    "sentence_index": 43,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "4.",
+    "char_start": 7479,
+    "char_end": 7481,
+    "sentence_index": 44,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Count the number of zeros immediately following the decimal point.",
+    "char_start": 7482,
+    "char_end": 7548,
+    "sentence_index": 45,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "Let's go through these steps using Python code.",
+    "char_start": 7550,
+    "char_end": 7597,
+    "sentence_index": 46,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "black 0.5pt\n\n``` python\n\nbase = 6 * 10\n\npower\\_value = base ** 10\n\nreciprocal = 1 / power\\_value\n\nreciprocal\\_str = f \" \\ reciprocal\\ \"\n\ndecimal\\_part = reciprocal\\_str.split( \" .",
+    "char_start": 7599,
+    "char_end": 7778,
+    "sentence_index": 47,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "\" )[1] \\# get the part after the decimal point\n\nzero\\_count = 0\n\nfor char in decimal\\_part:\n\n2em if char == \" 0 \" : zero\\_count += 1\n\n2em else: break\n\nprint(zero\\_count)\n\n```\n\nblack 0.5pt\n\n``` output\n\n17\n\n```\n\nblack 0.5pt\n\nblack The number of zeros immediately following the decimal point in the decimal representation of \\( 1 (6 10)^ 10 \\) is \\( 17 \\).",
+    "char_start": 7779,
+    "char_end": 8132,
+    "sentence_index": 48,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "-1.2mm\n\n-4mm\nExample of CoT and TIR solution of the problem.",
+    "char_start": 8134,
+    "char_end": 8194,
+    "sentence_index": 49,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "TIR enables the model to write code and call an interpreter to obtain the output of the executed code, and then perform further reasoning based on the execution results.",
+    "char_start": 8195,
+    "char_end": 8364,
+    "sentence_index": 50,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "Tool Integrated Reasoning (TIR) enables large language models (LLMs) to overcome their computational limitations by incorporating executable code into their reasoning process.",
+    "char_start": 8366,
+    "char_end": 8541,
+    "sentence_index": 51,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "Unlike traditional prompting approaches, TIR significantly improves accuracy on numerical computation and logical tasks through an iterative process of reasoning and code execution.",
+    "char_start": 8542,
+    "char_end": 8723,
+    "sentence_index": 52,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "Formally, given a language model $M$, A code interpreter $I$ which executes code written by $M$ to obtain the results of tool calls, and an input question $Q$, TIR constructs a reasoning trajectory $s_k$ at step $k$ as:\n\ns_k = r_1, c_1, o_1, , r_k, c_k, o_k\n\nwhere $r_i$ represents natural language reasoning, $c_i$ denotes generated code, and $o_i$ is the execution result of $c_i$.",
+    "char_start": 8725,
+    "char_end": 9108,
+    "sentence_index": 53,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "The iterative generation process follows:\n\n&(r_ k , c_ k ) = M(Q s_ k-1 )\n\n& o_ k = I(c_ k )\n\n& s_ k = s_ k-1 r_ k c_ k o_ k\n\nThis cycle continues until the model produces a final answer, with each step informed by previous code execution results.",
+    "char_start": 9109,
+    "char_end": 9356,
+    "sentence_index": 54,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "The dynamic adjustment of reasoning paths based on computational feedback allows the model to verify intermediate steps and correct errors during complex problem-solving.",
+    "char_start": 9357,
+    "char_end": 9527,
+    "sentence_index": 55,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "We propose Tool Integrated Reinforcement Learning ( ), a framework that combines TIR with reinforcement learning directly from base language models without prior supervised fine-tuning.",
+    "char_start": 9529,
+    "char_end": 9714,
+    "sentence_index": 56,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "While existing approaches typically apply RL on models already aligned through SFT, our method demonstrates that tool-augmented reasoning capabilities can emerge effectively from base models through properly designed reinforcement learning.",
+    "char_start": 9715,
+    "char_end": 9955,
+    "sentence_index": 57,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "In conventional RL for reasoning, models generate Chain-of-Thought (CoT) trajectories and receive rewards based on answer correctness.",
+    "char_start": 9957,
+    "char_end": 10091,
+    "sentence_index": 58,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "However, CoT often fails in scenarios requiring precise computation or exhaustive enumeration.",
+    "char_start": 10092,
+    "char_end": 10186,
+    "sentence_index": 59,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "Our approach replaces these pure language trajectories with tool-integrated reasoning paths, where a Code Interpreter module is integrated directly into the RL environment interaction loop.",
+    "char_start": 10187,
+    "char_end": 10376,
+    "sentence_index": 60,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec007",
+    "text": "To enable the model to automatically output reasoning with code blocks, we use the prompt in Figure .",
+    "char_start": 10378,
+    "char_end": 10479,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "During the model's rollout process, when a code termination identifier ( ```output ) is detected, the system pauses text generation, extracts the latest code block for execution, and inserts the structured execution result into the context in the format ```output nOBSERVATION n``` n , where OBSERVATION is the execution result.",
+    "char_start": 10480,
+    "char_end": 10808,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "The system then continues to generate subsequent natural language reasoning until the model either provides a final answer or produces a new code block.",
+    "char_start": 10809,
+    "char_end": 10961,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec007",
+    "text": "Notably, we deliberately return error messages to the LLM when code execution fails, as we hypothesize that these error diagnostics enhance the model's capacity to generate syntactically and semantically correct code in subsequent iterations.",
+    "char_start": 10962,
+    "char_end": 11204,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "[htbp]\n\n[title=Prompt, width=16cm, boxrule=0.45mm, fonttitle= ]\nA conversation between User and Assistant.",
+    "char_start": 11206,
+    "char_end": 11312,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "The user asks a question, and the Assistant solves it.",
+    "char_start": 11313,
+    "char_end": 11367,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "nUser: Please integrate natural language reasoning with programs to solve the problem above, and put your final answer within boxed\\ \\ .",
+    "char_start": 11368,
+    "char_end": 11504,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "n red prompt nAssistant:\n\nPrompt template for , and red prompt will be replaced with specific question in training.",
+    "char_start": 11505,
+    "char_end": 11620,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "We observed that the integration of tool during the rollout process introduces significant GPU idle time, with speed of rollout process inversely proportional to the frequency of tool calls.",
+    "char_start": 11622,
+    "char_end": 11812,
+    "sentence_index": 69,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "To maintain training speed within a reasonable range, we introduced a hyperparameter, $C$, which is the maximum number of tool calls the model can make during a single response generation.",
+    "char_start": 11813,
+    "char_end": 12001,
+    "sentence_index": 70,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "Once this threshold is exceeded, the system ignores further code execution requests, forcing the model to switch to pure-text reasoning mode.",
+    "char_start": 12002,
+    "char_end": 12143,
+    "sentence_index": 71,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec008",
+    "text": "0.1cm\n\nTool Call Frequency Control.",
+    "char_start": 12145,
+    "char_end": 12180,
+    "sentence_index": 72,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "We observed that tool integration during rollout introduces significant GPU idle time, with rollout speed inversely proportional to tool call frequency.",
+    "char_start": 12181,
+    "char_end": 12333,
+    "sentence_index": 73,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "To maintain reasonable training efficiency, we introduced a hyperparameter $C$, representing the maximum number of tool calls allowed per response generation.",
+    "char_start": 12334,
+    "char_end": 12492,
+    "sentence_index": 74,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "Once this threshold is exceeded, the system ignores further code execution requests, forcing the model to switch to pure-text reasoning mode.",
+    "char_start": 12493,
+    "char_end": 12634,
+    "sentence_index": 75,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "Execution Environment Selection.",
+    "char_start": 12635,
+    "char_end": 12667,
+    "sentence_index": 76,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "To balance training efficiency and effectiveness, we sought a stable, accurate, and responsive code interpreter implementation.",
+    "char_start": 12668,
+    "char_end": 12795,
+    "sentence_index": 77,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "We initially tested the Python executor from qwen-agent https://github.com/QwenLM/Qwen-Agent , which offers extremely low latency.",
+    "char_start": 12796,
+    "char_end": 12926,
+    "sentence_index": 78,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "However, its execution environment lacks isolation from the training system, potentially allowing execution errors (e.g., segmentation faults from illegal memory access) to compromise the entire training process.",
+    "char_start": 12927,
+    "char_end": 13139,
+    "sentence_index": 79,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "We ultimately selected Sandbox Fusion https://bytedance.github.io/SandboxFusion/ , which provides an isolated execution environment.",
+    "char_start": 13140,
+    "char_end": 13272,
+    "sentence_index": 80,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "Despite slightly higher latency, it delivers superior stability for sustained training operations.",
+    "char_start": 13273,
+    "char_end": 13371,
+    "sentence_index": 81,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "Error Message Processing.",
+    "char_start": 13372,
+    "char_end": 13397,
+    "sentence_index": 82,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "We implemented specific error handling optimizations to enhance training effectiveness.",
+    "char_start": 13398,
+    "char_end": 13485,
+    "sentence_index": 83,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "When Sandbox Fusion encounters execution errors, it generates verbose tracebacks containing irrelevant file path information.",
+    "char_start": 13486,
+    "char_end": 13611,
+    "sentence_index": 84,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "To reduce context length and preserve only relevant error information, we extract only the final line of error messages (e.g., NameError: name 'a' is not defined ).",
+    "char_start": 13612,
+    "char_end": 13776,
+    "sentence_index": 85,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "Sandbox Output Masking.",
+    "char_start": 13777,
+    "char_end": 13800,
+    "sentence_index": 86,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "During loss computation, we mask out the OBSERVATION outputs from the sandbox environment, significantly improving training stability by preventing the model from attempting to memorize specific execution outputs rather than learning generalizable reasoning patterns.",
+    "char_start": 13801,
+    "char_end": 14068,
+    "sentence_index": 87,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "We implemented a rule-based reward function where correct answers receive a reward of 1, incorrect answers receive -1.",
+    "char_start": 14070,
+    "char_end": 14188,
+    "sentence_index": 88,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "In addition, the code interpreter naturally provides feedback on code executability.",
+    "char_start": 14189,
+    "char_end": 14273,
+    "sentence_index": 89,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "Based on the correlation between successful code execution and problem-solving accuracy, we introduced an execution-based penalty : responses containing non-executable code incur a -0.5 reward reduction.",
+    "char_start": 14274,
+    "char_end": 14477,
+    "sentence_index": 90,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "[t] 0.48\n\ntable Answer Correctness Reward\ncc\n\nAnswer Correctness & Reward Value\n\nCorrect & 1\n\nIncorrect & -1\n\n[t] 0.48\n\ntable Code Executability Reward\ncc\n\nCode Executability & Reward Value\n\nExecutable & 0\n\nUnexecutable & -0.5\n\nTraining\nAll RL experiments are conducted using the veRL framework, with Sandbox Fusion as the code interpreter.",
+    "char_start": 14479,
+    "char_end": 14819,
+    "sentence_index": 91,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec011",
+    "text": "We employ the GRPO algorithm, setting the rollout batch size to 128 and generating 16 samples per problem.",
+    "char_start": 14820,
+    "char_end": 14926,
+    "sentence_index": 92,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec011",
+    "text": "To enhance model exploration, all experiments omit the KL loss and set the temperature to 1.",
+    "char_start": 14927,
+    "char_end": 15019,
+    "sentence_index": 93,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec011",
+    "text": "We choose the Qwen-2.5-Math series models as the base models for RL.",
+    "char_start": 15020,
+    "char_end": 15088,
+    "sentence_index": 94,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec011",
+    "text": "To maximize efficiency, the default number of calls, $C$, is set to 1 .",
+    "char_start": 15089,
+    "char_end": 15160,
+    "sentence_index": 95,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec011",
+    "text": "Moreover, only the Answer Correctness Reward is retained in the default experiments, without incorporating the Code Executability Reward , which will be discussed in .",
+    "char_start": 15161,
+    "char_end": 15328,
+    "sentence_index": 96,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec011",
+    "text": "Evaluation\nFor evaluation, we use greedy decoding (temperature = 0) across all models.",
+    "char_start": 15330,
+    "char_end": 15416,
+    "sentence_index": 97,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec011",
+    "text": "We evaluate our results on several challenging mathematical benchmarks: (1) AIME24, (2) AIME25, (3) MATH500 , (4) OlympiadBench , and (5) AMC23.",
+    "char_start": 15417,
+    "char_end": 15561,
+    "sentence_index": 98,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "lightblue rgb 0.878, 0.947, 0.952\nForestGreen rgb 0.133, 0.545, 0.133\n\ngreen 51\nred 55\n[htbp]\n\nComparison of different models testing accuracy on mathematical benchmarks.",
+    "char_start": 15563,
+    "char_end": 15733,
+    "sentence_index": 99,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec012",
+    "text": "Qwen2.5-Math-1.5B-Instruct-TIR represents the testing of Qwen2.5-Math-1.5B-Instruct in the TIR environment.",
+    "char_start": 15734,
+    "char_end": 15841,
+    "sentence_index": 100,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec012",
+    "text": "For a fair comparison, we set the maximum number of tool calls to 1.",
+    "char_start": 15842,
+    "char_end": 15910,
+    "sentence_index": 101,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec012",
+    "text": "The best results are presented in bold .",
+    "char_start": 15911,
+    "char_end": 15951,
+    "sentence_index": 102,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec012",
+    "text": "1.0 !",
+    "char_start": 15953,
+    "char_end": 15958,
+    "sentence_index": 103,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec012",
+    "text": "lcccccccc\n\nModel & SFT/RL & Tool & AIME24 & AIME25 & MATH500 & Olympiad & AMC23 & Avg\n\n8 c Models based on Qwen2.5-Math-1.5B-Base\n\nQwen2.5-Math-1.5B-Instruct & RL & & 10.0 & 10.0 & 66.0 & 31.0 & 62.5 & 35.9\n\nQwen2.5-Math-1.5B-Instruct-TIR & RL & & 13.3 & 13.3 & 73.8 & 41.3 & 55.0 & 41.3\n\ntir!20 -1.5B(Ours) & RL & & 26.7 $_ ForestGreen +13.3 $ & 26.7 $_ ForestGreen +13.3 $ & 77.8 $_ ForestGreen +3.0 $ & 44.0 $_ ForestGreen +2.7 $ & 67.5 $_ ForestGreen +5.0 $ & 48.5 $_ ForestGreen +7.2 $\n\n8 c Models based on Qwen2.5-Math-7B-Base\n\nQwen2.5-Math-7B-Instruct & RL & & 10.0 & 16.7 & 74.8 & 32.4 & 65.0 & 39.8\n\nQwen2.5-Math-7B-Instruct-TIR & RL & & 26.7 & 16.7 & 78.8 & 45.0 & 70.0 & 47.4\n\nSimpleRL-Zero & RL & & 33.3 & 6.7 & 77.2 & 37.6 & 62.5 & 43.5\n\nrStar-Math-7B & SFT & & 26.7 & - & 78.4 & 47.1 & 47.5 & -\n\nEurus-2-7B-PRIME & RL & & 26.7 & 13.3 & 79.2 & 42.1 & 57.4 & 43.1\n\ntir!20 -7B(Ours) & RL & & 43.3 $_ ForestGreen +10.0 $ & 30.0 $_ ForestGreen +13.3 $ & 82.2 $_ ForestGreen +3.0 $ & 49.9 $_ ForestGreen +2.8 $ & 75.0 $_ ForestGreen +5.0 $ & 62.1 $_ ForestGreen +14.7 $\n\n[ht]\n\nfigures/main_results_allbenchmark.pdf\nPerformance comparison across mathematical benchmarks.",
+    "char_start": 15959,
+    "char_end": 17136,
+    "sentence_index": 104,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec012",
+    "text": "The plots show accuracy (\\%) against training steps for the 7B model evaluated on different benchmarks.",
+    "char_start": 17137,
+    "char_end": 17240,
+    "sentence_index": 105,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec012",
+    "text": "Across all benchmarks, -7B (blue) consistently outperforms both the baseline without tool integration (red) and Qwen-2.5-Math-7B-Instruct-TIR (dashed gray).",
+    "char_start": 17241,
+    "char_end": 17397,
+    "sentence_index": 106,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec012",
+    "text": "Table presents the performance comparison of different models on mathematical benchmarks.",
+    "char_start": 17399,
+    "char_end": 17488,
+    "sentence_index": 107,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec012",
+    "text": "consistently outperforms baseline models across all tested benchmarks.",
+    "char_start": 17489,
+    "char_end": 17559,
+    "sentence_index": 108,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec012",
+    "text": "For the 1.5B parameter models, -1.5B achieves an average accuracy of 48.5\\% , surpassing both Qwen2.5-Math-1.5B-Instruct (35.9\\%) and Qwen2.5-Math-1.5B-Instruct-TIR (41.3\\%).",
+    "char_start": 17560,
+    "char_end": 17734,
+    "sentence_index": 109,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec012",
+    "text": "The improvement is even more pronounced in the 7B parameter models, where -7B reaches 62.1\\% average accuracy, significantly higher than other open-source models with the same base model\u2014representing an impressive 14.7\\% absolute improvement.",
+    "char_start": 17735,
+    "char_end": 17977,
+    "sentence_index": 110,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec012",
+    "text": "Figure illustrates the training dynamics across five different mathematical benchmarks.",
+    "char_start": 17979,
+    "char_end": 18066,
+    "sentence_index": 111,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec012",
+    "text": "-7B shows consistent improvement over training steps and maintains a clear advantage over both the baseline without tool integration and Qwen-2.5-Math-7B-Instruct-TIR.",
+    "char_start": 18067,
+    "char_end": 18234,
+    "sentence_index": 112,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec012",
+    "text": "This performance gap is particularly notable in challenging benchmarks like AIME24, AIME25, and OlympiadBench, where -7B achieves 43.3\\% , 30.0\\% , and 49.9\\% accuracy respectively.",
+    "char_start": 18235,
+    "char_end": 18416,
+    "sentence_index": 113,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec013",
+    "text": "To gain deeper insights into how RL facilitates the model's tool invocation for reasoning assistance, we quantitatively analyze the model's tool usage and code-writing behaviors in and showcase illustrative examples in .",
+    "char_start": 18418,
+    "char_end": 18638,
+    "sentence_index": 114,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec013",
+    "text": "Furthermore, we change critical parameters related to in the RL framework to examine their effects on both model performance and training efficiency in .",
+    "char_start": 18639,
+    "char_end": 18792,
+    "sentence_index": 115,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec014",
+    "text": "[htbp]\n\n[b] 0.245\nfigures/Code.pdf\nCode Ratio\n\n[b] 0.245\nfigures/Pass.pdf\nPass Ratio\n\n[b] 0.245\nfigures/Correct.pdf\nCorrect/Incorrect Pass Ratio\n\n[b] 0.245\nfigures/Executed.pdf\nEffective Pass Ratio\n\nTool usage dynamics during training.",
+    "char_start": 18794,
+    "char_end": 19029,
+    "sentence_index": 116,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec014",
+    "text": "(a) Code Ratio: proportion of responses that contain code, (b) Pass Ratio: proportion of executed code that runs without errors, (c) Pass Ratio in Correct/Incorrect Responses: comparing execution success rates for correct vs.",
+    "char_start": 19030,
+    "char_end": 19255,
+    "sentence_index": 117,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec014",
+    "text": "incorrect responses, and (d) Effective Code Ratio.",
+    "char_start": 19256,
+    "char_end": 19306,
+    "sentence_index": 118,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec014",
+    "text": "Figure provides insights into tool usage patterns during training, including:\nCode Ratio Figure illustrates the proportion of model-generated responses containing code within the first 100 steps, which increased from 40\\% to 80\\%, demonstrating steady improvement throughout training.",
+    "char_start": 19308,
+    "char_end": 19592,
+    "sentence_index": 119,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec014",
+    "text": "Pass Ratio Figure presents the proportion of successfully executed code, highlighting a continuous upward trend that reflects the model's enhanced coding capability.",
+    "char_start": 19593,
+    "char_end": 19758,
+    "sentence_index": 120,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec014",
+    "text": "Pass Ratio of Correct to Incorrect Responses Meanwhile, Figure depicts the Pass Ratio of Correct to Incorrect Responses, revealing a correlation between code execution errors and final answer accuracy, with correct responses exhibiting higher code pass rates.",
+    "char_start": 19759,
+    "char_end": 20018,
+    "sentence_index": 121,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec014",
+    "text": "Effective Code Ratio Furthermore, Figure examines changes in the proportion of effective code, focusing on two key metrics:\n\nExecuted code ratio, which represents the proportion of generated code successfully executed by the interpreter, excluding any code omitted due to due to exceeding the maximum number of tool calls ($C$).",
+    "char_start": 20019,
+    "char_end": 20347,
+    "sentence_index": 122,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec014",
+    "text": "Before final answer code ratio, which measures the proportion of code generated before the model provides its final answer, disregarding code used solely for correctness verification post-answer generation.",
+    "char_start": 20348,
+    "char_end": 20554,
+    "sentence_index": 123,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec014",
+    "text": "Both metrics increased over time, indicating that the effectiveness of model-generated code improved as training progressed.",
+    "char_start": 20556,
+    "char_end": 20680,
+    "sentence_index": 124,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec014",
+    "text": "[title=Takeaway-I, width=16cm, boxrule=0.45mm, fonttitle= ]\nAs the number of training steps increases, the proportion of problems the model solves using code, as well as the proportion of code that can be executed correctly, continues to grow.",
+    "char_start": 20682,
+    "char_end": 20925,
+    "sentence_index": 125,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec014",
+    "text": "Meanwhile, during the training process, the model identifies and reduces the generation of ineffective code.",
+    "char_start": 20926,
+    "char_end": 21034,
+    "sentence_index": 126,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "[htbp]\n\n[b] 0.245\nfigures/ablation_accuracy_c1_vs_c2.pdf\n\n[b] 0.245\nfigures/ablation_reward_c1_vs_c2.pdf\n\n[b] 0.245\nfigures/ablation_accuracy_standard_vs_penalty.pdf\n\n[b] 0.245\nfigures/ablation_reward_standard_vs_penalty.pdf\n\n-1.5B-C=2 indicates that the hyperparameter \\( C \\) is set to 2.",
+    "char_start": 21036,
+    "char_end": 21326,
+    "sentence_index": 127,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec015",
+    "text": "-1.5B-ErrorPenalty represents the incorporation of the Code Executability Reward into the reward function, penalizing incorrectly executed code.",
+    "char_start": 21327,
+    "char_end": 21471,
+    "sentence_index": 128,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec015",
+    "text": "In this section, we explore the impact of key settings on final performance and behavior.",
+    "char_start": 21473,
+    "char_end": 21562,
+    "sentence_index": 129,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec015",
+    "text": "r 0.3\n\ncr\n\n$C$ & Average Step Time(s)\n\n0 & 118\n\n1 & 237\n\n2 & 288\n\nThe average time per single step under different values of $C$(measured on an 8*A800 GPU system).",
+    "char_start": 21564,
+    "char_end": 21727,
+    "sentence_index": 130,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec015",
+    "text": "First, we investigate the effect of increasing $C$, the maximum number of tools that can be called in a single response generation during rollout.",
+    "char_start": 21729,
+    "char_end": 21875,
+    "sentence_index": 131,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec015",
+    "text": "Specifically, we examine the impact of setting $C$ to 1 and 2 on model performance.",
+    "char_start": 21876,
+    "char_end": 21959,
+    "sentence_index": 132,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec015",
+    "text": "As shown in Figures and , setting $C$ to 2 significantly improves performance, increasing average accuracy by approximately 2\\%.",
+    "char_start": 21960,
+    "char_end": 22088,
+    "sentence_index": 133,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec015",
+    "text": "However, as indicated in Table , increasing $C$ substantially reduces training speed, necessitating a trade-off between performance and efficiency.",
+    "char_start": 22089,
+    "char_end": 22236,
+    "sentence_index": 134,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec015",
+    "text": "Furthermore, we analyze the impact of incorporating Code Executability Reward into the reward shaping.",
+    "char_start": 22238,
+    "char_end": 22340,
+    "sentence_index": 135,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec015",
+    "text": "Figures and demonstrate that this reward design does not enhance model performance.",
+    "char_start": 22341,
+    "char_end": 22424,
+    "sentence_index": 136,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec015",
+    "text": "We hypothesize that introducing penalties for execution errors may incentivize the model to generate overly simplistic code to minimize errors, which could, in turn, hinder its ability to solve problems correctly.",
+    "char_start": 22425,
+    "char_end": 22638,
+    "sentence_index": 137,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec015",
+    "text": "[title=Takeaway-II, width=16cm, boxrule=0.45mm, fonttitle= ]\nIncreasing the $C$ can significantly enhance model performance but also severely reduces training efficiency.",
+    "char_start": 22640,
+    "char_end": 22810,
+    "sentence_index": 138,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec015",
+    "text": "Incorporating Code Executability Reward does not improve performance.",
+    "char_start": 22811,
+    "char_end": 22880,
+    "sentence_index": 139,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "[t]\n\n0.48\n\nThe code initially generate by the model encountered an execution error, then it is corrected by model and is successfully executed.",
+    "char_start": 22882,
+    "char_end": 23025,
+    "sentence_index": 140,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec016",
+    "text": "l\n\nQuestion: Given the polynomial $f(x)=x^ 6 -5x^ 5 +6x^ 4 +x^ 2 +0.3x+2$,\n\nuse Horner's method to calculate $f(-2)$ and find the value of $v_ 1 $.",
+    "char_start": 23027,
+    "char_end": 23174,
+    "sentence_index": 141,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec016",
+    "text": "Response: To solve the given problem using Horner's method, we can\n\n```python\n\ndef horner(coeffs, x):\n\nreturn result, red results[1]\n\n```\n\n```output\n\nTypeError: 'int' object is not subscriptable\n\n```\n\nTo fix this, we need to ensure that we properly store and access the\n\n```python\n\ndef horner(coeffs, x):\n\nreturn result, red results\n\n```\n\n```output\n\nv\\_1 = -7\n\n```\n\nThus, the value of \\( f(-2) \\) is \\( 325.4 \\) and the value of \\( v_1 \\) is \\( -7 \\).",
+    "char_start": 23176,
+    "char_end": 23627,
+    "sentence_index": 142,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec016",
+    "text": "0.48\nThe model first derives an incorrect result based on natural language reasoning, then discovers the error during code verification and makes corrections\n\nl\n\nQuestion: After labeling 12 balls with numbers 1, 2, 3, ...",
+    "char_start": 23629,
+    "char_end": 23850,
+    "sentence_index": 143,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec016",
+    "text": "12\n\nWhat are the numbers on the other three balls taken by Person C?",
+    "char_start": 23851,
+    "char_end": 23919,
+    "sentence_index": 144,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec016",
+    "text": "Response: To solve the problem, we need to find the numbers on the\n\nThe numbers on the other three balls taken by Person C are \\(2, 10, 13\\),\n\nreduced to valid numbers from 2 to 12, so the only valid combination is red \\(2, 10, 13\\) .",
+    "char_start": 23921,
+    "char_end": 24155,
+    "sentence_index": 145,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "Here is the Python code to verify the solution:\n\n```python\n\n\\# Define the total sum of the numbers from 1 to 12\n\ntotal\\_sum = sum(range(1, 13))\n\n\\# Each person's sum is total\\_sum / 3\n\nperson\\_sum = total\\_sum // 3\n\n\\# Output the balls taken by Person C\n\nprint(balls\\_C\\_remaining)\n\n```output\n\nred [3, 10, 12]\n\n```\n\nThe numbers on the other three balls taken by Person C are red \\( 3, 10, 12 \\).",
+    "char_start": 24157,
+    "char_end": 24552,
+    "sentence_index": 146,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "We present some interesting phenomena that occurred in the later stages of model training, which can help us further understand in detail the model's cognitive behavior in solving problems using tools.",
+    "char_start": 24554,
+    "char_end": 24755,
+    "sentence_index": 147,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "Table shows an example of the model adjusting its reasoning based on execution feedback from the code interpreter.",
+    "char_start": 24757,
+    "char_end": 24871,
+    "sentence_index": 148,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "The model first wrote the code, but improper handling of results caused an indexing error.",
+    "char_start": 24872,
+    "char_end": 24962,
+    "sentence_index": 149,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "After receiving the feedback TypeError: 'int' object is not subscriptable , it promptly adjusted and produced executable code, eventually inferring the correct answer.",
+    "char_start": 24963,
+    "char_end": 25130,
+    "sentence_index": 150,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "Table demonstrates the model\u2019s cognitive behavior of reflection.",
+    "char_start": 25132,
+    "char_end": 25196,
+    "sentence_index": 151,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "The model initially solved the problem with natural language reasoning, then verified it through tool but found inconsistencies.",
+    "char_start": 25197,
+    "char_end": 25325,
+    "sentence_index": 152,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "Consequently, the model further makes corrections, ultimately generate the correct answer.",
+    "char_start": 25326,
+    "char_end": 25416,
+    "sentence_index": 153,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "[title=Takeaway-III, width=16cm, boxrule=0.45mm, fonttitle= ]\ngives rise to a variety of cognitive behaviors, including obtaining feedback from code execution results, cross-checking with code and natural language.",
+    "char_start": 25418,
+    "char_end": 25632,
+    "sentence_index": 154,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec017",
+    "text": "We propose , which enables LLMs to integrate tools in reasoning through reinforcement learning, surpassing predefined tool usage constraints.",
+    "char_start": 25634,
+    "char_end": 25775,
+    "sentence_index": 155,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec017",
+    "text": "Our results show significant performance gains and emergent reasoning, highlighting 's potential for advancing LLMs in complex reasoning.",
+    "char_start": 25776,
+    "char_end": 25913,
+    "sentence_index": 156,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec017",
+    "text": "acl_natbib\nrelated",
+    "char_start": 25915,
+    "char_end": 25933,
+    "sentence_index": 157,
+    "section_sentence_index": 2
+  }
+]

@@ -1,0 +1,3062 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Multi-turn tool calling is challenging for Large Language Models (LLMs) because rewards are sparse and exploration is expensive.",
+    "char_start": 0,
+    "char_end": 128,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "A common recipe, SFT followed by GRPO, can stall when within-group reward variation is low (e.g., more rollouts in a group receive the all 0 or all 1 reward), making the group-normalized advantage uninformative and yielding vanishing updates.",
+    "char_start": 129,
+    "char_end": 371,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "To address this problem, we propose RC-GRPO (Reward-Conditioned Group Relative Policy Optimization), which treats exploration as a controllable steering problem via discrete reward tokens.",
+    "char_start": 372,
+    "char_end": 560,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "We first fine-tune a Reward-Conditioned Trajectory Policy (RCTP) on mixed-quality trajectories with reward goal special token (e.g., <|high\\_reward|> , <|low\\_reward|> ) injected into the prompts, enabling the model to learn how to generate distinct quality trajectories on demand.",
+    "char_start": 561,
+    "char_end": 842,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Then during RL, we sample diverse reward tokens within each GRPO group and condition rollouts on the sampled token to improve within-group diversity, improving agvantage gains.",
+    "char_start": 843,
+    "char_end": 1019,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "On the Berkley Function Calling Leaderboard v4 (BFCLv4) multi-turn benchmark, our method yields consistantly improved performance than baselines, and the performance on Qwen-2.5-7B-Instruct even surpasses all closed-source API models.",
+    "char_start": 1020,
+    "char_end": 1254,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Tool-using Large Language Models (LLMs) can execute complex tasks by interleaving natural language reasoning with external API calls .",
+    "char_start": 1256,
+    "char_end": 1390,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "However, for multi-turn tool calling, success is often measured by sparse, trajectory-level rewards, making exploration costly.",
+    "char_start": 1391,
+    "char_end": 1518,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "In this setting, group-relative policy-gradient methods such as Group Relative Policy Optimization (GRPO) are attractive because they avoid a critic, but their learning signal fundamentally depends on within-group variability: if the rewards within a sampled group have near-zero or even completely zero standard deviation, the group-normalized advantage becomes degenerate and policy updates vanish.",
+    "char_start": 1519,
+    "char_end": 1919,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "A practical failure mode then appears in the standard SFT-then-GRPO pipeline.",
+    "char_start": 1921,
+    "char_end": 1998,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "SFT on optimal demonstrations intentionally produces a peaked policy (a strong ``golden-path'' prior), which reduces rollout diversity and can substantially reduce within-group reward variance under GRPO.",
+    "char_start": 1999,
+    "char_end": 2203,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "This ``paradox of perfection'' is especially severe for multi-turn tool calling with partial observability : a policy that is locally confident can repeatedly generate the same short-horizon behavior, leaving little informative contrast for group-relative advantages, consistent with recent analyses of vanishing updates when reward variability under the current policy is small .",
+    "char_start": 2204,
+    "char_end": 2584,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "We propose RC-GRPO (Reward-Conditioned Group Relative Policy Optimization), which makes within-group diversity a controlled variable rather than a byproduct of sampling temperature.",
+    "char_start": 2586,
+    "char_end": 2767,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Inspired by return-conditioned generation , we first train a Reward-Conditioned Trajectory Policy (RCTP) on mixed-quality trajectories so that the policy can reliably produce distinct behaviors under different tokens; then, during RL with GRPO, we sample diverse reward tokens within each group and condition rollouts on the sampled token, explicitly injecting variance and systematically restoring non-degenerate group-relative advantages.",
+    "char_start": 2768,
+    "char_end": 3208,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Our principal contributions are summarized as follows.",
+    "char_start": 3210,
+    "char_end": 3264,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "We propose RC-GRPO .",
+    "char_start": 3266,
+    "char_end": 3286,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "We first fine-tune a Reward-Conditioned Trajectory Policy (RCTP) on mixed-quality trajectories by appending a reward-goal special token to the prompt, so the policy learns to generate systematically different-quality trajectories under different tokens.",
+    "char_start": 3287,
+    "char_end": 3540,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "We then train the model with reward-conditioned GRPO (RC-GRPO), where each GRPO group samples diverse reward tokens and conditions rollouts on them, ensuring non-degenerate within-group reward variation for group-normalized updates.",
+    "char_start": 3541,
+    "char_end": 3773,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "We conduct a series of experiments on Berkley Function Calling Leaderboard v4 multi-turn tool calling split using LLaMA-3.1-8B-Instruct and Qwen2.5-7B-Instruct, and we report comparisons against standard SFT+GRPO baselines as well as several strong closed API models .",
+    "char_start": 3774,
+    "char_end": 4042,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "We analyze training dynamics to justify whether improvements are attributable to increased randomness (entropy trajectories and entropy--reward correlation) and to quantify within-group learning signal quality (advantage spread with KL/gradient statistics).",
+    "char_start": 4043,
+    "char_end": 4300,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "We further provide a variance-based theoretical analysis.",
+    "char_start": 4301,
+    "char_end": 4358,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec003",
+    "text": "The capability of LLMs to use tools has been evaluated by benchmarks including the Berkeley Function Calling Leaderboard (BFCLv4) , API-Bank , and ToolRL .",
+    "char_start": 4360,
+    "char_end": 4515,
+    "sentence_index": 21,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec004",
+    "text": "We focus on BFCLv4's multi-turn subset, which requires agents to maintain state across sequential tool calls to solve complex queries.",
+    "char_start": 4516,
+    "char_end": 4650,
+    "sentence_index": 22,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec004",
+    "text": "In contrast, many tool-use benchmarks (e.g., ToolBench ) primarily evaluate single-turn function selection or parameter correctness without requiring persistent state tracking.",
+    "char_start": 4651,
+    "char_end": 4827,
+    "sentence_index": 23,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec004",
+    "text": "Toolformer pioneered self-supervised tool learning, while ReAct introduced interleaved reasoning and acting.",
+    "char_start": 4829,
+    "char_end": 4937,
+    "sentence_index": 24,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec004",
+    "text": "ToolLLM scaled tool-use training to large collections of real-world APIs.",
+    "char_start": 4938,
+    "char_end": 5011,
+    "sentence_index": 25,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec004",
+    "text": "While prompt engineering and standard SFT have shown promise, they often struggle with error recovery and long-horizon reasoning.",
+    "char_start": 5012,
+    "char_end": 5141,
+    "sentence_index": 26,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec004",
+    "text": "Recent work focuses on closed-loop agents , which is closely related to our setting.",
+    "char_start": 5142,
+    "char_end": 5226,
+    "sentence_index": 27,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec005",
+    "text": "Proximal Policy Optimization (PPO) has been the standard RL algorithm for RLHF .",
+    "char_start": 5228,
+    "char_end": 5308,
+    "sentence_index": 28,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec005",
+    "text": "However, PPO requires a separate value network (critic), which doubles the memory footprint.",
+    "char_start": 5309,
+    "char_end": 5401,
+    "sentence_index": 29,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec005",
+    "text": "GRPO removes the critic by estimating advantages relative to a group of outputs generated from the same prompt, reducing memory by $ $50\\%.",
+    "char_start": 5402,
+    "char_end": 5541,
+    "sentence_index": 30,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec005",
+    "text": "Direct Preference Optimization (DPO) similarly avoids explicit reward modeling but requires pairwise preferences.",
+    "char_start": 5542,
+    "char_end": 5655,
+    "sentence_index": 31,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec005",
+    "text": "Recent work has highlighted unique challenges in multi-turn agent RL.",
+    "char_start": 5657,
+    "char_end": 5726,
+    "sentence_index": 32,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec005",
+    "text": "RAGEN identifies the ``Echo Trap'' phenomenon where agents overfit to locally rewarded reasoning patterns, proposing trajectory-level rewards.",
+    "char_start": 5727,
+    "char_end": 5869,
+    "sentence_index": 33,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec005",
+    "text": "SimpleTIR addresses training instability from tool feedback deviating from pretrained distributions by filtering void turns during GRPO.",
+    "char_start": 5870,
+    "char_end": 6006,
+    "sentence_index": 34,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec005",
+    "text": "Agentic RL with Implicit Step Rewards tackles sparse reward credit assignment via implicit process reward models.",
+    "char_start": 6007,
+    "char_end": 6120,
+    "sentence_index": 35,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec005",
+    "text": "Agent Early Experience demonstrates that LLMs can perform model-based planning when fine-tuned to predict environment states.",
+    "char_start": 6121,
+    "char_end": 6246,
+    "sentence_index": 36,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec006",
+    "text": "Return-Conditioned Learning approaches, such as Decision Transformers and Upside-Down RL , reframe reinforcement learning as a sequence modeling problem.",
+    "char_start": 6248,
+    "char_end": 6401,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec006",
+    "text": "Instead of estimating value functions or policy gradients, these methods learn a conditional policy $ (a|s, R)$ where $R$ represents the target return.",
+    "char_start": 6402,
+    "char_end": 6553,
+    "sentence_index": 38,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec006",
+    "text": "During inference, the model is conditioned on a high return value to generate optimal trajectories.",
+    "char_start": 6554,
+    "char_end": 6653,
+    "sentence_index": 39,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec006",
+    "text": "This paradigm has been extended to offline RL settings by the Trajectory Transformer , which models the joint distribution of states, actions, and rewards.",
+    "char_start": 6654,
+    "char_end": 6809,
+    "sentence_index": 40,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec007",
+    "text": "Our method is motivated by a practical pathology observed when applying group-based policy optimization to strong tool-using LLMs.",
+    "char_start": 6811,
+    "char_end": 6941,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec007",
+    "text": "Starting from a high-quality SFT policy, rollouts within a GRPO group can become nearly identical, reducing intra-group reward variance and weakening the relative-advantage signal.",
+    "char_start": 6942,
+    "char_end": 7122,
+    "sentence_index": 42,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec007",
+    "text": "In Sec.",
+    "char_start": 7123,
+    "char_end": 7130,
+    "sentence_index": 43,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec007",
+    "text": "(Q4 in Sec.",
+    "char_start": 7131,
+    "char_end": 7142,
+    "sentence_index": 44,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec007",
+    "text": "), we formalize this ``gradient collapse'' phenomenon and show how reward-conditioned rollout generation restores within-group variance without requiring high policy entropy.",
+    "char_start": 7143,
+    "char_end": 7317,
+    "sentence_index": 45,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec007",
+    "text": "In Sec.",
+    "char_start": 7319,
+    "char_end": 7326,
+    "sentence_index": 46,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec007",
+    "text": ", we first formalize multi-turn tool calling as a POMDP and introduce our reward-conditioned policy parameterization.",
+    "char_start": 7327,
+    "char_end": 7444,
+    "sentence_index": 47,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec007",
+    "text": "Sec.",
+    "char_start": 7445,
+    "char_end": 7449,
+    "sentence_index": 48,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec007",
+    "text": "then describes Stage 1, where we fine-tune a Reward-Conditioned Trajectory Policy (RCTP) on mixed trajectories labeled by discrete reward tokens.",
+    "char_start": 7450,
+    "char_end": 7595,
+    "sentence_index": 49,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec007",
+    "text": "Sec.",
+    "char_start": 7596,
+    "char_end": 7600,
+    "sentence_index": 50,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec007",
+    "text": "presents Stage 2, where we optimize the policy using GRPO with reward-conditioned sampling to maintain within-group diversity.",
+    "char_start": 7601,
+    "char_end": 7727,
+    "sentence_index": 51,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec008",
+    "text": "We formalize multi-turn tool calling as a Partially Observable Markov Decision Process (POMDP).",
+    "char_start": 7729,
+    "char_end": 7824,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec008",
+    "text": "The agent interacts with the environment until episode termination.",
+    "char_start": 7825,
+    "char_end": 7892,
+    "sentence_index": 53,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec008",
+    "text": "At each turn $t \\ 1, , T_ max \\ $, the user provides a natural language query $u_t$, and the agent generates an action $a_t$, a JSON-formatted tool call containing name and args fields.",
+    "char_start": 7893,
+    "char_end": 8078,
+    "sentence_index": 54,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec008",
+    "text": "The environment executes this call and returns an observation $o_t$.",
+    "char_start": 8079,
+    "char_end": 8147,
+    "sentence_index": 55,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec008",
+    "text": "The episode terminates when the agent invokes a termination action (e.g., done() ) or reaches the maximum turn limit.",
+    "char_start": 8148,
+    "char_end": 8265,
+    "sentence_index": 56,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec008",
+    "text": "The history $h_t = (u_0, a_0, o_0, , u_ t-1 , a_ t-1 , o_ t-1 , u_t)$ accumulates all prior context up to the current query.",
+    "char_start": 8266,
+    "char_end": 8390,
+    "sentence_index": 57,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec008",
+    "text": "A complete interaction forms a trajectory $ = (h_T, a_T, o_T)$.",
+    "char_start": 8391,
+    "char_end": 8454,
+    "sentence_index": 58,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec008",
+    "text": "Following the return-conditioned paradigm of Decision Transformers, we model the policy as $ _ (a_t | h_t, r)$, where $r R $ is a discrete reward token indicating expected trajectory quality.",
+    "char_start": 8456,
+    "char_end": 8647,
+    "sentence_index": 59,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec008",
+    "text": "The token set $ R $ contains two levels: <|high\\_reward|> and <|low\\_reward|> .",
+    "char_start": 8648,
+    "char_end": 8727,
+    "sentence_index": 60,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec008",
+    "text": "This conditioning enables controllable generation: at inference, we set $r = <|high\\_reward|> $ to elicit optimal behavior; during training, we sample diverse $r$ values to inject variance into rollout groups.",
+    "char_start": 8728,
+    "char_end": 8937,
+    "sentence_index": 61,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec009",
+    "text": "The first stage transforms the base LLM $ _ base $ into a Reward-Conditioned Trajectory Policy (RCTP) capable of generating trajectories $ $ of varying quality based on the conditioning token $r$.",
+    "char_start": 8939,
+    "char_end": 9135,
+    "sentence_index": 62,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec009",
+    "text": "We construct the mixed-quality dataset $ D = \\ ( _i, r_i)\\ _ i=1 ^N$ by pairing each trajectory with its corresponding reward token.",
+    "char_start": 9136,
+    "char_end": 9268,
+    "sentence_index": 63,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec009",
+    "text": "In practice, $ D $ is curated by combining expert (successful) trajectories from the benchmark ground truth with diverse failure trajectories generated by exploration rollouts, and then injecting the appropriate reward token into each example; see Appendix for full details.",
+    "char_start": 9269,
+    "char_end": 9543,
+    "sentence_index": 64,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec009",
+    "text": "Reward Token Quantization.",
+    "char_start": 9545,
+    "char_end": 9571,
+    "sentence_index": 65,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec009",
+    "text": "We compute $R( _i)$ for each trajectory using Eq.",
+    "char_start": 9572,
+    "char_end": 9621,
+    "sentence_index": 66,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec009",
+    "text": "(defined in Sec.",
+    "char_start": 9622,
+    "char_end": 9638,
+    "sentence_index": 67,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec009",
+    "text": ").",
+    "char_start": 9639,
+    "char_end": 9641,
+    "sentence_index": 68,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec009",
+    "text": "Given the binary nature of our reward signal, we map the outcomes directly to the categorical token set $ R = \\ <|high\\_reward|> , <|low\\_reward|> \\ $:\n\nr_ token (R) =\n\n<|high\\_reward|> & if R = 1 (Success)\n\n<|low\\_reward|> & if R = 0 (Failure)\n\nFinetuning Objective.",
+    "char_start": 9642,
+    "char_end": 9909,
+    "sentence_index": 69,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec009",
+    "text": "We fine-tune $ _ base $ to learn the conditional distribution $ _ (a_t | h_t, r)$.",
+    "char_start": 9910,
+    "char_end": 9992,
+    "sentence_index": 70,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec009",
+    "text": "The reward token $r$ is prepended to the history $h_t$ before each assistant turn.",
+    "char_start": 9993,
+    "char_end": 10075,
+    "sentence_index": 71,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec009",
+    "text": "The objective maximizes log-likelihood over $ D $:\n\nL _ RCTP = - E _ ( ,r) D\n\nAfter training, we obtain the reference policy $ _ ref _ $, which serves as both the initialization and KL anchor for Stage 2.",
+    "char_start": 10076,
+    "char_end": 10280,
+    "sentence_index": 72,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec009",
+    "text": "The model learns to correlate $r$ with action quality: conditioning on <|high\\_reward|> produces optimal actions $a_t$, while <|low\\_reward|> generates plausible failures.",
+    "char_start": 10281,
+    "char_end": 10452,
+    "sentence_index": 73,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec010",
+    "text": "In Stage 2, we start from the Stage 1 reference policy $ _ ref $ and optimize the trainable policy $ _ $ using GRPO with reward-conditioned sampling.",
+    "char_start": 10454,
+    "char_end": 10603,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec010",
+    "text": "For each prompt, GRPO draws a group of $G$ trajectories; we obtain within-group diversity by sampling a discrete reward token $r R $ for each trajectory from a fixed distribution $P_ sample (r)$ (defined in Eq.",
+    "char_start": 10604,
+    "char_end": 10814,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec010",
+    "text": ") and conditioning rollouts on that token.",
+    "char_start": 10815,
+    "char_end": 10857,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec010",
+    "text": "This injects structured variance into each group---a prerequisite for non-degenerate, group-normalized advantages---and is not reliably achieved by temperature/entropy tuning alone when $ _ ref $ is highly peaked.",
+    "char_start": 10858,
+    "char_end": 11071,
+    "sentence_index": 77,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec010",
+    "text": "Reward-Conditioned Rollout.",
+    "char_start": 11073,
+    "char_end": 11100,
+    "sentence_index": 78,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec010",
+    "text": "For each prompt $u_0$, we generate a group of $G$ trajectories $\\ _1, , _G\\ $.",
+    "char_start": 11101,
+    "char_end": 11179,
+    "sentence_index": 79,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec010",
+    "text": "Unlike standard GRPO which samples from an unconditional $ _ (a|h)$, we first sample a reward token $r_j P_ sample (r)$ for each member $j \\ 1, , G\\ $:\n\nP_ sample (r) =\n\np & if r = <|high\\_reward|>\n\n1-p & if r = <|low\\_reward|>\n\nHere, $p$ is a hyperparameter set to match the proportion of successful (expert) trajectories in the RCTP's training dataset $ D $; the setting of this parameter can be found in Appendix .",
+    "char_start": 11180,
+    "char_end": 11597,
+    "sentence_index": 80,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec010",
+    "text": "This ensures that the sampling prior aligns with the model's learned distribution, preventing distribution shift while still guaranteeing variance injection.",
+    "char_start": 11598,
+    "char_end": 11755,
+    "sentence_index": 81,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec010",
+    "text": "Then, for each turn $t$ in trajectory $ _j$, the policy generates:\n\na_ t,j _ ( | h_ t,j , r_j)\n\nThis steers generation toward diverse quality modes: trajectories with $r_j = <|high\\_reward|> $ tend toward optimal actions, while those with $r_j = <|low\\_reward|> $ explore suboptimal paths\u2014preventing variance collapse.",
+    "char_start": 11756,
+    "char_end": 12074,
+    "sentence_index": 82,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec010",
+    "text": "Trajectory-Level Reward Function.",
+    "char_start": 12076,
+    "char_end": 12109,
+    "sentence_index": 83,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec010",
+    "text": "To align with the unified evaluation framework of modern agentic benchmarks, we adopt a unified trajectory-level reward function $R( )$ that evaluates the overall success of the interaction.",
+    "char_start": 12111,
+    "char_end": 12301,
+    "sentence_index": 84,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec010",
+    "text": "This reward serves dual purposes: (1) constructing the reward tokens $r R $ for building dataset $ D $ in Stage 1, and (2) calculating advantages during GRPO in Stage 2.",
+    "char_start": 12302,
+    "char_end": 12471,
+    "sentence_index": 85,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec010",
+    "text": "We formulate the reward as a composition of two essential factors:\n\nR( ) = R_ state R_ action\n\nState/Goal Consistency ($R_ state $).",
+    "char_start": 12473,
+    "char_end": 12605,
+    "sentence_index": 86,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec010",
+    "text": "Measures whether the agent drives the environment to a correct terminal condition.",
+    "char_start": 12606,
+    "char_end": 12688,
+    "sentence_index": 87,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec010",
+    "text": "For BFCL, this compares the final environment state against the state obtained by replaying golden actions (e.g., exact match of file systems or databases).",
+    "char_start": 12689,
+    "char_end": 12845,
+    "sentence_index": 88,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec010",
+    "text": "Essential Action / Constraint Coverage ($R_ action $).",
+    "char_start": 12847,
+    "char_end": 12901,
+    "sentence_index": 89,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec010",
+    "text": "Measures whether required actions and constraints are satisfied over the full interaction.",
+    "char_start": 12902,
+    "char_end": 12992,
+    "sentence_index": 90,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec010",
+    "text": "For BFCL, we check that every essential tool call from the ground truth appears in the trajectory with correct parameters.",
+    "char_start": 12993,
+    "char_end": 13115,
+    "sentence_index": 91,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec010",
+    "text": "In this framework, the reward acts as a binary success signal ($R( ) \\ 0, 1\\ $).",
+    "char_start": 13117,
+    "char_end": 13197,
+    "sentence_index": 92,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec010",
+    "text": "A trajectory is considered successful ($R=1$) only if it achieves the desired state and satisfies all procedural constraints; otherwise, it is failure ($R=0$).",
+    "char_start": 13198,
+    "char_end": 13357,
+    "sentence_index": 93,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec010",
+    "text": "This binary signal maps directly to our token set: $R=1 <|high\\_reward|> $ and $R=0 <|low\\_reward|> $.",
+    "char_start": 13358,
+    "char_end": 13460,
+    "sentence_index": 94,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec010",
+    "text": "Group-Relative Advantage.",
+    "char_start": 13462,
+    "char_end": 13487,
+    "sentence_index": 95,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "We compute $R( _j)$ for each trajectory using Eq.",
+    "char_start": 13488,
+    "char_end": 13537,
+    "sentence_index": 96,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": ". Following GRPO , we normalize rewards within the group to obtain advantage $A_j$.",
+    "char_start": 13538,
+    "char_end": 13621,
+    "sentence_index": 97,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "Because our group contains trajectories under different tokens $r_j R $, the group statistics capture variance across quality modes:\n\nA_j = R( _j) - _g _g + _ stab , where & _g = 1 G _ k=1 ^G R( _k),\n\n& _g = 1 G _ k=1 ^G (R( _k) - _g)^2\n\nHere $ _ stab > 0$ is a small numerical stability constant.",
+    "char_start": 13622,
+    "char_end": 13919,
+    "sentence_index": 98,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "Optimization Objective.",
+    "char_start": 13921,
+    "char_end": 13944,
+    "sentence_index": 99,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "The RC-GRPO loss follows the PPO-style clipped objective used in GRPO , adapted to the conditioned policy $ _ (a_t | h_t, r)$.",
+    "char_start": 13945,
+    "char_end": 14071,
+    "sentence_index": 100,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Let $ _ _ old $ denote the policy that generated the sampled group, and define the (trajectory-level) importance ratio\n\n_j( ) = _ t=1 ^ T _ (a_ t,j | h_ t,j , r_j) _ _ old (a_ t,j | h_ t,j , r_j) .",
+    "char_start": 14072,
+    "char_end": 14269,
+    "sentence_index": 101,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "Then the loss is\n\nL _ RC-GRPO ( )\n&= - E _ u_0 D _ train\n\nwhere\n\n^ clip _j( )\n= \\!",
+    "char_start": 14271,
+    "char_end": 14353,
+    "sentence_index": 102,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "(\n_j( ) A_j,\\;\nclip ( _j( ), 1- , 1+ )\\,A_j\n).",
+    "char_start": 14354,
+    "char_end": 14400,
+    "sentence_index": 103,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "Here $ $ is the clipping range and $ $ is the KL coefficient.",
+    "char_start": 14402,
+    "char_end": 14463,
+    "sentence_index": 104,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "Over training, $ _ $ improves the expected $R( )$ across sampled conditions while the clipping and KL regularization stabilize updates.",
+    "char_start": 14464,
+    "char_end": 14599,
+    "sentence_index": 105,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "[t]\nRC-GRPO Full Pipeline\n\n[1]\nRequire: Policy $ _ $, reference policy $ _ ref _ base $\nRequire: Dataset $ D $, training prompts $ D _ train $\nRequire: Hyperparameters: learning rate $ $, KL coefficient $ $, group size $G$, sampling distribution $P_ sample (r)$\nNotation: $ = (a_1, , a_T)$ trajectory; $h_t$ history at step $t$; $ _j( ) = _ ( _j) / _ ref ( _j)$ importance ratio\n\nblue // STAGE 1: REWARD-CONDITIONED TRAJECTORY POLICY (RCTP) FINETUNING\nCompute $R( )$ for each trajectory $ D $ (state match $ $ essential-action coverage; see Sec.",
+    "char_start": 14601,
+    "char_end": 15146,
+    "sentence_index": 106,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "and App.",
+    "char_start": 15147,
+    "char_end": 15155,
+    "sentence_index": 107,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": ") $ $ Eq.",
+    "char_start": 15156,
+    "char_end": 15165,
+    "sentence_index": 108,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "Assign a reward token $r( ) R $ via $r( )= <|high\\_reward|> $ if $R( )=1$, else $ <|low\\_reward|> $ $ $ Sec.",
+    "char_start": 15166,
+    "char_end": 15274,
+    "sentence_index": 109,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Define $ L _ RCTP = - E _ ( ,r) D $\nUpdate $ _ ref $ by minimizing $ L _ RCTP $\n\nblue // STAGE 2: REWARD-CONDITIONED GRPO (RC-GRPO)\nInitialize $ _ _ ref $\n\neach prompt $u_0 D _ train $\n$j = 1$ to $G$\nSample $r_j P_ sample (r)$ and roll out $ _j _ ( h, r_j)$\n\nCompute rewards $\\ R( _j)\\ _ j=1 ^ G $ and group-normalized advantages $\\ A_j\\ _ j=1 ^ G $\nUpdate $ - \\, _ L _ RC-GRPO ( )$, where\n1em 0.9 $ L _ RC-GRPO ( )= - 1 G _ j=1 ^ G ( _j( )A_j,\\; clip ( _j( ),1- ,1+ )A_j ) + \\,D_ KL ( _ \\,\\|\\, _ ref )$.",
+    "char_start": 15275,
+    "char_end": 15779,
+    "sentence_index": 110,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "convergence\n\nWe evaluate our method on Berkeley Function Calling Leaderboard (BFCLv4) using two base models: LLaMA-3.1-8B-Instruct and Qwen2.5-7B-Instruct .",
+    "char_start": 15781,
+    "char_end": 15937,
+    "sentence_index": 111,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec012",
+    "text": "Compared Methods.",
+    "char_start": 15939,
+    "char_end": 15956,
+    "sentence_index": 112,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec012",
+    "text": "We compare five training configurations.",
+    "char_start": 15957,
+    "char_end": 15997,
+    "sentence_index": 113,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec012",
+    "text": "The Base Model is the original instruction-tuned LLM without any additional task-specific finetuning on BFCLv4.",
+    "char_start": 15998,
+    "char_end": 16109,
+    "sentence_index": 114,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec012",
+    "text": "Our three baselines are: (i) supervised finetuning (SFT) followed by Group Relative Policy Optimization (GRPO), (ii) SFT followed by reward-conditioned GRPO (RC-GRPO), and (iii) reward-conditioned trajectory-policy finetuning (RCTP-FT) followed by standard GRPO.",
+    "char_start": 16110,
+    "char_end": 16372,
+    "sentence_index": 115,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec012",
+    "text": "Our full method combines RCTP-FT initialization with RC-GRPO in the RL stage.",
+    "char_start": 16373,
+    "char_end": 16450,
+    "sentence_index": 116,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "API Model Baselines.",
+    "char_start": 16452,
+    "char_end": 16472,
+    "sentence_index": 117,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "In addition, we report BFCLv4 validation accuracy for several closed API models (Opus-4.5, Sonnet-4.5, GLM-4.7, Gemini-3-Pro, GPT-5.2) evaluated under the same API-calling setting.",
+    "char_start": 16473,
+    "char_end": 16653,
+    "sentence_index": 118,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "At inference, we condition on $r = <|high\\_reward|> $ for optimal performance.",
+    "char_start": 16655,
+    "char_end": 16733,
+    "sentence_index": 119,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "Hyperparameter configurations are provided in Appendix .",
+    "char_start": 16734,
+    "char_end": 16790,
+    "sentence_index": 120,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec013",
+    "text": "We first present the overall performance of RC-GRPO compared to the baselines.",
+    "char_start": 16792,
+    "char_end": 16870,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "Table reports accuracy on BFCLv4 (overall and by category).",
+    "char_start": 16871,
+    "char_end": 16930,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec013",
+    "text": "[t]\n\n4pt\n1.08\n@ llccccc@\n\nModel & Method/Version & Overall Acc.",
+    "char_start": 16932,
+    "char_end": 16995,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec013",
+    "text": "& Base & Miss Func & Miss Param & Long Context\n\n5 * white Qwen2.5-7B & Base Model & 11.25\\% & 11.11\\% & 17.65\\% & 4.54\\% & 13.04\\%\n\n& SFT + GRPO & 48.75\\% & 55.56\\% & 35.29\\% & 50.00\\% & 52.17\\%\n\n& SFT + RC-GRPO & 46.25\\% & 50.00\\% & 35.29\\% & 50.00\\% & 47.82\\%\n\n& RCTP-FT + GRPO & 73.75\\% & 66.67\\% & 64.71\\% & 77.27\\% & 82.61\\%\n\nblue!10\n& RCTP-FT + RC-GRPO (Ours) & 85.00\\% & 77.78\\% & 88.23\\% & 81.81\\% & 91.30\\%\n\n5 * white LLaMA-3.1-8B & Base Model & 0.00\\% & 0.00\\% & 0.00\\% & 0.00\\% & 0.00\\%\n\n& SFT + GRPO & 35.00\\% & 38.89\\% & 17.67\\% & 40.91\\% & 39.13\\%\n\n& SFT + RC-GRPO & 35.00\\% & 44.44\\% & 17.64\\% & 36.36\\% & 39.13\\%\n\n& RCTP-FT + GRPO & 46.25\\% & 33.33\\% & 35.29\\% & 54.55\\% & 56.52\\%\n\nblue!10\n& RCTP-FT + RC-GRPO (Ours) & 48.75\\% & 38.89\\% & 35.29\\% & 60.87\\% & 54.54\\%\n\nOpus-4.5 & claude-opus-4-5-20251101 & 61.25\\% & 55.56\\% & 65.22\\% & 64.71\\% & 59.09\\%\n\nGLM-4.7 & glm-4.7 & 58.75\\% & 55.56\\% & 58.82\\% & 54.55\\% & 65.22\\%\n\nSonnet-4.5 & claude-sonnet-4-5-20250929 & 57.50\\% & 44.44\\% & 58.82\\% & 59.09\\% & 65.22\\%\n\nGemini-3-Pro & gemini-3-pro-preview & 53.75\\% & 55.56\\% & 64.71\\% & 36.36\\% & 60.87\\%\n\nGPT-5.2 & gpt-5.2-2025-12-11 & 50.00\\% & 38.89\\% & 47.06\\% & 45.45\\% & 65.22\\%\n\nPerformance comparison on the BFCLv4 validation split (overall and by category).",
+    "char_start": 16996,
+    "char_end": 18274,
+    "sentence_index": 124,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "On Qwen2.5-7B , our full pipeline (RCTP-FT + RC-GRPO) achieves 85.00\\% overall accuracy, improving upon all reported baselines: Base Model (11.25\\%), SFT + GRPO (48.75\\%), SFT + RC-GRPO (46.25\\%), and RCTP-FT + GRPO (73.75\\%).",
+    "char_start": 18276,
+    "char_end": 18502,
+    "sentence_index": 125,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "On LLaMA-3.1-8B , our method achieves 48.75\\% overall accuracy, improving over SFT + GRPO (35.00\\%) and matching SFT + RC-GRPO (35.00\\%), and outperforming the Base Model (0.00\\%) and RCTP-FT + GRPO (46.25\\%).",
+    "char_start": 18503,
+    "char_end": 18712,
+    "sentence_index": 126,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "For reference, the best-performing closed API baseline in Table achieves 61.25\\% overall accuracy, which remains below our best open-weights result (85.00\\% on Qwen2.5-7B).",
+    "char_start": 18713,
+    "char_end": 18885,
+    "sentence_index": 127,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "Full model/version details are summarized in Appendix .",
+    "char_start": 18886,
+    "char_end": 18941,
+    "sentence_index": 128,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec014",
+    "text": "To better understand where RC-GRPO helps (and why), we break the analysis into four focused questions, covering the roles of reward conditioning, RCTP initialization, training dynamics, and a supporting theoretical explanation.",
+    "char_start": 18943,
+    "char_end": 19170,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec014",
+    "text": "Q1: Does Reward Conditioning improve multi-turn tool calling ability compared to traditional GRPO?",
+    "char_start": 19172,
+    "char_end": 19270,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec014",
+    "text": "To isolate the effect of Reward Conditioning (RC) during RL, we compare traditional GRPO vs.\\ RC-GRPO while holding the initialization fixed to RCTP-FT in Table .",
+    "char_start": 19272,
+    "char_end": 19434,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec014",
+    "text": "[ht]\n\nAblation: Effect of Reward Conditioning (RC) under RCTP-FT initialization.",
+    "char_start": 19436,
+    "char_end": 19516,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec014",
+    "text": "@ lccc\n\nSetting & w/o RC & w/ RC & $ $\n\n4 l LLaMA-3.1-8B\n\nRCTP-FT init & 46.25\\% & 48.75\\% & +2.50\\%\n\n4 l Qwen2.5-7B\n\nRCTP-FT init & 73.75\\% & 85.00\\% & +11.25\\%\n\nThe results show that, once the policy is initialized with RCTP-FT, adding RC during RL consistently improves performance: +2.50\\% on LLaMA-3.1-8B (46.25\\%$ $48.75\\%) and +11.25\\% on Qwen2.5-7B (73.75\\%$ $85.00\\%).",
+    "char_start": 19518,
+    "char_end": 19895,
+    "sentence_index": 133,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec014",
+    "text": "Q2: Is the RCTP initialization necessary?",
+    "char_start": 19897,
+    "char_end": 19938,
+    "sentence_index": 134,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec014",
+    "text": "Table summarizes two complementary observations: (i) starting from an SFT initialization, adding reward conditioning during RL has little impact, and (ii) under RC-GRPO, switching the initialization from traditional FT to RCTP-FT yields a large gain.",
+    "char_start": 19940,
+    "char_end": 20190,
+    "sentence_index": 135,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "[ht]\n\nRCTP-FT is necessary: (A) from an SFT init, adding RC during RL has little impact; (B) under RC-GRPO, switching to RCTP-FT yields large gains.",
+    "char_start": 20192,
+    "char_end": 20340,
+    "sentence_index": 136,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "@ lccc\n\n4 l (A) Add RC during RL (SFT init)\n\nModel & w/o RC & w/ RC & $ $\n\nLLaMA-3.1-8B & 35.00\\% & 35.00\\% & +0.00\\%\n\nQwen2.5-7B & 48.75\\% & 46.25\\% & -2.50\\%\n\n4 l (B) Switch init under RC-GRPO\n\nModel & w/o RCTP-FT & w/ RCTP-FT & $ $\n\nLLaMA-3.1-8B & 35.00\\% & 48.75\\% & +13.75\\%\n\nQwen2.5-7B & 46.25\\% & 85.00\\% & +38.75\\%\n\nTable (A) shows that adding RC during RL from an SFT initialization yields negligible gains, likely because SFT does not expose the policy to mixed-quality, reward-conditioned trajectories, which highlights the necessity of RCTP-FT.",
+    "char_start": 20342,
+    "char_end": 20898,
+    "sentence_index": 137,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "In contrast, Table (B) shows that switching the initialization from SFT to RCTP-FT under RC-GRPO yields large improvements: +13.75\\% on LLaMA-3.1-8B (35.00\\%$ $48.75\\%) and +38.75\\% on Qwen2.5-7B (46.25\\%$ $85.00\\%).",
+    "char_start": 20899,
+    "char_end": 21115,
+    "sentence_index": 138,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "Q3: Does reward conditioning improve GRPO by stabilizing the update signal (non-vanishing KL/advantage spread), rather than by increasing randomness?",
+    "char_start": 21117,
+    "char_end": 21266,
+    "sentence_index": 139,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "A natural concern is that reward conditioning might act like a proxy for higher sampling temperature (or an entropy bonus), i.e., improving exploration primarily by increasing randomness.",
+    "char_start": 21268,
+    "char_end": 21455,
+    "sentence_index": 140,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "To test this hypothesis, we analyze training logs from four Qwen2.5-7B BFCLv4 runs and examine (i) the entropy trajectory and (ii) the correlation between entropy and training reward within each run.",
+    "char_start": 21456,
+    "char_end": 21655,
+    "sentence_index": 141,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "Here, $ $ denotes the Pearson correlation coefficient computed across training steps between the logged entropy values and the logged training reward values (no smoothing).",
+    "char_start": 21656,
+    "char_end": 21828,
+    "sentence_index": 142,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "We compute early/late summaries using 70-step windows, since 70 is approximately the last one-fifth of the total training horizon in these runs.",
+    "char_start": 21829,
+    "char_end": 21973,
+    "sentence_index": 143,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "[t]\n\nEntropy trajectory and entropy--reward correlation.",
+    "char_start": 21975,
+    "char_end": 22031,
+    "sentence_index": 144,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "RC-GRPO achieves improvements with decreasing entropy and a negative entropy--reward correlation, suggesting its benefit is not explained by higher randomness.",
+    "char_start": 22032,
+    "char_end": 22191,
+    "sentence_index": 145,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "3pt\n1.05\n@ lccc\n\nMethod & Entropy & $ $ & $ $ (entropy, reward)\n\nblue!10\nRCTP+RC (Ours) & 0.079$ $0.037 & $ $54\\% & $-0.15$**\n\nRCTP+GRPO & 0.029$ $0.066 & $ $127\\% & $+0.49$***\n\nSFT+GRPO & 0.037$ $0.216 & $ $489\\% & $+0.06$ (n.s.)\n\nSFT+RC & 0.104$ $0.317 & $ $205\\% & $+0.09$ (n.s.)\n\n0.2em\n\nEarly and late averages use 70-step windows (roughly one-fifth of training): Early = steps 1--70, Late = steps 280--350.",
+    "char_start": 22193,
+    "char_end": 22604,
+    "sentence_index": 146,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "***: $p<0.001$, **: $p<0.01$, n.s.: not significant.",
+    "char_start": 22605,
+    "char_end": 22657,
+    "sentence_index": 147,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "[t]\n\nq3_advantage_spread.pdf\nTraining dynamics for Qwen2.5-7B on BFCLv4.",
+    "char_start": 22659,
+    "char_end": 22731,
+    "sentence_index": 148,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "We plot a proxy for within-group diversity (the gap between the maximum and minimum advantage within each sampled group) together with the training reward over time.",
+    "char_start": 22732,
+    "char_end": 22897,
+    "sentence_index": 149,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "Taken together, Table and Fig.",
+    "char_start": 22899,
+    "char_end": 22929,
+    "sentence_index": 150,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "show that higher entropy is not required to maintain within-group diversity under RC-GRPO.",
+    "char_start": 22930,
+    "char_end": 23020,
+    "sentence_index": 151,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "In our best-performing setting (RCTP+RC), entropy decreases over training (0.079$ $0.037), yet reward improves and the entropy--reward correlation is negative ($ =-0.15$).",
+    "char_start": 23021,
+    "char_end": 23192,
+    "sentence_index": 152,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec014",
+    "text": "Meanwhile, under standard GRPO from the same RCTP initialization (RCTP+GRPO), reward is strongly positively correlated with entropy ($ =+0.49$), suggesting that entropy-based knobs act as an indirect and brittle route to exploration when the policy becomes peaked.",
+    "char_start": 23193,
+    "char_end": 23457,
+    "sentence_index": 153,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec014",
+    "text": "Q4: Can we conduct theoretical justifications to explain why RC-GRPO works?",
+    "char_start": 23459,
+    "char_end": 23534,
+    "sentence_index": 154,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec014",
+    "text": "So far, we have focused on empirical results.",
+    "char_start": 23536,
+    "char_end": 23581,
+    "sentence_index": 155,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec014",
+    "text": "We now complement them with a simple theoretical analysis and connect it to the observed training dynamics, to better illustrate why RC-GRPO is stable.",
+    "char_start": 23582,
+    "char_end": 23733,
+    "sentence_index": 156,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "Specifically, we first analyze when standard GRPO can suffer from weak/vanishing group-normalized advantages, and then explain how reward-conditioned sampling restores within-group reward variance.",
+    "char_start": 23734,
+    "char_end": 23931,
+    "sentence_index": 157,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec014",
+    "text": "We do not claim a complete theory of multi-turn agent training dynamics; rather, we propose a minimal variance-based explanation for a common failure mode of standard GRPO when initialized from a peaked policy (e.g., after strong SFT).",
+    "char_start": 23933,
+    "char_end": 24168,
+    "sentence_index": 158,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec014",
+    "text": "The key observation is that the Stage 2 GRPO update is mediated by the group-normalized advantage\n$A_j = (R( _j)- _g)/( _g+ _ stab )$.",
+    "char_start": 24169,
+    "char_end": 24303,
+    "sentence_index": 159,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec014",
+    "text": "When group rollouts receive identical rewards, we have $R( _j)= _g$ for all $j$, so the numerator $(R( _j)- _g)$ is exactly zero and therefore $A_j=0$ (regardless of $ _g$ and $ _ stab $).",
+    "char_start": 24304,
+    "char_end": 24492,
+    "sentence_index": 160,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec014",
+    "text": "In this case, the advantage-weighted update vanishes and learning stalls.",
+    "char_start": 24493,
+    "char_end": 24566,
+    "sentence_index": 161,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "More generally, when rewards within a group are nearly identical, both $(R( _j)- _g)$ and $ _g$ become small, yielding near-zero and/or noisy advantages (often effectively limited by the stability term $ _ stab $), which again weakens the learning signal.",
+    "char_start": 24567,
+    "char_end": 24822,
+    "sentence_index": 162,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "Proposition formalizes one sufficient condition under which such collapse can arise for standard (unconditioned) GRPO on peaked policies, while Proposition shows how reward-conditioned sampling can prevent it by injecting between-mode reward variability within each group.",
+    "char_start": 24823,
+    "char_end": 25095,
+    "sentence_index": 163,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "[GRPO Advantage Collapse]\nIn GRPO with group size $G$, the advantage for trajectory $ _j$ is:\n\nA_j = R( _j) - _g _g + _ stab\n\nwhere $ _g$ and $ _g$ are the within-group mean and standard deviation of $R( )$.",
+    "char_start": 25097,
+    "char_end": 25304,
+    "sentence_index": 164,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec014",
+    "text": "The advantage collapses when $ _g 0$, causing $A_j 0$ for all $j$ regardless of actual rewards.",
+    "char_start": 25305,
+    "char_end": 25400,
+    "sentence_index": 165,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec014",
+    "text": "[Vanishing Gradient in Peaked Policies]\n\nLet $ _ ref $ be trained on optimal demonstrations.",
+    "char_start": 25402,
+    "char_end": 25494,
+    "sentence_index": 166,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec014",
+    "text": "Suppose that for each step $t$ (and history $h_t$ on the optimal trajectory), the SFT objective achieves a small per-step cross-entropy/KL to the optimal Dirac policy $ ^*( |h_t)$:\n\nD_ KL ( ^*( |h_t)\\,\\|\\, _ ref ( |h_t)) _ sft .",
+    "char_start": 25495,
+    "char_end": 25723,
+    "sentence_index": 167,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec014",
+    "text": "Then for a group of $G$ independent trajectories $\\ _1, , _G\\ $ sampled from $ _ ref $, the probability that all trajectories match the optimal trajectory $ ^*$ satisfies\n\nP( _1 = _2 = = _G = ^*) \\; \\; e^ -GT _ sft \\; \\; 1 - GT _ sft .",
+    "char_start": 25725,
+    "char_end": 25960,
+    "sentence_index": 168,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec014",
+    "text": "On the event $\\ _1 = = _G = ^*\\ $, the within-group rewards are identical, so $ _g = 0$ and $A_j = 0$ for all $j$.",
+    "char_start": 25962,
+    "char_end": 26076,
+    "sentence_index": 169,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec014",
+    "text": "More generally, when $ _ ref $ is sufficiently peaked so that rollouts within a group induce nearly identical rewards, we have $ _g _ stab $ and the normalized advantages are dominated by $ _ stab $, making the effective learning signal negligible.",
+    "char_start": 26077,
+    "char_end": 26325,
+    "sentence_index": 170,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec014",
+    "text": "[Proof Sketch]\nStandard SFT on optimal-only data $ D _ opt $ minimizes the negative log-likelihood of the optimal action, which can be written as $D_ KL ( ^* \\| _ ref )$ when $ ^*$ is a Dirac measure on the optimal action.",
+    "char_start": 26327,
+    "char_end": 26549,
+    "sentence_index": 171,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec014",
+    "text": "If $D_ KL ( ^*( |h_t)\\,\\|\\, _ ref ( |h_t)) _ sft $, then $- _ ref (a_t^*|h_t) _ sft $, hence $ _ ref (a_t^*|h_t) e^ - _ sft 1- _ sft $.",
+    "char_start": 26550,
+    "char_end": 26685,
+    "sentence_index": 172,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec014",
+    "text": "Over $T$ steps, $P( = ^*) e^ -T _ sft 1-T _ sft $, and for $G$ independent samples, $P( _1= = _G= ^*) e^ -GT _ sft 1-GT _ sft $.",
+    "char_start": 26686,
+    "char_end": 26814,
+    "sentence_index": 173,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec014",
+    "text": "When trajectories are identical, $R( _1)= =R( _G)$ so $ _g=0$ and all advantages collapse (hence the advantage-weighted policy-gradient term is zero).",
+    "char_start": 26815,
+    "char_end": 26965,
+    "sentence_index": 174,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec014",
+    "text": "See Appendix for the full proof.",
+    "char_start": 26966,
+    "char_end": 26998,
+    "sentence_index": 175,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec014",
+    "text": "The key insight of RC-GRPO is to inject variance through conditioning via the reward token $r R $:\n\n[Variance Guarantee via Reward Conditioning]\n\nIn RC-GRPO, each trajectory $ _j$ is conditioned on token $r_j P_ sample (r)$.",
+    "char_start": 27000,
+    "char_end": 27224,
+    "sentence_index": 176,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec014",
+    "text": "If $ _ ref $ learns distinct modes such that $| E [R( )|r_i] - E [R( )|r_j]| $ for $r_i r_j$, then the within-group variance is lower-bounded:\n\nE ^2\n\nwhere $ _g^2 = 1 G _ j=1 ^G (R( _j)- _g)^2$ is the (biased) within-group second central moment and $ > 0$ depends on $P_ sample (r)$ and $G$.",
+    "char_start": 27225,
+    "char_end": 27516,
+    "sentence_index": 177,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec014",
+    "text": "In particular, with $p$ defined as in Eq.",
+    "char_start": 27517,
+    "char_end": 27558,
+    "sentence_index": 178,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec014",
+    "text": ", one may take $ = G-1 G p(1-p)$.",
+    "char_start": 27559,
+    "char_end": 27592,
+    "sentence_index": 179,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec014",
+    "text": "[Proof Sketch]\nBy the law of total variance, $ Var (R( )) Var _ r ( E [R( )|r])$.",
+    "char_start": 27594,
+    "char_end": 27675,
+    "sentence_index": 180,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec014",
+    "text": "If the conditional means are separated by at least $ $, then $ Var (R( )) p(1-p) ^2$.",
+    "char_start": 27676,
+    "char_end": 27761,
+    "sentence_index": 181,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec014",
+    "text": "Since $ _g^2$ is the group second central moment over $G$ i.i.d.\\ draws, $ E [ _g^2]= G-1 G Var (R( )) G-1 G p(1-p) ^2$.",
+    "char_start": 27762,
+    "char_end": 27882,
+    "sentence_index": 182,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec014",
+    "text": "See Appendix for details.",
+    "char_start": 27883,
+    "char_end": 27908,
+    "sentence_index": 183,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec014",
+    "text": "[Convergence Implication]\n\nThe expected variance lower bound $ E [ _g^2] ^2$ has direct implications for convergence speed.",
+    "char_start": 27910,
+    "char_end": 28033,
+    "sentence_index": 184,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec014",
+    "text": "The signal-to-noise ratio of the GRPO gradient estimator depends on the typical scale of $ _g$; by enforcing between-mode variability through $r$ and thereby preventing collapse of $ _g$ in expectation, RC-GRPO maintains informative group-relative advantages throughout training.",
+    "char_start": 28034,
+    "char_end": 28313,
+    "sentence_index": 185,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec014",
+    "text": "This contrasts with standard GRPO on peaked SFT models, where groups concentrate on a single trajectory and $ _g$ collapses.",
+    "char_start": 28314,
+    "char_end": 28438,
+    "sentence_index": 186,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec014",
+    "text": "In combination, Proposition and Proposition explain why RC-GRPO avoids within-group variance collapse in practice.",
+    "char_start": 28440,
+    "char_end": 28554,
+    "sentence_index": 187,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec014",
+    "text": "To empirically validate these theoretical claims, we analyze training dynamics in the late phase (the last 70 training steps) across four Qwen2.5-7B runs.",
+    "char_start": 28555,
+    "char_end": 28709,
+    "sentence_index": 188,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec014",
+    "text": "Guided by Proposition and Proposition , we operationalize within-group diversity using the advantage spread ---the difference between the maximum and minimum group-normalized advantage within each sampled group---as a direct proxy for how much signal the group normalization provides.",
+    "char_start": 28710,
+    "char_end": 28994,
+    "sentence_index": 189,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec014",
+    "text": "[t]\n\nLate-phase training dynamics (last 70 training steps).",
+    "char_start": 28996,
+    "char_end": 29055,
+    "sentence_index": 190,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec014",
+    "text": "RC-GRPO maintains high within-group diversity while keeping policy entropy low, consistent with the variance-guarantee mechanism.",
+    "char_start": 29056,
+    "char_end": 29185,
+    "sentence_index": 191,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec014",
+    "text": "2pt\n1.05\n@ lcccc\n\nMethod & Spread & KL & $\\|g\\|$ & $H$\n\nblue!10\nRCTP+RC (Ours) & 3.58 & 0.0010 & 2.7 & 0.037\n\nRCTP+GRPO & 3.46 & 0.0004 & 2.5 & 0.066\n\nSFT+GRPO & 3.22 & 0.0040 & 6.5 & 0.216\n\nSFT+RC & 3.51 & 0.0033 & 14.2 & 0.317\n\n0.2em\n\nSpread: max--min advantage within a sampled group; $\\|g\\|$: gradient norm; $H$: entropy.",
+    "char_start": 29187,
+    "char_end": 29512,
+    "sentence_index": 192,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec014",
+    "text": "Table supports the variance-guarantee interpretation.",
+    "char_start": 29514,
+    "char_end": 29567,
+    "sentence_index": 193,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec014",
+    "text": "Our method achieves the largest advantage spread (3.58) while maintaining the lowest entropy (0.037), indicating that within-group diversity is preserved without relying on increased policy randomness.",
+    "char_start": 29568,
+    "char_end": 29769,
+    "sentence_index": 194,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec014",
+    "text": "In contrast, SFT + GRPO exhibits substantially higher entropy yet lower advantage spread, suggesting that entropy-based exploration alone is insufficient to reliably restore the within-group variability needed for informative group-normalized advantages.",
+    "char_start": 29770,
+    "char_end": 30024,
+    "sentence_index": 195,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec014",
+    "text": "Across all runs, gradient norms remain non-zero, but the combination of high spread and low entropy in RC-GRPO is most consistent with the intended between-mode separation induced by reward conditioning.",
+    "char_start": 30025,
+    "char_end": 30228,
+    "sentence_index": 196,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec015",
+    "text": "We introduced RC-GRPO, a two-stage pipeline (RCTP finetuning + reward-conditioned GRPO) for multi-turn tool calling that mitigates variance collapse in group-normalized policy optimization by making within-group diversity a controlled variable.",
+    "char_start": 30230,
+    "char_end": 30474,
+    "sentence_index": 197,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec015",
+    "text": "Empirically, RC-GRPO delivers consistent gains on BFCLv4 for both Qwen2.5-7B and LLaMA-3.1-8B, with particularly large improvements when combined with the RCTP initialization.",
+    "char_start": 30475,
+    "char_end": 30650,
+    "sentence_index": 198,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec015",
+    "text": "Our analysis suggests these gains are explained by more informative group-relative advantages (and non-vanishing updates) rather than simply increasing policy randomness.",
+    "char_start": 30651,
+    "char_end": 30821,
+    "sentence_index": 199,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec015",
+    "text": "Theoretically, we provide a variance-based perspective that clarifies when standard GRPO can degenerate under peaked SFT policies and why reward-conditioned sampling prevents collapse.",
+    "char_start": 30822,
+    "char_end": 31006,
+    "sentence_index": 200,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec015",
+    "text": "We hope this framing helps bridge controllable generation and group-based RL for training more reliable multi-turn tool-using agents.",
+    "char_start": 31007,
+    "char_end": 31140,
+    "sentence_index": 201,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec016",
+    "text": "This paper presents work whose goal is to advance the field of machine learning by improving the stability of reinforcement-learning optimization for multi-turn tool-calling agents.",
+    "char_start": 31142,
+    "char_end": 31323,
+    "sentence_index": 202,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec016",
+    "text": "More reliable tool use can support beneficial applications such as automating routine digital tasks and enabling more capable assistants; at the same time, like other tool-using LLM systems, such capabilities may have dual-use implications if deployed without appropriate operational safeguards (e.g., access controls and monitoring).",
+    "char_start": 31324,
+    "char_end": 31658,
+    "sentence_index": 203,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec016",
+    "text": "We expect the primary societal consequence of this work to be enabling further research on robust agent training and evaluation, rather than introducing fundamentally new deployment risks beyond those already associated with tool-enabled language models.",
+    "char_start": 31659,
+    "char_end": 31913,
+    "sentence_index": 204,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec016",
+    "text": "example_paper\nicml2026\n\nThis appendix provides formal proofs for the theoretical results presented in the main text.",
+    "char_start": 31915,
+    "char_end": 32031,
+    "sentence_index": 205,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec018",
+    "text": "We first state the definitions and lemmas used in the proof.",
+    "char_start": 32033,
+    "char_end": 32093,
+    "sentence_index": 206,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec018",
+    "text": "[Probability Space]\nLet $( A , , P)$ be a discrete probability space over the set of actions $ A $.",
+    "char_start": 32095,
+    "char_end": 32194,
+    "sentence_index": 207,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec018",
+    "text": "Let $ _ ref $ and $ ^*$ be probability measures on this space.",
+    "char_start": 32195,
+    "char_end": 32257,
+    "sentence_index": 208,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec018",
+    "text": "[KL-Probability Bound]\n\nLet $ ^*$ be a Dirac measure concentrated at $a^*$, i.e., $ ^*(a^*) = 1$.",
+    "char_start": 32259,
+    "char_end": 32356,
+    "sentence_index": 209,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec018",
+    "text": "If $D_ KL ( ^* \\| ) $, then:\n\n(a^*) e^ - 1 -\n\n[Proof of Lemma ]\nSince $ ^*$ is a Dirac measure:\n\nD_ KL ( ^* \\| ) = _ a ^*(a) ^*(a) (a) = 1 1 (a^*) = - (a^*)\n\nGiven $D_ KL ( ^* \\| ) $, we have $- (a^*) (a^*) e^ - $.",
+    "char_start": 32357,
+    "char_end": 32571,
+    "sentence_index": 210,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec018",
+    "text": "Using the inequality $e^ -x 1-x$ for $x 0$, we get $ (a^*) 1 - $.",
+    "char_start": 32572,
+    "char_end": 32637,
+    "sentence_index": 211,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec018",
+    "text": "[Proof of Proposition ]\nFix an optimal trajectory $ ^*=(h_1^*,a_1^*, ,h_T^*,a_T^*)$ and let $h_t^*$ denote the history on this optimal trajectory at step $t$.",
+    "char_start": 32639,
+    "char_end": 32797,
+    "sentence_index": 212,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec018",
+    "text": "Under the proposition assumption,\n\nD_ KL \\!",
+    "char_start": 32798,
+    "char_end": 32841,
+    "sentence_index": 213,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec018",
+    "text": "( ^*( h_t^*)\\, \\|\\, _ ref ( h_t^*) ) _ sft\n\n_ ref (a_t^* h_t^*) e^ - _ sft\n\nby Lemma .",
+    "char_start": 32842,
+    "char_end": 32928,
+    "sentence_index": 214,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec018",
+    "text": "Therefore the probability that a single rollout from $ _ ref $ exactly follows the optimal trajectory is\n\nP( = ^*) \\;=\\; _ t=1 ^ T _ ref (a_t^* h_t^*) \\; \\; e^ -T _ sft \\; \\; 1-T _ sft ,\n\nwhere we used $ _ t=1 ^T e^ - _ sft =e^ -T _ sft $ and the inequality $e^ -x 1-x$ for $x 0$.",
+    "char_start": 32929,
+    "char_end": 33209,
+    "sentence_index": 215,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec018",
+    "text": "Now sample $G$ independent trajectories $ _1, , _G i.i.d.",
+    "char_start": 33211,
+    "char_end": 33268,
+    "sentence_index": 216,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "_ ref $.",
+    "char_start": 33269,
+    "char_end": 33277,
+    "sentence_index": 217,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec018",
+    "text": "Then\n\nP( _1= = _G= ^*) \\;=\\; P( = ^*)^G \\; \\; e^ -GT _ sft \\; \\; 1-GT _ sft .",
+    "char_start": 33278,
+    "char_end": 33355,
+    "sentence_index": 218,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec018",
+    "text": "On the event $\\ _1= = _G\\ $, we have $R( _1)= =R( _G)$, hence $ _g=0$ and $R( _j)- _g=0$ for every $j$.",
+    "char_start": 33357,
+    "char_end": 33460,
+    "sentence_index": 219,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec018",
+    "text": "Therefore $A_j= R( _j)- _g _g+ _ stab =0$ for all $j$, and the advantage-weighted GRPO policy-gradient term for that group,\n\n1 G _ j=1 ^G A_j _ t=1 ^ T _ _ (a_ t,j h_ t,j )\n\nis exactly zero.",
+    "char_start": 33461,
+    "char_end": 33651,
+    "sentence_index": 220,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec019",
+    "text": "We first state the key lemmas used in this proof.",
+    "char_start": 33653,
+    "char_end": 33702,
+    "sentence_index": 221,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec019",
+    "text": "[Law of Total Variance]\n\nFor random variables $X$ and $Y$, the total variance of $X$ decomposes as:\n\nVar (X) = E _ Y [ Var (X|Y)] _ within-group variance + Var _ Y ( E [X|Y]) _ between-group variance\n\nSince the first term is non-negative, we have $ Var (X) Var _ Y ( E [X|Y])$.",
+    "char_start": 33704,
+    "char_end": 33981,
+    "sentence_index": 222,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec019",
+    "text": "[Expected Group Second Central Moment]\n\nLet $X_1, ,X_G$ be i.i.d.\\ with finite variance $ Var (X)$.",
+    "char_start": 33983,
+    "char_end": 34082,
+    "sentence_index": 223,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec019",
+    "text": "Define $ X = 1 G _ j=1 ^G X_j$ and $S_G^2= 1 G _ j=1 ^G (X_j- X )^2$.",
+    "char_start": 34083,
+    "char_end": 34152,
+    "sentence_index": 224,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec019",
+    "text": "Then\n\nE [S_G^2] = G-1 G \\, Var (X).",
+    "char_start": 34153,
+    "char_end": 34188,
+    "sentence_index": 225,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec019",
+    "text": "Using $S_G^2= 1 G _ j=1 ^G X_j^2- X ^2$ and letting $ = E [X]$, we have\n\nE [S_G^2] = E [X^2] - E [ X ^2]\n= E [X^2] - ( Var ( X ) + ( E [ X ])^2 )\n= ( Var (X)+ ^2) - ( 1 G Var (X)+ ^2 ),\n\nwhich yields $ E [S_G^2]= G-1 G Var (X)$.",
+    "char_start": 34190,
+    "char_end": 34418,
+    "sentence_index": 226,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec019",
+    "text": "[Proof of Proposition ]\nLet $r \\ high , low \\ $ be sampled from $P_ sample $ with $p:=P_ sample (r= high ) (0,1)$.",
+    "char_start": 34420,
+    "char_end": 34534,
+    "sentence_index": 227,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec019",
+    "text": "Let $ _ ref ( r)$ and define the bounded reward random variable $X:=R( ) $.",
+    "char_start": 34535,
+    "char_end": 34610,
+    "sentence_index": 228,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec019",
+    "text": "Let $ _h:= E [X r= high ]$ and $ _l:= E [X r= low ]$.",
+    "char_start": 34611,
+    "char_end": 34664,
+    "sentence_index": 229,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec019",
+    "text": "By Lemma (law of total variance),\n\nVar (X) \\; \\; Var _ r \\!",
+    "char_start": 34666,
+    "char_end": 34725,
+    "sentence_index": 230,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec019",
+    "text": "( E [X r] )\n\\;=\\; p(1-p)\\,( _h- _l)^2.",
+    "char_start": 34726,
+    "char_end": 34764,
+    "sentence_index": 231,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec019",
+    "text": "Under the proposition assumption $| _h- _l| $, we obtain\n\nVar (X) p(1-p)\\, ^2.",
+    "char_start": 34766,
+    "char_end": 34844,
+    "sentence_index": 232,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec019",
+    "text": "Now draw a GRPO group by sampling $G$ i.i.d.\\ pairs $(r_j, _j)$ with $r_j P_ sample $ and $ _j _ ref ( r_j)$, and define $X_j:=R( _j)$ and $ _g^2:= 1 G _ j=1 ^G (X_j- X )^2$ where $ X = 1 G _ j=1 ^G X_j$.",
+    "char_start": 34846,
+    "char_end": 35050,
+    "sentence_index": 233,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec019",
+    "text": "By Lemma ,\n\nE [ _g^2] = G-1 G \\, Var (X)\n\\; \\; G-1 G \\,p(1-p)\\, ^2.",
+    "char_start": 35051,
+    "char_end": 35118,
+    "sentence_index": 234,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec019",
+    "text": "Thus we can take $ = G-1 G p(1-p)$.",
+    "char_start": 35120,
+    "char_end": 35155,
+    "sentence_index": 235,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec020",
+    "text": "The Berkeley Function Calling Leaderboard (BFCLv4) is a comprehensive benchmark designed to evaluate the tool-calling capabilities of Large Language Models.",
+    "char_start": 35157,
+    "char_end": 35313,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec021",
+    "text": "It encompasses a wide variety of APIs (e.g., Java, JavaScript, Python) and diverse scenarios.",
+    "char_start": 35314,
+    "char_end": 35407,
+    "sentence_index": 237,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec021",
+    "text": "Our work primarily focuses on the multi-turn dataset section, which is specifically designed to test an agent's ability to maintain context, handle state changes, and execute sequential tools to achieve a complex goal.",
+    "char_start": 35408,
+    "char_end": 35626,
+    "sentence_index": 238,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec021",
+    "text": "Benchmark Statistics.",
+    "char_start": 35628,
+    "char_end": 35649,
+    "sentence_index": 239,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec021",
+    "text": "The multi-turn subset consists of 200 high-quality, human-curated evaluation trajectories.",
+    "char_start": 35650,
+    "char_end": 35740,
+    "sentence_index": 240,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec021",
+    "text": "Each trajectory involves multiple steps (typically 3-10 turns) where the agent must interact with a simulated environment.",
+    "char_start": 35741,
+    "char_end": 35863,
+    "sentence_index": 241,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec021",
+    "text": "The primary domains include:\n\nGorillaFileSystem: A simulated Linux file system supporting commands like ls , cd , grep , find , mv , etc.",
+    "char_start": 35864,
+    "char_end": 36001,
+    "sentence_index": 242,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec021",
+    "text": "TwitterAPI: A mock social media API for posting tweets, replying, and managing followers.",
+    "char_start": 36002,
+    "char_end": 36091,
+    "sentence_index": 243,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec021",
+    "text": "MathAPI: Utilities for statistical calculations (mean, standard deviation, logarithm).",
+    "char_start": 36092,
+    "char_end": 36178,
+    "sentence_index": 244,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec021",
+    "text": "TicketAPI: A system for managing support tickets (create, resolve, query).",
+    "char_start": 36179,
+    "char_end": 36253,
+    "sentence_index": 245,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec022",
+    "text": "We employ a systematic pipeline to construct aligned SFT, RCTP-FT, and RL datasets for BFCLv4 multi-turn evaluation.",
+    "char_start": 36255,
+    "char_end": 36371,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec022",
+    "text": "All datasets share the same ID-based train/test split (90\\%/10\\%) to ensure zero question overlap between training and evaluation.",
+    "char_start": 36372,
+    "char_end": 36502,
+    "sentence_index": 247,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec022",
+    "text": "Stage 1: SFT and RCTP-FT Data.",
+    "char_start": 36504,
+    "char_end": 36534,
+    "sentence_index": 248,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec022",
+    "text": "Source.",
+    "char_start": 36536,
+    "char_end": 36543,
+    "sentence_index": 249,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec022",
+    "text": "We derive training data from two complementary sources.",
+    "char_start": 36544,
+    "char_end": 36599,
+    "sentence_index": 250,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec022",
+    "text": "Since the RCTP-FT training dataset uses an exact 1:1 expert-to-failure ratio (800:800), we set $p=0.5$ in Eq.",
+    "char_start": 36600,
+    "char_end": 36709,
+    "sentence_index": 251,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec022",
+    "text": ".\n\nExpert Trajectories (800): Extracted from the official BFCLv4 ground truth ( possible\\_answer/ files).",
+    "char_start": 36710,
+    "char_end": 36815,
+    "sentence_index": 252,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec022",
+    "text": "These represent optimal execution paths verified by the benchmark maintainers across four multi-turn categories: base , long\\_context , miss\\_func , and miss\\_param (200 samples each).",
+    "char_start": 36816,
+    "char_end": 37000,
+    "sentence_index": 253,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec022",
+    "text": "Failure Trajectories (800): Collected via RL exploration rollouts using Qwen2.5-7B-Instruct.",
+    "char_start": 37001,
+    "char_end": 37093,
+    "sentence_index": 254,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec022",
+    "text": "These capture diverse failure modes including incorrect tool selection, parameter errors, and premature termination.",
+    "char_start": 37094,
+    "char_end": 37210,
+    "sentence_index": 255,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec022",
+    "text": "Split.",
+    "char_start": 37212,
+    "char_end": 37218,
+    "sentence_index": 256,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec022",
+    "text": "We apply an ID-based split: 720 train / 80 test.",
+    "char_start": 37219,
+    "char_end": 37267,
+    "sentence_index": 257,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec022",
+    "text": "This ensures that questions sharing the same numeric ID (which appear across multiple categories) are kept together in either train or test, preventing data leakage.",
+    "char_start": 37268,
+    "char_end": 37433,
+    "sentence_index": 258,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec022",
+    "text": "Format.",
+    "char_start": 37435,
+    "char_end": 37442,
+    "sentence_index": 259,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec022",
+    "text": "Both SFT and RCTP-FT datasets use OpenAI chat format with a combined task prompt (``Step 1: ...",
+    "char_start": 37443,
+    "char_end": 37538,
+    "sentence_index": 260,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec022",
+    "text": "Step 2: ...",
+    "char_start": 37539,
+    "char_end": 37550,
+    "sentence_index": 261,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec022",
+    "text": "Complete all the steps above using the available tools.",
+    "char_start": 37551,
+    "char_end": 37606,
+    "sentence_index": 262,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec022",
+    "text": "Call done() when you have finished all tasks.'').",
+    "char_start": 37607,
+    "char_end": 37656,
+    "sentence_index": 263,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec022",
+    "text": "The key distinction:\n\nSFT: Expert trajectories only, no reward tokens.",
+    "char_start": 37657,
+    "char_end": 37727,
+    "sentence_index": 264,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec022",
+    "text": "RCTP-FT: Both expert and failure trajectories, with reward token appended to the first user message: [Reward Goal: <|high\\_reward|>] for success and [Reward Goal: <|low\\_reward|>] for failure.",
+    "char_start": 37728,
+    "char_end": 37920,
+    "sentence_index": 265,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec022",
+    "text": "Statistics.",
+    "char_start": 37922,
+    "char_end": 37933,
+    "sentence_index": 266,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec022",
+    "text": "Table summarizes the curated data.",
+    "char_start": 37934,
+    "char_end": 37968,
+    "sentence_index": 267,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec022",
+    "text": "The RCTP-FT dataset maintains an exact 50-50 balance between success and failure trajectories, which is essential for learning reward-conditioned generation.",
+    "char_start": 37969,
+    "char_end": 38126,
+    "sentence_index": 268,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec022",
+    "text": "[h]\n\nSFT and RCTP-FT Dataset Statistics for BFCLv4\n\n@ lcccc@\n\nDataset & Train & Test & Total & Success Rate\n\nSFT & 720 & 80 & 800 & 100\\%\n\nRCTP-FT (success) & 720 & 80 & 800 & 100\\%\n\nRCTP-FT (failure) & 720 & 80 & 800 & 0\\%\n\nRCTP-FT Total & 1,440 & 160 & 1,600 & 50\\%\n\nStage 2: RL Data.",
+    "char_start": 38128,
+    "char_end": 38414,
+    "sentence_index": 269,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec022",
+    "text": "Source.",
+    "char_start": 38416,
+    "char_end": 38423,
+    "sentence_index": 270,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec022",
+    "text": "For online RL, we use minimal task pointers that reference the original BFCLv4 questions.",
+    "char_start": 38424,
+    "char_end": 38513,
+    "sentence_index": 271,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec022",
+    "text": "The BFCL environment adapter constructs the full system prompt and combined task prompt at runtime, enabling dynamic interaction with the simulated environment.",
+    "char_start": 38514,
+    "char_end": 38674,
+    "sentence_index": 272,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec022",
+    "text": "Split.",
+    "char_start": 38676,
+    "char_end": 38682,
+    "sentence_index": 273,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec022",
+    "text": "We use the same ID-based split as Stage 1: 720 train / 80 test.",
+    "char_start": 38683,
+    "char_end": 38746,
+    "sentence_index": 274,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec022",
+    "text": "Table shows the distribution across categories.",
+    "char_start": 38747,
+    "char_end": 38794,
+    "sentence_index": 275,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec022",
+    "text": "The per-category counts are not exactly 180/20 because the split operates at the ID level first, and samples sharing an ID inherit that assignment.",
+    "char_start": 38795,
+    "char_end": 38942,
+    "sentence_index": 276,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "[h]\n\nRL Data Train/Test Split by Category\n\n@ lccc@\n\nCategory & Train & Test & Total\n\nmulti\\_turn\\_base & 182 & 18 & 200\n\nmulti\\_turn\\_long\\_context & 177 & 23 & 200\n\nmulti\\_turn\\_miss\\_func & 183 & 17 & 200\n\nmulti\\_turn\\_miss\\_param & 178 & 22 & 200\n\nTotal & 720 & 80 & 800\n\nFormat.",
+    "char_start": 38944,
+    "char_end": 39226,
+    "sentence_index": 277,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec022",
+    "text": "Each RL sample is a minimal task pointer:\n\n\"conversations\": [ \"from\": \"human\", \"value\": \"[BFCL task: multi_turn_base_0]\" ],\n\"task_id\": \"multi_turn_base_0\",\n\"source_file\": \"BFCL_v4_multi_turn_base.json\",\n\"env_type\": \"bfcl\"\n\nFormat Alignment.",
+    "char_start": 39227,
+    "char_end": 39467,
+    "sentence_index": 278,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec022",
+    "text": "All data phases enforce strict format alignment to ensure consistency across SFT, RCTP-FT, and RL:\n\nMessage Structure: OpenAI chat format ( \\ role, content, tool\\_calls\\ ).",
+    "char_start": 39468,
+    "char_end": 39640,
+    "sentence_index": 279,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec022",
+    "text": "Combined Task Prompt: User instructions are merged into a single ``Step 1: ..., Step 2: ...'' format.",
+    "char_start": 39641,
+    "char_end": 39742,
+    "sentence_index": 280,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec022",
+    "text": "Schema Consistency: All assistant messages include an explicit tool\\_calls key (empty list if no calls).",
+    "char_start": 39743,
+    "char_end": 39847,
+    "sentence_index": 281,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec023",
+    "text": "We provide examples to illustrate the data formats used in each training stage.",
+    "char_start": 39849,
+    "char_end": 39928,
+    "sentence_index": 282,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec023",
+    "text": "Multi-Turn Trajectory Example.",
+    "char_start": 39930,
+    "char_end": 39960,
+    "sentence_index": 283,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec023",
+    "text": "This example from multi\\_turn\\_base\\_1 demonstrates a task requiring file system manipulation.",
+    "char_start": 39961,
+    "char_end": 40055,
+    "sentence_index": 284,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec023",
+    "text": "During SFT/RCTP-FT, the model observes multi-turn user queries as separate turns.",
+    "char_start": 40056,
+    "char_end": 40137,
+    "sentence_index": 285,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec023",
+    "text": "During RL, the queries are merged into a single combined task prompt.",
+    "char_start": 40138,
+    "char_end": 40207,
+    "sentence_index": 286,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec023",
+    "text": "Task ID: multi\\_turn\\_base\\_1\n\nUser Query 1: ``I am alex.",
+    "char_start": 40209,
+    "char_end": 40266,
+    "sentence_index": 287,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec023",
+    "text": "Check if the current directory is under my name and list all the visible and hidden contents in the current directory now, please.''\n\nAgent Action 1: ls(a=True)\n\nObservation 1: \\ \"status\": \"success\"\\\n\nUser Query 2: ``Go to workspace directory and move one of the 'log.txt' files into a new directory 'archive'.''\n\nAgent Action 2: cd(folder=\"workspace\")\n\nAgent Action 3: mv(source=\"log.txt\", destination=\"archive\")\n\nUser Query 3: ``Investigate within 'log.txt' for the occurrence of the keyword 'Error'.''\n\nAgent Action 4: cd(folder=\"archive\")\n\nAgent Action 5: grep(file\\_name=\"log.txt\", pattern=\"Error\")\n\nReward-Conditioned Format Example.",
+    "char_start": 40267,
+    "char_end": 40906,
+    "sentence_index": 288,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec023",
+    "text": "For RCTP-FT, we augment trajectories with reward tokens.",
+    "char_start": 40907,
+    "char_end": 40963,
+    "sentence_index": 289,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec023",
+    "text": "Below shows how the same task is formatted for high-reward (expert) and low-reward (failure) trajectories:\n\nRCTP-FT Input (High Reward):\n\nUser: Find analysis\\_report.csv and move it to 'archive'...",
+    "char_start": 40964,
+    "char_end": 41161,
+    "sentence_index": 290,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec023",
+    "text": "[Reward Goal: <|high\\_reward|>]\n\nAssistant: mv(source=\"analysis\\_report.csv\", destination=\"archive\")\n\n...",
+    "char_start": 41163,
+    "char_end": 41268,
+    "sentence_index": 291,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec023",
+    "text": "RCTP-FT Input (Low Reward):\n\nUser: Find analysis\\_report.csv and move it to 'archive'...",
+    "char_start": 41270,
+    "char_end": 41358,
+    "sentence_index": 292,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec023",
+    "text": "[Reward Goal: <|low\\_reward|>]\n\nAssistant: cp(source=\"analysis\\_report.csv\", destination=\"archive\")\n\n(Copying instead of moving is a common failure mode)\n\n...",
+    "char_start": 41360,
+    "char_end": 41518,
+    "sentence_index": 293,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec024",
+    "text": "This appendix summarizes the exact model versions used in our experiments.",
+    "char_start": 41520,
+    "char_end": 41594,
+    "sentence_index": 294,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec025",
+    "text": "We report the exact model identifiers in Table .",
+    "char_start": 41596,
+    "char_end": 41644,
+    "sentence_index": 295,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec025",
+    "text": "[h]\n\nBase model versions used in this paper.",
+    "char_start": 41645,
+    "char_end": 41689,
+    "sentence_index": 296,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec025",
+    "text": "@ ll@\n\nModel & Version / Identifier\n\nLLaMA-3.1-8B-Instruct & meta-llama/Llama-3.1-8B-Instruct\n\nQwen2.5-7B-Instruct & Qwen/Qwen2.5-7B-Instruct\n\nWe report the exact model identifiers in Table .",
+    "char_start": 41691,
+    "char_end": 41882,
+    "sentence_index": 297,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec026",
+    "text": "[h]\n\nAPI model versions evaluated on BFCLv4 (validation).",
+    "char_start": 41883,
+    "char_end": 41940,
+    "sentence_index": 298,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec026",
+    "text": "@ ll@\n\nModel & Version / Identifier\n\nOpus-4.5 & claude-opus-4-5-20251101\n\nSonnet-4.5 & claude-sonnet-4-5-20250929\n\nGLM-4.7 & glm-4.7\n\nGemini-3-Pro & gemini-3-pro-preview\n\nGPT-5.2 & gpt-5.2-2025-12-11\n\nThis section provides the rigorous mathematical formulation of the trajectory-level reward function $R( )$ used in RC-GRPO (see Sec.",
+    "char_start": 41942,
+    "char_end": 42275,
+    "sentence_index": 299,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec027",
+    "text": "), followed by a concrete calculation example.",
+    "char_start": 42276,
+    "char_end": 42322,
+    "sentence_index": 300,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec028",
+    "text": "We use the following notation:\n\n$S_ final $: The final state of the environment (API states, databases, etc.) after the agent's trajectory $ $.",
+    "char_start": 42324,
+    "char_end": 42467,
+    "sentence_index": 301,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec029",
+    "text": "$S_ gold $: The final state of the environment after executing the ground truth trajectory.",
+    "char_start": 42468,
+    "char_end": 42559,
+    "sentence_index": 302,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec029",
+    "text": "$A_ traj $: The set of all tool calls executed by the agent in trajectory $ $.",
+    "char_start": 42560,
+    "char_end": 42638,
+    "sentence_index": 303,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec029",
+    "text": "$A_ gold $: The set of all essential tool calls in the ground truth trajectory.",
+    "char_start": 42639,
+    "char_end": 42718,
+    "sentence_index": 304,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec029",
+    "text": "$ 1 [C]$: Indicator function (1 if condition $C$ is true, 0 otherwise).",
+    "char_start": 42719,
+    "char_end": 42790,
+    "sentence_index": 305,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec029",
+    "text": "For BFCLv4, the total reward $R( )$ is the product of a state consistency check and an action coverage check:\n\nR( ) = R_ state R_ action\n\nState Consistency ($R_ state $).",
+    "char_start": 42792,
+    "char_end": 42962,
+    "sentence_index": 306,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec030",
+    "text": "This component verifies that the side effects of the agent's actions match the ground truth.",
+    "char_start": 42963,
+    "char_end": 43055,
+    "sentence_index": 307,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec030",
+    "text": "This is critical for tasks where different action sequences can yield the same valid outcome (e.g., creating a file).",
+    "char_start": 43056,
+    "char_end": 43173,
+    "sentence_index": 308,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec030",
+    "text": "R_ state = 1 [S_ final = S_ gold ]\n\nIn implementation, this involves comparing the hash or deep equality of the environment's state dictionary.",
+    "char_start": 43175,
+    "char_end": 43318,
+    "sentence_index": 309,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec030",
+    "text": "Action Coverage ($R_ action $).",
+    "char_start": 43320,
+    "char_end": 43351,
+    "sentence_index": 310,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec030",
+    "text": "This component ensures that all required actions were performed.",
+    "char_start": 43352,
+    "char_end": 43416,
+    "sentence_index": 311,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec030",
+    "text": "Unlike strict sequential matching, this allows for reordering of independent commutative actions.",
+    "char_start": 43417,
+    "char_end": 43514,
+    "sentence_index": 312,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec030",
+    "text": "R_ action = 1\n\nwhere $ Match (a, a^*)$ is true if and only if:\n\n$a.",
+    "char_start": 43516,
+    "char_end": 43583,
+    "sentence_index": 313,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec030",
+    "text": "name = a^*.",
+    "char_start": 43584,
+    "char_end": 43595,
+    "sentence_index": 314,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec030",
+    "text": "name $\nFor every parameter $k, v$ in $a^*.",
+    "char_start": 43596,
+    "char_end": 43638,
+    "sentence_index": 315,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec030",
+    "text": "args $, $a.",
+    "char_start": 43639,
+    "char_end": 43650,
+    "sentence_index": 316,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec030",
+    "text": "args [k] = v$.",
+    "char_start": 43651,
+    "char_end": 43665,
+    "sentence_index": 317,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec030",
+    "text": "(The agent may provide extra optional parameters, but must match all required/golden parameters).",
+    "char_start": 43666,
+    "char_end": 43763,
+    "sentence_index": 318,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec031",
+    "text": "Consider a task: ``Move report.csv to /archive and delete temp.log .''\n\nGround Truth ($A_ gold $):\n\nmv(src=\"report.csv\", dst=\"/archive\")\nrm(path=\"temp.log\")\n\nScenario 1: Perfect Execution (Success)\n\nAgent Actions: rm(\"temp.log\") , then mv(\"report.csv\", \"/archive\") .",
+    "char_start": 43765,
+    "char_end": 44031,
+    "sentence_index": 319,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec031",
+    "text": "$R_ state = 1$ (Filesystem state matches gold).",
+    "char_start": 44032,
+    "char_end": 44079,
+    "sentence_index": 320,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec031",
+    "text": "$R_ action = 1$ (Both mv and rm present with correct args, order ignored).",
+    "char_start": 44080,
+    "char_end": 44154,
+    "sentence_index": 321,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec031",
+    "text": "Total Reward: $1 1 = 1$.",
+    "char_start": 44155,
+    "char_end": 44179,
+    "sentence_index": 322,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec031",
+    "text": "Scenario 2: Right Actions, Wrong State (Failure)\n\nAgent Actions: mv(\"report.csv\", \"/archive\") , rm(\"temp.log\") , but then touch(\"temp.log\") .",
+    "char_start": 44181,
+    "char_end": 44322,
+    "sentence_index": 323,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec031",
+    "text": "$R_ action = 1$ (All essential actions executed).",
+    "char_start": 44323,
+    "char_end": 44372,
+    "sentence_index": 324,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec031",
+    "text": "$R_ state = 0$ ( temp.log exists in final state, but shouldn't).",
+    "char_start": 44373,
+    "char_end": 44437,
+    "sentence_index": 325,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec031",
+    "text": "Total Reward: $0 1 = 0$.",
+    "char_start": 44438,
+    "char_end": 44462,
+    "sentence_index": 326,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec031",
+    "text": "Scenario 3: Missing Action (Failure)\n\nAgent Actions: Only mv(\"report.csv\", \"/archive\") .",
+    "char_start": 44464,
+    "char_end": 44552,
+    "sentence_index": 327,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec031",
+    "text": "$R_ state = 0$ ( temp.log still exists).",
+    "char_start": 44553,
+    "char_end": 44593,
+    "sentence_index": 328,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec031",
+    "text": "$R_ action = 0$ (Missing rm call).",
+    "char_start": 44594,
+    "char_end": 44628,
+    "sentence_index": 329,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec031",
+    "text": "Total Reward: $0 0 = 0$.",
+    "char_start": 44629,
+    "char_end": 44653,
+    "sentence_index": 330,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec032",
+    "text": "We conduct our experiments using 8 NVIDIA H200 GPUs.",
+    "char_start": 44655,
+    "char_end": 44707,
+    "sentence_index": 331,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec032",
+    "text": "This section details the hyperparameter configurations for RC-GRPO (Table ), RCTP-FT (Table ), and the main baselines (Table ).",
+    "char_start": 44709,
+    "char_end": 44836,
+    "sentence_index": 332,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec033",
+    "text": "We summarize the hyperparameter configurations for RC-GRPO (Table ) and RCTP-FT (Table ).",
+    "char_start": 44838,
+    "char_end": 44927,
+    "sentence_index": 333,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec033",
+    "text": "Table lists the hyperparameters used for the RC-GRPO experiments on BFCLv4.",
+    "char_start": 44929,
+    "char_end": 45004,
+    "sentence_index": 334,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec033",
+    "text": "[h]\n\nHyperparameter settings for RC-GRPO.",
+    "char_start": 45006,
+    "char_end": 45047,
+    "sentence_index": 335,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec033",
+    "text": "lcc\n\nHyperparameter & LLaMA-3.1-8B & Qwen2.5-7B\n\nLearning Rate & $1 10^ -6 $ & $1 10^ -6 $\n\nKL Coefficient ($ $) & 0.1 & 0.1\n\nGroup Size ($G$) & 5 & 5\n\nBatch Size & 256 & 256\n\nClip Ratio & 0.2 & 0.2\n\nEpochs & 400 & 400\n\n[h]\n\nHyperparameter settings for RCTP-FT (reward-conditioned trajectory finetuning).",
+    "char_start": 45049,
+    "char_end": 45353,
+    "sentence_index": 336,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec033",
+    "text": "lcc\n\nHyperparameter & LLaMA-3.1-8B & Qwen2.5-7B\n\nLearning Rate & $1 10^ -5 $ & $1 10^ -5 $\n\nBatch Size & 16 & 16\n\nEpochs & 5.0 & 5.0\n\nReward Tokens & <|high\\_reward|> , <|low\\_reward|> & <|high\\_reward|> , <|low\\_reward|>\n\nTable summarizes the hyperparameter configurations for the baseline methods.",
+    "char_start": 45355,
+    "char_end": 45654,
+    "sentence_index": 337,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec034",
+    "text": "[h]\n\nHyperparameter settings for baseline methods.",
+    "char_start": 45656,
+    "char_end": 45706,
+    "sentence_index": 338,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec034",
+    "text": "lcc\n\nHyperparameter & LLaMA-3.1-8B & Qwen2.5-7B\n\n3 l SFT\n\nLearning rate & $1 10^ -5 $ & $1 10^ -5 $\n\nBatch size & 16 & 16\n\nEpochs & 2.0 & 2.0\n\nOptimizer & AdamW & AdamW\n\n3 l GRPO\n\nLearning rate & $1 10^ -6 $ & $1 10^ -6 $\n\nBatch size & 64 & 64\n\nGroup size ($G$) & 5 & 5\n\nKL coefficient ($ $) & 0.1 & 0.1\n\nClip ratio ($ $) & 0.2 & 0.2",
+    "char_start": 45708,
+    "char_end": 46041,
+    "sentence_index": 339,
+    "section_sentence_index": 1
+  }
+]

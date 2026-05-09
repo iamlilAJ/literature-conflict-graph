@@ -1,0 +1,2261 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Reasoning segmentation has recently expanded from ground-level scenes to remote-sensing imagery, yet UAV data poses distinct challenges, including oblique viewpoints, ultra-high resolutions, and extreme scale variations.",
+    "char_start": 0,
+    "char_end": 220,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "To address these issues, we formally define the UAV Reasoning Segmentation task and organize its semantic requirements into three dimensions: Spatial, Attribute, and Scene-level reasoning.",
+    "char_start": 221,
+    "char_end": 409,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Based on this formulation, we construct DRSeg, a large-scale benchmark for UAV reasoning segmentation, containing 10k high-resolution aerial images paired with Chain-of-Thought QA supervision across all three reasoning types.",
+    "char_start": 410,
+    "char_end": 635,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "As a benchmark companion, we introduce PixDLM, a simple yet effective pixel-level multimodal language model that serves as a unified baseline for this task.",
+    "char_start": 636,
+    "char_end": 792,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Experiments on DRSeg establish strong baseline results and highlight the unique challenges of UAV reasoning segmentation, providing a solid foundation for future research.",
+    "char_start": 793,
+    "char_end": 964,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "All datasets, models, and code are available at .",
+    "char_start": 965,
+    "char_end": 1014,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "[t]\n\npic/02datanew.pdf\n\nOverview of the DRSeg construction pipeline.",
+    "char_start": 1016,
+    "char_end": 1084,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Includes (1) human selection, (2) semi-automatic mask generation, (3) automatic reasoning annotation, and (4) human verification, producing a high-quality UAV reasoning segmentation dataset with multi-level supervision.",
+    "char_start": 1085,
+    "char_end": 1304,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Reasoning segmentation aims to identify image regions that satisfy free-form natural language instructions .",
+    "char_start": 1306,
+    "char_end": 1414,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Recent works such as LISA and PixelLM show that large multimodal models can perform implicit and relation-based reasoning for pixel-level segmentation, establishing reasoning segmentation as an instruction-driven visual understanding paradigm.",
+    "char_start": 1415,
+    "char_end": 1658,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "However, existing reasoning segmentation benchmarks and models are largely built on ground-view or nadir-view imagery .",
+    "char_start": 1660,
+    "char_end": 1779,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Their visual assumptions moderate resolution, limited scale variation, stable camera orientation, and sizable objects\u2014do not hold for unmanned aerial vehicle (UAV) imagery.",
+    "char_start": 1780,
+    "char_end": 1952,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "In particular, UAV imagery presents three defining characteristics:\n(i) High-altitude and oblique viewpoints continuously change the perspective geometry, requiring models to infer semantics across dynamic view changes rather than from a fixed ground-level reference frame.",
+    "char_start": 1954,
+    "char_end": 2227,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "(ii) Extreme scale variation and dense small objects mean that many critical targets---vehicles, pedestrians, debris, and inspection structures---occupy only tens of pixels, making them easily lost during token compression in existing MLLMs.",
+    "char_start": 2228,
+    "char_end": 2469,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "(iii) Ultra-high-resolution scenes combine global environmental context with fine-grained structural cues (e.g., rooftops, lanes, and fences), requiring models to reason jointly over global semantics and tiny, high-frequency details.",
+    "char_start": 2470,
+    "char_end": 2703,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "We therefore define the UAV Reasoning Segmentation task(Fig.",
+    "char_start": 2705,
+    "char_end": 2765,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "), which takes a UAV image and a free-form instruction as input and predicts a pixel-level mask for the region that satisfies the instruction.",
+    "char_start": 2766,
+    "char_end": 2908,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Unlike referring segmentation, which often benefits from explicit object mentions , UAV instructions typically emphasize spatial configuration (``the vehicle closest to the crosswalk''), visual state (``the solar panel with broken cells''), or scene intent (``the area suitable for landing'').",
+    "char_start": 2909,
+    "char_end": 3202,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Despite its practical importance in low-altitude monitoring, search-and-rescue, intelligent inspection, and autonomous drone navigation, reasoning segmentation under UAV conditions still lacks a dedicated benchmark because existing UAV datasets generally lack fine-grained annotations, diverse semantic coverage, and reasoning-oriented textual supervision .",
+    "char_start": 3204,
+    "char_end": 3561,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Several UAV-based datasets such as VisDrone , AUAIR , UAVDT , and CARPK provide drone-view images but generally lack fine-grained or oriented annotations.",
+    "char_start": 3562,
+    "char_end": 3716,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Even datasets specifically designed for UAV-oriented detection, including DroneVehicle and UAV-ROD , cover only a narrow set of object categories and do not include reasoning-oriented textual instructions , making them inadequate for tasks that require diverse scene elements and instruction-dependent target definitions.",
+    "char_start": 3717,
+    "char_end": 4038,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "This gap prevents the community from systematically measuring progress in UAV reasoning and limits the development of models capable of supporting real-world aerial decision-making.",
+    "char_start": 4039,
+    "char_end": 4220,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "To address this gap, we introduce DRSeg , a benchmark tailored to UAV Reasoning Segmentation.",
+    "char_start": 4222,
+    "char_end": 4315,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "DRSeg contains over 10,000 high-resolution UAV images across diverse environments and illumination conditions, enriched with pixel-accurate masks and Chain-of-Thought reasoning QA pairs reflecting three key reasoning dimensions\u2014spatial, attribute, and scene-level reasoning.",
+    "char_start": 4316,
+    "char_end": 4590,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Each QA\u2013mask pair is generated through a GPT-5 guided process and validated by human experts, ensuring consistency between reasoning intention and final pixel-level supervision.",
+    "char_start": 4591,
+    "char_end": 4768,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "However, a benchmark alone is insufficient to facilitate systematic evaluation of UAV reasoning segmentation.",
+    "char_start": 4770,
+    "char_end": 4879,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Existing reasoning segmentation models typically rely on low-resolution visual tokenization, which may discard fine-grained UAV details during compression.",
+    "char_start": 4880,
+    "char_end": 5035,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To provide a reference baseline under such conditions, we introduce PixDLM, a pixel-level multimodal language model equipped with a Dual-Path Vision Encoder.",
+    "char_start": 5036,
+    "char_end": 5193,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "The model combines a global low-resolution pathway for semantic context with a high-resolution structural pathway that preserves small objects and boundary cues.",
+    "char_start": 5194,
+    "char_end": 5355,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "These pathways are integrated through a lightweight MultiPath Alignment module, while a hierarchical decoder refines segmentation masks under LLM-guided reasoning.",
+    "char_start": 5356,
+    "char_end": 5519,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Our contributions are threefold:\n\nWe formalize UAV Reasoning Segmentation as an instruction-driven pixel-level prediction task under UAV-specific visual statistics, clarifying why existing reasoning models fail under aerial viewpoints.",
+    "char_start": 5520,
+    "char_end": 5755,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "We introduce DRSeg , a large-scale UAV reasoning segmentation benchmark with over 10,000 high-resolution images and CoT-aligned reasoning annotations.",
+    "char_start": 5756,
+    "char_end": 5906,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We introduce PixDLM, a Dual-Path pixel-level multimodal language model that serves as a strong baseline for UAV reasoning segmentation and demonstrates competitive performance on standard referring segmentation benchmarks.",
+    "char_start": 5907,
+    "char_end": 6129,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec003",
+    "text": "Large Multimodal Models.",
+    "char_start": 6131,
+    "char_end": 6155,
+    "sentence_index": 33,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "Recent LMMs such as BLIP-2 , InternGPT , LLaVA , Llama-Adapter , and Qwen-VL have significantly advanced open-world visual reasoning by aligning vision and language through adapter-based fusion and instruction tuning.",
+    "char_start": 6156,
+    "char_end": 6373,
+    "sentence_index": 34,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "However, these models primarily produce text-only outputs and lack pixel-level prediction mechanisms, making them unsuitable for fine-grained spatial reasoning\u2014especially under UAV conditions involving oblique viewpoints, high-resolution imagery, and extreme scale variation.",
+    "char_start": 6374,
+    "char_end": 6649,
+    "sentence_index": 35,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "Reasoning Segmentation.",
+    "char_start": 6651,
+    "char_end": 6674,
+    "sentence_index": 36,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "LISA formalized reasoning segmentation by introducing a multimodal LLM with a $< SEG >$ token and an embedding-as-mask decoder, enabling implicit language reasoning with pixel-level outputs.",
+    "char_start": 6675,
+    "char_end": 6865,
+    "sentence_index": 37,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "PixelLM further removed external segmentation modules by integrating a lightweight pixel decoder and segmentation codebook, supporting multi-object and multi-scale reasoning.",
+    "char_start": 6866,
+    "char_end": 7040,
+    "sentence_index": 38,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "While effective on ground-view scenes, these models generalize poorly to UAV imagery , where viewpoint distortions, tiny objects, and high-frequency structural cues are easily lost through low-resolution tokenization .",
+    "char_start": 7041,
+    "char_end": 7259,
+    "sentence_index": 39,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Reasoning in Geographic and Remote Sensing Domains.",
+    "char_start": 7261,
+    "char_end": 7312,
+    "sentence_index": 40,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "In recent years, deep learning has made remarkable progress in the field of remote sensing, significantly advancing the ability to interpret large-scale aerial and satellite imagery .",
+    "char_start": 7313,
+    "char_end": 7496,
+    "sentence_index": 41,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "Building on this momentum, the reasoning paradigm has been extended to large-scale geographic scenes, with GeoPix and GeoPixel incorporating spatial priors and topological cues to improve language-guided mask generation.",
+    "char_start": 7497,
+    "char_end": 7717,
+    "sentence_index": 42,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Meanwhile, remote-sensing models such as RS-MMFormer , RemoteSAM , and AerialVLN adapt generic segmentation frameworks to high-resolution satellite imagery.",
+    "char_start": 7718,
+    "char_end": 7874,
+    "sentence_index": 43,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Nonetheless, these approaches remain bound to predefined semantic categories and show limited open-vocabulary reasoning, weak compositionality, and insufficient robustness to dense small-object distribution .",
+    "char_start": 7875,
+    "char_end": 8083,
+    "sentence_index": 44,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Challenges in UAV Imagery.",
+    "char_start": 8085,
+    "char_end": 8111,
+    "sentence_index": 45,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Compared with satellite or ground-view images, UAV scenes feature drastic viewpoint changes, complex motion patterns, and dynamic scene characteristics, which motivate the development of DRSeg as a standardized benchmark for language-driven reasoning in aerial imagery .",
+    "char_start": 8112,
+    "char_end": 8382,
+    "sentence_index": 46,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Moreover, Existing reasoning segmentation models fail to preserve small, densely distributed targets, while remote-sensing frameworks do not generalize well to low-altitude oblique perspectives and often incur prohibitive computational costs .",
+    "char_start": 8383,
+    "char_end": 8626,
+    "sentence_index": 47,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "Inspired by LLaVA-HR , PixDLM introduces a dual-path visual encoder that explicitly balances global semantic abstraction and high-resolution structural perception through controlled integration.",
+    "char_start": 8627,
+    "char_end": 8821,
+    "sentence_index": 48,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "[t]\n\npic/03method.pdf\n\nOverview of PixDLM.",
+    "char_start": 8823,
+    "char_end": 8865,
+    "sentence_index": 49,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "A Dual-Path Vision Encoder extracts global semantics (CLIP) and fine-grained structure (SAM), which are fused through MultiPath Alignment.",
+    "char_start": 8866,
+    "char_end": 9004,
+    "sentence_index": 50,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Text embeddings and a Mask Token are processed by the LLM for instruction-conditioned reasoning, and a multi-scale decoder reconstructs the final segmentation mask.",
+    "char_start": 9005,
+    "char_end": 9169,
+    "sentence_index": 51,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "Given an input UAV image \\(x_ img \\) and an implicit natural language instruction \\(x_ txt \\), the goal of UAV Reasoning Segmentation is to predict a binary mask \\(M \\ 0,1\\ ^ H W \\) satisfying the semantic conditions expressed in the instruction:\n\nM = f_ (x_ img , x_ txt ),\n\nwhere \\(f_ \\) denotes a multimodal reasoning model parameterized by \\( \\).",
+    "char_start": 9171,
+    "char_end": 9521,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "Unlike conventional referring segmentation, UAV ReasonSeg operates in a category-agnostic and implicit setting.",
+    "char_start": 9523,
+    "char_end": 9634,
+    "sentence_index": 53,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Instructions do not explicitly name target categories (e.g., ``the red truck''), but instead describe relational, contextual, or intent-driven semantics such as ``the safest open area for landing'', ``the object blocking the road ahead'', or ``the building with visible structural damage''.",
+    "char_start": 9635,
+    "char_end": 9925,
+    "sentence_index": 54,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "This requires models to infer what to segment from scene context and reasoning cues rather than surface-level category recognition.",
+    "char_start": 9926,
+    "char_end": 10057,
+    "sentence_index": 55,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "To capture the diversity of implicit semantics in UAV scenes, we define three complementary reasoning dimensions:\n\nSpatial Reasoning : inferring geometric or positional relations (e.g., ``the vehicle behind the fire truck'', ``the region closest to the riverbank'').",
+    "char_start": 10059,
+    "char_end": 10325,
+    "sentence_index": 56,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Attribute Reasoning : identifying latent visual properties or object states (e.g., ``the illuminated structure at night'', ``the damaged solar panel'').",
+    "char_start": 10326,
+    "char_end": 10478,
+    "sentence_index": 57,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Scene-level Reasoning : interpreting global context or task-oriented semantics (e.g., ``the safest landing zone'', ``the area suggesting ongoing construction'').",
+    "char_start": 10479,
+    "char_end": 10640,
+    "sentence_index": 58,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Compared with ground-view or satellite-view imagery, UAV images exhibit unique challenges including oblique viewpoints, large-scale variation, dense small objects, and dynamic flight conditions.",
+    "char_start": 10642,
+    "char_end": 10836,
+    "sentence_index": 59,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Existing reasoning segmentation datasets do not reflect these characteristics, motivating the need for a UAV-specific benchmark.",
+    "char_start": 10837,
+    "char_end": 10965,
+    "sentence_index": 60,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "We evaluate performance using two metrics: gIoU and cIoU.",
+    "char_start": 10967,
+    "char_end": 11024,
+    "sentence_index": 61,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "Specifically, the generalized Intersection-over-Union (gIoU) measures the average IoU across individual images.",
+    "char_start": 11025,
+    "char_end": 11136,
+    "sentence_index": 62,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "In contrast, the cumulative Intersection-over-Union (cIoU) computes the ratio between the total intersection and total union aggregated over the entire dataset.",
+    "char_start": 11137,
+    "char_end": 11297,
+    "sentence_index": 63,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "To fill this gap, we present DRSeg , the first large-scale dataset tailored for UAV reasoning segmentation.",
+    "char_start": 11299,
+    "char_end": 11406,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Built upon the CODrone dataset , DRSeg spans diverse aerial environments such as urban roads, parks, residential areas, industrial zones, and waterfront scenes.",
+    "char_start": 11407,
+    "char_end": 11567,
+    "sentence_index": 65,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Images are captured from multiple altitudes (30\\,m/60\\,m/100\\,m) and various lighting conditions, including nighttime and mixed artificial illumination.",
+    "char_start": 11568,
+    "char_end": 11720,
+    "sentence_index": 66,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "The construction pipeline of DRSeg consists of four stages (Fig.",
+    "char_start": 11722,
+    "char_end": 11786,
+    "sentence_index": 67,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "):\n\nHuman Selection.",
+    "char_start": 11787,
+    "char_end": 11807,
+    "sentence_index": 68,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "We first curate UAV images exhibiting strong visual and semantic complexity, including large scale variation, dense objects, motion blur, occlusion, and oblique viewpoints.",
+    "char_start": 11808,
+    "char_end": 11980,
+    "sentence_index": 69,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Low-quality or trivial images are filtered out to ensure challenging and diverse reasoning scenarios.",
+    "char_start": 11981,
+    "char_end": 12082,
+    "sentence_index": 70,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Semi-Automatic Annotation.",
+    "char_start": 12084,
+    "char_end": 12110,
+    "sentence_index": 71,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "Rotated bounding boxes from CODrone are converted into coarse instance masks via SAM2 .",
+    "char_start": 12111,
+    "char_end": 12198,
+    "sentence_index": 72,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "These masks are further refined using the semi-automatic ISAT tool to correct boundary errors, enabling accurate pixel-level instance segmentation, especially for small objects or thin structures.",
+    "char_start": 12199,
+    "char_end": 12395,
+    "sentence_index": 73,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "Automatic Reasoning Annotation.",
+    "char_start": 12397,
+    "char_end": 12428,
+    "sentence_index": 74,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "To generate reasoning-aware supervision, we employ GPT-5 conditioned on the image, refined mask, and category label.",
+    "char_start": 12429,
+    "char_end": 12545,
+    "sentence_index": 75,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Three tailored prompt sets (See in the Supplementary Material) guide GPT-5 to produce reasoning-oriented question--answer pairs across spatial, attribute, and scene-level dimensions.",
+    "char_start": 12546,
+    "char_end": 12728,
+    "sentence_index": 76,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "Each annotation includes natural language reasoning and a distilled Chain-of-Thought (CoT) trace, giving interpretable and context-rich supervision.",
+    "char_start": 12729,
+    "char_end": 12877,
+    "sentence_index": 77,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "We conduct masking, shuffling, and semantic corruption experiments on the CoT traces of 10\\% of the samples, and the limited performance changes indicate strong robustness to noisy reasoning supervision.",
+    "char_start": 12878,
+    "char_end": 13081,
+    "sentence_index": 78,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "Human Verification.",
+    "char_start": 13083,
+    "char_end": 13102,
+    "sentence_index": 79,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "Finally, human annotators review all automatically generated annotations for logical consistency, correctness, and semantic alignment with the target mask.",
+    "char_start": 13103,
+    "char_end": 13258,
+    "sentence_index": 80,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "Valid samples are retained and split into training, validation, and test sets following a 3:2:5 ratio.",
+    "char_start": 13259,
+    "char_end": 13361,
+    "sentence_index": 81,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "DRSeg contains a total of 10,000 high-resolution UAV images and 10,000 instance masks , making it one of the largest UAV-view segmentation datasets to date.",
+    "char_start": 13363,
+    "char_end": 13519,
+    "sentence_index": 82,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "Although each image is annotated with only one target instance for reasoning, aerial scenes typically contain many distractor objects, leading to high effective object density.",
+    "char_start": 13520,
+    "char_end": 13696,
+    "sentence_index": 83,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "For reasoning supervision, DRSeg provides 10,000 reasoning QA pairs , one for each annotated instance, covering all three reasoning dimensions.",
+    "char_start": 13698,
+    "char_end": 13841,
+    "sentence_index": 84,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "Among them, 33.33\\% correspond to Spatial reasoning, 33.34\\% to Attribute reasoning, and 33.33\\% to Scene-level reasoning, demonstrating a balanced distribution that supports diverse reasoning behaviors.",
+    "char_start": 13842,
+    "char_end": 14045,
+    "sentence_index": 85,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "In terms of geometric diversity, the dataset spans three flight altitudes (30\\,m, 60\\,m, and 100\\,m), with 31.44\\% , 25.45\\% , and 43.11\\% of images captured at each altitude, respectively.",
+    "char_start": 14047,
+    "char_end": 14236,
+    "sentence_index": 86,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "Object scale variation is equally significant: 58.08\\% of all instances fall into the small-object regime (area $<\\!",
+    "char_start": 14237,
+    "char_end": 14353,
+    "sentence_index": 87,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "2\\%$ of the image), highlighting the fine-grained challenges introduced by UAV viewpoints.Additional dataset visualizations are provided in the Supplementary Material.",
+    "char_start": 14354,
+    "char_end": 14521,
+    "sentence_index": 88,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "In total, DRSeg provides a high-resolution, reasoning-rich benchmark specifically aligned with the challenges of UAV perception, enabling systematic evaluation of multimodal reasoning and segmentation models.",
+    "char_start": 14523,
+    "char_end": 14731,
+    "sentence_index": 89,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "[t]\n\nComparison of different models on the DRSeg benchmark across three reasoning dimensions.",
+    "char_start": 14733,
+    "char_end": 14826,
+    "sentence_index": 90,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec007",
+    "text": "6pt\n1.15\n0.85 !",
+    "char_start": 14828,
+    "char_end": 14843,
+    "sentence_index": 91,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec007",
+    "text": "l|l|cc|cc|cc\n\n2 * Setting &\n2 * Model Name &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n3-8\n& & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $\n\n7 * Zero-shot\n& SegEarth-R1 & 20.58 & 11.18 & 26.33 & 16.11 & 25.83 & 14.87\n\n& LISA-13B-llama2-v1 & 52.65 & 48.12 & 47.08 & 42.41 & 42.85 & 37.94\n\n& LISA-7B-v1 & 49.21 & 45.15 & 45.55 & 41.59 & 42.00 & 37.50\n\n& LISA-7B-v1-explanatory & 48.40 & 43.77 & 42.79 & 37.86 & 38.69 & 34.97\n\n& LISAt-7B & 43.80 & 46.36 & 42.13 & 44.20 & 39.91 & 37.45\n\n& PixelLM-7B & 46.87 & 49.55 & 43.07 & 45.49 & 41.28 & 40.94\n\n& PixelLM-13B & 48.39 & 47.26 & 45.06 & 48.90 & 41.98 & 39.31\n\n3 * SFT\n& LISA-7B-v1 & 59.22 & 59.66 & 54.45 & 53.25 & 57.33 & 58.02\n\n& PixelLM-7B & 58.39 & 57.35 & 55.19 & 54.29 & 55.38 & 54.47\n\n& Ours & 62.80 & 62.84 & 61.75 & 64.03 & 62.51 & 62.80\n\nWhile DRSeg enables systematic evaluation of UAV reasoning segmentation, effective benchmarking also requires a suitable baseline.",
+    "char_start": 14844,
+    "char_end": 15815,
+    "sentence_index": 92,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Existing MLLMs typically rely on low-resolution visual tokens , which discard fine-grained UAV details, while directly reasoning over full-resolution imagery is computationally prohibitive due to substantial memory overhead.",
+    "char_start": 15816,
+    "char_end": 16040,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "To provide a reference point for future research, we introduce PixDLM , a lightweight pixel-level multimodal model designed as a baseline for DRSeg.",
+    "char_start": 16041,
+    "char_end": 16189,
+    "sentence_index": 94,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "[t]\n\npic/04example.pdf\nVisual comparison of segmentation results produced by LISA, our fine-tuned LISA variant, GeoPix, and our PixDLM model.",
+    "char_start": 16191,
+    "char_end": 16332,
+    "sentence_index": 95,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "[t]\n\npic/05examplepic.pdf\nVisualization of PixDLM results on the three DRSeg reasoning subsets: Attribute (left), Scene (middle), and Spatial (right).",
+    "char_start": 16334,
+    "char_end": 16484,
+    "sentence_index": 96,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "Each panel shows examples with increasing reasoning complexity, diverse visual conditions, and varying localization difficulty.",
+    "char_start": 16485,
+    "char_end": 16612,
+    "sentence_index": 97,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "[t]\n\nAblation study on the effects of training datasets ( RRSIS-D , DRSeg ) and COT supervision.",
+    "char_start": 16614,
+    "char_end": 16710,
+    "sentence_index": 98,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "Each checkmark ($ $) indicates a 1:1 inclusion.",
+    "char_start": 16711,
+    "char_end": 16758,
+    "sentence_index": 99,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "We evaluate how different dataset combinations and COT usage influence reasoning performance.",
+    "char_start": 16759,
+    "char_end": 16852,
+    "sentence_index": 100,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "Metrics (\\%) are reported as $gIoU $ and $cIoU $.",
+    "char_start": 16853,
+    "char_end": 16902,
+    "sentence_index": 101,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "6pt\n1.15\n0.80 !",
+    "char_start": 16904,
+    "char_end": 16919,
+    "sentence_index": 102,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "ccc|cc|cc|cc\n\n3 c| Activated Datasets &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n4-9\nCOT & RRSISD & DRSeg &\n$gIoU $ & $cIoU $ &\n$gIoU $ & $cIoU $ &\n$gIoU $ & $cIoU $\n\n& & & 61.13 & 60.60 & 55.60 & 54.53 & 60.55 & 65.73\n\n& & & 59.02 & 60.19 & 55.98 & 54.70 & 59.00 & 59.21\n\n& & & 62.80 & 62.84 & 61.75 & 64.03 & 62.51 & 62.80\n\n& & & 62.51 & 61.62 & 55.92 & 54.29 & 59.57 & 60.94\n\n[t]\n\nAblation study of the Dual-Path Vision Encoder on the DRSeg benchmark.",
+    "char_start": 16920,
+    "char_end": 17406,
+    "sentence_index": 103,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "Each layer is progressively activated from top to bottom.",
+    "char_start": 17407,
+    "char_end": 17464,
+    "sentence_index": 104,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "Metrics (\\%) are reported as $gIoU $ and $cIoU $.",
+    "char_start": 17465,
+    "char_end": 17514,
+    "sentence_index": 105,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "6pt\n1.15\n0.80 !",
+    "char_start": 17515,
+    "char_end": 17530,
+    "sentence_index": 106,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "cccc|cc|cc|cc\n\n4 c| Activated Layers &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n5-10\n1st & 2nd & 3rd & 4th &\n$gIoU $ & $cIoU $ &\n$gIoU $ & $cIoU $ &\n$gIoU $ & $cIoU $\n\n& & & & 58.39 & 57.35 & 55.19 & 54.29 & 55.38 & 54.47\n\n& & & & 58.90 & 59.77 & 55.38 & 54.47 & 56.96 & 59.10\n\n& & & & 60.36 & 61.13 & 55.92 & 56.21 & 57.76 & 60.85\n\n& & & & 60.56\n& 61.62 & 57.09 & 56.25 & 59.57 & 60.94\n\n& & & & 62.80 & 62.84 & 61.75 & 64.03 & 62.51 & 62.80\n\n[t]\n\nAblation study of the Hierarchical Reasoning Decoder on the DRSeg benchmark.",
+    "char_start": 17531,
+    "char_end": 18087,
+    "sentence_index": 107,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "Each configuration progressively increases the decoder depth from two to three layers.",
+    "char_start": 18088,
+    "char_end": 18174,
+    "sentence_index": 108,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec008",
+    "text": "Metrics (\\%) are reported as gIoU $ $ and cIoU $ $.",
+    "char_start": 18175,
+    "char_end": 18226,
+    "sentence_index": 109,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec008",
+    "text": "6pt\n1.15\n0.85 !",
+    "char_start": 18227,
+    "char_end": 18242,
+    "sentence_index": 110,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec008",
+    "text": "l|cc|cc|cc|cc\n\n2 * Decoder Layer &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c| Spatial Reasoning &\n2 c ALL\n\n2-9\n& $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $\n\n2-layers & 56.27 & 57.23 & 55.13 & 56.28 & 56.67 & 61.42 & 56.43 & 58.01\n\n3-layers (Ours) & 62.80 & 62.84 & 61.75 & 64.03 & 62.51 & 62.80 & 62.35 & 63.23\n\nFollowing LLaVA-HR , PixDLM is built on a simple and effective idea:\ninject high-resolution structure into low-resolution semantic reasoning through MultiPath Alignment, allowing an MLLM to perform pixel-level segmentation without increasing visual token cost.",
+    "char_start": 18243,
+    "char_end": 18862,
+    "sentence_index": 111,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec008",
+    "text": "The architecture consists of three tightly coupled components:\n\n(1) A Dual-Path Vision Encoder that separately models global semantics and fine structural details, then aligns and fuses them through a hierarchical cross-path mechanism.",
+    "char_start": 18863,
+    "char_end": 19098,
+    "sentence_index": 112,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec008",
+    "text": "(2) An LLM backbone that receives text tokens, image tokens, and a learnable Mask Token , whose hidden states naturally encode multimodal reasoning .",
+    "char_start": 19100,
+    "char_end": 19249,
+    "sentence_index": 113,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec008",
+    "text": "(3) A Hierarchical Reasoning Decoder that progressively reconstructs the segmentation mask through cross-scale refinement using both high-resolution visual features and LLM-driven mask embeddings.",
+    "char_start": 19251,
+    "char_end": 19447,
+    "sentence_index": 114,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec008",
+    "text": "During inference, the image and instruction are processed by the LLM, which outputs the hidden state of the Mask Token containing integrated semantic+visual reasoning.",
+    "char_start": 19449,
+    "char_end": 19616,
+    "sentence_index": 115,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec008",
+    "text": "To preserve spatial fidelity, PixDLM augments this reasoning signal with the final three high-resolution layers from the SAM encoder .",
+    "char_start": 19617,
+    "char_end": 19751,
+    "sentence_index": 116,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec008",
+    "text": "These multi-scale features and mask embeddings are then decoded into the final mask .",
+    "char_start": 19752,
+    "char_end": 19837,
+    "sentence_index": 117,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec008",
+    "text": "The overall pipeline is shown in Fig.",
+    "char_start": 19838,
+    "char_end": 19875,
+    "sentence_index": 118,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec008",
+    "text": ".\n\nBelow, we detail each module and naturally introduce the mathematical formulation supporting these components.",
+    "char_start": 19876,
+    "char_end": 19989,
+    "sentence_index": 119,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec009",
+    "text": "UAV imagery requires jointly modeling (1) long-range context for reasoning, and (2) high-frequency boundaries for small-object segmentation.",
+    "char_start": 19991,
+    "char_end": 20131,
+    "sentence_index": 120,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec009",
+    "text": "To satisfy these competing needs, PixDLM adopts a Dual-Path Vision Encoder consisting of:\n\nGlobal-Scope Path : Captures coarse semantics for long-range reasoning.",
+    "char_start": 20132,
+    "char_end": 20294,
+    "sentence_index": 121,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec009",
+    "text": "Fine-Scope Path : Preserves dense structural details for small-object boundaries.",
+    "char_start": 20295,
+    "char_end": 20376,
+    "sentence_index": 122,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec009",
+    "text": "Overall, the proposed Dual-Path Vision Encoder follows a simple three-step pipeline: (1) dual-path feature extraction, (2) three-stage latent fusion, and (3) final fusion.",
+    "char_start": 20378,
+    "char_end": 20549,
+    "sentence_index": 123,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec009",
+    "text": "To jointly preserve global semantics and fine-grained structures, we employ a dual-path feature extraction strategy, where a dual-path visual encoder consisting of a Global-Scope Path and a Fine-Scope Path.",
+    "char_start": 20551,
+    "char_end": 20757,
+    "sentence_index": 124,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec009",
+    "text": "Given an input image $x$, the two branches operate on different resolutions:\n\nF_f^ (0) = E_f(R_f(x)), F_s = E_s(R_s(x)),\n\nwhere $R_f( )$ and $R_s( )$ denote branch-specific resizing operations, and $E_f$ and $E_s$ denote the CLIP and SAM encoders , respectively.",
+    "char_start": 20758,
+    "char_end": 21020,
+    "sentence_index": 125,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec009",
+    "text": "Here, $F_f^ (0) $ represents the initial token features from the Global-Scope Path, while $F_s$ denotes the high-resolution structural feature extracted by the Fine-Scope Path.",
+    "char_start": 21021,
+    "char_end": 21197,
+    "sentence_index": 126,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec009",
+    "text": "To bridge the resolution gap, we introduce a lightweight MultiPath Alignment .",
+    "char_start": 21199,
+    "char_end": 21277,
+    "sentence_index": 127,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec009",
+    "text": "Rather than fusing the two branches only at the output level, we inject the feature from the Fine-Scope Path into the intermediate latent spaces of the Global-Scope Path in three-stage latent fusion .",
+    "char_start": 21278,
+    "char_end": 21478,
+    "sentence_index": 128,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec009",
+    "text": "Specifically, at each stage $k \\ 1,2,3\\ $, we first align the feature from Fine-Scope Path to the token dimension and spatial resolution of the current Global-Scope Path latent:\n\nF _s^ (k) = A_k(F_s), k \\ 1,2,3\\ ,\n\nwhere $A_k( )$ denotes the alignment operator at stage $k$, including channel projection and spatial resampling.",
+    "char_start": 21479,
+    "char_end": 21806,
+    "sentence_index": 129,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec009",
+    "text": "In this way, $ F _s^ (k) $ is compatible with the latent feature of the corresponding CLIP stage.",
+    "char_start": 21807,
+    "char_end": 21904,
+    "sentence_index": 130,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec009",
+    "text": "After alignment, we perform gated residual fusion:\n\nF_f^ (k) = B_k(F_f^ (k-1) ) + G_k\\!",
+    "char_start": 21906,
+    "char_end": 21993,
+    "sentence_index": 131,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec009",
+    "text": "(B_k(F_f^ (k-1) ), F _s^ (k) ) F _s^ (k) ,\n\nwhere $B_k( )$ denotes the transformation of the $k$-th Global-Scope Path stage, $G_k( )$ is a learnable gating function, and $ $ denotes element-wise scaling.",
+    "char_start": 21994,
+    "char_end": 22197,
+    "sentence_index": 132,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec009",
+    "text": "This design allows the model to adaptively inject high-resolution structural cues into the semantic encoding process, so that fine details can influence representation learning throughout the encoder rather than only at the end.",
+    "char_start": 22198,
+    "char_end": 22426,
+    "sentence_index": 133,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec009",
+    "text": "Final Fusion:\nAfter the three-stage latent fusion, we further perform an explicit fusion at the output level.",
+    "char_start": 22427,
+    "char_end": 22536,
+    "sentence_index": 134,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec009",
+    "text": "The final feature from Global-Scope Path and the aligned feature from Fine-Scope Path are projected into the same feature space and summed to form the final visual representation:\n\nF_ out = W_f F_f^ (3) + W_s A_o(F_s),\n\nwhere $A_o( )$ denotes the output-level alignment operator, and $W_f$ and $W_s$ are learnable linear projections for the global and fine scope path, respectively.",
+    "char_start": 22537,
+    "char_end": 22919,
+    "sentence_index": 135,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec009",
+    "text": "The resulting feature $F_ out $ is then used as the final visual representation for downstream language reasoning and mask prediction.",
+    "char_start": 22920,
+    "char_end": 23054,
+    "sentence_index": 136,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "The Mask Token produced by the LLM contains cross-modal reasoning signals\nbut lacks fine spatial granularity.",
+    "char_start": 23056,
+    "char_end": 23165,
+    "sentence_index": 137,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "To recover pixel-level masks, we introduce a lightweight\nHierarchical Reasoning Decoder\nthat progressively injects multi-scale visual features into the reasoning flow.",
+    "char_start": 23166,
+    "char_end": 23333,
+    "sentence_index": 138,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "At each layer $l$, the decoder receives:\n(1) visual feature map $ F ^l$, and\n(2) a higher-level predicted mask $M^ l+1 $.",
+    "char_start": 23335,
+    "char_end": 23456,
+    "sentence_index": 139,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "The mask modulates feature importance through:\n\nF '^l = F ^l ( (M^ l+1 ) + 1),\n\ndirecting attention to high-confidence regions while suppressing noise.",
+    "char_start": 23457,
+    "char_end": 23608,
+    "sentence_index": 140,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "After obtaining all $n$ intermediate masks $\\ M^1, ,M^n\\ $,\nwe fuse them using learnable layer-wise coefficients:\n\nM = _ l=1 ^ n ^l M^l.",
+    "char_start": 23610,
+    "char_end": 23746,
+    "sentence_index": 141,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "This hierarchical refinement improves spatial precision and enforces semantic consistency across scales, which is critical for UAV reasoning segmentation where objects vary drastically in size and appearance.",
+    "char_start": 23748,
+    "char_end": 23956,
+    "sentence_index": 142,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec011",
+    "text": "We initialize our VLLM with the pre-trained weights of LLaMA-2-13B as the language backbone and adopt a Dual-Path vision encoder for multi-scale feature extraction.",
+    "char_start": 23958,
+    "char_end": 24122,
+    "sentence_index": 143,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "Training is performed with DeepSpeed ZeRO-2 using a batch size of 2 and 10 gradient-accumulation steps on eight NVIDIA GeForce RTX 3090 GPUs.",
+    "char_start": 24123,
+    "char_end": 24264,
+    "sentence_index": 144,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "We employ the AdamW optimizer with a learning rate of $3 10^ -4 $, a linear warm-up of 100 steps, and train for 10 epochs (200 steps per epoch).",
+    "char_start": 24265,
+    "char_end": 24409,
+    "sentence_index": 145,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "The total loss is a weighted combination of cross-entropy (1.0), binary cross-entropy (2.0), and Dice loss (0.5).",
+    "char_start": 24410,
+    "char_end": 24523,
+    "sentence_index": 146,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec013",
+    "text": "Table compares PixDLM with state-of-the-art approaches.Fig.",
+    "char_start": 24525,
+    "char_end": 24584,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec013",
+    "text": "further provides visual comparisons of segmentation results produced by LISA , our fine-tuned LISA variant, GeoPix , and our PixDLM model.",
+    "char_start": 24585,
+    "char_end": 24723,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec013",
+    "text": "In the zero-shot setting, existing models show limited performance on DRSeg, with low gIoU and cIoU across all three reasoning dimensions.",
+    "char_start": 24724,
+    "char_end": 24862,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec013",
+    "text": "This suggests that current multimodal models do not transfer well to UAV reasoning segmentation, underscoring the need for a dataset specifically designed for this setting.",
+    "char_start": 24863,
+    "char_end": 25035,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec013",
+    "text": "With supervised fine-tuning (SFT), our method achieves higher scores than baselines such as PixelLM across all reasoning dimensions, demonstrating a clear performance advantage.",
+    "char_start": 25037,
+    "char_end": 25214,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec013",
+    "text": "These results indicate that PixDLM aligns more effectively with the demands of DRSeg and provides stronger reasoning and segmentation capabilities, validating the effectiveness of our design.Fig.",
+    "char_start": 25215,
+    "char_end": 25410,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec013",
+    "text": "further visualizes PixDLM\u2019s segmentation results across the three reasoning subsets of DRSeg.",
+    "char_start": 25411,
+    "char_end": 25504,
+    "sentence_index": 153,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec013",
+    "text": "To assess its cross-domain generalization, we further evaluate PixDLM on the RefCOCOs , RefCOCO+ , and RefCOCOg dataset (See in the Supplementary Material).",
+    "char_start": 25506,
+    "char_end": 25662,
+    "sentence_index": 154,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec013",
+    "text": "PixDLM delivers strong performance across all three benchmarks and demonstrates clear advantages over multimodal baselines such as LISA-7B and PixelLM on most evaluation splits.",
+    "char_start": 25663,
+    "char_end": 25840,
+    "sentence_index": 155,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec013",
+    "text": "These findings suggest that the proposed Dual-Path architecture and reasoning-aware alignment not only enhance UAV segmentation, but also transfer effectively to standard referring segmentation tasks, underscoring the model\u2019s robust generalization capability.",
+    "char_start": 25841,
+    "char_end": 26100,
+    "sentence_index": 156,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "Training Strategy (with/without COT; mixed vs single-task)\nAs shown in Tab , training purely on DRSeg provides a strong baseline (Attribute: $62.51\\%$ gIoU / $61.62\\%$ cIoU; Scene: $55.92\\%$ / $54.29\\%$; Spatial: $59.57\\%$ / $60.94\\%$).",
+    "char_start": 26102,
+    "char_end": 26338,
+    "sentence_index": 157,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec014",
+    "text": "Adding COT supervision yields the best overall configuration, improving to $62.80\\%$ / $62.84\\%$ on Attribute and $61.75\\%$ / $64.03\\%$ on Scene, while maintaining solid Spatial performance ($62.51\\%$ / $62.80\\%$).",
+    "char_start": 26339,
+    "char_end": 26553,
+    "sentence_index": 158,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec014",
+    "text": "Using RRSIS-D alone with DRSeg brings limited gains, likely due to weaker reasoning annotations.",
+    "char_start": 26554,
+    "char_end": 26650,
+    "sentence_index": 159,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec014",
+    "text": "Overall, these results show that (i) COT provides the largest overall benefit by injecting step-wise linguistic reasoning signals, (ii) single-task training underperforms mixed-task learning across dimensions.",
+    "char_start": 26651,
+    "char_end": 26860,
+    "sentence_index": 160,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec014",
+    "text": "MultiPath Alignment Layers\nTab examines the four fusion layers in our Dual-Path Vision Encoder.",
+    "char_start": 26862,
+    "char_end": 26957,
+    "sentence_index": 161,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "Starting with no fusion (all columns empty), the model attains $58.39\\%$/$57.35\\%$ (Attribute), $55.19\\%$/$54.29\\%$ (Scene), and $55.38\\%$/$54.47\\%$ (Spatial).",
+    "char_start": 26958,
+    "char_end": 27117,
+    "sentence_index": 162,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "Enabling fusion progressively from deep to shallow yields monotonic gains across all reasoning types.",
+    "char_start": 27118,
+    "char_end": 27219,
+    "sentence_index": 163,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "Activating the full set of 1st--4th layers (i.e., all four fusion stages) delivers the best results: $62.80\\%$/$62.84\\%$ (Attribute), $61.75\\%$/$64.03\\%$ (Scene), and $62.51\\%$/$62.80\\%$ (Spatial).",
+    "char_start": 27220,
+    "char_end": 27417,
+    "sentence_index": 164,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec014",
+    "text": "Relative to no fusion, this corresponds to $+4.41\\%$/$+5.49\\%$ on Attribute, $+6.56\\%$/$+9.74\\%$ on Scene, and $+7.13\\%$/$+8.33\\%$ on Spatial.",
+    "char_start": 27418,
+    "char_end": 27560,
+    "sentence_index": 165,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec014",
+    "text": "These results confirm the importance of MultiPath Alignment across scales: early fusion introduces structural details, deeper fusion stabilizes semantics, and combining all four stages achieves the most consistent gains.",
+    "char_start": 27562,
+    "char_end": 27782,
+    "sentence_index": 166,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec014",
+    "text": "Hierarchical Reasoning Decoder\nAs summarized in Table , increasing the decoder depth from two layers (two-scale fusion) to three layers (three-scale fusion) leads to clear and consistent performance gains.",
+    "char_start": 27784,
+    "char_end": 27989,
+    "sentence_index": 167,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec014",
+    "text": "The overall average increases from $56.43\\%$/$58.01\\%$ to $62.35\\%$/$63.23\\%$ in gIoU/cIoU, corresponding to improvements of $+5.92\\%$ and $+5.22\\%$, respectively.",
+    "char_start": 27990,
+    "char_end": 28153,
+    "sentence_index": 168,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec014",
+    "text": "Performance also improves across all reasoning dimensions.",
+    "char_start": 28154,
+    "char_end": 28212,
+    "sentence_index": 169,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec014",
+    "text": "For Attribute Reasoning, the score increases from $56.27\\%$/$57.23\\%$ to $62.80\\%$/$62.84\\%$; for Scene Reasoning, from $55.13\\%$/$56.28\\%$ to $61.75\\%$/$64.04\\%$; and for Spatial Reasoning, from $56.67\\%$/$61.42\\%$ to $62.51\\%$/$62.80\\%$.",
+    "char_start": 28213,
+    "char_end": 28452,
+    "sentence_index": 170,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec014",
+    "text": "These results show that the three-scale decoder improves coarse-to-fine refinement and multimodal integration during mask prediction, achieving a good balance between accuracy and efficiency.",
+    "char_start": 28453,
+    "char_end": 28644,
+    "sentence_index": 171,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec014",
+    "text": "Therefore, we use the three-layer decoder as the default configuration.",
+    "char_start": 28645,
+    "char_end": 28716,
+    "sentence_index": 172,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "We introduce UAV Reasoning Segmentation and categorize reasoning into three types: attribute, scene, and spatial reasoning, which collectively characterize the requirements of UAV vision scenarios.",
+    "char_start": 28718,
+    "char_end": 28915,
+    "sentence_index": 173,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec015",
+    "text": "To support this task, we construct DRSeg, a high-resolution, multi-view UAV dataset annotated with detailed chain-of-thought supervision.",
+    "char_start": 28916,
+    "char_end": 29053,
+    "sentence_index": 174,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec015",
+    "text": "We further propose PixDLM, a multimodal model that integrates a Dual-Path encoder with a hierarchical decoder.",
+    "char_start": 29054,
+    "char_end": 29164,
+    "sentence_index": 175,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec015",
+    "text": "Experimental results demonstrate that PixDLM achieves substantial improvements in both semantic consistency and spatial localization.",
+    "char_start": 29165,
+    "char_end": 29298,
+    "sentence_index": 176,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "This work is supported by the National Key Research and Development Program of China (No.",
+    "char_start": 29300,
+    "char_end": 29389,
+    "sentence_index": 177,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec016",
+    "text": "2025YFE0113500), National Science Fund for Distinguished Young Scholars (No.62525605) and the National Natural Science Foundation of China (No.",
+    "char_start": 29390,
+    "char_end": 29533,
+    "sentence_index": 178,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec016",
+    "text": "U25B2066, No.",
+    "char_start": 29534,
+    "char_end": 29547,
+    "sentence_index": 179,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "U22B2051, No.",
+    "char_start": 29548,
+    "char_end": 29561,
+    "sentence_index": 180,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "62302411).",
+    "char_start": 29562,
+    "char_end": 29572,
+    "sentence_index": 181,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "page 1\n\nIn this supplementary material, Sec.",
+    "char_start": 29574,
+    "char_end": 29618,
+    "sentence_index": 182,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "provides additional visualizations of the DRSeg dataset.",
+    "char_start": 29619,
+    "char_end": 29675,
+    "sentence_index": 183,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "Sec.",
+    "char_start": 29676,
+    "char_end": 29680,
+    "sentence_index": 184,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "discusses the design of the loss functions.",
+    "char_start": 29681,
+    "char_end": 29724,
+    "sentence_index": 185,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "Sec.",
+    "char_start": 29725,
+    "char_end": 29729,
+    "sentence_index": 186,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "presents extended experimental results, covering the baselines of GeoPix and Seg-Zero across the three reasoning dimensions, along with the performance of PixDLM on the ReferSeg benchmark.",
+    "char_start": 29730,
+    "char_end": 29918,
+    "sentence_index": 187,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "Sec.",
+    "char_start": 29919,
+    "char_end": 29923,
+    "sentence_index": 188,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "presents ablation studies on alternative Multi-Path Encoder fusion strategies and a one-layer decoder variant.",
+    "char_start": 29924,
+    "char_end": 30034,
+    "sentence_index": 189,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "section\n.",
+    "char_start": 30036,
+    "char_end": 30045,
+    "sentence_index": 190,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "table\n.",
+    "char_start": 30046,
+    "char_end": 30053,
+    "sentence_index": 191,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "figure\n\nsection 0\ntable 0\nfigure 0\n\nFigure illustrates the instruction template used to construct the reasoning annotations in DRSeg.",
+    "char_start": 30054,
+    "char_end": 30187,
+    "sentence_index": 192,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec018",
+    "text": "To ensure consistent and high-quality supervision,we design a unified prompt format that guides the model to generate three types of reasoning signals: Spatial, Attribute, and Scene-level reasoning.",
+    "char_start": 30188,
+    "char_end": 30386,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec018",
+    "text": "For each annotated instance, the prompt requires:\n(1) a reasoning-oriented question that uniquely locates the target;\n(2) a structured reasoning chain that analyzes contextual cues such as environmental elements, functional roles, spatial relations, and appearance features; and\n(3) a concise, verifiable answer.",
+    "char_start": 30387,
+    "char_end": 30699,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec018",
+    "text": "The output is constrained to a strict JSON format, enabling robust automatic parsing and ensuring annotation consistency across all 10,000 samples.",
+    "char_start": 30700,
+    "char_end": 30847,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec018",
+    "text": "[t]\n\npic/06A1prompt.pdf\nInstruction template used for constructing reasoning annotations in DRSeg.",
+    "char_start": 30848,
+    "char_end": 30946,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec018",
+    "text": "It includes structured prompts for generating Spatial, Attribute, and Scene-level reasoning, each guiding the model to produce questions, reasoning chains, and answers in a unified JSON format.",
+    "char_start": 30947,
+    "char_end": 31140,
+    "sentence_index": 197,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec019",
+    "text": "We provide extended visualizations of DRSeg's key statistics in Table , including scene category distribution, altitude levels, day/night proportions, and object scale diversity.",
+    "char_start": 31142,
+    "char_end": 31320,
+    "sentence_index": 198,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec019",
+    "text": "These plots offer a more comprehensive view of the dataset's geometric, semantic, and environmental variability.",
+    "char_start": 31321,
+    "char_end": 31433,
+    "sentence_index": 199,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec019",
+    "text": "[t]\n\npic/07A2dataset.pdf\nDataset statistics of DRSeg, including small-object relative area distribution,\nscene category summary, UAV altitude distribution, and day/night proportions.",
+    "char_start": 31434,
+    "char_end": 31616,
+    "sentence_index": 200,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec020",
+    "text": "To systematically assess the annotation quality of DRSeg , we invited remote sensing researchers to conduct a human verification study on a stratified random sample of 2,000 images.",
+    "char_start": 31618,
+    "char_end": 31799,
+    "sentence_index": 201,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec020",
+    "text": "The evaluation covers three dimensions: reasoning question uniqueness, CoT reasoning consistency, and Mask--text alignment.",
+    "char_start": 31800,
+    "char_end": 31923,
+    "sentence_index": 202,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec020",
+    "text": "Each sample was independently reviewed and quantified based on the following criteria.",
+    "char_start": 31924,
+    "char_end": 32010,
+    "sentence_index": 203,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec020",
+    "text": "Uniquely Identifiable Rate : This metric measures whether a reasoning question can uniquely refer to a single target entity in the image.",
+    "char_start": 32012,
+    "char_end": 32149,
+    "sentence_index": 204,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec020",
+    "text": "We compute the proportion of samples for which both annotators agree that the question is uniquely identifiable.",
+    "char_start": 32150,
+    "char_end": 32262,
+    "sentence_index": 205,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec020",
+    "text": "CoT Reasoning Consistency : This metric evaluates whether the chain-of-thought reasoning is consistent with the visual evidence and the final target.",
+    "char_start": 32264,
+    "char_end": 32413,
+    "sentence_index": 206,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec020",
+    "text": "Each CoT explanation is scored according to the following three criteria, with $1$ point awarded for each satisfied condition (score range: $0$--$3$):\n\nThe entities mentioned in the CoT exist in the image;\nThe reasoning steps clearly describe the localization process;\nThe final predicted target matches the image semantics.",
+    "char_start": 32414,
+    "char_end": 32738,
+    "sentence_index": 207,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec020",
+    "text": "The average CoT score is defined as:\n\\[\nCoT-Score = 1 N _ i=1 ^ N s_i,\n\\]\nwhere $s_i$ denotes the CoT score of the $i$-th sample.",
+    "char_start": 32740,
+    "char_end": 32869,
+    "sentence_index": 208,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec020",
+    "text": "MaskAlign-Rate : This metric measures whether the segmentation mask aligns with the textual description.",
+    "char_start": 32871,
+    "char_end": 32975,
+    "sentence_index": 209,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec020",
+    "text": "A sample is considered aligned if (1) the target region coverage is $ 95\\%$, and (2) the non-target miscoverage is $ 5\\%$.",
+    "char_start": 32976,
+    "char_end": 33098,
+    "sentence_index": 210,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec020",
+    "text": "We report the proportion of samples for which both annotators judged the mask to be aligned.",
+    "char_start": 33099,
+    "char_end": 33191,
+    "sentence_index": 211,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec020",
+    "text": "The results show that the Uniquely Identifiable Rate reaches 95\\% , the CoT-Score achieves 2.83 out of $3$, and the MaskAlign-Rate is 97\\% .",
+    "char_start": 33193,
+    "char_end": 33333,
+    "sentence_index": 212,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec020",
+    "text": "These findings demonstrate that DRSeg exhibits highly reliable annotation quality in terms of reasoning target identification, reasoning-chain soundness, and visual-text alignment.",
+    "char_start": 33334,
+    "char_end": 33514,
+    "sentence_index": 213,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec020",
+    "text": "[t]\n\nZero-shot comparison on the DRSeg benchmark across three reasoning dimensions.",
+    "char_start": 33516,
+    "char_end": 33599,
+    "sentence_index": 214,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec020",
+    "text": "6pt\n1.15\n0.9 !",
+    "char_start": 33601,
+    "char_end": 33615,
+    "sentence_index": 215,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec020",
+    "text": "l|l|cc|cc|cc\n\n2 * Setting &\n2 * Model Name &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n3-8\n& & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $\n\n2 * Zero-shot\n& Seg-Zero-7B & 49.32 & 50.58 & 25.99 & 29.56 & 31.12 & 36.25\n\n& GeoPix-7B & 42.96 & 46.51 & 36.84 & 41.67 & 36.79 & 39.73\n\n[t]\n\nResults on the referring segmentation benchmark.",
+    "char_start": 33616,
+    "char_end": 33992,
+    "sentence_index": 216,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec020",
+    "text": "6pt\n1.15\n0.7 !",
+    "char_start": 33993,
+    "char_end": 34007,
+    "sentence_index": 217,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec020",
+    "text": "l|ccc|ccc|cc\n\n2 * Model Name &\n3 c| refCOCO &\n3 c| refCOCO+ &\n2 c refCOCOg\n\n2-9\n& val & testA & testB & val & testA & testB & val & test\n\nGSVA-7B & 76.4 & 77.4 & 72.8 & 64.5 & 67.7 & 58.6 & 71.1 & 72.0\n\nLaSagnA-7B & 76.8 & 78.7 & 73.8 & 66.4 & 70.6 & 60.1 & 70.6 & 71.9\n\nLISA-7B & 74.1 & 76.5 & 71.1 & 62.4 & 67.4 & 56.5 & 64.5 & 66.7\n\nPixelLM & 73.0 & 76.5 & 68.2 & 66.3 & 71.7 & 58.3 & 69.3 & 70.5\n\nOurs & 75.2 & 80.2 & 70.5 & 68.5 & 73.3 & 60.6 & 73.3 & 72.8\n\n[t]\n\nAblation study of the Multi-Path Alignment Fusion Strategy on the DRSeg benchmark.",
+    "char_start": 34008,
+    "char_end": 34558,
+    "sentence_index": 218,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec021",
+    "text": "We compare three fusion directions: SAM$ $ CLIP , SAM+CLIP , and CLIP$ $ SAM .",
+    "char_start": 34559,
+    "char_end": 34637,
+    "sentence_index": 219,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec021",
+    "text": "Metrics (\\%) are reported as $gIoU $ and $cIoU $.",
+    "char_start": 34638,
+    "char_end": 34687,
+    "sentence_index": 220,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec021",
+    "text": "6pt\n1.15\n0.8 !",
+    "char_start": 34689,
+    "char_end": 34703,
+    "sentence_index": 221,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec021",
+    "text": "c|cc|cc|cc\n\n2 * Fusion Strategy &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n2-7\n& $gIoU $ & $cIoU $\n& $gIoU $ & $cIoU $\n& $gIoU $ & $cIoU $\n\nSAM + CLIP\n& 60.11 & 58.73\n& 56.80 & 56.23\n& 59.34 & 60.32\n\nCLIP $ $ SAM\n& 60.24 & 60.28\n& 57.12 & 57.84\n& 59.36 & 60.97\n\nSAM $ $ CLIP\n& 62.80 & 62.84\n& 61.75 & 64.03\n& 62.51 & 62.80\n\n[t]\n\nAblation study of single-layer decoders on the DRSeg benchmark.",
+    "char_start": 34704,
+    "char_end": 35128,
+    "sentence_index": 222,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec021",
+    "text": "We compare our Single-Layer Decoder (no fusion) with the SAM Decoder baseline.Metrics (\\%) are reported as gIoU $ $ and cIoU $ $.",
+    "char_start": 35129,
+    "char_end": 35258,
+    "sentence_index": 223,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec021",
+    "text": "6pt\n1.15\n0.8 !",
+    "char_start": 35259,
+    "char_end": 35273,
+    "sentence_index": 224,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec021",
+    "text": "l|cc|cc|cc\n\n2 * Decoder Layer &\n2 c| Attribute Reasoning &\n2 c| Scene Reasoning &\n2 c Spatial Reasoning\n\n2-7\n& $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $ & $gIoU $ & $cIoU $\n\n1-layer & 47.06 & 50.07 & 45.16 & 51.35 & 45.81 & 53.27\n\nsam2.1-l& 46.43 & 48.80 & 44.78 & 49.90 & 46.16 & 51.95\n\nThe overall objective $ L $ constitutes the weighted sum of these losses, calibrated by $ _ ref $ and $ _ dice $:\n\nL\n=\nL _ txt\n+\n_ ref \\, L _ ref\n+\n_ dice \\, L _ dice .",
+    "char_start": 35274,
+    "char_end": 35726,
+    "sentence_index": 225,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec022",
+    "text": "$L$ denotes the overall training objective, $L_ txt $ is the text cross-entropy loss,\n$L_ ref $ is the binary cross-entropy loss supervising the referred target mask,\nand $L_ dice $ is the Dice loss measuring region-level overlap.",
+    "char_start": 35728,
+    "char_end": 35958,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "Following LISA , PixDLM keeps the same CE and Dice loss weights\n($ _ ref = 2.0$ and $ _ dice = 0.5$)\n\nTo preserve the knowledge of the pre-trained multimodal LLM, PixDLM adopts LoRA for efficient fine-tuning while completely freezing the CLIP vision encoder, the SAM vision encoder, and the base LLaMA/LLaVA language backbone (only the inserted LoRA adapters carry gradients).",
+    "char_start": 35959,
+    "char_end": 36335,
+    "sentence_index": 227,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec023",
+    "text": "The trainable components include the MultiPath Alignment modules, the hierarchical reasoning decoder, the text-hidden projection MLP, the SAM-to-LLM bridging convolution , the prompt encoder, and the image-feature neck adapter.",
+    "char_start": 36336,
+    "char_end": 36563,
+    "sentence_index": 228,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec024",
+    "text": "Baseline evaluations on an RTX 3090 GPU show that PixDLM requires an average of 1.12 seconds ($ $0.89 FPS) to process a single $1024 1024$ UAV image.",
+    "char_start": 36565,
+    "char_end": 36714,
+    "sentence_index": 229,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec024",
+    "text": "This measurement is obtained under the full model configuration, including the multi-level segmentation decoder and the dual-path semantic\u2013structural alignment mechanism.",
+    "char_start": 36715,
+    "char_end": 36885,
+    "sentence_index": 230,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec024",
+    "text": "The results indicate that PixDLM maintains stable throughput even with fine-grained structural modeling and cross-path interaction enabled, making it suitable for offline analysis and large-scale batch inference.",
+    "char_start": 36886,
+    "char_end": 37098,
+    "sentence_index": 231,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec024",
+    "text": "In addition, the model contains 4,194,304 trainable parameters ($ $4.19M) out of a total of 7,303,624,675 parameters ($ $7.3B), corresponding to a trainable ratio of 0.0574\\%.",
+    "char_start": 37099,
+    "char_end": 37274,
+    "sentence_index": 232,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec024",
+    "text": "figure 0\ntable 0\n\nC.",
+    "char_start": 37276,
+    "char_end": 37296,
+    "sentence_index": 233,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec024",
+    "text": "figure\nC.",
+    "char_start": 37297,
+    "char_end": 37306,
+    "sentence_index": 234,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec024",
+    "text": "table\n\nTo further strengthen the comprehensiveness of our evaluation, we additionally benchmark two recently proposed multimodal segmentation models Seg-Zero-7B and GeoPix-7B under the zero-shot setting in Table\nThese models have demonstrated strong generalization capabilities in open-world or geospatial reasoning tasks, making them relevant candidates for comparison on the DRSeg benchmark.",
+    "char_start": 37307,
+    "char_end": 37700,
+    "sentence_index": 235,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec027",
+    "text": "Table shows that PixDLM, despite being designed\nprimarily for UAV reasoning segmentation, transfers well to standard referring\nsegmentation tasks.",
+    "char_start": 37702,
+    "char_end": 37848,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec027",
+    "text": "The model achieves leading accuracy on multiple splits of\nrefCOCO and refCOCO+, and remains highly competitive on refCOCOg.",
+    "char_start": 37849,
+    "char_end": 37972,
+    "sentence_index": 237,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec027",
+    "text": "These results highlight the versatility and robustness of our dual-path design and Multi-Path Alignment module.",
+    "char_start": 37973,
+    "char_end": 38084,
+    "sentence_index": 238,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec028",
+    "text": "Table reports an ablation study on the fusion\ndirections of the Multi-Path Alignment module.",
+    "char_start": 38086,
+    "char_end": 38178,
+    "sentence_index": 239,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec029",
+    "text": "We compare three alternatives:\n( i ) directly summing features from both paths (SAM+CLIP),\n( ii ) injecting SAM features into the CLIP branch (CLIP$ $SAM),\nand ( iii ) injecting CLIP features into the SAM branch (SAM$ $CLIP).",
+    "char_start": 38179,
+    "char_end": 38404,
+    "sentence_index": 240,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec029",
+    "text": "The results show that the SAM$ $CLIP direction consistently yields the\nbest performance across all three reasoning dimensions.",
+    "char_start": 38405,
+    "char_end": 38531,
+    "sentence_index": 241,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec029",
+    "text": "This confirms that\nguiding the low-resolution semantic path with high-resolution structural cues is\nmore effective than the reverse integration strategy.",
+    "char_start": 38532,
+    "char_end": 38685,
+    "sentence_index": 242,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec030",
+    "text": "To better understand the contribution of hierarchical multi-level reasoning, we conduct ablations on non-hierarchical decoder variants, as shown in Table .",
+    "char_start": 38687,
+    "char_end": 38842,
+    "sentence_index": 243,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec030",
+    "text": "Specifically, we compare two single-layer decoders: (1) a Single-Layer Decoder that performs one-step reasoning without any cross-level fusion, and (2) a SAM2.1-L Decoder baseline that replaces our decoder with the mask prediction head from SAM2.1-Hiera-L.",
+    "char_start": 38843,
+    "char_end": 39099,
+    "sentence_index": 244,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec030",
+    "text": "Both variants operate without hierarchical fusion, thus isolating the effect of multi-stage reasoning depth.",
+    "char_start": 39101,
+    "char_end": 39209,
+    "sentence_index": 245,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec030",
+    "text": "The results demonstrate that all single-layer designs exhibit a clear performance drop across attribute, scene, and spatial reasoning dimensions.",
+    "char_start": 39210,
+    "char_end": 39355,
+    "sentence_index": 246,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec030",
+    "text": "In particular, our Single-Layer Decoder achieves higher scores than the SAM decoder baseline, indicating that even without hierarchical fusion, a reasoning-oriented decoder provides better cross-modality alignment than a purely segmentation-oriented head.",
+    "char_start": 39356,
+    "char_end": 39611,
+    "sentence_index": 247,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec030",
+    "text": "However, both single-layer variants lag significantly behind our full hierarchical decoder (Table 4 in the main paper), highlighting the importance of progressive multi-level reasoning for capturing complex UAV semantics, long-range relations, and fine-grained spatial cues.",
+    "char_start": 39613,
+    "char_end": 39887,
+    "sentence_index": 248,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec030",
+    "text": "These results verify that hierarchical fusion is essential for robust reasoning segmentation under UAV-specific challenges.",
+    "char_start": 39888,
+    "char_end": 40011,
+    "sentence_index": 249,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec030",
+    "text": "ieeenat_fullname\nmain",
+    "char_start": 40013,
+    "char_end": 40034,
+    "sentence_index": 250,
+    "section_sentence_index": 7
+  }
+]

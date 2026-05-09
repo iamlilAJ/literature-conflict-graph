@@ -1,0 +1,3629 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Mathematical reasoning is a cornerstone of human intelligence and a key benchmark for advanced capabilities in large language models (LLMs).",
+    "char_start": 0,
+    "char_end": 140,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, the research community still lacks an open, large-scale, high-quality corpus tailored to the demands of math-centric LLM pre-training.",
+    "char_start": 141,
+    "char_end": 284,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We present , an open dataset curated from diverse, math-focused sources through following practices:\n(1) Revisiting web data :\nWe re-extracted mathematical documents from Common Crawl with math-oriented HTML optimizations, -based filtering and deduplication, all for acquiring higher-quality data on the Internet.",
+    "char_start": 285,
+    "char_end": 598,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "(2) Recalling Math-related code data : We identified high quality math-related code from large code training corpus, Stack-V2, further enhancing data diversity.",
+    "char_start": 599,
+    "char_end": 759,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "(3) Exploring Synthetic data : We synthesized QA-style text, math-related code, and interleaved text-code blocks from web data or code data.",
+    "char_start": 760,
+    "char_end": 900,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "By integrating these strategies and validating their effectiveness through extensive ablations, delivers 371B tokens with the largest quantity and top quality among existing open math pre-training datasets.",
+    "char_start": 901,
+    "char_end": 1107,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Mathematical reasoning is a fundamental yet challenging aspect of human intelligence\u2014and a persistent difficulty for language models.",
+    "char_start": 1109,
+    "char_end": 1242,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Recent breakthroughs like o1 openaio1 and DeepSeek-R1 guo2025deepseekr1 demonstrate that, with sufficient pre-training and large-scale reinforcement learning, models can tackle competition-level math problems.",
+    "char_start": 1243,
+    "char_end": 1452,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "However, the success of such models hinges on access to massive high-quality math pre-training datasets\u2014e.g., DeepSeekMath\u2019s 120B tokens shao2024deepseekmath and Qwen-2.5-Math\u2019s 1T tokens yang2024qwen25math .",
+    "char_start": 1453,
+    "char_end": 1661,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Yet no open-source dataset currently matches this scale and quality (see Table for comparison), hindering progress on open math models.",
+    "char_start": 1662,
+    "char_end": 1797,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "A key obstacle lies in the limitations of current math web data pipelines.",
+    "char_start": 1799,
+    "char_end": 1873,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "While web data forms the backbone of modern pre-training corpora penedo2024fineweb, txt360data2024 , existing math-specific pipelines often suffer from overly aggressive pre-filtering ( e.g.",
+    "char_start": 1874,
+    "char_end": 2064,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": ", filtering based on HTML math tags pasteropenwebmath ), which causes many math-relevant documents to be missed.",
+    "char_start": 2065,
+    "char_end": 2177,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Moreover, widely used general-purpose text extraction tools are not optimized for mathematical content\u2014they often strip or discard equations and symbols, severely degrading data quality han24infimm,lozhkov2024finemath .",
+    "char_start": 2178,
+    "char_end": 2397,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "As a result, web-collected math data often lacks both scale and fidelity.",
+    "char_start": 2398,
+    "char_end": 2471,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Beyond web data, math-related code corpora ( e.g.",
+    "char_start": 2472,
+    "char_end": 2521,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": ", AlgebraicStack azerbayev2023llemma , MathCode-Pile lu2024mathcoder2 ) and synthetic datasets ( e.g.",
+    "char_start": 2522,
+    "char_end": 2623,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": ", WebInstruct yue2024mammoth2 ) have shown promising potential, but remain either limited in scale or not fully open-sourced.",
+    "char_start": 2624,
+    "char_end": 2749,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "[!t]\n\n0.52\n\n-11pt\nfigures/megamath_web_comparison_with_existing_large_scale_math_corpora_9x6_v2_blod.pdf\n-2mm\n\n0.5mm\n0.43\n\n-16pt\nfigures/megamath_pyramid.pdf\n-2mm\n\nComparison with existing open math corpora and -Web subsets.",
+    "char_start": 2751,
+    "char_end": 2975,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "-6.5mm\n\nTo bridge this gap, we introduce --- the largest open-source English math corpus to date, totaling 371.6B tokens.",
+    "char_start": 2977,
+    "char_end": 3098,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "It comprises 279B tokens of web data, 28.1B of code, and 64.5B of synthetic data.",
+    "char_start": 3099,
+    "char_end": 3180,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "During its construction, we conducted extensive ablation studies and optimizations across all domains to ensure both scalability and quality.",
+    "char_start": 3181,
+    "char_end": 3322,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "For the web domain, we designed a two-stage, coarse-to-fine extraction and filtering pipeline, improving on the common pipeline.",
+    "char_start": 3323,
+    "char_end": 3451,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "We reformatted math elements in HTML into compatible text representations ( i.e.",
+    "char_start": 3452,
+    "char_end": 3532,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": ", ) to preserve equations and symbols during extraction.",
+    "char_start": 3533,
+    "char_end": 3589,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "In the first stage, we applied a fast text extractor alongside a classifier to filter candidate math documents.",
+    "char_start": 3590,
+    "char_end": 3701,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "After deduplication, we reprocessed the retained HTMLs using a slower, high-quality extractor, followed by a second-stage trained on the seed data from the first stage to mitigate distributional shift.",
+    "char_start": 3702,
+    "char_end": 3903,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This pipeline achieves both scale and fidelity, resulting in -Web.",
+    "char_start": 3904,
+    "char_end": 3970,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Based on this foundation, we further developed -Web-Pro , a premium subset delivering top quality via LM-based filtering and LLM refining, particularly beneficial for later training stages requiring higher data quality hu2024minicpm .",
+    "char_start": 3971,
+    "char_end": 4205,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "In the code domain, we fine-tuned a small language model to filter math-relevant code snippets at scale, yielding -Code.",
+    "char_start": 4206,
+    "char_end": 4326,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "For -Synthetic, we extracted and refined QA pairs from math web documents, translated non-Python code snippets into Python, and generated interleaved text-code samples from web content.",
+    "char_start": 4327,
+    "char_end": 4512,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Together, these efforts form a diverse and scalable math dataset backed by extensive empirical pre-training.",
+    "char_start": 4513,
+    "char_end": 4621,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Our contribution can be summarized with following offerings in :\n-2.5mm\n\n[leftmargin=1.25em,itemindent=0.15em,labelsep=0.2em,itemsep=0.05em]\n\nAn open math-focused dataset containing 371B tokens with optimized data curation pipelines, and a variety of data variants to cater to customized demands.",
+    "char_start": 4623,
+    "char_end": 4919,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "( - )\nA comprehensive set of studies and ablation experiments that rigorously evaluate key design choices in the data accumulation process.",
+    "char_start": 4920,
+    "char_end": 5059,
+    "sentence_index": 33,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "( - )\nEmpirical demonstrations including head-to-head comparison with existing math datasets ( , Figure ), and further training on latest series of models.",
+    "char_start": 5060,
+    "char_end": 5215,
+    "sentence_index": 34,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "( )\n\n-3.5mm\n\nIn this section, we will describe 's whole data processing pipelines, which include three main components: web data ( ), code data ( ), and synthetic data generated from the former two ( ).",
+    "char_start": 5216,
+    "char_end": 5418,
+    "sentence_index": 35,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "Our key design choices are validated through downstream benchmarks or split validation sets.",
+    "char_start": 5419,
+    "char_end": 5511,
+    "sentence_index": 36,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "For computationally intensive operations like deduplication, we prioritize solutions that balance efficiency and effectiveness.",
+    "char_start": 5512,
+    "char_end": 5639,
+    "sentence_index": 37,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "Web data takes up quite a lot of the general pre-training corpora, from which Common Crawl\nis what has been widely used as pre-training data in many recent LLMs training dubey2024llama3, yang2024qwen2, liu2024deepseek .",
+    "char_start": 5641,
+    "char_end": 5860,
+    "sentence_index": 38,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "In , we use 99 Common Crawl snapshots ( 2014-15 to 2024-46 ) as data source to extract high-quality math documents on the Internet.",
+    "char_start": 5861,
+    "char_end": 5992,
+    "sentence_index": 39,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "The overall pipeline for web data is presented in Figure , with a detailed description in the following subsections.",
+    "char_start": 5993,
+    "char_end": 6109,
+    "sentence_index": 40,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "In short, our pipeline contains the following steps: (1) data acquisition ; (2) first round text extraction ; (3) -based math filtering ; (4) deduplication ; (5) second round text extraction ; (6) further filtering and post-processing .",
+    "char_start": 6110,
+    "char_end": 6346,
+    "sentence_index": 41,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "[htbp]\n-2.5mm\n\nfigures/cc_pipeline.pdf\n-2.5mm\n\nThe pipeline for curating -Web from Common Crawl data.",
+    "char_start": 6348,
+    "char_end": 6449,
+    "sentence_index": 42,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "-4.5mm\n\nInstead of using WET ( W ARC E ncapsulated T ext) data or simply filtering from public pre-training datasets penedo2024fineweb, txt360data2024 ,\nwe re-extracted all the text from WARC ( W eb ARC hive format) file format where each web page is stored as an HTML file.",
+    "char_start": 6451,
+    "char_end": 6725,
+    "sentence_index": 43,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "This practice enables us to optimize text extraction from HTML, enhancing corpora quality specifically for math domain ( ).",
+    "char_start": 6726,
+    "char_end": 6849,
+    "sentence_index": 44,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "We downloaded all available CC dumps and applied a URL filtering strategy before text extraction penedo2023refinedweb to exclude domains related to adult, gambling content, etc.",
+    "char_start": 6850,
+    "char_end": 7027,
+    "sentence_index": 45,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "Next, we used an off-the-shelf model joulin2016bag for language identification and retained only English documents ( score $ 0.65$).",
+    "char_start": 7028,
+    "char_end": 7160,
+    "sentence_index": 46,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "-3.5mm\n\nExtracting texts from WARC using common extractors (e.g., and ) could produce higher-quality corpora over WET extraction li2024datacomplm .",
+    "char_start": 7162,
+    "char_end": 7309,
+    "sentence_index": 47,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "However, these extractors often fail to preserve math symbols and equations, even omitting them entirely lozhkov2024finemath .",
+    "char_start": 7310,
+    "char_end": 7436,
+    "sentence_index": 48,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "To address this, we introduced several HTML parsing optimizations specifically for optimizing math expressions before extraction .",
+    "char_start": 7437,
+    "char_end": 7567,
+    "sentence_index": 49,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "Our approach involved traversing the HTML DOM tree parsed by and modifying math elements-related nodes to obtain an improved HTML file easy for text extraction including:\n\n[\ncolback=lightgray!10,\ncolframe=black!60,\nboxsep=-1.pt\n\n]\n[leftmargin=0.25em,itemindent=0.25em,labelsep=0.4em,itemsep=0.15em]\nMath Element Conversion: Converts MathML and KaTeX content into LaTeX by extracting annotation tags or using mathml2latex (with namespace handling) and recursively parsing HTML to accurately extract subscripts and superscripts.",
+    "char_start": 7568,
+    "char_end": 8094,
+    "sentence_index": 50,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "LaTeX Standardization and Transformation: Removes unnecessary style commands, fixes symbol formatting issues, and converts HTML tags (such as |<sup>|, |<sub>|, and ``intbl'' spans) into appropriate LaTeX constructs.",
+    "char_start": 8095,
+    "char_end": 8310,
+    "sentence_index": 51,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "Unicode and Entity Conversion: Maps mathematical Unicode characters and HTML entities to their corresponding LaTeX commands using W3C standards.",
+    "char_start": 8311,
+    "char_end": 8455,
+    "sentence_index": 52,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "Two-stage Extraction Our extraction process consisted of two phases, each serving a distance purpose.",
+    "char_start": 8457,
+    "char_end": 8558,
+    "sentence_index": 53,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "In practice, and are widely used for pre-training corpora construction, but they have trade-offs: is significantly faster and retains HTML elements more faithfully, while , though slower, removes noise more aggressively using various extraction engines and heuristics.",
+    "char_start": 8559,
+    "char_end": 8827,
+    "sentence_index": 54,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "Unlike prior works based solely on pasteropenwebmath,han24infimm , our pipeline first applied for rapid extraction and filtering, significantly shrinking the candidate data size.",
+    "char_start": 8828,
+    "char_end": 9006,
+    "sentence_index": 55,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "For these candidate data, we then used on their WARC files for a second round HTML optimizations and text extraction, obtaining cleaner mathematical data.",
+    "char_start": 9007,
+    "char_end": 9161,
+    "sentence_index": 56,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "This coarse-to-fine approach improves text quality while maintaining development efficiency.",
+    "char_start": 9162,
+    "char_end": 9254,
+    "sentence_index": 57,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "Common Crawl (CC) contains a vast array of texts from diverse domains.",
+    "char_start": 9256,
+    "char_end": 9326,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec007",
+    "text": "To effectively filter texts at scale, we require a robust and efficient classifier.",
+    "char_start": 9327,
+    "char_end": 9410,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "We used bojanowski2017enriching , a lightweight n-gram model, to score and identify math-related texts.",
+    "char_start": 9411,
+    "char_end": 9514,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec007",
+    "text": "During development, we identified the following key factors to obtain a robust classifier:\n\n[\ncolback=lightgray!10,\ncolframe=black!60,\nboxsep=-1.pt\n\n]\n[leftmargin=0.25em,itemindent=0.25em,labelsep=0.4em,itemsep=0.15em]\nText normalization : Techniques like tokenization, case folding, digit normalization, and Unicode handling while managing whitespace and special characters achieve better training compatibility.",
+    "char_start": 9515,
+    "char_end": 9928,
+    "sentence_index": 61,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "Seed data : Uniform sampling from Common Crawl and adding CoT data helps.",
+    "char_start": 9929,
+    "char_end": 10002,
+    "sentence_index": 62,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "Comprehensive evaluation : Expanding beyond web texts to Wikipedia, textbooks, StackExchange and research papers improves recall assessment.",
+    "char_start": 10003,
+    "char_end": 10143,
+    "sentence_index": 63,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec007",
+    "text": "Training We started training with one million positive and negative seed documents from and random web documents from CC.",
+    "char_start": 10145,
+    "char_end": 10266,
+    "sentence_index": 64,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "Initially, we used a single snapshot dump for development, which risked reinforcing biases.",
+    "char_start": 10267,
+    "char_end": 10358,
+    "sentence_index": 65,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "To mitigate this, we sampled from all CC dumps and retrained the classifier during the second-round filtering process.",
+    "char_start": 10359,
+    "char_end": 10477,
+    "sentence_index": 66,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "We used Llama-3.1-70B-Instruct dubey2024llama3 to automatically annotate math relevance scores (see Figure for the prompt) on these filtered documents and CoT data was incorporated into the positive set as well, resulting in two million seed data.",
+    "char_start": 10478,
+    "char_end": 10725,
+    "sentence_index": 67,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "We used the same training hyperparameters as shao2024deepseekmath .",
+    "char_start": 10726,
+    "char_end": 10793,
+    "sentence_index": 68,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "-2.5mm\nEvaluation\nWhen iterating training strategy, we found evaluation on 20K in-distribution (ID) samples yielded easily over 90\\% F1 score, masking 's true performance.",
+    "char_start": 10794,
+    "char_end": 10965,
+    "sentence_index": 69,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "We thus created an out-of-distribution (OOD) suite by sampling arXiv, StackExchange, Wikipedia, and Textbook data from wang2024mathpile .",
+    "char_start": 10966,
+    "char_end": 11103,
+    "sentence_index": 70,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "In the OOD setting, our text normalization and training adjustments boosted the average F1 score from 81.8\\% to 98.8\\% , validating the effectiveness of our training strategy.",
+    "char_start": 11104,
+    "char_end": 11279,
+    "sentence_index": 71,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec007",
+    "text": "-2.5mm\n\nData deduplication plays a vital role in data curation process, especially for improving training efficiency, stability and reducing data memorization lee2021deduplicating,tokpanov2024zyda .",
+    "char_start": 11280,
+    "char_end": 11478,
+    "sentence_index": 72,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "We adopted the Locality Sensitive Hash (LSH) implementation of MinHash broder2000identifying for efficiency.",
+    "char_start": 11480,
+    "char_end": 11588,
+    "sentence_index": 73,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "Given two documents, the probability that they are assigned to the same hash bucket depends on their Jaccard similarity broder1997resemblance \\(S\\) and is given by\n\\(\nP = 1 - (1 - S^b)^r\n\\)\nwhere \\(b\\) denotes the number of hash functions per bucket and \\(r\\) represents the number of buckets.",
+    "char_start": 11589,
+    "char_end": 11882,
+    "sentence_index": 74,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "Given a fixed hash permutation scheme (\\(b r\\)), which is strongly correlated with memory cost, and a target Jaccard similarity threshold \\(t\\), it is desirable to find the optimal deduplication configuration\u2014one that ensures a rapid decay of \\(P\\) for any \\(S t\\).",
+    "char_start": 11883,
+    "char_end": 12148,
+    "sentence_index": 75,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "Considering our CPU capacity, we evaluated multiple configurations with\nthe number of permutations between 110 and 128 and \\(t \\ 0.70, 0.75, 0.80\\ \\).",
+    "char_start": 12149,
+    "char_end": 12299,
+    "sentence_index": 76,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "Assisted by training experiments, we determined that the most feasible choice is \\(r=11\\), \\(b=10\\), and \\(t=0.75\\).",
+    "char_start": 12300,
+    "char_end": 12416,
+    "sentence_index": 77,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "-1.5mm\n\nIt is increasingly common practice to filter top-quality data due to its superior impact on model performance abdin2024phi .",
+    "char_start": 12417,
+    "char_end": 12549,
+    "sentence_index": 78,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec009",
+    "text": "High-quality data not only enhances performance but also does so at a lower cost, making it ideal for continual pre-training, mid-training, or scenarios with limited budgets.",
+    "char_start": 12550,
+    "char_end": 12724,
+    "sentence_index": 79,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec009",
+    "text": "We thus further developed -Web-Pro, a premium subset filtered and refined from -Web.",
+    "char_start": 12725,
+    "char_end": 12809,
+    "sentence_index": 80,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "We employed the FineMath classifier lozhkov2024finemath to filter out low-quality text.",
+    "char_start": 12810,
+    "char_end": 12897,
+    "sentence_index": 81,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec009",
+    "text": "Subsequently, we used LLMs to further refine the text, ultimately delivering 15.1B tokens that significantly surpass all existing math corpora such as FineMath-4plus lozhkov2024finemath (cf.",
+    "char_start": 12898,
+    "char_end": 13088,
+    "sentence_index": 82,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec009",
+    "text": "Figure ) .",
+    "char_start": 13089,
+    "char_end": 13099,
+    "sentence_index": 83,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec009",
+    "text": "Though LLM was involved, we focused primarily on noise removal and text reorganizing thus this is not categorized as pure synthetic data.",
+    "char_start": 13100,
+    "char_end": 13237,
+    "sentence_index": 84,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec009",
+    "text": "See for full developing strategy.",
+    "char_start": 13238,
+    "char_end": 13271,
+    "sentence_index": 85,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec009",
+    "text": "-1.5mm\n\n[htbp]\n\n-12.5pt\nfigures/stack_pipeline.pdf\n-1.5mm\n\nThe pipeline for curating -Code.",
+    "char_start": 13273,
+    "char_end": 13364,
+    "sentence_index": 86,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec010",
+    "text": "Code pre-training has proved to enhance general reasoning shao2024deepseekmath, aryabumi2024code , and LLMs have also shown great potential to leverage code for problem-solving goutora, li2024numinamath .",
+    "char_start": 13366,
+    "char_end": 13570,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec010",
+    "text": "Thus, we believe blending code in math LLM training is also crucial.",
+    "char_start": 13571,
+    "char_end": 13639,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec010",
+    "text": "We built -Code based on the Stack V2 lozhkov2024starcoder2 , and\nemployed a multi-step pipeline to recall high-quality code relevant to mathematical reasoning, logic puzzles, and scientific computation.",
+    "char_start": 13640,
+    "char_end": 13842,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec010",
+    "text": "As shown in Figure , our pipeline consists of:\n(1) Programming Language Selection ( ) and\n(2) SLM-based Code Recall ( ).",
+    "char_start": 13843,
+    "char_end": 13963,
+    "sentence_index": 90,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec011",
+    "text": "The code pre-training corpus includes hundreds of programming languages;\nhowever, many of these languages are primarily associated with domains that are not closely related to mathematics or scientific computation lozhkov2024starcoder2 .",
+    "char_start": 13965,
+    "char_end": 14202,
+    "sentence_index": 91,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec011",
+    "text": "In order to reduce the cost of model-based recall, we selected eleven programming languages based on choices made in previous studies azerbayev2023llemma,xu2024lemur : C, C\\#, C++, Go, Java, JavaScript, Python, R, Rust, Shell, SQL .",
+    "char_start": 14203,
+    "char_end": 14435,
+    "sentence_index": 92,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec011",
+    "text": "The selected languages are either extensively used in scientific computing and numerical operations or represent a significant portion of the corpus, which may potentially include mathematics-related snippets.",
+    "char_start": 14436,
+    "char_end": 14645,
+    "sentence_index": 93,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec012",
+    "text": "We applied a small language model (SLM) based recall mechanism to identify math-related code snippets from public code pre-training datasets.",
+    "char_start": 14647,
+    "char_end": 14788,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec012",
+    "text": "Inspired by recent works penedo2024fineweb,zhou2024programming,wei2024arctic , we first used a strong LLM to score code quality (educational value) and mathematical relevance, assigning a discrete score from 0 to 5 for each aspect, as applied in several works yuan2024self,penedo2024fineweb .",
+    "char_start": 14789,
+    "char_end": 15081,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec012",
+    "text": "Then, we trained a SLM on these data for large-scale filtering.",
+    "char_start": 15082,
+    "char_end": 15145,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec012",
+    "text": "(Please see for more details).",
+    "char_start": 15146,
+    "char_end": 15176,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "We also found that:\n(1) Stricter filtering greatly enhances performance to solve problems using code ;\n(2) Allocating no more than 20\\% of code data maximizes code-integrated problem-solving ability while maintaining NL reasoning benefits .",
+    "char_start": 15177,
+    "char_end": 15417,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "This aligns with DeepSeekMath's shao2024deepseekmath training recipe and further reinforces the justification for our filtering strategy, and we also empirically show the reasonability of this choice in .",
+    "char_start": 15418,
+    "char_end": 15622,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec013",
+    "text": "Beyond being a high-quality mathematical corpus, also serves as a strong foundation for large-scale data synthesis .",
+    "char_start": 15624,
+    "char_end": 15740,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec013",
+    "text": "We explored data synthesis methods to further enhance both the quantity and quality of our dataset.",
+    "char_start": 15741,
+    "char_end": 15840,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec013",
+    "text": "Our synthesis spans three distinct formats: (1) Q\\&A data , (2) code data , and (3) text \\& code block data .",
+    "char_start": 15841,
+    "char_end": 15950,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec013",
+    "text": "[htbp]\n\nfigures/synthetic_data_pipelines.pdf\n\nThe pipeline for curating synthetic data.",
+    "char_start": 15952,
+    "char_end": 16039,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec013",
+    "text": "Left : QA data generation; Middle : Python code augmentation; Right : text \\& ode block data curation.",
+    "char_start": 16040,
+    "char_end": 16142,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec013",
+    "text": "-4.5mm\n\nQ\\&A Extraction\n\nQuestion-and-answer data is inherently well-structured and embodies a concentrated form of knowledge, making it valuable for problem-solving benchmarks maini-etal-2024-rephrasing .",
+    "char_start": 16144,
+    "char_end": 16349,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec013",
+    "text": "Recent work reveal that these data can be found in pre-training data with massive quantity yue2024mammoth2 .",
+    "char_start": 16350,
+    "char_end": 16458,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec013",
+    "text": "We thus integrate and further verify this in .",
+    "char_start": 16459,
+    "char_end": 16505,
+    "sentence_index": 107,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec013",
+    "text": "Our pipeline contains two steps:\n(1) identify and extract Q\\&A pairs from the raw documents;\n(2) refine the Q\\&A to make up or improve the intermediate reasoning steps.",
+    "char_start": 16506,
+    "char_end": 16674,
+    "sentence_index": 108,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec013",
+    "text": "To improve diversity and accumulate quantity, we ensembled refined Q\\&A data from Qwen-2.5-72B-Instruct yang2024qwen2 and Llama-3.3-70B-Instruct dubey2024llama3 .",
+    "char_start": 16676,
+    "char_end": 16838,
+    "sentence_index": 109,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec013",
+    "text": "Code Translation\nTo enhance Python code data, we employed LLMs to ``translate'' code from other programming languages into Python, thereby augmenting the code data.",
+    "char_start": 16840,
+    "char_end": 17004,
+    "sentence_index": 110,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec013",
+    "text": "We adopted a straightforward zero-shot prompting approach using open-source LLMs or code-specialized LLMs to enhance the volume of Python code.",
+    "char_start": 17005,
+    "char_end": 17148,
+    "sentence_index": 111,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec013",
+    "text": "Specifically, we experimented with two models: Qwen2.5-Coder-32B-Instruct hui2024qwen2 and Llama-3.1-70B-Instruct dubey2024llama3 .",
+    "char_start": 17149,
+    "char_end": 17280,
+    "sentence_index": 112,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec013",
+    "text": "Please kindly refer to for the translation prompt.",
+    "char_start": 17281,
+    "char_end": 17331,
+    "sentence_index": 113,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec013",
+    "text": "Text \\& Code Block Generation\nRecent work by lu2024mathcoder2 introduced a synthesis pipeline for obtaining ``generated mathematical code'' , consisting of interleaved text, symbolic expressions and code blocks.",
+    "char_start": 17332,
+    "char_end": 17543,
+    "sentence_index": 114,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec013",
+    "text": "Such data has been shown to enhance a model\u2019s ability to generate Python snippets for solving mathematical problems and to leverage execution feedback to refine solution steps.",
+    "char_start": 17544,
+    "char_end": 17720,
+    "sentence_index": 115,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec013",
+    "text": "As illustrated in Figure , we unify such process into:\n(1) LLM-based generation : given a document, LLMs generate multiple structured blocks including title, mathematical expression, result, and corresponding code;\n(2) Verification via execution : ensures that the generated code executes correctly without errors and produces expected outputs;\n(3) Packing verified blocks : combines validated blocks into a single training sample for downstream use.",
+    "char_start": 17721,
+    "char_end": 18171,
+    "sentence_index": 116,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec013",
+    "text": "Besides, we found lu2024mathcoder2\ndid not account for malicious code, handling only basic errors like timeouts.",
+    "char_start": 18172,
+    "char_end": 18284,
+    "sentence_index": 117,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec013",
+    "text": "To address these issues, we implemented a pre-filtering mechanism based on Abstract Syntax Tree (AST).",
+    "char_start": 18285,
+    "char_end": 18387,
+    "sentence_index": 118,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec013",
+    "text": "Any snippet flagged as risky is excluded from execution, safeguarding a 100\\% execution success rate without abrupt halts or segmentation faults during our curation.",
+    "char_start": 18388,
+    "char_end": 18553,
+    "sentence_index": 119,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec013",
+    "text": "-2.5mm\n\nTo mitigate benchmark contamination xu2024benbench , we checked the overlap between and 12 downstream benchmarks widely used in evaluating LLM's mathematical reasoning ability such as GSM8K cobbe2021training-gsm8k , MATH hendrycks2measuring-math , MMLU hendrycks2020measuring-mmlu , and AIME https://huggingface.co/datasets/AI-MO/aimo-validation-aime https://huggingface.co/datasets/AI-MO/aimo-validation-aime .",
+    "char_start": 18554,
+    "char_end": 18973,
+    "sentence_index": 120,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec014",
+    "text": "We concatenated problems and solutions together as a whole sample, checked the exact 13-gram match, and ruled out contaminated documents.",
+    "char_start": 18974,
+    "char_end": 19111,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec014",
+    "text": "This further removes about 0.01\\% of the documents from the dataset.",
+    "char_start": 19112,
+    "char_end": 19180,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec014",
+    "text": "-2.5mm\n\n-2.5mm\n[!t]\n\n12.5pt\nmegablue HTML CBEFFF\nThe category and statistics of .",
+    "char_start": 19181,
+    "char_end": 19262,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec015",
+    "text": "0.75 !",
+    "char_start": 19264,
+    "char_end": 19270,
+    "sentence_index": 124,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec015",
+    "text": "l r r r\n\nCategory & \\# Sample(M) & \\# Toks(B) & Avg.",
+    "char_start": 19272,
+    "char_end": 19324,
+    "sentence_index": 125,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec015",
+    "text": "(\\# Toks)\n\nmegablue\nWeb Domain & 121.5 & 279.0 & 2296.9\n\nWeb & 106.5 & 263.9 & 2478.7\n\nWeb-Pro & 15.0 & 15.1 & 1006.0\n\nmegablue\nCode Domain & 13.4 & 28.1 & 2102.7\n\nmegablue\nSynthetic Data & 80.2 & 64.5 & 804.5\n\nTranslated Code & 7.4 & 7.2 & 979.5\n\nQ\\&A & 22.6 & 7.0 & 308.3\n\nText\\&Code Block & 50.2 & 50.3 & 1002.1\n\nmegablue\nTotal & 215.1 & 371.6 & 1727.6\n\nCombining all previous efforts together, the final collection of datasets currently contained a total of $371$B tokens (count by the Llama-2 tokenizer).",
+    "char_start": 19325,
+    "char_end": 19834,
+    "sentence_index": 126,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "We present a detailed breakdown statistics about in\nTable .",
+    "char_start": 19835,
+    "char_end": 19894,
+    "sentence_index": 127,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec015",
+    "text": "Designed for various training stages, training budgets, and base model capability,\nwe offer a collection of data variants including:\n(1) 0070C0 -Web : the complete web dataset consisting of 263.9B tokens, and also 0070C0 -Web-Pro (15.1B), the top-quality subset obtained through LM-based scoring and refining.",
+    "char_start": 19895,
+    "char_end": 20204,
+    "sentence_index": 128,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec015",
+    "text": "(2) 0070C0 -Code (28.1B): math-related code corpus recalled from Stack-v2.",
+    "char_start": 20205,
+    "char_end": 20279,
+    "sentence_index": 129,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec015",
+    "text": "(3) 0070C0 -Synth (64.5B): LLM-based synthetic data enhancing both the quality and quantity, covering three distinct formats of text and code data.",
+    "char_start": 20280,
+    "char_end": 20427,
+    "sentence_index": 130,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec015",
+    "text": "-2.5mm\n\nDuring data curation, we conducted extensive pre-training experiments on to ablate each key decision.",
+    "char_start": 20428,
+    "char_end": 20537,
+    "sentence_index": 131,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec016",
+    "text": "In this section, we present the experimental details, key results, and finally scale up training to further demonstrate the effectiveness of .",
+    "char_start": 20538,
+    "char_end": 20680,
+    "sentence_index": 132,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec017",
+    "text": "Proxy LM for Ablation\nDuring development, we used a small proxy model for ablations on each data source and component.",
+    "char_start": 20682,
+    "char_end": 20800,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec017",
+    "text": "We chose TinyLlama-1B zhang2024tinyllama for its small size and transparent training, ensuring it effectively monitors data quality.",
+    "char_start": 20801,
+    "char_end": 20933,
+    "sentence_index": 134,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec017",
+    "text": "We trained within a controlled budget, typically set to 5/15/55 B tokens, depending on dataset size and experimental cost, and evaluated performance at 1B token intervals.",
+    "char_start": 20934,
+    "char_end": 21105,
+    "sentence_index": 135,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec017",
+    "text": "-2.5mm\nEvaluation\nWe used a total of 10 math-related benchmarks, splited into two sets: Core and Extended .",
+    "char_start": 21106,
+    "char_end": 21213,
+    "sentence_index": 136,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec017",
+    "text": "The Core set includes five math-focused tasks with stable improvements even under limited training, such as GSM8K and MATH.",
+    "char_start": 21214,
+    "char_end": 21337,
+    "sentence_index": 137,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec017",
+    "text": "Building on this, the Extend set further includes five datasets, either indirectly related to math or with performance fluctuations, such as MMLU-STEM.",
+    "char_start": 21338,
+    "char_end": 21489,
+    "sentence_index": 138,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec017",
+    "text": "We employ two prompting-based evaluations: (1) few-shot CoT wei2022chain for all benchmarks; (2) PAL gao2023pal for the Core set to assess problem-solving via Python code generation.",
+    "char_start": 21490,
+    "char_end": 21672,
+    "sentence_index": 139,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec017",
+    "text": "Please check for more details.",
+    "char_start": 21673,
+    "char_end": 21703,
+    "sentence_index": 140,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec018",
+    "text": "-0.2cm\n[8] r 0.49\n-4.5mm\n\nAblation on Text Extraction for Math\n\n-2.5mm\n\nmegablue HTML CBEFFF\n0.8\n0.95\n> m 1.8cm | > m 1.8cm | > m 0.8cm > m 0.8cm\n\nText Extractors & [c] @ c@ w/ HTML\nOptimization & Core Avg.",
+    "char_start": 21705,
+    "char_end": 21911,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec018",
+    "text": "& Ext.",
+    "char_start": 21912,
+    "char_end": 21918,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec018",
+    "text": "Avg.",
+    "char_start": 21919,
+    "char_end": 21923,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec018",
+    "text": "9B9B9B Base Model & - & 9B9B9B 11.2 & 9B9B9B 14.7\n\n& 55 & 22.0 & 19.2\n\n& 52 & 22.5 & 18.6\n\nmegablue\n& 52 & 23.8 & 20.6\n\nImportance of optimizing text extraction for math content We conducted continual pre-training experiments within a 15B-token training budget on one dump from 2024.",
+    "char_start": 21925,
+    "char_end": 22208,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec018",
+    "text": "The training corpora consisted of filtered math documents from vanilla , and text extracted from the optimized HTML using and , all derived from the first-round filtering.",
+    "char_start": 22209,
+    "char_end": 22380,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec018",
+    "text": "During original 's extraction, <math> elements in HTML were directly discarded.",
+    "char_start": 22381,
+    "char_end": 22460,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec018",
+    "text": "After applying specialized optimizations for math-related HTML, the extracted data from well-preserved math symbols and clearly improved CoT downstream performance (cf.",
+    "char_start": 22461,
+    "char_end": 22629,
+    "sentence_index": 147,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec018",
+    "text": "Table ).",
+    "char_start": 22630,
+    "char_end": 22638,
+    "sentence_index": 148,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec018",
+    "text": "When both extractors operated on our optimized HTML, preserved more noise from the original documents, leading to lower data quality compared to .",
+    "char_start": 22639,
+    "char_end": 22785,
+    "sentence_index": 149,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec018",
+    "text": "[9] r 0.460\n\nAblation on MinhashLSH Dedup.",
+    "char_start": 22787,
+    "char_end": 22829,
+    "sentence_index": 150,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec018",
+    "text": "-2.5mm\n\nmegablue HTML CBEFFF\n0.9\n> m 1.1cm | > m 0.4cm > m 1.4cm | > m 0.7cm > m 0.7cm\n\n(r, b) & t & Tokens Left (B) & Core Avg.",
+    "char_start": 22830,
+    "char_end": 22958,
+    "sentence_index": 151,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec018",
+    "text": "& Ext.",
+    "char_start": 22959,
+    "char_end": 22965,
+    "sentence_index": 152,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec018",
+    "text": "Avg.",
+    "char_start": 22966,
+    "char_end": 22970,
+    "sentence_index": 153,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec018",
+    "text": "(14, 9) & 0.70 & 16.0 & 17.3 & 16.6\n\n(14, 8) & 0.75 & 23.5 & 19.1 & 17.0\n\nmegablue\n(11, 10) & 0.75 & 26.0 & 19.4 & 17.5\n\n(11, 11) & 0.75 & 25.0 & 19.2 & 16.0\n\n(9, 12) & 0.80 & 29.0 & 18.8 & 16.9\n\n(9, 13) & 0.80 & 30.0 & 17.6 & 15.7\n\nParameters of Deduplication To minimize redundancy and reduce the costs associated with follow-up text re-extraction using , we conducted ablation pre-training experiments on all 2014 dumps with a 55B-token training budget to optimize the parameters for Minhash LSH.",
+    "char_start": 22972,
+    "char_end": 23471,
+    "sentence_index": 154,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec018",
+    "text": "Our goal was to preserve downstream CoT performance while retaining as many mathematical documents as possible within our cluster capacity.",
+    "char_start": 23472,
+    "char_end": 23611,
+    "sentence_index": 155,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec018",
+    "text": "As shown in Table , applying \\(r=11\\), \\(b=10\\) provided the optimal balance.",
+    "char_start": 23612,
+    "char_end": 23689,
+    "sentence_index": 156,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec018",
+    "text": "We reported the average of the last 5 checkpoints to avoid result fluctuations.",
+    "char_start": 23690,
+    "char_end": 23769,
+    "sentence_index": 157,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec018",
+    "text": "-5.5mm\n\n[13] r 0.40\n-4.5mm\n\n[\nxlabel= Training Tokens (B) ,\nylabel= CoT Core Performance ,\nxmin=1, xmax=5,\nymin=16, ymax=30,\nxtick= 1,2,3,4,5 ,\n\nytick= 16, 22, 28 ,\ntick label style= font= ,\n\nlegend style= font= , draw=none, fill=none, at= (0.5,-0.15) , anchor=north, legend columns = 2, align=right ,\ngrid=major,\nwidth=5.8cm,\nheight=4.9cm\n]\n\ncolorwarmorange HTML 9554BD\ncolorwarmgreen HTML DBB2F0\ncolorwarmblue HTML 819EFF\ncolorwarmred HTML 66CFFE\n\ncoordinates\n\n(1, 16.62) (2, 19.35) (3, 20.80) (4, 21.81) (5, 22.45)\n;\nV1: OWM\n\ncoordinates\n(1,22.33) (2,25.74) (3,26.00) (4,27.29) (5,27.15)\n;\nV2: Random\n\ncoordinates\n(1,21.76) (2,23.60) (3,26.46) (4,26.90) (5,27.82)\n;\nV2: Balance\n\ncoordinates\n(1,23.40) (2,25.77) (3,27.67) (4,28.59) (5,28.89)\n;\nV2: Balance + CoT data\n\n-4mm\nAblation on\n\nAblation on Initially, we employed as the positive seed data for training used for the first round filtering with a loose threshold.",
+    "char_start": 23770,
+    "char_end": 24690,
+    "sentence_index": 158,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec018",
+    "text": "While it worked well on the single dump used for initial development, it became less accurate when scaled to all dumps, likely due to shifting data distributions.",
+    "char_start": 24691,
+    "char_end": 24853,
+    "sentence_index": 159,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec018",
+    "text": "We thus re-trained with LLM-annotated math-related documents from all dumps as the positive seed data.",
+    "char_start": 24854,
+    "char_end": 24956,
+    "sentence_index": 160,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec018",
+    "text": "As shown in Figure , the re-trained (V2) performed better in the second-round filtering compared to the initial version (V1).",
+    "char_start": 24957,
+    "char_end": 25082,
+    "sentence_index": 161,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec018",
+    "text": "Our controlled experiments revealed that balanced sampling seed data from each dump provides a slight improvement while incorporating CoT data into positive seed data yielded significant gains.",
+    "char_start": 25083,
+    "char_end": 25276,
+    "sentence_index": 162,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "Note that the ablations were conducted on the top 10\\% scoring filtered data from all dumps in 2024 within a 5B-token training budget.",
+    "char_start": 25277,
+    "char_end": 25411,
+    "sentence_index": 163,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "We further validated our decision through experiments on all dumps yearly as shown in Figure .",
+    "char_start": 25412,
+    "char_end": 25506,
+    "sentence_index": 164,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec019",
+    "text": "We conducted two sets of ablation studies using 5B training tokens: (1) evaluating the impact of recall filtering criteria on downstream performance When testing filtering criteria, we prioritize PAL results, and use Python subset for training.",
+    "char_start": 25508,
+    "char_end": 25752,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec019",
+    "text": ", and (2) ensuring the recalled code dataset is sufficiently large for training despite aggressive filtering.",
+    "char_start": 25753,
+    "char_end": 25862,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec019",
+    "text": "As shown in Table , stricter filtering (i.e., $S_ edu 4$ and $S_ math 4$) selects code data that significantly boosts PAL performance.",
+    "char_start": 25863,
+    "char_end": 25997,
+    "sentence_index": 167,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec019",
+    "text": "Moreover, even though such strict filtering excludes many samples, the remaining data appears sufficient for effective mathematical training; in fact, mixing too much code data seems harmful for CoT Performance ( e.g.",
+    "char_start": 25998,
+    "char_end": 26215,
+    "sentence_index": 168,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec019",
+    "text": ", $ 30\\%$).",
+    "char_start": 26216,
+    "char_end": 26227,
+    "sentence_index": 169,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec019",
+    "text": "-2.5mm\n[htbp]\n\n0.45\n\nmegablue HTML CBEFFF\nAblation of filtering criteria.",
+    "char_start": 26228,
+    "char_end": 26301,
+    "sentence_index": 170,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec019",
+    "text": "-2.0mm\n!",
+    "char_start": 26302,
+    "char_end": 26310,
+    "sentence_index": 171,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec019",
+    "text": "c|cc\n\nFilter Criteria & CoT Avg.",
+    "char_start": 26312,
+    "char_end": 26344,
+    "sentence_index": 172,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec019",
+    "text": "& PAL Avg.",
+    "char_start": 26345,
+    "char_end": 26355,
+    "sentence_index": 173,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec019",
+    "text": "text only & 19.0 & 15.6\n\n$S_ edu 3, S_ math 3$ & 19.4 & 16.1\n\n$S_ edu 3, S_ math 4$ & 19.8 & 16.8\n\n$S_ edu 4, S_ math 3$ & 19.7 & 17.5\n\nmegablue\n$S_ edu 4, S_ math 4$ & 18.8 & 19.5\n\n0.75cm\n0.43\n\nAblation of data mixture ratios.",
+    "char_start": 26357,
+    "char_end": 26584,
+    "sentence_index": 174,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec019",
+    "text": "-2.0mm\nmegablue HTML CBEFFF\n!",
+    "char_start": 26585,
+    "char_end": 26614,
+    "sentence_index": 175,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec019",
+    "text": "c|cc\n\nMix Ratio & CoT Avg.",
+    "char_start": 26616,
+    "char_end": 26642,
+    "sentence_index": 176,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec019",
+    "text": "& PAL Avg.",
+    "char_start": 26643,
+    "char_end": 26653,
+    "sentence_index": 177,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec019",
+    "text": "text only & 19.0 & 15.6\n\ncode : text = 12.5\\% & 19.3 & 17.4\n\nmegablue\ncode : text = 20.0\\% & 19.5 & 18.4\n\ncode : text = 33.3\\% & 16.4 & 17.5\n\ncode : text = 50.0\\% & 17.5 & 18.8\n\n-3.5mm\n\nOur synthesis development proceeds in parallel with web data acquisition.",
+    "char_start": 26655,
+    "char_end": 26914,
+    "sentence_index": 178,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec020",
+    "text": "Thus, in web data synthesis, we started with existing public corpora rather than -Web.",
+    "char_start": 26915,
+    "char_end": 27001,
+    "sentence_index": 179,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec020",
+    "text": "In particular, we utilized quality-filtered subsets of and to lower experimental cost.",
+    "char_start": 27002,
+    "char_end": 27088,
+    "sentence_index": 180,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec020",
+    "text": "We focus on:\n(1) Verify that the generated data can boost performance more effectively.",
+    "char_start": 27089,
+    "char_end": 27176,
+    "sentence_index": 181,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec020",
+    "text": "(2) Evaluate the impact of different prompts and models on performance, ultimately guiding better strategies.",
+    "char_start": 27177,
+    "char_end": 27286,
+    "sentence_index": 182,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec020",
+    "text": "-1.5mm\n\n[10] r 0.5\n\nmegablue HTML CBEFFF\nAblations on prompt and comparison with other data.",
+    "char_start": 27287,
+    "char_end": 27379,
+    "sentence_index": 183,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec020",
+    "text": "FM-4plus : FineMath-4plus.",
+    "char_start": 27380,
+    "char_end": 27406,
+    "sentence_index": 184,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec020",
+    "text": "-2.5mm\n0.45 !",
+    "char_start": 27407,
+    "char_end": 27420,
+    "sentence_index": 185,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec020",
+    "text": "l|cc\n\nData & Core Avg.",
+    "char_start": 27421,
+    "char_end": 27443,
+    "sentence_index": 186,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec020",
+    "text": "& Ext.",
+    "char_start": 27444,
+    "char_end": 27450,
+    "sentence_index": 187,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec020",
+    "text": "Avg.",
+    "char_start": 27451,
+    "char_end": 27455,
+    "sentence_index": 188,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec020",
+    "text": "FM-4plus & 28.3 & 19.6\n\nWebInstruct & 34.6 & 17.6\n\nVanilla Prompt & 39.2 & 19.5\n\nw.",
+    "char_start": 27457,
+    "char_end": 27540,
+    "sentence_index": 189,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec020",
+    "text": "ELI5 & 41.3 & 19.2\n\nmegablue\nw.",
+    "char_start": 27541,
+    "char_end": 27572,
+    "sentence_index": 190,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec020",
+    "text": "ELI5 + IC & 48.8 & 23.6\n\nQA generation We implemented the two-stage pipeline in WebInstruct yue2024mammoth2 but using the latest and most capable LLMs.",
+    "char_start": 27573,
+    "char_end": 27724,
+    "sentence_index": 191,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec020",
+    "text": "Through several prompting iterations, we found: (1) using an ELI5-style (Explain like I am five) prompt for QA refining produces structured solutions; (2) emphasizing information completeness enhances data quality further.",
+    "char_start": 27725,
+    "char_end": 27947,
+    "sentence_index": 192,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec020",
+    "text": "Table shows the 5B training results on different datasets: using prompt with ELI5 improves performance, and further adding information completeness (ELI5 + IC) yields the best results, with Core and Extended scores of 48.8 and 23.6 .",
+    "char_start": 27948,
+    "char_end": 28181,
+    "sentence_index": 193,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec020",
+    "text": "These results indicate that structured and comprehensive extraction are keys to enhancing QA data, and also show that QA style data exhibits superior performance to web documents.",
+    "char_start": 28182,
+    "char_end": 28361,
+    "sentence_index": 194,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec020",
+    "text": "[10] r 0.49\n-4.5mm\n\nAblations on Code Synthesis: The default code-to-text ratio is 1:7; ``full'': no text is mixed.",
+    "char_start": 28363,
+    "char_end": 28478,
+    "sentence_index": 195,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec020",
+    "text": "We exclude lu2024mathcoder2 due to its partial release ($ $0.25B tokens).",
+    "char_start": 28479,
+    "char_end": 28552,
+    "sentence_index": 196,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec020",
+    "text": "-2.5mm\n0.48 !",
+    "char_start": 28554,
+    "char_end": 28567,
+    "sentence_index": 197,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec020",
+    "text": "l|cc\n\nData & CoT Avg.",
+    "char_start": 28568,
+    "char_end": 28589,
+    "sentence_index": 198,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec020",
+    "text": "& PAL Avg.",
+    "char_start": 28590,
+    "char_end": 28600,
+    "sentence_index": 199,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec020",
+    "text": "code & 18.8 & 19.5\n\ntrans.",
+    "char_start": 28602,
+    "char_end": 28628,
+    "sentence_index": 200,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec020",
+    "text": "code & 19.0 & 20.6\n\ntext \\& code block & 22.5 & 28.1\n\ntext \\& code block (full) & 30.8 & 46.5\n\nCode Synthesis\nOur experiments compared training on raw code data to methods incorporating code translation and interleaved text \\& code blocks.",
+    "char_start": 28629,
+    "char_end": 28868,
+    "sentence_index": 201,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec020",
+    "text": "With a controlled training budget of 5B tokens (see Table ), translated code (trans.",
+    "char_start": 28869,
+    "char_end": 28953,
+    "sentence_index": 202,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec020",
+    "text": "code) yields modest downstream improvements over raw code, while adding code block data further enhances both CoT and PAL performance, even without mixing text data (see the ``full'' line results).",
+    "char_start": 28954,
+    "char_end": 29151,
+    "sentence_index": 203,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec020",
+    "text": "Also, These results clearly show that synthetic data achieves higher quality.",
+    "char_start": 29152,
+    "char_end": 29229,
+    "sentence_index": 204,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec021",
+    "text": "To assess the data quality of , we performed continual pre-training on existing corpora within a 55B token budget.",
+    "char_start": 29231,
+    "char_end": 29345,
+    "sentence_index": 205,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec021",
+    "text": "We compared -Web with mainstream large-scale corpora, including , , and the latest FineMath release.",
+    "char_start": 29346,
+    "char_end": 29446,
+    "sentence_index": 206,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec021",
+    "text": "As previously shown in Figure , -Web already achieves corpus quality comparable to in downstream tasks but providing substantial more tokens, with performance improving if we use higher-scored subsets (top 75\\% and top 50\\%).",
+    "char_start": 29447,
+    "char_end": 29672,
+    "sentence_index": 207,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec021",
+    "text": "Notably, -Web-Pro outperforms both FineMath-3+ and FineMath-4+ by $ 4\\% $ , delivering the highest-quality corpus to date.",
+    "char_start": 29673,
+    "char_end": 29795,
+    "sentence_index": 208,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec021",
+    "text": "Furthermore, these -Web variants show the potential to offer flexible options to accommodate different computing budgets.",
+    "char_start": 29796,
+    "char_end": 29917,
+    "sentence_index": 209,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec022",
+    "text": "[13] r 0.45\n-4.5mm\n\nfigures/megamath_put_together.pdf\n-8.0mm\nTraining on .2-1B/3B.",
+    "char_start": 29919,
+    "char_end": 30001,
+    "sentence_index": 210,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec022",
+    "text": "-4.5mm\n\nWe demonstrate the effectiveness of by training it on state-of-the-art open LLMs\u2014the .2 series.",
+    "char_start": 30003,
+    "char_end": 30106,
+    "sentence_index": 211,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec022",
+    "text": "Given that the models have been extensively trained on 14.8T tokens dubey2024llama3 and exhibit strong performance across various benchmarks, we believe they exemplify state-of-the-art capability and robust performance, making them an ideal validation point.",
+    "char_start": 30107,
+    "char_end": 30365,
+    "sentence_index": 212,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec022",
+    "text": "For training, we adopt and refine the data mixture configurations from DeepSeekMath and Llemma to accommodate our diverse data sources, and train 100B tokens for .2-1B and 50B tokens for .2-3B.",
+    "char_start": 30366,
+    "char_end": 30559,
+    "sentence_index": 213,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec022",
+    "text": "We evaluate all models under CoT and PAL configurations.",
+    "char_start": 30560,
+    "char_end": 30616,
+    "sentence_index": 214,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec022",
+    "text": "As shown in Figure , the MegaMath series of models achieves a 15\\% to 20\\% CoT performance improvement over Llama \u2014 for example, reaching 56.2\\% on GSM8K and 25.1\\% on MATH for the 3B model \u2014 with a similar boost observed on PAL.",
+    "char_start": 30617,
+    "char_end": 30846,
+    "sentence_index": 215,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec022",
+    "text": "This clearly demonstrates the exceptional quality and effectiveness of in advancing mathematical reasoning in state-of-the-art language models.",
+    "char_start": 30847,
+    "char_end": 30990,
+    "sentence_index": 216,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec022",
+    "text": "Please refer to and for training configuration and full evaluation results.",
+    "char_start": 30991,
+    "char_end": 31066,
+    "sentence_index": 217,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec023",
+    "text": "-1.5mm\nMathematical Pre-training Corpus and Syntheic Datasets\nOpenWebMath pasteropenwebmath curated its data from web pages, with strict filtering which may remove potential documents.",
+    "char_start": 31068,
+    "char_end": 31252,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec023",
+    "text": "MathPile wang2024mathpile diversified from web domains and built datasets mostly from arXiv papers and textbooks.",
+    "char_start": 31253,
+    "char_end": 31366,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec023",
+    "text": "Furthermore, InfiMM-Web-Math han24infimm assembled a multimodal dataset pairing math text with images.",
+    "char_start": 31367,
+    "char_end": 31469,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec023",
+    "text": "Recently, FineMath lozhkov2024finemath was developed by retrieving from FineWeb penedo2024fineweb and using a BERT classifier to select clear, step-by-step math explanations.",
+    "char_start": 31470,
+    "char_end": 31644,
+    "sentence_index": 221,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec023",
+    "text": "For synthetic math datasets,\nrecent work such as NuminaMath li2024numinamath converted competition-level problems into chain-of-thought solutions via tool-assisted reasoning.",
+    "char_start": 31645,
+    "char_end": 31819,
+    "sentence_index": 222,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec023",
+    "text": "Meanwhile, Skywork-Math zeng2024skyworkmath , OpenMathInstruct-2 toshniwal2024openmathinstruct and WebInstruct yue2024mammoth2 generated large-scale QA pairs from open benchmarks and web contents.",
+    "char_start": 31820,
+    "char_end": 32016,
+    "sentence_index": 223,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec023",
+    "text": "MathCoder2 lu2024mathcoder2 used a 19.2B-token MathCode-Pile combining filtered datasets with synthetic code data.",
+    "char_start": 32017,
+    "char_end": 32131,
+    "sentence_index": 224,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec023",
+    "text": "In , we aim to build a large-scale dataset that matches proprietary corpora via reproducible pipelines, diverse data sources, and thorough sanity checks, finally covering larger quantity and higher quality dataset.",
+    "char_start": 32132,
+    "char_end": 32346,
+    "sentence_index": 225,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec024",
+    "text": "-1.5mm\nWe introduce , the largest training corpus to date tailored for the mathematical domain, comprising 371B tokens from web sources, code corpora, and synthesized data.",
+    "char_start": 32348,
+    "char_end": 32520,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec024",
+    "text": "Comprehensive ablation studies guide us to efficient curation of high-quality, domain-specific datasets.",
+    "char_start": 32521,
+    "char_end": 32625,
+    "sentence_index": 227,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec024",
+    "text": "Large-scale continual pretraining on series of model further demonstrates 's effectiveness by producing strong math base models.",
+    "char_start": 32626,
+    "char_end": 32754,
+    "sentence_index": 228,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec024",
+    "text": "We hope the dataset, alongside our released artifacts, can foster further research in mathematical reasoning and domain-specific language modeling.",
+    "char_start": 32755,
+    "char_end": 32902,
+    "sentence_index": 229,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec024",
+    "text": "colm2025_conference\ncolm2025_conference\n\n[htbp]\n\nComparison with existing large-scale math corpora\n\n1.",
+    "char_start": 32904,
+    "char_end": 33006,
+    "sentence_index": 230,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec025",
+    "text": "!\nlcSccc\nCorpus Name & Fully Public & \\# Tokens (B) & Date & Type\n\nOpenWebMath & 52 &14.5 &2023 Oct.",
+    "char_start": 33007,
+    "char_end": 33107,
+    "sentence_index": 231,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec025",
+    "text": "&Web\n\nAlgebraicStack & 52 &11.0 &2023 Oct.",
+    "char_start": 33108,
+    "char_end": 33150,
+    "sentence_index": 232,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec025",
+    "text": "&Code\n\nMathPile & 52 &9.5 &2023 Dec.",
+    "char_start": 33151,
+    "char_end": 33187,
+    "sentence_index": 233,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec025",
+    "text": "& ArXiv, Web, Textbooks,\nStackExchange, Wiki\n\nDeepseekMath & 55 &120 &2024 Feb.",
+    "char_start": 33188,
+    "char_end": 33267,
+    "sentence_index": 234,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec025",
+    "text": "&Web\n\nInfiMMWebMath & 52 &55.0 &2024 Sep.",
+    "char_start": 33268,
+    "char_end": 33309,
+    "sentence_index": 235,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec025",
+    "text": "&Web\n\nQwen Math Corpus v2 & 55 & 1000 & 2024 Sep.",
+    "char_start": 33310,
+    "char_end": 33359,
+    "sentence_index": 236,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec025",
+    "text": "& Web, Code snippets, Encyclopedias,\nBooks, Exam questions, Synthetic data\n\nMathCode-Pile & 55 &19.1 &2024 Oct.",
+    "char_start": 33360,
+    "char_end": 33471,
+    "sentence_index": 237,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec025",
+    "text": "&Web, Code, Textbooks\n\nFineMath & 52 &34 &2024 Dec.",
+    "char_start": 33472,
+    "char_end": 33523,
+    "sentence_index": 238,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec025",
+    "text": "&Web\n\n5 c Collection (Ours)\n\nMegaMath-Web & 52 &263.9 & 6 * 2025 Apr.",
+    "char_start": 33524,
+    "char_end": 33593,
+    "sentence_index": 239,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec025",
+    "text": "&Web\n\nMegaMath-Web-Pro & 52 & 15.1 & &Web\n\nMegaMath-Code & 52 & 28.1 & &Code\n\nMegaMath-Synth-Code & 52 & 7.2 & &Code\n\nMegaMath-Synth-Q\\&A & 52 & 7.0 & &Q\\&A\n\nMegaMath-Synth-Text\\&Code & 52 & 50.3 & &Interleave text\\&code\n\nThe scoring prompt for evaluating web documents' relevance to mathematics is presented in Figure .",
+    "char_start": 33594,
+    "char_end": 33914,
+    "sentence_index": 240,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec026",
+    "text": "[ht]\n\n[breaklines=true,breaksymbol=,]\nPlease evaluate the given document for its relevance to mathematics and assign a score from 0 to 5.",
+    "char_start": 33915,
+    "char_end": 34052,
+    "sentence_index": 241,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec026",
+    "text": "Use the following scoring criteria:\n5: The document is entirely about mathematics, containing numerous mathematical concepts, formulas, proofs, or advanced mathematical educational content.",
+    "char_start": 34053,
+    "char_end": 34242,
+    "sentence_index": 242,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec026",
+    "text": "4: The document is primarily about mathematics but may include some applications in other disciplines or content related to mathematics education.",
+    "char_start": 34243,
+    "char_end": 34389,
+    "sentence_index": 243,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec026",
+    "text": "3: The document contains significant mathematical content, but it's not the main focus.",
+    "char_start": 34390,
+    "char_end": 34477,
+    "sentence_index": 244,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec026",
+    "text": "It might be mathematical applications in physics, engineering, or similar fields.",
+    "char_start": 34478,
+    "char_end": 34559,
+    "sentence_index": 245,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec026",
+    "text": "2: The document includes some mathematical elements, such as basic calculations, simple statistics, or graphs, but these are not the main content of the document.",
+    "char_start": 34560,
+    "char_end": 34722,
+    "sentence_index": 246,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec026",
+    "text": "1: The document has very little mathematics-related content, possibly only mentioning numbers or simple calculations in passing.",
+    "char_start": 34723,
+    "char_end": 34851,
+    "sentence_index": 247,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec026",
+    "text": "0: The document has no mathematical content whatsoever.",
+    "char_start": 34852,
+    "char_end": 34907,
+    "sentence_index": 248,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec026",
+    "text": "The document is given as:\n<EXAMPLE>.",
+    "char_start": 34909,
+    "char_end": 34945,
+    "sentence_index": 249,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec026",
+    "text": "After examining the document:\n- Briefly justify your total score, up to 100 words.",
+    "char_start": 34947,
+    "char_end": 35029,
+    "sentence_index": 250,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec026",
+    "text": "- Conclude with the score using the format: \"Score: <total points>\"\n\nScoring Prompts for evaluating web documents relavance to mathematics.",
+    "char_start": 35030,
+    "char_end": 35169,
+    "sentence_index": 251,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec027",
+    "text": "We also explored several fine-grained deduplication methods, including exact substring lee2021deduplicating and sentence-level deduplication raffel2020exploring .",
+    "char_start": 35171,
+    "char_end": 35333,
+    "sentence_index": 252,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec027",
+    "text": "Initially, we found that removing duplicates disrupted text consistency.",
+    "char_start": 35334,
+    "char_end": 35406,
+    "sentence_index": 253,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec027",
+    "text": "To mitigate this, we attempted trimming only the head and tail portions, but still identified many math expressions and degraded downstream performance.",
+    "char_start": 35407,
+    "char_end": 35559,
+    "sentence_index": 254,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec027",
+    "text": "We suspect the effectiveness of these methods depends on text extraction techniques and may be more suitable for .",
+    "char_start": 35560,
+    "char_end": 35674,
+    "sentence_index": 255,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec027",
+    "text": "We thus leave this for future exploration.",
+    "char_start": 35675,
+    "char_end": 35717,
+    "sentence_index": 256,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec028",
+    "text": "[12] r 0.55\n-3.5mm\n\nYearly Ablation of Edu scoring strategy.",
+    "char_start": 35719,
+    "char_end": 35779,
+    "sentence_index": 257,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec028",
+    "text": "-2.0mm\n0.55 !",
+    "char_start": 35780,
+    "char_end": 35793,
+    "sentence_index": 258,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec028",
+    "text": "c|cccccc\n\n1 c & GSM8K & MATH & ASDiv & SVAMP & MAWPS & AVG\n\nFM-4plus & 10.5 & 6.1 & 41.9 & 25.3 & 57.9 & 28.3\n\n1, .937, .608 2014 & .878, .902, .588 6.0 & .863, .894, .584 3.7 & .796, .875, .569 30.2 & .867, .898, .584 17.5 & .871, .898, .584 35.4 & .855, .894, .584 18.6\n\n1, .937, .608 2015 & .937, .918, .6 5.0 & 1, .937, .612 3.0 & 1, .937, .612 21.8 & 1, .937, .612 14.4 & 1, .937, .612 27.7 & 1, .937, .612 14.4\n\n1, .937, .608 2016 & 1, .937, .612 3.9 & .725, .851, .557 4.4 & .839, .886, .58 28.4 & .894, .906, .592 16.9 & .867, .898, .584 35.8 & .878, .902, .588 17.9\n\n.937, .918, .608 2017 & .855, .894, .584 6.4 & .608, .816, .529 5.0 & .678, .839, .545 34.9 & .682, .839, .545 21.8 & .718, .851, .553 44.6 & .718, .851, .553 22.5\n\n.937, .918, .608 2018 & .867, .898, .584 6.2 & .431, .761, .494 5.9 & .686, .839, .545 34.6 & .647, .827, .537 22.6 & .682, .839, .545 46.7 & .694, .843, .549 23.2\n\n.937, .918, .608 2019 & .855, .894, .584 6.4 & .647, .827, .537 4.8 & .608, .816, .529 37.7 & .686, .839, .549 21.7 & .651, .827, .541 48.4 & .675, .835, .545 23.8\n\n.937, .918, .608 2020 & .722, .851, .553 8.7 & .686, .839, .545 4.6 & .663, .831, .541 35.5 & .557, .8, .522 24.7 & .635, .824, .537 49.3 & .647, .827, .537 24.6\n\n.608, .816, .529 2021 & .745, .859, .561 8.3 & .569, .804, .522 5.2 & .565, .8, .522 39.6 & .561, .8, .522 24.6 & .573, .804, .522 53.0 & .588, .808, .525 26.2\n\n.608, .816, .529 2022 & .616, .82, .533 10.5 & .549, .796, .518 5.3 & .506, .784, .51 41.9 & .573, .804, .522 24.4 & .518, .788, .51 56.4 & .537, .792, .514 27.7\n\n.431, .761, .494 2023 & .525, .788, .514 12.1 & .451, .765, .498 5.8 & .424, .757, .49 45.2 & .404, .753, .486 28.3 & .404, .753, .486 63.0 & .424, .757, .49 30.9\n\n.431, .761, .494 2024 & .388, .745, .482 14.4 & .388, .745, .482 6.1 & .388, .745, .482 46.6 & .388, .745, .482 28.6 & .388, .745, .482 63.9 & .388, .745, .482 31.9\n\nBuilding on gunasekar2023textbooks , documents with higher educational values are treated as higher-quality samples\u2014a strategy widely adopted in pre-training works.",
+    "char_start": 35794,
+    "char_end": 37846,
+    "sentence_index": 259,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec028",
+    "text": "In , we create the -Web-Pro subset from -Web data using FineMath classifier allal2025smollm2smolgoesbig to score documents on a 0\u20135 scale.",
+    "char_start": 37848,
+    "char_end": 37986,
+    "sentence_index": 260,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec028",
+    "text": "However, we found that document distribution and relevance to mathematical reasoning vary over time.",
+    "char_start": 37987,
+    "char_end": 38087,
+    "sentence_index": 261,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec028",
+    "text": "As Table indicates, after applying Edu filtering, training 5B tokens on some years' data (e.g., 2014) yields marginal improvements, whereas later years achieve much higher performance than FineMath-4plus (FM-4plus).",
+    "char_start": 38088,
+    "char_end": 38303,
+    "sentence_index": 262,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec028",
+    "text": "Based on these observations, we adopted a dynamic filtering strategy: a more tolerant threshold (Edu score $ $ 3) for recent years (e.g., 2023\u20132024) and a stricter one (Edu score $ $ 4) for earlier periods (e.g., 2014\u20132017).",
+    "char_start": 38304,
+    "char_end": 38528,
+    "sentence_index": 263,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec028",
+    "text": "Similar to Nemontron-CC su2024nemotron , we also used an LLM (in our case, we use .3-70B-instruct) to further remove noise, and refine the web text into higher quality.",
+    "char_start": 38529,
+    "char_end": 38697,
+    "sentence_index": 264,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec028",
+    "text": "Please see Figure for the detailed prompt.",
+    "char_start": 38698,
+    "char_end": 38740,
+    "sentence_index": 265,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec028",
+    "text": "[htbp]\n\n[breaklines=true,breaksymbol=,]\nTask:\n- Carefully analyze the provided text to extract key facts, concrete details, important numbers, and core concepts.",
+    "char_start": 38741,
+    "char_end": 38902,
+    "sentence_index": 266,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec028",
+    "text": "- Remove any irrelevant or noisy information, and reorganize the content into a logically structured, information-dense, and concise version that is easy to learn from.",
+    "char_start": 38903,
+    "char_end": 39071,
+    "sentence_index": 267,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec028",
+    "text": "Output only the refined text.",
+    "char_start": 39072,
+    "char_end": 39101,
+    "sentence_index": 268,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec028",
+    "text": "- Strive to maintain the original length as much as possible (avoid excessive shortening).",
+    "char_start": 39102,
+    "char_end": 39192,
+    "sentence_index": 269,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec028",
+    "text": "Text:\n<EXAMPLE>\n\nJust output the refined text, no other text.",
+    "char_start": 39194,
+    "char_end": 39255,
+    "sentence_index": 270,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec028",
+    "text": "Rewriting Prompt for constructing -Web-Pro.",
+    "char_start": 39257,
+    "char_end": 39300,
+    "sentence_index": 271,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec029",
+    "text": "We further validated our decision through experiments on all yearly dumps.",
+    "char_start": 39302,
+    "char_end": 39376,
+    "sentence_index": 272,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec029",
+    "text": "Specifically, we conducted pre-training on the top 10\\% highest-scoring filtered data from each yearly dump using different versions of .",
+    "char_start": 39377,
+    "char_end": 39514,
+    "sentence_index": 273,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec029",
+    "text": "As shown in Figure , the results confirm the effectiveness of our final version (V2: Balance + CoT data), demonstrating clear improvements over the initial version in our second-round filtering.",
+    "char_start": 39515,
+    "char_end": 39709,
+    "sentence_index": 274,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec029",
+    "text": "Another interesting observation is that data quality, as indicated by downstream performance, gradually improves over time.",
+    "char_start": 39710,
+    "char_end": 39833,
+    "sentence_index": 275,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec029",
+    "text": "[ht]\n\n[\nxlabel= Year ,\nylabel= Core Performence ,\nxmin=2014, xmax=2024,\nymin=16, ymax=34,\nxtick= 2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024 ,\nxticklabels= 2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024 ,\n\nscaled ticks=false,\n\nytick= 18, 22, 26, 30 ,\ntick label style= font= ,\n\nlegend style= font= , draw=none, fill=none, at= (0.5,-0.15) , anchor=north, legend columns = 2 ,\ngrid=major,\nwidth=9cm,\nheight=7cm\n]\n\ncolorwarmgreen HTML DBB2F0\ncolorwarmred HTML 66CFFE\n\ncoordinates\n(2014, 18.66) (2015, 18.79) (2016, 19.37) (2017, 20.82) (2018, 20.13) (2019, 21.09) (2020, 21.96) (2021, 23.16) (2022, 24.71) (2023, 26.83) (2024, 27.15) ;\nV2: Random\n\ncoordinates\n(2014,18.24) (2015, 18.74) (2016, 20.45) (2017, 22.06)\n(2018, 20.90) (2019, 21.14) (2020, 22.84) (2021, 22.65)\n(2022, 25.86) (2023, 28.04) (2024, 28.89)\n;\nV2: Balance + CoT data\n\nAblation on for each year's all dumps within 5B-token training budget\n\nWe used Llama-3.1-70B-Instruct to annotate 25K randomly sampled code data and fine-tuned a Qwen-2.5-0.5B model to judge the code quality and decide whether to filter the code.",
+    "char_start": 39835,
+    "char_end": 40936,
+    "sentence_index": 276,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec030",
+    "text": "The scoring prompts are presented in Figure and Figure .",
+    "char_start": 40937,
+    "char_end": 40993,
+    "sentence_index": 277,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec030",
+    "text": "We only keep code data with Math Score $ 4 $ and Code Score $ 4 $, and all other code data are treated as negative samples during training.",
+    "char_start": 40994,
+    "char_end": 41133,
+    "sentence_index": 278,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec030",
+    "text": "In Table , we list details for our supervised fine-tuning configurations.",
+    "char_start": 41135,
+    "char_end": 41208,
+    "sentence_index": 279,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec030",
+    "text": "We use LlamaFactory zheng2024llamafactory as our code base.",
+    "char_start": 41209,
+    "char_end": 41268,
+    "sentence_index": 280,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec030",
+    "text": "Same as ProX zhou2024programming , we also select the model with highest F1 score as out final recalling models, which achieves 80\\% on a split validation set.",
+    "char_start": 41269,
+    "char_end": 41428,
+    "sentence_index": 281,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec030",
+    "text": "[htbp]\n\nTraining parameters for SLM.",
+    "char_start": 41430,
+    "char_end": 41466,
+    "sentence_index": 282,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec030",
+    "text": "l|c\n\nHyperParams & Setting\n\nLR & 1e-5\n\nLR Schedule & cosine\n\nBatch Size & 64\n\nNumber of Epochs & 2\n\nContext Length & 2048\n\n[htbp]\n\n[breaklines=true,breaksymbol=,]\nBelow is an extract from a resource focused on mathematical reasoning.",
+    "char_start": 41467,
+    "char_end": 41700,
+    "sentence_index": 283,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec030",
+    "text": "Evaluate its educational value in effectively teaching concepts in this area, with emphasis on mathematical reasoning.",
+    "char_start": 41701,
+    "char_end": 41819,
+    "sentence_index": 284,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec030",
+    "text": "Use the additive 5-point scoring system described below.",
+    "char_start": 41820,
+    "char_end": 41876,
+    "sentence_index": 285,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec030",
+    "text": "Points accumulate based on each criterion:\n\n- Add 1 point if the resource contains valid content in mathematics, reasoning, logic puzzles, or scientific computation, even if it\u2019s not inherently educational (e.g., configurations or specialized algorithms).",
+    "char_start": 41877,
+    "char_end": 42132,
+    "sentence_index": 286,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec030",
+    "text": "- Add another point if the resource addresses practical concepts in these areas, such as solving math problems or reasoning tasks, even without annotations or explanations.",
+    "char_start": 42133,
+    "char_end": 42305,
+    "sentence_index": 287,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec030",
+    "text": "- Award a third point if the resource is suitable for educational use and introduces key concepts in mathematics or reasoning, with a structured format and some explanations or annotations.",
+    "char_start": 42306,
+    "char_end": 42495,
+    "sentence_index": 288,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec030",
+    "text": "- Give a fourth point if the resource is self-contained and directly useful for teaching, resembling a structured exercise, tutorial, or part of a lesson in mathematical reasoning or logic.",
+    "char_start": 42496,
+    "char_end": 42685,
+    "sentence_index": 289,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec030",
+    "text": "- Grant a fifth point if the resource is outstanding in educational value and perfectly suited for teaching, with clear, step-by-step explanations and thorough annotations on mathematical reasoning concepts.",
+    "char_start": 42686,
+    "char_end": 42893,
+    "sentence_index": 290,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec030",
+    "text": "The extract: <EXAMPLE>\n\nAfter examining the extract:\n\n- Briefly justify your total score, up to 100 words.",
+    "char_start": 42895,
+    "char_end": 43001,
+    "sentence_index": 291,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec030",
+    "text": "- Conclude with the score using the format: \"Score: <total points>\"\n\nScoring Prompt for evaluating code snippets' relevance to mathematics.",
+    "char_start": 43002,
+    "char_end": 43141,
+    "sentence_index": 292,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec030",
+    "text": "[!t]\n\n[breaklines=true,breaksymbol=,]\nBelow is an extract from a <CODE_TYPE> program.",
+    "char_start": 43143,
+    "char_end": 43228,
+    "sentence_index": 293,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec030",
+    "text": "Evaluate whether it has a high educational value and could help teach coding.",
+    "char_start": 43229,
+    "char_end": 43306,
+    "sentence_index": 294,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec030",
+    "text": "Use the additive 5-point scoring system described below.",
+    "char_start": 43307,
+    "char_end": 43363,
+    "sentence_index": 295,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec030",
+    "text": "Points are accumulated based on the satisfaction of each criterion:\n\n- Add 1 point if the program contains valid <CODE_TYPE> code, even if it's not educational, like boilerplate code, configs, and niche concepts.",
+    "char_start": 43364,
+    "char_end": 43576,
+    "sentence_index": 296,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec030",
+    "text": "- Add another point if the program addresses practical concepts, even if it lacks comments.",
+    "char_start": 43577,
+    "char_end": 43668,
+    "sentence_index": 297,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec030",
+    "text": "- Award a third point if the program is suitable for educational use and introduces key concepts in programming, even if the topic is advanced (e.g., deep learning).",
+    "char_start": 43669,
+    "char_end": 43834,
+    "sentence_index": 298,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec030",
+    "text": "The code should be well-structured and contain some comments.",
+    "char_start": 43835,
+    "char_end": 43896,
+    "sentence_index": 299,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec030",
+    "text": "- Give a fourth point if the program is self-contained and highly relevant to teaching programming.",
+    "char_start": 43897,
+    "char_end": 43996,
+    "sentence_index": 300,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec030",
+    "text": "It should be similar to a school exercise, a tutorial, or a <CODE_TYPE> course section.",
+    "char_start": 43997,
+    "char_end": 44084,
+    "sentence_index": 301,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec030",
+    "text": "- Grant a fifth point if the program is outstanding in its educational value and is perfectly suited for teaching programming.",
+    "char_start": 44085,
+    "char_end": 44211,
+    "sentence_index": 302,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec030",
+    "text": "It should be well-written, easy to understand, and contain step-by-step explanations and comments.",
+    "char_start": 44212,
+    "char_end": 44310,
+    "sentence_index": 303,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec030",
+    "text": "The extract:\n<EXAMPLE>\n\nAfter examining the extract:\n- Briefly justify your total score, up to 100 words.",
+    "char_start": 44312,
+    "char_end": 44417,
+    "sentence_index": 304,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec030",
+    "text": "- Conclude with the score using the format: \"Score: <total points>\"\n\nScoring Prompt for evaluating code snippets' general quality, i.e., educational value.",
+    "char_start": 44418,
+    "char_end": 44573,
+    "sentence_index": 305,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec031",
+    "text": "Synthetic Text Data We provide the prompts for extraction and refining Q\\&A below.",
+    "char_start": 44575,
+    "char_end": 44657,
+    "sentence_index": 306,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec031",
+    "text": "[ht]\n\n[breaklines=true,breaksymbol=,]\nBelow is a web document extract.",
+    "char_start": 44658,
+    "char_end": 44728,
+    "sentence_index": 307,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec031",
+    "text": "Assess whether it contains a mathematical question-and-answer pair:\n\n- If the web document extract does not contain a mathematical question-and-answer pair, return the explicit symbol `[NO QA]`.",
+    "char_start": 44729,
+    "char_end": 44923,
+    "sentence_index": 308,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec031",
+    "text": "- If a mathematical question-and-answer pair is found, extract it in the following format:\nQuestion: <question text with complete problem statement and all necessary mathematical information>\nAnswer: <complete solution with all necessary steps and calculations included> (only if an answer is provided, otherwise do not generate this line)\n- The extracted pair must be self-contained and mathematically precise, allowing independent solving without additional context.",
+    "char_start": 44924,
+    "char_end": 45392,
+    "sentence_index": 309,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec031",
+    "text": "#### The extract:\n<EXAMPLE>\n\nNow process the extract and return the result.",
+    "char_start": 45394,
+    "char_end": 45469,
+    "sentence_index": 310,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec031",
+    "text": "Prompt for QA extraction.",
+    "char_start": 45471,
+    "char_end": 45496,
+    "sentence_index": 311,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec031",
+    "text": "[ht]\n\n[breaklines=true,breaksymbol=,]\nBelow is a mathematical question-and-answer pair.",
+    "char_start": 45498,
+    "char_end": 45585,
+    "sentence_index": 312,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec031",
+    "text": "Refine the answer based on the following requirements:\n\n- **If the answer does not contain any explanation or intermediate reasoning process**:\n- Add only necessary intermediate reasoning process leading to the given answer\n- Ensure the added steps are logical, clear, and provide necessary explanation of the solution process\n\n- **If the answer already includes necessary solution process**:\n- Reorganize the solution into a clear and well-structured format for better readability and understanding\n- for simple solutions, there is no need to use latex format\n\n- Maintain the original question text and provide the refined answer in the same format:\n- Question: <question text>\n- Answer: <refined solution>\n\n#### The question-and-answer pair:\n<EXAMPLE>\n\nSuppose you are a math teacher, you should explain the solution in a way that is easy for a student to understand.",
+    "char_start": 45586,
+    "char_end": 46455,
+    "sentence_index": 313,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec031",
+    "text": "Now process the pair and return the refined result.",
+    "char_start": 46456,
+    "char_end": 46507,
+    "sentence_index": 314,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec031",
+    "text": "Prompt for Refined QA.",
+    "char_start": 46509,
+    "char_end": 46531,
+    "sentence_index": 315,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec031",
+    "text": "Synthetic Code Data We provide the prompt for code translation in Figure at below.",
+    "char_start": 46533,
+    "char_end": 46615,
+    "sentence_index": 316,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec031",
+    "text": "Synthetic Code Block Data\n[htbp]\n\n[breaklines=true,breaksymbol=,]\nBelow is an extract from a code snippet.",
+    "char_start": 46616,
+    "char_end": 46722,
+    "sentence_index": 317,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec031",
+    "text": "Translate the code from other programming languages into Python.",
+    "char_start": 46723,
+    "char_end": 46787,
+    "sentence_index": 318,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec031",
+    "text": "Read the code carefully and translate it into Python.",
+    "char_start": 46788,
+    "char_end": 46841,
+    "sentence_index": 319,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec031",
+    "text": "- If the original code has poor quality or cannot be converted to Python, return the explicit symbol \"[Untranslatable]\".",
+    "char_start": 46843,
+    "char_end": 46963,
+    "sentence_index": 320,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec031",
+    "text": "- The translated Python code should meet the following requirements:\n- Ensure good code formatting.",
+    "char_start": 46964,
+    "char_end": 47063,
+    "sentence_index": 321,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec031",
+    "text": "- Include proper comments or explanations for clarity explaining the logic where needed.",
+    "char_start": 47064,
+    "char_end": 47152,
+    "sentence_index": 322,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec031",
+    "text": "- Add docstrings when necessary to improve readability.",
+    "char_start": 47153,
+    "char_end": 47208,
+    "sentence_index": 323,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec031",
+    "text": "- Wrap the generated Python code within python ```python ```.",
+    "char_start": 47209,
+    "char_end": 47270,
+    "sentence_index": 324,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec031",
+    "text": "- Keep good test cases if any.",
+    "char_start": 47271,
+    "char_end": 47301,
+    "sentence_index": 325,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec031",
+    "text": "The extract:\n```\n<EXAMPLE>\n```\n\nDo not produce any additional commentary or text beyond ```python ```.",
+    "char_start": 47303,
+    "char_end": 47405,
+    "sentence_index": 326,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec031",
+    "text": "Now output the translated Python code:\n\nPrompt for translating non-Python code samples into Python code samples.",
+    "char_start": 47406,
+    "char_end": 47518,
+    "sentence_index": 327,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec031",
+    "text": "We used the same prompts as in lu2024mathcoder2 .",
+    "char_start": 47520,
+    "char_end": 47569,
+    "sentence_index": 328,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec031",
+    "text": "Please see Figure .",
+    "char_start": 47570,
+    "char_end": 47589,
+    "sentence_index": 329,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec031",
+    "text": "[htbp]\n\n[breaklines=true,breaksymbol=,]\nYou will be presented with a text related to math.",
+    "char_start": 47590,
+    "char_end": 47680,
+    "sentence_index": 330,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec031",
+    "text": "I need you to identify all the complex computations in it.",
+    "char_start": 47681,
+    "char_end": 47739,
+    "sentence_index": 331,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec031",
+    "text": "For each complex computation that requires a scratchpad, find out the conditions needed for the computation, the latex expression that conducts the computation, and the result of the computation.",
+    "char_start": 47740,
+    "char_end": 47935,
+    "sentence_index": 332,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec031",
+    "text": "Then generate a Python code snippet for each computation that demonstrates how the result is reached.",
+    "char_start": 47936,
+    "char_end": 48037,
+    "sentence_index": 333,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec031",
+    "text": "Output each computation in the following format:\n\nConditions Needed:\n1.",
+    "char_start": 48038,
+    "char_end": 48109,
+    "sentence_index": 334,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec031",
+    "text": "[Condition 1]\n2.",
+    "char_start": 48110,
+    "char_end": 48126,
+    "sentence_index": 335,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec031",
+    "text": "[Condition 2]\n...",
+    "char_start": 48127,
+    "char_end": 48144,
+    "sentence_index": 336,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec031",
+    "text": "Computation Expression:\n$[Latex Expression]$\n\nComputation Result:\n[Computation Result]\n\nPython Code Snippet:\n```python\n[Python Code]\n```\n\nThere can be more than one complex computation in the text.",
+    "char_start": 48146,
+    "char_end": 48343,
+    "sentence_index": 337,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec031",
+    "text": "Output only the computations that requires calculation.",
+    "char_start": 48344,
+    "char_end": 48399,
+    "sentence_index": 338,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec031",
+    "text": "Do not include mathematical statements or definitions as a computation.",
+    "char_start": 48400,
+    "char_end": 48471,
+    "sentence_index": 339,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec031",
+    "text": "Make sure each snippet can be executed individually.",
+    "char_start": 48472,
+    "char_end": 48524,
+    "sentence_index": 340,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec031",
+    "text": "The text is as follows:\n\n<EXAMPLE>\n\nThe computations are:\n\nPrompt for generating code-block data lu2024mathcoder2 .",
+    "char_start": 48525,
+    "char_end": 48640,
+    "sentence_index": 341,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec031",
+    "text": "Our AST filtering mainly contains the following aspects:\n\nCode Parsing and AST Generation : The input code is parsed into an AST using Python's built-in ast module.",
+    "char_start": 48642,
+    "char_end": 48806,
+    "sentence_index": 342,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec031",
+    "text": "The system first verifies code length constraints (max 100,000 characters) and handles syntax errors through exception catching.",
+    "char_start": 48807,
+    "char_end": 48935,
+    "sentence_index": 343,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec031",
+    "text": "Import Declaration Analysis : A specialized visitor collects all imported modules and their aliases through two-phase inspection:\n\nDirect imports ( import x as y ) mapping\nSelective imports from modules ( from a import b as c )\n\nSemantic Node Traversal : A secondary visitor examines all function calls and context managers, checking against three prohibition categories:\n\nFile Operations : file I/O methods (e.g., open , savefig ), path manipulations, and serialization functions\nConcurrency Patterns : Thread/process creation calls and 5+ restricted modules (e.g., threading , asyncio )\nNetwork Communication : network libraries and protocol-specific methods (e.g., requests.get , socket.send )\n\nModule Dependency Verification : Cross-references imported modules against prohibited libraries spanning file systems ( shutil ), parallelism ( multiprocessing ), and network protocols ( ftplib ).",
+    "char_start": 48936,
+    "char_end": 49830,
+    "sentence_index": 344,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec031",
+    "text": "Context-Specific Checks : Special handling for:\n\nwith statements containing file open operations\nClass instantiations of thread/process primitives\nPath manipulation methods in object-oriented interfaces\n\nIn all ablation experiments, we keep our training hyper-parameter the same except for training steps.",
+    "char_start": 49832,
+    "char_end": 50137,
+    "sentence_index": 345,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec033",
+    "text": "We present our full training details in Table .",
+    "char_start": 50138,
+    "char_end": 50185,
+    "sentence_index": 346,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec033",
+    "text": "[htbp]\n\nTraining hyper-parameters.",
+    "char_start": 50186,
+    "char_end": 50220,
+    "sentence_index": 347,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec033",
+    "text": "lc\n\nHyper-parameter & 5B / 15B / 55B Tokens\n\n1 * Context Length & 2,048\n\n1 * Batch Size & 1,024\n\nMax Steps & 2,500 / 7,500 / 27,500\n\n1 * Warmup Steps & 0\n\n1 * Weight Decay & 0.1\n\n1 * Optimizer & AdamW\n\n1 * LR Scheduler & cosine\n\n1 * Learning Rate (LR) & $8 e- 5 8 e- 6$\n\n[htbp]\n\nTraining Data Mixture for .",
+    "char_start": 50222,
+    "char_end": 50528,
+    "sentence_index": 348,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec033",
+    "text": "lc\nData & Ratio \\%\n\nDCLM &10\n\nWeb &15\n\nWeb-pro &35\n\nCode &2.5\n\nQA &10\n\nTrans.",
+    "char_start": 50530,
+    "char_end": 50607,
+    "sentence_index": 349,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec033",
+    "text": "code &2.5\n\nText \\& code block &25\n\nTotal &100\n\n[htbp]\n\nTraining hyper-parameters.",
+    "char_start": 50608,
+    "char_end": 50689,
+    "sentence_index": 350,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec033",
+    "text": "lc\n\nHyper-parameter & .2-1B / 3B\n\n1 * Context Length & 8,192\n\n1 * Batch Size & 512\n\nMax Steps & 25,000 / 25,000 (stop at 12,500)\n\n1 * Warmup Steps & 0\n\n1 * Weight Decay & 0.1\n\n1 * Optimizer & AdamW\n\n1 * LR Scheduler & cosine\n\n1 * Learning Rate (LR) & $5 e- 5 5 e- 6$\n$3 e- 5 3 e- 6$\n\nThe data mixture and hyper-parameters for training are presented in Table and Table .",
+    "char_start": 50691,
+    "char_end": 51060,
+    "sentence_index": 351,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec035",
+    "text": "Our core set of tasks and eval settings are at below.",
+    "char_start": 51062,
+    "char_end": 51115,
+    "sentence_index": 352,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec036",
+    "text": "We revised our evaluation from DeepSeekMath shao2024deepseekmath : we fixed one of its prompts https://github.com/deepseek-ai/DeepSeek-Math/blob/main/evaluation/few\\_shot\\_prompts/pal\\_math\\_4\\_shot.py\\#L54 https://github.com/deepseek-ai/DeepSeek-Math/blob/main/evaluation/few\\_shot\\_prompts/pal\\_math\\_4\\_shot.py\\#L54 , and support PAL for more benchmarks.",
+    "char_start": 51116,
+    "char_end": 51473,
+    "sentence_index": 353,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec036",
+    "text": "GSM8K cobbe2021training-gsm8k , 8-shot\nMATH hendrycks2measuring-math , 4-shot\nASDiv miao-etal-2020-diverse-asdiv , 8-shot\nSVAMP patel-etal-2021-nlp-svamp , 8-shot\nMAWPS koncel-kedziorski-etal-2016-mawps , 8-shot\n\nOur extended set of tasks are:\n\nMMLU-STEM hendrycks2020measuring-mmlu , 4-shot\nTabMWP ludynamic-tabmwp , 8-shot\nMathQA amini-etal-2019-mathqa , 8-shot\nSAT azerbayev2023llemma , 4-shot\nOCW Courses lewkowycz2022solving-ocw , 4-shot\n\nWe present our full results in this section:\n\nFor ablation on Web Data We provide the full ablation results on math text extraction, Minhash deduplication and in Table , Table , Table .",
+    "char_start": 51475,
+    "char_end": 52104,
+    "sentence_index": 354,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec037",
+    "text": "For ablations on Code filtering, please see Table , and Table .",
+    "char_start": 52105,
+    "char_end": 52168,
+    "sentence_index": 355,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec037",
+    "text": "For ablations on synthetic data, please see Table , and Table .",
+    "char_start": 52169,
+    "char_end": 52232,
+    "sentence_index": 356,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec037",
+    "text": "The full comparison results are provided in Table .",
+    "char_start": 52233,
+    "char_end": 52284,
+    "sentence_index": 357,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec037",
+    "text": "For evaluation results for , please see Table .",
+    "char_start": 52285,
+    "char_end": 52332,
+    "sentence_index": 358,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec037",
+    "text": "[htp]\n\nFull ablation results on math text extraction within 15B-token training budget\n!",
+    "char_start": 52334,
+    "char_end": 52421,
+    "sentence_index": 359,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec037",
+    "text": "c|c|cccccccccc|cc\n\nText Extractors & [c] @ c@ w/ HTML\nOptimization & ASDiV & GSM8K & MATH & MATH-SAT & MATHQA & MAWPS & MMLU-STEM & OCW & SWAMP & TABMWP & Core Avg.",
+    "char_start": 52422,
+    "char_end": 52586,
+    "sentence_index": 360,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec037",
+    "text": "& Ext.",
+    "char_start": 52587,
+    "char_end": 52593,
+    "sentence_index": 361,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 52594,
+    "char_end": 52598,
+    "sentence_index": 362,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec037",
+    "text": "C0C0C0 TinyLlama-1.1B & C0C0C0 - & C0C0C0 18.0 & C0C0C0 3.0 & C0C0C0 3.1 & C0C0C0 40.6 & C0C0C0 13.2 & C0C0C0 20.8 & C0C0C0 16.3 & C0C0C0 2.9 & C0C0C0 11.0 & C0C0C0 18.0 & C0C0C0 11.2 & C0C0C0 14.7\n\n& 55 & 32.6 & 5.9 & 4.3 & 21.9 & 12.9 & 44.8 & 23.2 & 2.2 & 22.3 & 21.8 & 22.0 & 19.2\n\n& 52 & 33.5 & 5.8 & 3.9 & 15.6 & 10.9 & 47.3 & 21.3 & 2.6 & 22.1 & 22.7 & 22.5 & 18.6\n\n& 52 & 36.3 & 7.0 & 3.9 & 25.0 & 14.7 & 49.5 & 22.6 & 2.2 & 22.1 & 22.8 & 23.8 & 20.6\n\n[ht]\n\nFull ablation results on Minhash LSH within 55B-token training budget\n!",
+    "char_start": 52600,
+    "char_end": 53137,
+    "sentence_index": 363,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec037",
+    "text": "ccc|cccccccccc|cc\n\n(r,b) & t & [c] @ c@ remaining\ntokens (B) & ASDiV & GSM8K & MATH & MATH-SAT & MATHQA & MAWPS & MMLU-STEM & OCW & SWAMP & TABMWP & Core.",
+    "char_start": 53138,
+    "char_end": 53292,
+    "sentence_index": 364,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 53293,
+    "char_end": 53297,
+    "sentence_index": 365,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec037",
+    "text": "& Ext.",
+    "char_start": 53298,
+    "char_end": 53304,
+    "sentence_index": 366,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 53305,
+    "char_end": 53309,
+    "sentence_index": 367,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec037",
+    "text": "(14,9) & 0.70 & 16.0 & 26.1 & 4.9 & 3.4 & 25.0 & 10.0 & 36.0 & 20.5 & 2.6 & 16.3 & 21.0 & 17.3 & 16.6\n\n(14,8) & 0.75 & 23.5 & 29.1 & 5.4 & 3.7 & 17.5 & 9.3 & 38.6 & 23.1 & 1.5 & 18.7 & 23.1 & 19.1 & 17.0\n\n(11,10) & 0.75 & 26.0 & 29.8 & 4.4 & 3.9 & 23.1 & 10.2 & 41.4 & 19.3 & 2.9 & 17.6 & 22.1 & 19.4 & 17.5\n\n(11,11) & 0.75 & 25.0 & 30.1 & 4.3 & 3.8 & 9.4 & 10.9 & 38.9 & 21.0 & 2.1 & 18.7 & 20.3 & 19.2 & 16.0\n\n(9,12) & 0.80 & 29.0 & 28.3 & 4.4 & 3.6 & 18.8 & 11.2 & 40.3 & 21.8 & 2.4 & 17.5 & 20.7 & 18.8 & 16.9\n\n(9,13) & 0.80 & 30.0 & 27.7 & 3.5 & 3.5 & 13.8 & 10.0 & 36.7 & 21.7 & 2.1 & 16.6 & 21.1 & 17.6 & 15.7\n\n[!t]\n\nFull ablation results on within 5B-token training budget\n!",
+    "char_start": 53311,
+    "char_end": 53993,
+    "sentence_index": 368,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec037",
+    "text": "l|cccccccccc|cc\n\nversion & ASDiV & GSM8K & MATH & MATH-SAT & MATHQA & MAWPS & MMLU-STEM & OCW & SWAMP & TABMWP & Core.",
+    "char_start": 53994,
+    "char_end": 54112,
+    "sentence_index": 369,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 54113,
+    "char_end": 54117,
+    "sentence_index": 370,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec037",
+    "text": "& Ext.",
+    "char_start": 54118,
+    "char_end": 54124,
+    "sentence_index": 371,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 54125,
+    "char_end": 54129,
+    "sentence_index": 372,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec037",
+    "text": "V1: & 34.6 & 5.6 & 3.2 & 34.4 & 12.0 & 45.8 & 21.1 & 2.2 & 23.0 & 18.4 & 22.4 & 20.0\n\nV2: Random & 41.7 & 8.6 & 5.1 & 15.6 & 11.6 & 55.9 & 17.1 & 2.2 & 24.5 & 25.1 & 27.2 & 20.7\n\nV2: Balance & 41.3 & 8.9 & 5.0 & 28.1 & 15.5 & 57.8 & 19.2 & 2.2 & 26.2 & 26.2 & 27.8 & 23.0\n\nV2: Balance + CoT & 44.2 & 9.6 & 5.4 & 25.0 & 15.7 & 59.0 & 17.1 & 2.2 & 26.3 & 25.8 & 28.9 & 23.0\n\n[!t]\n\nPerformance comparison of CoT and PAL under different filtering criteria\n0.75 !",
+    "char_start": 54131,
+    "char_end": 54589,
+    "sentence_index": 373,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec037",
+    "text": "c|cccccc\n\n1 c| 2 [4] * Filter Criteria & 6 c CoT\n\n2-7\n& GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 54590,
+    "char_end": 54689,
+    "sentence_index": 374,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec037",
+    "text": "text only & 4.4 & 4.1 & 29.3 & 39.5 & 17.7 & 19.0\n\n$S\\_ edu 3, S\\_ math 3$ & 4.1 & 4.4 & 28.9 & 40.2 & 19.4 & 19.4\n\n$S\\_ edu 3, S\\_ math 4$ & 4.9 & 4.2 & 29.8 & 41.1 & 19.2 & 19.8\n\n$S\\_ edu 4, S\\_ math 3$ & 4.9 & 4.3 & 29.8 & 39.9 & 19.4 & 19.7\n\n$S\\_ edu 4, S\\_ math 4$ & 4.3 & 4.2 & 29.5 & 38.5 & 17.3 & 18.8\n\n1 c| 2 [4] * Filter Criteria & 6 c PAL\n\n2-7 & GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 54691,
+    "char_end": 55091,
+    "sentence_index": 375,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec037",
+    "text": "text only & 2.8 & 2.9 & 24.8 & 30.1 & 17.6 & 15.6\n\n$S\\_ edu 3, S\\_ math 3$ & 3.7 & 3.6 & 25.8 & 31.7 & 15.6 & 16.1\n\n$S\\_ edu 3, S\\_ math 4$ & 4.4 & 4.3 & 27.2 & 31.4 & 16.5 & 16.8\n\n$S\\_ edu 4, S\\_ math 3$ & 4.5 & 3.7 & 27.4 & 32.3 & 19.5 & 17.5\n\n$S\\_ edu 4, S\\_ math 4$ & 5.7 & 5.5 & 29.7 & 36.4 & 20.2 & 19.5\n\n[!t]\n\nPerformance comparison of CoT and PAL under different mix ratios.",
+    "char_start": 55093,
+    "char_end": 55475,
+    "sentence_index": 376,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec037",
+    "text": "0.75 !",
+    "char_start": 55476,
+    "char_end": 55482,
+    "sentence_index": 377,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec037",
+    "text": "c|cccccc\n\n1 c| 2 [4] * Mix Ratio & 6 c CoT\n\n2-7 & GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 55483,
+    "char_end": 55576,
+    "sentence_index": 378,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec037",
+    "text": "text only & 4.4 & 4.1 & 29.3 & 39.5 & 17.7 & 19.0\n\ncode:text = 1:7 & 3.8 & 4.2 & 30.2 & 40.0 & 18.3 & 19.3\n\ncode:text = 1:4 & 4.6 & 4.1 & 29.5 & 40.6 & 18.9 & 19.5\n\ncode:text = 1:2 & 3.9 & 4.0 & 28.3 & 27.6 & 18.1 & 16.4\n\ncode:text = 1:1 & 3.6 & 3.9 & 26.7 & 36.7 & 16.6 & 17.5\n\n1 c| 2 [4] * Mix Ratio & 6 c PAL\n\n2-7 & GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 55578,
+    "char_end": 55940,
+    "sentence_index": 379,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec037",
+    "text": "text only & 2.8 & 2.9 & 24.8 & 30.1 & 17.6 & 15.6\n\ncode:text = 1:7 & 4.4 & 4.3 & 27.2 & 31.8 & 19.5 & 17.4\n\ncode:text = 1:4 & 4.4 & 4.4 & 29.2 & 33.6 & 20.2 & 18.4\n\ncode:text = 1:2 & 4.3 & 4.4 & 27.6 & 34.1 & 17.1 & 17.5\n\ncode:text = 1:1 & 5.4 & 4.9 & 29.5 & 36.3 & 17.7 & 18.8\n\n[htbp]\n\nPerformance comparison of CoT using different Q\\&A datasets\n0.75 !",
+    "char_start": 55942,
+    "char_end": 56295,
+    "sentence_index": 380,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec037",
+    "text": "l|cccccc\n\nData & ASDiV & GSM8K & MATH & MATH-SAT & MATHQA & MAWPS\n\nFM-4plus & 41.9 & 10.5 & 6.1 & 34.4 & 14.4 & 57.9\n\nWebInstruct & 49.5 & 13.1 & 10.6 & 25.0 & 14.7 & 65.8\n\nVanilla Prompt & 57.4 & 22.1 & 10.5 & 25.0 & 16.5 & 68.6\n\nw.",
+    "char_start": 56296,
+    "char_end": 56529,
+    "sentence_index": 381,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec037",
+    "text": "ELI5 & 58.6 & 25.9 & 12.3 & 21.9 & 18.4 & 71.6\n\nw.",
+    "char_start": 56530,
+    "char_end": 56580,
+    "sentence_index": 382,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec037",
+    "text": "ELI5 + IC & 68.0 & 33.3 & 15.3 & 34.4 & 21.7 & 79.6\n\nData & MMLU-STEM & OCW & SVAMP & TABMWP & Core Avg.",
+    "char_start": 56581,
+    "char_end": 56685,
+    "sentence_index": 383,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec037",
+    "text": "& Ext.",
+    "char_start": 56686,
+    "char_end": 56692,
+    "sentence_index": 384,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 56693,
+    "char_end": 56697,
+    "sentence_index": 385,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec037",
+    "text": "FM-4plus & 20.6 & 2.9 & 25.3 & 25.5 & 28.3 & 19.6\n\nWebInstruct & 16.0 & 3.3 & 34.0 & 29.2 & 34.6 & 17.6\n\nVanilla Prompt & 17.7 & 2.9 & 37.2 & 35.4 & 39.2 & 19.5\n\nw.",
+    "char_start": 56699,
+    "char_end": 56863,
+    "sentence_index": 386,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec037",
+    "text": "ELI5 & 15.6 & 4.0 & 38.1 & 35.9 & 41.3 & 19.2\n\nw.",
+    "char_start": 56864,
+    "char_end": 56913,
+    "sentence_index": 387,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec037",
+    "text": "ELI5 + IC & 18.3 & 3.3 & 48.0 & 40.1 & 48.8 & 23.6\n\n[!t]\n\nPerformance comparison of CoT and PAL under different mix ratios.",
+    "char_start": 56914,
+    "char_end": 57037,
+    "sentence_index": 388,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec037",
+    "text": "0.75 !",
+    "char_start": 57038,
+    "char_end": 57044,
+    "sentence_index": 389,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec037",
+    "text": "l|cccccc\n\n1 c| 2 [4] * Data & 6 c CoT\n\n2-7 & GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 57045,
+    "char_end": 57133,
+    "sentence_index": 390,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec037",
+    "text": "code & 4.3 & 4.2 & 29.5 & 38.5 & 17.3 & 18.8\n\ntrans.",
+    "char_start": 57135,
+    "char_end": 57187,
+    "sentence_index": 391,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec037",
+    "text": "code & 3.5 & 4.3 & 30.2 & 39.3 & 17.8 & 19.0\n\ntext \\& code block & 6.7 & 5.2 & 34.0 & 45.4 & 21.2 & 22.5\n\ntext \\& code block (full) & 12.4 & 7.9 & 43.8 & 58.6 & 31.2 & 30.8\n\n1 c| 2 [4] * Data & 6 c PAL\n\n2-7 & GSM8K & MATH & ASDiV & MAWPS & SVAMP & Avg.",
+    "char_start": 57188,
+    "char_end": 57440,
+    "sentence_index": 392,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec037",
+    "text": "code & 5.7 & 5.5 & 29.7 & 36.4 & 20.2 & 19.5\n\ntrans.",
+    "char_start": 57442,
+    "char_end": 57494,
+    "sentence_index": 393,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec037",
+    "text": "code & 7.0 & 5.3 & 31.3 & 39.4 & 20.1 & 20.6\n\ntext \\& code block & 9.6 & 10.6 & 41.1 & 51.2 & 27.8 & 28.1\n\ntext \\& code block (full) & 26.9 & 17.3 & 62.1 & 78.0 & 48.3 & 46.5\n\n[ht]\n\nFull comparison CoT results with existing corpora\nwithin 55B-token training budget\n!",
+    "char_start": 57495,
+    "char_end": 57761,
+    "sentence_index": 394,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec037",
+    "text": "lcccccccccc|cc\n\nCorpus & ASDiV & GSM8K & MATH & MATH-SAT & MATHQA & MAWPS & MMLU-STEM & OCW & SWAMP & TABMWP & Core.",
+    "char_start": 57762,
+    "char_end": 57878,
+    "sentence_index": 395,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 57879,
+    "char_end": 57883,
+    "sentence_index": 396,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec037",
+    "text": "& Ext.",
+    "char_start": 57884,
+    "char_end": 57890,
+    "sentence_index": 397,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec037",
+    "text": "Avg.",
+    "char_start": 57891,
+    "char_end": 57895,
+    "sentence_index": 398,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec037",
+    "text": "MegaMath-Web-Pro (15B, Ours) & 61.9 & 24.1 & 12.0 & 34.4 & 15.4 & 75.7 & 28.2 & 2.6 & 42.9 & 32.5 & 43.3 & 33.0\n\nFineMath-4+ (11B) & 55.7 & 21.1 & 11.4 & 31.3 & 23.7 & 70.9 & 25.9 & 2.6 & 35.9 & 32.6 & 39.0 & 31.1\n\nMegaMath-Web-Top 50\\% (Ours) & 53.0 & 15.5 & 8.4 & 31.3 & 15.5 & 68.3 & 25.7 & 3.7 & 33.1 & 32.7 & 35.6 & 28.7\n\nFineMath-3+ (41.6B) & 50.8 & 17.1 & 8.5 & 21.9 & 17.5 & 68.4 & 24.4 & 4.4 & 30.7 & 30.5 & 35.1 & 27.4\n\nMegaMath-Web-Top 75\\% (Ours) & 46.8 & 11.7 & 6.9 & 43.8 & 17.3 & 62.4 & 17.2 & 2.6 & 29.2 & 30.0 & 31.4 & 26.8\n\nInfiMM-WebMath (55B) & 46.1 & 12.3 & 6.4 & 25.0 & 15.3 & 63.0 & 22.5 & 3.3 & 26.3 & 28.4 & 30.8 & 24.9\n\nMegaMath-Web-Full (Ours) & 44.7 & 11.6 & 6.4 & 25.0 & 13.0 & 61.0 & 21.8 & 2.2 & 26.2 & 30.0 & 30.0 & 24.2\n\nOpen-Web-Math (14.5B) & 39.7 & 8.7 & 6.3 & 31.3 & 12.9 & 54.2 & 22.7 & 2.6 & 24.1 & 25.1 & 26.6 & 22.8\n\n[htbp]\n\nFull results of training on series of models.",
+    "char_start": 57897,
+    "char_end": 58808,
+    "sentence_index": 399,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec037",
+    "text": "l|cccccc\n2 * Model & 6 c CoT\n\n2-7\n& ASDiV & GSM8K & MATH & MAWPS & SVAMP & Avg.",
+    "char_start": 58810,
+    "char_end": 58889,
+    "sentence_index": 400,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec037",
+    "text": "Llama-3.2-1B &33.8 &8.5 &4.6 &43.3 &21.5 &22.3\n\nMegaMath Llama-3.2-1B &59.8 &25.7 &9.5 &74.6 &41.3 &42.2\n\nLlama-3.2-3B &60.5 &30.1 &9.2 &80.5 &52.6 &46.6\n\nMegaMath Llama-3.2-3B &78.8 &56.2 &25.1 &90.2 &71.6 &64.4\n\n2 * Model & 6 c PAL\n\n2-7\n& ASDiV & GSM8K & MATH & MAWPS & SVAMP & Avg.",
+    "char_start": 58891,
+    "char_end": 59175,
+    "sentence_index": 401,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec037",
+    "text": "Llama-3.2-1B &13.4 &7.9 &3.1 &16.8 &8.4 &9.9\n\nMegaMath Llama-3.2-1B &42.8 &16.8 &6.3 &52.7 &29.8 &29.7\n\nLlama-3.2-3B &65.1 &35.7 &0.4 &83.3 &58.3 &48.6\n\nMegaMath Llama-3.2-3B &78.1 &55.7 &24.6 &93.7 &74.4 &65.3",
+    "char_start": 59177,
+    "char_end": 59387,
+    "sentence_index": 402,
+    "section_sentence_index": 47
+  }
+]

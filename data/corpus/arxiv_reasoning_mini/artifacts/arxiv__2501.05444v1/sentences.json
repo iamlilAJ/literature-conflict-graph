@@ -1,0 +1,4160 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "-0.2in\n\nThe ability to organically reason over and with both text and images is a pillar of human intelligence, yet the ability of Multimodal Large Language Models (MLLMs) to perform such multimodal reasoning remains under-explored.",
+    "char_start": 0,
+    "char_end": 232,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Existing benchmarks often emphasize text-dominant reasoning or rely on shallow visual cues, failing to adequately assess integrated visual and textual reasoning.",
+    "char_start": 233,
+    "char_end": 394,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce EMMA (Enhanced MultiModal reAsoning), a benchmark targeting organic multimodal reasoning across mathematics, physics, chemistry, and coding.",
+    "char_start": 395,
+    "char_end": 548,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "EMMA tasks demand advanced cross-modal reasoning that cannot be addressed by reasoning independently in each modality, offering an enhanced test suite for MLLMs' reasoning capabilities.",
+    "char_start": 549,
+    "char_end": 734,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Our evaluation of state-of-the-art MLLMs on EMMA reveals significant limitations in handling complex multimodal and multi-step reasoning tasks, even with advanced techniques like Chain-of-Thought prompting and test-time compute scaling underperforming.",
+    "char_start": 735,
+    "char_end": 987,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "These findings underscore the need for improved multimodal architectures and training paradigms to close the gap between human and model reasoning in multimodality.",
+    "char_start": 988,
+    "char_end": 1152,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "[t]\n\nfigs/EMMA.pdf\nOverview of EMMA.",
+    "char_start": 1154,
+    "char_end": 1190,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "EMMA covers four subjects: math, physics, chemistry, and coding.",
+    "char_start": 1191,
+    "char_end": 1255,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Questions are categorized based on specific skills.",
+    "char_start": 1256,
+    "char_end": 1307,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "We provide answers to the sample questions in this figure on the GitHub page.",
+    "char_start": 1308,
+    "char_end": 1385,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "-0.1in\nMultimodal reasoning is fundamental to human problem-solving.",
+    "char_start": 1387,
+    "char_end": 1455,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "For example, meteorologists interpret weather maps alongside numerical forecasts, and interior designers combine textual descriptions with mental imagery to optimize room layouts.",
+    "char_start": 1456,
+    "char_end": 1635,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Text-based reasoning allows us to analyze abstract concepts, while visual reasoning enables us to manipulate and draw insights from complex visual information.",
+    "char_start": 1636,
+    "char_end": 1795,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Combining these skills provides a robust framework for solving technical and creative challenges.",
+    "char_start": 1796,
+    "char_end": 1893,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "In math, for example, formal symbolic reasoning and visual aids such as diagrams and spatial thinking work in tandem to explore ideas that neither modality could fully address alone .",
+    "char_start": 1894,
+    "char_end": 2077,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Recent advancements in Large Language Models (LLMs) have significantly enhanced their reasoning abilities , enabling strong performance on tasks such as formal logic reasoning , graduate-level academic question answering , and competitive programming .",
+    "char_start": 2079,
+    "char_end": 2331,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Despite these successes, these models primarily focus on text-only reasoning , leaving an open question: can Multimodal LLMs (MLLMs) effectively reason across both language and visual inputs?",
+    "char_start": 2332,
+    "char_end": 2523,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "A major bottleneck in addressing this question is the lack of appropriate benchmarks.",
+    "char_start": 2525,
+    "char_end": 2610,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Existing multimodal benchmarks largely test surface-level visual understanding or textual knowledge recall with multimodal inputs .",
+    "char_start": 2611,
+    "char_end": 2742,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "While some benchmarks include math questions with images, studies have shown that many of these tasks reduce to language-only reasoning, as the visual content is often fully described in text.",
+    "char_start": 2743,
+    "char_end": 2935,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "To address this gap, we introduce EMMA: an Enhanced MultiModal reAsoning benchmark, specifically designed to evaluate the ability to solve problems that require both visual- and language-based problem-solving.",
+    "char_start": 2937,
+    "char_end": 3146,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "EMMA features questions that are difficult to solve by relying solely on text-based reasoning or a single visual pass .",
+    "char_start": 3147,
+    "char_end": 3266,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Instead, solving these problems necessitates a back-and-forth process between interpreting visual inputs and applying multimodal reasoning steps, where visual aids are often integral or more efficient for arriving at the solution.",
+    "char_start": 3267,
+    "char_end": 3497,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "For instance, Figure illustrates a sample physics problem that asks for the direction of the net electric force.",
+    "char_start": 3498,
+    "char_end": 3610,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "While GPT-4o understands that like charges repel, it\nmistakes the direction of the repulsive force, highlighting its limitations in multimodal reasoning.",
+    "char_start": 3611,
+    "char_end": 3764,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Unlike recent benchmarks , which focus on spatial cognition, or visual puzzles that can be perfectly represented in text, EMMA introduces domain-specific challenges where reasoning can often be strengthened by visual aids.",
+    "char_start": 3766,
+    "char_end": 3988,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "These include tasks like 3D spatial transformations, chemical structure recognition, multi-step physical simulations, and program output visualization (Figure ).",
+    "char_start": 3989,
+    "char_end": 4150,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "EMMA consists of 992 multimodal reasoning questions gathered from existing benchmarks through a rigorous filtering pipeline, and 1,796 newly constructed questions created manually in collaboration with domain experts.",
+    "char_start": 4151,
+    "char_end": 4368,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Our evaluation of nine state-of-the-art (SoTA) MLLMs on EMMA reveals three key findings:\n\nMLLMs struggle with multimodal reasoning : All models perform suboptimally on EMMA, regardless of the usage of Chain-of-Thought (CoT) prompting .",
+    "char_start": 4369,
+    "char_end": 4604,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "On the balanced subset of EMMA, the best-performing model, o1, scores only 45.75\\%, which is 8.5\\% higher than the best non-reasoning MLLM, Qwen2-VL , but still trails human experts by 32\\%.",
+    "char_start": 4605,
+    "char_end": 4795,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "These results suggest a limitation of current MLLMs to perform in-depth multimodal reasoning.",
+    "char_start": 4796,
+    "char_end": 4889,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Test-time compute scaling methods with textual CoTs are insufficient :\nWe explore test-time compute scaling of SoTA MLLMs with\ndifferent methods\n(e.g., majority voting, best-of-N, and tournament) up to 16 times, yet they still fail to address the challenges posed by multimodal reasoning questions in EMMA.",
+    "char_start": 4890,
+    "char_end": 5196,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Our analysis reveals that simply increasing the number of candidate responses with textual CoTs does little to compensate for the models' inability to produce valid visual reasoning steps, particularly for tasks requiring fine-grained spatial understanding or multi-step reasoning.",
+    "char_start": 5197,
+    "char_end": 5478,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "In addition, current MLLMs and specialized reward models struggle with complex multimodal reasoning themselves, which can make their reward signals unreliable and limit the utility of test-time compute scaling.",
+    "char_start": 5479,
+    "char_end": 5689,
+    "sentence_index": 33,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Visual reasoning remains a fundamental bottleneck : Through thorough error analysis, we find that SoTA MLLMs frequently struggle with tasks requiring precise spatial simulations, multi-hop visual reasoning, and integration of visual and textual information.",
+    "char_start": 5690,
+    "char_end": 5947,
+    "sentence_index": 34,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "These shortcomings are particularly pronounced in problems where visual aids offer a simpler or more natural path to the solution.",
+    "char_start": 5948,
+    "char_end": 6078,
+    "sentence_index": 35,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Further, textual CoT negatively impacts model performance on visual-reasoning-heavy tasks, highlighting the need for new paradigms to improve visual reasoning.",
+    "char_start": 6079,
+    "char_end": 6238,
+    "sentence_index": 36,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "These insights suggest that the performance gap between text-based and multimodal reasoning arises from MLLMs' limited ability to perform fine-grained visual reasoning.",
+    "char_start": 6240,
+    "char_end": 6408,
+    "sentence_index": 37,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "EMMA highlights the need for new architectures and training paradigms that can better integrate and reason over diverse modalities, enabling models to leverage both visual and linguistic information more effectively.",
+    "char_start": 6409,
+    "char_end": 6625,
+    "sentence_index": 38,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Multimodal Large Language Models\nRecent years have witnessed rapid progress in MLLM development.",
+    "char_start": 6627,
+    "char_end": 6723,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Building upon early techniques in vision-language modeling , modern MLLMs leverage the success of LLMs and achieve impressive performance in many multimodal tasks.",
+    "char_start": 6724,
+    "char_end": 6887,
+    "sentence_index": 40,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "In addition, various visual instruction tuning techniques and the increasing availability of open-source and model-generated training data have further contributed to the robustness and zero-shot generalization ability of MLLMs.",
+    "char_start": 6888,
+    "char_end": 7116,
+    "sentence_index": 41,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "LLM and MLLM Reasoning\nWhile early LLMs were widely regarded as mere next-token predictors with limited reasoning ability , recent advancements in LLM research have begun to challenge this view.",
+    "char_start": 7118,
+    "char_end": 7312,
+    "sentence_index": 42,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "State-of-the-art models now achieve strong performance on tasks such as formal logic reasoning , graduate-level academic question answering , and competitive programming .",
+    "char_start": 7313,
+    "char_end": 7484,
+    "sentence_index": 43,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "These advancements in text-based reasoning have spurred growing interest in multimodal reasoning, exemplified by visual CoT models such as Visual Chain-of-Thought and Multimodal Chain-of-Thought , as well as visual CoT prompting techniques like Image-of-Thought .",
+    "char_start": 7485,
+    "char_end": 7748,
+    "sentence_index": 44,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Although visual CoT prompting techniques have shown promise, their focus is primarily on enhancing perception through methods like cropping images to simulate attention.",
+    "char_start": 7750,
+    "char_end": 7919,
+    "sentence_index": 45,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Hence, these approaches offer limited support for tasks that demand more advanced visual reasoning skills, such as visual manipulation or imagination.",
+    "char_start": 7920,
+    "char_end": 8070,
+    "sentence_index": 46,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Multimodal Reasoning Benchmarks\nMost reasoning benchmarks to date are purely text-based (e.g., ).",
+    "char_start": 8072,
+    "char_end": 8169,
+    "sentence_index": 47,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "The growing demand for measuring multimodal reasoning has driven the development of multimodal reasoning benchmarks across diverse domains (e.g., ).",
+    "char_start": 8170,
+    "char_end": 8318,
+    "sentence_index": 48,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "In particular, recent efforts have targeted spatial and relational reasoning and college-level reasoning that requires domain knowledge .",
+    "char_start": 8319,
+    "char_end": 8456,
+    "sentence_index": 49,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "Nonetheless, a persistent shortcoming remains: many purported multimodal benchmarks contain redundancy between text and images, allowing models to shortcut through language reasoning alone.",
+    "char_start": 8457,
+    "char_end": 8646,
+    "sentence_index": 50,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "For example, Zhang et al.",
+    "char_start": 8647,
+    "char_end": 8672,
+    "sentence_index": 51,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "observe that textual elements in math benchmarks often describe the visual content in detail, reducing the need for integrated reasoning across modalities.",
+    "char_start": 8673,
+    "char_end": 8828,
+    "sentence_index": 52,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "In light of this, MMMU-Pro incorporates a filtering pipeline to better evaluate true multimodal reasoning.",
+    "char_start": 8829,
+    "char_end": 8935,
+    "sentence_index": 53,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "In this work, we further refine such approaches by curating a benchmark that focuses explicitly on tasks requiring strong visual reasoning.",
+    "char_start": 8936,
+    "char_end": 9075,
+    "sentence_index": 54,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "Unlike existing benchmarks, our test suite emphasizes multimodal reasoning challenges that are difficult to solve with text-based reasoning and a single visual pass.",
+    "char_start": 9076,
+    "char_end": 9241,
+    "sentence_index": 55,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "We introduce EMMA, an Enhanced MultiModal ReAsoning Benchmark.",
+    "char_start": 9243,
+    "char_end": 9305,
+    "sentence_index": 56,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "EMMA is composed of 2,788 problems, of which 1,796 are newly constructed, across four domains: math, physics, chemistry, and coding.",
+    "char_start": 9306,
+    "char_end": 9438,
+    "sentence_index": 57,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "The key statistics of EMMA are summarized in Table , and its composition is presented in Figure .",
+    "char_start": 9439,
+    "char_end": 9536,
+    "sentence_index": 58,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "To provide fine-grained insights into how MLLMs might fail in multimodal reasoning, we assign labels to each problem in our benchmark.",
+    "char_start": 9538,
+    "char_end": 9672,
+    "sentence_index": 59,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "These labels are either created by domain experts or assigned by GPT-4o and subsequently verified by experts.",
+    "char_start": 9673,
+    "char_end": 9782,
+    "sentence_index": 60,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "As shown in Figure , questions in EMMA assess a wide array of multimodal reasoning skills.",
+    "char_start": 9783,
+    "char_end": 9873,
+    "sentence_index": 61,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "For example, the pattern inference problem in math challenges models to identify and generalize visual patterns; the visual decomposition simulation problem in physics requires graphically decomposing forces to determine resultant effects; the reaction simulation problem in chemistry demands precise interpretation and simulation of electron movement; the 3D visualization problem in coding Different from the other subjects in EMMA, coding questions can be assigned more than one category since our visualizations tend to employ multiple advanced techniques.",
+    "char_start": 9874,
+    "char_end": 10434,
+    "sentence_index": 62,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "evaluates spatial imagination by requiring models to associate function calls with their corresponding 3D representations.",
+    "char_start": 10435,
+    "char_end": 10557,
+    "sentence_index": 63,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "[t]\n15pt 1.1\n\n.95 !",
+    "char_start": 10559,
+    "char_end": 10578,
+    "sentence_index": 64,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "l r\n\nStatistic & Number\n\nTotal questions & 2,788\n\n- Multiple-choice questions & 2,002 (72\\%)\n\n- Free-form questions & 786 (28\\%)\n\n- Questions with answers & 2,788 (100\\%)\n\n- Questions newly added & 1,796 (64\\%)\n\nImage in the question & 2,599 (93\\%)\n\nImage in the option(s) & 195 (7\\%)\n\nProblems with multiple images & 298 (10\\%)\n\nKey statistics of EMMA.",
+    "char_start": 10580,
+    "char_end": 10933,
+    "sentence_index": 65,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "In addition, to ease the burden of evaluation, all questions in EMMA are in either multiple-choice or open-ended formats with short, easily checkable ground truth answers, obviating the need for using MLLMs as judges .",
+    "char_start": 10935,
+    "char_end": 11153,
+    "sentence_index": 66,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "[t]\n\nfigs/fig3_composition.pdf\nComposition of EMMA.",
+    "char_start": 11155,
+    "char_end": 11206,
+    "sentence_index": 67,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "EMMA comprises 2,788 questions across four subjects: math, physics, chemistry, and coding.",
+    "char_start": 11207,
+    "char_end": 11297,
+    "sentence_index": 68,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "Within each subject, we further provide fine-grained labels for each question based on the specific skills it measures.",
+    "char_start": 11298,
+    "char_end": 11417,
+    "sentence_index": 69,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "As discussed in Section , most existing multimodal reasoning benchmarks likely contain many problems that primarily measure text-based reasoning.",
+    "char_start": 11419,
+    "char_end": 11564,
+    "sentence_index": 70,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "To address this, we employ a two-step approach to constructing EMMA (Figure ).",
+    "char_start": 11565,
+    "char_end": 11643,
+    "sentence_index": 71,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "First, we source problems from existing multimodal reasoning benchmarks and apply rigorous filtering to exclude those solvable through text-based reasoning and a single visual pass.",
+    "char_start": 11644,
+    "char_end": 11825,
+    "sentence_index": 72,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "Next, we categorize the remaining problems for each subject into fine-grained multimodal reasoning skill taxonomies and manually collect more samples aligned with these taxonomies to expand our dataset.",
+    "char_start": 11827,
+    "char_end": 12029,
+    "sentence_index": 73,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "Filtering Mechanisms To filter for questions that require multimodal reasoning, Yue et al.",
+    "char_start": 12031,
+    "char_end": 12121,
+    "sentence_index": 74,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "provide only the text from multimodal reasoning questions to LLMs and discard questions that can be correctly answered this way.",
+    "char_start": 12122,
+    "char_end": 12250,
+    "sentence_index": 75,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Nonetheless, some of the remaining questions may still not truly measure visual reasoning, as a single pass of visual perception and language understanding may suffice to answer them.",
+    "char_start": 12251,
+    "char_end": 12434,
+    "sentence_index": 76,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "We extend one step further (illustrated in Figure ): we first caption the images in multimodal reasoning questions using GPT-4o and then pass both the original text and our generated captions to MLLMs, filtering out questions that can be answered under this condition.",
+    "char_start": 12435,
+    "char_end": 12703,
+    "sentence_index": 77,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "Specifically, for each candidate question, we query Llama-3-70B-Instruct , GPT-4o, and Qwen2-72B-Instruct ten times; if any model answers a question correctly at least five times, we discard it.",
+    "char_start": 12704,
+    "char_end": 12898,
+    "sentence_index": 78,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "This more stringent filtering ensures that the remaining questions require models to engage deeply with visual information.",
+    "char_start": 12899,
+    "char_end": 13022,
+    "sentence_index": 79,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "We introduce the data collection process for each project in detail below.",
+    "char_start": 13023,
+    "char_end": 13097,
+    "sentence_index": 80,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "Math\n\nWe first apply the filtering pipeline to Math-Vision and MathVista , and then manually inspect the remaining set and craft a taxonomy consisting of five categories with a strong focus on multimodal reasoning, including 3D Simulation, 2D Transformation, Path Tracing, Multi-hop Object Counting, and Pattern Inference.",
+    "char_start": 13099,
+    "char_end": 13421,
+    "sentence_index": 81,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "Next, we use GPT-4o to categorize all questions based on this taxonomy, followed by a manual verification.",
+    "char_start": 13422,
+    "char_end": 13528,
+    "sentence_index": 82,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec006",
+    "text": "In addition, we supplement our benchmark with additional pattern inference questions from RAVEN , which inherently require multi-hop visual reasoning.This process results in a total of 892 math questions.",
+    "char_start": 13529,
+    "char_end": 13733,
+    "sentence_index": 83,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec006",
+    "text": "This process ultimately results in\n\nPhysics\n\nWe apply the filtering pipeline to multimodal physics problems in OlympiadBench , EXAMS-V , and MMMU , which yields only 80 problems.",
+    "char_start": 13734,
+    "char_end": 13912,
+    "sentence_index": 84,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec006",
+    "text": "In addition, we manually collect more problems online from Learn AP Physics and Khan Academy and filter them, resulting in 76 more new problems.",
+    "char_start": 13913,
+    "char_end": 14057,
+    "sentence_index": 85,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec006",
+    "text": "Through manual labeling, we verify that these problems span a wide range of topics, including 3D Field Simulation, Graph Reasoning, and Path Tracing.",
+    "char_start": 14058,
+    "char_end": 14207,
+    "sentence_index": 86,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "We note that despite our best efforts, multimodal physics problems meeting our criteria are difficult to source and construct.",
+    "char_start": 14208,
+    "char_end": 14334,
+    "sentence_index": 87,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "[t]\n\nfigs/fig4_compare_data_curation.pdf\nData curation process for EMMA.",
+    "char_start": 14335,
+    "char_end": 14407,
+    "sentence_index": 88,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "We first apply a filtering pipeline to existing benchmarks, discarding problems that MLLMs can solve given only the text and image captions.",
+    "char_start": 14408,
+    "char_end": 14548,
+    "sentence_index": 89,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "Next, we categorize the remaining problems based on the skills they assess and manually collect or create additional problems to expand our dataset within these taxonomies.",
+    "char_start": 14549,
+    "char_end": 14721,
+    "sentence_index": 90,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "Chemistry\nAfter filtering the chemistry portion of EXAMS-V and MMMU , we are left with only 20 problems.",
+    "char_start": 14723,
+    "char_end": 14827,
+    "sentence_index": 91,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "These questions mostly involve reasoning about molecular formulas, which inspires us to manually construct a novel test suite on organic chemistry.",
+    "char_start": 14828,
+    "char_end": 14975,
+    "sentence_index": 92,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "Based on molecular images in SMiCRM , we analyze their chemical properties with RDKit , a computational chemistry toolkit, and develop 746 novel questions over chemical structure recognition, bond counting, and structure simulation.",
+    "char_start": 14976,
+    "char_end": 15208,
+    "sentence_index": 93,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "In addition, we draw from the collection of chemical reactions in and collaborate with PhD students in chemistry to annotate reaction outcomes, contributing another 210 questions on reaction simulation.",
+    "char_start": 15209,
+    "char_end": 15411,
+    "sentence_index": 94,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "Coding\nIn addition to STEM questions, we design four types of coding tasks to capture various real-world use cases of MLLMs for visualization creation.",
+    "char_start": 15413,
+    "char_end": 15564,
+    "sentence_index": 95,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "For instance, to evaluate the ability to reproduce a visualization, we construct ``Vis Choose Code'' questions where models select the code that generates a target chart.",
+    "char_start": 15565,
+    "char_end": 15735,
+    "sentence_index": 96,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "Since previous data visualization benchmarks all rely on using MLLMs as judges, we do not source from existing benchmarks, but manually construct all coding questions from scratch through a three-stage process.",
+    "char_start": 15736,
+    "char_end": 15946,
+    "sentence_index": 97,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "First, we identify ``seed visualizations'' that employ advanced visualization techniques from CharXiv , the matplotlib example gallery (following Wu et al.",
+    "char_start": 15947,
+    "char_end": 16102,
+    "sentence_index": 98,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "), and our prior experience.",
+    "char_start": 16103,
+    "char_end": 16131,
+    "sentence_index": 99,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "Next, we generate four variations for each seed visualization to form a ``set'' by introducing design variations (e.g., changes in spine configuration, line style, and axis scaling) either manually or through prompting MLLMs, with post-hoc manual verification.",
+    "char_start": 16132,
+    "char_end": 16392,
+    "sentence_index": 100,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "We also provide these design variations as labels for each problem.",
+    "char_start": 16393,
+    "char_end": 16460,
+    "sentence_index": 101,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "Finally, we construct four types of questions using these visualization sets.",
+    "char_start": 16461,
+    "char_end": 16538,
+    "sentence_index": 102,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "In addition to ``Vis Choose Code'', we have ``Code Choose Vis'' questions that require models to identify the chart produced by a given code snippet.",
+    "char_start": 16539,
+    "char_end": 16688,
+    "sentence_index": 103,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "``Modify'' questions, inspired by visualization debugging scenarios, provide a target chart, a code snippet, and the chart generated by the snippet, requiring models to select the modification needed to transform the code into the target chart.",
+    "char_start": 16689,
+    "char_end": 16933,
+    "sentence_index": 104,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "Similarly, ``Modify without Original Image'' presents the same task but excludes the image generated by the initial code snippet.",
+    "char_start": 16934,
+    "char_end": 17063,
+    "sentence_index": 105,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec006",
+    "text": "In the end, our curation results in 564 multiple-choice coding questions in total.",
+    "char_start": 17064,
+    "char_end": 17146,
+    "sentence_index": 106,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec007",
+    "text": "Our enhanced data filtering pipeline ensures that EMMA focuses on questions requiring in-depth multimodal reasoning, i.e., those that cannot be solved solely using text-based reasoning or a single visual pass.",
+    "char_start": 17148,
+    "char_end": 17357,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec007",
+    "text": "While MMMU-Pro removes questions solvable through their text portion alone, it may still retain problems for which visual reasoning is inessential.",
+    "char_start": 17358,
+    "char_end": 17505,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec007",
+    "text": "In contrast, EMMA applies a stricter filtering criterion, discarding questions solvable with text and image captions.",
+    "char_start": 17506,
+    "char_end": 17623,
+    "sentence_index": 109,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec007",
+    "text": "For instance, the left example in Figure (adapted from MathVista) asks whether a depicted function is even or odd.",
+    "char_start": 17624,
+    "char_end": 17738,
+    "sentence_index": 110,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec007",
+    "text": "Although unsolvable without the image, the problem can be shortcut by extracting the function's text expression embedded in the image.",
+    "char_start": 17739,
+    "char_end": 17873,
+    "sentence_index": 111,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec007",
+    "text": "In this case, the role of vision is more aligned with visual perception than with visual reasoning.",
+    "char_start": 17874,
+    "char_end": 17973,
+    "sentence_index": 112,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec007",
+    "text": "By eliminating such problems, which MMMU-Pro's approach would retain, EMMA better evaluates the multimodal reasoning capabilities of models.",
+    "char_start": 17974,
+    "char_end": 18114,
+    "sentence_index": 113,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec007",
+    "text": "We also contribute 1,796 novel multimodal reasoning problems across physics, chemistry, and coding.",
+    "char_start": 18116,
+    "char_end": 18215,
+    "sentence_index": 114,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec007",
+    "text": "After filtering physics and chemistry problems from all relevant benchmarks to our knowledge (e.g., ), only 100 remain.",
+    "char_start": 18216,
+    "char_end": 18335,
+    "sentence_index": 115,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec007",
+    "text": "We expand this to 1,332 in EMMA by manually sourcing additional data and hiring domain experts.",
+    "char_start": 18336,
+    "char_end": 18431,
+    "sentence_index": 116,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec007",
+    "text": "For coding, EMMA is the first benchmark to systematically evaluate data visualization skills using a multiple-choice format, enabling a standardized assessment and obviating the need for MLLMs as judges.",
+    "char_start": 18432,
+    "char_end": 18635,
+    "sentence_index": 117,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec007",
+    "text": "Moreover, through meticulous manual labeling or verification, we provide fine-grained labels for each question (Figure ), categorizing them based on the specific skills they assess.",
+    "char_start": 18636,
+    "char_end": 18817,
+    "sentence_index": 118,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec007",
+    "text": "These labels enable a detailed analysis of MLLM performance, as we demonstrate in Section .",
+    "char_start": 18818,
+    "char_end": 18909,
+    "sentence_index": 119,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec008",
+    "text": "Data Split\nTo create a more balanced subset of EMMA, we randomly sample 400 questions (100 per subject) from the benchmark, hereafter referred to as EMMA-mini.",
+    "char_start": 18911,
+    "char_end": 19070,
+    "sentence_index": 120,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec009",
+    "text": "Within each subject, we aim for equal representation across categories to the extent possible.",
+    "char_start": 19071,
+    "char_end": 19165,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec009",
+    "text": "Human Performance\nTo estimate expert-level performance on EMMA-mini, we hire two human experts per subject and report their average score.",
+    "char_start": 19167,
+    "char_end": 19305,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec009",
+    "text": "This score serves as a baseline contextualizing model performance.",
+    "char_start": 19306,
+    "char_end": 19372,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec009",
+    "text": "Models\nWe evaluate nine state-of-the-art MLLMs under the zero-shot setting, including four open-source models (Qwen2-VL (72B) , LLaVA-Onevision (72B) , InternVL2 (76B) , and InternVL2.5 (78B) ) and five proprietary ones (GPT-4o , Claude 3.5 Sonnet , Gemini 2.0 Flash , Gemini 2.0 Flash Thinking , and o1 ).",
+    "char_start": 19374,
+    "char_end": 19680,
+    "sentence_index": 124,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec009",
+    "text": "Due to rate limits, we report o1 performance on EMMA-mini only.",
+    "char_start": 19681,
+    "char_end": 19744,
+    "sentence_index": 125,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec009",
+    "text": "All other models are evaluated on the entire benchmark.",
+    "char_start": 19745,
+    "char_end": 19800,
+    "sentence_index": 126,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec009",
+    "text": "Prompting Strategies\nFor all models except o1 and Gemini 2.0 Flash Thinking, we test two prompting strategies: (1) Direct prompting, which instructs models to output the answers without reasoning steps; and (2) Chain-of-Thought ( CoT ) prompting , where we prompt models to ``think step-by-step'' and output responses in a structured format.",
+    "char_start": 19802,
+    "char_end": 20143,
+    "sentence_index": 127,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "Table compares the performance of different MLLMs and prompting strategies.",
+    "char_start": 20145,
+    "char_end": 20220,
+    "sentence_index": 128,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "[t!]\n10pt 1\n\n.98 !",
+    "char_start": 20222,
+    "char_end": 20240,
+    "sentence_index": 129,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "lllccccc\n\nModel & Method & Reward Model & N=1 & N=2 & N=4 & N=8 & N=16\n\n5 * [c] @ c@ GPT-4o\n& Majority Voting & $-$ & 5 * 36.00 & $-$ & 37.25 & 36.25 & 38.25\n\n& BoN & GPT-4o (Self) & & 35.50 & 35.75 & 36.75 & $-$\n\n& BoN & Gemini Flash Thinking & & 40.75 & 36.25 & 36.5 & $-$\n\n& Tournament & Gemini Flash Thinking & & 40.75 & 39.25 & 41.25 & 35.25\n\n& Pass@N & $-$ & & 45.00 & 53.25 & 65.75 & 74.00\n\n(lr) 1-8\n5 * [c] @ c@ Gemini 2.0 Flash\n& Majority Voting & $-$ & 5 * 36.25 & $-$ & 37.75 & 39.25 & 39.75\n\n& BoN & Gemini Flash (Self) & & 38.25 & 36.50 & 36.00 & $-$\n\n& BoN & Gemini Flash Thinking & & 36.75 & 37.00 & 40.25 & $-$\n\n& Tournament & Gemini Flash Thinking & & 36.75 & 37.25 & 40.75 & 38.75\n\n& Pass@N & $-$ & & 45.25 & 56.25 & 64.50 & 75.00\n\n3 * [c] @ c@ Gemini 2.0 Flash Thinking\n& Majority Voting & $-$ & 3 * 43.50 & $-$ & 48.00 & 49.00 & 50.75\n\n& Tournament & Gemini Flash Thinking (Self) & & 45.50 & 47.25 & 47.25 & 48.00\n\n& Pass@N & $-$ & & 53.75 & 64.50 & 71.50 & 81.50\n\n(lr) 1-8\no1 & $-$ & $-$ & 45.75 & $-$ & $-$ & $-$ & $-$\n\nResults of different test-time scaling strategies on EMMA-mini.",
+    "char_start": 20242,
+    "char_end": 21347,
+    "sentence_index": 130,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "We also include Pass@N accuracies as upper bounds to scaling performance.",
+    "char_start": 21348,
+    "char_end": 21421,
+    "sentence_index": 131,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "While test-time scaling tends to improve model accuracy, they do not help models achieve near-human-level performance.",
+    "char_start": 21422,
+    "char_end": 21540,
+    "sentence_index": 132,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "Overall, Gemini 2.0 Flash Thinking is the best reward model.",
+    "char_start": 21541,
+    "char_end": 21601,
+    "sentence_index": 133,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "It also benefits the most from test-time scaling, gaining 7.25\\% in accuracy with majority voting at N=16 over N=1.",
+    "char_start": 21602,
+    "char_end": 21717,
+    "sentence_index": 134,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "Are MLLMs Multimodal Reasoners?",
+    "char_start": 21719,
+    "char_end": 21750,
+    "sentence_index": 135,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec010",
+    "text": "Table demonstrates that all models perform suboptimally across the subjects in EMMA.",
+    "char_start": 21751,
+    "char_end": 21835,
+    "sentence_index": 136,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "On EMMA-mini, the best-performing model, o1, achieves an accuracy of 45.75\\%, trailing human experts by 32\\%.",
+    "char_start": 21836,
+    "char_end": 21945,
+    "sentence_index": 137,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "At the lower end, LLaVA-OneVision-72B scores only 25.25\\%, barely surpassing random choice by 2.5\\%.",
+    "char_start": 21946,
+    "char_end": 22046,
+    "sentence_index": 138,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "Drilling down into subjects, the best models show the smallest gap with human performance on physics, with Gemini 2.0 Flash Thinking scoring 7.5\\% lower than human experts.",
+    "char_start": 22047,
+    "char_end": 22219,
+    "sentence_index": 139,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "This smaller gap may reflect the inherent difficulty of physics problems, leading human experts to achieve a score of 64.5\\%.",
+    "char_start": 22220,
+    "char_end": 22345,
+    "sentence_index": 140,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "For other subjects, however, the best-performing models lag significantly behind human experts, with gaps of 34\\%, 42\\%, and 32.5\\% in math, chemistry, and coding, respectively.",
+    "char_start": 22346,
+    "char_end": 22523,
+    "sentence_index": 141,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "These results underscore the limitations of current MLLMs in addressing complex multimodal reasoning tasks.",
+    "char_start": 22524,
+    "char_end": 22631,
+    "sentence_index": 142,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec010",
+    "text": "On the full EMMA benchmark, closed-source models generally outperform open-source ones, particularly with CoT prompting.",
+    "char_start": 22633,
+    "char_end": 22753,
+    "sentence_index": 143,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec010",
+    "text": "Across all subjects, Qwen2-VL-72B-Instruct is the only open-source model to place in the top two for any subject.",
+    "char_start": 22754,
+    "char_end": 22867,
+    "sentence_index": 144,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec010",
+    "text": "Gemini 2.0 Flash Thinking scores best overall, ranking among the top two models in three out of four subjects, further highlighting the advantages of optimizing models for reasoning by training them to generate thought processes over traditional MLLM paradigms (note that o1 is not evaluated on the full set due to rate limits).",
+    "char_start": 22868,
+    "char_end": 23196,
+    "sentence_index": 145,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec010",
+    "text": "In particular, Gemini 2.0 Flash Thinking performs exceptionally well in physics, leading by nearly 13\\% over the second-best model, GPT-4o.",
+    "char_start": 23197,
+    "char_end": 23336,
+    "sentence_index": 146,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec010",
+    "text": "In contrast, Claude 3.5 Sonnet excels in chemistry, surpassing the next best model, Gemini 2.0 Flash Thinking, by over 2\\%.",
+    "char_start": 23337,
+    "char_end": 23460,
+    "sentence_index": 147,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec010",
+    "text": "These results suggest interesting comparative strengths between models, which may result from differences in training data.",
+    "char_start": 23461,
+    "char_end": 23584,
+    "sentence_index": 148,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec010",
+    "text": "Does CoT help?",
+    "char_start": 23586,
+    "char_end": 23600,
+    "sentence_index": 149,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec010",
+    "text": "We observe divergent tendencies in the effectiveness of CoT prompting across both closed- and open-source models.",
+    "char_start": 23601,
+    "char_end": 23714,
+    "sentence_index": 150,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec010",
+    "text": "We exclude o1 and Gemini 2.0 Flash Thinking from this analysis, as these models inherently generate CoT as part of their responses.",
+    "char_start": 23715,
+    "char_end": 23846,
+    "sentence_index": 151,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec010",
+    "text": "Under direct prompting, accuracies achieved by the best open-source models are well within 2\\% of Claude 3.5 Sonnet (the best closed-source model).",
+    "char_start": 23847,
+    "char_end": 23994,
+    "sentence_index": 152,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec010",
+    "text": "However, the gap widens significantly under CoT prompting, with the best open-source model underperforming by almost 10\\%.",
+    "char_start": 23995,
+    "char_end": 24117,
+    "sentence_index": 153,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec010",
+    "text": "Comparing each model's performance with and without CoT on EMMA and EMMA-mini, CoT prompting generally improves performance for closed-source models, while reduces performance for open-source models .",
+    "char_start": 24118,
+    "char_end": 24318,
+    "sentence_index": 154,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec010",
+    "text": "Notably, Qwen2-VL-72B-Instruct and InternVL2.5-78B, the top two open-source models overall under direct prompting, suffer decreases of over 6\\% in accuracies on both EMMA and EMMA-mini.",
+    "char_start": 24319,
+    "char_end": 24504,
+    "sentence_index": 155,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec010",
+    "text": "While some tasks might not benefit significantly from textual CoT, we hypothesize that this divergence arises because open-source models fail to fully leverage the potential of language to assist in multimodal reasoning tasks where language could be helpful.",
+    "char_start": 24505,
+    "char_end": 24763,
+    "sentence_index": 156,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec010",
+    "text": "We elaborate on this hypothesis in detail in Section .",
+    "char_start": 24764,
+    "char_end": 24818,
+    "sentence_index": 157,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec011",
+    "text": "In this section, we test three test-time compute scaling methods on EMMA-mini: majority voting, Best-of-N selection, and Tournament-Style selection.",
+    "char_start": 24820,
+    "char_end": 24968,
+    "sentence_index": 158,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec011",
+    "text": "Both Best-of-N and Tournament-Style selection require a reward model to select the best response among multiple candidates.",
+    "char_start": 24969,
+    "char_end": 25092,
+    "sentence_index": 159,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec011",
+    "text": "We use CoT prompting to generate the candidate responses, so that the reward model has enough context to score the responses.",
+    "char_start": 25093,
+    "char_end": 25218,
+    "sentence_index": 160,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec011",
+    "text": "For each test-time scaling method, we experiment with N = 1, 2, 4, 8, and 16, as long as the context length of the reward model allows.",
+    "char_start": 25219,
+    "char_end": 25354,
+    "sentence_index": 161,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec011",
+    "text": "Majority Voting: Majority voting selects the most frequent response among batches of N candidate responses.",
+    "char_start": 25356,
+    "char_end": 25463,
+    "sentence_index": 162,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec011",
+    "text": "When there is a tie, we randomly choose one among the most frequent answers.",
+    "char_start": 25464,
+    "char_end": 25540,
+    "sentence_index": 163,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec011",
+    "text": "Best-of-N: Best-of-N selection selects the highest-scoring response according to a reward model.",
+    "char_start": 25542,
+    "char_end": 25638,
+    "sentence_index": 164,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec011",
+    "text": "We explore two configurations: using the base model itself or a stronger reasoning model ( Gemini 2.0 Flash Thinking) as the reward model.",
+    "char_start": 25639,
+    "char_end": 25777,
+    "sentence_index": 165,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec011",
+    "text": "Tournament-Style Selection: In Tournament-Style Selection , responses are paired in matches, and the winners progress through successive rounds until a final selection is made.",
+    "char_start": 25779,
+    "char_end": 25955,
+    "sentence_index": 166,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec011",
+    "text": "Tournament-style selection with N=2 is equivalent to Best-of-2.",
+    "char_start": 25956,
+    "char_end": 26019,
+    "sentence_index": 167,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec011",
+    "text": "We use the best-performing reward model identified in the Best-of-N experiments, which is Gemini 2.0 Flash Thinking.",
+    "char_start": 26020,
+    "char_end": 26136,
+    "sentence_index": 168,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec011",
+    "text": "Does test-time compute scaling help?",
+    "char_start": 26138,
+    "char_end": 26174,
+    "sentence_index": 169,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec011",
+    "text": "Tables presents results of test-time compute scaling methods on top of GPT-4o, Gemini 2.0 Flash, and Gemini 2.0 Flash Thinking.",
+    "char_start": 26175,
+    "char_end": 26302,
+    "sentence_index": 170,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec011",
+    "text": "Overall, test-time compute scaling improves model performance, but it fails to close the gap to human expert performance.",
+    "char_start": 26304,
+    "char_end": 26425,
+    "sentence_index": 171,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec011",
+    "text": "The highest accuracy improvements are 5.25\\% for GPT-4o, 4.5\\% for Gemini 2.0 Flash, and 7.5\\% for Gemini 2.0 Flash Thinking.",
+    "char_start": 26427,
+    "char_end": 26552,
+    "sentence_index": 172,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec011",
+    "text": "Notably, without test-time scaling (N=1), Gemini 2.0 Flash Thinking's accuracy is 2.25\\% lower than that of o1, but it overtakes o1 by 5\\% with majority voting at N=16.",
+    "char_start": 26553,
+    "char_end": 26721,
+    "sentence_index": 173,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec011",
+    "text": "Nonetheless, its best performance still lags human performance by 27\\%.",
+    "char_start": 26722,
+    "char_end": 26793,
+    "sentence_index": 174,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec011",
+    "text": "[t]\n\nfigs/error_dist.pdf\nDistribution of error types made by o1 on the math and coding portions of EMMA-mini.",
+    "char_start": 26795,
+    "char_end": 26904,
+    "sentence_index": 175,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec011",
+    "text": "The majority of errors arise in visual reasoning.",
+    "char_start": 26905,
+    "char_end": 26954,
+    "sentence_index": 176,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec011",
+    "text": "-3pt\n\nWe also observe distinct patterns in test-time compute scaling performance across different models.",
+    "char_start": 26955,
+    "char_end": 27060,
+    "sentence_index": 177,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec011",
+    "text": "While scaling beyond N=8 for GPT-4o and Gemini 2.0 Flash leads to performance degradation, Gemini 2.0 Flash Thinking continues to benefit incrementally from additional test-time compute, at least up to N=16.",
+    "char_start": 27061,
+    "char_end": 27268,
+    "sentence_index": 178,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec011",
+    "text": "In fact, stronger base models also achieve higher Pass@N accuracy: Gemini 2.0 Flash Thinking's Pass@N consistently surpasses those of the other two models by around 7\\%, suggesting that a stronger base reasoner is more likely to cover the correct response when given multiple attempts.",
+    "char_start": 27269,
+    "char_end": 27554,
+    "sentence_index": 179,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec011",
+    "text": "In sum, these results suggest that using a stronger model as the base model raises the upper bound for test-time scaling.",
+    "char_start": 27555,
+    "char_end": 27676,
+    "sentence_index": 180,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec011",
+    "text": "Comparing scaling strategies for each model, we find that GPT-4o and Gemini 2.0 Flash achieve their greatest improvements when Gemini 2.0 Flash Thinking is used as the reward model.",
+    "char_start": 27678,
+    "char_end": 27859,
+    "sentence_index": 181,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec011",
+    "text": "Additionally, tournament-style selection consistently outperforms Best-of-N (BoN) selection.",
+    "char_start": 27860,
+    "char_end": 27952,
+    "sentence_index": 182,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec011",
+    "text": "These results suggest that employing a stronger model as the reward model enables less capable models to achieve better results, particularly when the reward model can make fine-grained decisions involving a couple candidate responses each time.",
+    "char_start": 27953,
+    "char_end": 28198,
+    "sentence_index": 183,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec011",
+    "text": "This is intuitive, as evaluating responses also requires reasoning.",
+    "char_start": 28199,
+    "char_end": 28266,
+    "sentence_index": 184,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec011",
+    "text": "On the other hand, we find that self-reward modeling tends to be perform suboptimally.",
+    "char_start": 28268,
+    "char_end": 28354,
+    "sentence_index": 185,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec011",
+    "text": "Even using Gemini 2.0 Flash Thinking for self-reward modeling yields performance consistently below that of majority voting.",
+    "char_start": 28355,
+    "char_end": 28479,
+    "sentence_index": 186,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec011",
+    "text": "We conjecture that self-reward modeling may be less effective because the model's evaluation criteria may be disrupted by its own generation patterns, making it less sensitive to differences in the reasoning of the generated responses compared to an independent reward model.",
+    "char_start": 28480,
+    "char_end": 28755,
+    "sentence_index": 187,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec012",
+    "text": "[t]\n\nfigs/fig5_error_case.pdf\nA representative example of visual reasoning error.",
+    "char_start": 28757,
+    "char_end": 28838,
+    "sentence_index": 188,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec012",
+    "text": "While o1 recognizes that solving this problem involves the Right-Hand Rule, it misapplies the rule due to limited visual spatial simulation skills, resulting in an incorrect conclusion about the direction of the magnetic field.",
+    "char_start": 28839,
+    "char_end": 29066,
+    "sentence_index": 189,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec013",
+    "text": "We present an analysis of the errors made by o1 on the math and coding portions of EMMA-mini.",
+    "char_start": 29068,
+    "char_end": 29161,
+    "sentence_index": 190,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec013",
+    "text": "In total, o1 incorrectly answers 59 math questions and 47 coding questions.",
+    "char_start": 29162,
+    "char_end": 29237,
+    "sentence_index": 191,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec013",
+    "text": "Figure categorizes these errors into four types.",
+    "char_start": 29238,
+    "char_end": 29286,
+    "sentence_index": 192,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec013",
+    "text": "Perceptual errors , such as misinterpreting visual information, account for 30.19\\% of all errors.",
+    "char_start": 29287,
+    "char_end": 29385,
+    "sentence_index": 193,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec013",
+    "text": "Lack of knowledge errors , including mistakes related to API usage, contribute 7.55\\%.",
+    "char_start": 29386,
+    "char_end": 29472,
+    "sentence_index": 194,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec013",
+    "text": "Visual reasoning errors , such as failures to simulate 3D processes, constitute the largest category at 52.83\\%.",
+    "char_start": 29473,
+    "char_end": 29585,
+    "sentence_index": 195,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec013",
+    "text": "Finally, textual reasoning errors , including calculation mistakes or logical missteps, represent 9.43\\%.",
+    "char_start": 29586,
+    "char_end": 29691,
+    "sentence_index": 196,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec013",
+    "text": "The predominance of visual reasoning errors underscores the limitations of current models in addressing complex visual reasoning tasks.",
+    "char_start": 29692,
+    "char_end": 29827,
+    "sentence_index": 197,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec013",
+    "text": "Figure illustrates a representative case: while o1 correctly identifies that the problem calls for the application of the Right-Hand Rule, it fails to simulate where the thumb would point to when the right-hand fingers are curled in the direction of the current.",
+    "char_start": 29828,
+    "char_end": 30090,
+    "sentence_index": 198,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec013",
+    "text": "We provide more error cases in the Appendix.",
+    "char_start": 30091,
+    "char_end": 30135,
+    "sentence_index": 199,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec014",
+    "text": "[t]\n\nfigs/model_diff.pdf\nPerformance differences with and without CoT for two math tasks: 2D Transformation and Multi-Hop Object Counting.",
+    "char_start": 30137,
+    "char_end": 30275,
+    "sentence_index": 200,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec014",
+    "text": "The observed discrepancies in CoT's effectiveness suggest that its impact might depend on the extent of visual reasoning required to solve the task.",
+    "char_start": 30276,
+    "char_end": 30424,
+    "sentence_index": 201,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec014",
+    "text": "Results in Table reveals a notable discrepancy: while CoT prompting improves reasoning in closed-source MLLMs, it tends to reduce performance in open-source models.",
+    "char_start": 30426,
+    "char_end": 30590,
+    "sentence_index": 202,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec014",
+    "text": "Although the cause remains unclear without direct access to training data or methods, we analyze error rate per skill category to propose a conjecture.",
+    "char_start": 30591,
+    "char_end": 30742,
+    "sentence_index": 203,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec014",
+    "text": "Figure compares accuracy differences between CoT and Direct prompting for six models on two math tasks: 2D Transformation and Multi-Hop Object Counting.",
+    "char_start": 30743,
+    "char_end": 30895,
+    "sentence_index": 204,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec014",
+    "text": "On 2D Transformation, all but one model shows reduced performance with CoT; on Multi-Hop Object Counting, while CoT generally helps closed-source models, it makes all but one open-source model perform worse.",
+    "char_start": 30896,
+    "char_end": 31103,
+    "sentence_index": 205,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec014",
+    "text": "In fact, we notice that CoT prompting introduces more hallucinations for open-source models.",
+    "char_start": 31104,
+    "char_end": 31196,
+    "sentence_index": 206,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec014",
+    "text": "2D Transformation questions primarily test for visual simulation and spatial imagination, which are difficult to verbalize.",
+    "char_start": 31198,
+    "char_end": 31321,
+    "sentence_index": 207,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec014",
+    "text": "The question in Figure , for example, calls for spatial imagination beyond the power of language.",
+    "char_start": 31322,
+    "char_end": 31419,
+    "sentence_index": 208,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec014",
+    "text": "In contrast, Multi-Hop Object Counting can leverage language to describe the relative positions of objects.",
+    "char_start": 31420,
+    "char_end": 31527,
+    "sentence_index": 209,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec014",
+    "text": "Hence, we conjecture that visual-centric tasks, such as 2D Transformation, are poorly suited for textual CoT.",
+    "char_start": 31528,
+    "char_end": 31637,
+    "sentence_index": 210,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec014",
+    "text": "In contrast, tasks that benefit from language-based reasoning, such as Multi-Hop Object Counting, allow models to achieve greater performance gains with textual CoT, as evidenced by the closed-source models.",
+    "char_start": 31638,
+    "char_end": 31845,
+    "sentence_index": 211,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec014",
+    "text": "[t]\n\nfigs/fig6_math_cot.pdf\nAn example where textual CoT is unhelpful for solving the problem with current models.",
+    "char_start": 31847,
+    "char_end": 31961,
+    "sentence_index": 212,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec014",
+    "text": "While GPT-4o correctly resolves the problem without CoT, it answers incorrectly with CoT.",
+    "char_start": 31962,
+    "char_end": 32051,
+    "sentence_index": 213,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec014",
+    "text": "The thought process demonstrates a superficial association with spatial manipulations and relations rather than genuine visual reasoning.",
+    "char_start": 32052,
+    "char_end": 32189,
+    "sentence_index": 214,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec015",
+    "text": "We contribute EMMA, an Enhanced MultiModal reAsoning benchmark.",
+    "char_start": 32191,
+    "char_end": 32254,
+    "sentence_index": 215,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec015",
+    "text": "EMMA features multimodal questions requiring advanced cross-modal reasoning, which cannot be solved by independently reasoning within each modality.",
+    "char_start": 32255,
+    "char_end": 32403,
+    "sentence_index": 216,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec015",
+    "text": "Evaluation of nine state-of-the-art MLLMs reveals a substantial performance gap compared to human experts on EMMA, with techniques such as Chain-of-Thought prompting and test-time compute scaling offering only marginal gains.",
+    "char_start": 32404,
+    "char_end": 32629,
+    "sentence_index": 217,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec015",
+    "text": "EMMA highlights the need for new architectures and training paradigms that can better integrate and reason over diverse modalities.",
+    "char_start": 32630,
+    "char_end": 32761,
+    "sentence_index": 218,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec015",
+    "text": "Like any benchmark, EMMA has its limitations, which can be improved in future works.",
+    "char_start": 32762,
+    "char_end": 32846,
+    "sentence_index": 219,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec015",
+    "text": "For example, future iterations could enrich the currently underrepresented physics section or expand the chemistry section to incorporate a broader range of chemistry topics.",
+    "char_start": 32847,
+    "char_end": 33021,
+    "sentence_index": 220,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec015",
+    "text": "Nonetheless, EMMA sets a new standard for assessing MLLMs on multimodal reasoning.",
+    "char_start": 33022,
+    "char_end": 33104,
+    "sentence_index": 221,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec015",
+    "text": "ieee_fullname\negbib\n\nThis Appendix is organized as follows:\n\nSection contains details about the composition of EMMA, the data curation process, and comparison with existing benchmarks;\n\nSection contains experimental details, including the prompts used, models tested, hyperparameter settings, and the breakdown results on different categories;\nSection contains additional case studies for each subject.",
+    "char_start": 33106,
+    "char_end": 33508,
+    "sentence_index": 222,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec017",
+    "text": "EMMA comprises 2,788 questions across four subjects: math, physics, chemistry, and coding.",
+    "char_start": 33510,
+    "char_end": 33600,
+    "sentence_index": 223,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec018",
+    "text": "We now provide a detailed breakdown of EMMA by subject:\n\nMath\nThe math portion of EMMA consists of 892 questions, of which 562 are multiple-choice questions and 330 are free-form questions.",
+    "char_start": 33601,
+    "char_end": 33790,
+    "sentence_index": 224,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec018",
+    "text": "These questions can be categorized into five areas: 2D Transformation (266 questions); 3D Spatial Simulation (275 questions); Path Tracing/Change of View simulation (127 questions); Multi-Hop Visual Object Counting (124 questions); and Pattern Inference (100 questions).",
+    "char_start": 33791,
+    "char_end": 34061,
+    "sentence_index": 225,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec018",
+    "text": "Tasks in the 2D Transformation category often involve operations such as rotating, translating, or flipping shapes.",
+    "char_start": 34063,
+    "char_end": 34178,
+    "sentence_index": 226,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec018",
+    "text": "Examples are provided in Figure .",
+    "char_start": 34179,
+    "char_end": 34212,
+    "sentence_index": 227,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec018",
+    "text": "Humans typically solve these problems by leveraging their ability to ``see'' and mentally manipulate objects, simulating spatial transformations to arrive at a solution.",
+    "char_start": 34213,
+    "char_end": 34382,
+    "sentence_index": 228,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec018",
+    "text": "During data filtering, we observe that models also rely heavily on visual information to solve these problems, as they often fail when provided only with textual descriptions of the accompanying images.",
+    "char_start": 34383,
+    "char_end": 34585,
+    "sentence_index": 229,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec018",
+    "text": "Similarly, problems in the 3D Spatial Simulation category require a similar visual reasoning approach, but with the key difference that the simulation must be performed in three-dimensional space.",
+    "char_start": 34586,
+    "char_end": 34782,
+    "sentence_index": 230,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec018",
+    "text": "The Path Tracing/Change of View Simulation category involves solving problems akin to maze navigation, where the task requires tracing a path from a starting point to an endpoint while considering changes in perspective.",
+    "char_start": 34783,
+    "char_end": 35003,
+    "sentence_index": 231,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec018",
+    "text": "We present two typical examples in Figure .",
+    "char_start": 35004,
+    "char_end": 35047,
+    "sentence_index": 232,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec018",
+    "text": "Problems in the Multi-Hop Visual Object Counting category are sampled from Math-Vista , with some examples shown in Figure .",
+    "char_start": 35048,
+    "char_end": 35172,
+    "sentence_index": 233,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec018",
+    "text": "Unlike straightforward object counting, which might ask, ``How many objects are present?'', these questions require models to identify objects based on their attributes and perform subtraction operations grounded in visual properties.",
+    "char_start": 35173,
+    "char_end": 35407,
+    "sentence_index": 234,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec018",
+    "text": "The Pattern Inference category involves identifying how shapes or colors evolve across a series of diagrams and predicting the next pattern in the sequence.",
+    "char_start": 35408,
+    "char_end": 35564,
+    "sentence_index": 235,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec018",
+    "text": "Solving such problems draws on the ability to recognize visual regularities, which are challenging to describe accurately using text alone, necessitating strong visual reasoning.",
+    "char_start": 35565,
+    "char_end": 35743,
+    "sentence_index": 236,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec018",
+    "text": "Typical examples are provided in Figure .",
+    "char_start": 35744,
+    "char_end": 35785,
+    "sentence_index": 237,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec018",
+    "text": "[h]\n\nfigs/math-cases/math-case-2D.pdf\nThree main types of questions belonging to the 2D Transformation category in math: Rotation, Translation, and Flipping.",
+    "char_start": 35787,
+    "char_end": 35944,
+    "sentence_index": 238,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec018",
+    "text": "[h]\n\nfigs/math-cases/math-case-path.pdf\nTwo typical examples of the Path Tracing / Change of View Simulation category in math.",
+    "char_start": 35946,
+    "char_end": 36072,
+    "sentence_index": 239,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec018",
+    "text": "[h]\n\nfigs/math-cases/math-case-counting-v2.pdf\nFour typical problems from the Multi-Hop Visual Object Counting category in math.",
+    "char_start": 36074,
+    "char_end": 36202,
+    "sentence_index": 240,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec018",
+    "text": "[h]\n\nfigs/math-cases/math-case-pattern.pdf\nQuestions in the Pattern Inference category for math are sourced from two datasets: Math-Vista and RAVEN .",
+    "char_start": 36204,
+    "char_end": 36353,
+    "sentence_index": 241,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec018",
+    "text": "Two examples from these sources are presented for illustration.",
+    "char_start": 36354,
+    "char_end": 36417,
+    "sentence_index": 242,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec018",
+    "text": "Physics\n\nThe physics portion of EMMA includes 156 questions divided into five categories: 3D Field Simulation (37 questions), Graph Reasoning (26 questions), Multi-Hop Visual Reasoning (33 questions), Path Tracing (13 questions), and Visual Decomposition Simulation (47 questions).",
+    "char_start": 36419,
+    "char_end": 36700,
+    "sentence_index": 243,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec018",
+    "text": "All physics questions in EMMA are multiple-choice questions.",
+    "char_start": 36701,
+    "char_end": 36761,
+    "sentence_index": 244,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec018",
+    "text": "The Visual Decomposition Simulation category (47 questions) is often related to topics in physics such as Dynamics, Circular Motion, \\& Gravitation.",
+    "char_start": 36763,
+    "char_end": 36911,
+    "sentence_index": 245,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec018",
+    "text": "It typically involves the analysis of forces acting on static or dynamic objects, which requires visual decomposition of forces and visual simulation of current and future states.",
+    "char_start": 36912,
+    "char_end": 37091,
+    "sentence_index": 246,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec018",
+    "text": "The 3D Field Simulation category (37 questions) addresses topics like Electric Force, Field, and Potential.",
+    "char_start": 37092,
+    "char_end": 37199,
+    "sentence_index": 247,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec018",
+    "text": "These tasks emphasize visual simulations of properties and phenomena in three-dimensional electric and magnetic fields.",
+    "char_start": 37200,
+    "char_end": 37319,
+    "sentence_index": 248,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec018",
+    "text": "The Graph Reasoning category (26 questions) involves interpreting and reasoning about physics-related graphs, such as velocity-time (v-t) graphs, displacement-time (s-t) graphs, and trajectory graphs.",
+    "char_start": 37320,
+    "char_end": 37520,
+    "sentence_index": 249,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec018",
+    "text": "The Multi-Hop Visual Reasoning category (33 questions) is a mixed category, which includes some circuit analysis diagrams, as well as various types of problems that require multi-hop thinking.",
+    "char_start": 37521,
+    "char_end": 37713,
+    "sentence_index": 250,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec018",
+    "text": "In the Path Tracing category (13 questions), most problems involve light refraction.",
+    "char_start": 37714,
+    "char_end": 37798,
+    "sentence_index": 251,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec018",
+    "text": "These tasks require analyzing the paths of particles by tracing their trajectories based on the perspectives depicted in the images.",
+    "char_start": 37799,
+    "char_end": 37931,
+    "sentence_index": 252,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec018",
+    "text": "Chemistry\nThe chemistry portion of EMMA includes 1,176 questions.",
+    "char_start": 37933,
+    "char_end": 37998,
+    "sentence_index": 253,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec018",
+    "text": "Only 20 of them come from existing benchmarks, the vast majority of 1,156 are created by us.",
+    "char_start": 37999,
+    "char_end": 38091,
+    "sentence_index": 254,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec018",
+    "text": "These questions can be categorized into five areas: Knowledge-based Counting (456 questions); Graph Reasoning (9 questions); Structure Recognition (474 questions); Reaction Simulation (132 questions); and Reaction Simulation Pro (105 questions; Based on the test Reaction Simulation skill, the requirements for visual reasoning are more professional, where all options in multiple-choice questions are images).",
+    "char_start": 38092,
+    "char_end": 38502,
+    "sentence_index": 255,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec018",
+    "text": "Among the chemistry questions, only the answer corresponding to the category Knowledge-based Counting is free-form, and all the remaining questions are multiple-choice.",
+    "char_start": 38503,
+    "char_end": 38671,
+    "sentence_index": 256,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec018",
+    "text": "EMMA prioritizes chemistry problems that require rich multimodal reasoning over simple fact recall or direct applications.",
+    "char_start": 38673,
+    "char_end": 38795,
+    "sentence_index": 257,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec018",
+    "text": "To fill the gaps in current datasets, we manually developed a new test suite concentrating on organic chemistry because we found that this type of problem makes up the majority of the remaining data set filtered.",
+    "char_start": 38796,
+    "char_end": 39008,
+    "sentence_index": 258,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec018",
+    "text": "In these newly developed sections, we focus on ``arrow-pushing'' diagrams, a common representation used to illustrate electron flow in mechanistic steps.",
+    "char_start": 39009,
+    "char_end": 39162,
+    "sentence_index": 259,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec018",
+    "text": "The dataset includes structural molecular identifiers of molecular images in chemical reaction mechanisms.",
+    "char_start": 39163,
+    "char_end": 39269,
+    "sentence_index": 260,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec018",
+    "text": "The questions are categorized into three types in increasing reasoning difficulty: Knowledge-based Counting , Structure Recognition , and Reaction Simulation .",
+    "char_start": 39270,
+    "char_end": 39429,
+    "sentence_index": 261,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec018",
+    "text": "The Knowledge-based Counting category (456 questions) involves counting the number of chemical bonds of a chemical structure.",
+    "char_start": 39431,
+    "char_end": 39556,
+    "sentence_index": 262,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec018",
+    "text": "The task requires domain-specific knowledge and multiple inference steps to accurately count different bonds.",
+    "char_start": 39557,
+    "char_end": 39666,
+    "sentence_index": 263,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec018",
+    "text": "Structure Recognition (474 questions) presents a more difficult task.",
+    "char_start": 39667,
+    "char_end": 39736,
+    "sentence_index": 264,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec018",
+    "text": "It requires correctly identifying the number and type of atoms and chemical bonds, recognizing the molecular structure, and deriving the corresponding chemical expression or SMILES expression.",
+    "char_start": 39737,
+    "char_end": 39929,
+    "sentence_index": 265,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec018",
+    "text": "Notably, each molecule in the diagram corresponds to a unique SMILES expression, encapsulating both compositional and structural information.",
+    "char_start": 39930,
+    "char_end": 40071,
+    "sentence_index": 266,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec018",
+    "text": "Reaction Simulation (132 questions) is the task requiring the most advanced visual reasoning.",
+    "char_start": 40073,
+    "char_end": 40166,
+    "sentence_index": 267,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec018",
+    "text": "It involves inferring the post-reaction SMILES/Chemical expression based on the molecular composition and structural information available before the reaction, guided by the direction of electron flow indicated by arrows.",
+    "char_start": 40167,
+    "char_end": 40388,
+    "sentence_index": 268,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec018",
+    "text": "Due to its complexity and the poor performance of models on the simpler open-ended tasks, this task is presented in the form of multiple-choice questions.",
+    "char_start": 40389,
+    "char_end": 40543,
+    "sentence_index": 269,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec018",
+    "text": "Reaction Simulation Pro (105 questions) assess reaction simulation skills and visual reasoning with a higher level of expertise.",
+    "char_start": 40544,
+    "char_end": 40672,
+    "sentence_index": 270,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec018",
+    "text": "Each question presents options in the form of images, requiring participants to not only simulate reactions but also engage in complex multi-step reasoning by comparing different choices.",
+    "char_start": 40673,
+    "char_end": 40860,
+    "sentence_index": 271,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec018",
+    "text": "Graph Reasoning (9 questions) involves graph-based reasoning problems related to chemistry knowledge, such as reaction rate changes.",
+    "char_start": 40861,
+    "char_end": 40993,
+    "sentence_index": 272,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec018",
+    "text": "Coding\n\nImplementing user interfaces (UIs) is a fundamental task in software engineering.",
+    "char_start": 40995,
+    "char_end": 41084,
+    "sentence_index": 273,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec018",
+    "text": "In this work, we focus on a critical aspect of UI development: data visualization.",
+    "char_start": 41085,
+    "char_end": 41167,
+    "sentence_index": 274,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec018",
+    "text": "Creating data visualizations not only requires working knowledge of the charting toolkits, but also demands reasoning over how various visual elements coordinate to achieve the desired results.",
+    "char_start": 41168,
+    "char_end": 41361,
+    "sentence_index": 275,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec018",
+    "text": "To stress-test MLLMs' visualization skills, we design four tasks: Visualization Choose Code (188 questions; given an image of a visualization, choosing which visualization program generates it), Code Choose Visualization (188 questions; given a visualization program, choosing which image it generates), Modify without the Original Image (94 questions; given a target visualization image and a visualization program that does not yet generate the target image, choosing what change should be applied to the program to create the target image), and Modify with the Original Image (94 questions; given a target visualization image, a visualization program that does not yet generate the target image, and the image that the current program generates, choosing what change should be applied to the program to create the target image).",
+    "char_start": 41362,
+    "char_end": 42193,
+    "sentence_index": 276,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec018",
+    "text": "The four examples in Figure illustrate each task.",
+    "char_start": 42194,
+    "char_end": 42243,
+    "sentence_index": 277,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec018",
+    "text": "All coding questions in EMMA are multiple-choice questions created by us from scratch .",
+    "char_start": 42244,
+    "char_end": 42331,
+    "sentence_index": 278,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec018",
+    "text": "Notably, these tasks simulate various real-world applications of MLLMs, requiring skills essential for replicating a target visualization or redesigning an existing one.",
+    "char_start": 42332,
+    "char_end": 42501,
+    "sentence_index": 279,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec018",
+    "text": "To ensure familiarity, all visualization code in our benchmark is generated in Python using matplotlib or seaborn.",
+    "char_start": 42502,
+    "char_end": 42616,
+    "sentence_index": 280,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec018",
+    "text": "Further, similar to the other subjects, we provide fine-grained categorizations for each coding question based on the skills it measures.",
+    "char_start": 42618,
+    "char_end": 42755,
+    "sentence_index": 281,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec018",
+    "text": "Since visualizations involve multiple design choices and each problem includes at least four visualizations (or visualization programs), each question may be assigned to multiple categories.",
+    "char_start": 42756,
+    "char_end": 42946,
+    "sentence_index": 282,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec018",
+    "text": "On average, each question is associated with 2.11 categories.",
+    "char_start": 42947,
+    "char_end": 43008,
+    "sentence_index": 283,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec018",
+    "text": "Through manual coding, we identify a total of ten categories: 3D (108 questions; reasoning about visualizations in 3D), Color \\& Texture (156 questions; reasoning about the colors and textures of marks), Data Reasoning (108 questions; reasoning about the data in visualizations); Advanced Chart Type (276 questions; involving advanced chart types, such as fishbone diagrams), Alignment, Orientation, \\& Position (180 questions; reasoning about how visual elements should be arranged), Gridline (60 questions; reasoning about the use of gridlines), Polar Coordinates (48 questions; reasoning about charts in polar coordinates), Axis \\& Scale (108 questions; reasoning about the use of axes and scales), Legend (96 questions; reasoning about the appearance, content, and position of legends), Marker \\& Line (48 questions; reasoning about the style of markers and lines).",
+    "char_start": 43009,
+    "char_end": 43878,
+    "sentence_index": 284,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec018",
+    "text": "Section contains sample questions for some of the categories.",
+    "char_start": 43879,
+    "char_end": 43940,
+    "sentence_index": 285,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec019",
+    "text": "We now provide additional details on data curation for chemistry and coding.",
+    "char_start": 43942,
+    "char_end": 44018,
+    "sentence_index": 286,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec019",
+    "text": "Chemistry\nWe generate ten responses with state-of-the-art LLMs for image-captioned versions of chemistry questions in existing multimodal reasoning datasets .",
+    "char_start": 44020,
+    "char_end": 44178,
+    "sentence_index": 287,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec019",
+    "text": "Questions that are answered correctly in at least five out of ten rounds are filtered out.",
+    "char_start": 44179,
+    "char_end": 44269,
+    "sentence_index": 288,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec019",
+    "text": "Analysis of the remaining questions shows that most involve molecular formulas, indicating that molecular-related tasks often require additional visual information for effective reasoning.",
+    "char_start": 44270,
+    "char_end": 44458,
+    "sentence_index": 289,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec019",
+    "text": "Based on this observation, we construct the chemistry section in EMMA from scratch, which features three tasks of increasing difficulty.",
+    "char_start": 44460,
+    "char_end": 44596,
+    "sentence_index": 290,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec019",
+    "text": "The original data is sourced from SMiCRM .",
+    "char_start": 44597,
+    "char_end": 44639,
+    "sentence_index": 291,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec019",
+    "text": "Notably, the correct answers for the Reaction Simulation task---the most challenging and the one that best reflects vision\u2019s role in the reasoning process---are constructed and verified by a PhD candidate in chemical molecules.",
+    "char_start": 44640,
+    "char_end": 44867,
+    "sentence_index": 292,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec019",
+    "text": "The questions and answers for the Reaction Simulation task are sourced from Li et al.'s collection of chemical reactions .",
+    "char_start": 44868,
+    "char_end": 44990,
+    "sentence_index": 293,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec019",
+    "text": "Coding We manually curate all questions for coding.",
+    "char_start": 44992,
+    "char_end": 45043,
+    "sentence_index": 294,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec019",
+    "text": "Our curation process consists of three stages.",
+    "char_start": 45044,
+    "char_end": 45090,
+    "sentence_index": 295,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec019",
+    "text": "In the first stage, we identify ``seed visualizations'' that employ advanced visualization techniques or present a rich space for design variations.",
+    "char_start": 45091,
+    "char_end": 45239,
+    "sentence_index": 296,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec019",
+    "text": "We source these seed visualizations through three channels: CharXiv (a benchmark consisting of diverse charts extracted from arXiv papers), the official matplotlib example gallery .",
+    "char_start": 45240,
+    "char_end": 45421,
+    "sentence_index": 297,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec019",
+    "text": "This approach is inspired by Wu et al.",
+    "char_start": 45422,
+    "char_end": 45460,
+    "sentence_index": 298,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec019",
+    "text": ". , and our prior experience.",
+    "char_start": 45461,
+    "char_end": 45490,
+    "sentence_index": 299,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec019",
+    "text": "For each source, we attempt to reproduce visualizations demonstrating advanced techniques (e.g., 3D bar charts) in Python using GPT-4o or Claude 3.5 Sonnet, retaining only those that MLLMs cannot reasonably replicate after multiple iterations of prompting.",
+    "char_start": 45491,
+    "char_end": 45747,
+    "sentence_index": 300,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec019",
+    "text": "The first stage ultimately results in 47 seed visualizations.",
+    "char_start": 45748,
+    "char_end": 45809,
+    "sentence_index": 301,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec019",
+    "text": "In the second stage, we generate four variations for each seed visualization.",
+    "char_start": 45811,
+    "char_end": 45888,
+    "sentence_index": 302,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec019",
+    "text": "When we prompt MLLMs to reconstruct visualizations during the first stage, MLLM-generated visualizations are often ill-formed, nonsensical, or otherwise fail to achieve the desired effects.",
+    "char_start": 45889,
+    "char_end": 46078,
+    "sentence_index": 303,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec019",
+    "text": "However, since these visualizations are generated by MLLMs, they may be indistinguishable from the correct visualizations to the models.",
+    "char_start": 46079,
+    "char_end": 46215,
+    "sentence_index": 304,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec019",
+    "text": "Yet, it is crucial for MLLMs to recognize such flaws, as early identification of errors is essential for efficient human-AI collaboration.",
+    "char_start": 46216,
+    "char_end": 46354,
+    "sentence_index": 305,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec019",
+    "text": "As such, we include such ``buggy'' code snippets as variations of seed visualizations.",
+    "char_start": 46355,
+    "char_end": 46441,
+    "sentence_index": 306,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec019",
+    "text": "In addition, we further enrich the set by introducing design variations (e.g., changes in spine configuration, line style, or axis scaling) either manually or through prompting MLLMs, with post-hoc manual verification.",
+    "char_start": 46442,
+    "char_end": 46660,
+    "sentence_index": 307,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec019",
+    "text": "After the second stage, we are left with 188 visualizations, organized into 47 sets, each containing four visualizations.",
+    "char_start": 46661,
+    "char_end": 46782,
+    "sentence_index": 308,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec019",
+    "text": "In the third stage, we construct questions using these 188 visualizations.",
+    "char_start": 46784,
+    "char_end": 46858,
+    "sentence_index": 309,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec019",
+    "text": "For Vis Choose Code, we iterate through each visualization within a set and construct questions asking models to select the code snippet used to generate the chart.",
+    "char_start": 46859,
+    "char_end": 47023,
+    "sentence_index": 310,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec019",
+    "text": "For Code Choose Vis, we iteratively choose a code snippet from each set and ask models to identify the corresponding generated image.",
+    "char_start": 47024,
+    "char_end": 47157,
+    "sentence_index": 311,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec019",
+    "text": "For Modification, we first introduce another design variation in each set, and then select two pairs of visualizations from the set, where each set contains a relatively well-formed chart and another random chart.",
+    "char_start": 47158,
+    "char_end": 47371,
+    "sentence_index": 312,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec019",
+    "text": "We construct questions by comparing the code of the randomly selected snippet with others, asking what changes are needed to produce the target visualization.",
+    "char_start": 47372,
+    "char_end": 47530,
+    "sentence_index": 313,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec019",
+    "text": "While the target visualization image is requisite, we vary whether the original visualization image is provided.",
+    "char_start": 47531,
+    "char_end": 47643,
+    "sentence_index": 314,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec019",
+    "text": "In sum, this procedure generates four Code Choose Vis questions, four Vis Choose Code questions, and four Modification questions (two with the original image and two without) per set, resulting in a total of 564 questions evenly divided among the tasks.",
+    "char_start": 47644,
+    "char_end": 47897,
+    "sentence_index": 315,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec020",
+    "text": "EMMA stands out from existing multimodal benchmarks by emphasizing questions that truly demand multimodal reasoning capabilities.",
+    "char_start": 47899,
+    "char_end": 48028,
+    "sentence_index": 316,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec020",
+    "text": "Through meticulous manual labeling or verification, we provide fine-grained labels for each question, categorizing them based on the specific skills they assess.",
+    "char_start": 48029,
+    "char_end": 48190,
+    "sentence_index": 317,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec020",
+    "text": "This approach enables a more detailed analysis of the limitations of MLLMs.",
+    "char_start": 48191,
+    "char_end": 48266,
+    "sentence_index": 318,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec020",
+    "text": "Math\n\nVarious benchmark datasets have been proposed to evaluate the mathematical reasoning capabilities of MLLMs.",
+    "char_start": 48268,
+    "char_end": 48381,
+    "sentence_index": 319,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec020",
+    "text": "However, existing math benchmarks often emphasize shallow perceptual cues or rely heavily on text-dominant reasoning.",
+    "char_start": 48382,
+    "char_end": 48499,
+    "sentence_index": 320,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec020",
+    "text": "In contrast, our dataset mainly focuses on assessing the performance of MLLMs on tasks that require integrated reasoning, particularly those that are highly dependent on visual information.",
+    "char_start": 48500,
+    "char_end": 48689,
+    "sentence_index": 321,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec020",
+    "text": "Specifically, we employ an enhanced data filtering pipeline to separate questions that could be answered correctly using only the caption of images.",
+    "char_start": 48690,
+    "char_end": 48838,
+    "sentence_index": 322,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec020",
+    "text": "Representative examples of such problems are illustrated in Figure .",
+    "char_start": 48839,
+    "char_end": 48907,
+    "sentence_index": 323,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec020",
+    "text": "In some cases, the images provide no additional information required to solve the question, and the answer can be derived entirely from the text of the question alone, as shown in the middle example in Figure .",
+    "char_start": 48908,
+    "char_end": 49118,
+    "sentence_index": 324,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec020",
+    "text": "In other instances, questions can be solved using image captions, leveraging the text reasoning capabilities of MLLMs.",
+    "char_start": 49119,
+    "char_end": 49237,
+    "sentence_index": 325,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec020",
+    "text": "These images either consist solely of textual information, as illustrated in the rightmost example in Figure , or can be fully described textually without necessitating further reasoning involving image transformations.",
+    "char_start": 49238,
+    "char_end": 49457,
+    "sentence_index": 326,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec020",
+    "text": "For instance, in the leftmost example in Figure , as long as the key textual information in the image, such as $y=0.5^x$, is identified, the question can be solved without employing a graphical approach.",
+    "char_start": 49458,
+    "char_end": 49661,
+    "sentence_index": 327,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec020",
+    "text": "In addition to the above, we provide a fine-grained taxonomy for math problems.",
+    "char_start": 49663,
+    "char_end": 49742,
+    "sentence_index": 328,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec020",
+    "text": "By first categorizing the questions using GPT-4o and conducting expert-level manual verification of the classifications, we identify categories that are highly likely to require graphic transformation and spatial simulation.",
+    "char_start": 49743,
+    "char_end": 49967,
+    "sentence_index": 329,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec020",
+    "text": "These categories are not only applicable to all math problems in our dataset but are also adaptable to other dataset, such as MMMU .",
+    "char_start": 49968,
+    "char_end": 50100,
+    "sentence_index": 330,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec020",
+    "text": "In figure , we present two examples from MMMU that fall under our defined categories.",
+    "char_start": 50101,
+    "char_end": 50186,
+    "sentence_index": 331,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec020",
+    "text": "We hope these categories will inspire further exploration of the visual reasoning capability of MLLMs.",
+    "char_start": 50187,
+    "char_end": 50289,
+    "sentence_index": 332,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec020",
+    "text": "[htbp]\n\nfigs/math-cases/math-comparison.pdf\nThree typical examples from other math datasets that do not really require the images or can be correctly answered using only the captions of images.",
+    "char_start": 50291,
+    "char_end": 50484,
+    "sentence_index": 333,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec020",
+    "text": "The leftmost and rightmost examples are from Math-Vista and the middle example is from Math-Vision .",
+    "char_start": 50485,
+    "char_end": 50585,
+    "sentence_index": 334,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec020",
+    "text": "Q represents the question, C represents the caption of the image, and I represents the image.",
+    "char_start": 50586,
+    "char_end": 50679,
+    "sentence_index": 335,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec020",
+    "text": "[h]\n\nfigs/math-cases/mmmu.pdf\nTwo examples from MMMU , which belong to our defined categories of 2D Transformation and 3D Spatial Simulation respectively.",
+    "char_start": 50681,
+    "char_end": 50835,
+    "sentence_index": 336,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec020",
+    "text": "Our classification is equally applicable to other datasets.",
+    "char_start": 50836,
+    "char_end": 50895,
+    "sentence_index": 337,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec020",
+    "text": "Science (Physics \\& Chemistry)\nThe latest multimodal reasoning benchmarks in science, such as , do not provide many multimodal physics and chemistry problems.",
+    "char_start": 50897,
+    "char_end": 51055,
+    "sentence_index": 338,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec020",
+    "text": "In addition, they often focus on superficial visual cues or heavily rely on text-based reasoning.",
+    "char_start": 51056,
+    "char_end": 51153,
+    "sentence_index": 339,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec020",
+    "text": "As pointed out by isobench , text representation can address 90\\% of physics and chemistry questions in ScienceQA .",
+    "char_start": 51154,
+    "char_end": 51269,
+    "sentence_index": 340,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec020",
+    "text": "As a result, our filtering pipeline leaves only 100 problems in total for these subjects from relevant benchmarks, which we expand to 1,332 with our newly constructed problems.",
+    "char_start": 51270,
+    "char_end": 51446,
+    "sentence_index": 341,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec020",
+    "text": "Our benchmark places greater emphasis on the role of vision in multimodal reasoning.",
+    "char_start": 51448,
+    "char_end": 51532,
+    "sentence_index": 342,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec020",
+    "text": "Beyond filtering out problems solvable through text alone, we manually review and annotate the remaining questions to ensure a strong reliance on visual information.",
+    "char_start": 51533,
+    "char_end": 51698,
+    "sentence_index": 343,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec020",
+    "text": "In particular, we focus on two specific types of problems.",
+    "char_start": 51700,
+    "char_end": 51758,
+    "sentence_index": 344,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec020",
+    "text": "First, some physics problems require visual imagination and simulation of physical processes.",
+    "char_start": 51759,
+    "char_end": 51852,
+    "sentence_index": 345,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec020",
+    "text": "Auxiliary images can significantly enhance both the accuracy and efficiency of problem-solving.",
+    "char_start": 51853,
+    "char_end": 51948,
+    "sentence_index": 346,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec020",
+    "text": "Second, in chemistry, tasks such as molecule counting, structure recognition, and reaction simulation demand effective utilization of visual information.",
+    "char_start": 51949,
+    "char_end": 52102,
+    "sentence_index": 347,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec020",
+    "text": "These two types of problems and their related data have been largely overlooked in current science datasets.",
+    "char_start": 52103,
+    "char_end": 52211,
+    "sentence_index": 348,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec020",
+    "text": "To address this gap, we emphasize these under-explored aspects in the science portion of EMMA by manually constructing test questions and carefully sourcing them from existing datasets.",
+    "char_start": 52212,
+    "char_end": 52397,
+    "sentence_index": 349,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec020",
+    "text": "Coding\nMost current visualization-related benchmarks assess visualization understanding .",
+    "char_start": 52399,
+    "char_end": 52488,
+    "sentence_index": 350,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec020",
+    "text": "In this work, we focus on evaluating how well MLLMs can reason in multimodality when generating visualizations.",
+    "char_start": 52489,
+    "char_end": 52600,
+    "sentence_index": 351,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec020",
+    "text": "To this end, past work has proposed the task of visualization reproduction---generating code to reproduce a target visualization.",
+    "char_start": 52601,
+    "char_end": 52730,
+    "sentence_index": 352,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec020",
+    "text": "To evaluate the quality of generations, researchers have developed heuristic measures and employed MLLMs as judges.",
+    "char_start": 52731,
+    "char_end": 52846,
+    "sentence_index": 353,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec020",
+    "text": "EMMA enhances past work by introducing new task types.",
+    "char_start": 52848,
+    "char_end": 52902,
+    "sentence_index": 354,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec020",
+    "text": "Our four tasks enable targeted assessments of Vis2Code , Code2Vis , and Visualization Modification .",
+    "char_start": 52903,
+    "char_end": 53003,
+    "sentence_index": 355,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec020",
+    "text": "In particular, while many users rely on MLLMs for visualization debugging, this task has not been addressed by existing benchmarks.",
+    "char_start": 53004,
+    "char_end": 53135,
+    "sentence_index": 356,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec020",
+    "text": "We further provide fine-grained, expert-generated categorizations for each question based on the skills it measures (see Section ).",
+    "char_start": 53136,
+    "char_end": 53267,
+    "sentence_index": 357,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec020",
+    "text": "Finally, all of our coding questions are posed as multiple-choice questions, which removes the need for using MLLMs as judges, which can be unreliable.",
+    "char_start": 53268,
+    "char_end": 53419,
+    "sentence_index": 358,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec020",
+    "text": "[h]\n\nfigs/emma_coding_advantage.pdf\nTraditional visualization benchmarks for coding often require MLLMs to recreate a target visualization, with evaluations conducted using a combination of MLLMs as judges and heuristic methods.",
+    "char_start": 53421,
+    "char_end": 53649,
+    "sentence_index": 359,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec020",
+    "text": "In contrast, EMMA introduces four visualization-related coding tasks designed to assess multimodal coding abilities across multiple dimensions.",
+    "char_start": 53650,
+    "char_end": 53793,
+    "sentence_index": 360,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec020",
+    "text": "By employing a multiple-choice format, EMMA eliminates the reliance on potentially unreliable MLLM-based judgment.",
+    "char_start": 53794,
+    "char_end": 53908,
+    "sentence_index": 361,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec020",
+    "text": "Additionally, our fine-grained categories facilitate a detailed analysis of the limitations of multimodal coding skills.",
+    "char_start": 53909,
+    "char_end": 54029,
+    "sentence_index": 362,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec021",
+    "text": "As previously discussed, we conduct much filtering to cull out questions from existing datasets that genuinely require visual reasoning, which involves using GPT-4o to generate captions for images and passing the captions along with textual questions to MLLMs to generate responses.",
+    "char_start": 54031,
+    "char_end": 54313,
+    "sentence_index": 363,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec022",
+    "text": "The prompts used to generate captions and responses are shown in Table .",
+    "char_start": 54314,
+    "char_end": 54386,
+    "sentence_index": 364,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec022",
+    "text": "Notably, when generating image captions, we also provide the corresponding questions to models to make sure the captions are as accurate as possible.",
+    "char_start": 54387,
+    "char_end": 54536,
+    "sentence_index": 365,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec022",
+    "text": "For math, after filtering the data, we conduct a detailed observation and analysis of the remaining problems and develop a taxonomy consisting of five categories.",
+    "char_start": 54538,
+    "char_end": 54700,
+    "sentence_index": 366,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec022",
+    "text": "We then utilize GPT-4o to assist with the categorization and the prompts used during this process are shown in Table .",
+    "char_start": 54701,
+    "char_end": 54819,
+    "sentence_index": 367,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec022",
+    "text": "[htbp]\n\n!",
+    "char_start": 54821,
+    "char_end": 54830,
+    "sentence_index": 368,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec022",
+    "text": "p 0.2 p 0.8\n\nSetting & Prompt\n\nGenerate Captions & There is a question about the image or figure.",
+    "char_start": 54831,
+    "char_end": 54928,
+    "sentence_index": 369,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec022",
+    "text": "Please describe the fine-grained content of the image or figure based on this question, including scenes, objects, relationships, and any text present.",
+    "char_start": 54929,
+    "char_end": 55080,
+    "sentence_index": 370,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec022",
+    "text": "Please note that you do not need to answer this question directly, just describe the information of this picture.",
+    "char_start": 55081,
+    "char_end": 55194,
+    "sentence_index": 371,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec022",
+    "text": "Generate Responses & Please first solve the problem step by step, then put your final answer or a single letter (if it is a multiple choice question) in one `` boxed\\ \\ ''.",
+    "char_start": 55196,
+    "char_end": 55368,
+    "sentence_index": 372,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec022",
+    "text": "Here is the natural description of the figure, please solve the following problem based on the description.",
+    "char_start": 55369,
+    "char_end": 55476,
+    "sentence_index": 373,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec022",
+    "text": "Categorize & There are some math problems combining images and text, and existing large models cannot correctly reason through these problems.",
+    "char_start": 55478,
+    "char_end": 55620,
+    "sentence_index": 374,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec022",
+    "text": "We have analyzed the reasons why large models fail to classify these problems and have categorized them based on the challenges present in the problems.",
+    "char_start": 55621,
+    "char_end": 55773,
+    "sentence_index": 375,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec022",
+    "text": "The categories are as follows: A: To solve the problem, a 2D transformation is required, such as translation, rotation, scaling, shearing, reflection, etc.",
+    "char_start": 55774,
+    "char_end": 55929,
+    "sentence_index": 376,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec022",
+    "text": "B: To solve the problem, 3D spatial imagination is needed.",
+    "char_start": 55930,
+    "char_end": 55988,
+    "sentence_index": 377,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec022",
+    "text": "C: To solve the problem, path tracing/change of view simulation is needed, such as a math problem about a maze.",
+    "char_start": 55989,
+    "char_end": 56100,
+    "sentence_index": 378,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec022",
+    "text": "D: None of the above.",
+    "char_start": 56101,
+    "char_end": 56122,
+    "sentence_index": 379,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec022",
+    "text": "It belongs to another category.",
+    "char_start": 56123,
+    "char_end": 56154,
+    "sentence_index": 380,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec022",
+    "text": "Here is a math problem, please give the math category that you think this problem belongs to and explain why.",
+    "char_start": 56155,
+    "char_end": 56264,
+    "sentence_index": 381,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec022",
+    "text": "If you choose D, please additionally include the type of math problem you believe it to be.",
+    "char_start": 56265,
+    "char_end": 56356,
+    "sentence_index": 382,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec022",
+    "text": "The prompts used to caption images and generate responses during data curation.",
+    "char_start": 56358,
+    "char_end": 56437,
+    "sentence_index": 383,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec023",
+    "text": "We evaluate several state-of-the-art MLLMs on EMMA, considering two different prompting strategies: Direct prompting and Chain-of-Thought ( CoT ) prompting.",
+    "char_start": 56439,
+    "char_end": 56595,
+    "sentence_index": 384,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec023",
+    "text": "Furthermore, our benchmark features two question types: Open-ended and Multiple Choice .",
+    "char_start": 56596,
+    "char_end": 56684,
+    "sentence_index": 385,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec023",
+    "text": "The corresponding prompts vary according to the type of question and the prompting strategy, as shown in Table\n\n[htbp]\n\n!",
+    "char_start": 56685,
+    "char_end": 56806,
+    "sentence_index": 386,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec023",
+    "text": "p 0.1 p 0.07 p 0.66\n\nType & Strategy & Prompt\n\n6 * Open-ended & 3 * CoT & \\ context\\ \\ question\\\n\n& & Answer the question using a single word or phrase and put the answer in one `` boxed\\ \\ ''.",
+    "char_start": 56807,
+    "char_end": 57000,
+    "sentence_index": 387,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec023",
+    "text": "Please solve the problem step by step.",
+    "char_start": 57001,
+    "char_end": 57039,
+    "sentence_index": 388,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec023",
+    "text": "2-3\n& 4 * Direct & \\ context\\ \\ question\\\n\n& & Answer the question using a single word or phrase and put the answer in one `` boxed\\ \\ ''.",
+    "char_start": 57041,
+    "char_end": 57179,
+    "sentence_index": 389,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec023",
+    "text": "Please ensure that your output only contains the final answer without any additional content (such as intermediate reasoning steps).",
+    "char_start": 57180,
+    "char_end": 57312,
+    "sentence_index": 390,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec023",
+    "text": "7 * [l] @ l@ Multiple\nChoice & 3 * CoT & \\ context\\ \\ question\\ \\ options\\\n\n& & Answer with the option's letter from the given choices and put the letter in one `` boxed\\ \\ ''.",
+    "char_start": 57314,
+    "char_end": 57490,
+    "sentence_index": 391,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec023",
+    "text": "Please solve the problem step by step.",
+    "char_start": 57491,
+    "char_end": 57529,
+    "sentence_index": 392,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec023",
+    "text": "2-3\n& 4 * Direct & \\ context\\ \\ question\\ \\ options\\\n\n& & Answer with the option's letter from the given choices and put the letter in one `` boxed\\ \\ ''.",
+    "char_start": 57531,
+    "char_end": 57685,
+    "sentence_index": 393,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec023",
+    "text": "Please ensure that your output only contains the final answer without any additional content (such as intermediate reasoning steps).",
+    "char_start": 57686,
+    "char_end": 57818,
+    "sentence_index": 394,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec023",
+    "text": "The prompts used for evaluation across different question types and prompting strategies.",
+    "char_start": 57820,
+    "char_end": 57909,
+    "sentence_index": 395,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec024",
+    "text": "During math data curation, we filter out questions that models can answer when provided only with the image caption and the question.",
+    "char_start": 57911,
+    "char_end": 58044,
+    "sentence_index": 396,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec024",
+    "text": "In this process, each model generates ten candidate responses to ensure reliable and effective filtering.",
+    "char_start": 58045,
+    "char_end": 58150,
+    "sentence_index": 397,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec024",
+    "text": "To expedite response generation, we use the vLLM library, an open-source tool for fast LLM inference and serving.",
+    "char_start": 58151,
+    "char_end": 58264,
+    "sentence_index": 398,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec024",
+    "text": "For all other cases, we load models directly using the Transformers library.",
+    "char_start": 58265,
+    "char_end": 58341,
+    "sentence_index": 399,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec024",
+    "text": "All model sources are official and listed in Table .",
+    "char_start": 58342,
+    "char_end": 58394,
+    "sentence_index": 400,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec024",
+    "text": "When evaluating different models, we use default hyperparameter values unless otherwise specified, with detailed parameter settings provided in Table .",
+    "char_start": 58395,
+    "char_end": 58546,
+    "sentence_index": 401,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec024",
+    "text": "[htbp]\n\n!",
+    "char_start": 58548,
+    "char_end": 58557,
+    "sentence_index": 402,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec024",
+    "text": "cccp 0.4\n\nModel & Parameter Setting & Source & URL\n\nGPT-4o pass@1 & temperature = 0.0 & chatgpt-4o-latest &\n\nGPT-4o pass@n & temperature = 0.7 & chatgpt-4o-latest &\n\nClaude 3.5 Sonnet & temperature = 0.0 & claude-3-5-sonnet &\n\n[c] @ c@ Gemini 2.0 Flash\npass@1 & temperature = 0.0 & gemini-2.0-flash-exp &\n\n[c] @ c@ Gemini 2.0 Flash\npass@n & temperature = 0.7 & gemini-2.0-flash-exp &\n\n[c] @ c@ Gemini 2.0 Flash\nThinking & temperature = 0.0 & [c] @ c@ gemini-2.0-flash-\nthinking-exp-1219 &\n\nOpenAI o1 & [c] @ c@ - & interface &\n\nQwen2-VL-72B-Instruct & temperature = 0.7 & local checkpoint &\n\nLLaVA-Onevision-72B & [c] @ c@ do sample=True,\ntemperature = 0.7 & local checkpoint &\n\nInternVL2-Llama3-76B & [c] @ c@ do sample=True,\ntemperature = 0.7 & local checkpoint &\n\nInternVL2.5-78B & [c] @ c@ do sample=True,\ntemperature = 0.7 & local checkpoint &\n\nThe sources of models used in the experiments and the hyperparameters configuration.",
+    "char_start": 58558,
+    "char_end": 59492,
+    "sentence_index": 403,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec024",
+    "text": "Pass@1 refers to scenarios where evaluation is performed only once, while pass@n refers to cases that require generating multiple candidate responses.",
+    "char_start": 59493,
+    "char_end": 59643,
+    "sentence_index": 404,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec025",
+    "text": "In this section, we present a detailed breakdown of the results for each category across different subjects.",
+    "char_start": 59645,
+    "char_end": 59753,
+    "sentence_index": 405,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec025",
+    "text": "Specifically, the results for math are shown in Table , for physics in Table , for chemistry in Table , and for coding in Table .",
+    "char_start": 59754,
+    "char_end": 59883,
+    "sentence_index": 406,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec025",
+    "text": "[htbp]\n\nmax width=\n@ lccccccc@\n\n3 * & EMMA-mini & 6 c EMMA\n\n(l) 2-2 (l) 3-8\n& Overall & 2D & 3D & Path & MH & Pat & Overall\n\n& (100) & (266) & (275) & (127) & (124) & (100) & (892)\n\nRandom choice & 13.00 & 15.04 & 12.73 & 10.24 & 22.58 & 9.00 & 14.01\n\nHuman Expert & 75.00 & - & - & - & - & - & -\n\nDirect Claude 3.5 Sonnet & 23.00 & 26.69 & 18.18 & 21.26 & 49.19 & 17.00 & 25.34\n\nDirect Gemini 2.0 Flash & 20.00 & 25.19 & 20.73 & 19.69 & 37.90 & 17.00 & 23.88\n\nDirect GPT-4o & 30.00 & 27.44 & 19.64 & 17.32 & 58.87 & 21.00 & 27.24\n\nDirect Qwen2-VL-72B-Instruct & 38.00 & 24.81 & 20.00 & 18.90 & 78.23 & 53.00 & 33.07\n\nDirect LLaVA-Onevision-72B & 25.00 & 24.81 & 22.18 & 20.47 & 69.35 & 8.00 & 27.69\n\nDirect InternVL2-Llama3-76B & 31.00 & 22.18 & 14.55 & 22.83 & 65.32 & 15.00 & 25.11\n\nDirect InternVL2.5-78B & 30.00 & 28.95 & 21.82 & 18.90 & 80.65 & 19.00 & 31.39\n\nCoT Claude 3.5 Sonnet & 30.00 & 26.69 & 22.18 & 22.83 & 60.48 & 26.00 & 29.37\n\nCoT Gemini 2.0 Flash & 24.00 & 23.31 & 26.55 & 15.75 & 37.90 & 29.00 & 25.90\n\nCoT GPT-4o & 27.00 & 23.68 & 17.82 & 14.17 & 60.48 & 23.00 & 25.56\n\nCoT Gemini 2.0 Flash Thinking & 35.00 & 30.83 & 27.64 & 20.47 & 60.48 & 23.00 & 31.61\n\nCoT OpenAI o1 & 41.00 & - & - & - & - & - & -\n\nCoT Qwen2-VL-72B-Instruct & 32.00 & 18.80 & 16.00 & 14.96 & 78.23 & 37.00 & 27.69\n\nCoT LLaVA-Onevision-72B & 23.00 & 19.17 & 13.45 & 16.54 & 64.52 & 11.00 & 22.42\n\nCoT InternVL2-Llama3-76B & 27.00 & 16.17 & 14.55 & 15.75 & 64.52 & 15.00 & 22.20\n\nCoT InternVL2.5-78B & 31.00 & 22.18 & 13.09 & 16.54 & 75.81 & 18.00 & 25.56\n\nPerformance of state-of-the-art MLLMs on Math.",
+    "char_start": 59885,
+    "char_end": 61479,
+    "sentence_index": 407,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec025",
+    "text": "Column abbreviations: 2D = 2D Transformation, 3D = 3D Spatial Simulation, Path = Path Tracing, Pat = Pattern Inference, MH = Multi-Hop Visual Object Counting.",
+    "char_start": 61480,
+    "char_end": 61638,
+    "sentence_index": 408,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec025",
+    "text": "[htbp]\n\nmax width=\n@ lccccccc@\n\n3 * & EMMA-mini & 6 c EMMA\n\n(l) 2-2 (l) 3-8\n& Overall & Path & 3D & MH & VD & GR & Overall\n\n& (100) & (13) & (37) & (33) & (47) & (26) & (156)\n\nRandom choice & 23.00 & 38.46 & 21.62 & 27.27 & 31.91 & 11.54 & 25.64\n\nHuman Expert & 64.50 & - & - & - & - & - & -\n\nDirect Claude 3.5 Sonnet & 34.00 & 30.77 & 37.84 & 36.36 & 31.91 & 30.77 & 33.97\n\nDirect Gemini 2.0 Flash & 40.00 & 38.46 & 29.73 & 42.42 & 38.30 & 46.15 & 38.46\n\nDirect GPT-4o & 38.00 & 30.77 & 40.54 & 33.33 & 36.17 & 50.00 & 38.46\n\nDirect Qwen2-VL-72B-Instruct & 40.00 & 30.77 & 48.65 & 45.45 & 42.55 & 34.62 & 42.31\n\nDirect LLaVA-Onevision-72B & 32.00 & 23.08 & 27.03 & 39.39 & 48.94 & 26.92 & 35.90\n\nDirect InternVL2-Llama3-76B & 22.00 & 15.38 & 32.43 & 21.21 & 6.45 & 23.08 & 22.44\n\nDirect InternVL2.5-78B & 40.00 & 38.46 & 43.24 & 42.42 & 38.30 & 26.92 & 38.46\n\nCoT Claude 3.5 Sonnet & 38.00 & 53.85 & 37.84 & 36.36 & 42.55 & 42.31 & 41.03\n\nCoT Gemini 2.0 Flash & 41.00 & 30.77 & 29.73 & 36.36 & 44.68 & 46.15 & 38.46\n\nCoT GPT-4o & 44.00 & 69.23 & 35.14 & 39.39 & 44.68 & 46.15 & 43.59\n\nCoT Gemini 2.0 Flash Thinking & 57.00 & 61.54 & 43.24 & 57.58 & 61.70 & 61.54 & 56.41\n\nCoT OpenAI o1 & 49.00 & - & - & - & - & - & -\n\nCoT Qwen2-VL-72B-Instruct & 34.00 & 15.38 & 35.14 & 33.33 & 34.04 & 46.15 & 34.62\n\nCoT LLaVA-Onevision-72B & 26.00 & 15.38 & 10.81 & 18.18 & 6.38 & 15.38 & 12.18\n\nCoT InternVL2-Llama3-76B & 33.00 & 53.85 & 27.03 & 21.21 & 12.90 & 38.46 & 32.05\n\nCoT InternVL2.5-78B & 36.00 & 46.15 & 35.14 & 30.30 & 46.81 & 42.31 & 39.74\n\nPerformance of state-of-the-art MLLMs on Physics.",
+    "char_start": 61640,
+    "char_end": 63231,
+    "sentence_index": 409,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec025",
+    "text": "Column abbreviations: Path = Path Tracing, 3D = 3D Field Simulation, MH = Multi-Hop Visual Reasoning, VD = Visual Decomposition Simulation, GR = Graph Reasoning.",
+    "char_start": 63232,
+    "char_end": 63393,
+    "sentence_index": 410,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec025",
+    "text": "[htbp]\n\nmax width=\n@ lccccccc@\n\n3 * & EMMA-mini & 6 c EMMA\n\n(l) 2-2 (l) 3-8\n& Overall & SR & GR & RS & RS-pro & KS & Overall\n\n& (100) & (474) & (9) & (132) & (105) & (456) & (1176)\n\nRandom choice & 27.00 & 24.47 & 33.33 & 27.27 & 35.24 & 0.44 & 16.50\n\nHuman Expert & 86.00 & - & - & - & - & - & -\n\nDirect Claude 3.5 Sonnet & 44.00 & 66.88 & 22.22 & 55.30 & 55.24 & 6.80 & 40.90\n\nDirect Gemini 2.0 Flash & 36.00 & 54.01 & 11.11 & 53.79 & 58.10 & 8.33 & 36.31\n\nDirect GPT-4o & 33.00 & 47.05 & 11.11 & 51.52 & 42.86 & 8.33 & 31.89\n\nDirect Qwen2-VL-72B-Instruct & 34.00 & 45.99 & 33.33 & 48.48 & 45.71 & 9.65 & 32.06\n\nDirect LLaVA-Onevision-72B & 24.00 & 38.19 & 33.33 & 39.39 & 26.67 & 7.24 & 25.26\n\nDirect InternVL2-Llama3-76B & 21.00 & 37.34 & 22.22 & 31.45 & 24.76 & 8.55 & 24.06\n\nDirect InternVL2.5-78B & 38.00 & 55.06 & 33.33 & 47.73 & 43.81 & 8.99 & 35.20\n\nCoT Claude 3.5 Sonnet & 41.00 & 57.17 & 33.33 & 58.33 & 58.10 & 15.57 & 41.07\n\nCoT Gemini 2.0 Flash & 36.00 & 22.15 & 33.33 & 50.00 & 59.05 & 11.84 & 24.66\n\nCoT GPT-4o & 35.00 & 42.41 & 33.33 & 51.52 & 45.71 & 16.67 & 33.67\n\nCoT Gemini 2.0 Flash Thinking & 41.00 & 48.31 & 33.33 & 45.45 & 69.52 & 17.76 & 37.93\n\nCoT OpenAI o1 & 40.00 & - & - & - & - & - & -\n\nCoT Qwen2-VL-72B-Instruct & 32.00 & 33.33 & 11.11 & 37.12 & 42.86 & 7.89 & 24.57\n\nCoT LLaVA-Onevision-72B & 23.00 & 33.76 & 0.00 & 37.88 & 20.95 & 7.24 & 22.53\n\nCoT InternVL2-Llama3-76B & 21.00 & 29.11 & 22.22 & 30.65 & 22.86 & 6.58 & 19.73\n\nCoT InternVL2.5-78B & 24.00 & 37.13 & 33.33 & 37.12 & 33.33 & 13.16 & 27.47\n\nPerformance of state-of-the-art MLLMs on Chemistry.",
+    "char_start": 63395,
+    "char_end": 64984,
+    "sentence_index": 411,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec025",
+    "text": "Column abbreviations: SR = Structure Recognition, GR = Graph Reasoning, RS = Reaction Simulation, RS-pro = Reaction Simulation-Pro, KS = Knowledge-based Counting.",
+    "char_start": 64985,
+    "char_end": 65147,
+    "sentence_index": 412,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec025",
+    "text": "[htbp]\n\nmax width=\n@ lcccccc@\n\n3 * & EMMA-mini & 5 c EMMA\n\n(l) 2-2 (l) 3-7\n& Overall & CCV & VCC & MwoI & MwI & Overall\n\n& (100) & (188) & (188) & (94) & (94) & (564)\n\nRandom choice & 28.00 & 22.87 & 23.94 & 29.79 & 30.85 & 25.71\n\nHuman Expert & 85.50 & - & - & - & - & -\n\nDirect Claude 3.5 Sonnet & 35.00 & 32.98 & 41.49 & 40.43 & 42.55 & 38.65\n\nDirect Gemini 2.0 Flash & 41.00 & 39.36 & 42.02 & 43.62 & 45.74 & 42.02\n\nDirect GPT-4o & 40.00 & 43.09 & 35.11 & 40.43 & 43.62 & 40.07\n\nDirect Qwen2-VL-72B-Instruct & 37.00 & 35.11 & 30.85 & 36.17 & 39.36 & 34.57\n\nDirect LLaVA-Onevision-72B & 28.00 & 22.34 & 28.19 & 38.30 & 32.98 & 28.72\n\nDirect InternVL2-Llama3-76B & 28.00 & 27.66 & 39.52 & 30.85 & 28.72 & 27.84\n\nDirect InternVL2.5-78B & 33.00 & 30.85 & 31.38 & 35.11 & 31.91 & 31.91\n\nCoT Claude 3.5 Sonnet & 39.00 & 39.36 & 38.83 & 43.62 & 43.62 & 40.60\n\nCoT Gemini 2.0 Flash & 44.00 & 38.30 & 46.28 & 37.23 & 39.36 & 40.96\n\nCoT GPT-4o & 38.00 & 40.43 & 35.11 & 44.68 & 38.30 & 39.01\n\nCoT Gemini 2.0 Flash Thinking & 41.00 & 43.62 & 46.81 & 39.36 & 40.43 & 43.44\n\nCoT OpenAI o1 & 53.00 & - & - & - & - & -\n\nCoT Qwen2-VL-72B-Instruct & 23.00 & 31.38 & 28.72 & 25.53 & 30.85 & 29.43\n\nCoT LLaVA-Onevision-72B & 29.00 & 24.47 & 32.98 & 35.11 & 34.04 & 30.67\n\nCoT InternVL2-Llama3-76B & 32.00 & 24.47 & 29.79 & 38.30 & 35.11 & 30.32\n\nCoT InternVL2.5-78B & 19.00 & 25.53 & 25.00 & 25.53 & 24.47 & 25.18\n\nPerformance of state-of-the-art MLLMs on Coding.",
+    "char_start": 65149,
+    "char_end": 66597,
+    "sentence_index": 413,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec025",
+    "text": "Column abbreviations: CCV = Code Choose Vis, VCC = Vis Choose Code, MwoI = Modify without Original Image, MwI = Modify with Original Image.",
+    "char_start": 66598,
+    "char_end": 66737,
+    "sentence_index": 414,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec025",
+    "text": "[t]\n\nmax width=\nccccccc\n\nModel & Method & N=1 & N=2 & N=4 & N=8 & N=16\n\n3 * GPT-4o & BoN w.",
+    "char_start": 66739,
+    "char_end": 66830,
+    "sentence_index": 415,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec025",
+    "text": "Self-RM & 3 * 27.00 & 29.00 & 27.00 & 25.00 & $-$\n\n& BoN w.",
+    "char_start": 66831,
+    "char_end": 66890,
+    "sentence_index": 416,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec025",
+    "text": "Gemini 2.0 Flash Thinking as RM & & 30.00 & 28.00 & 31.00 & $-$\n\n& BoN w.",
+    "char_start": 66891,
+    "char_end": 66964,
+    "sentence_index": 417,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec025",
+    "text": "Qwen2.5-Math-RM-72B as RM & & 26.00 & 24.00 & 25.00 & 29.00\n\n3 * Gemini 2.0 Flash & BoN w.",
+    "char_start": 66965,
+    "char_end": 67055,
+    "sentence_index": 418,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec025",
+    "text": "Self-RM & 3 * 24.00 & 33.00 & 24.00 & 27.00 & $-$\n\n& BoN w.",
+    "char_start": 67056,
+    "char_end": 67115,
+    "sentence_index": 419,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec025",
+    "text": "Gemini 2.0 Flash Thinking as RM & & 33.00 & 24.00 & 25.00 & $-$\n\n& BoN w.",
+    "char_start": 67116,
+    "char_end": 67189,
+    "sentence_index": 420,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec025",
+    "text": "Qwen2.5-Math-RM-72B as RM & & 27.00 & 28.00 & 23.00 & 23.00\n\nGemini 2.0 Flash Thinking & $-$ & 35.00 & $-$ & $-$ & $-$ & $-$\n\no1 & $-$ & 41.00 & $-$ & $-$ & $-$ & $-$\n\nTest-time scaling results on the math portion of EMMA-mini using Qwen2.5-Math-RM-72B, a specialized reward model for math, and some generalist models as reward models.",
+    "char_start": 67190,
+    "char_end": 67525,
+    "sentence_index": 421,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec025",
+    "text": "Since Qwen2.5-Math-RM-72B does not take images as input, we provide GPT-4o-generated captions of images in the problems to it.",
+    "char_start": 67526,
+    "char_end": 67652,
+    "sentence_index": 422,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec025",
+    "text": "Overall, generalist reward models provide better reward signals than Qwen2.5-Math-RM-72B.",
+    "char_start": 67653,
+    "char_end": 67742,
+    "sentence_index": 423,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec026",
+    "text": "While we want to evaluate specialized reward models in addition to generalist reward models, they are currently only available for math.",
+    "char_start": 67744,
+    "char_end": 67880,
+    "sentence_index": 424,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec026",
+    "text": "Qwen2.5-Math-RM-72B is one such specialized LLM for evaluating the quality of responses to math problems.",
+    "char_start": 67881,
+    "char_end": 67986,
+    "sentence_index": 425,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec026",
+    "text": "For the math portion of EMMA-mini, we first generate 16 responses using each of GPT-4o and Gemini 2.0 Flash.",
+    "char_start": 67987,
+    "char_end": 68095,
+    "sentence_index": 426,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec026",
+    "text": "We then score each response using Qwen2.5-Math-RM-72B and select the highest-scoring answer.",
+    "char_start": 68096,
+    "char_end": 68188,
+    "sentence_index": 427,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec026",
+    "text": "As in previous experiments, we test with N values of 2, 4, 8, and 16.",
+    "char_start": 68189,
+    "char_end": 68258,
+    "sentence_index": 428,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec026",
+    "text": "Since Qwen2.5-Math-RM-72B is not multimodal, we supply GPT-4o-generated captions for all images in the questions to enable evaluation.",
+    "char_start": 68259,
+    "char_end": 68393,
+    "sentence_index": 429,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec026",
+    "text": "Table compares scaling results on the math portion of EMMA-mini using Qwen2.5-Math-RM-72B, a specialized reward model for math, against other generalist reward models.",
+    "char_start": 68395,
+    "char_end": 68562,
+    "sentence_index": 430,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec026",
+    "text": "Overall, generalist reward models generate better rewards than Qwen2.5-Math-RM-72B.",
+    "char_start": 68563,
+    "char_end": 68646,
+    "sentence_index": 431,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec026",
+    "text": "We note, however, that Qwen2.5-Math-RM-72B is not a text-only model, which likely affects its performance on a multimodal benchmark like EMMA.",
+    "char_start": 68647,
+    "char_end": 68789,
+    "sentence_index": 432,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec027",
+    "text": "We now present additional case studies, showcasing both correct and incorrect responses by MLLMs, organized by subject.",
+    "char_start": 68791,
+    "char_end": 68910,
+    "sentence_index": 433,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec027",
+    "text": "We provide the original questions, MLLM responses, ground truth solutions, and our error analyses.",
+    "char_start": 68911,
+    "char_end": 69009,
+    "sentence_index": 434,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec027",
+    "text": "Some questions also feature o1 responses to the captioned version of the original questions.",
+    "char_start": 69010,
+    "char_end": 69102,
+    "sentence_index": 435,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec027",
+    "text": "Overall, we find that a recurring pattern in error cases is that MLLMs fail to fully engage their multimodal reasoning skills.",
+    "char_start": 69103,
+    "char_end": 69229,
+    "sentence_index": 436,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec027",
+    "text": "When questions require multiple visual passes or extended visual simulation or manipulation, MLLMs often skip over these critical steps in their thought processes or produce completely incorrect solutions.",
+    "char_start": 69230,
+    "char_end": 69435,
+    "sentence_index": 437,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec027",
+    "text": "[htbp]\n\nfigs/math-cases/math-case-correct-1.pdf\nA sample correct case in math.",
+    "char_start": 69437,
+    "char_end": 69515,
+    "sentence_index": 438,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec027",
+    "text": "[htbp]\n\nfigs/math-cases/math-case-correct-2.pdf\nA sample correct case in math.",
+    "char_start": 69517,
+    "char_end": 69595,
+    "sentence_index": 439,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec027",
+    "text": "[htbp]\n\nfigs/math-cases/math-case-correct-3.pdf\nA sample correct case in math.",
+    "char_start": 69597,
+    "char_end": 69675,
+    "sentence_index": 440,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec027",
+    "text": "[htbp]\n\nfigs/math-cases/math-case-correct-4.pdf\nA sample correct case in math.",
+    "char_start": 69677,
+    "char_end": 69755,
+    "sentence_index": 441,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec027",
+    "text": "[htbp]\n\nfigs/math-cases/math-case-correct-5.pdf\nA sample correct case in math.",
+    "char_start": 69757,
+    "char_end": 69835,
+    "sentence_index": 442,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/math-cases/math-case-wrong-4.pdf\nA sample error case in math.",
+    "char_start": 69837,
+    "char_end": 69908,
+    "sentence_index": 443,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/math-cases/math-case-wrong-1.pdf\nA sample error case in math.",
+    "char_start": 69910,
+    "char_end": 69981,
+    "sentence_index": 444,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/math-cases/math-case-wrong-2.pdf\nA sample error case in math.",
+    "char_start": 69983,
+    "char_end": 70054,
+    "sentence_index": 445,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/math-cases/math-case-wrong-3.pdf\nA sample error case in math.",
+    "char_start": 70056,
+    "char_end": 70127,
+    "sentence_index": 446,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-wrong-4.pdf\nA sample error case in physics.",
+    "char_start": 70129,
+    "char_end": 70209,
+    "sentence_index": 447,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-wrong-5.pdf\nA sample error case in physics.",
+    "char_start": 70211,
+    "char_end": 70291,
+    "sentence_index": 448,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-wrong-1.pdf\nA sample error case in physics.",
+    "char_start": 70293,
+    "char_end": 70373,
+    "sentence_index": 449,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-wrong-2.pdf\nA sample error case in physics.",
+    "char_start": 70375,
+    "char_end": 70455,
+    "sentence_index": 450,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-wrong-3.pdf\nA sample error case in physics.",
+    "char_start": 70457,
+    "char_end": 70537,
+    "sentence_index": 451,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-correct-1.pdf\nA sample correct case in physics.",
+    "char_start": 70539,
+    "char_end": 70623,
+    "sentence_index": 452,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/physics-cases/physics-case-correct-2.pdf\nA sample correct case in physics.",
+    "char_start": 70625,
+    "char_end": 70709,
+    "sentence_index": 453,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/chemistry-cases/chemistry-case-correct-1.pdf\nA sample correct case in chemistry.",
+    "char_start": 70711,
+    "char_end": 70801,
+    "sentence_index": 454,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/chemistry-cases/chemistry-case-wrong-3.pdf\nA sample error case in chemistry.",
+    "char_start": 70803,
+    "char_end": 70889,
+    "sentence_index": 455,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding_correct.pdf\nA sample correct case in coding.",
+    "char_start": 70891,
+    "char_end": 70965,
+    "sentence_index": 456,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding-wrong-1.pdf\nA sample error case in coding.",
+    "char_start": 70967,
+    "char_end": 71039,
+    "sentence_index": 457,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding-wrong-2.pdf\nA sample error case in coding.",
+    "char_start": 71041,
+    "char_end": 71113,
+    "sentence_index": 458,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding-wrong-3.pdf\nA sample error case in coding.",
+    "char_start": 71115,
+    "char_end": 71187,
+    "sentence_index": 459,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding-wrong-4.pdf\nA sample error case in coding.",
+    "char_start": 71189,
+    "char_end": 71261,
+    "sentence_index": 460,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec027",
+    "text": "[h]\n\nfigs/coding-cases/coding-wrong-5.pdf\nA sample error case in coding.",
+    "char_start": 71263,
+    "char_end": 71335,
+    "sentence_index": 461,
+    "section_sentence_index": 28
+  }
+]

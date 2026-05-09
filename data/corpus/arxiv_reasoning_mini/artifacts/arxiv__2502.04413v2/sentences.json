@@ -1,0 +1,2648 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Retrieval-augmented generation (RAG) is a well-suited technique for retrieving privacy-sensitive Electronic Health Records (EHR).",
+    "char_start": 0,
+    "char_end": 129,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "It can serve as a key module of the healthcare copilot, helping reduce misdiagnosis for healthcare practitioners and patients.",
+    "char_start": 130,
+    "char_end": 256,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, the diagnostic accuracy and specificity of existing heuristic-based RAG models used in the medical domain are inadequate, particularly for diseases with similar manifestations.",
+    "char_start": 257,
+    "char_end": 442,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "This paper proposes MedRAG, a RAG model enhanced by knowledge graph (KG)-elicited reasoning for the medical domain that retrieves diagnosis and treatment recommendations based on manifestations.",
+    "char_start": 443,
+    "char_end": 637,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "MedRAG systematically constructs a comprehensive four-tier hierarchical diagnostic KG encompassing critical diagnostic differences of various diseases.",
+    "char_start": 638,
+    "char_end": 789,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "These differences are dynamically integrated with similar EHRs retrieved from an EHR database, and reasoned within a large language model.",
+    "char_start": 790,
+    "char_end": 928,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "This process enables more accurate and specific decision support, while also proactively providing follow-up questions to enhance personalized medical decision-making.",
+    "char_start": 929,
+    "char_end": 1096,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "MedRAG is evaluated on both a public dataset DDXPlus and a private chronic pain diagnostic dataset (CPDD) collected from Tan Tock Seng Hospital, and its performance is compared against various existing RAG methods.",
+    "char_start": 1097,
+    "char_end": 1311,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Experimental results show that, leveraging the information integration and relational abilities of the KG, our MedRAG provides more specific diagnostic insights and outperforms state-of-the-art models in reducing misdiagnosis rates.",
+    "char_start": 1312,
+    "char_end": 1544,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "Our code will be available at\n\n[t]\n\nLaTeX/pics/motivation_5pm.pdf (a) The existing RAG and LLMs rely on heuristic-based approaches, leading to incorrect or vague outputs, particularly when diseases share similar manifestations (high lighted by green colour).",
+    "char_start": 1545,
+    "char_end": 1803,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "(b) MedRAG is a RAG framework with KG-elicited reasoning ability that can make accurate diagnostic decisions and generate highly specific diagnoses, along with proactively providing follow-up questions when necessary.",
+    "char_start": 1804,
+    "char_end": 2021,
+    "sentence_index": 10,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Diagnostic errors cause significant harm to healthcare systems worldwide.",
+    "char_start": 2023,
+    "char_end": 2096,
+    "sentence_index": 11,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "In the United States, approximately 795,000 individuals each year suffer permanent disability or death due to misdiagnosis of dangerous diseases.",
+    "char_start": 2097,
+    "char_end": 2242,
+    "sentence_index": 12,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "These errors are predominantly attributed to cognitive biases and judgmental mistakes .",
+    "char_start": 2243,
+    "char_end": 2330,
+    "sentence_index": 13,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "``Healthcare Copilot'' is a medical AI assistant designed to provide diagnostic decision support, mitigating biases and increasing efficiency for healthcare practitioners, while also empowering patients and improving overall decision-making .",
+    "char_start": 2331,
+    "char_end": 2573,
+    "sentence_index": 14,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "We conducted interviews to gather requirements and suggestions from users of the healthcare copilot.",
+    "char_start": 2574,
+    "char_end": 2674,
+    "sentence_index": 15,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "The results showed that one of the most important and challenging tasks for a healthcare copilot is to provide an accurate diagnosis based on patient manifestations ``Manifestations'' typically include all observable signs and symptoms of a patient's condition, such as physical indicators (e.g., rash, fever), patient-reported symptoms (e.g., pain, dizziness), and measurable clinical data (e.g., blood pressure, lab results).",
+    "char_start": 2675,
+    "char_end": 3102,
+    "sentence_index": 16,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": ", followed by offering appropriate treatment plans and medication recommendations based on the diagnosis.",
+    "char_start": 3103,
+    "char_end": 3208,
+    "sentence_index": 17,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "In addition, when patient information is insufficient or the diagnosis is ambiguous, the healthcare copilot should proactively offer precise follow-up questions to enhance the decision-making process .",
+    "char_start": 3209,
+    "char_end": 3410,
+    "sentence_index": 18,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Retrieval-augmented generation (RAG) offers an advanced approach by utilizing domain-specific, private datasets to address user queries without the need for additional model training .",
+    "char_start": 3412,
+    "char_end": 3596,
+    "sentence_index": 19,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "This approach is well-suited for retrieving information from privacy-sensitive Electronic Health Records (EHRs), and helps healthcare professionals to reduce the risk of misdiagnosis as a healthcare copilot .",
+    "char_start": 3597,
+    "char_end": 3805,
+    "sentence_index": 20,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "The existing medical RAG and LLMs fine-tuned on medical datasets often rely on heuristic-based approaches, leading to incorrect or vague outputs, particularly when diseases share similar manifestations, making differentiation difficult as shown in Figure (a).",
+    "char_start": 3806,
+    "char_end": 4065,
+    "sentence_index": 21,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "To address this, we introduce MedRAG, a framework that combines RAG with a comprehensive diagnostic knowledge graph, enabling more accurate reasoning and tailored treatment recommendations by grounding predictions in structured, inferable medical data .",
+    "char_start": 4066,
+    "char_end": 4319,
+    "sentence_index": 22,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This approach significantly enhances the reasoning ability of RAG, enabling it not only to identify subtle diagnostic differences but also to proactively infer relevant follow-up questions, further clarifying ambiguous patient information, as shown in Figure (b).",
+    "char_start": 4320,
+    "char_end": 4583,
+    "sentence_index": 23,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Specifically, a diagnostic knowledge graph (KG) with a four-tier hierarchical structure is constructed systematically through advanced techniques, including disease clustering, hierarchical aggregation and large language model augmentation.",
+    "char_start": 4585,
+    "char_end": 4825,
+    "sentence_index": 24,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "While medical ontologies like UMLS could be considered, their ambiguous class definitions and low granularity make them less suitable for direct use.",
+    "char_start": 4826,
+    "char_end": 4975,
+    "sentence_index": 25,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "To address these limitations, we construct this KG tailored to each database to eliminate redundancies and enhance manifestations for improved granularity.",
+    "char_start": 4976,
+    "char_end": 5131,
+    "sentence_index": 26,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "The diagnostic differences KG searching module then identifies all critical diagnostic differences KG related to the input patient by performing multi-level manifestations matching within the diagnostic KG.",
+    "char_start": 5132,
+    "char_end": 5338,
+    "sentence_index": 27,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Finally, a KG-augmented RAG module synthesizes the retrieved EHRs and the critical diagnostic differences KG to elicit the reasoning within a large language model.",
+    "char_start": 5339,
+    "char_end": 5502,
+    "sentence_index": 28,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "This integration enhances the system\u2019s ability to make precise and highly specific diagnostic decisions, while also providing personalized treatment recommendations, medication guidance, and, when necessary, proactive follow-up questions.",
+    "char_start": 5503,
+    "char_end": 5741,
+    "sentence_index": 29,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "We evaluate the general applicability of MedRAG by a public dataset DDXPlus and real-world clinical applicability by a private chronic pain diagnostic dataset (CPDD).",
+    "char_start": 5743,
+    "char_end": 5909,
+    "sentence_index": 30,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Performance is quantitatively compared against several popular state-of-the-art (SOTA) RAG models, including FL-RAG and DRAGIN .",
+    "char_start": 5910,
+    "char_end": 6038,
+    "sentence_index": 31,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We further validate the generalization of MedRAG on widely-used open-source LLMs, including Mixtral-8x7B and Llama-3.1-Instruct , as well as on some closed-source LLMs such as GPT-3.5-turbo , GPT-4o .",
+    "char_start": 6039,
+    "char_end": 6239,
+    "sentence_index": 32,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Experimental results demonstrate that our model outperforms existing RAG approaches in terms of diagnostic accuracy and specificity.",
+    "char_start": 6240,
+    "char_end": 6372,
+    "sentence_index": 33,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Additionally, MedRAG demonstrates robust generalization across various LLMs, and proves highly effective in generating reasoning-based follow-up diagnostic questions.",
+    "char_start": 6373,
+    "char_end": 6539,
+    "sentence_index": 34,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "These capabilities are particularly valuable for distinguishing between diseases with similar manifestations.",
+    "char_start": 6540,
+    "char_end": 6649,
+    "sentence_index": 35,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Based on extensive experiments, our key contributions can be summarized as follows:\n\nWe deliver two diagnostic knowledge graphs: one focused on chronic pain and the other based on DDXPlus , a large-scale synthesized dataset.",
+    "char_start": 6650,
+    "char_end": 6874,
+    "sentence_index": 36,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "These knowledge graphs contain a rich hierarchical structure of diseases, along with their key diagnostic differences.",
+    "char_start": 6875,
+    "char_end": 6993,
+    "sentence_index": 37,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "This comprehensive organization allows for enhanced precision in disease differentiation and diagnosis, enabling better decision-making support across various medical systems.",
+    "char_start": 6994,
+    "char_end": 7169,
+    "sentence_index": 38,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "We proposed a novel RAG approach enhanced by KG-elicited reasoning, which significantly improves RAG's ability to make accurate and highly specific diagnostic decisions.",
+    "char_start": 7170,
+    "char_end": 7339,
+    "sentence_index": 39,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "In addition to supporting personalized treatment recommendations and medication guidance, it proactively generates follow-up questions when necessary.",
+    "char_start": 7340,
+    "char_end": 7490,
+    "sentence_index": 40,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "These enhancements greatly optimize the decision-making process in complex medical scenarios.",
+    "char_start": 7491,
+    "char_end": 7584,
+    "sentence_index": 41,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "Comprehensive experiments conducted on two datasets demonstrate the superiority of our model over existing RAG and LLM approaches.",
+    "char_start": 7585,
+    "char_end": 7715,
+    "sentence_index": 42,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "Additionally, the results highlight its applicability across various backbone LLMs and its effectiveness in proactively generating reasoning-based diagnostic questions for medical consultation.",
+    "char_start": 7716,
+    "char_end": 7909,
+    "sentence_index": 43,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Large Language Models (LLMs) have been increasingly applied to healthcare tasks such as EHR analysis, clinical note generation, virtual medical assistant, and clinical decision support .",
+    "char_start": 7911,
+    "char_end": 8097,
+    "sentence_index": 44,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "Although LLMs fine-tuned on medical datasets can handle large amounts of unstructured clinical information, most of these models are heuristic-based, with limitations such as generating incorrect or vague information and struggling to handle complex patient cases .",
+    "char_start": 8098,
+    "char_end": 8363,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "To address this, integrating external information sources becomes essential to improve their contextual accuracy.",
+    "char_start": 8364,
+    "char_end": 8477,
+    "sentence_index": 46,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "We adopt a Retrieval-Augmented Generation (RAG) approach .",
+    "char_start": 8478,
+    "char_end": 8536,
+    "sentence_index": 47,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "RAG enhances LLMs by incorporating retrieved text passages from external sources such as electronic health records, medical papers, textbooks, and databases into their input, resulting in significant improvements in knowledge-intensive tasks .",
+    "char_start": 8538,
+    "char_end": 8781,
+    "sentence_index": 48,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "In the field of healthcare, integrating retrieved information grounds the predictions in current, verifiable medical data, resulting in more accurate, specificity and context-aware outputs such as diagnostic assessments and treatment recommendations.",
+    "char_start": 8782,
+    "char_end": 9032,
+    "sentence_index": 49,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "RAG typically employs a retrieve-and-read approach to retrieve information based on the initial user query and an answer is generated using that content .",
+    "char_start": 9034,
+    "char_end": 9188,
+    "sentence_index": 50,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "However, this simplicity restricts their ability to adapt to complex and evolving medical cases.",
+    "char_start": 9189,
+    "char_end": 9285,
+    "sentence_index": 51,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "Enhanced RAG models aim to improve retrieval and generation quality by integrating more sophisticated components such as retrievers, re-rankers, filters, and readers .",
+    "char_start": 9286,
+    "char_end": 9453,
+    "sentence_index": 52,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "Despite these advancements, delivering accurate clinical decision support remains challenging.",
+    "char_start": 9454,
+    "char_end": 9548,
+    "sentence_index": 53,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "The models often struggle to provide precise diagnoses, particularly when diseases share similar manifestations, making differentiation difficult.",
+    "char_start": 9549,
+    "char_end": 9695,
+    "sentence_index": 54,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "Our proposed MedRAG addresses these challenges by systematically constructing a four-tier hierarchical diagnostic knowledge graph to elicit reasoning for the generation module of RAG.",
+    "char_start": 9696,
+    "char_end": 9879,
+    "sentence_index": 55,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "This approach enables the model to make accurate diagnostic decisions and generate highly specific diagnoses along with personalized treatment recommendations.",
+    "char_start": 9880,
+    "char_end": 10039,
+    "sentence_index": 56,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Recent studies have focused on creating strategies that integrate knowledge graphs to enhance LLMs and RAG, enabling them to generate accurate and reliable medical responses.",
+    "char_start": 10041,
+    "char_end": 10215,
+    "sentence_index": 57,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Compared to knowledge contained in document repositories , knowledge graphs offer structured and inferable information, making them more suitable for augmenting LLMs and RAG .",
+    "char_start": 10216,
+    "char_end": 10391,
+    "sentence_index": 58,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Several works propose training sequence-to-sequence models from scratch, focusing on dialogue generation by conditioning the output on entities extracted from knowledge graphs.",
+    "char_start": 10392,
+    "char_end": 10568,
+    "sentence_index": 59,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "However, existing medical knowledge graphs often fall short because they lack the detailed and structured information necessary for accurate diagnostic assistance, especially when distinguishing between diseases with similar manifestations.",
+    "char_start": 10570,
+    "char_end": 10810,
+    "sentence_index": 60,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "To overcome this limitation, we introduce MedRAG, a framework that combines RAG with a comprehensive diagnostic knowledge graph to enhance the reasoning ability of RAG in identifying subtle differences in diagnoses.",
+    "char_start": 10811,
+    "char_end": 11026,
+    "sentence_index": 61,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "MedRAG allows physicians to input patients' medical records or manifestations.",
+    "char_start": 11027,
+    "char_end": 11105,
+    "sentence_index": 62,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "Our knowledge graph is constructed based on patterns extracted from Electronic Health Record (EHR) databases and augmented by LLMs, making it highly scalable and adaptable to various medical specialties.",
+    "char_start": 11106,
+    "char_end": 11309,
+    "sentence_index": 63,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "It supports customization with local databases, ensuring relevance to specific clinical settings.",
+    "char_start": 11310,
+    "char_end": 11407,
+    "sentence_index": 64,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "We employ LLMs to enrich the knowledge graph by providing detailed descriptions of the manifestations of each disease at the leaf nodes, including symptoms, affected areas, activity limitations, and other pertinent features.",
+    "char_start": 11408,
+    "char_end": 11632,
+    "sentence_index": 65,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Definition 3.1 (Diagnostic Knowledge Graph)\nGiven an EHR database $D$ and an LLM $ M _a$, our target is to construct a four-tier hierarchical diagnostic knowledge graph $ G $.",
+    "char_start": 11634,
+    "char_end": 11809,
+    "sentence_index": 66,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "A multi-hop path, from the top level to the bottom level of $ G $ is represented as $(E_ L1 r_s E_ L2 r_s E_ L3 r_m E_ L_4 )$.",
+    "char_start": 11810,
+    "char_end": 11936,
+    "sentence_index": 67,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "$E_ L3 $ is the set of all diseases (i.e.",
+    "char_start": 11937,
+    "char_end": 11978,
+    "sentence_index": 68,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "potential diagnoses) names extracted from $D$, $E_ L2 $ represents the set of subcategories of $E_ L3 $, and $E_ L1 $ is the set of broader categories of $E_ L2 $.",
+    "char_start": 11979,
+    "char_end": 12142,
+    "sentence_index": 69,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Each $e_ Lij $ is a disease name or a category name and $e_ Lij E_ Li $.",
+    "char_start": 12143,
+    "char_end": 12215,
+    "sentence_index": 70,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "$E_ L1 $ and $E_ L2 $ are generated by hierarchical aggregation in Section , they indicate the diseases with similar manifestations.",
+    "char_start": 12216,
+    "char_end": 12348,
+    "sentence_index": 71,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "$r_s$ is an `` is\\_a '' relation, indicating a hierarchical or subordinate relationship.",
+    "char_start": 12349,
+    "char_end": 12437,
+    "sentence_index": 72,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "$r_m$ is a `` has\\_manifestation\\_of '' relation between diseases and their manifestations.",
+    "char_start": 12438,
+    "char_end": 12529,
+    "sentence_index": 73,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "$E_ L4 $ contains two subtypes: $E_ L4a $, representing disease-specific features augmented by the LLM $ M a$, and $E L4d $, representing features decomposed from the manifestations extracted from the EHR database $D$.",
+    "char_start": 12530,
+    "char_end": 12748,
+    "sentence_index": 74,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "Definition 3.2 (Diagnostic Differences KG Searching)\nGiven a $ G $ and the input patient\u2019s manifestations $q$, let $e_ L2_s E_ L2 $ denote a certain subcategory identified through the method described in Section determined from $q$.",
+    "char_start": 12750,
+    "char_end": 12982,
+    "sentence_index": 75,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "The target is to extract the diagnostic differences KG $K$, related to $e_ L2_s $, from $ G $.",
+    "char_start": 12983,
+    "char_end": 13077,
+    "sentence_index": 76,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "Definition 3.3 (RAG)\nWe define a typical retrieval-augmented generation approach for generating diagnostic reports in two phases: algorithm $ R $ for the retrieval phase and LLM $ M _g$ for the generative phase.",
+    "char_start": 13079,
+    "char_end": 13290,
+    "sentence_index": 77,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "A prompt $p_ naive $ is used to guide $ M _g$ to generate the final report.",
+    "char_start": 13291,
+    "char_end": 13366,
+    "sentence_index": 78,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "Given a $q$, $D$ and embedding model $ E $, $ R $ retrieves top-$k$ relevant documents $d_r$, and then $ M _g$ generates answer $A$ with $q$, $d_r$ and prompt $p_ naive $ as shown in Equation and :\n\nd_r= R (q,D, E ),\n\nA= M _g(q, d_r, p_ naive ).",
+    "char_start": 13367,
+    "char_end": 13612,
+    "sentence_index": 79,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "[htb]\n\nLaTeX/pics/method_5pm.pdf\nThe overall framework of MedRAG.",
+    "char_start": 13614,
+    "char_end": 13679,
+    "sentence_index": 80,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "MedRAG first extracts patient (red node) manifestations from structured or unstructured input, and decomposes different clinical features.",
+    "char_start": 13680,
+    "char_end": 13818,
+    "sentence_index": 81,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "These features are embedded and matched with a diagnostic KG to identify critical diagnostic differences KG.",
+    "char_start": 13819,
+    "char_end": 13927,
+    "sentence_index": 82,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "MedRAG\u2019s KG-elicited reasoning RAG module retrieves relevant EHRs and integrates them with these diagnostic differences KG to trigger reasoning in an LLM.",
+    "char_start": 13928,
+    "char_end": 14082,
+    "sentence_index": 83,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "This reasoning generates precise diagnoses, treatment recommendations, and follow-up questions.",
+    "char_start": 14083,
+    "char_end": 14178,
+    "sentence_index": 84,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "In this section, we elaborate on the details of our proposed MedRAG, and the overall framework is illustrated in Figure .",
+    "char_start": 14180,
+    "char_end": 14301,
+    "sentence_index": 85,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "MedRAG includes five modules:\n\nInput : The input to MedRAG is the description of patient manifestations, which can be either structured EHR or unstructured text descriptions.",
+    "char_start": 14302,
+    "char_end": 14476,
+    "sentence_index": 86,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "Output : The output of MedRAG includes the diagnoses, treatment recommendations, medication guidance and follow-up questions when necessary.",
+    "char_start": 14477,
+    "char_end": 14617,
+    "sentence_index": 87,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "Diagnostic Knowledge Graph Construction : This module constructs a four-tier hierarchical diagnostic knowledge graph systematically.",
+    "char_start": 14618,
+    "char_end": 14750,
+    "sentence_index": 88,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "First, potential diagnoses and corresponding manifestations are extracted from an EHR database to form a four-tier disease KG through clustering and hierarchical aggregation.",
+    "char_start": 14751,
+    "char_end": 14925,
+    "sentence_index": 89,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "Then, an LLM is used to augment the graph with critical diagnostic differences, transforming it into a diagnostic KG.",
+    "char_start": 14926,
+    "char_end": 15043,
+    "sentence_index": 90,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec007",
+    "text": "Diagnostic Differences KG Searching : This module identifies key diagnostic differences by decomposing patient manifestations into clinical features, such as symptoms and locations, through medical chunking.",
+    "char_start": 15044,
+    "char_end": 15251,
+    "sentence_index": 91,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec007",
+    "text": "Then, the extracted features are embedded and matched with relevant diagnostic differences via multi-level matching and upward traversal within the diagnostic KG.",
+    "char_start": 15252,
+    "char_end": 15414,
+    "sentence_index": 92,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec007",
+    "text": "KG-elicited Reasoning RAG : This module comprises a document retriever and a KG-elicited reasoning LLM engine.",
+    "char_start": 15415,
+    "char_end": 15525,
+    "sentence_index": 93,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec007",
+    "text": "The retriever selects relevant top-k EHRs based on patient embeddings and integrates them with critical diagnostic differences KG to trigger reasoning in the LLM, generating final diagnoses, treatment and medical recommendations and follow-up questions for medical consultation.",
+    "char_start": 15526,
+    "char_end": 15804,
+    "sentence_index": 94,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "To enhance the reasoning capabilities and fill the knowledge gaps of the RAG, we propose constructing a diagnostic knowledge graph $ G $ tailored to the medical domain of a specific EHR database.",
+    "char_start": 15806,
+    "char_end": 16001,
+    "sentence_index": 95,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "The construction of the diagnostic knowledge graph draws inspiration from the hierarchical structure of the World Health Organization's International Classification of Diseases, 11th Edition (ICD-11) The specific classification principles of our diagnostic KG and ICD-11 are different.",
+    "char_start": 16002,
+    "char_end": 16287,
+    "sentence_index": 96,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "Our approach classifies and organizes diseases based on the similarity of their manifestations, rather than the traditional classification of ICD-11 based on diagnostic categories.",
+    "char_start": 16288,
+    "char_end": 16468,
+    "sentence_index": 97,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "As a result, while the hierarchical concept is similar, the ICD-11 structure cannot be directly applied to our model.",
+    "char_start": 16469,
+    "char_end": 16586,
+    "sentence_index": 98,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": ".\n\nThe forms and representations of the diseases in an EHR database are diverse, we first unify the set of original disease descriptions $E_ L3_ raw $ by disease clustering to $E_ L3 $.",
+    "char_start": 16587,
+    "char_end": 16772,
+    "sentence_index": 99,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "The most common disease name within each cluster is regarded as the final disease name and is assigns to all other diseases in the cluster, as shown in Equation :\n\nE_ L3 = C (E_ L3_ raw , E ),\n\nwhere $ C $ represents the clustering model applied to $E_ L3 $, $ E $ is an embedding model.",
+    "char_start": 16773,
+    "char_end": 17060,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec009",
+    "text": "Then we use the unified $E_ L3 $ to construct a four-tier hierarchical disease knowledge graph through hierarchical aggregation.",
+    "char_start": 17062,
+    "char_end": 17190,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec009",
+    "text": "This graph integrates the relationships between diseases and their potential categories, with each disease aggregated into a subcategory and category .",
+    "char_start": 17191,
+    "char_end": 17342,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": "We define the disease knowledge graph as $ G _D$ where $ G _D G $ aggregated by $ $ and LLM $ M _h$, as shown in Equation :\n\nG _D= (E_ Li , M _h, E ), i=3,2.",
+    "char_start": 17343,
+    "char_end": 17500,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "In the first phase, we apply LLM-based topic aggregation using $ M _h$, which extracts the most relevant topics from $E L3 $ to aggregate subcategories.",
+    "char_start": 17502,
+    "char_end": 17654,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "These subcategory topics are then further aggregated into higher-level categories, forming the hierarchical structure from subcategories to broader categories.",
+    "char_start": 17655,
+    "char_end": 17814,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "Next, hierarchical clustering is applied to assign diseases in $E_ L3 $ into aggregated subcategory topics and then subtopics to topics.",
+    "char_start": 17815,
+    "char_end": 17951,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "This approach leverages LLM's powerful semantic understanding and topic extraction capability, allowing for a more nuanced categorization of diseases in topic aggregation.",
+    "char_start": 17953,
+    "char_end": 18124,
+    "sentence_index": 107,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "By applying hierarchical clustering to the LLM-based topics, diseases in $E_ L3 $ are aggregated into a hierarchical structure.",
+    "char_start": 18125,
+    "char_end": 18252,
+    "sentence_index": 108,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Hierarchical aggregation introduces multiple layers of granularity to $E_ L3 $, ensuring that diseases with different manifestations are properly categorized.",
+    "char_start": 18253,
+    "char_end": 18411,
+    "sentence_index": 109,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "To effectively utilize historical diagnoses from $D$ as accurate representations of disease manifestations, we decompose their manifestations of the diseases in $E_ L3 $, parsing them into discrete features $E_ L4d $.",
+    "char_start": 18413,
+    "char_end": 18630,
+    "sentence_index": 110,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec009",
+    "text": "Every single feature like symptom, location, or activity limitation from each $e_ L3_i $ is created as a node $e_ L4d_i E_ L4 $.",
+    "char_start": 18631,
+    "char_end": 18759,
+    "sentence_index": 111,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec009",
+    "text": "This final decomposition results in the comprehensive disease knowledge graph $ G _D$, capturing both disease category information derived from hierarchical aggregation and their associated features.",
+    "char_start": 18760,
+    "char_end": 18959,
+    "sentence_index": 112,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "The knowledge in $ G _D$ only contains information from $D$, which is insufficient to accurately diagnose all diseases, particularly when distinguishing between diseases with similar clinical manifestations.",
+    "char_start": 18961,
+    "char_end": 19168,
+    "sentence_index": 113,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "Therefore, the integration of external knowledge is essential.",
+    "char_start": 19169,
+    "char_end": 19231,
+    "sentence_index": 114,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "To complement the diagnostic knowledge graph with essential knowledge that is not present in $D$, we augment external knowledge $E_ L4 $ to $ G _D$ that aids in distinguishing diseases with similar manifestations.",
+    "char_start": 19232,
+    "char_end": 19445,
+    "sentence_index": 115,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "We traverse all disease $e_ L3_i $ and employ a prompt $p_a$ specially tailored for searching and generating the nuances of the diseases on an LLM denoted by $ M _a$.",
+    "char_start": 19446,
+    "char_end": 19612,
+    "sentence_index": 116,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "As shown in Equation , each generated diagnostic key difference node $e_ L4a_ ij $ is then connected to its corresponding $e_ L3_i $ with relationship $r_m$.",
+    "char_start": 19613,
+    "char_end": 19770,
+    "sentence_index": 117,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Thus we obtain a chain $E_ L3 r_m E_ L4a $.",
+    "char_start": 19771,
+    "char_end": 19814,
+    "sentence_index": 118,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "For example, we generate a manifestation and relation to disease node $lumbar spondylosis$ and form a chain: $<lumbar\\_spondylosis, has\\_symptom, stiffness\\_or\\_pain\\_in\\_the\\_l- ower\\_back>$.",
+    "char_start": 19815,
+    "char_end": 20007,
+    "sentence_index": 119,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "\\ e_ L3_i \\ _ i=1 ^n M _a(p_a, e_ L3_i ) \\ e_ L4a_ ij \\ _ i=1,j=1 ^ n,m_i ,\n\nE_ L4 = E_ L4d E_ L4a ,\n\nG = G _D _ E_ L3 \\ E_ L3 E_ L4 \\ _ i=1 ^n,\n\nwhere $ M _a$ and $p_a$ represent the large language model for disease manifestation augmentation and its prompt respectively.",
+    "char_start": 20009,
+    "char_end": 20281,
+    "sentence_index": 120,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "The finalized four-tier hierarchical diagnostic knowledge graph $ G $ is formed by integrating the disease knowledge graph $ G _D$ with $E_ L4 $ combined with $E_ L4_a $ and $E_ L4_d $ , as shown in Equation and .",
+    "char_start": 20283,
+    "char_end": 20496,
+    "sentence_index": 121,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec011",
+    "text": "Given $q$ as a query, which is a description of the patient\u2019s manifestations, we perform sentence trunking on $q$ to decompose the manifestation into more detailed features, denoted as $ f_1, f_2, , f_n q$.",
+    "char_start": 20498,
+    "char_end": 20704,
+    "sentence_index": 122,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec012",
+    "text": "We define a mapping function to describe the process, shown in Equation :\n\nq \\ f_1, f_2, , f_n\\ .",
+    "char_start": 20705,
+    "char_end": 20802,
+    "sentence_index": 123,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec013",
+    "text": "Given a $q$, we compute the semantic similarity score $sim$ between $f_i$ and $e_ L4d_i $, shown in Equation :\n\nsim_ ij = S (f_i,e_ L4d_j , E ),\n\nwhere $ S $ is similarity model and $ E $ is embedding model applied to $f_i$ and $e_ L4d_j $ before similarity calculation.",
+    "char_start": 20804,
+    "char_end": 21074,
+    "sentence_index": 124,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "For each patient feature $f_i$, we retrieve the top-$m$ most similar $e_ L4d_j $, where $m$ denotes the number of closest matches selected.",
+    "char_start": 21076,
+    "char_end": 21215,
+    "sentence_index": 125,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "Totally, the system retrieves $n m$ matching nodes in the $ G $.",
+    "char_start": 21216,
+    "char_end": 21280,
+    "sentence_index": 126,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "To address the scenario where a $f_i$ has no closely matching counterpart in $E_ L4d $, we introduce an indicator function $ (sim_ ij , t_ matching )$ to filter irrelevant matches:\n\n(sim_ ij , t_ matching ) =\n\nsim_ ij & if sim_ ij > t_ matching\n\n0 & otherwise ,\n\nT = _ i=1 ^ n \\ e_ L4d_j j _ j \\ 1, , |E_ L4d |\\ ^ m (sim_ ij , t_ matching ) \\\n\nwhere $T$ represents the set of nodes $e_ L4d_j $ that satisfy the condition $sim_ ij > t_ matching $.",
+    "char_start": 21281,
+    "char_end": 21727,
+    "sentence_index": 127,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "The indicator function $ $ ensures that only $e_ L4d_j $ with a similarity score above the threshold are selected into $T$.",
+    "char_start": 21728,
+    "char_end": 21851,
+    "sentence_index": 128,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Through clinical features matching, we successfully matched $q$ to the most relevant clinical feature nodes in $ G $.",
+    "char_start": 21852,
+    "char_end": 21969,
+    "sentence_index": 129,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec014",
+    "text": "To precisely match the patient\u2019s most relevant $e_ L2_s $, we employ upward traversal which determines the closest disease subcategory by aggregating votes based on the shortest path distances between $t_i T$ and $e_ L2_j $ in the graph.",
+    "char_start": 21971,
+    "char_end": 22208,
+    "sentence_index": 130,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec014",
+    "text": "For $t_i$, we calculate the shortest path to each disease subcategory $e_ L2_j $ by upward traversing through the graph.",
+    "char_start": 22210,
+    "char_end": 22330,
+    "sentence_index": 131,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec014",
+    "text": "Denote the shortest path distance between $t_i$ to $e_ L2_j $ as $P(t_i, e_ L2_j )$.",
+    "char_start": 22331,
+    "char_end": 22415,
+    "sentence_index": 132,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec014",
+    "text": "If $e_ L2_ ik $ represents the closest disease subcategory node for the current $t_i$, the vote count for $e_ L2_ ik $ is incremented by one.",
+    "char_start": 22416,
+    "char_end": 22557,
+    "sentence_index": 133,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec014",
+    "text": "We then accumulate the votes for each $e_ L2_ ik $ during the reversal and identify the node with the highest vote count as the $e_ L2_s $.",
+    "char_start": 22558,
+    "char_end": 22697,
+    "sentence_index": 134,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec014",
+    "text": "This voting process is formalized through the indicator function $ $, defined as follows:\n\n(t_i, e_ L2_ ik ) =\n\n1 & if e_ L2_ ik = _ e_ L2_j P(t_i, e_ L2_j ),\n\n0 & otherwise\n\ne_ L2_s = _ e_ L2_ ik _ t_i T (t_i, e_ L2_ ik ),\n\nTaking this $e_ L2_s $ as the parent node, we traverse downward towards $E_ L4 $, retrieving all $e_ L3_i $ that are adjacent to $e_ L2_s $ and their adjacent $e_ L4a_i $.",
+    "char_start": 22698,
+    "char_end": 23094,
+    "sentence_index": 135,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "Given $e_ L2_s $, let $E_ L3_s = \\ e_ L3_i e_ L3_i Adj (e_ L2_s )\\ $ denote the set of disease nodes that belong to $e_ L2_s $.",
+    "char_start": 23095,
+    "char_end": 23222,
+    "sentence_index": 136,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "Similarly, define $E_ L4a_s = \\ e_ L4a_j e_ L4a_j Adj (e_ L3_i ), e_ L3_i E_ L3_s \\ $ to denote the set of feature nodes linked to the disease nodes in $E_ L3_s $.",
+    "char_start": 23223,
+    "char_end": 23386,
+    "sentence_index": 137,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "We concatenate all triples $( e_ L3_s , r_m, e_ L4a_i )$, where $e_ L3_s Adj (e_ L2_s )$ and $e_ L4a_i Adj (e_ L3_s )$, to form the set of diagnostic differences KG:\n\nK(e_ L2_s ) = _ e_ L3_s Adj (e_ L2_s ) \\ ( e_ L3_s , r_m, e_ L4a_s ) \\ ,\n\nwhere $K$ represents the diagnostic differences KG used for the reasoning in the LLM next.",
+    "char_start": 23388,
+    "char_end": 23719,
+    "sentence_index": 138,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec015",
+    "text": "Inaccurate diagnoses often stem from insufficient or incomplete patient descriptions.",
+    "char_start": 23721,
+    "char_end": 23806,
+    "sentence_index": 139,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec015",
+    "text": "To address this issue, we propose a Proactive Diagnostic Questioning Mechanism.",
+    "char_start": 23807,
+    "char_end": 23886,
+    "sentence_index": 140,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec015",
+    "text": "When the initial input $q$ lacks some crucial information required for doctors or LLMs to make more precise diagnostic decisions, this mechanism acts as a copilot to cast targeted follow-up questions.",
+    "char_start": 23887,
+    "char_end": 24087,
+    "sentence_index": 141,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec015",
+    "text": "In the diagnostic knowledge graph $ G $, a feature $e_ L4d_i $ may be connected to multiple disease nodes $e_ L3 $, with each $e_ L4d_i $ varying in its discriminability.",
+    "char_start": 24089,
+    "char_end": 24259,
+    "sentence_index": 142,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec015",
+    "text": "For instance, certain features are more prevalent, such as ``pain located in the lumbar region'', while others represent more distinctive characteristics, like ``pain worsens while walking''.",
+    "char_start": 24260,
+    "char_end": 24451,
+    "sentence_index": 143,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec015",
+    "text": "Here we define the discriminability score of $e_ L4d_i $ as the reciprocal of the degree centrality in $ G $:\n\n(e_ L4d_i )= n-1 deg(e_ L4d_i ) ,\n\nwhere $n$ represents the total number of $e_ L4d_i G $.",
+    "char_start": 24452,
+    "char_end": 24653,
+    "sentence_index": 144,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec015",
+    "text": "We calculate the discriminability score $ (e_ L4d_j )$ for each feature node $e_ L4d_j E_ L4d_s $ and select those with the highest discriminability scores as follows:\n\n\\ e_ L4d_ s_1 , e_ L4d_ s_2 , , e_ L4d_ s_k \\ = _ \\ e_ L4d_j e_ L4d_j E_ L4d_s \\ (e_ L4d_j ),\n\nwhere $\\ e_ L4d_ s_1 , e_ L4d_ s_2 , , e_ L4d_ s_k \\ $ represents the selected features with the highest discriminability scores, which are used to proactively guide follow-up questions for clarifying the diagnosis.",
+    "char_start": 24655,
+    "char_end": 25134,
+    "sentence_index": 145,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec016",
+    "text": "KG-elicited Reasoning RAG is the core component of MedRAG, we use an LLM to generate diagnoses, personalized treatment plans, and medication suggestions.",
+    "char_start": 25136,
+    "char_end": 25289,
+    "sentence_index": 146,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec016",
+    "text": "Additionally, the system proactively suggests follow-up questions for doctors to clarify missing or ambiguous patient information.",
+    "char_start": 25290,
+    "char_end": 25420,
+    "sentence_index": 147,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec016",
+    "text": "As shown in Equation , MedRAG utilizes diagnostic differences KG augmented by LLM and a tailored prompt $p_s$ to elicit the reasoning capabilities of LLM.",
+    "char_start": 25421,
+    "char_end": 25575,
+    "sentence_index": 148,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec016",
+    "text": "A= M _g(q, d_r, K, p_s)\n\nUnlike most RAG systems that focus on answering short factual questions, our system is tailored for complex tasks in clinical scenarios.",
+    "char_start": 25577,
+    "char_end": 25738,
+    "sentence_index": 149,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "The prompts are designed explicitly to optimize the reasoning capabilities of the LLM, particularly in distinguishing between diseases with similar manifestations.",
+    "char_start": 25739,
+    "char_end": 25902,
+    "sentence_index": 150,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "The system conducts thorough reasoning by using both the retrieved documents and the diagnostic differences KG extracted from $G$.",
+    "char_start": 25903,
+    "char_end": 26033,
+    "sentence_index": 151,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "We use the EHR database as a document repository to retrieve the most relevant documents $d_r$ corresponding to the patient's manifestations $q$.",
+    "char_start": 26035,
+    "char_end": 26180,
+    "sentence_index": 152,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "We then perform a similarity search over the database to identify the most relevant k records.",
+    "char_start": 26181,
+    "char_end": 26275,
+    "sentence_index": 153,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "For this, we employ Facebook AI Similarity Search (FAISS) , a library optimized for efficient approximate nearest neighbor searches.",
+    "char_start": 26276,
+    "char_end": 26408,
+    "sentence_index": 154,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec016",
+    "text": "FAISS allows rapid retrieval of similar records in large-scale EHR datasets, enabling adjustable trade-offs between speed and search accuracy.",
+    "char_start": 26409,
+    "char_end": 26551,
+    "sentence_index": 155,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec016",
+    "text": "After obtaining all inputs, we designed a tailored prompt $p_s$ for guiding the LLM to reason through $K$, generating answers to assist doctors in distinguishing between similar diseases and proactively generating follow-up questions.",
+    "char_start": 26552,
+    "char_end": 26786,
+    "sentence_index": 156,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec017",
+    "text": "We evaluate MedRAG framework using two distinct datasets: one public and one private.",
+    "char_start": 26788,
+    "char_end": 26873,
+    "sentence_index": 157,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec018",
+    "text": "The public dataset demonstrates the model\u2019s general applicability, while the private dataset, focused on chronic pain patients, enables a more thorough evaluation of MedRAG's diagnostic capabilities in real-world clinical settings.",
+    "char_start": 26874,
+    "char_end": 27105,
+    "sentence_index": 158,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec018",
+    "text": "The public dataset, DDXPlus , is a large-scale synthesized EHR dataset, recognized for its complex and diverse medical cases.",
+    "char_start": 27107,
+    "char_end": 27232,
+    "sentence_index": 159,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec018",
+    "text": "It includes comprehensive patient data such as socio-demographic information, underlying diseases, symptoms, and antecedents, addressing the symptom-related data gap in common EHR datasets like MIMIC .",
+    "char_start": 27233,
+    "char_end": 27434,
+    "sentence_index": 160,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec018",
+    "text": "Many studies have employed DDXPlus to benchmark models in medical reasoning and diagnosis .",
+    "char_start": 27435,
+    "char_end": 27526,
+    "sentence_index": 161,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec018",
+    "text": "DDXPlus contains 49 different diagnoses with over 1.3 million patients, each of whom has approximately 10 symptoms and 3 antecedents on average.",
+    "char_start": 27527,
+    "char_end": 27671,
+    "sentence_index": 162,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "We ultimately utilized a maximum balanced sub-dataset comprising 13,230 patients' EHRs.",
+    "char_start": 27672,
+    "char_end": 27759,
+    "sentence_index": 163,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "The private dataset is the Chronic Pain Diagnostic Dataset (CPDD), a specialized EHR dataset focused on chronic pain patients.",
+    "char_start": 27761,
+    "char_end": 27887,
+    "sentence_index": 164,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec018",
+    "text": "This dataset is collected from Tan Tock Seng Hospital, it comprises 551 patients with 33 distinct diagnoses.",
+    "char_start": 27888,
+    "char_end": 27996,
+    "sentence_index": 165,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec018",
+    "text": "CPDD offers manifestations-specific chronic pain patient data, making it an invaluable resource for testing MedRAG's diagnostic capabilities in clinical settings.",
+    "char_start": 27997,
+    "char_end": 28159,
+    "sentence_index": 166,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "For more details on the partitioning, preprocessing, and experimental setup, please refer to the Appendix.",
+    "char_start": 28161,
+    "char_end": 28267,
+    "sentence_index": 167,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec019",
+    "text": "In order to explore the performance of the MedRAG, we compare the MedRAG results against six other models, including Naive RAG with COT , FL-RAG , FS-RAG , FLARE , DRAGIN and SR-RAG .",
+    "char_start": 28269,
+    "char_end": 28452,
+    "sentence_index": 168,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec019",
+    "text": "More detailed introduction to each baseline model is provided in the appendix.",
+    "char_start": 28453,
+    "char_end": 28531,
+    "sentence_index": 169,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec020",
+    "text": "In this section, we present the results of the experiments to answer the following research questions:\n\nRQ1 : Does MedRAG outperform the SOTA RAG methods using the same datasets?",
+    "char_start": 28533,
+    "char_end": 28711,
+    "sentence_index": 170,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec020",
+    "text": "RQ2 : Does MedRAG demonstrate compatibility, generalizability and adaptability across different backbone LLMs?",
+    "char_start": 28712,
+    "char_end": 28822,
+    "sentence_index": 171,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec020",
+    "text": "RQ3 : Does MedRAG's proactive diagnostic questioning mechanism provide users with impactful, relevant follow-up questions to enhance diagnostic performance?",
+    "char_start": 28823,
+    "char_end": 28979,
+    "sentence_index": 172,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec020",
+    "text": "RQ4 : Is the MedRAG system we designed effective?",
+    "char_start": 28980,
+    "char_end": 29029,
+    "sentence_index": 173,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec020",
+    "text": "What is the impact of each module on its overall performance, and how do specific KG components contribute to MedRAG?",
+    "char_start": 29030,
+    "char_end": 29147,
+    "sentence_index": 174,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec020",
+    "text": "[htb]\n\njustification=centering\nlccccccc\n\n2 * Method & 2 * Model &\n3 c CPDD & 3 c DDXPlus\n\n(lr) 3-5 (lr) 6-8\n& & $L1$ & $L2$ & $L3$ & $L1$ & $L2$ & $L3$\n\n6 * Baselines\n2 *\n& Naive RAG + COT & 75.47 & 54.72 & 43.40 & 79.28 & 71.89 & 56.84\n\n& FS-RAG & 64.71 & 49.02 & 45.10 & 78.18 & 68.20 & 51.40\n\n& FLARE & 54.84 & 48.39 & 45.16 & 71.09 & 56.70 & 31.02\n\n& FL-RAG & 65.45 & 50.91 & 49.09 & 90.12 & 83.32 & 66.78\n\n& DRAGIN & 78.72 & 59.57 & 40.42 & 80.51 & 70.83& 50.24\n\n& SR-RAG & 73.58 & 60.38 & 54.72 & 78.65 &70.28 & 52.16\n\nOurs & MedRAG & 79.25 & 75.47 & 66.04 & 88.65 & 83.46 & 68.01\n\nResults of quantitative performance comparison\n\n[ht]\n\njustification=centering\ncccccccccc\n\n2 * & 2 * Backbone LLMs & 2 * Size &\n3 c w/o KG-elicited Reasoning & 3 c w/ KG-elicited Reasoning\n\n(lr) 4-6 (lr) 7-9\n& & & $L1$ & $L2$ & $L3$ & $L1$ & $L2$ & $L3$\n\n4 * Open-source Models\n& Mixtral-8x7B & 13B & 60.38 & 32.08 & 22.34 & 84.62 & 82.69 & 63.46\n\n& Qwen-2.5 & 72B & 66.04 & 41.51 & 39.62 & 80.36 & 73.21 & 64.29\n\n& Llama-3.1-Instruct & 8B & 75.47 & 54.72 & 43.40 & 79.25 & 75.47 & 66.04\n\n& Llama-3.1-Instruct & 70B & 86.79 & 67.92 & 56.60 & 86.79 & 83.02 & 71.70\n\n3 * Closed-source Models\n& GPT-3.5-turbo & - & 83.02 & 56.60 & 45.28 & 70.56 & 68.68 & 50.57\n\n& GPT-4o-mini & - & 88.68 & 67.92 & 56.60 & 85.85 & 75.00 & 60.38\n\n& GPT-4o & - & 90.57 & 71.70 & 60.38 & 91.87 & 81.78 & 73.23\n\nPerformance of MedRAG on different LLM backbones with and without KG-elicited reasoning\n\n[ht]\n\nc|ccc\n\nManifestation Masking Ratio & $L1$ & $L2$ & $L3$\n\n100\\% & 60.38 & 56.60 & 52.83\n\n66.6\\% & 69.39 & 67.35 & 55.10\n\n33.3\\% & 71.43 & 67.35 & 61.22\n\n0\\% & 79.25 & 75.47 & 66.04\n\nResult of proactive diagnostic questioning\n\nOur experiments evaluate MedRAG against six different SOTA RAG models on 2 two datasets.",
+    "char_start": 29149,
+    "char_end": 30932,
+    "sentence_index": 175,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec021",
+    "text": "We report the results using: 1) Accuracy , defined as the number of correct diagnoses out of the total diagnoses; 2) Specificity , which uses $L1$, $L2$, and $L3$ to represent different diagnostic granularity levels.",
+    "char_start": 30933,
+    "char_end": 31149,
+    "sentence_index": 176,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec021",
+    "text": "As outlined in Section (Definition 3.1), $L_i$ refers to the MedRAG select potential diagnoses from $E_ Li $.",
+    "char_start": 31150,
+    "char_end": 31259,
+    "sentence_index": 177,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec021",
+    "text": "This metric evaluates the model's specificity and its ability to differentiate between similar diseases across varying levels of diagnostic granularity; 3) Text Generation Metrics , which uses BERTScore, BLEU, ROUGE, METEOR and subjective evaluatio from doctor to evaluate generated reports.",
+    "char_start": 31260,
+    "char_end": 31551,
+    "sentence_index": 178,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec021",
+    "text": "The result is shown in Table , MedRAG achieved the best or second-best (with only one exception) performance across multiple metrics in all datasets.",
+    "char_start": 31553,
+    "char_end": 31702,
+    "sentence_index": 179,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec021",
+    "text": "Accuracy on the $L3$ metric is the best indicator of MedRAG's performance, as higher specificity increases diagnostic difficulty.",
+    "char_start": 31703,
+    "char_end": 31832,
+    "sentence_index": 180,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec021",
+    "text": "MedRAG outperformed the second-best scores on the CPDD and DDXPlus datasets by $11.32\\%$ and $1.23\\%$.",
+    "char_start": 31833,
+    "char_end": 31935,
+    "sentence_index": 181,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec021",
+    "text": "Additionally, most RAG models designed for simpler QA tasks do not perform as well in the more complex medical domain, leading to longer contextual and prompt.",
+    "char_start": 31937,
+    "char_end": 32096,
+    "sentence_index": 182,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec021",
+    "text": "These models are often optimized for generating short and straightforward answers, which limits their effectiveness in handling intricate medical queries.",
+    "char_start": 32097,
+    "char_end": 32251,
+    "sentence_index": 183,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec021",
+    "text": "We observe models that have a simpler mechanism in the query-organizing phase perform better than part of more sophisticated ones.",
+    "char_start": 32252,
+    "char_end": 32382,
+    "sentence_index": 184,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec021",
+    "text": "Except for our MedRAG, models like SR-RAG and FL-RAG also secured several second-best performances.",
+    "char_start": 32383,
+    "char_end": 32482,
+    "sentence_index": 185,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec021",
+    "text": "Even the Chain-of-Thought model, which lacks improvements in the retriever or generator components, outperformed some of the other SOTA models in complex medical tasks.",
+    "char_start": 32483,
+    "char_end": 32651,
+    "sentence_index": 186,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec021",
+    "text": "For report generation, we conducted both objective evaluation using BERTScore, BLEU, ROUGE and METEOR, as well as subjective evaluation based on Mini-CEX criteria by LLM with validation by doctors.",
+    "char_start": 32653,
+    "char_end": 32850,
+    "sentence_index": 187,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec021",
+    "text": "Performance results are shown in the Appendix.",
+    "char_start": 32851,
+    "char_end": 32897,
+    "sentence_index": 188,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec022",
+    "text": "The results in Table demonstrate the performance of incorporating KG-elicited reasoning to various backbone LLMs, including both open-source and closed-source models.",
+    "char_start": 32899,
+    "char_end": 33065,
+    "sentence_index": 189,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec022",
+    "text": "The results demonstrate that the inclusion of KG-elicited reasoning significantly enhances diagnostic accuracy across $L1$, $L2$, and $L3$ for all backbone LLMs, compared to models without its use.",
+    "char_start": 33066,
+    "char_end": 33263,
+    "sentence_index": 190,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec022",
+    "text": "For example, Mixtral-8x7B shows a significant $L3$ improvement from $22.34\\%$ to $63.46\\%$, demonstrating the effectiveness of our proposed KG-elicited reasoning, particularly in smaller models.",
+    "char_start": 33264,
+    "char_end": 33458,
+    "sentence_index": 191,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec022",
+    "text": "Comparing open-source and closed-source models, the RAG with the GPT-4o as the backbone LLM outperforms all others, showing its superior adaptability with knowledge graph integration.",
+    "char_start": 33460,
+    "char_end": 33643,
+    "sentence_index": 192,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec022",
+    "text": "In addition, MedRAG performs best on closed-source models, showcasing our framework's compatibility, generalizability and adaptability.",
+    "char_start": 33644,
+    "char_end": 33779,
+    "sentence_index": 193,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec022",
+    "text": "In contrast, token-level RAG models like DRAGIN and FLARE face challenges in adapting to closed-source models due to their inherent frameworks, limiting their potential to achieve better performance across various LLMs.",
+    "char_start": 33780,
+    "char_end": 33999,
+    "sentence_index": 194,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec022",
+    "text": "We also observe an interesting result that L1 performance decreased when KG knowledge is incorporated into small-parameter closed-source models.",
+    "char_start": 34001,
+    "char_end": 34145,
+    "sentence_index": 195,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec022",
+    "text": "We deduce that introducing similar disease difference complicates the reasoning.",
+    "char_start": 34146,
+    "char_end": 34226,
+    "sentence_index": 196,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec022",
+    "text": "GPT-3.5 and GPT-4o-mini struggle with incorporating highly granular information due to parameter limitations, leading to knowledge conflicts and blurred classification boundaries, which impact L1 performance.",
+    "char_start": 34227,
+    "char_end": 34435,
+    "sentence_index": 197,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec022",
+    "text": "However, GPT-4o's larger parameter scale and stronger reasoning capacity result in higher L1 accuracy.",
+    "char_start": 34436,
+    "char_end": 34538,
+    "sentence_index": 198,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec023",
+    "text": "The results in Table show the impact of following MedRAG\u2019s optimized instructive questions and obtaining corresponding patient responses on diagnostic accuracy.",
+    "char_start": 34540,
+    "char_end": 34700,
+    "sentence_index": 199,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec023",
+    "text": "As more detailed information is gathered through these targeted questions, the $L3$ accuracy progressively improves.",
+    "char_start": 34702,
+    "char_end": 34818,
+    "sentence_index": 200,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec023",
+    "text": "Initially, with no specific patient information obtained through this questioning process, the $L3$ accuracy is $52.83\\%$, representing MedRAG making a diagnosis with other information with very few manifestations.",
+    "char_start": 34819,
+    "char_end": 35033,
+    "sentence_index": 201,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec023",
+    "text": "As the doctor collects more critical details about disease representation, covering from $33.3\\%$ to $100\\%$ of the key manifestations, the $L3$ score rises from $55.10\\%$ to $66.04\\%$ and other levels' metrics follow the same trend.",
+    "char_start": 35034,
+    "char_end": 35267,
+    "sentence_index": 202,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec023",
+    "text": "This demonstrates the significant effectiveness of MedRAG\u2019s proactive diagnostic questioning mechanism, validating its capability to provide doctors with impactful questions that not only enhance diagnostic performance but also improve the efficiency of the medical consultation process.",
+    "char_start": 35268,
+    "char_end": 35555,
+    "sentence_index": 203,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec024",
+    "text": "[h]\n\nLaTeX/pics/ablation2.png\nAblation result on Llama-3.1-Instruct 8B backbone using the CPDD dataset\n\nWe perform ablation studies to evaluate the effectiveness of different components in MedRAG and present the result in Figure .",
+    "char_start": 35557,
+    "char_end": 35787,
+    "sentence_index": 204,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec024",
+    "text": "Specifically, we assess the retriever $ R $ and KG-elicited reasoning module $ G $ under three configurations: ``random'', ``with'' and ``without''.",
+    "char_start": 35788,
+    "char_end": 35936,
+    "sentence_index": 205,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec024",
+    "text": "In the ``random'' setting for $ R $, we choose documents from the entire EHR database randomly.",
+    "char_start": 35937,
+    "char_end": 36032,
+    "sentence_index": 206,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec024",
+    "text": "The ``without'' of the retriever refers to the scenario where no documents are passed to $ M _g$.",
+    "char_start": 36033,
+    "char_end": 36130,
+    "sentence_index": 207,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec024",
+    "text": "The ``with'' setting of the retriever means to pass the top-$k$ relevant documents to $ M _g$.",
+    "char_start": 36131,
+    "char_end": 36225,
+    "sentence_index": 208,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec024",
+    "text": "For the KG-elicited reasoning module, the ``random'' configuration denotes randomly selecting subcategory $e_ L2_s $ and collecting corresponding $K$ accordingly.",
+    "char_start": 36226,
+    "char_end": 36388,
+    "sentence_index": 209,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec024",
+    "text": "The ``without'' is the scenario where no diagnostic differences KG are passed to $ M _g$.",
+    "char_start": 36389,
+    "char_end": 36478,
+    "sentence_index": 210,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec024",
+    "text": "Configuration ``with'' means to pass correct $K$ by the $e_ L2_s $ to $ M _g$.",
+    "char_start": 36479,
+    "char_end": 36557,
+    "sentence_index": 211,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec024",
+    "text": "As shown in Figure , both the retriever and KG-elicited reasoning module significantly enhance performance across all specificity levels.",
+    "char_start": 36559,
+    "char_end": 36696,
+    "sentence_index": 212,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec024",
+    "text": "the best outcomes are achieved when RAG and KG components are combined and aligned, especially for granular diagnosis tasks that demand high specificity.",
+    "char_start": 36697,
+    "char_end": 36850,
+    "sentence_index": 213,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec024",
+    "text": "Notably, randomly selected documents performed better than no documents at all, this phenomenon was explored in detail by .",
+    "char_start": 36851,
+    "char_end": 36974,
+    "sentence_index": 214,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec024",
+    "text": "We also observed a performance decline in the lower-granularity levels of $L1$ and $L2$ when transitioning from random to no knowledge from KG when random documents are retrieved.",
+    "char_start": 36975,
+    "char_end": 37154,
+    "sentence_index": 215,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec024",
+    "text": "Once correct KG-augmented knowledge was added, this noise effect was mitigated, leading to accuracy improvements across all metrics: an average accuracy increase of $18.88\\%$ for $L1$, $26.92\\%$ for $L2$, and $18.89\\%$ for $L3$, compared to the baseline with random or without KG-elicited reasoning module.",
+    "char_start": 37155,
+    "char_end": 37461,
+    "sentence_index": 216,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec024",
+    "text": "The ablation study of KG components is shown in the Appendix.",
+    "char_start": 37462,
+    "char_end": 37523,
+    "sentence_index": 217,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec025",
+    "text": "In conclusion, MedRAG significantly improves diagnostic accuracy and specificity in the medical domain by integrating KG-elicited reasoning with RAG models.",
+    "char_start": 37525,
+    "char_end": 37681,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec025",
+    "text": "By systematically retrieving and reasoning over EHRs and dynamically incorporating critical diagnostic differences KG, MedRAG offers more precise diagnosis and personalized treatment recommendations.",
+    "char_start": 37682,
+    "char_end": 37881,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec025",
+    "text": "Additionally, MedRAG\u2019s proactive diagnostic questioning mechanism proves highly effective, and shows potential capacity to provide doctors and patients with impactful questions that enhance diagnostic performance and improve consultation efficiency.",
+    "char_start": 37882,
+    "char_end": 38131,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec025",
+    "text": "The evaluation of public and private datasets demonstrates that MedRAG outperforms state-of-the-art RAG models, particularly in reducing misdiagnosis rates for diseases with similar manifestations, showcasing its potential as a key module in healthcare copilot.",
+    "char_start": 38132,
+    "char_end": 38393,
+    "sentence_index": 221,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec025",
+    "text": "For future work, we aim to further enhance MedRAG's capabilities by incorporating multimodal data, such as medical imaging (e.g., MRI), physiological signal data (e.g., ECG), and blood test data to improve diagnostic accuracy and broaden its applicability to a wider range of medical conditions.",
+    "char_start": 38395,
+    "char_end": 38690,
+    "sentence_index": 222,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec025",
+    "text": "Additionally, we plan to deploy MedRAG within our healthcare copilot systems (The user interface is shown in the Appendix) for real-world hospital testing, ensuring its effectiveness in clinical settings.",
+    "char_start": 38691,
+    "char_end": 38895,
+    "sentence_index": 223,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec025",
+    "text": "Furthermore, to improve usability for doctors, we will integrate a speech recognition module into the system.",
+    "char_start": 38896,
+    "char_end": 39005,
+    "sentence_index": 224,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec025",
+    "text": "This feature will passively listen to conversations between doctors and patients during consultations without causing disruptions.",
+    "char_start": 39006,
+    "char_end": 39136,
+    "sentence_index": 225,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec025",
+    "text": "Based on the dialogue content, it will provide real-time suggestions for follow-up questions and relevant explanations, assisting doctors in conducting more comprehensive and efficient patient assessments.",
+    "char_start": 39137,
+    "char_end": 39342,
+    "sentence_index": 226,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec025",
+    "text": "ACM-Reference-Format\nsample-base\n\ntable 0\nA table\nfigure 0\nA figure\n\nThis appendix is organized as follows:\n\nSection includes variables and definitions in the paper.",
+    "char_start": 39344,
+    "char_end": 39509,
+    "sentence_index": 227,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec026",
+    "text": "Section demonstrates the detailed data preprocessing steps and experimental setup, ensuring transparency and reproducibility.",
+    "char_start": 39510,
+    "char_end": 39635,
+    "sentence_index": 228,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec026",
+    "text": "Section describes the details of the baseline models in the experiments.",
+    "char_start": 39636,
+    "char_end": 39708,
+    "sentence_index": 229,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec026",
+    "text": "Section presents intermediate results from experiments.",
+    "char_start": 39709,
+    "char_end": 39764,
+    "sentence_index": 230,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec026",
+    "text": "Section shows the evaluation of report generation.",
+    "char_start": 39765,
+    "char_end": 39815,
+    "sentence_index": 231,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec026",
+    "text": "Section shows the ablation study on KG components.",
+    "char_start": 39816,
+    "char_end": 39866,
+    "sentence_index": 232,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec026",
+    "text": "Section shows the user interface of the healthcare copilot.",
+    "char_start": 39867,
+    "char_end": 39926,
+    "sentence_index": 233,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec027",
+    "text": "The variables used throughout this paper and their definitions are provided in Table .",
+    "char_start": 39928,
+    "char_end": 40014,
+    "sentence_index": 234,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec028",
+    "text": "CPDD We split the data set into a 9:1 ratio for the training set (to be retrieved) and test set.",
+    "char_start": 40016,
+    "char_end": 40112,
+    "sentence_index": 235,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec029",
+    "text": "Since the dataset was collected from multiple doctors, the diagnosis descriptions are not standardized.",
+    "char_start": 40113,
+    "char_end": 40216,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec029",
+    "text": "Part of the diagnosis is presented as a type of pain instead of a specific disease.",
+    "char_start": 40217,
+    "char_end": 40300,
+    "sentence_index": 237,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec029",
+    "text": "When calculating the accuracy of these pain-type diagnoses, if the predicted result is a disease associated with that type of pain, it will be considered a correct prediction.",
+    "char_start": 40301,
+    "char_end": 40476,
+    "sentence_index": 238,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec029",
+    "text": "DDXPlus We directly use the training set and test set in a split dataset in the ratio of 8:1:1(validation set).",
+    "char_start": 40477,
+    "char_end": 40588,
+    "sentence_index": 239,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec029",
+    "text": "Due to the massive size of the dataset with over a million synthesized patients' records, which is too large for the scale of our task, we first fixed the number of samples in the test set to 30, which corresponds to the fewest pathology.",
+    "char_start": 40589,
+    "char_end": 40827,
+    "sentence_index": 240,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec029",
+    "text": "For the other pathology with more samples, we randomly select 30 samples to form the whole test set.",
+    "char_start": 40828,
+    "char_end": 40928,
+    "sentence_index": 241,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec029",
+    "text": "In the training set, we randomly pick 240 samples for each pathology to retrieve.",
+    "char_start": 40929,
+    "char_end": 41010,
+    "sentence_index": 242,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec029",
+    "text": "This approach can ensure we get a maximum balanced sub-dataset containing 13230 patients' EHR in total.",
+    "char_start": 41011,
+    "char_end": 41114,
+    "sentence_index": 243,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec029",
+    "text": "The random seed is set to 42.",
+    "char_start": 41115,
+    "char_end": 41144,
+    "sentence_index": 244,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec030",
+    "text": "We mask certain existing manifestations of a patient to simulate scenarios where they are missing.",
+    "char_start": 41146,
+    "char_end": 41244,
+    "sentence_index": 245,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec030",
+    "text": "MedRAG then generates follow-up questions based on the remaining information.",
+    "char_start": 41245,
+    "char_end": 41322,
+    "sentence_index": 246,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec030",
+    "text": "If MedRAG identifies the removed manifestations during questioning, they are added back to the patient's record, and diagnostic reasoning is repeated to evaluate the improvement in diagnostic accuracy.",
+    "char_start": 41323,
+    "char_end": 41524,
+    "sentence_index": 247,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec030",
+    "text": "We begin by selecting all matching manifestation nodes $E_ L4d_s $ and ranking them according to their discriminability scores.",
+    "char_start": 41526,
+    "char_end": 41653,
+    "sentence_index": 248,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec030",
+    "text": "A proportion $r$ of the nodes with the highest discriminability scores is then removed, simulating the scenario where certain key patient features are missing or unclear, shown in Equation .",
+    "char_start": 41654,
+    "char_end": 41844,
+    "sentence_index": 249,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec030",
+    "text": "After removing, we match the removed nodes $E_ L4d_s ^ del $ with each $f_i$, if the similarity score, the corresponding sentence $f_i$ is also removed, as formalized in Equation , which simulates the loss of relevant patient information from the input.",
+    "char_start": 41845,
+    "char_end": 42098,
+    "sentence_index": 250,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec030",
+    "text": "e_ L4d_s ^ del = Top-r ( e_ L4d_s , (e_ L4d_s ) ),\n\nf_i^ del = _ f_i \\ f_i S (f_i, e_ L4d_s ^ del , E ) > t \\ ,\n\nwhere $e_ L4d_s ^ del $ represents the nodes removed from $e_ L4d_s $ based on the similarity score threshold $t$ and $f_i^ del $ is removed $f_i$.",
+    "char_start": 42100,
+    "char_end": 42360,
+    "sentence_index": 251,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec031",
+    "text": "The prompt configuration for disease clustering is shown below:\n\nCluster the following diseases into multiple categories based on the similarity of their manifestations, affected locations, and other characteristics.",
+    "char_start": 42362,
+    "char_end": 42578,
+    "sentence_index": 252,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec031",
+    "text": "Diseases: \\ \\ .",
+    "char_start": 42579,
+    "char_end": 42594,
+    "sentence_index": 253,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec031",
+    "text": "The prompt configuration for the generative model in MedRAG is illustrated in Figure .",
+    "char_start": 42596,
+    "char_end": 42682,
+    "sentence_index": 254,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec031",
+    "text": "The first block provides instructions as the system prompt.",
+    "char_start": 42683,
+    "char_end": 42742,
+    "sentence_index": 255,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec031",
+    "text": "The second block displays the answer template.",
+    "char_start": 42743,
+    "char_end": 42789,
+    "sentence_index": 256,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec031",
+    "text": "In the final block, relevant information including the patient\u2019s manifestations $q$, retrieved documents $d_r$, and diagnostic differences $K$, is populated in this field.",
+    "char_start": 42790,
+    "char_end": 42961,
+    "sentence_index": 257,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec032",
+    "text": "We conducted experiments on six baseline models and compared them with MedRAG.",
+    "char_start": 42963,
+    "char_end": 43041,
+    "sentence_index": 258,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec032",
+    "text": "Naive RAG + COT\nWe apply the chain-of-thought (COT) prompting with a naive RAG model, which only retrieves documents without additional enhancements.",
+    "char_start": 43043,
+    "char_end": 43192,
+    "sentence_index": 259,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec032",
+    "text": "FL-RAG\n\nFL-RAG is a multi-round retrieval method that triggers the retrieval module every n tokens.",
+    "char_start": 43194,
+    "char_end": 43293,
+    "sentence_index": 260,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec032",
+    "text": "FS-RAG\n\nFS-RAG is an interleaving retrieval method that improves multi-round question answering by alternating between COT reasoning and document retrieval.",
+    "char_start": 43295,
+    "char_end": 43451,
+    "sentence_index": 261,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec032",
+    "text": "FLARE\n\nFLARE is an active RAG method that improves knowledge-intensive tasks by retrieving relevant documents when the model encounters uncertain tokens.",
+    "char_start": 43453,
+    "char_end": 43606,
+    "sentence_index": 262,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec032",
+    "text": "DRAGIN\n\nDRAGIN is a dynamic retrieval method that enhances language models by retrieving relevant documents based on real-time information needs during generation, triggered by token uncertainty.",
+    "char_start": 43608,
+    "char_end": 43803,
+    "sentence_index": 263,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec032",
+    "text": "SR-RAG\n\nIn SR-RAG, relevant passages are retrieved from an external corpus based on the initial query and then incorporated into the input of the language model\n\nThe result of disease clustering in CPDD is Shown in Figure .",
+    "char_start": 43805,
+    "char_end": 44028,
+    "sentence_index": 264,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec034",
+    "text": "Through the disease clustering operation, we group different forms and representations of the same disease in the EHR database together, assigning a topic to each cluster.",
+    "char_start": 44029,
+    "char_end": 44200,
+    "sentence_index": 265,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec034",
+    "text": "This process unifies the representation of diseases, ensuring consistency and comparability.",
+    "char_start": 44201,
+    "char_end": 44293,
+    "sentence_index": 266,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec034",
+    "text": "Additionally, it provides a unified foundation for subsequent disease knowledge graph construction and augmentation.",
+    "char_start": 44294,
+    "char_end": 44410,
+    "sentence_index": 267,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec035",
+    "text": "While lumbar canal stenosis and sciatica share some similar features, the critical distinguishing factor lies in the response to sitting.",
+    "char_start": 44412,
+    "char_end": 44549,
+    "sentence_index": 268,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec035",
+    "text": "In lumbar canal stenosis, features are typically alleviated when sitting, whereas in sciatica, sitting tends to exacerbate the discomfort.",
+    "char_start": 44550,
+    "char_end": 44688,
+    "sentence_index": 269,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec035",
+    "text": "The augmented disease features are shown in Figure .",
+    "char_start": 44689,
+    "char_end": 44741,
+    "sentence_index": 270,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec036",
+    "text": "To evaluate the report generation of MedRAG, we conducted both objective and subjective evaluations on the generated reports of CCPD, since the DDXPlus dataset does not contain report data.",
+    "char_start": 44743,
+    "char_end": 44932,
+    "sentence_index": 271,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec036",
+    "text": "Objectice Evaluation: We use BERTScore, BLEU, ROUGE, METEOR as metrics.",
+    "char_start": 44934,
+    "char_end": 45005,
+    "sentence_index": 272,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec036",
+    "text": "The result is shown in Table .",
+    "char_start": 45006,
+    "char_end": 45036,
+    "sentence_index": 273,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec036",
+    "text": "Subjective Evaluation: Reports were generated for 10 randomly selected patients using SRRAG and MedRAG.",
+    "char_start": 45037,
+    "char_end": 45140,
+    "sentence_index": 274,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec036",
+    "text": "The results were scored on 4 Mini-CEX criteria (Scale 1-9) , and assessed by GPT-4o , with validation by doctors.",
+    "char_start": 45141,
+    "char_end": 45254,
+    "sentence_index": 275,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec036",
+    "text": "The results were: SRRAG 277, MedRAG 290 out of 360.",
+    "char_start": 45255,
+    "char_end": 45306,
+    "sentence_index": 276,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec036",
+    "text": "[t]\n\nc|cccc\n\nModels & BERTScore & BLEU & ROUGE & METEOR\n\nFSRAG & 0.7853 & 0.0963 & 0.1459 & 0.1490\n\nFLARE & 0.8328 & 0.1637 & 0.1011 & 0.1923\n\nFL-RAG & 0.8130 & 0.1551 & 0.2171 & 0.2054\n\nDragin & 0.8259 & 0.2036 & 0.2053 & 0.2081\n\nSRRAG & 0.8346 & 0.2013 & 0.2722 & 0.2756\n\nMedRAG & 0.8359 & 0.2189 & 0.2863 & 0.2822\n\nResults of objective performance on CCPD\n\nIn order to evaluate how different components in diagnostic differences KG, we conducted extra ablation study focusing on key components.",
+    "char_start": 45308,
+    "char_end": 45805,
+    "sentence_index": 277,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec037",
+    "text": "Specifically, we examined the effects of diagnostic key difference nodes, augmented feature nodes, patient clinical feature matching, and the augmentation of diagnostic differences.",
+    "char_start": 45806,
+    "char_end": 45987,
+    "sentence_index": 278,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec037",
+    "text": "[t]\n\nl|ccc\n\nConfiguration & L1 & L2 & L3\n\nw/ augmented feature node & 79.25 & 75.47 & 67.92\n\nw/o augmented feature node & 66.04 & 60.38 & 49.06\n\nw/ diagnostic key difference node & 79.25 & 75.47 & 67.92\n\nw/o diagnostic key difference node & 77.36 & 71.70 & 64.15\n\nw/ L2 \\& L3 & 79.25 & 75.47 & 67.92\n\nw/o L2 \\& L3 & 63.64 & 57.58 & 51.52\n\nImpact of KG components on the performance of MedRAG\n\nResults in Table show that KG components like diagnostic key difference nodes, augmented feature nodes, the patient clinical feature matching and the augmentation of diagnostic differences contribute to MedRAG\u2019s overall effectiveness significantly.",
+    "char_start": 45989,
+    "char_end": 46630,
+    "sentence_index": 279,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec037",
+    "text": "Moreover, the hierarchical structure of the constructed diagnostic differences KG directly impacts the experimental results as well.",
+    "char_start": 46631,
+    "char_end": 46763,
+    "sentence_index": 280,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec038",
+    "text": "This section introduces how our MedRAG can be integrated into the user interface design of the healthcare copilot system.",
+    "char_start": 46765,
+    "char_end": 46886,
+    "sentence_index": 281,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec038",
+    "text": "The healthcare copilot offers three modes of interaction, as shown in Figure .",
+    "char_start": 46887,
+    "char_end": 46965,
+    "sentence_index": 282,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec038",
+    "text": "Consultation Mode : By monitoring the consultation dialogue between the doctor and patient, the system extracts patient manifestations in real-time and provides diagnostic suggestions along with proactive questioning recommendations to guide the consultation.",
+    "char_start": 46967,
+    "char_end": 47226,
+    "sentence_index": 283,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec038",
+    "text": "EHR Mode : By uploading the patient's EHR to the healthcare copilot system, this system automatically extracts the relevant patient manifestations for diagnostic purposes.",
+    "char_start": 47227,
+    "char_end": 47398,
+    "sentence_index": 284,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec038",
+    "text": "Typewritting Mode : The user can manually input the patient's manifestations into the system.",
+    "char_start": 47399,
+    "char_end": 47492,
+    "sentence_index": 285,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec038",
+    "text": "On the results page shown in Figure , the output of the healthcare copilot system include diagnoses, instructive follow-up questions, physiotherapy treatments, and medication treatments.",
+    "char_start": 47494,
+    "char_end": 47680,
+    "sentence_index": 286,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec038",
+    "text": "This UI integrates the most essential functions derived from extensive interviews we conducted with numerous healthcare practitioners.",
+    "char_start": 47681,
+    "char_end": 47815,
+    "sentence_index": 287,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec038",
+    "text": "It ensures that the healthcare copilot system meets the practical needs of healthcare professionals, ultimately enhancing the overall quality of care.",
+    "char_start": 47816,
+    "char_end": 47966,
+    "sentence_index": 288,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec038",
+    "text": "[htbp]\n\n!",
+    "char_start": 47968,
+    "char_end": 47977,
+    "sentence_index": 289,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec038",
+    "text": "|> p 2cm |X|\n\nVariable & Definition\n\n$ C $ & The clustering model\n\n$d_r$ & Retrieved relevant documents\n\n$D$ & Electronic Health Record (EHR) database\n\n$E_ L1 $ & The set of broad disease categories\n\n$E_ L2 $ & The set of disease subcategories\n\n$e_ L2_s $ & The matched subcategory\n\n$E_ L3 $ & The set of specific disease names\n\n$E_ L3_ raw $& the set of original disease descriptions in $D$\n\n$E_ L3_s $ & The set of disease nodes connected with $E_ L2_s $\n\n$E_ L4 $ & The set of disease-specific features\n\n$E_ L4_s $ & The set of features nodes connected with node in $E_ L3_s $\n\n$E_ L4d_s ^ del $ & Deleted features in proactive diagnostic questioning\n\n$E_ L4a $ & Disease-specific features augmented by the LLM\n\n$E_ L4d $ & Features decomposed from the EHR database\n\n$e_ L2_ ik $ & The closest disease subcategory node\n\n$e_ Lij $ & A disease or category name in the graph where $e_ Lij E_ Li $\n\n$f_i$ & A specific feature of the patient\u2019s manifestation\n\n$K$ & The set of diagnostic differences KG identified in the knowledge graph\n\n$p_a$ & Prompt used by $ M _a$ for disease manifestation augmentation\n\n$p_ naive $ & Simple prompt used by $ M _g$\n\n$p_s$ & Prompt designed for reasoning and generating diagnostic reports\n\n$P$ & The shortest path function\n\n$q$ & A input patient\u2019s manifestations\n\n$r$ & $E_ L4_s $ removing proportion in proactive diagnostic questioning mechanism\n\n$r_m$ & Relation type \" has\\_manifestation\\_of \" between diseases and their manifestations\n\n$r_s$ & Relation type \" is\\_a \" for hierarchical relationships\n\n$sim$ & The similarity score between patient features and nodes in the knowledge graph\n\n$T$ & Set of relevant matching nodes in the knowledge graph\n\n$t$ & Similarity score threshold in proactive diagnostic questioning mechanism\n\n$ $ & The voting indicator function\n\n$ $ & The matching filtering indicator function\n\n$ E $ & Embedding model used to compute similarity between features\n\n$ G $ & The four-tier hierarchical diagnostic knowledge graph\n\n$ G _D$ & The four-tier disease knowledge graph\n\n$ M _a$ & LLM used for disease manifestation augmentation\n\n$ M _g$ & LLM used for generating diagnostic reports\n\n$ M _h$ & LLM used for topic aggregation\n\n$ S $ & The similarity model\n\n$ $ & The decomposition function for $q$\n\n$ (e_ L4d_i )$ & Discriminability score of a feature in the knowledge graph\n\n$ $ & The hierarchical aggregation operator\n\nList of variables and their definitions\n\n[htb]\n\nLaTeX/pics/prompt3.pdf\nPrompt for the generative model of MedRAG\n\n[ht]\n\nLaTeX/pics/clustering.png\nThe result of disease clustering in CPDD\n\n[ht]\n\nLaTeX/pics/diagnosticdiff.pdf\nDiagnostic differences knowledge graph between lumbar canal stenosis and sciatica.",
+    "char_start": 47978,
+    "char_end": 50667,
+    "sentence_index": 290,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec038",
+    "text": "(Similar manifestations but opposite responses to sitting (Alleviation vs.",
+    "char_start": 50668,
+    "char_end": 50742,
+    "sentence_index": 291,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec038",
+    "text": "Exacerbation))\n\n[ht]\n\nLaTeX/pics/1.pdf\nThe interactive interface of healthcare copilot allows multi-turn medical Q\\&A through voice, files, and text.",
+    "char_start": 50743,
+    "char_end": 50892,
+    "sentence_index": 292,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec038",
+    "text": "[ht]\n\nLaTeX/pics/2.pdf\nA specific example of how healthcare copilot could handle the diagnosis of lumbar canal stenosis using a JSON format medical record input, and output relevant treatments.",
+    "char_start": 50894,
+    "char_end": 51087,
+    "sentence_index": 293,
+    "section_sentence_index": 12
+  }
+]

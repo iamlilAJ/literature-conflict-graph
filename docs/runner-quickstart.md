@@ -75,6 +75,43 @@ filter (year + keywords + has-sections + sort + take top N)
 artifacts/runs/<id>/selected_hypotheses.md
 ```
 
+## Service-mode query (per-query layer)
+
+After a corpus run has been done once, subsequent topic queries hit
+the cached run output without rerunning the LLM stages. **0 LLM calls,
+sub-second latency.**
+
+```bash
+python3 scripts/aigraph_query.py \
+    --run-dir artifacts/runs/arxiv-reasoning-v0.7-100p \
+    --topic "agent reasoning" \
+    --k 5 \
+    --output -
+```
+
+Algorithm:
+1. Load `hypotheses_scored.jsonl` from the cached run
+2. Score each cached hypothesis by query-token overlap against
+   `(hypothesis text + mechanism + parent anomaly central_question +
+   cited claim_text + method/task/dataset/metric fields)`
+3. Drop zero-relevance, take top-N candidates (default 30)
+4. Re-score with `aigraph.scoring.score_all` (fast, no LLM)
+5. MMR select top-K with diversity (default K=5, λ=0.7)
+6. Render markdown via `aigraph.report.render_report`
+
+Smoke results on the bundled run (148 cached hypotheses):
+
+| query | n_matched | wall |
+|---|---:|---|
+| `"agent reasoning"` | 142 | 30 ms |
+| `"multimodal video"` | many | <100 ms |
+| `"quantum computing"` | 1 | <100 ms |
+| `"protein folding nanotube"` | 0 | 15 ms |
+
+`stderr` carries a JSON stats line on every run with `n_matched`,
+`n_selected`, `wall_seconds`, `llm_calls`, `topic_tokens`. Use it for
+service-side observability.
+
 ## Two-script split
 
 Use **`run_local_corpus.py`** for fresh end-to-end. It runs all 7

@@ -1,0 +1,3980 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language models (LLMs) have achieved remarkable performance in recent years but are fundamentally limited by the underlying training data.",
+    "char_start": 0,
+    "char_end": 144,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "To improve models beyond the training data, recent works have explored how LLMs can be used to generate synthetic data for autonomous self-improvement.",
+    "char_start": 145,
+    "char_end": 296,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, successive steps of self-improvement can reach a point of diminishing returns.",
+    "char_start": 297,
+    "char_end": 384,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "In this work, we propose a complementary approach towards self-improvement where finetuning is applied to a multiagent society of language models.",
+    "char_start": 385,
+    "char_end": 531,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "A group of language models, all starting from the same base model, are independently specialized by updating each one using data generated through multiagent interactions among the models.",
+    "char_start": 532,
+    "char_end": 720,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "By training each model on independent sets of data, we illustrate how this approach enables specialization across models and diversification over the set of models.",
+    "char_start": 721,
+    "char_end": 885,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "As a result, our overall system is able to preserve diverse reasoning chains and autonomously improve over many more rounds of fine-tuning than single-agent self-improvement methods.",
+    "char_start": 886,
+    "char_end": 1068,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "We quantitatively illustrate the efficacy of the approach across a wide suite of reasoning tasks.",
+    "char_start": 1069,
+    "char_end": 1166,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "Project website at\n\nRecent breakthroughs in large language models (LLMs) like GPT-3.5 and GPT-4 have demonstrated remarkable proficiency in language generation, comprehension, question answering, and translation openai2023gpt, touvron2023llama .",
+    "char_start": 1168,
+    "char_end": 1413,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Despite these advancements, LLMs are fundamentally constrained by the data they are trained on, with existing models already using much of the available data on the Internet brown2020language .",
+    "char_start": 1414,
+    "char_end": 1607,
+    "sentence_index": 9,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "To further enhance the performance of LLMs, recent research on self-improvement , where LLMs generate additional synthetic data on which they are trained on huang2022large, yu2023teaching .",
+    "char_start": 1608,
+    "char_end": 1797,
+    "sentence_index": 10,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "One approach to increase the data available to LLMs is to use powerful existing frontier models like GPT-4 to generate additional supervisory data.",
+    "char_start": 1799,
+    "char_end": 1946,
+    "sentence_index": 11,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "However, this approach is limited by the inherent quality of frontier models, preventing models from becoming better than the frontier of what the best existing models can accomplish.",
+    "char_start": 1947,
+    "char_end": 2130,
+    "sentence_index": 12,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "In addition, such an approach incurs high financial costs due to inference expenses of such large models and is also often legally prohibited with existing commercial-grade models.",
+    "char_start": 2131,
+    "char_end": 2311,
+    "sentence_index": 13,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "An alternative approach is to directly leverage existing language models to generate additional synthetic data for their self-improvement zelikman2022star, bai2022constitutional, chen2024self, yuan2024self .",
+    "char_start": 2313,
+    "char_end": 2520,
+    "sentence_index": 14,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "In such works, language models are used to iteratively collect data that they are then finetuned on.",
+    "char_start": 2521,
+    "char_end": 2621,
+    "sentence_index": 15,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "However, as models are repeatedly trained, performance gains often plateau relatively quickly as diversity decreases (Figure ) and the self-improvement loop is often only run for two or three rounds lu2023self, song2024mind .",
+    "char_start": 2622,
+    "char_end": 2847,
+    "sentence_index": 16,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This limits the applicability of self-improvement to autonomously improve language models, as models can only be improved a limited amount above their base performance.",
+    "char_start": 2848,
+    "char_end": 3016,
+    "sentence_index": 17,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "In this paper, we propose a new approach to self-improvement that can help mitigate the issue of decreased gains of performance after multiple rounds of fine-tuning.",
+    "char_start": 3018,
+    "char_end": 3183,
+    "sentence_index": 18,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Instead of fine-tuning a single model, our method finetunes a multiagent set of language models from the same base model and then independently specializes each model to capture parts of a task of interest.",
+    "char_start": 3184,
+    "char_end": 3390,
+    "sentence_index": 19,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Our key insight is that by finetuning multiple models, we can encourage specialization and diversification across responses, which can enable consistent performance gains over many rounds of fine-tuning.",
+    "char_start": 3391,
+    "char_end": 3594,
+    "sentence_index": 20,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "To achieve specialization between models, we fine-tune each model repeatedly on independent subsets of the generated data corresponding to responses from the respective particular model.",
+    "char_start": 3595,
+    "char_end": 3781,
+    "sentence_index": 21,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Within our multiagent set of models, we propose to specialize models into distinct functionalities within the output generation procedure.",
+    "char_start": 3783,
+    "char_end": 3921,
+    "sentence_index": 22,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "First, we specialize a set of models to be generation agents that produce a set of initial responses given queries.",
+    "char_start": 3922,
+    "char_end": 4037,
+    "sentence_index": 23,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Since initial responses can often be suboptimal, especially for challenging reasoning tasks, we further propose to specialize a set of models as critic agents that evaluate and refine the generations of other models.",
+    "char_start": 4038,
+    "char_end": 4254,
+    "sentence_index": 24,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "By using this set of distinct models in combination through multiagent debate du2023improving , we are able to construct a robust feedback loop for generating final responses, with experiments on other multiagent methods in Appendix .",
+    "char_start": 4255,
+    "char_end": 4489,
+    "sentence_index": 25,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "By training each model on distinct sets of data and roles, our approach fosters specialization across models and promotes diversification within the society of models.",
+    "char_start": 4491,
+    "char_end": 4658,
+    "sentence_index": 26,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Consequently, our system can autonomously improve over many more rounds of finetuning compared to single-agent self-improvement methods (Figure ).",
+    "char_start": 4659,
+    "char_end": 4805,
+    "sentence_index": 27,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "We quantitatively demonstrate the effectiveness of our approach across a comprehensive suite of reasoning tasks, illustrating significant performance gains, as shown in Table .",
+    "char_start": 4806,
+    "char_end": 4982,
+    "sentence_index": 28,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "In our experiments, we illustrate how our proposed method can be directly applied to both open-source LLMs such as Phi-3, Mistral, and LLaMA-3 as well proprietary LLMs such as GPT-3.5 to substantially improve performance.",
+    "char_start": 4983,
+    "char_end": 5204,
+    "sentence_index": 29,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "In addition, the finetuned models can generalize to novel datasets and outperform the baseline methods trained directly on these new datasets.",
+    "char_start": 5205,
+    "char_end": 5347,
+    "sentence_index": 30,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Overall, our paper has the following contributions: (1) We propose to leverage multiagent interaction as an approach to self-improvement with language models.",
+    "char_start": 5349,
+    "char_end": 5507,
+    "sentence_index": 31,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "(2) We propose to specialize models with distinct roles to enable detailed feedback between agents and to improve the final output quality.",
+    "char_start": 5508,
+    "char_end": 5647,
+    "sentence_index": 32,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "(3) We quantitatively verify the applicability of our approach across a wide suite of reasoning tasks on both open-source and proprietary language models.",
+    "char_start": 5648,
+    "char_end": 5802,
+    "sentence_index": 33,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "(4) We demonstrate that the finetuned agents can generalize across different datasets in a zero-shot manner.",
+    "char_start": 5803,
+    "char_end": 5911,
+    "sentence_index": 34,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "rebuttal/multi-iters-ft.pdf\n-15pt\nMultiagent finetuning improves reasoning performance over multiple rounds of finetuning .",
+    "char_start": 5913,
+    "char_end": 6036,
+    "sentence_index": 35,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Our multiagent finetuning procedure enables models to improve across multiple iterations of finetuing.",
+    "char_start": 6037,
+    "char_end": 6139,
+    "sentence_index": 36,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Results reported on the MATH dataset.",
+    "char_start": 6140,
+    "char_end": 6177,
+    "sentence_index": 37,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "-18pt\n\n-5pt\n\nWe provide an overview of our approach towards multiagent finetuning of language models, where we learn a multiagent society of models to accomplish a task.",
+    "char_start": 6179,
+    "char_end": 6348,
+    "sentence_index": 38,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Our method involves two components.",
+    "char_start": 6349,
+    "char_end": 6384,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "We first use a multiagent debate method to construct a finetuning dataset for raining models (though other multiagent generation methods can also be used, see Appendix Section ).",
+    "char_start": 6385,
+    "char_end": 6563,
+    "sentence_index": 40,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "We then introduce our approach, multiagent finetuning, where we specialize each LLM model by finetuning each model on its own generated data.",
+    "char_start": 6564,
+    "char_end": 6705,
+    "sentence_index": 41,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "An overview of our approach can be seen in Figure .",
+    "char_start": 6706,
+    "char_end": 6757,
+    "sentence_index": 42,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "We first provide an introduction of our multiagent debate method in Section .",
+    "char_start": 6758,
+    "char_end": 6835,
+    "sentence_index": 43,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "We then discuss how to fine-tune a single model on generated data in Section , and the proposed multiagent finetuning in Section and Section .",
+    "char_start": 6836,
+    "char_end": 6978,
+    "sentence_index": 44,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "We then show how to apply finetuned models for inference in Section .",
+    "char_start": 6979,
+    "char_end": 7048,
+    "sentence_index": 45,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "Multiagent debate du2023improving involves a series of $N$ language model agents\u2014either specific copies or finetuned versions of the same model\u2014each tasked with generating a response to a given problem.",
+    "char_start": 7050,
+    "char_end": 7252,
+    "sentence_index": 46,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "After the initial responses are generated, a debate round is initiated among the agents.",
+    "char_start": 7253,
+    "char_end": 7341,
+    "sentence_index": 47,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "In our paper, we concatenate and summarize the responses from other agents.",
+    "char_start": 7342,
+    "char_end": 7417,
+    "sentence_index": 48,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "Each agent is instructed to construct a new response based on its prior response and the summarized responses from the others.",
+    "char_start": 7418,
+    "char_end": 7544,
+    "sentence_index": 49,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "The final result is determined by majority vote based on the outputs from the last round of debate.",
+    "char_start": 7545,
+    "char_end": 7644,
+    "sentence_index": 50,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "The multiagent debate is illustrated in Figure .",
+    "char_start": 7645,
+    "char_end": 7693,
+    "sentence_index": 51,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "figures/main5.pdf\nOverview of Multiagent Finetuning .We first use multiagent debate and majority voting to create the finetuning datasets (left).",
+    "char_start": 7695,
+    "char_end": 7840,
+    "sentence_index": 52,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "These datasets are then used to finetune the generation and critic agents (right).",
+    "char_start": 7841,
+    "char_end": 7923,
+    "sentence_index": 53,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "When finetuning generation models, we use the majority voted result (\"correct\" output) to select first-round responses from each agent.",
+    "char_start": 7924,
+    "char_end": 8059,
+    "sentence_index": 54,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "We then finetune critic models using responses from the final round based on whether responses match the majority voted result (mix of \"correct and incorrect\" outputs).",
+    "char_start": 8060,
+    "char_end": 8228,
+    "sentence_index": 55,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "The finetuned models are combined through multiagent debate to generate more accurate answers.",
+    "char_start": 8229,
+    "char_end": 8323,
+    "sentence_index": 56,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "In this figure, we illustrate a single finetuning iteration.",
+    "char_start": 8324,
+    "char_end": 8384,
+    "sentence_index": 57,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "Applying multiple rounds of finetuning iterations can significantly boost performance.",
+    "char_start": 8385,
+    "char_end": 8471,
+    "sentence_index": 58,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "-15pt\n\nWe start by considering how to use data generated by multiagent debate data to finetune a single LLM model for self-improvement.",
+    "char_start": 8473,
+    "char_end": 8608,
+    "sentence_index": 59,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Given a set of natural language inputs \\( D _ task = \\ x_i\\ \\), we use a multiagent debate method du2023improving , specifically a debate with \\(N\\) agents and \\(M\\) rounds, to generate responses for each input in \\( D _ task \\).",
+    "char_start": 8609,
+    "char_end": 8838,
+    "sentence_index": 60,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "We obtain the final predicted output \\( y _i\\) for each \\(x_i\\) through majority voting in the last round of debate.",
+    "char_start": 8839,
+    "char_end": 8955,
+    "sentence_index": 61,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "We use this to construct a ``ground truth'' dataset of \\(\\ (x_i, y _i)\\ \\).",
+    "char_start": 8956,
+    "char_end": 9031,
+    "sentence_index": 62,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "In the single LLM model setting, we then finetune the model on the set of generated responses $y_i$ which match $ y _i$ given input $x_i$.",
+    "char_start": 9032,
+    "char_end": 9170,
+    "sentence_index": 63,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "While the final debate results \\( y _i\\) are accurate, they often similar in style and methodology.",
+    "char_start": 9172,
+    "char_end": 9271,
+    "sentence_index": 64,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "As a result, repeatedly capturing a dataset of \\(\\ (x_i, y _i)\\ \\) pairs for multiple rounds of finetuning often leads to a plateau of self-improvement performance.",
+    "char_start": 9272,
+    "char_end": 9436,
+    "sentence_index": 65,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Our goal in multiagent finetuning is to create datasets that construct a set of models representing different agents that are diverse and accurately solve problems.",
+    "char_start": 9438,
+    "char_end": 9602,
+    "sentence_index": 66,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "Instead of building a single dataset to finetune each model, we propose creating different datasets to finetune different models.",
+    "char_start": 9603,
+    "char_end": 9732,
+    "sentence_index": 67,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "A set of models are trained as generation agents and others as critic agents .",
+    "char_start": 9733,
+    "char_end": 9811,
+    "sentence_index": 68,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "The generation models produce initial responses to input questions.",
+    "char_start": 9812,
+    "char_end": 9879,
+    "sentence_index": 69,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "In contrast, the critic models assess the outputs from all generation agents and then select or generate the most effective responses.",
+    "char_start": 9880,
+    "char_end": 10014,
+    "sentence_index": 70,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Finetuning Generation Models.",
+    "char_start": 10016,
+    "char_end": 10045,
+    "sentence_index": 71,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "The role of a generation model is to generate accurate responses to input questions.",
+    "char_start": 10046,
+    "char_end": 10130,
+    "sentence_index": 72,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "Such models should rely on diverse reasoning chains to promote diversity.",
+    "char_start": 10131,
+    "char_end": 10204,
+    "sentence_index": 73,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "Generation agents $A^G_n$ are constructed from the $N$ generation models which generate a response to the given input $x$ (we omit $i$ for simplicity).",
+    "char_start": 10205,
+    "char_end": 10356,
+    "sentence_index": 74,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "For each agent, we select its outputs \\(y_n\\) that match the final debate results \\( y \\) and construct input-output pairs \\((x, y_n)\\).",
+    "char_start": 10357,
+    "char_end": 10493,
+    "sentence_index": 75,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "The resulting dataset for agent $A^G_n$ is \\( D _n^G = \\ (x, y_n)\\ \\).",
+    "char_start": 10494,
+    "char_end": 10564,
+    "sentence_index": 76,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "This approach generates a set of finetuning datasets \\(\\ D ^G_1, , D ^G_N\\ \\) across all \\(N\\) agents.",
+    "char_start": 10565,
+    "char_end": 10667,
+    "sentence_index": 77,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "Each dataset contains different outputs, allowing for specialization and diversification of responses.",
+    "char_start": 10668,
+    "char_end": 10770,
+    "sentence_index": 78,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "We finetune each generation model with the corresponding dataset to get $N$ correspondingly finetuned agents $\\ A ^G_1, , A ^G_N\\ $.",
+    "char_start": 10771,
+    "char_end": 10903,
+    "sentence_index": 79,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "[t]\n\n[H]\nMultiagent Finetuning of Language Models\n\n[1]\n\nA pretrained LLM $A$; A set of language inputs $ D _ task = \\ x_i\\ $; The number of agents $N$; The number of debate rounds $M$; The number of finetuning iterations $L$.",
+    "char_start": 10905,
+    "char_end": 11130,
+    "sentence_index": 80,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "$A_1^G, , A_N^G A$ gray \\# Copy the LLM to build $N$ generation agents\n\n$A_1^C, , A_N^C A$ gray \\# Copy the LLM to build $N$ critic agents\n\ngray \\# Multiple Iterations of Finetuning\n$l=1 L$\n\ngray \\# Multiagent Debate\n\n$x$ in $ D _ task $ gray \\# Iterate over the input tasks\n\n$m$ in $M$ gray \\# M rounds of debate\n$m=0$\n$y_ 1,1 , , y_ 1, N $ $ $ $ A^G_1(x), , A^G_N(x) $ gray \\# Response of each generation agent\n\n$x^s_ m,1 , , x^s_ m, N $ $ $ Summarize the responses from other agents in round $m-1$\n$y_ m,1 , , y_ m, N $ $ $ $ A^C_1(x^s_ m,1 ), , A^C_N(x^s_ m,N ) $ gray \\# Response of each critic agent\n\n$ y $ $ $ Majority Voting $\\ y_ M,1 , ,y_ M,N \\ $ gray \\# Responses of the final round of debate\n\ngray \\# Multiagent Finetuning\n\nInitialize datasets for finetuning generation models $\\ D ^G_n\\ _ n=1 ^ N $\n\nInitialize datasets for finetuning critic models $\\ D ^C_n\\ _ n=1 ^ N $\n\n$n$ in $N$ gray \\# Iterate over all the agents\n\n$x$ in $ D _ task $ gray \\# Iterate over the input tasks\n\nsuperlightred $ D ^G_n D _n^ G \\ (x, y_ 1, n ) | y_ 1,n = y \\ $ gray \\# Add pairs\n\nlightblue $ D _n^ C- D _n^ C- \\ (x, (y_ 1, n , , y_ M, n )) | y_ 1, n y , y_ M, n = y \\ $ gray \\# Add pairs\n\nlightblue $ D _n^ C+ D _n^ C+ \\ (x, (y_ 1, n , , y_ M, n )) | y_ 1, n = y , y_ M, n = y \\ $ gray \\# Add pairs\n\nlightblue $ D _n^C w D _n^ C- + (1-w) D _n^ C+ $ gray \\# Combine the datasets\n\nsuperlightred $ A _n^G $ Finetune$(A_n, D _n^G)$ gray \\# Finetune the generation model\n\nlightblue $ A _n^C $ Finetune$(A_n, D _n^C)$ gray \\# Finetune the critic model\n\n$A_1^G, , A_N^G A _1^G, , A _N^G$ gray \\# Generation agent for the next finetuning iteration\n\n$A_1^C, , A_N^C A _1^C, , A _N^C$ gray \\# Critic agent for the next finetuning iteration\n\n-25pt\n\nFinetuning Critic Models.",
+    "char_start": 11132,
+    "char_end": 12890,
+    "sentence_index": 81,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "The role of a critic model is to further provide accurate critiques to responses from other agents and use these responses to provide an updated answer.",
+    "char_start": 12891,
+    "char_end": 13043,
+    "sentence_index": 82,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec006",
+    "text": "Simply finetuning generation models isn't sufficient for achieving optimal results, especially for more challenging tasks, due to the lack of a feedback mechanism on their outputs.",
+    "char_start": 13044,
+    "char_end": 13224,
+    "sentence_index": 83,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec006",
+    "text": "Critic agents $A^C_n$ are constructed from critic models and evaluate the outputs from all generation agents and then select or synthesize the best responses.",
+    "char_start": 13225,
+    "char_end": 13383,
+    "sentence_index": 84,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec006",
+    "text": "This additional step ensures that the system continuously improves and adapts, enhancing overall performance.",
+    "char_start": 13384,
+    "char_end": 13493,
+    "sentence_index": 85,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec006",
+    "text": "In the multiagent debate setting, each agent's output in the last round of debates is represented as \\(y_ M,n \\), where \\(M\\) denotes the number of debate rounds.",
+    "char_start": 13495,
+    "char_end": 13657,
+    "sentence_index": 86,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "We first identify those outputs \\(y_ M,n \\) that align with the final debate results \\( y \\).",
+    "char_start": 13658,
+    "char_end": 13751,
+    "sentence_index": 87,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "These consistent outputs, together with the previous responses, are then used to construct input-output pairs \\( ( x, (y_ 1,n , , y_ M,n ) )\\) for finetuning the critic models.",
+    "char_start": 13752,
+    "char_end": 13928,
+    "sentence_index": 88,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "To enhance the model's capability to correct incorrect answers generated early in the debate process, we sample a subset of pairs where \\(y_ 1,n \\) differs from \\( y \\), but \\(y_ M,n \\) matches \\( y \\) and build a dataset \\( D _n^ C- = \\ ( x, (y_ 1,n , , y_ M,n ) ) | y_ 1,n y , y_ M,n = y \\ \\).",
+    "char_start": 13930,
+    "char_end": 14225,
+    "sentence_index": 89,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "This indicates that the answer was successfully corrected by the end of the debates.",
+    "char_start": 14226,
+    "char_end": 14310,
+    "sentence_index": 90,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "We also construct another dataset \\( D _n^ C+ = \\ ( x, (y_ 1,n , , y_ M,n ) ) | y_ 1,n = y , y_ M,n = y \\ \\) where both \\(y_ 1,n \\) and \\(y_ M,n \\) match \\( y \\), demonstrating the agent's ability to maintain the correct answer throughout the debates.",
+    "char_start": 14311,
+    "char_end": 14562,
+    "sentence_index": 91,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "We combine these two datasets to create a comprehensive finetuning dataset for each critic model to construct updated critic agents \\(A^C_n\\):\n\nD _n^C =\nw D _n^ C- + (1-w) D _n^ C+ .",
+    "char_start": 14563,
+    "char_end": 14745,
+    "sentence_index": 92,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "In the above expression, $w$ is a tunable hyperparameter representing the proportion of data sampled from the first set, while $(1 - w)$ represents the proportion of data sampled from the second set.",
+    "char_start": 14747,
+    "char_end": 14946,
+    "sentence_index": 93,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "This method generates a series of datasets \\(\\ D ^C_1, , D ^C_N\\ \\) for finetuning the critic models, denoted as \\(\\ A ^C_1, , A ^C_N\\ \\) after the finetuning process.",
+    "char_start": 14947,
+    "char_end": 15114,
+    "sentence_index": 94,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec007",
+    "text": "The finetuned models are capable of generating responses through multiagent debate.",
+    "char_start": 15116,
+    "char_end": 15199,
+    "sentence_index": 95,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec007",
+    "text": "We found that iterative application of the multiagent finetuning allows for continuous learning and adaptation, leading to progressively refined and more accurate responses over time.",
+    "char_start": 15200,
+    "char_end": 15383,
+    "sentence_index": 96,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec007",
+    "text": "The finetuned generation agents $\\ A ^G_1, , A ^G_N\\ $ and critic agents $\\ A ^C_1, , A ^C_N\\ $ are used to gather datasets for the next iteration through multiagent debate.",
+    "char_start": 15384,
+    "char_end": 15557,
+    "sentence_index": 97,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec007",
+    "text": "The algorithm for the proposed approach of $L$ iterations of finetuning is detailed in Algorithm .",
+    "char_start": 15559,
+    "char_end": 15657,
+    "sentence_index": 98,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec007",
+    "text": "The steps for collecting data for finetuning the generation models are marked in red, and the finetuning of critic models is shown in blue.",
+    "char_start": 15658,
+    "char_end": 15797,
+    "sentence_index": 99,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec007",
+    "text": "-5pt\n\n-3pt\nAt inference time, we have a set of finetuned generation models which represent generation agents $\\ A ^G_1, , A ^G_N\\ $, and a set of finetuned critic models which represent critic agents \\(\\ A ^C_1, , A ^C_N\\ \\).",
+    "char_start": 15799,
+    "char_end": 16024,
+    "sentence_index": 100,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "We conduct a multiagent debate among these agents, where each individual generation agent participates in the first round of the debate, followed by each individual critic agent in subsequent rounds.",
+    "char_start": 16025,
+    "char_end": 16224,
+    "sentence_index": 101,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "Each agent takes the responses from all other agents and generates a new response in each round of the debate.",
+    "char_start": 16225,
+    "char_end": 16335,
+    "sentence_index": 102,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "We found that summarizing the responses from the other agents helps eliminate redundant information while retaining the most important details, thereby further improving performance.",
+    "char_start": 16336,
+    "char_end": 16518,
+    "sentence_index": 103,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "The final result is determined by a majority vote based on the responses from the final round of the debate.",
+    "char_start": 16519,
+    "char_end": 16627,
+    "sentence_index": 104,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "We provide pseudocode in Algorithm .",
+    "char_start": 16628,
+    "char_end": 16664,
+    "sentence_index": 105,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "-5pt\n\n-3pt\n\nWe evaluate our method and baselines on three language reasoning tasks.",
+    "char_start": 16666,
+    "char_end": 16749,
+    "sentence_index": 106,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "Arithmetic.",
+    "char_start": 16751,
+    "char_end": 16762,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": "consists of 1,000 generated arithmetic problems in the form \\(a + b c + d - e f\\).",
+    "char_start": 16763,
+    "char_end": 16845,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "Following the generation procedure in du2023improving , each variable is assigned a random value up to a maximum of 30.",
+    "char_start": 16846,
+    "char_end": 16965,
+    "sentence_index": 109,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Grade School Math (GSM).",
+    "char_start": 16967,
+    "char_end": 16991,
+    "sentence_index": 110,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "cobbe2021training consists of math word problems that require multi-step mathematical reasoning.",
+    "char_start": 16992,
+    "char_end": 17088,
+    "sentence_index": 111,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "Each example includes a problem statement, the numerical answer, and an explanation of the answer.",
+    "char_start": 17089,
+    "char_end": 17187,
+    "sentence_index": 112,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "MATH.",
+    "char_start": 17189,
+    "char_end": 17194,
+    "sentence_index": 113,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "hendrycks2021measuring consists of competition-level math problems categorized into five difficulty levels.",
+    "char_start": 17195,
+    "char_end": 17302,
+    "sentence_index": 114,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "For our experiments, we sample problems from the first three levels.",
+    "char_start": 17303,
+    "char_end": 17371,
+    "sentence_index": 115,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "For each dataset, we randomly select $500$ examples for finetuning the language model.",
+    "char_start": 17373,
+    "char_end": 17459,
+    "sentence_index": 116,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Additionally, we select $500$ held-out problems for evaluation.",
+    "char_start": 17460,
+    "char_end": 17523,
+    "sentence_index": 117,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "We parse the generated answers and evaluate their correctness by comparing them with the ground truth answers.",
+    "char_start": 17524,
+    "char_end": 17634,
+    "sentence_index": 118,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Accuracy is reported based on how frequently the model returns the correct answer.",
+    "char_start": 17635,
+    "char_end": 17717,
+    "sentence_index": 119,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "We also report the standard error of each accuracy value to measure the significance of improvement.",
+    "char_start": 17718,
+    "char_end": 17818,
+    "sentence_index": 120,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec011",
+    "text": "We compare the proposed method with various baselines.",
+    "char_start": 17820,
+    "char_end": 17874,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec011",
+    "text": "In all multiagent settings, we use three agents, and for all debate settings, we conduct two rounds of debates to ensure a fair comparison (additional results with five agents in Appendix Section ).",
+    "char_start": 17875,
+    "char_end": 18073,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec011",
+    "text": "Base utilizes a single language model to process input and generate responses.",
+    "char_start": 18075,
+    "char_end": 18153,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec011",
+    "text": "Majority is a multiagent baseline that selects responses based on a majority vote from multiple agents.",
+    "char_start": 18155,
+    "char_end": 18258,
+    "sentence_index": 124,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "If no response secures a majority, one of the potential answers is chosen at random.",
+    "char_start": 18259,
+    "char_end": 18343,
+    "sentence_index": 125,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "Debate is a multiagent debate baseline as described in .",
+    "char_start": 18345,
+    "char_end": 18401,
+    "sentence_index": 126,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "The debate structure is outlined in Figure .",
+    "char_start": 18402,
+    "char_end": 18446,
+    "sentence_index": 127,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec011",
+    "text": "STaR zelikman2022star iteratively finetunes the language agent using a dataset with ground truth answers for each problem.",
+    "char_start": 18448,
+    "char_end": 18570,
+    "sentence_index": 128,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec011",
+    "text": "Initially, the LM generates an answer for each problem, and correct responses, as verified by the ground truth, are added to the finetuning dataset.",
+    "char_start": 18571,
+    "char_end": 18719,
+    "sentence_index": 129,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec011",
+    "text": "For problems answered incorrectly, the LM is reprompted with a hint that includes the ground truth answer.",
+    "char_start": 18720,
+    "char_end": 18826,
+    "sentence_index": 130,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec011",
+    "text": "Problems where the generated response includes the correct answer are added to the finetuning dataset.",
+    "char_start": 18827,
+    "char_end": 18929,
+    "sentence_index": 131,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec011",
+    "text": "The LM is finetuned on the collected dataset.",
+    "char_start": 18930,
+    "char_end": 18975,
+    "sentence_index": 132,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec011",
+    "text": "This iterative process of building the dataset and finetuning is repeated until the finetuning loss saturates.",
+    "char_start": 18976,
+    "char_end": 19086,
+    "sentence_index": 133,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "The final model is then used for evaluation.",
+    "char_start": 19087,
+    "char_end": 19131,
+    "sentence_index": 134,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "Majority FT is a baseline that incorporates both majority voting and finetuning.",
+    "char_start": 19133,
+    "char_end": 19213,
+    "sentence_index": 135,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "We prompt the language agents with each problem and conduct a majority vote on their results.",
+    "char_start": 19214,
+    "char_end": 19307,
+    "sentence_index": 136,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "We then compile the responses from all agents that align with the majority vote, along with the input, to create a finetuning dataset.",
+    "char_start": 19308,
+    "char_end": 19442,
+    "sentence_index": 137,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "The language model is finetuned using this dataset.",
+    "char_start": 19443,
+    "char_end": 19494,
+    "sentence_index": 138,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "Finally, we apply majority voting to the outputs of the finetuned model to determine the final answer.",
+    "char_start": 19495,
+    "char_end": 19597,
+    "sentence_index": 139,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec012",
+    "text": "[t]\n\n3.5pt\n\n0.85 !",
+    "char_start": 19599,
+    "char_end": 19617,
+    "sentence_index": 140,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec012",
+    "text": "l|l|ccc\nLLM & Methods & Arithmetic & GSM & MATH\n\n6 * GPT-3.5 openai2022chatgpt & Base & 81.99 $ $ 0.99 & 75.60 $ $ 1.36 & 46.83 $ $ 2.25\n\n& Majority & 94.40 $ $ 1.03 & 81.20 $ $ 1.24 & 51.40 $ $ 2.23\n\n& Debate & 98.21 $ $ 0.54 &83.30 $ $ 1.18 & lightblue 55.73 $ $ 2.21\n\n& STaR & 98.38 $ $ 0.57 & lightblue 83.60 $ $ 1.17 & 53.00 $ $ 2.23\n\n& Majority FT & lightblue 98.40 $ $ 0.56 & 83.70 $ $ 1.17 & 53.40 $ $ 2.23\n\n& Ours & superlightred 99.62 $ $ 0.28 & superlightred 85.60 $ $ 1.11 & superlightred 60.60 $ $ 2.18\n\n6 * Phi-3 abdin2024phi & Base & 88.30 $ $ 1.44 & 81.20 $ $ 1.74& 45.60 $ $ 2.10\n\n& Majority & 91.80 $ $ 1.23 & 81.80 $ $ 1.72 & 47.20 $ $ 1.82\n\n& Debate & lightblue 96.20 $ $ 0.86 & 84.40 $ $ 1.58& lightblue 53.40 $ $ 2.28\n\n& STaR & 94.80 $ $ 0.99 & lightblue 85.80 $ $ 1.21 & 51.80 $ $ 2.06\n\n& Majority FT & 93.80 $ $ 1.08 & 82.20 $ $ 1.71 & 48.60 $ $ 2.16\n\n& Ours & superlightred 99.40 $ $ 0.34& superlightred 88.60 $ $ 1.42& superlightred 58.80 $ $ 2.22\n\n6 * Mistral jiang2023mistral & Base & 10.80 $ $ 0.51 & 35.60 $ $ 1.92 & 16.60 $ $ 1.21\n\n& Majority & 14.80 $ $ 1.17 & 41.80 $ $ 0.88 & 16.80 $ $ 1.25\n\n& Debate & lightblue 19.60 $ $ 1.12 & lightblue 52.60 $ $ 1.26 & 18.20 $ $ 1.37\n\n& STaR & 17.40 $ $ 0.97 & 45.50 $ $ 1.54 & 17.84 $ $ 1.23\n\n& Majority FT & 16.40 $ $ 0.73 & 44.60 $ $ 1.65 & lightblue 18.91 $ $ 1.37\n\n& Ours & superlightred 22.60 $ $ 0.97 & superlightred 58.40 $ $ 2.11 & superlightred 22.50 $ $ 1.87\n\n5 * LLaMA-3 dubey2024llama & Base & 43.20 $ $ 2.22 & 75.00 $ $ 1.94 & 46.80 $ $ 2.23\n\n& Majority & 45.80 $ $ 2.23 & 76.40 $ $ 1.90 & 47.20 $ $ 2.23\n\n& Debate & 48.40 $ $ 2.24 & lightblue 78.40 $ $ 1.44 & 51.60 $ $ 2.23\n\n& Majority FT & lightblue 49.20 $ $ 2.24 & 77.20 $ $ 1.87 & lightblue 52.20 $ $ 2.23\n\n& Ours & superlightred 52.00 $ $ 2.24 & superlightred 88.60 $ $ 1.77 & superlightred 57.40 $ $ 2.21\n\n-5pt\nQuantitative results of the proposed method and baselines.",
+    "char_start": 19618,
+    "char_end": 21531,
+    "sentence_index": 141,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "Our method outperforms the baselines across all datasets, as indicated by accuracy (\\%) $ $ standard error.",
+    "char_start": 21532,
+    "char_end": 21639,
+    "sentence_index": 142,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "The highest values are highlighted in red, and the second-highest values are highlighted in blue.",
+    "char_start": 21640,
+    "char_end": 21737,
+    "sentence_index": 143,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "All results are reported over 500 fixed evaluation problems, expect GSM results for GPT-3.5 which are reported over 1000 fixed evaluation problems (to construct nonoverlapping confidence bars).",
+    "char_start": 21738,
+    "char_end": 21931,
+    "sentence_index": 144,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "-10pt\n\nWe compare baselines and our method, which was finetuned for only a single iteration ($L=1$), in Table .",
+    "char_start": 21933,
+    "char_end": 22044,
+    "sentence_index": 145,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "The accuracy and standard error for each dataset are reported.",
+    "char_start": 22045,
+    "char_end": 22107,
+    "sentence_index": 146,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "We use three distinct base language models: three open-source models, Phi-3 4B abdin2024phi , Mistral 7B jiang2023mistral , and LLaMA-3 8B dubey2024llama ; and one proprietary model, GPT-3.5 openai2022chatgpt .",
+    "char_start": 22108,
+    "char_end": 22318,
+    "sentence_index": 147,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "Our method outperforms all the baselines.",
+    "char_start": 22320,
+    "char_end": 22361,
+    "sentence_index": 148,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec012",
+    "text": "Although ``STaR'' utilizes ground truth labels for data selection and undergoes multiple iterations of finetuning, it still performs worse than our method, which uses only a single finetuning iteration without access to ground truth.",
+    "char_start": 22362,
+    "char_end": 22595,
+    "sentence_index": 149,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec012",
+    "text": "The ``Majority'', ``Debate'' and ``STaR'' methods outperform the ``Base'' model, demonstrating that majority voting, multiagent debate, and finetuning all contribute to improved performance.",
+    "char_start": 22596,
+    "char_end": 22786,
+    "sentence_index": 150,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec012",
+    "text": "``Majority FT'' enhances the performance of ``Majority'' by incorporating a finetuning procedure.",
+    "char_start": 22787,
+    "char_end": 22884,
+    "sentence_index": 151,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": "Our method is only finetuned on 500 examples and still shows significant improvement over the baselines, particularly on more challenging datasets such as GSM and MATH.",
+    "char_start": 22885,
+    "char_end": 23053,
+    "sentence_index": 152,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec012",
+    "text": "Additional evaluations on a larger set of problems and datasets can be found in Appendix Section .",
+    "char_start": 23054,
+    "char_end": 23152,
+    "sentence_index": 153,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec013",
+    "text": "To verify the effectiveness of multiple iterations of finetuning, as described in Section , we present the performance of our proposed method ``Multiagent FT (Ours)'' over five iterations of finetuning in Figure .",
+    "char_start": 23154,
+    "char_end": 23367,
+    "sentence_index": 154,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec013",
+    "text": "We tested this method on two open-source models, Mistral and Phi-3, using the MATH dataset.",
+    "char_start": 23368,
+    "char_end": 23459,
+    "sentence_index": 155,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec013",
+    "text": "The results demonstrate that ``Multiagent FT (Ours)'' consistently improves performance over time.",
+    "char_start": 23460,
+    "char_end": 23558,
+    "sentence_index": 156,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec013",
+    "text": "For example, the accuracy of Phi-3 increased from 58.8\\% to 66.0\\%, and the accuracy of Mistral improved from 22.5\\% to 28.2\\%.",
+    "char_start": 23559,
+    "char_end": 23686,
+    "sentence_index": 157,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec013",
+    "text": "Our method with five rounds of finetuning is 12.6\\% and 9.31\\% more accurate than the best baseline listed in Table using Phi-3 and Mistral, respectively.",
+    "char_start": 23687,
+    "char_end": 23841,
+    "sentence_index": 158,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec013",
+    "text": "In contrast, finetuning a single agent (\"Single-agent FT\"), as described in Section , shows that performance saturates after one iteration of finetuning and starts dropping afterward, indicating potential overfitting to generated responses.",
+    "char_start": 23843,
+    "char_end": 24083,
+    "sentence_index": 159,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec013",
+    "text": "This issue occurs when the single model, after several finetuning cycles, becomes fixated on a small range of responses, which limits its diversity and prevents further enhancement.",
+    "char_start": 24084,
+    "char_end": 24265,
+    "sentence_index": 160,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec013",
+    "text": "However, finetuning multiple generation and critic agents using our proposed method increases diversity and consistently improves performance.",
+    "char_start": 24266,
+    "char_end": 24408,
+    "sentence_index": 161,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "In this section, we aim to answer the following questions:\n1) How important is the proposed multiagent finetuning procedure?",
+    "char_start": 24410,
+    "char_end": 24534,
+    "sentence_index": 162,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "2) Will it increase response diversity?",
+    "char_start": 24535,
+    "char_end": 24574,
+    "sentence_index": 163,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "3) Can the finetuned agent generalize to other datasets in a zero-shot setting?",
+    "char_start": 24575,
+    "char_end": 24654,
+    "sentence_index": 164,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec015",
+    "text": "[t]\n4.5pt\n\n!",
+    "char_start": 24656,
+    "char_end": 24668,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec015",
+    "text": "l|l|ccc\nLLM & Ablations & Arithmetic & GSM & MATH\n\n5 * GPT-3.5 openai2022chatgpt\n& Multiagent FT (Ours) & superlightred 99.62 $ $ 0.28 & superlightred 85.60 $ $ 1.67 & superlightred\n60.60 $ $ 2.18\n\n& Multiagent FT w/o summary & lightblue 99.20 $ $ 0.40 & 82.20 $ $ 1.72 & 51.70 $ $ 2.24\n\n& Multiagent FT w/o critic & lightblue 99.20 $ $ 0.40 & lightblue 83.80 $ $ 1.65 & 50.80 $ $ 2.24\n\n& Single-agent FT & 99.00 $ $ 0.45 & 83.60 $ $ 1.66 & lightblue 56.80 $ $ 2.21\n\n& Single-agent FT w/o debate & 87.20 $ $ 1.49 & 75.00 $ $ 1.93 & 48.89 $ $ 2.23\n\n5 * Phi-3 abdin2024phi\n& Multiagent FT (Ours) & superlightred 99.40 $ $ 0.34& superlightred 88.60 $ $ 1.42 & superlightred 58.80 $ $ 2.22\n\n& Multiagent FT w/o summary & lightblue 98.80 $ $ 0.51 & 84.40 $ $ 1.68 & 55.00 $ $ 2.09\n\n& Multiagent FT w/o critic & 98.20 $ $ 0.62 & 86.00 $ $ 1.58 & 56.60 $ $ 2.22\n\n& Single-agent FT & 97.40 $ $ 0.71 & lightblue 86.80 $ $ 1.51 & lightblue 56.80 $ $ 2.21\n\n& Single-agent FT w/o debate & 92.20 $ $ 1.20 & 83.60 $ $ 1.66 & 50.20 $ $ 2.24\n\n5 * Mistral jiang2023mistral\n& Multiagent FT (Ours) & superlightred 22.60 $ $ 1.87 & superlightred 58.40 $ $ 2.11& superlightred 22.50 $ $ 1.87\n\n& Multiagent FT w/o summary & lightblue 21.80 $ $ 1.84 & lightblue 56.00 $ $ 1.56 & lightblue 20.20 $ $ 1.55\n\n& Multiagent FT w/o critic & 21.00 $ $ 1.82 & 54.80 $ $ 1.60 & 19.01 $ $ 1.59\n\n& Single-agent FT & 21.20 $ $ 1.83 & 55.00 $ $ 2.22 & 19.21 $ $ 1.69\n\n& Single-agent FT w/o debate & 17.71 $ $ 1.70 & 51.20 $ $ 2.24 & 17.22 $ $ 1.54\n\n5 * LLaMA-3 dubey2024llama\n& Multiagent FT (Ours) & superlightred 52.00 $ $ 2.24 & superlightred 88.60 $ $ 1.77& superlightred 57.40 $ $ 2.21\n\n& Multiagent FT w/o summary & lightblue 50.40 $ $ 2.24 & 83.20 $ $ 1.67 & 51.60 $ $ 2.23\n\n& Multiagent FT w/o critic & 48.60 $ $ 2.24 & 82.20 $ $ 1.70 & 50.50 $ $ 2.23\n\n& Single-agent FT & 48.00 $ $ 2.23 & lightblue 84.40 $ $ 1.62 & lightblue 52.40 $ $ 2.23\n\n& Single-agent FT w/o debate & 44.00 $ $ 2.22 & 81.60 $ $ 1.73 & 48.80 $ $ 2.24\n\n-5pt\nAblation results .",
+    "char_start": 24669,
+    "char_end": 26687,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec015",
+    "text": "We examine each component of the proposed method and found that summarization, the combination of critic and generation agents, multiagent finetuning, and multiagent debate all contribute to performance improvement.",
+    "char_start": 26688,
+    "char_end": 26903,
+    "sentence_index": 167,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec015",
+    "text": "The accuracy (\\%) \\( \\) standard error is reported.",
+    "char_start": 26904,
+    "char_end": 26955,
+    "sentence_index": 168,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec015",
+    "text": "-15pt\n\nfigures/final_diversity_plot.pdf\n-18pt\nDiversity is preserved and can improve across iterations of finetuning.",
+    "char_start": 26957,
+    "char_end": 27074,
+    "sentence_index": 169,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec015",
+    "text": "We measure the response diversity of our method and the single-agent finetuning method on the MATH dataset using two diversity measures.",
+    "char_start": 27075,
+    "char_end": 27211,
+    "sentence_index": 170,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec015",
+    "text": "The diversity of our method remains consistent over finetuning iterations for one metric and improves for another metric, whereas the diversity of the single-agent method drops significantly.",
+    "char_start": 27212,
+    "char_end": 27403,
+    "sentence_index": 171,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec015",
+    "text": "-15pt\n\nWe examine each component of the proposed method, as shown in Table .",
+    "char_start": 27405,
+    "char_end": 27481,
+    "sentence_index": 172,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "Multiagent FT (Ours) refers to our proposed method with a single round of finetuning, \\(L=1\\).",
+    "char_start": 27482,
+    "char_end": 27576,
+    "sentence_index": 173,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec015",
+    "text": "Multiagent FT w/o summary removes the summarization step from the multiagent debate.",
+    "char_start": 27578,
+    "char_end": 27662,
+    "sentence_index": 174,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec015",
+    "text": "Instead of summarizing, the responses from other agents are directly concatenated and presented to each agent.",
+    "char_start": 27663,
+    "char_end": 27773,
+    "sentence_index": 175,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec015",
+    "text": "Summarization helps by eliminating redundant information and retaining the most critical points; therefore, omitting the summarization step can negatively impact performance.",
+    "char_start": 27774,
+    "char_end": 27948,
+    "sentence_index": 176,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec015",
+    "text": "Multiagent FT w/o critic :\nThe critic agents evaluate the outputs from all generation agents and select or synthesize the best responses.",
+    "char_start": 27950,
+    "char_end": 28087,
+    "sentence_index": 177,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec015",
+    "text": "Removing the critic agents and only finetuning the $N$ generation agents could hurt performance, as the critic agents play a crucial role of refining the final output.",
+    "char_start": 28088,
+    "char_end": 28255,
+    "sentence_index": 178,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec015",
+    "text": "Single-agent FT involves finetuning only a single LLM as covered in Section and using it as an agent in multiagent debate.",
+    "char_start": 28257,
+    "char_end": 28379,
+    "sentence_index": 179,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec015",
+    "text": "This approach can easily lead to model collapse, where the agent generates similar responses after finetuning, thereby reducing diversity and hurting performance.",
+    "char_start": 28380,
+    "char_end": 28542,
+    "sentence_index": 180,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec015",
+    "text": "Therefore, multiagent finetuning is necessary to maintain high performance in reasoning tasks.",
+    "char_start": 28543,
+    "char_end": 28637,
+    "sentence_index": 181,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec015",
+    "text": "Single-agent FT w/o Debate further eliminates the debate procedure, with the finetuned LLM generating responses directly.",
+    "char_start": 28639,
+    "char_end": 28760,
+    "sentence_index": 182,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec015",
+    "text": "As shown in , multiagent debate can significantly boost performance, so removing it could lead to a performance drop.",
+    "char_start": 28761,
+    "char_end": 28878,
+    "sentence_index": 183,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec015",
+    "text": "These results indicate that summarization, the combination of critic and generation agents, multiagent finetuning, and multiagent debate all contribute to performance improvement.",
+    "char_start": 28880,
+    "char_end": 29059,
+    "sentence_index": 184,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec015",
+    "text": "Our proposed method integrates these components into a single, unified framework, leveraging their combined benefits.",
+    "char_start": 29060,
+    "char_end": 29177,
+    "sentence_index": 185,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec015",
+    "text": "-5pt\n\n-3pt\n\nBy finetuning multiple agents with distinct roles, our approach enables us to obtain more diverse responses across rounds of finetuning compared to a single agent.",
+    "char_start": 29179,
+    "char_end": 29354,
+    "sentence_index": 186,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "Figure illustrates the diversity of generations from our method and single-agent across rounds of finetuning using two metrics of diversity.",
+    "char_start": 29355,
+    "char_end": 29495,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "We cover one metric of diversity, negative log-likelihood, here and cover the other in Section .",
+    "char_start": 29496,
+    "char_end": 29592,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "In our first diversity metric, we aim to characterize specialization by tracking the likelihood of responses of other agents using likelihood calculations of a specific agent.",
+    "char_start": 29594,
+    "char_end": 29769,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "If we are increasing diversity, then the log-likelihood of responses from other agents will decrease across iterations of finetuning.",
+    "char_start": 29770,
+    "char_end": 29903,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "The reasoning used by other agents would be considered less common for the specific agent, indicating a divergence in responses.",
+    "char_start": 29904,
+    "char_end": 30032,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "If accuracy increases while likelihood of responses from other agents decreases, this indicates must specialization.",
+    "char_start": 30033,
+    "char_end": 30149,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec016",
+    "text": "We evaluate the negative log-likelilhood (NLL) of responses from other critic agents using another held-out critic agent and plot this over iterations of finetuning.",
+    "char_start": 30151,
+    "char_end": 30316,
+    "sentence_index": 193,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec016",
+    "text": "We do the same with Single-Agent FT, using responses from other agents and evaluate likelihood using a held-out agent.",
+    "char_start": 30317,
+    "char_end": 30435,
+    "sentence_index": 194,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec016",
+    "text": "Larger NLL values indicate that the model has assigned low likelihood to a sequence and lower NLL values indicate that the model has assigned higher likelihood to a sequence.",
+    "char_start": 30436,
+    "char_end": 30610,
+    "sentence_index": 195,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec016",
+    "text": "We measure this over iterations of finetuning for our method as well as Single-Agent FT.",
+    "char_start": 30611,
+    "char_end": 30699,
+    "sentence_index": 196,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec016",
+    "text": "r 0.5\n-20pt\n\nrebuttal/scatter_sim_acc-1.pdf\n-20pt\nRelationship between accuracy and diversity.",
+    "char_start": 30701,
+    "char_end": 30795,
+    "sentence_index": 197,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec016",
+    "text": "We visualize the relationship between embedding dissimilarity and MATH accuracy across rounds of finetuning.",
+    "char_start": 30796,
+    "char_end": 30904,
+    "sentence_index": 198,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec016",
+    "text": "Our multiagent finetuning preserves diversity across rounds of finetuning while improving accuracy.",
+    "char_start": 30905,
+    "char_end": 31004,
+    "sentence_index": 199,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec016",
+    "text": "-10pt\n\nWe compute the diversity across all test examples and present the results in Figure .",
+    "char_start": 31006,
+    "char_end": 31098,
+    "sentence_index": 200,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec016",
+    "text": "For the ``Single-agent FT'', all agents are the same finetuned language models, and \\(M=1\\).",
+    "char_start": 31099,
+    "char_end": 31191,
+    "sentence_index": 201,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec016",
+    "text": "We notice that NLL increases across iterations of finetuning for our method, meaning that responses from other critic agents are more diversity according to our held-out critic agent.",
+    "char_start": 31192,
+    "char_end": 31375,
+    "sentence_index": 202,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec016",
+    "text": "Moreover, our responses are more diverse than using Single-Agent FT.",
+    "char_start": 31376,
+    "char_end": 31444,
+    "sentence_index": 203,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec016",
+    "text": "This aligns with our previous observation that diverse responses can mitigate model collapse and prevent the model from overfitting to the finetuning data, leading to better performance.",
+    "char_start": 31445,
+    "char_end": 31631,
+    "sentence_index": 204,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec016",
+    "text": "We also include another metric, embedding dissimilarity, as a further comparison, finding that responses from our method preserves diversity, where as diversity reduces significantly with Single-agent FT.",
+    "char_start": 31632,
+    "char_end": 31836,
+    "sentence_index": 205,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec016",
+    "text": "We provide additional metrics for evaluating diversity in generations in Appendix Section , and similarly find that multiagent finetuning preserves the final diversity of generations.",
+    "char_start": 31837,
+    "char_end": 32020,
+    "sentence_index": 206,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec016",
+    "text": "We further analyze the relationship between diversity and performance and show this in Figure .",
+    "char_start": 32022,
+    "char_end": 32117,
+    "sentence_index": 207,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec016",
+    "text": "Specifically, we see that an improvement in the diversity of responses correlates positively with an improvement in performance across rounds of finetuning across both Phi-3 and Mistral models.",
+    "char_start": 32118,
+    "char_end": 32311,
+    "sentence_index": 208,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec016",
+    "text": "This suggests that in general, increasing the diversity of responses can be helpful for improvement over multiple rounds of fine-tuning.",
+    "char_start": 32312,
+    "char_end": 32448,
+    "sentence_index": 209,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec016",
+    "text": "In Appendix Section , we compare our approach with additional approaches to improve the diversity of samples such as increasing the temperature at which samples are generated, or using unique IDs in a single language to simulate a single agent.",
+    "char_start": 32449,
+    "char_end": 32693,
+    "sentence_index": 210,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec016",
+    "text": "We find that our approach outperforms these baselines.",
+    "char_start": 32694,
+    "char_end": 32748,
+    "sentence_index": 211,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec017",
+    "text": "r 0.65\n\nfigures/new_generalize.pdf\n-20pt\nZero-shot generalization of the proposed method .",
+    "char_start": 32750,
+    "char_end": 32840,
+    "sentence_index": 212,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec017",
+    "text": "Our method demonstrates zero-shot generalization capabilities.",
+    "char_start": 32841,
+    "char_end": 32903,
+    "sentence_index": 213,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec017",
+    "text": "When trained on the MATH dataset, it can effectively generalize to the GSM dataset.",
+    "char_start": 32904,
+    "char_end": 32987,
+    "sentence_index": 214,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec017",
+    "text": "It outperforms all the baselines that are trained on the GSM dataset.",
+    "char_start": 32988,
+    "char_end": 33057,
+    "sentence_index": 215,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec017",
+    "text": "-10pt\n\nWe investigate the zero-shot generalization of the proposed method across different datasets.",
+    "char_start": 33059,
+    "char_end": 33159,
+    "sentence_index": 216,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec017",
+    "text": "Specifically, we use generation and critic agents finetuned on the MATH dataset and evaluate their performance on 100 randomly sampled examples from the GSM dataset.",
+    "char_start": 33160,
+    "char_end": 33325,
+    "sentence_index": 217,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec017",
+    "text": "We compare our method to baseline methods used in Table .",
+    "char_start": 33326,
+    "char_end": 33383,
+    "sentence_index": 218,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec017",
+    "text": "These baselines are trained on the GSM dataset.",
+    "char_start": 33384,
+    "char_end": 33431,
+    "sentence_index": 219,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec017",
+    "text": "All methods use Mistral as the base LLM.",
+    "char_start": 33432,
+    "char_end": 33472,
+    "sentence_index": 220,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec017",
+    "text": "Figure shows that our method surpasses all the baseline methods, even though it has never seen data from the GSM dataset, indicating the strong zero-shot generalization capability of the proposed method.",
+    "char_start": 33473,
+    "char_end": 33676,
+    "sentence_index": 221,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec017",
+    "text": "We show further results in Section .",
+    "char_start": 33677,
+    "char_end": 33713,
+    "sentence_index": 222,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec018",
+    "text": "=-1\nFinetuning methods generally fall into three categories: human-in-the-loop, distillation, and self-improvement.",
+    "char_start": 33715,
+    "char_end": 33830,
+    "sentence_index": 223,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec018",
+    "text": "We briefly cover the first two categories and spend more time on self-improvement, which is more related to our work.",
+    "char_start": 33831,
+    "char_end": 33948,
+    "sentence_index": 224,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec018",
+    "text": "Finetuning with human-in-the-loop and distillation : Several human-in-the-loop methods have been introduced for finetuning, most noticeably RLHF christiano2017deep, sun2023aligning and DPO rafailov2024direct .",
+    "char_start": 33950,
+    "char_end": 34159,
+    "sentence_index": 225,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec018",
+    "text": "These methods have been employed as part of instruction tuning zhang2023instruction , improving the generated responses to instructions.",
+    "char_start": 34160,
+    "char_end": 34296,
+    "sentence_index": 226,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec018",
+    "text": "Several instruction tuning datasets wang2022super, longpre2023flan have been released publicly, some with human-generated responses.",
+    "char_start": 34297,
+    "char_end": 34429,
+    "sentence_index": 227,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec018",
+    "text": "Other datasets have been constructed using the second category of finetuning methods, distillation, whereby a much larger, highly performant LLM is used to generate data that finetunes a smaller LLM peng2023instruction, liu2024visual .",
+    "char_start": 34430,
+    "char_end": 34665,
+    "sentence_index": 228,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec018",
+    "text": "These approaches have been used to build recent LLMs such as Alpaca taori2023alpaca or Vicuna chiang2023vicuna using responses generated by GPT-3.5 or GPT-4 achiam2023gpt .",
+    "char_start": 34666,
+    "char_end": 34838,
+    "sentence_index": 229,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec018",
+    "text": "Finetuning with self-improvement : Self-improvement methods huang2022large, yu2023teaching, yuan2024self, hsieh2023distilling, welleck2022generating improve the performance of LLMs through the finetuning.",
+    "char_start": 34840,
+    "char_end": 35044,
+    "sentence_index": 230,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec018",
+    "text": "Common approaches include iterated learning anthony2017thinking, vani2105iterated, polu2022formal, xu2024survey where solution/methods discovered by optimization on prior data are used to uncover further solutions or, in this context, provide additional finetuning data.",
+    "char_start": 35045,
+    "char_end": 35315,
+    "sentence_index": 231,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec018",
+    "text": "Some of the main papers we use for comparison finetune using bootstrapping through rationale generation zelikman2022star,lee2024llm2llm, pang2024iterative, zhang2024small, lu2023self or use self-play/self-training methods through reinforcement learning chen2024self, yuan2024self, chen2024improving .",
+    "char_start": 35316,
+    "char_end": 35616,
+    "sentence_index": 232,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec018",
+    "text": "Most methods find that using self-generated rationales leads to significant improvement when finetuning.",
+    "char_start": 35617,
+    "char_end": 35721,
+    "sentence_index": 233,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec018",
+    "text": "However, these works and many others rely on access to ground truth answer.",
+    "char_start": 35722,
+    "char_end": 35797,
+    "sentence_index": 234,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec018",
+    "text": "Overall, existing works often show a plateauing effect with limited boosts in improvement after several rounds of fine-tuning.",
+    "char_start": 35798,
+    "char_end": 35924,
+    "sentence_index": 235,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec018",
+    "text": "Our work proposes to use multiagent interaction as an approach to get more consistent gains after multiple rounds of finetuning.",
+    "char_start": 35925,
+    "char_end": 36053,
+    "sentence_index": 236,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec018",
+    "text": "Multiagent Interaction : Our work builds on the combination of finetuning and multiagent interaction systems.",
+    "char_start": 36055,
+    "char_end": 36164,
+    "sentence_index": 237,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec018",
+    "text": "We primarily incorporate multiagent debate du2023improving, chan2023chateval, pham2023let, liang2023encouraging due to its success in improving factuality and reasoning in LLMs in a variety of tasks at inference time.",
+    "char_start": 36165,
+    "char_end": 36382,
+    "sentence_index": 238,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec018",
+    "text": "Several other multiagent interactions could also serve as the basis for this paper.",
+    "char_start": 36383,
+    "char_end": 36466,
+    "sentence_index": 239,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec018",
+    "text": "Tree-of-thought yao2024tree, long2023large and graph-of-thought besta2024graph represent two common multiagent interaction systems over LLMs that incorporate responses across multiple LLMs, which improves reasoning.",
+    "char_start": 36467,
+    "char_end": 36682,
+    "sentence_index": 240,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec018",
+    "text": "Other works wu2023autogen have designed more flexible systems for multiagent conversations built on structured program synthesis rather than natural language.",
+    "char_start": 36683,
+    "char_end": 36841,
+    "sentence_index": 241,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec018",
+    "text": "Prior work has also focused on incorporating multiagent interaction into domains beyond factuality and reasoning such as strategy and communication games abdelnabi2023llm .",
+    "char_start": 36842,
+    "char_end": 37014,
+    "sentence_index": 242,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec018",
+    "text": "More recently, this has led to multiagent interaction systems over LLMs that have optimized via equilibrium search for factuality and reasoning tasks jacob2023consensus, jacob2023regularized .",
+    "char_start": 37015,
+    "char_end": 37207,
+    "sentence_index": 243,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec018",
+    "text": "In contrast to existing works, our work aims to use multiagent interaction as a method to finetune language models.",
+    "char_start": 37208,
+    "char_end": 37323,
+    "sentence_index": 244,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec018",
+    "text": "-7pt\n\n-5pt\n\nLimitations.",
+    "char_start": 37325,
+    "char_end": 37349,
+    "sentence_index": 245,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec019",
+    "text": "In comparison to existing works in single model finetuning, multiagent finetuning is substantially more expensive at both training and inference time as multiple copies of a model need to be trained and run.",
+    "char_start": 37350,
+    "char_end": 37557,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec019",
+    "text": "To run multiagent finetuning experiments on open source models, we used either four H100 GPUs or four A100 GPUs.",
+    "char_start": 37558,
+    "char_end": 37670,
+    "sentence_index": 247,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec019",
+    "text": "Models took between 120GB - 240GB of GPU memory and inference took between 12-24 hours across multiple GPUs.",
+    "char_start": 37671,
+    "char_end": 37779,
+    "sentence_index": 248,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec019",
+    "text": "To improve the training time of multiagent models, it may be interesting to instead share weights across different instances of models.",
+    "char_start": 37780,
+    "char_end": 37915,
+    "sentence_index": 249,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec019",
+    "text": "To improve inference time in multiagent models, we can directly distill the debate procedure into a single modelor use quantization as part of finetuning.",
+    "char_start": 37916,
+    "char_end": 38070,
+    "sentence_index": 250,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec019",
+    "text": "Conclusion.",
+    "char_start": 38072,
+    "char_end": 38083,
+    "sentence_index": 251,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec019",
+    "text": "In this paper, we have introduced a novel multiagent finetuning framework that significantly enhances the performance and diversity of language models.",
+    "char_start": 38084,
+    "char_end": 38235,
+    "sentence_index": 252,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec019",
+    "text": "By employing a society of agents with distinct roles, our method effectively improves the feedback mechanism and overall output quality, mitigating the limitations inherent in single-agent self-improvement methods.",
+    "char_start": 38236,
+    "char_end": 38450,
+    "sentence_index": 253,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec019",
+    "text": "This system allows for autonomous self-improvement through iterative finetuning, leading to substantial performance gains across a comprehensive suite of reasoning tasks.",
+    "char_start": 38451,
+    "char_end": 38621,
+    "sentence_index": 254,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec019",
+    "text": "Importantly, our approach is versatile and can be applied to both open-source and proprietary LLMs, ensuring broad utility and impact.",
+    "char_start": 38622,
+    "char_end": 38756,
+    "sentence_index": 255,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec019",
+    "text": "Additionally, our method can be integrated with other finetuning approaches such that incorporate human feedback such as RLHF or DPO, which we leave to future work.",
+    "char_start": 38757,
+    "char_end": 38921,
+    "sentence_index": 256,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec019",
+    "text": "This work opens new avenues for future research in language model enhancement and sets a foundation for further advancements in the field.",
+    "char_start": 38922,
+    "char_end": 39060,
+    "sentence_index": 257,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec020",
+    "text": "This work was supported by the Center for Brains, Minds, and Machines, NSF STC award CCF-1231216, the NSF award 2124052, the MIT CSAIL Machine Learning Applications Initiative, the MIT-IBM Watson AI Lab, the CBMM-Siemens Graduate Fellowship, the DARPA Mathematics for the DIscovery of ALgorithms and Architectures (DIAL) program, the DARPA Knowledge Management at Scale and Speed (KMASS) program, the DARPA Machine Common Sense (MCS) program, the Air Force Office of Scientific Research (AFOSR) under award number FA9550-21-1-0399, the United States Air Force Research Laboratory and the Department of the Air Force Artificial Intelligence Accelerator under Cooperative Agreement Number FA8750-19-2-1000, and ONR MURI grant N00014-22-1-2740.",
+    "char_start": 39062,
+    "char_end": 39803,
+    "sentence_index": 258,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec020",
+    "text": "The views and conclusions contained in this document are those of the authors and should not be interpreted as representing the official policies, either expressed or implied, of the Department of the Air Force or the U.S.",
+    "char_start": 39804,
+    "char_end": 40026,
+    "sentence_index": 259,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec020",
+    "text": "Government.",
+    "char_start": 40027,
+    "char_end": 40038,
+    "sentence_index": 260,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec020",
+    "text": "The U.S.",
+    "char_start": 40039,
+    "char_end": 40047,
+    "sentence_index": 261,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec020",
+    "text": "Government is authorized to reproduce and distribute reprints for Government purposes notwithstanding any copyright notation herein.",
+    "char_start": 40048,
+    "char_end": 40180,
+    "sentence_index": 262,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec020",
+    "text": "iclr2025_conference\niclr2025_conference\n\nWe add additional details for our methods and experiments as well as additional results to provide more evidence of improvements with multiagent finetuning.",
+    "char_start": 40182,
+    "char_end": 40379,
+    "sentence_index": 263,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec021",
+    "text": "In Section , we provide additional details on summarization, inference and training details using multiagent finetuning with debate.",
+    "char_start": 40380,
+    "char_end": 40512,
+    "sentence_index": 264,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec021",
+    "text": "In Section , we cover additional metrics for measuring diversity in agent responses based (1) consensus and (2) KL-divergence (3) likelihood.",
+    "char_start": 40513,
+    "char_end": 40654,
+    "sentence_index": 265,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec021",
+    "text": "Both metrics show that diversity is maintained or increases while accuracy increase over rounds of finetuning.",
+    "char_start": 40655,
+    "char_end": 40765,
+    "sentence_index": 266,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec021",
+    "text": "In Section , we introduce a cooperative approach for composing agent responses rather than a competitive approach through multiagent debate.",
+    "char_start": 40766,
+    "char_end": 40906,
+    "sentence_index": 267,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec021",
+    "text": "We apply multiagent finetuning with the cooperative approach to analyze whether our method is agnostic to the approach style.",
+    "char_start": 40907,
+    "char_end": 41032,
+    "sentence_index": 268,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec021",
+    "text": "We find strong similar improvements when our method is applied to a cooperative approach.",
+    "char_start": 41033,
+    "char_end": 41122,
+    "sentence_index": 269,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec021",
+    "text": "In Section , we include an additional baseline based on Single Agent FT where we increase the sampling temperature applied across all agents.",
+    "char_start": 41123,
+    "char_end": 41264,
+    "sentence_index": 270,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec021",
+    "text": "This is a proxy for increasing diversity that is complementary to our method.",
+    "char_start": 41265,
+    "char_end": 41342,
+    "sentence_index": 271,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec021",
+    "text": "We find that multiagent finetuning significantly outperforms methods that modify temperature to artificially induce diversity.",
+    "char_start": 41343,
+    "char_end": 41469,
+    "sentence_index": 272,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec021",
+    "text": "In Section , we add an additional experiment where we apply multiagent finetuning to responses across 5 agents instead of 3.",
+    "char_start": 41470,
+    "char_end": 41594,
+    "sentence_index": 273,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec021",
+    "text": "We see significant improvements in performance when using additional agents.",
+    "char_start": 41595,
+    "char_end": 41671,
+    "sentence_index": 274,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec021",
+    "text": "In Section , we present a simple mathematical model illustrating how multiagent finetuning can improve diversity.",
+    "char_start": 41672,
+    "char_end": 41785,
+    "sentence_index": 275,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec021",
+    "text": "Finally, in Section , we present additional evaluations of multiagent finetuning across a wide suite of datasets.",
+    "char_start": 41786,
+    "char_end": 41899,
+    "sentence_index": 276,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec022",
+    "text": "As done in , we incorporate summarization into the multiagent debate procedure.",
+    "char_start": 41901,
+    "char_end": 41980,
+    "sentence_index": 277,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec023",
+    "text": "In summarization, we have an LLM agent take responses from other agents as input and summarize the answers to the responses.",
+    "char_start": 41981,
+    "char_end": 42105,
+    "sentence_index": 278,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec023",
+    "text": "During round $m$ of debate, we introduce a summarization agent $A^S_n$ which takes responses from the other $N-1$ agents in the last round, $(y_1^ m-1 , , y_ n-1 ^ m-1 , y_ n+1 ^ m-1 , y_N^ m-1 )$ and generates a summary of the responses $x^s_ m,n $.",
+    "char_start": 42106,
+    "char_end": 42356,
+    "sentence_index": 279,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec023",
+    "text": "This summary is sent to the critic agent $A_n^C$ to generate a new response.",
+    "char_start": 42357,
+    "char_end": 42433,
+    "sentence_index": 280,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec024",
+    "text": "The pseudocode of our method for inference is shown below.",
+    "char_start": 42435,
+    "char_end": 42493,
+    "sentence_index": 281,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec024",
+    "text": "Inference\n\n[1]\n\nA set of finetuned generation agents $\\ A ^G_1, , A ^G_N\\ $; A set of finetuned critic agents $\\ A ^C_1, , A ^C_N\\ $; A test set of language inputs and ground truth responses $ D _ task = \\ x_i, y_i\\ $; The number of agents $N$; The number of debate rounds $M$.",
+    "char_start": 42495,
+    "char_end": 42772,
+    "sentence_index": 282,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec024",
+    "text": "success $ 0$\n\n$x, y$ in $ D _ task $ gray \\# Iterate over the input tasks\n$m$ in $M$ gray \\# M rounds of debate\n$m=0$\nsuperlightred $y_ 1,1 , y_ 1,N $ $ $ $ A ^G_1(x), , A ^G_N(x) $ gray \\# Response of each generation agent\n\n$x^s_ m,1 , , x^s_ m,N $ $ $ Summarize the responses from other generator agents\nlightblue $y_ m,1 , , y_ m,N $ $ $ $ A ^C_1(x^s_ m,1 ), , A ^C_N(x^s_ m,N ) $ gray \\# Response of each critic agent\n\n$ y $ $ $ Majority Voting $\\ y_ M,1 , ,y_ M,N \\ $ gray \\# Responses of the final round of debate\n\nsuccess $ success + I ( y = y)$\n\nAccuracy $ success | D | $\n\n.",
+    "char_start": 42774,
+    "char_end": 43357,
+    "sentence_index": 283,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec025",
+    "text": "For all open-source models, we perform finetuning using a total of eight 40GB A100 GPUs and four 80GB H100 GPUs.",
+    "char_start": 43359,
+    "char_end": 43471,
+    "sentence_index": 284,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec025",
+    "text": "The evaluation of individual inference times for multi-agent finetuning with open-source models took approximately 30 to 36 hours.",
+    "char_start": 43472,
+    "char_end": 43602,
+    "sentence_index": 285,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec025",
+    "text": "Phi-3 We ran our results using Phi-3-Mini-128K-Instruct which has 4 billion tunable parameters.",
+    "char_start": 43604,
+    "char_end": 43699,
+    "sentence_index": 286,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec025",
+    "text": "We finetune the entire model end-to-end (no LoRA or memory adaptation) on two 40GB A100 GPUs or one 80GB H100 GPU and run a total of two epochs of finetuning for generation agents and one epoch of finetuning for critic agents.",
+    "char_start": 43700,
+    "char_end": 43926,
+    "sentence_index": 287,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec025",
+    "text": "We use a batch size of 1 and a learning rate of $5e^ -6 $ for generation agents and $5e^ -7 $ for critic agents.",
+    "char_start": 43927,
+    "char_end": 44039,
+    "sentence_index": 288,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec025",
+    "text": "When applying multiple iterations of finetuning, we use a learning rate of $5e^ -7 $ across both generation and critic agents.",
+    "char_start": 44040,
+    "char_end": 44166,
+    "sentence_index": 289,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec025",
+    "text": "Models are finetuned with a fixed training set of 500 randomly selected questions (where we do not provide answer annotations for the questions) and then evaluated on a separate test set of 500 randomly selected questions.",
+    "char_start": 44167,
+    "char_end": 44389,
+    "sentence_index": 290,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec025",
+    "text": "Mistral We ran our results using Mistral-7B-Instruct-v0.2 , which has 7 billion tunable parameters.",
+    "char_start": 44391,
+    "char_end": 44490,
+    "sentence_index": 291,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec025",
+    "text": "We finetune the entire model end-to-end (no LoRA or memory adaptation) on four 40GB A100 GPUs or two 80GB H100 GPUs and run a total of one epoch of finetuning.",
+    "char_start": 44491,
+    "char_end": 44650,
+    "sentence_index": 292,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec025",
+    "text": "We use a batch size of 1 and a learning rate of $5e^ -7 $ for generation agents and $5e^ -7 $ for critic agents and a weight decay of $1e^ -2 $.",
+    "char_start": 44651,
+    "char_end": 44795,
+    "sentence_index": 293,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec025",
+    "text": "When applying multiple iterations of finetuning, we use a learning rate of $5e^ -7 $ across both generation and critic agents.",
+    "char_start": 44796,
+    "char_end": 44922,
+    "sentence_index": 294,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec025",
+    "text": "Models are finetuned with a fixed training set of 500 randomly selected questions (where we do not provide answer annotations for the questions) and then evaluated on a separate test set of 500 randomly selected questions.",
+    "char_start": 44923,
+    "char_end": 45145,
+    "sentence_index": 295,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec025",
+    "text": "LLaMA-3 We ran our using Meta-Llama-3-8B-Instruct , which has 8 billion tunable parameters.",
+    "char_start": 45147,
+    "char_end": 45238,
+    "sentence_index": 296,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec025",
+    "text": "We finetune the entire model end-to-end (no LoRA or memory adaptation) on three 80GB H100 GPUs and run a total of two epochs of finetuning.",
+    "char_start": 45239,
+    "char_end": 45378,
+    "sentence_index": 297,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec025",
+    "text": "We use a batch size of 1 and a learning rate of $5e^ -7 $ for generation agents and $2e^ -7 $ for critic agents.",
+    "char_start": 45379,
+    "char_end": 45491,
+    "sentence_index": 298,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec025",
+    "text": "When applying multiple iterations of finetuning, we use a learning rate of $5e^ -7 $ across both generation and critic agents as well as a weight decay of $1e^ -2 $.",
+    "char_start": 45492,
+    "char_end": 45657,
+    "sentence_index": 299,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec025",
+    "text": "Models are finetuned with a fixed training set of 500 randomly selected questions (where we do not provide answer annotations for the questions) and then evaluated on a separate test set of 500 randomly selected questions.",
+    "char_start": 45658,
+    "char_end": 45880,
+    "sentence_index": 300,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec025",
+    "text": "GPT-3.5 We ran our results on the gpt-3.5-turbo-0613 model.",
+    "char_start": 45882,
+    "char_end": 45941,
+    "sentence_index": 301,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec025",
+    "text": "We use the finetuning API and run a total of two epochs of finetuning, using a batch size of 1 and a learning rate multiplier of 1.",
+    "char_start": 45942,
+    "char_end": 46073,
+    "sentence_index": 302,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec025",
+    "text": "Models are finetuned with a fixed training set of 500 randomly selected questions (where we do not provide answer annotations for the questions) and then evaluated on a separate test set of 500 randomly selected questions.",
+    "char_start": 46074,
+    "char_end": 46296,
+    "sentence_index": 303,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec026",
+    "text": "We cover different metrics for measuring diversity for both Phi-3 and Mistral to provide an overview of the diversity of our method in comparison to Single Agent FT.",
+    "char_start": 46298,
+    "char_end": 46463,
+    "sentence_index": 304,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec027",
+    "text": "figures/mean_consensus-iters-ft.pdf\n-20pt\nConsensus: Response diversity across finetuning iterations .",
+    "char_start": 46465,
+    "char_end": 46567,
+    "sentence_index": 305,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec027",
+    "text": "We measure the response diversity based on agent consensus of our method and the single-agent finetuning method on the MATH dataset.",
+    "char_start": 46568,
+    "char_end": 46700,
+    "sentence_index": 306,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec027",
+    "text": "The diversity of our method remains consistent over finetuning iterations, whereas the diversity of the single-agent method drops significantly.",
+    "char_start": 46701,
+    "char_end": 46845,
+    "sentence_index": 307,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec027",
+    "text": "-10pt\n\nWe further analyze the diversity of responses from our method to show that diversity is preserved.",
+    "char_start": 46847,
+    "char_end": 46952,
+    "sentence_index": 308,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec027",
+    "text": "Rather than using text embeddings, we further measure the consensus among agents as a more interpretable alternative.",
+    "char_start": 46953,
+    "char_end": 47070,
+    "sentence_index": 309,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec027",
+    "text": "This is measured as the proportion of agents that have the same final answer in a given round of debate.",
+    "char_start": 47071,
+    "char_end": 47175,
+    "sentence_index": 310,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec027",
+    "text": "We take an average of this proportion across all 500 problems used for evaluation.",
+    "char_start": 47176,
+    "char_end": 47258,
+    "sentence_index": 311,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec027",
+    "text": "To obtain the mean consensus of our single agent finetuning baseline, we prompt the single-agent finetuned model 3 times, take a majority vote over generated answers, and find the proportion of agents that had a generated answer that was the majority vote.",
+    "char_start": 47259,
+    "char_end": 47515,
+    "sentence_index": 312,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec027",
+    "text": "In order to convert this to diversity, we take the difference of the mean consensus value from 1, which represents the average number of agents with a different response from the consensus answer.",
+    "char_start": 47516,
+    "char_end": 47712,
+    "sentence_index": 313,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec027",
+    "text": "We measure diversity as the inverse of consensus.",
+    "char_start": 47714,
+    "char_end": 47763,
+    "sentence_index": 314,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec027",
+    "text": "Specifically, we consider the agent responses in the final round of debate \\(\\ y_ M,1 , , y_ M,N \\ \\) that match the majority-voted final response \\( y \\).",
+    "char_start": 47764,
+    "char_end": 47919,
+    "sentence_index": 315,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec027",
+    "text": "The consensus is computed as the percentage of responses in \\(\\ y_ M,1 , , y_ M,N \\ \\) that match \\( y \\):\n\\[\nConsensus = _ n=1 ^ N I (y_ M,n = y ) N ,\n\\]\nwhere \\( I \\) is the indicator function.",
+    "char_start": 47920,
+    "char_end": 48115,
+    "sentence_index": 316,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec027",
+    "text": "Diversity is then given by $ Diversity = 1 - Consensus $.",
+    "char_start": 48116,
+    "char_end": 48173,
+    "sentence_index": 317,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec027",
+    "text": "We show results in Figure .",
+    "char_start": 48175,
+    "char_end": 48202,
+    "sentence_index": 318,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec027",
+    "text": "As seen with our prior metric, embedding dissimilarity, we can preserve diversity based on the responses given by the agents, rather than based on the embeddings of a language model.",
+    "char_start": 48203,
+    "char_end": 48385,
+    "sentence_index": 319,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec028",
+    "text": "rebuttal/kl-iters-ft.pdf\n-20pt\nKL-Divergence: Response diversity across finetuning iterations .",
+    "char_start": 48387,
+    "char_end": 48482,
+    "sentence_index": 320,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec028",
+    "text": "We measure diversity based on the KL-divergence between the probabilities of the output tokens between agents.",
+    "char_start": 48483,
+    "char_end": 48593,
+    "sentence_index": 321,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec028",
+    "text": "Similar to our likelihood measurement, we find that diversity is preserved across rounds of finetuning.",
+    "char_start": 48594,
+    "char_end": 48697,
+    "sentence_index": 322,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec028",
+    "text": "-15pt\n\nWe next measure diversity by computing KL divergence between the probability distributions computed based on the final answers from different agents.",
+    "char_start": 48699,
+    "char_end": 48855,
+    "sentence_index": 323,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec028",
+    "text": "We estimate the probability distribution of each agent\u2019s response using the likelihoods from Gemma-2 (2B) For each test example, we compute the KL divergence between the responses of any two agents and then average the values from all pairs of agents to determine the overall KL divergence.",
+    "char_start": 48856,
+    "char_end": 49146,
+    "sentence_index": 324,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec028",
+    "text": "We see results in Figure .",
+    "char_start": 49148,
+    "char_end": 49174,
+    "sentence_index": 325,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec028",
+    "text": "Specifically, we see that diversity is preserved using our method whereby KL-divergence is consistently higher than the single-agent finetuning baseline.",
+    "char_start": 49175,
+    "char_end": 49328,
+    "sentence_index": 326,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec029",
+    "text": "figures/kl_div_analysis.pdf\n-10pt\nKL Diversity between finetuned and unfinetuned LLM.",
+    "char_start": 49330,
+    "char_end": 49415,
+    "sentence_index": 327,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec029",
+    "text": "We measure the KL-divergence between likelihoods of responses from finetuned agents and base LLM agents for single-agent finetuning and generation/critic agents from multiagent finetuning.",
+    "char_start": 49416,
+    "char_end": 49604,
+    "sentence_index": 328,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec029",
+    "text": "Likelihoods are calculated using Gemma-2 (2B).",
+    "char_start": 49605,
+    "char_end": 49651,
+    "sentence_index": 329,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec029",
+    "text": "We find that our method diverges from the base LLM probabilities and furthermore, critic agents have better divergence in responses and our method has better diversity metrics than single-agent FT.",
+    "char_start": 49652,
+    "char_end": 49849,
+    "sentence_index": 330,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec029",
+    "text": "-10pt\n\nWe further analyze diversity by comparing the KL-divergence of generation and critic agents with the likelihood of responses from the base LLM model across iterations of finetuning.",
+    "char_start": 49851,
+    "char_end": 50039,
+    "sentence_index": 331,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec029",
+    "text": "We measure the KL-divergence between each agent responses and responses from a base LLM for 500 MATH examples.",
+    "char_start": 50041,
+    "char_end": 50151,
+    "sentence_index": 332,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec029",
+    "text": "We average KL-divergence across all examples for each iteration of finetuning.",
+    "char_start": 50152,
+    "char_end": 50230,
+    "sentence_index": 333,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec029",
+    "text": "We apply this measure to agents formed through Single Agent-FT and to generation and critic agents formed through our method.",
+    "char_start": 50231,
+    "char_end": 50356,
+    "sentence_index": 334,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec029",
+    "text": "For Single-Agent FT, we find the KL divergence for each finetuned agent and average the KL-divergence across all examples and all agents per iteration of finetuning.",
+    "char_start": 50357,
+    "char_end": 50522,
+    "sentence_index": 335,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec029",
+    "text": "For our method, we separate generation and critic agents and find the average KL-divergence for both.",
+    "char_start": 50523,
+    "char_end": 50624,
+    "sentence_index": 336,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec029",
+    "text": "We measure likelihoods using Gemma-2 (2B), similar to Figure .",
+    "char_start": 50625,
+    "char_end": 50687,
+    "sentence_index": 337,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec029",
+    "text": "We show results in Figure .",
+    "char_start": 50689,
+    "char_end": 50716,
+    "sentence_index": 338,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec029",
+    "text": "We see that critic agents generally have higher KL-divergences from the base LLM and both critic and generation agents have higher KL-divergences across iterations of finetuning.",
+    "char_start": 50717,
+    "char_end": 50895,
+    "sentence_index": 339,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec030",
+    "text": "rebuttal/embed_diss-iters-ft.pdf\n-10pt\nEmbedding Dissimilarity: Response diversity across finetuning iterations.",
+    "char_start": 50897,
+    "char_end": 51009,
+    "sentence_index": 340,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec030",
+    "text": "We measure the response diversity based on the embedding dissimilarity between the responses of different agents, where embeddings are computed using the T5-3B encoder.",
+    "char_start": 51010,
+    "char_end": 51178,
+    "sentence_index": 341,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec030",
+    "text": "We notice that similar to likelihood measurement, we find that diversity is preserved across rounds of finetuning.",
+    "char_start": 51179,
+    "char_end": 51293,
+    "sentence_index": 342,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec030",
+    "text": "-15pt\n\nFinally, we analyze diversity by measuring the embedding dissimilarity between responses of different agents.",
+    "char_start": 51295,
+    "char_end": 51411,
+    "sentence_index": 343,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec030",
+    "text": "Specifically, we consider agent responses in the final round of debate \\(\\ y_ M,1 , , y_ M,N \\ \\) that match the majority-voted final majority-voted final response \\( y \\).",
+    "char_start": 51413,
+    "char_end": 51585,
+    "sentence_index": 344,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec030",
+    "text": "For each response, we obtain pretrained contextual word embeddings from a held-out language model, in this case the T5-3B encoder model raffel2020exploring .",
+    "char_start": 51586,
+    "char_end": 51743,
+    "sentence_index": 345,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec030",
+    "text": "We feed each agent response to the T5 encoder model to obtain word embeddings and extract the embedding associated with the classification token [CLS] .",
+    "char_start": 51745,
+    "char_end": 51897,
+    "sentence_index": 346,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec030",
+    "text": "As done in prior work, we use this embedding as a representation of the sequence.",
+    "char_start": 51898,
+    "char_end": 51979,
+    "sentence_index": 347,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec030",
+    "text": "We compare the similarity of the agent responses using cosine similarity of the [CLS] embeddings.",
+    "char_start": 51980,
+    "char_end": 52077,
+    "sentence_index": 348,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec030",
+    "text": "Since cosine similarity measures similarity, to obtain a metric for diversity, we take the complement of cosine similarity by subtracting the value from $1$.",
+    "char_start": 52078,
+    "char_end": 52235,
+    "sentence_index": 349,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec031",
+    "text": "[t]\n\n5.5pt\n\n0.7 !",
+    "char_start": 52237,
+    "char_end": 52254,
+    "sentence_index": 350,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec031",
+    "text": "l|l|ccc\nLLM & Methods & Arithmetic & GSM & MATH\n\n2 * GPT-3.5 & Cooperative (Base) & 96.60 $ $ 0.83 & 81.80 $ $ 1.73 & 53.60 $ $ 2.23\n\n& Cooperative (FT) & 98.80 $ $ 0.39 & 84.00 $ $ 1.64 & 56.40 $ $ 2.21\n\n-5pt\nCooperative Finetuning.",
+    "char_start": 52255,
+    "char_end": 52488,
+    "sentence_index": 351,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec031",
+    "text": "Our method supports fine-tuning in cooperative settings, where agents work together (e.g., 3 agents, 2 rounds).",
+    "char_start": 52489,
+    "char_end": 52600,
+    "sentence_index": 352,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec031",
+    "text": "-10pt\n\n[t]\n\nrebuttal/temp_multi-iters-ft.pdf\n-20pt\nInducing diversity through increasing temperature .",
+    "char_start": 52602,
+    "char_end": 52704,
+    "sentence_index": 353,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec031",
+    "text": "We introduce an additional baseline where we apply the Single-Agent FT baselin with a temperature of 2.",
+    "char_start": 52705,
+    "char_end": 52808,
+    "sentence_index": 354,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec031",
+    "text": "By increasing the sampling temperature, we allow the model to generate more diverse responses.",
+    "char_start": 52809,
+    "char_end": 52903,
+    "sentence_index": 355,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec031",
+    "text": "We observe that our method out-performs higher temperature settings, which demonstrates that temperature does not increase diversity in a way that is useful for accuracy.",
+    "char_start": 52904,
+    "char_end": 53074,
+    "sentence_index": 356,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec031",
+    "text": "-5pt\n\n[t]\n\n5.5pt\n\n0.7 !",
+    "char_start": 53076,
+    "char_end": 53099,
+    "sentence_index": 357,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec031",
+    "text": "l|l|ccc\nLLM & Methods & Arithmetic & GSM & MATH\n\n3 * GPT-3.5 & Debate & 99.40 $ $ 0.34 & 85.40 $ $ 1.58 & 58.20 $ $ 2.22\n\n& Majority FT & lightblue 99.60 $ $ 0.28 & lightblue 86.20 $ $ 1.54 & lightblue 59.00 $ $ 2.19\n\n& Ours & superlightred 100.00 $ $ 0.00 & superlightred 88.20 $ $ 1.44 & superlightred 62.80 $ $ 2.16\n\n3 * Phi-3 & Debate & lightblue 97.40 $ $ 0.71 & lightblue 86.00 $ $ 1.55 & lightblue 55.20 $ $ 2.22\n\n& Majority FT & 95.80 $ $ 0.90 & 84.80 $ $ 1.61 & 53.20 $ $ 2.23\n\n& (Ours) & superlightred 99.80 $ $ 0.20 & superlightred 89.40 $ $ 1.38 & superlightred 60.40 $ $ 2.19\n\nMore agents of debate .",
+    "char_start": 53101,
+    "char_end": 53714,
+    "sentence_index": 358,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec031",
+    "text": "With 5 agents and 2 rounds of debate, our methods still outperform the baselines and show better results than the 3 agents and 2 rounds of debate results presented in Table 1 of the main paper.",
+    "char_start": 53715,
+    "char_end": 53908,
+    "sentence_index": 359,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec031",
+    "text": "-8pt\n\nIn this paper, our method mainly builds on a competitive approach for composing agent responses with multiagent debate.",
+    "char_start": 53910,
+    "char_end": 54035,
+    "sentence_index": 360,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec031",
+    "text": "Our approach for multiagent finetuning can be applied to both the competitive setting, where critic agents provide feedback to generator agents, and cooperative settings, where agents work together in a \"mixture of experts\" style to generate answers.",
+    "char_start": 54036,
+    "char_end": 54286,
+    "sentence_index": 361,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec031",
+    "text": "Instead of prompting agents to critique responses from other agents, in the second round of conversation, we prompt agents to cooperate with other agents.",
+    "char_start": 54287,
+    "char_end": 54441,
+    "sentence_index": 362,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec031",
+    "text": "We ask each agent to generate a new response by merging their own response with the responses of other agents, using the prompt \u201cCan you derive a new solution by combining your solution with the solutions of other agents?\u201d.",
+    "char_start": 54442,
+    "char_end": 54665,
+    "sentence_index": 363,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec031",
+    "text": "Under this cooperative setting, the proposed multi-agent finetuning improves the performance, as demonstrated by Cooperative (FT) outperforming Cooperative (Base).",
+    "char_start": 54666,
+    "char_end": 54829,
+    "sentence_index": 364,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec031",
+    "text": "We show results in Table .",
+    "char_start": 54831,
+    "char_end": 54857,
+    "sentence_index": 365,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec031",
+    "text": "More specifically, we see that we can finetune with a cooperative method with multiagent finetuning and achieve similar improvements in performance.",
+    "char_start": 54858,
+    "char_end": 55006,
+    "sentence_index": 366,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec031",
+    "text": "This demonstrates that our method can be applied to other multiagent prompt settings as a general finetuning method for LLMs.",
+    "char_start": 55007,
+    "char_end": 55132,
+    "sentence_index": 367,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec032",
+    "text": "We compare our approach to two additional approaches to improve the diversity of reasoning chains.",
+    "char_start": 55134,
+    "char_end": 55232,
+    "sentence_index": 368,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec033",
+    "text": "We first consider inducing diverse responses from LLM agents by increasing the temperature of generation.",
+    "char_start": 55234,
+    "char_end": 55339,
+    "sentence_index": 369,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec033",
+    "text": "We add an additional baseline where we vary the temperature of agents finetuned using Single Agent-FT.",
+    "char_start": 55340,
+    "char_end": 55442,
+    "sentence_index": 370,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec033",
+    "text": "Higher temperature values may be a proxy for more diverse responses.",
+    "char_start": 55443,
+    "char_end": 55511,
+    "sentence_index": 371,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec033",
+    "text": "We show results over rounds of finetuning in Figure .",
+    "char_start": 55512,
+    "char_end": 55565,
+    "sentence_index": 372,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec033",
+    "text": "We see that our method surpasses the performance of this baseline.",
+    "char_start": 55567,
+    "char_end": 55633,
+    "sentence_index": 373,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec033",
+    "text": "This likely because higher temperature values can reduce accuracy due to increased variability of samples.",
+    "char_start": 55634,
+    "char_end": 55740,
+    "sentence_index": 374,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec033",
+    "text": "Our method preserves diversity of responses while increasing accuracy using a more carefully designed finetuning method.",
+    "char_start": 55741,
+    "char_end": 55861,
+    "sentence_index": 375,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec034",
+    "text": "[t]\n\n3.5pt\n\n0.55 !",
+    "char_start": 55863,
+    "char_end": 55881,
+    "sentence_index": 376,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec034",
+    "text": "l|l|ccc\nLLM & Methods & MATH\n\n4 * LLaMA-3 dubey2024llama & Base & 46.80 $ $ 2.23\n\n& Debate & lightblue 51.60 $ $ 2.23\n\n& Unique ID & 50.80 $ $ 2.24\n\n& Ours & superlightred 57.40 $ $ 2.21\n\n-5pt\nUnique ID vs Multiagent Finetuning.",
+    "char_start": 55882,
+    "char_end": 56110,
+    "sentence_index": 377,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec034",
+    "text": "We introduce an additional comparison to multiagent finetuning where we feed a unique ID token to each agent, corresponding to a generation or critic agent.",
+    "char_start": 56111,
+    "char_end": 56267,
+    "sentence_index": 378,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec034",
+    "text": "We find that this is not comparable to improvements on multiagent finetuning.",
+    "char_start": 56268,
+    "char_end": 56345,
+    "sentence_index": 379,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec034",
+    "text": "-10pt\n\nWe next considering an additional comparison to multiagent finetuning that can preserve diversity while reducing the cost of finetuning.",
+    "char_start": 56347,
+    "char_end": 56490,
+    "sentence_index": 380,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec034",
+    "text": "The method involves using a unique identifier as part of the prompt fed to each agent.",
+    "char_start": 56491,
+    "char_end": 56577,
+    "sentence_index": 381,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec034",
+    "text": "We feed each generation agent an ID given by GEN1 , GEN2 , etc.",
+    "char_start": 56578,
+    "char_end": 56641,
+    "sentence_index": 382,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec034",
+    "text": "Similarly, each critic agent is given an ID CRIT1 , CRIT2 , etc.",
+    "char_start": 56642,
+    "char_end": 56706,
+    "sentence_index": 383,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec034",
+    "text": "Additionally, we provide a short description to the agent, explaining what the ID refers to.",
+    "char_start": 56707,
+    "char_end": 56799,
+    "sentence_index": 384,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec034",
+    "text": "For generation agents, we state that the agent is tasked with creating a solution.",
+    "char_start": 56800,
+    "char_end": 56882,
+    "sentence_index": 385,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec034",
+    "text": "For critic agents, we state that the agent is tasked with evaluating and improving responses.",
+    "char_start": 56883,
+    "char_end": 56976,
+    "sentence_index": 386,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec034",
+    "text": "The ID is presented to the agent at the beginning of each prompt, marked by the string Agent ID: GEN1 (This is a generation agent tasked with creating a solution.) as an example of the ID fed to generation agent 1.",
+    "char_start": 56977,
+    "char_end": 57191,
+    "sentence_index": 387,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec034",
+    "text": "We compare the unique ID approach on the same 500 MATH examples reported in Table .",
+    "char_start": 57193,
+    "char_end": 57276,
+    "sentence_index": 388,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec034",
+    "text": "Results are shown in Table .",
+    "char_start": 57277,
+    "char_end": 57305,
+    "sentence_index": 389,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec034",
+    "text": "We find that multiagent finetuning performs significantly better and that using unique IDs is fairly similar to debate.",
+    "char_start": 57306,
+    "char_end": 57425,
+    "sentence_index": 390,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec034",
+    "text": "This demonstrates that mechanisms for generating solutions and critiquing them is unlocked via finetuning.",
+    "char_start": 57426,
+    "char_end": 57532,
+    "sentence_index": 391,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec035",
+    "text": "In Table , we show the influence additional agents with finetuning.",
+    "char_start": 57534,
+    "char_end": 57601,
+    "sentence_index": 392,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec035",
+    "text": "We use 5 agents and 2 rounds of debate.",
+    "char_start": 57602,
+    "char_end": 57641,
+    "sentence_index": 393,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec035",
+    "text": "We find that additional agents improves results as noted in prior work du2023improving over 3 agents, 2 rounds of debate.",
+    "char_start": 57642,
+    "char_end": 57763,
+    "sentence_index": 394,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec035",
+    "text": "This also implies that our method will scale with larger number of finetuned agents.",
+    "char_start": 57764,
+    "char_end": 57848,
+    "sentence_index": 395,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec036",
+    "text": "We consider a simple mathematical model illustrating how diversity can arise by finetuning models only on answers that they are accurate on.",
+    "char_start": 57850,
+    "char_end": 57990,
+    "sentence_index": 396,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec036",
+    "text": "Consider a training dataset of problems in three topics, A, B, and C as well as three models we train all initialized from the same base model.",
+    "char_start": 57991,
+    "char_end": 58134,
+    "sentence_index": 397,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec036",
+    "text": "For each model, we assign a specialization skill score $S_A$, $S_B$, $S_C$ between 0 and 1, representing how accurate the model is at answering questions in the specified topic.",
+    "char_start": 58135,
+    "char_end": 58312,
+    "sentence_index": 398,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec036",
+    "text": "All three models are initialized to have a skill of 0.33 on each topic.",
+    "char_start": 58313,
+    "char_end": 58384,
+    "sentence_index": 399,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec036",
+    "text": "The specialization $S_i$ for each topic $i$ corresponds to the percentage of questions in topic $i$ the model get accurate, where $S_A$ of 0 represents that a model would get 0\\% of questions in topic A correct.",
+    "char_start": 58385,
+    "char_end": 58596,
+    "sentence_index": 400,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec036",
+    "text": "At each iteration, a model is trained on all questions it answers correctly in each topic.",
+    "char_start": 58598,
+    "char_end": 58688,
+    "sentence_index": 401,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec036",
+    "text": "This increases the specialization skill score by fraction of training the model saw for each specific topic.",
+    "char_start": 58689,
+    "char_end": 58797,
+    "sentence_index": 402,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec036",
+    "text": "Formally, the updated skill of model $A$ at iteration $t$ would be:\n\nS_A^t = S_A^ t-1 ( 1 + S_A^ t-1 S_A^ t-1 + S_B^ t-1 + S_C^ t-1 ).",
+    "char_start": 58798,
+    "char_end": 58932,
+    "sentence_index": 403,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec036",
+    "text": "To account for a finite amount of capacity in each model, after the above skill update, the skills across all models at iteration $t$ are then normalized to have a sum of one.",
+    "char_start": 58934,
+    "char_end": 59109,
+    "sentence_index": 404,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec036",
+    "text": "Without loss of generality, assume that at iteration t, $S_A^t$ is larger than $S_B^t$ and $S_C^t$ (which happens by random chance, since we have a finite number of questions).",
+    "char_start": 59110,
+    "char_end": 59286,
+    "sentence_index": 405,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec036",
+    "text": "Under the update rule described, the ratio $S_A^ t+1 $ to $S_A^ t $ is given by\n\n(1 + S_A^ t S_A^ t + S_B^ t + S_C^ t ) / ( _ i \\ A, B, C\\ (1 + S_i^ t S_A^ t + S_B^ t + S_C^ t )S_i^ t ).",
+    "char_start": 59287,
+    "char_end": 59473,
+    "sentence_index": 406,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec036",
+    "text": "Since $S_A^ t $ is greater than or equal to $S_i^ t $, the above expression is greater than or equal to\n\n(1 + S_A^ t S_A^ t + S_B^ t + S_C^ t ) / ( _ i \\ A, B, C\\ (1 + S_A^ t S_A^ t + S_B^ t + S_C^ t )S_i^ t ) = 1,\n\nwhere we use the identity that the sum of $S_i^t$ is equal to 1 to indicate since they are normalization of the scores.",
+    "char_start": 59475,
+    "char_end": 59810,
+    "sentence_index": 407,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec036",
+    "text": "We thus have that $S_A^ t+1 $ will be larger than $S_A^t$, with specialization on topic A monotonically increasing over iterations of training.",
+    "char_start": 59811,
+    "char_end": 59954,
+    "sentence_index": 408,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec036",
+    "text": "Since a priori the model has no preference for any particular topic, random sampling each initial base model will lead to skill preference over a different random topic.",
+    "char_start": 59956,
+    "char_end": 60125,
+    "sentence_index": 409,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec036",
+    "text": "This repeated procedure will then eventually result in models specializing in either topic A, B, C, ensuring diversity across models.",
+    "char_start": 60126,
+    "char_end": 60259,
+    "sentence_index": 410,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec036",
+    "text": "This mathematical model is similar to the multiagent finetuning procedure in the paper, where we selectively train generators and critics on datasets they are accurate on and illustrate how they can then specialize on different portions of data.",
+    "char_start": 60260,
+    "char_end": 60505,
+    "sentence_index": 411,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec037",
+    "text": "[t]\n\n3.5pt\n\n0.55 !",
+    "char_start": 60507,
+    "char_end": 60525,
+    "sentence_index": 412,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec038",
+    "text": "l|l|ccc\nLLM & Methods & MATH\n\n5 * LLaMA-3 dubey2024llama & Base & 24.40 $ $ 1.92\n\n& Majority & 25.20 $ $ 1.94\n\n& Debate & lightblue 29.80 $ $ 2.05\n\n& Majority FT & 28.00 $ $ 2.01\n\n& Ours & superlightred 34.20 $ $ 2.12\n\n-5pt\nAdditional Evaluation of Multiagent Finetuning on more difficult tasks.",
+    "char_start": 60526,
+    "char_end": 60821,
+    "sentence_index": 413,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec038",
+    "text": "Our method outperforms the baselines on more difficult tasks including examples from all levels of MATH.",
+    "char_start": 60822,
+    "char_end": 60926,
+    "sentence_index": 414,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec038",
+    "text": "This shows the applicability of our method in more broad settings.",
+    "char_start": 60927,
+    "char_end": 60993,
+    "sentence_index": 415,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec038",
+    "text": "-10pt\n\nfigures/llama_3_math_eval.pdf\n-5pt\nMultiple iterations of finetuning over all levels of MATH .",
+    "char_start": 60995,
+    "char_end": 61096,
+    "sentence_index": 416,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec038",
+    "text": "We apply multiple iterations of finetuning over 500 examples of MATH sampled from all levels.",
+    "char_start": 61097,
+    "char_end": 61190,
+    "sentence_index": 417,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec038",
+    "text": "Even over a more difficult domain, we see significant improvements from multiagent finetuning that continue to self-improve.",
+    "char_start": 61191,
+    "char_end": 61315,
+    "sentence_index": 418,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec038",
+    "text": "-5pt\n\nTo further evaluate multiagent finetuning, we evaluate on the MATH dataset across all 5 levels of difficulty, instead of selecting examples from levels 1-3.",
+    "char_start": 61317,
+    "char_end": 61479,
+    "sentence_index": 419,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec038",
+    "text": "We extract 500 examples for training and 500 examples for testing and evaluate on LLaMA-3.",
+    "char_start": 61480,
+    "char_end": 61570,
+    "sentence_index": 420,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec038",
+    "text": "We show results across all baselines in Table and results across multiple rounds of finetuning in Figure .",
+    "char_start": 61572,
+    "char_end": 61678,
+    "sentence_index": 421,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec038",
+    "text": "We see consistent improvement using LLaMA-3.",
+    "char_start": 61679,
+    "char_end": 61723,
+    "sentence_index": 422,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec039",
+    "text": "[t]\n\n3.5pt\n\n0.55 !",
+    "char_start": 61725,
+    "char_end": 61743,
+    "sentence_index": 423,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec039",
+    "text": "l|l|ccc\nLLM & Methods & MMLU\n\n5 * LLaMA-3 dubey2024llama & Base & 60.40 $ $ 2.18\n\n& Majority & 61.80 $ $ 2.17\n\n& Debate & lightblue 65.80 $ $ 2.12\n\n& Majority FT & 63.40 $ $ 2.15\n\n& Ours & superlightred 68.80 $ $ 2.07\n\n-5pt\nMMLU Evaluation We introduce an additional evaluation with the MMLU benchmark, finetuning on 500 MMLU examples and testing on 500 different MMLU examples.",
+    "char_start": 61744,
+    "char_end": 62122,
+    "sentence_index": 424,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec039",
+    "text": "We find that our method performs better than other baselines.",
+    "char_start": 62123,
+    "char_end": 62184,
+    "sentence_index": 425,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec039",
+    "text": "-15pt\n\nWe add an additional comparison with MMLU to further establish thte improvement of our method on a task related to general factuality and reasoning instead of mathematics.",
+    "char_start": 62186,
+    "char_end": 62364,
+    "sentence_index": 426,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec039",
+    "text": "We finetune on 500 MMLU examples randomly sampled from all 57 subjects.",
+    "char_start": 62366,
+    "char_end": 62437,
+    "sentence_index": 427,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec039",
+    "text": "We then evaluate on a different set of 500 randomly sampled examples.",
+    "char_start": 62438,
+    "char_end": 62507,
+    "sentence_index": 428,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec039",
+    "text": "We show results in Table .",
+    "char_start": 62509,
+    "char_end": 62535,
+    "sentence_index": 429,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec039",
+    "text": "We see that our method can improve performance on a task related to factuality.",
+    "char_start": 62536,
+    "char_end": 62615,
+    "sentence_index": 430,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec040",
+    "text": "figures/larger_generalize.pdf\n-5pt\nTesting zero-shot generalization across 1000 GSM problems We test the zero-shot capabilities of our method using models trained on the MATH dataset.",
+    "char_start": 62617,
+    "char_end": 62800,
+    "sentence_index": 431,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec040",
+    "text": "We find that over 1000 problems of GSM, our method performs better than all baselines.",
+    "char_start": 62801,
+    "char_end": 62887,
+    "sentence_index": 432,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec040",
+    "text": "figures/arith_generalize.pdf\n-5pt\nZero-shot generalization after arithmetic finetuning .",
+    "char_start": 62889,
+    "char_end": 62977,
+    "sentence_index": 433,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec040",
+    "text": "We evaluate the ability of our method to generalize after finetuning Mistral on the arithmetic task and evaluating on GSM.",
+    "char_start": 62978,
+    "char_end": 63100,
+    "sentence_index": 434,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec040",
+    "text": "We find that this aids in GSM performance, even more than finetuning with MATH.",
+    "char_start": 63101,
+    "char_end": 63180,
+    "sentence_index": 435,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec040",
+    "text": "-10pt\n\nWe include a larger evaluation of zero-shot evaluation of our method in Figure , where we finetune on 500 MATH problems and test on 1000 GSM problems.",
+    "char_start": 63182,
+    "char_end": 63339,
+    "sentence_index": 436,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec040",
+    "text": "We find that our method performs significantly better than all other baselines.",
+    "char_start": 63340,
+    "char_end": 63419,
+    "sentence_index": 437,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec040",
+    "text": "Furthermore, we test another setting to measure zero-shot performance by finetuning on the arithmetic dataset and evaluating on the GSM dataset.",
+    "char_start": 63421,
+    "char_end": 63565,
+    "sentence_index": 438,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec040",
+    "text": "We finetune using 500 arithmetic problems and evaluate each method on 1000 GSM problems.",
+    "char_start": 63566,
+    "char_end": 63654,
+    "sentence_index": 439,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec040",
+    "text": "See Figure .",
+    "char_start": 63655,
+    "char_end": 63667,
+    "sentence_index": 440,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec040",
+    "text": "We find that our method also performs significantly better than all other baselines.",
+    "char_start": 63668,
+    "char_end": 63752,
+    "sentence_index": 441,
+    "section_sentence_index": 10
+  }
+]

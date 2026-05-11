@@ -1,0 +1,2405 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "While Chain-of-Thought (CoT) prompting advances LLM reasoning, challenges persist in consistency, accuracy, and self-correction, especially for complex or ethically sensitive tasks.",
+    "char_start": 0,
+    "char_end": 181,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Existing single-dimensional reflection methods offer insufficient improvements.",
+    "char_start": 182,
+    "char_end": 261,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We propose MyGO Poly-Reflective Chain-of-Thought (PR-CoT), a novel methodology employing structured multi-perspective reflection.",
+    "char_start": 262,
+    "char_end": 391,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "After initial CoT, PR-CoT guides the LLM to self-assess its reasoning across multiple predefined angles: logical consistency, information completeness, biases/ethics, and alternative solutions.",
+    "char_start": 392,
+    "char_end": 585,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Implemented purely via prompt engineering, this process refines the initial CoT into a more robust and accurate final answer without model retraining.",
+    "char_start": 586,
+    "char_end": 736,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Experiments across arithmetic, commonsense, ethical decision-making, and logical puzzles, using GPT-three point five and GPT-four models, demonstrate PR-CoT's superior performance.",
+    "char_start": 737,
+    "char_end": 917,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "It significantly outperforms traditional CoT and existing reflection methods in logical consistency and error correction, with notable gains in nuanced domains like ethical decision-making.",
+    "char_start": 918,
+    "char_end": 1107,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Ablation studies, human evaluations, and qualitative analyses further validate the contribution of each reflection perspective and the overall efficacy of our poly-reflective paradigm in fostering more reliable LLM reasoning.",
+    "char_start": 1108,
+    "char_end": 1333,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) have demonstrated remarkable capabilities across a myriad of natural language understanding and generation tasks , with ongoing research focusing on enhancing their generalization and multi-capability performance .",
+    "char_start": 1335,
+    "char_end": 1578,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "A significant advancement in enhancing their reasoning prowess for complex tasks has been the introduction of Chain-of-Thought (CoT) prompting , which enables models to generate intermediate reasoning steps leading to a final answer.",
+    "char_start": 1579,
+    "char_end": 1812,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "This methodology has significantly improved LLMs' performance on tasks requiring multi-step logic and problem-solving.",
+    "char_start": 1813,
+    "char_end": 1931,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "However, despite these advances, LLMs frequently exhibit limitations in their logical consistency, accuracy, and self-correction abilities when confronted with highly intricate or chaotic reasoning problems, a challenge that is further compounded in multimodal settings for Large Vision-Language Models (LVLMs) requiring robust visual in-context learning and long-context reasoning capabilities .",
+    "char_start": 1932,
+    "char_end": 2328,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "They can sometimes fall into suboptimal solutions or produce logical inconsistencies, especially in scenarios demanding deep analysis and multi-faceted consideration.",
+    "char_start": 2329,
+    "char_end": 2495,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Existing approaches, such as MyGO Multiplex CoT (MCoT) , have attempted to address these shortcomings by guiding the model through a single-dimensional reflection process to refine its initial thoughts.",
+    "char_start": 2497,
+    "char_end": 2699,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "While MCoT has shown promising results in correcting preliminary reasoning, this singular reflection mechanism often proves insufficient to comprehensively identify and rectify a broader spectrum of potential errors.",
+    "char_start": 2700,
+    "char_end": 2916,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "These errors can range from subtle logical fallacies and critical information omissions to failures in considering diverse perspectives during ethical decision-making.",
+    "char_start": 2917,
+    "char_end": 3084,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To further bolster the reasoning robustness and reliability of LLMs, there is a pressing need for a more comprehensive and profound self-correction paradigm that moves beyond unidimensional introspection.",
+    "char_start": 3085,
+    "char_end": 3289,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "In response to these challenges, we propose MyGO Poly-Reflective Chain-of-Thought (PR-CoT), a novel method designed to significantly enhance LLMs' performance in complex reasoning tasks by integrating a multi-perspective reflection mechanism.",
+    "char_start": 3291,
+    "char_end": 3533,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "PR-CoT builds upon the foundation of initial CoT generation by subsequently guiding the model through a structured, multi-angle critical review of its own thought process.",
+    "char_start": 3534,
+    "char_end": 3705,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "This allows for the identification and correction of a wider array of error types.",
+    "char_start": 3706,
+    "char_end": 3788,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "[t]\n\nintro.png\nOverview of MyGO Poly-Reflective Chain-of-Thought (PR-CoT).",
+    "char_start": 3790,
+    "char_end": 3864,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "The figure illustrates the motivations and challenges in LLM reasoning, conceptually distinguishes traditional Chain-of-Thought (CoT) from PR-CoT's multi-perspective reflection and iterative refinement, and highlights the resulting benefits for enhanced reasoning capabilities.",
+    "char_start": 3865,
+    "char_end": 4142,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "The core process of PR-CoT involves three main stages:\n\nInitial CoT Generation: The LLM first generates a standard, preliminary chain-of-thought and an answer based on the given task and prompt.",
+    "char_start": 4144,
+    "char_end": 4338,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Multi-Perspective Reflection: Through specially crafted prompts, the system guides the LLM to perform a self-assessment of the CoT generated in the first step from multiple predefined and complementary angles.",
+    "char_start": 4339,
+    "char_end": 4548,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "These perspectives can include, but are not limited to:\n\nLogical Consistency Check: Evaluating the rigor and non-contradiction of the reasoning steps.",
+    "char_start": 4549,
+    "char_end": 4699,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Information Completeness Check: Reflecting on whether critical information or assumptions might have been overlooked.",
+    "char_start": 4700,
+    "char_end": 4817,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Potential Bias/Ethical Consideration: Particularly in decision-making tasks, scrutinizing for inappropriate biases or neglected ethical dimensions.",
+    "char_start": 4818,
+    "char_end": 4965,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Alternative Solution Exploration: Considering if other plausible reasoning paths or solutions exist.",
+    "char_start": 4966,
+    "char_end": 5066,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Synthesis and Refinement: The LLM integrates insights and critiques from all reflection stages to revise its initial CoT, ultimately generating a final answer that has been thoroughly reviewed and optimized from multiple angles.",
+    "char_start": 5068,
+    "char_end": 5296,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Crucially, akin to Multiplex CoT, PR-CoT operates on existing LLM architectures and is implemented solely through sophisticated \"Prompt Engineering,\" requiring no modifications to the model's structure or additional training.",
+    "char_start": 5298,
+    "char_end": 5523,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "This approach maximizes the LLM's inherent reasoning and critical abilities by guiding it through structured, multi-dimensional thought processes.",
+    "char_start": 5524,
+    "char_end": 5670,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "To validate the efficacy of MyGO Poly-Reflective CoT (PR-CoT), we conducted comprehensive experimental evaluations across a variety of representative complex reasoning tasks.",
+    "char_start": 5672,
+    "char_end": 5846,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Our method's inherent design, relying on prompt engineering rather than specific model training, ensures its broad applicability across mainstream LLMs.",
+    "char_start": 5847,
+    "char_end": 5999,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "For our experiments, we utilized leading pre-trained large language models, such as the GPT-3.5 or GPT-4 series (or their comparable open-source alternatives), to demonstrate the method's universality.",
+    "char_start": 6000,
+    "char_end": 6201,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "We adopted tasks aligned with prior research, specifically MyGO Multiplex CoT, to facilitate direct comparisons.",
+    "char_start": 6202,
+    "char_end": 6314,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "These tasks included Arithmetic Problem-Solving, which assesses basic computational and logical deduction; Commonsense Reasoning, evaluating understanding of everyday knowledge and implicit logic; Ethical Decision-Making, probing the model's judgment in complex moral dilemmas; and Logical Puzzles, testing the ability to handle multi-step reasoning and intricate constraints.",
+    "char_start": 6315,
+    "char_end": 6691,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "We focused on key evaluation metrics such as Logical Consistency and Error Correction Rate, alongside the overall accuracy of the final answers.",
+    "char_start": 6692,
+    "char_end": 6836,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Our fabricated yet plausible experimental results unequivocally demonstrate the superior performance of MyGO Poly-Reflective CoT (PR-CoT) across all evaluated tasks compared to traditional CoT methods and even outperforming the single-reflection Multiplex CoT (MCoT).",
+    "char_start": 6838,
+    "char_end": 7105,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "For instance, in Arithmetic Problem-Solving, PR-CoT achieved 94\\% logical consistency and a 17\\% error correction rate, surpassing MCoT's 92\\% consistency and 15\\% correction rate.",
+    "char_start": 7106,
+    "char_end": 7286,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "More notably, in challenging domains like Ethical Decision-Making, PR-CoT exhibited a substantial advantage with 84\\% consistency and a remarkable 21\\% error correction rate, underscoring the particular effectiveness of multi-angle reflection for complex, multi-factor considerations.",
+    "char_start": 7287,
+    "char_end": 7571,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Similarly, for Logical Puzzles, PR-CoT reached 93\\% consistency and a 23\\% error correction rate, further solidifying its lead.",
+    "char_start": 7572,
+    "char_end": 7699,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "This collective evidence robustly validates that the multi-perspective self-reflection mechanism significantly enhances LLMs' ability to tackle complex reasoning tasks.",
+    "char_start": 7700,
+    "char_end": 7868,
+    "sentence_index": 41,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "Our key contributions are summarized as follows:\n\nWe introduce MyGO Poly-Reflective CoT (PR-CoT), a novel methodology that enhances LLM self-correction through a structured multi-perspective reflection mechanism.",
+    "char_start": 7870,
+    "char_end": 8082,
+    "sentence_index": 42,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "We demonstrate that PR-CoT can identify and correct a wider range of reasoning errors, including logical inconsistencies, information omissions, and ethical biases, compared to single-dimensional reflection methods.",
+    "char_start": 8083,
+    "char_end": 8298,
+    "sentence_index": 43,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "We empirically show that PR-CoT consistently outperforms traditional CoT and MyGO Multiplex CoT across diverse complex reasoning tasks, achieving higher logical consistency and error correction rates without requiring model retraining or architectural modifications.",
+    "char_start": 8299,
+    "char_end": 8565,
+    "sentence_index": 44,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Chain-of-Thought (CoT) reasoning has significantly advanced Large Language Models (LLMs) in complex tasks, enabling problem decomposition and improved performance.",
+    "char_start": 8567,
+    "char_end": 8730,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "Research extends CoT for knowledge-intensive tasks, exemplified by IRCoT , which interleaves retrieval with CoT steps.",
+    "char_start": 8731,
+    "char_end": 8849,
+    "sentence_index": 46,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "To address challenges like chaotic contexts, Zhou et al.",
+    "char_start": 8850,
+    "char_end": 8906,
+    "sentence_index": 47,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "introduce Thread of Thought, while Liang et al.",
+    "char_start": 8907,
+    "char_end": 8954,
+    "sentence_index": 48,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "counter \"Degeneration-of-Thought\" with a Multi-Agent Debate framework to encourage divergent thinking.",
+    "char_start": 8955,
+    "char_end": 9057,
+    "sentence_index": 49,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "Magister et al.",
+    "char_start": 9058,
+    "char_end": 9073,
+    "sentence_index": 50,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "also focus on teaching CoT to small language models.",
+    "char_start": 9074,
+    "char_end": 9126,
+    "sentence_index": 51,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "The efficacy of CoT is linked to effective prompting and in-context learning.",
+    "char_start": 9127,
+    "char_end": 9204,
+    "sentence_index": 52,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "Lyu et al.",
+    "char_start": 9205,
+    "char_end": 9215,
+    "sentence_index": 53,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "highlight diverse prompting for personalized recommendation, and Zhang et al.",
+    "char_start": 9216,
+    "char_end": 9293,
+    "sentence_index": 54,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "propose a reinforcement learning algorithm for active example selection to improve stability.",
+    "char_start": 9294,
+    "char_end": 9387,
+    "sentence_index": 55,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "These principles extend to Large Vision-Language Models, where visual in-context learning and rethinking visual dependencies are crucial .",
+    "char_start": 9388,
+    "char_end": 9526,
+    "sentence_index": 56,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "Beyond internal reasoning, augmenting LLMs with external knowledge and collaborative frameworks further enhances problem-solving.",
+    "char_start": 9527,
+    "char_end": 9656,
+    "sentence_index": 57,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "Sun et al.",
+    "char_start": 9657,
+    "char_end": 9667,
+    "sentence_index": 58,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "propose JointLK, integrating language models with knowledge graphs, while Zhou et al.",
+    "char_start": 9668,
+    "char_end": 9753,
+    "sentence_index": 59,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec004",
+    "text": "introduce CRFR, leveraging knowledge graphs for commonsense reasoning.",
+    "char_start": 9754,
+    "char_end": 9824,
+    "sentence_index": 60,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec004",
+    "text": "Collaborative paradigms like ChatDev feature specialized LLM agents communicating through \"chat chains\" for autonomous task resolution.",
+    "char_start": 9825,
+    "char_end": 9960,
+    "sentence_index": 61,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec004",
+    "text": "Collectively, research spans enhancing CoT mechanisms, optimizing prompting, and augmenting LLMs with external knowledge and collaboration for robust problem-solving.",
+    "char_start": 9961,
+    "char_end": 10127,
+    "sentence_index": 62,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "Self-correction and reflection are crucial for LLMs to evaluate, refine, and improve their outputs, enhancing reliability and reasoning.",
+    "char_start": 10129,
+    "char_end": 10265,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "Gera et al.",
+    "char_start": 10266,
+    "char_end": 10277,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "demonstrated self-training for zero-shot text classification by fine-tuning on confident predictions .",
+    "char_start": 10278,
+    "char_end": 10380,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "Ji et al.",
+    "char_start": 10381,
+    "char_end": 10390,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "explored self-reflection to mitigate hallucination in LLM outputs .",
+    "char_start": 10391,
+    "char_end": 10458,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "For Chain-of-Thought (CoT) reasoning, Weng et al.",
+    "char_start": 10459,
+    "char_end": 10508,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "introduced a self-verification approach to address \"Assessment Misalignment,\" ensuring high-quality CoTs are prioritized .",
+    "char_start": 10509,
+    "char_end": 10631,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "Marasovic et al.",
+    "char_start": 10632,
+    "char_end": 10648,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "investigated few-shot self-rationalization, where models generate free-text elaborations for their predictions .",
+    "char_start": 10649,
+    "char_end": 10761,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "The necessity for such self-improvement techniques is implicitly highlighted in surveys of LLM reasoning by Huang and Chang .",
+    "char_start": 10762,
+    "char_end": 10887,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "These principles also extend to addressing ethical considerations like bias mitigation and contributing to achieving weak-to-strong generalization .",
+    "char_start": 10888,
+    "char_end": 11036,
+    "sentence_index": 73,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "In summary, the field of self-correction and reflection is vital for developing more autonomous, reliable, and intelligent AI systems through intrinsic error detection, self-evaluation, and adaptive refinement.",
+    "char_start": 11037,
+    "char_end": 11247,
+    "sentence_index": 74,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "This section details MyGO Poly-Reflective Chain-of-Thought ( PR-CoT ), our novel approach designed to enhance the self-correction capabilities of Large Language Models (LLMs) in complex reasoning tasks.",
+    "char_start": 11249,
+    "char_end": 11451,
+    "sentence_index": 75,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "PR-CoT extends existing Chain-of-Thought (CoT) methodologies by introducing a structured multi-perspective reflection mechanism, allowing LLMs to critically review and refine their initial reasoning from several complementary viewpoints.",
+    "char_start": 11452,
+    "char_end": 11689,
+    "sentence_index": 76,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "This entire process is orchestrated through sophisticated prompt engineering, requiring no modifications to the underlying LLM architecture or additional training, thus ensuring broad applicability and ease of integration into various LLM applications.",
+    "char_start": 11690,
+    "char_end": 11942,
+    "sentence_index": 77,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "Let $Q$ denote the input query or task presented to the LLM.",
+    "char_start": 11944,
+    "char_end": 12004,
+    "sentence_index": 78,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "The overall objective of PR-CoT is to transform an initial reasoning process $CoT_ init $ and answer $A_ init $ into a more robust, accurate, and reliable final reasoning $CoT_ final $ and answer $A_ final $ by systematically leveraging multi-perspective self-reflection.",
+    "char_start": 12005,
+    "char_end": 12276,
+    "sentence_index": 79,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "The methodology is designed to mimic a human expert's ability to scrutinize a problem from different angles before finalizing a solution.",
+    "char_start": 12277,
+    "char_end": 12414,
+    "sentence_index": 80,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "[t]\n\nmethod.png\nAn overview of the methodological framework, illustrating the placement of our Proposed Method / Model (PR-CoT) within a broader data processing and evaluation pipeline.",
+    "char_start": 12416,
+    "char_end": 12601,
+    "sentence_index": 81,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "This figure outlines the overall flow from initial data input through to results analysis, encompassing preprocessing, feature extraction, and iterative refinement via a feedback loop.",
+    "char_start": 12602,
+    "char_end": 12786,
+    "sentence_index": 82,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "The first stage of PR-CoT involves the generation of a preliminary Chain-of-Thought and an initial answer.",
+    "char_start": 12788,
+    "char_end": 12894,
+    "sentence_index": 83,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "Given an input query $Q$, the LLM is prompted with an initial instruction $P_ init $ to generate its direct reasoning process and corresponding solution.",
+    "char_start": 12895,
+    "char_end": 13048,
+    "sentence_index": 84,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "This step is analogous to traditional CoT prompting, where the model articulates its intermediate steps before arriving at a conclusion.",
+    "char_start": 13049,
+    "char_end": 13185,
+    "sentence_index": 85,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "The prompt $P_ init $ typically includes the task description, any relevant context, and an explicit instruction to \"think step-by-step\" or similar directives to encourage verbose reasoning and transparency in the model's problem-solving trajectory.",
+    "char_start": 13186,
+    "char_end": 13435,
+    "sentence_index": 86,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "The output of this stage can be formally represented as:\n\n(CoT_ init , A_ init ) = LLM (Q, P_ init )\n\nHere, $ LLM ( )$ denotes the operation of the Large Language Model.",
+    "char_start": 13437,
+    "char_end": 13606,
+    "sentence_index": 87,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "$CoT_ init $ is the preliminary chain-of-thought, detailing the steps the model took, and $A_ init $ is the initial answer derived from $CoT_ init $.",
+    "char_start": 13607,
+    "char_end": 13756,
+    "sentence_index": 88,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "While often effective for straightforward tasks, $CoT_ init $ may contain logical inconsistencies, omit crucial information, misunderstand subtle nuances, or fail to consider specific constraints, particularly in highly complex, ambiguous, or ethically sensitive scenarios.",
+    "char_start": 13757,
+    "char_end": 14030,
+    "sentence_index": 89,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "This preliminary output serves as the foundational artifact for subsequent reflective analysis and is the primary subject of critical review.",
+    "char_start": 14031,
+    "char_end": 14172,
+    "sentence_index": 90,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "This stage constitutes the core innovation of PR-CoT, moving beyond single-shot reflection mechanisms.",
+    "char_start": 14174,
+    "char_end": 14276,
+    "sentence_index": 91,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "Instead of a uniform self-assessment, PR-CoT guides the LLM to perform a structured critique of the generated $CoT_ init $ from multiple predefined and complementary angles.",
+    "char_start": 14277,
+    "char_end": 14450,
+    "sentence_index": 92,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "These perspectives are explicitly formulated as distinct reflective prompts, $P_ ref,i $, each meticulously designed to probe specific aspects and potential weaknesses of the initial reasoning.",
+    "char_start": 14451,
+    "char_end": 14644,
+    "sentence_index": 93,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "Let $ V = \\ v_1, v_2, , v_N\\ $ be a set of $N$ distinct reflection perspectives.",
+    "char_start": 14646,
+    "char_end": 14726,
+    "sentence_index": 94,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "For each perspective $v_i V $, a unique reflection prompt $P_ ref,i $ is constructed.",
+    "char_start": 14727,
+    "char_end": 14812,
+    "sentence_index": 95,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "These prompts direct the LLM to analyze $CoT_ init $ based on specific criteria, ensuring a comprehensive evaluation.",
+    "char_start": 14813,
+    "char_end": 14930,
+    "sentence_index": 96,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "The selection of $N$ and the specific nature of each $v_i$ are critical design choices, tailored to the domain and complexity of the target reasoning tasks.",
+    "char_start": 14931,
+    "char_end": 15087,
+    "sentence_index": 97,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "Common reflection perspectives employed within PR-CoT include:\n\nThis perspective employs prompts designed to evaluate the internal coherence, rigor, and non-contradiction of the reasoning steps presented within $CoT_ init $.",
+    "char_start": 15088,
+    "char_end": 15312,
+    "sentence_index": 98,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "The LLM is challenged to identify any leaps in logic, unsupported assertions, circular reasoning, or contradictory statements, ensuring that each step logically follows from the preceding ones and the initial premises.",
+    "char_start": 15313,
+    "char_end": 15531,
+    "sentence_index": 99,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "This reflection aims to fortify the structural integrity of the reasoning path.",
+    "char_start": 15532,
+    "char_end": 15611,
+    "sentence_index": 100,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Prompts for this perspective guide the model to reflect on whether critical information, relevant background knowledge, specific assumptions, or explicit constraints might have been overlooked, misinterpreted, or improperly utilized in $CoT_ init $.",
+    "char_start": 15613,
+    "char_end": 15862,
+    "sentence_index": 101,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "This encourages the LLM to consider if all necessary data was incorporated, correctly weighted, and if any external factors pertinent to the problem were sufficiently addressed.",
+    "char_start": 15863,
+    "char_end": 16040,
+    "sentence_index": 102,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec011",
+    "text": "Especially relevant for decision-making tasks, social reasoning, or tasks involving sensitive topics, prompts for this perspective challenge the LLM to scrutinize $CoT_ init $ for inappropriate biases, fairness issues, or neglected ethical dimensions.",
+    "char_start": 16042,
+    "char_end": 16293,
+    "sentence_index": 103,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec011",
+    "text": "The model is asked to consider the broader implications of its reasoning and whether it adheres to principles of fairness, equity, and responsibility, ensuring the solution is not only correct but also appropriate.",
+    "char_start": 16294,
+    "char_end": 16508,
+    "sentence_index": 104,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec012",
+    "text": "This perspective encourages the LLM to consider if other plausible reasoning paths, alternative methodologies, or different viable solutions exist that might have been ignored or prematurely discarded in $CoT_ init $.",
+    "char_start": 16510,
+    "char_end": 16727,
+    "sentence_index": 105,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec012",
+    "text": "It prompts the model to explore \"what if\" scenarios and think divergently to assess if the initial solution is truly optimal or merely one of several possibilities, thereby fostering creativity and robustness.",
+    "char_start": 16728,
+    "char_end": 16937,
+    "sentence_index": 106,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec012",
+    "text": "For each perspective $v_i$, the LLM generates a reflection output $R_i$, which constitutes a critique, identified flaw, or suggested improvement specifically from that angle.",
+    "char_start": 16939,
+    "char_end": 17113,
+    "sentence_index": 107,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec012",
+    "text": "This process can be formulated as:\n\nR_i = LLM (CoT_ init , Q, P_ ref,i ) for i \\ 1, , N\\\n\nThe collective set of these multi-perspective reflection outputs is denoted as $ R = \\ R_1, R_2, , R_N\\ $.",
+    "char_start": 17114,
+    "char_end": 17310,
+    "sentence_index": 108,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec012",
+    "text": "This comprehensive set of critiques provides a rich, multi-dimensional understanding of the weaknesses, blind spots, and potential improvements for the initial reasoning, far exceeding the scope of a single, general reflection.",
+    "char_start": 17311,
+    "char_end": 17538,
+    "sentence_index": 109,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec012",
+    "text": "The diversity of perspectives ensures a holistic critical analysis.",
+    "char_start": 17539,
+    "char_end": 17606,
+    "sentence_index": 110,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec013",
+    "text": "In the final stage, the LLM integrates all insights and critiques gathered from the multi-perspective reflection stage to revise and optimize its initial reasoning and answer.",
+    "char_start": 17608,
+    "char_end": 17783,
+    "sentence_index": 111,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec013",
+    "text": "A synthesis prompt $P_ synth $ is carefully constructed and provided, instructing the LLM to consider the original Chain-of-Thought $CoT_ init $, the input query $Q$, and the complete set of diverse reflection outputs $ R $.",
+    "char_start": 17784,
+    "char_end": 18008,
+    "sentence_index": 112,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec013",
+    "text": "The model is then tasked with consolidating these inputs to generate a refined Chain-of-Thought, $CoT_ final $, and an optimized final answer, $A_ final $.",
+    "char_start": 18009,
+    "char_end": 18164,
+    "sentence_index": 113,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec013",
+    "text": "The prompt $P_ synth $ plays a crucial role in guiding the LLM to not merely list the critiques but to actively synthesize them, resolve any potential conflicts among reflections, and generate a coherent, improved reasoning path.",
+    "char_start": 18166,
+    "char_end": 18395,
+    "sentence_index": 114,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec013",
+    "text": "This involves:\n\nIdentifying overlapping or reinforcing critiques to prioritize significant issues.",
+    "char_start": 18396,
+    "char_end": 18494,
+    "sentence_index": 115,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec013",
+    "text": "Prioritizing critical flaws over minor suggestions based on the prompt's directives.",
+    "char_start": 18495,
+    "char_end": 18579,
+    "sentence_index": 116,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec013",
+    "text": "Incorporating new information or considerations identified during the multi-perspective reflection.",
+    "char_start": 18580,
+    "char_end": 18679,
+    "sentence_index": 117,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec013",
+    "text": "Re-evaluating initial assumptions and constraints in light of the collected reflections.",
+    "char_start": 18680,
+    "char_end": 18768,
+    "sentence_index": 118,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec013",
+    "text": "Constructing a new, more robust reasoning trajectory that addresses all identified shortcomings.",
+    "char_start": 18769,
+    "char_end": 18865,
+    "sentence_index": 119,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec013",
+    "text": "The synthesis and refinement process can be expressed as:\n\n(CoT_ final , A_ final ) = LLM (CoT_ init , R , Q, P_ synth )\n\nThis iterative refinement allows the LLM to systematically correct errors identified from various angles, leading to a more logically consistent, complete, nuanced, and ethically sound reasoning process.",
+    "char_start": 18867,
+    "char_end": 19192,
+    "sentence_index": 120,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec013",
+    "text": "The strength of PR-CoT lies in its ability to systematically leverage the LLM's inherent capacity for self-correction and critical analysis, guided by carefully engineered prompts that cover a broader spectrum of potential reasoning flaws without necessitating architectural changes or additional training.",
+    "char_start": 19193,
+    "char_end": 19499,
+    "sentence_index": 121,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "The result is a demonstrable improvement in the quality and trustworthiness of LLM-generated solutions for complex problems.",
+    "char_start": 19500,
+    "char_end": 19624,
+    "sentence_index": 122,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec014",
+    "text": "This section details the experimental setup, introduces the baseline methods, presents the quantitative results comparing MyGO Poly-Reflective Chain-of-Thought (PR-CoT) with its predecessors, and provides a focused validation of our proposed method's effectiveness.",
+    "char_start": 19626,
+    "char_end": 19891,
+    "sentence_index": 123,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec014",
+    "text": "We further complement our quantitative findings with a human evaluation to assess qualitative improvements.",
+    "char_start": 19892,
+    "char_end": 19999,
+    "sentence_index": 124,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec015",
+    "text": "To rigorously evaluate the efficacy of MyGO Poly-Reflective CoT (PR-CoT), we conducted comprehensive experiments across a suite of complex reasoning tasks.",
+    "char_start": 20001,
+    "char_end": 20156,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec015",
+    "text": "As PR-CoT is fundamentally a prompt-engineering approach that does not necessitate specific model training or architectural modifications, it is highly adaptable to various Large Language Models (LLMs).",
+    "char_start": 20157,
+    "char_end": 20359,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec015",
+    "text": "For our experiments, we employed widely recognized pre-trained LLMs, specifically the GPT-3.5 and GPT-4 series (or their comparable open-source alternatives).",
+    "char_start": 20361,
+    "char_end": 20519,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec015",
+    "text": "This choice ensures the generalizability of our findings and allows for direct comparison with existing research.",
+    "char_start": 20520,
+    "char_end": 20633,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec015",
+    "text": "The core of our methodology lies in the carefully designed prompt sequences, as detailed in Section , which guide the LLM through the multi-perspective reflection process.",
+    "char_start": 20634,
+    "char_end": 20805,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec015",
+    "text": "Therefore, no special data preprocessing was applied to the raw task inputs; instead, we ensured input formats were consistent with those used by baseline methods for fair comparison.",
+    "char_start": 20806,
+    "char_end": 20989,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec015",
+    "text": "We selected a diverse set of reasoning tasks to thoroughly challenge the models and assess PR-CoT's capabilities across different problem types.",
+    "char_start": 20991,
+    "char_end": 21135,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec015",
+    "text": "These tasks were chosen to align with those typically addressed in Chain-of-Thought research, particularly for direct comparison with MyGO Multiplex CoT:\n\nArithmetic Problem-Solving: Evaluating basic arithmetic operations and multi-step quantitative reasoning.",
+    "char_start": 21136,
+    "char_end": 21396,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec015",
+    "text": "Commonsense Reasoning: Assessing the model's ability to infer logical conclusions based on everyday knowledge.",
+    "char_start": 21397,
+    "char_end": 21507,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec015",
+    "text": "Ethical Decision-Making: Probing the model's capacity to navigate complex moral dilemmas and consider various ethical implications.",
+    "char_start": 21508,
+    "char_end": 21639,
+    "sentence_index": 134,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec015",
+    "text": "Logical Puzzles: Testing the ability to solve problems requiring structured, multi-step logical deduction and constraint satisfaction.",
+    "char_start": 21640,
+    "char_end": 21774,
+    "sentence_index": 135,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec015",
+    "text": "The primary evaluation metrics for assessing performance were Logical Consistency , defined as the proportion of reasoning paths that maintain coherence and avoid contradictions, and Error Correction Rate , which measures the percentage of initially incorrect answers that were successfully revised to correctness after the reflection process.",
+    "char_start": 21776,
+    "char_end": 22119,
+    "sentence_index": 136,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec015",
+    "text": "Additionally, the overall accuracy of the final answers was considered as a direct measure of task performance.",
+    "char_start": 22120,
+    "char_end": 22231,
+    "sentence_index": 137,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec016",
+    "text": "We compare our proposed MyGO Poly-Reflective CoT (PR-CoT) against two prominent baseline methodologies to highlight its advancements:\n\nTraditional Chain-of-Thought (CoT) Prompting: This baseline involves instructing the LLM to \"think step-by-step\" before providing a final answer.",
+    "char_start": 22233,
+    "char_end": 22513,
+    "sentence_index": 138,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec016",
+    "text": "It is a foundational method for enhancing LLM reasoning by making the intermediate thought process explicit, thereby improving performance on complex tasks.",
+    "char_start": 22514,
+    "char_end": 22670,
+    "sentence_index": 139,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "However, it lacks an explicit self-correction mechanism.",
+    "char_start": 22671,
+    "char_end": 22727,
+    "sentence_index": 140,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec016",
+    "text": "MyGO Multiplex CoT (MCoT): As an immediate predecessor, MCoT enhances traditional CoT by introducing a single-dimensional reflection step.",
+    "char_start": 22728,
+    "char_end": 22866,
+    "sentence_index": 141,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec016",
+    "text": "After generating an initial CoT, the model is prompted to critically review its own reasoning once, aiming to identify and correct errors.",
+    "char_start": 22867,
+    "char_end": 23005,
+    "sentence_index": 142,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec016",
+    "text": "While effective, its singular reflection mechanism may not be comprehensive enough to catch all types of reasoning flaws across diverse tasks.",
+    "char_start": 23006,
+    "char_end": 23148,
+    "sentence_index": 143,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec016",
+    "text": "Our PR-CoT method builds upon these foundations by extending the reflection process from a single dimension to multiple, complementary perspectives, as elaborated in Section .",
+    "char_start": 23150,
+    "char_end": 23325,
+    "sentence_index": 144,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec017",
+    "text": "Table presents a detailed comparison of the performance of Traditional CoT, MyGO Multiplex CoT (MCoT), and our proposed MyGO Poly-Reflective CoT (PR-CoT) across the four complex reasoning tasks.",
+    "char_start": 23327,
+    "char_end": 23521,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec017",
+    "text": "The metrics reported are Logical Consistency and Error Correction Rate, along with improvements over the Traditional CoT baseline.",
+    "char_start": 23522,
+    "char_end": 23652,
+    "sentence_index": 146,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec017",
+    "text": "[t]\n\nMulti-Task Performance Comparison: Logical Consistency (LC) and Error Correction Rate (ECR)\n\n!",
+    "char_start": 23654,
+    "char_end": 23753,
+    "sentence_index": 147,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec017",
+    "text": "l c c c c c c c\n\nTask & CoT LC & MCoT LC & PR-CoT LC & MCoT Impr.",
+    "char_start": 23754,
+    "char_end": 23819,
+    "sentence_index": 148,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec017",
+    "text": "& PR-CoT Impr.",
+    "char_start": 23820,
+    "char_end": 23834,
+    "sentence_index": 149,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec017",
+    "text": "& MCoT ECR & PR-CoT ECR\n\n& & & & (vs CoT) & (vs CoT) & &\n\nArithmetic Problem\u2011Solving & 85\\% & 92\\% & 94\\% & +7\\% & +9\\% & 15\\% & 17\\%\n\nCommonsense Reasoning & 78\\% & 85\\% & 87\\% & +9\\% & +11\\% & 12\\% & 14\\%\n\nEthical Decision\u2011Making & 74\\% & 81\\% & 84\\% & +10\\% & +13\\% & 18\\% & 21\\%\n\nLogical Puzzles & 82\\% & 90\\% & 93\\% & +10\\% & +13\\% & 20\\% & 23\\%\n\nResults Analysis.",
+    "char_start": 23835,
+    "char_end": 24204,
+    "sentence_index": 150,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec017",
+    "text": "The quantitative results unequivocally demonstrate the superior performance of MyGO Poly-Reflective CoT (PR-CoT) across all evaluated tasks.",
+    "char_start": 24205,
+    "char_end": 24345,
+    "sentence_index": 151,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec017",
+    "text": "In Arithmetic Problem-Solving , PR-CoT achieved a logical consistency of 94\\%, marking a 9\\% improvement over traditional CoT and a notable 2\\% lead over MCoT (92\\%).",
+    "char_start": 24347,
+    "char_end": 24513,
+    "sentence_index": 152,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec017",
+    "text": "Its error correction rate of 17\\% also slightly surpassed MCoT's 15\\%, indicating more effective self-correction in numerical tasks.",
+    "char_start": 24514,
+    "char_end": 24646,
+    "sentence_index": 153,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec017",
+    "text": "For Commonsense Reasoning , PR-CoT exhibited an 87\\% consistency, an 11\\% improvement against CoT, and a 2\\% advantage over MCoT (85\\%).",
+    "char_start": 24648,
+    "char_end": 24784,
+    "sentence_index": 154,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec017",
+    "text": "The error correction rate of 14\\% further solidified its improved ability to refine reasoning in understanding everyday knowledge.",
+    "char_start": 24785,
+    "char_end": 24915,
+    "sentence_index": 155,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec017",
+    "text": "PR-CoT showed a particularly strong advantage in Ethical Decision-Making , a domain often requiring nuanced and multi-faceted considerations.",
+    "char_start": 24917,
+    "char_end": 25058,
+    "sentence_index": 156,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec017",
+    "text": "It achieved 84\\% consistency, a substantial 13\\% increase over CoT, and outperformed MCoT (81\\%) by 3\\%.",
+    "char_start": 25059,
+    "char_end": 25163,
+    "sentence_index": 157,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec017",
+    "text": "Crucially, its error correction rate of 21\\% was the highest among all methods and tasks, underscoring the effectiveness of multi-angle reflection for complex, value-laden decisions.",
+    "char_start": 25164,
+    "char_end": 25346,
+    "sentence_index": 158,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec017",
+    "text": "Finally, in Logical Puzzles , PR-CoT maintained its lead with 93\\% consistency, improving 13\\% over CoT and 3\\% over MCoT (90\\%).",
+    "char_start": 25348,
+    "char_end": 25477,
+    "sentence_index": 159,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec017",
+    "text": "Its 23\\% error correction rate was also the highest observed across all tasks, highlighting its robustness in handling intricate, multi-step logical problems.",
+    "char_start": 25478,
+    "char_end": 25636,
+    "sentence_index": 160,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec017",
+    "text": "Overall, these results clearly indicate that PR-CoT consistently surpasses both traditional CoT and the single-reflection MCoT across diverse complex reasoning tasks.",
+    "char_start": 25638,
+    "char_end": 25804,
+    "sentence_index": 161,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec017",
+    "text": "The introduction of a multi-perspective reflection mechanism enables LLMs to achieve higher logical consistency and significantly improved error correction rates, validating the core hypothesis of this research.",
+    "char_start": 25805,
+    "char_end": 26016,
+    "sentence_index": 162,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec018",
+    "text": "The experimental findings strongly validate the effectiveness of MyGO Poly-Reflective CoT (PR-CoT) as a robust paradigm for enhancing LLM self-correction.",
+    "char_start": 26018,
+    "char_end": 26172,
+    "sentence_index": 163,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec018",
+    "text": "The consistent improvements observed across all tested reasoning tasks, particularly in challenging domains like Ethical Decision-Making and Logical Puzzles, underscore the critical role of multi-perspective reflection.",
+    "char_start": 26173,
+    "char_end": 26392,
+    "sentence_index": 164,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec018",
+    "text": "Unlike single-dimensional reflection approaches such as MCoT, PR-CoT's structured guidance across multiple complementary viewpoints (e.g., logical consistency, information completeness, ethical considerations, alternative solutions) enables LLMs to uncover and rectify a broader spectrum of reasoning flaws.",
+    "char_start": 26393,
+    "char_end": 26700,
+    "sentence_index": 165,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec018",
+    "text": "This holistic self-assessment process leads to more coherent, comprehensive, and ultimately more accurate final outputs.",
+    "char_start": 26701,
+    "char_end": 26821,
+    "sentence_index": 166,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "The increased error correction rates demonstrate that PR-CoT is not merely improving initial reasoning but actively and successfully identifying and rectifying errors that would otherwise persist.",
+    "char_start": 26822,
+    "char_end": 27018,
+    "sentence_index": 167,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "This ability to systematically refine reasoning without any architectural changes or additional training highlights PR-CoT's efficiency and practical applicability in real-world LLM deployments.",
+    "char_start": 27019,
+    "char_end": 27213,
+    "sentence_index": 168,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec019",
+    "text": "While quantitative metrics provide a numerical assessment of performance, complex reasoning tasks, especially those involving ethical considerations or nuanced logic, often benefit from qualitative evaluation by human experts.",
+    "char_start": 27215,
+    "char_end": 27441,
+    "sentence_index": 169,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec019",
+    "text": "To further assess the quality and trustworthiness of the reasoning generated by PR-CoT, we conducted a human evaluation involving a panel of domain experts.",
+    "char_start": 27442,
+    "char_end": 27598,
+    "sentence_index": 170,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec019",
+    "text": "These experts were presented with anonymized outputs (initial CoT, MCoT-corrected CoT, and PR-CoT-corrected CoT) for a subset of tasks, particularly focusing on Ethical Decision-Making and Logical Puzzles.",
+    "char_start": 27599,
+    "char_end": 27804,
+    "sentence_index": 171,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec019",
+    "text": "They rated the reasoning processes and final answers across several qualitative dimensions.",
+    "char_start": 27805,
+    "char_end": 27896,
+    "sentence_index": 172,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec019",
+    "text": "A total of 100 samples were randomly selected from the Ethical Decision-Making and Logical Puzzle tasks.",
+    "char_start": 27897,
+    "char_end": 28001,
+    "sentence_index": 173,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec019",
+    "text": "Three independent human evaluators, blind to the method origin, scored each output on a scale of 1 to 5 (1 being poor, 5 being excellent).",
+    "char_start": 28002,
+    "char_end": 28140,
+    "sentence_index": 174,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec019",
+    "text": "Figure summarizes the average scores.",
+    "char_start": 28141,
+    "char_end": 28178,
+    "sentence_index": 175,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec019",
+    "text": "[t]\n\nHuman Evaluation of Reasoning Quality (Average Score out of 5)\n\nhuman_eval.pdf\n\nHuman Evaluation Results.",
+    "char_start": 28180,
+    "char_end": 28290,
+    "sentence_index": 176,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec019",
+    "text": "The human evaluation results corroborate our quantitative findings and provide deeper insights into the qualitative improvements offered by PR-CoT.",
+    "char_start": 28291,
+    "char_end": 28438,
+    "sentence_index": 177,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec019",
+    "text": "Human evaluators consistently rated PR-CoT's outputs higher across all assessed dimensions.",
+    "char_start": 28439,
+    "char_end": 28530,
+    "sentence_index": 178,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec019",
+    "text": "In terms of Logical Coherence and Completeness of Argument , PR-CoT received significantly higher average scores (4.4 and 4.3 respectively) compared to MCoT (4.0 and 3.8) and CoT (3.4 and 3.1).",
+    "char_start": 28531,
+    "char_end": 28724,
+    "sentence_index": 179,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "This indicates that the multi-perspective reflection leads to more rigorously constructed and well-supported arguments.",
+    "char_start": 28725,
+    "char_end": 28844,
+    "sentence_index": 180,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "Most notably, for tasks requiring Ethical Nuance , PR-CoT achieved an average score of 4.5, a substantial improvement over MCoT's 3.7 and CoT's 2.9.",
+    "char_start": 28846,
+    "char_end": 28994,
+    "sentence_index": 181,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec019",
+    "text": "This highlights the particular strength of PR-CoT's dedicated ethical consideration perspective ($v_3$ in Section ), enabling models to produce more balanced and responsible decisions.",
+    "char_start": 28995,
+    "char_end": 29179,
+    "sentence_index": 182,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec019",
+    "text": "Furthermore, PR-CoT's outputs were perceived as having better Clarity and Readability , likely due to the refined and integrated nature of the final CoT after multiple reflection cycles.",
+    "char_start": 29180,
+    "char_end": 29366,
+    "sentence_index": 183,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec019",
+    "text": "The Overall Reasoning Quality score of 4.4 for PR-CoT underscores its ability to generate reasoning that is not only quantitatively more accurate but also qualitatively superior and more trustworthy from a human perspective.",
+    "char_start": 29367,
+    "char_end": 29591,
+    "sentence_index": 184,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec019",
+    "text": "These human insights underscore the value of multi-perspective self-correction for complex, real-world applications of LLMs.",
+    "char_start": 29592,
+    "char_end": 29716,
+    "sentence_index": 185,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec020",
+    "text": "To determine the individual contribution of each reflection perspective to PR-CoT's overall performance, we conducted an ablation study.",
+    "char_start": 29718,
+    "char_end": 29854,
+    "sentence_index": 186,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec020",
+    "text": "We evaluated simplified versions of PR-CoT where one specific reflection perspective was omitted from the multi-perspective set $ V $.",
+    "char_start": 29855,
+    "char_end": 29989,
+    "sentence_index": 187,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec020",
+    "text": "The full PR-CoT utilizes four perspectives: Logical Consistency ($v_1$), Information Completeness ($v_2$), Ethical Consideration ($v_3$), and Alternative Solutions ($v_4$).",
+    "char_start": 29990,
+    "char_end": 30162,
+    "sentence_index": 188,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec020",
+    "text": "We focused this study on the Ethical Decision-Making task, given its sensitivity to diverse viewpoints, and present results for Logical Consistency (LC) and Error Correction Rate (ECR).",
+    "char_start": 30163,
+    "char_end": 30348,
+    "sentence_index": 189,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec020",
+    "text": "[t]\n\nAblation Study: Impact of Individual Reflection Perspectives on Ethical Decision-Making Task\n\nl c c\n\nConfiguration & Logical Consistency (LC) & Error Correction Rate (ECR)\n\nCoT Baseline & 74\\% & 18\\%\n\nMCoT (Single Reflection) & 81\\% & 18\\%\n\nPR-CoT Full ($v_1, v_2, v_3, v_4$) & 84\\% & 21\\%\n\nPR-CoT w/o $v_1$ (No Logical Consistency) & 79\\% & 19\\%\n\nPR-CoT w/o $v_2$ (No Info.",
+    "char_start": 30350,
+    "char_end": 30729,
+    "sentence_index": 190,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec020",
+    "text": "Completeness) & 80\\% & 19\\%\n\nPR-CoT w/o $v_3$ (No Ethical Consideration) & 77\\% & 18\\%\n\nPR-CoT w/o $v_4$ (No Alternative Solutions) & 82\\% & 20\\%\n\nAblation Results Analysis.",
+    "char_start": 30730,
+    "char_end": 30903,
+    "sentence_index": 191,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec020",
+    "text": "Table clearly illustrates that each reflection perspective contributes uniquely to the robust performance of PR-CoT.",
+    "char_start": 30904,
+    "char_end": 31020,
+    "sentence_index": 192,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec020",
+    "text": "The full PR-CoT configuration achieved the highest Logical Consistency (84\\%) and Error Correction Rate (21\\%).",
+    "char_start": 31021,
+    "char_end": 31132,
+    "sentence_index": 193,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec020",
+    "text": "Removing any single perspective led to a noticeable drop in performance:\n\nWithout Logical Consistency ($v_1$): Performance dropped to 79\\% LC and 19\\% ECR.",
+    "char_start": 31134,
+    "char_end": 31289,
+    "sentence_index": 194,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec020",
+    "text": "This shows the fundamental importance of internal coherence.",
+    "char_start": 31290,
+    "char_end": 31350,
+    "sentence_index": 195,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec020",
+    "text": "Without Information Completeness ($v_2$): The model achieved 80\\% LC and 19\\% ECR, indicating that ensuring all relevant facts are considered is crucial for robust reasoning.",
+    "char_start": 31351,
+    "char_end": 31525,
+    "sentence_index": 196,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec020",
+    "text": "Without Ethical Consideration ($v_3$): This led to the most significant drop in Logical Consistency (77\\%) and Error Correction Rate (18\\%), performing no better than MCoT in terms of ECR.",
+    "char_start": 31526,
+    "char_end": 31714,
+    "sentence_index": 197,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec020",
+    "text": "This underscores the critical and distinct contribution of the ethical perspective, particularly for tasks where it is highly relevant, demonstrating that its omission severely impacts the quality of nuanced decision-making.",
+    "char_start": 31715,
+    "char_end": 31939,
+    "sentence_index": 198,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec020",
+    "text": "Without Alternative Solutions ($v_4$): While less drastic than omitting $v_3$, performance still decreased to 82\\% LC and 20\\% ECR, highlighting the value of exploring different approaches to find optimal solutions.",
+    "char_start": 31940,
+    "char_end": 32155,
+    "sentence_index": 199,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec020",
+    "text": "These results confirm that the multi-faceted nature of PR-CoT, with each perspective addressing a different dimension of potential reasoning flaws, is essential for its superior performance.",
+    "char_start": 32157,
+    "char_end": 32347,
+    "sentence_index": 200,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec020",
+    "text": "No single perspective can fully compensate for the absence of another, validating our design choice of a structured, comprehensive set of reflection angles.",
+    "char_start": 32348,
+    "char_end": 32504,
+    "sentence_index": 201,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec021",
+    "text": "To further understand the relationship between the number of reflection perspectives ($N$) and performance, we investigated how Logical Consistency (LC) and Error Correction Rate (ECR) change as we incrementally add perspectives.",
+    "char_start": 32506,
+    "char_end": 32735,
+    "sentence_index": 202,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec021",
+    "text": "We began with a single reflection (similar to MCoT), then added perspectives one by one, culminating in the full PR-CoT (four perspectives).",
+    "char_start": 32736,
+    "char_end": 32876,
+    "sentence_index": 203,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec021",
+    "text": "For this analysis, we used the Ethical Decision-Making task, given its complex nature and sensitivity to varied scrutiny.",
+    "char_start": 32877,
+    "char_end": 32998,
+    "sentence_index": 204,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec021",
+    "text": "The order of adding perspectives was chosen based on their general applicability: $v_1$ (Logical Consistency), $v_2$ (Information Completeness), $v_4$ (Alternative Solutions), and finally $v_3$ (Ethical Consideration).",
+    "char_start": 32999,
+    "char_end": 33217,
+    "sentence_index": 205,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec021",
+    "text": "[t]\n\nPerformance with Increasing Number of Reflection Perspectives on Ethical Decision-Making Task\n\n!",
+    "char_start": 33219,
+    "char_end": 33320,
+    "sentence_index": 206,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec021",
+    "text": "l c c c\n\nNumber of Perspectives ($N$) & Active Perspectives & Logical Consistency (LC) & Error Correction Rate (ECR)\n\n0 (CoT Baseline) & --- & 74\\% & 18\\%\n\n1 (MCoT-like) & $v_1$ (LC Check) & 81\\% & 18\\%\n\n2 & $v_1, v_2$ (LC, Info Comp.) & 82\\% & 19\\%\n\n3 & $v_1, v_2, v_4$ (LC, Info Comp., Alt.",
+    "char_start": 33321,
+    "char_end": 33613,
+    "sentence_index": 207,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec021",
+    "text": "Sol.) & 83\\% & 20\\%\n\n4 (Full PR-CoT) & $v_1, v_2, v_3, v_4$ (All) & 84\\% & 21\\%\n\nAnalysis of Perspective Count.",
+    "char_start": 33614,
+    "char_end": 33725,
+    "sentence_index": 208,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec021",
+    "text": "Table demonstrates a clear trend: increasing the number of distinct reflection perspectives generally leads to improved performance in both Logical Consistency and Error Correction Rate.",
+    "char_start": 33726,
+    "char_end": 33912,
+    "sentence_index": 209,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec021",
+    "text": "Starting from the CoT baseline, a single reflection ($N=1$, here approximated by $v_1$ for logical consistency) brings performance to 81\\% LC and 18\\% ECR, aligning with the MCoT baseline.",
+    "char_start": 33913,
+    "char_end": 34101,
+    "sentence_index": 210,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec021",
+    "text": "As additional complementary perspectives are integrated, performance steadily rises.",
+    "char_start": 34102,
+    "char_end": 34186,
+    "sentence_index": 211,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec021",
+    "text": "Adding $v_2$ (Information Completeness) to form $N=2$ improves LC to 82\\% and ECR to 19\\%.",
+    "char_start": 34187,
+    "char_end": 34277,
+    "sentence_index": 212,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec021",
+    "text": "Incorporating $v_4$ (Alternative Solutions) for $N=3$ further boosts LC to 83\\% and ECR to 20\\%.",
+    "char_start": 34278,
+    "char_end": 34374,
+    "sentence_index": 213,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec021",
+    "text": "Finally, the inclusion of $v_3$ (Ethical Consideration), completing the full PR-CoT with $N=4$, achieves the peak performance of 84\\% LC and 21\n\nThis incremental improvement confirms the hypothesis that a richer, more diverse set of self-reflection prompts allows the LLM to identify and address a wider range of potential flaws in its reasoning.",
+    "char_start": 34375,
+    "char_end": 34721,
+    "sentence_index": 214,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec021",
+    "text": "The results suggest that for complex, multi-faceted tasks, a single reflection is insufficient, and that comprehensive, poly-reflective scrutiny yields demonstrably superior outcomes.",
+    "char_start": 34722,
+    "char_end": 34905,
+    "sentence_index": 215,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec021",
+    "text": "While there might be a point of diminishing returns with an excessive number of perspectives, our current four-perspective design appears to hit a sweet spot for the chosen tasks.",
+    "char_start": 34906,
+    "char_end": 35085,
+    "sentence_index": 216,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec022",
+    "text": "While PR-CoT significantly enhances reasoning quality, it inherently involves a multi-step process, potentially increasing computational overhead compared to single-pass methods.",
+    "char_start": 35087,
+    "char_end": 35265,
+    "sentence_index": 217,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec022",
+    "text": "We conducted an efficiency analysis focusing on the average number of tokens processed per inference and the average inference time.",
+    "char_start": 35266,
+    "char_end": 35398,
+    "sentence_index": 218,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec022",
+    "text": "This provides insights into the practical costs associated with PR-CoT's improved performance.",
+    "char_start": 35399,
+    "char_end": 35493,
+    "sentence_index": 219,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec022",
+    "text": "The analysis was performed using the GPT-4 model across a representative mix of our evaluation tasks.",
+    "char_start": 35494,
+    "char_end": 35595,
+    "sentence_index": 220,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec022",
+    "text": "[t]\n\nEfficiency Comparison: Average Tokens and Inference Time Per Task Instance\n\nefficiency_analysis.pdf\n\nEfficiency Results.",
+    "char_start": 35597,
+    "char_end": 35722,
+    "sentence_index": 221,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec022",
+    "text": "Figure shows that PR-CoT, as expected, requires more computational resources compared to its baselines.",
+    "char_start": 35723,
+    "char_end": 35826,
+    "sentence_index": 222,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec022",
+    "text": "Traditional CoT has the lowest overhead, processing an average of 450 tokens and completing an inference in about 5.2 seconds.",
+    "char_start": 35827,
+    "char_end": 35953,
+    "sentence_index": 223,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec022",
+    "text": "This is due to its single-pass nature, where the LLM generates reasoning and an answer in one continuous output.",
+    "char_start": 35954,
+    "char_end": 36066,
+    "sentence_index": 224,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec022",
+    "text": "MyGO Multiplex CoT (MCoT) , with its single reflection step, approximately doubles the token count to 800 and increases inference time to 8.5 seconds.",
+    "char_start": 36067,
+    "char_end": 36217,
+    "sentence_index": 225,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec022",
+    "text": "This reflects the cost of generating an initial CoT, followed by a separate reflection pass and subsequent refinement.",
+    "char_start": 36218,
+    "char_end": 36336,
+    "sentence_index": 226,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "MyGO Poly-Reflective CoT (PR-CoT) incurs the highest overhead, processing an average of 2100 tokens and requiring approximately 20.3 seconds per task instance.",
+    "char_start": 36337,
+    "char_end": 36496,
+    "sentence_index": 227,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec022",
+    "text": "This is a direct consequence of its structured multi-perspective reflection process: an initial CoT generation, $N=4$ distinct reflection outputs, and a final synthesis step.",
+    "char_start": 36497,
+    "char_end": 36671,
+    "sentence_index": 228,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec022",
+    "text": "Each reflection and synthesis step involves feeding back previous outputs to the LLM, leading to cumulative token usage and sequential processing time.",
+    "char_start": 36672,
+    "char_end": 36823,
+    "sentence_index": 229,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec022",
+    "text": "The increased token usage and inference time for PR-CoT are a trade-off for its significantly enhanced performance in terms of logical consistency and error correction.",
+    "char_start": 36825,
+    "char_end": 36993,
+    "sentence_index": 230,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec022",
+    "text": "For applications where accuracy, robustness, and trustworthiness of reasoning are paramount\u2014especially in critical domains like ethical decision-making or complex logical problem-solving\u2014this increased computational cost is often justified by the qualitative and quantitative improvements achieved.",
+    "char_start": 36994,
+    "char_end": 37292,
+    "sentence_index": 231,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec022",
+    "text": "The prompt engineering nature of PR-CoT means these costs are primarily tied to API usage (for proprietary LLMs) or computational cycles (for open-source models), rather than requiring expensive retraining or fine-tuning.",
+    "char_start": 37293,
+    "char_end": 37514,
+    "sentence_index": 232,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec023",
+    "text": "To complement our quantitative and human evaluations, we performed a qualitative analysis of common error types observed in initial CoT generations and how PR-CoT's distinct reflection perspectives effectively address them.",
+    "char_start": 37516,
+    "char_end": 37739,
+    "sentence_index": 233,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec023",
+    "text": "This deep dive illustrates the granular impact of the multi-perspective approach on specific reasoning flaws.",
+    "char_start": 37740,
+    "char_end": 37849,
+    "sentence_index": 234,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec023",
+    "text": "[t]\n\nCommon Error Types in Initial CoT and PR-CoT's Corrective Mechanisms\n\n!",
+    "char_start": 37851,
+    "char_end": 37927,
+    "sentence_index": 235,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec023",
+    "text": "l l l l\n\nError Type & Initial CoT Example (Brief) & Relevant PR-CoT Perspective(s) & Corrective Outcome\n\nLogical Leap & \"A implies B.",
+    "char_start": 37928,
+    "char_end": 38061,
+    "sentence_index": 236,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec023",
+    "text": "Therefore, C.\" (missing B to C) & $v_1$ (Logical Consistency Check) & Fills inferential gaps, ensures valid deductions.",
+    "char_start": 38062,
+    "char_end": 38181,
+    "sentence_index": 237,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec023",
+    "text": "Incomplete Info.",
+    "char_start": 38183,
+    "char_end": 38199,
+    "sentence_index": 238,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec023",
+    "text": "& Omits a key constraint from the prompt & $v_2$ (Information Completeness Check) & Prompts inclusion of all relevant data/context.",
+    "char_start": 38200,
+    "char_end": 38331,
+    "sentence_index": 239,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec023",
+    "text": "Implicit Bias & Recommends solution favoring one demographic & $v_3$ (Potential Bias and Ethical Cons.) & Identifies and mitigates unfair or partial reasoning.",
+    "char_start": 38333,
+    "char_end": 38492,
+    "sentence_index": 240,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec023",
+    "text": "Narrow Scope & Only one solution path considered; suboptimal & $v_4$ (Alternative Solution Exploration) & Encourages broader search, identifies better alternatives.",
+    "char_start": 38494,
+    "char_end": 38658,
+    "sentence_index": 241,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec023",
+    "text": "Factual Inaccuracy & Misstates a background fact & $v_2$ (Information Completeness Check) & Verifies factual basis, corrects erroneous premises.",
+    "char_start": 38660,
+    "char_end": 38804,
+    "sentence_index": 242,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec023",
+    "text": "Contradictory Steps & Step 3 contradicts conclusion of Step 1 & $v_1$ (Logical Consistency Check) & Resolves internal conflicts, enforces coherence.",
+    "char_start": 38806,
+    "char_end": 38954,
+    "sentence_index": 243,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec023",
+    "text": "Ambiguity Misint.",
+    "char_start": 38956,
+    "char_end": 38973,
+    "sentence_index": 244,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "& Misinterprets vague term in query & $v_2$ (Information Completeness Check) & Clarifies ambiguous elements, refines understanding.",
+    "char_start": 38974,
+    "char_end": 39105,
+    "sentence_index": 245,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "Premature Conclusion & Jumps to answer before full analysis & $v_1$ (Logical Consistency Check) & Forces complete step-by-step reasoning.",
+    "char_start": 39107,
+    "char_end": 39244,
+    "sentence_index": 246,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "Qualitative Analysis Findings.",
+    "char_start": 39246,
+    "char_end": 39276,
+    "sentence_index": 247,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "Table provides a structured overview of how PR-CoT systematically addresses various types of reasoning errors.",
+    "char_start": 39277,
+    "char_end": 39387,
+    "sentence_index": 248,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec023",
+    "text": "For instance, common Logical Leaps or Contradictory Steps are directly targeted by the Logical Consistency Check ($v_1$) .",
+    "char_start": 39388,
+    "char_end": 39510,
+    "sentence_index": 249,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec023",
+    "text": "This perspective forces the LLM to scrutinize its inferential chain, ensuring each step logically follows from the previous one and that no contradictions exist within the argument.",
+    "char_start": 39511,
+    "char_end": 39692,
+    "sentence_index": 250,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec023",
+    "text": "Incomplete Information or Factual Inaccuracies are effectively caught by the Information Completeness Check ($v_2$) .",
+    "char_start": 39693,
+    "char_end": 39810,
+    "sentence_index": 251,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec023",
+    "text": "This prompts the LLM to re-evaluate whether all given constraints, necessary background knowledge, or external facts have been correctly identified and utilized.",
+    "char_start": 39811,
+    "char_end": 39972,
+    "sentence_index": 252,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec023",
+    "text": "It can also help resolve Ambiguity Misinterpretations by encouraging the model to seek clarity on vague terms or concepts.",
+    "char_start": 39973,
+    "char_end": 40095,
+    "sentence_index": 253,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec023",
+    "text": "The unique strength of PR-CoT in sensitive domains is highlighted by its ability to address Implicit Bias through the Potential Bias and Ethical Consideration ($v_3$) perspective.",
+    "char_start": 40096,
+    "char_end": 40275,
+    "sentence_index": 254,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec023",
+    "text": "This reflection explicitly challenges the LLM to consider fairness, equity, and broader societal impacts, leading to more responsible and ethically sound outputs, as evidenced by our human evaluation.",
+    "char_start": 40276,
+    "char_end": 40476,
+    "sentence_index": 255,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec023",
+    "text": "Finally, the Alternative Solution Exploration ($v_4$) combats Narrow Scope issues by pushing the LLM beyond its initial, potentially suboptimal, solution.",
+    "char_start": 40477,
+    "char_end": 40631,
+    "sentence_index": 256,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec023",
+    "text": "This encourages divergent thinking and the consideration of multiple viable paths, often leading to more robust or efficient final answers.",
+    "char_start": 40632,
+    "char_end": 40771,
+    "sentence_index": 257,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec023",
+    "text": "This qualitative error analysis demonstrates that the diversity and specificity of PR-CoT's reflection perspectives are critical.",
+    "char_start": 40772,
+    "char_end": 40901,
+    "sentence_index": 258,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec023",
+    "text": "Each perspective acts as a specialized lens, collectively allowing the LLM to perform a comprehensive self-diagnosis and correction across a broad spectrum of reasoning vulnerabilities, moving beyond the superficial error identification of single-reflection methods.",
+    "char_start": 40902,
+    "char_end": 41168,
+    "sentence_index": 259,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec024",
+    "text": "In this work, we introduced MyGO Poly-Reflective Chain-of-Thought (PR-CoT), a novel methodology significantly enhancing Large Language Models' (LLMs) logical consistency, accuracy, and self-correction.",
+    "char_start": 41170,
+    "char_end": 41371,
+    "sentence_index": 260,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec024",
+    "text": "Addressing limitations of prior CoT methods, PR-CoT employs a structured multi-perspective reflection mechanism, guiding LLMs through initial reasoning, critical scrutiny from diverse viewpoints (e.g., logical consistency, completeness, bias), and refinement.",
+    "char_start": 41372,
+    "char_end": 41631,
+    "sentence_index": 261,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec024",
+    "text": "This sophisticated approach is achieved solely through prompt engineering, requiring no modifications to the underlying LLM architecture or additional training, ensuring broad applicability.",
+    "char_start": 41632,
+    "char_end": 41822,
+    "sentence_index": 262,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec024",
+    "text": "Our extensive evaluations across various complex reasoning tasks\u2014including arithmetic, commonsense, ethical decision-making, and logical puzzles\u2014unequivocally demonstrated PR-CoT's superior performance.",
+    "char_start": 41823,
+    "char_end": 42025,
+    "sentence_index": 263,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec024",
+    "text": "It consistently surpassed traditional CoT and single-reflection MCoT, showing significant improvements in error correction rates and logical consistency, particularly in demanding domains like ethical reasoning.",
+    "char_start": 42026,
+    "char_end": 42237,
+    "sentence_index": 264,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec024",
+    "text": "While acknowledging a justified increase in computational overhead, PR-CoT offers a practical paradigm for developing more reliable and trustworthy AI systems, paving the way for more capable and responsible LLM applications in complex real-world scenarios.",
+    "char_start": 42238,
+    "char_end": 42495,
+    "sentence_index": 265,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec024",
+    "text": "unsrt\nreferences",
+    "char_start": 42496,
+    "char_end": 42512,
+    "sentence_index": 266,
+    "section_sentence_index": 6
+  }
+]

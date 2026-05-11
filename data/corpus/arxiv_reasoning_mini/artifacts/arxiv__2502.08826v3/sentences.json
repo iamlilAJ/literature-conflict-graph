@@ -1,0 +1,4475 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large Language Models (LLMs) suffer from hallucinations and outdated knowledge due to their reliance on static training data.",
+    "char_start": 0,
+    "char_end": 125,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Retrieval-Augmented Generation (RAG) mitigates these issues by integrating external dynamic information for improved factual grounding.",
+    "char_start": 126,
+    "char_end": 261,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "With advances in multimodal learning, Multimodal RAG extends this approach by incorporating multiple modalities such as text, images, audio, and video to enhance the generated outputs.",
+    "char_start": 262,
+    "char_end": 446,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "However, cross-modal alignment and reasoning introduce unique challenges beyond those in unimodal RAG.",
+    "char_start": 447,
+    "char_end": 549,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "This survey offers a structured and comprehensive analysis of Multimodal RAG systems, covering datasets, benchmarks, metrics, evaluation, methodologies, and innovations in retrieval, fusion, augmentation, and generation.",
+    "char_start": 550,
+    "char_end": 770,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "We review training strategies, robustness enhancements, loss functions, and agent-based approaches, while also exploring the diverse Multimodal RAG scenarios.",
+    "char_start": 771,
+    "char_end": 929,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "In addition, we outline open challenges and future directions to guide research in this evolving field.",
+    "char_start": 930,
+    "char_end": 1033,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "This survey lays the foundation for developing more capable and reliable AI systems that effectively leverage multimodal dynamic external knowledge bases.",
+    "char_start": 1034,
+    "char_end": 1188,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "All resources are publicly available .",
+    "char_start": 1189,
+    "char_end": 1227,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Recent advancements in transformer architectures , coupled with increased computational resources and the availability of large-scale training datasets , have significantly accelerated progress in the development of language models.",
+    "char_start": 1229,
+    "char_end": 1461,
+    "sentence_index": 9,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The emergence of foundational Large Language Models (LLMs) , has revolutionized natural language processing (NLP), excelling in tasks such as instruction following , reasoning , in-context learning , and multilingual translation .",
+    "char_start": 1462,
+    "char_end": 1692,
+    "sentence_index": 10,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Despite these achievements, LLMs face challenges such as hallucinations, outdated knowledge, and a lack of verifiable reasoning .",
+    "char_start": 1693,
+    "char_end": 1822,
+    "sentence_index": 11,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Their reliance on parametric memory limits access to up-to-date information, reducing their effectiveness in knowledge-intensive tasks.",
+    "char_start": 1823,
+    "char_end": 1958,
+    "sentence_index": 12,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Retrieval-Augmented Generation (RAG)\nRAG addresses these limitations by enabling LLMs to retrieve and incorporate external knowledge, improving factual accuracy and reducing hallucinations .",
+    "char_start": 1960,
+    "char_end": 2150,
+    "sentence_index": 13,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "By dynamically accessing external knowledge sources, RAG enhances knowledge-intensive tasks while grounding responses in verifiable sources .",
+    "char_start": 2151,
+    "char_end": 2292,
+    "sentence_index": 14,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "In practice, RAG systems follow a retriever-generator pipeline: the retriever uses embedding models\n\nto identify relevant passages from external knowledge bases and may apply re-ranking techniques to improve precision .",
+    "char_start": 2293,
+    "char_end": 2512,
+    "sentence_index": 15,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "The retrieved passages are then provided to the generator, which leverages this contextual information to produce more informed and coherent responses.",
+    "char_start": 2513,
+    "char_end": 2664,
+    "sentence_index": 16,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Recent advancements in RAG frameworks, such as planning-guided retrieval , agentic RAG , and feedback-driven iterative refinement , have further improved both the retrieval and generation components of these systems.",
+    "char_start": 2665,
+    "char_end": 2881,
+    "sentence_index": 17,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "[t!]\n\nMM-RAG_V2_500.png\n\nOverview of the multimodal RAG pipeline, illustrating key techniques and recent advancements.",
+    "char_start": 2883,
+    "char_end": 3001,
+    "sentence_index": 18,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "-5mm\n\nMultimodal Learning\nIn parallel with advances in language modeling, multimodal learning has emerged as a transformative area in artificial intelligence, enabling systems to integrate and reason over heterogeneous data sources for more comprehensive representations.",
+    "char_start": 3002,
+    "char_end": 3273,
+    "sentence_index": 19,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "A pivotal breakthrough was the introduction of CLIP model , which aligned visual and textual modalities through contrastive learning and inspired a wave of subsequent models .",
+    "char_start": 3274,
+    "char_end": 3449,
+    "sentence_index": 20,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "These developments have catalyzed progress across diverse domains, including sentiment analysis and biomedical applications , highlighting the effectiveness of multimodal approaches.",
+    "char_start": 3450,
+    "char_end": 3632,
+    "sentence_index": 21,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "By facilitating the joint processing of text, images, audio, and video, multimodal learning is increasingly recognized as a critical enabler of progress toward artificial general intelligence (AGI) .",
+    "char_start": 3633,
+    "char_end": 3832,
+    "sentence_index": 22,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Multimodal RAG\nThe extension of large language models to multimodal LLMs (MLLMs) has significantly broadened their capabilities, enabling reasoning and generation across multiple data modalities .",
+    "char_start": 3834,
+    "char_end": 4030,
+    "sentence_index": 23,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Notably, GPT-4 demonstrates human-level performance by jointly processing text and images, marking a milestone in multimodal understanding.",
+    "char_start": 4031,
+    "char_end": 4170,
+    "sentence_index": 24,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Building on this progress, multimodal RAG incorporates diverse sources, such as images, audio, and structured data, to enrich contextual grounding and enhance generation quality .",
+    "char_start": 4171,
+    "char_end": 4350,
+    "sentence_index": 25,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "This approach improves reasoning by leveraging cross-modal cues, but also introduces challenges, including modality selection, effective fusion, and managing cross-modal relevance .",
+    "char_start": 4351,
+    "char_end": 4532,
+    "sentence_index": 26,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "fig:overview illustrates the general pipeline of these systems.",
+    "char_start": 4533,
+    "char_end": 4596,
+    "sentence_index": 27,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Multimodal RAG Formulation\nWe present a mathematical formulation of multimodal RAG.",
+    "char_start": 4598,
+    "char_end": 4681,
+    "sentence_index": 28,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "These systems aim to generate a multimodal response \\( r \\) given a multimodal query \\( q \\).",
+    "char_start": 4682,
+    "char_end": 4775,
+    "sentence_index": 29,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Let \\( D = \\ d_1, d_2, , d_n\\ \\) denote a multimodal corpus.",
+    "char_start": 4776,
+    "char_end": 4836,
+    "sentence_index": 30,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "For clarity, we assume each document \\( d_i D \\) is associated with a single modality \\( M_ d_i \\).",
+    "char_start": 4837,
+    "char_end": 4936,
+    "sentence_index": 31,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "In practice, however, documents often span multiple modalities\u2014for example, a scientific article containing both text and images.",
+    "char_start": 4937,
+    "char_end": 5066,
+    "sentence_index": 32,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Such cases are typically addressed by either decomposing the document into modality-specific sub-documents or employing universal encoders capable of jointly processing multiple modalities.",
+    "char_start": 5067,
+    "char_end": 5256,
+    "sentence_index": 33,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Each document \\( d_i \\) is encoded using its corresponding modality-specific encoder, yielding \\( z_i = Enc _ M_ d_i (d_i) \\).",
+    "char_start": 5258,
+    "char_end": 5384,
+    "sentence_index": 34,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "The collection of all encoded representations is denoted as \\( Z = \\ z_1, z_2, , z_n\\ \\).",
+    "char_start": 5385,
+    "char_end": 5474,
+    "sentence_index": 35,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "These modality-specific encoders project diverse input modalities into a shared semantic space, enabling cross-modal alignment.",
+    "char_start": 5475,
+    "char_end": 5602,
+    "sentence_index": 36,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "A retrieval model \\( R \\) computes a relevance score \\( s(e_q, z_i) \\) between the encoded query representation \\( e_q \\) (obtained by encoding \\( q \\) using the appropriate encoders) and each document representation \\( z_i \\).",
+    "char_start": 5604,
+    "char_end": 5831,
+    "sentence_index": 37,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "The retrieval-augmented multimodal context \\( X \\) is constructed by selecting documents whose relevance scores exceed a modality-specific threshold:\n-0.3cm\n\\[\nX = \\ d_i D s(e_q, z_i) _ M_ d_i \\ , -0.1cm\n\\] where \\( _ M_ d_i \\) is the relevance threshold for the modality \\( M_ d_i \\), and \\( s \\) is the scoring function that measures semantic relevance.",
+    "char_start": 5832,
+    "char_end": 6187,
+    "sentence_index": 38,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Finally, the generative model \\( G \\) produces the response conditioned on the original query \\( q \\) and the retrieved context \\( X \\), formally defined as\n$r = G(q, X)$.",
+    "char_start": 6188,
+    "char_end": 6359,
+    "sentence_index": 39,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Related Works\nMultimodal RAG is a rapidly emerging field, yet a comprehensive survey dedicated to its recent advancements remains lacking.",
+    "char_start": 6361,
+    "char_end": 6499,
+    "sentence_index": 40,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "While over ten surveys discuss RAG-related topics such as Agentic RAG , none specifically focus on the multimodal setting.",
+    "char_start": 6500,
+    "char_end": 6622,
+    "sentence_index": 41,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "To our knowledge, the only relevant work categorizes multimodal RAGs by application and modality.",
+    "char_start": 6623,
+    "char_end": 6720,
+    "sentence_index": 42,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "In contrast, our survey adopts a more innovation-driven perspective, offering a detailed taxonomy and addressing recent trends and open challenges.",
+    "char_start": 6721,
+    "char_end": 6868,
+    "sentence_index": 43,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "We review over 100 recent papers, primarily from the ACL Anthology, reflecting the growing interest and progress in this domain.",
+    "char_start": 6869,
+    "char_end": 6997,
+    "sentence_index": 44,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "-0.35cm\n\nContributions\nIn this work, (i) we present a comprehensive review of multimodal RAG, covering task formulation, datasets, benchmarks, applications, and key innovations across retrieval, fusion, augmentation, generation, training strategies, loss functions, and agent frameworks.",
+    "char_start": 6999,
+    "char_end": 7286,
+    "sentence_index": 45,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "(ii) We propose a structured taxonomy ( fig:taxonomy_full ) that categorizes state-of-the-art models by their core contributions, highlighting methodological advances and emerging trends.",
+    "char_start": 7287,
+    "char_end": 7474,
+    "sentence_index": 46,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "(iii) We provide open-access resources, including datasets, benchmarks, and implementation details, to facilitate future research.",
+    "char_start": 7475,
+    "char_end": 7605,
+    "sentence_index": 47,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "(iv) Finally, we identify research gaps and offer insights to guide future directions in this rapidly evolving field.",
+    "char_start": 7606,
+    "char_end": 7723,
+    "sentence_index": 48,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "We review diverse datasets and benchmarks supporting tasks such as multimodal summarization, visual QA, video understanding, and more.",
+    "char_start": 7725,
+    "char_end": 7859,
+    "sentence_index": 49,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "For full details, see Appendix ( ) and Tables and .",
+    "char_start": 7860,
+    "char_end": 7911,
+    "sentence_index": 50,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Multimodal RAG has been applied across various domains, including healthcare, software engineering, fashion, entertainment, and emerging fields.",
+    "char_start": 7912,
+    "char_end": 8056,
+    "sentence_index": 51,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "An overview of tasks and applications are detailed in Appendix ( ) and fig:app_taxonomy .",
+    "char_start": 8057,
+    "char_end": 8146,
+    "sentence_index": 52,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "Evaluating these systems requires multiple metrics, covering retrieval performance, generation quality, and modality alignment.",
+    "char_start": 8147,
+    "char_end": 8274,
+    "sentence_index": 53,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "The complete evaluation methods, metrics, and their definitions and formulations are in Appendix ( ).",
+    "char_start": 8275,
+    "char_end": 8376,
+    "sentence_index": 54,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "[t!]\n\n0.85 !",
+    "char_start": 8378,
+    "char_end": 8390,
+    "sentence_index": 55,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "forked edges,\nfor tree=\nchild anchor=west,\nparent anchor=east,\ngrow'=east,\nanchor=west,\nbase=left,\nfont= ,\nrectangle,\ndraw=hidden-black,\nrounded corners,\nminimum height=2em,\nminimum width=4em,\nedge+= darkgray, line width=1pt ,\ns sep=3pt,\n\ninner xsep=0.4em,\ninner ysep=0.6em,\nline width=0.8pt,\ntext width=8.5em,\nwhere level=1\ntext width=5em,\ninner xsep=0.3em,\ninner ysep=0.5em,\nfont= ,\n,\nwhere level=2\ntext width=10em,\n,\nwhere level=3\ntext width=7em,\n,\nver/.style=\nfill=white!50,\nrotate=90,\nchild anchor=north,\nparent anchor=south,\nanchor=center,\ntext width=8em\n,\nleaf/.style=\ntext opacity=1,\ninner sep=2pt,\nfill opacity=.5,\n\nfill=green!20,\ntext=black,\n\ntext width=44.5em\nfont= ,\n\ninner xsep=0.4em,\ninner ysep=0.6em,\ndraw,\n\n,\n,\n\n[Multimodal RAG, ver\n[\nRetrieval\nStrategies\n( ), fill=yellow!20\n[\nEfficient-Search and\nSimilarity Retrieval\n( ), fill=red!15\n[\nMaximum Inner Product Search (MIPS), fill=blue!15\n[\nTPU-KNN , ScaNN ,\nMAXSIM score ,\nADQ ,\nZhang_Lian_Zhang_Wang_Chen_2023 ,\nBanditMIPS , MUST ,\nFARGO ,\nMuRAG ,\nRA-CM3 ,\nnguyen2024multimodallearnedsparseretrieval ,\nGraph-based ANNs ,\n10.1145/3580305.3599897 , Deeperimpact , RetrievalAttention ,\nFactMM-RAG\n, leaf, text width=53em\n]\n]\n[\nMultimodal\nEncoders, fill=blue!15\n[\nCLIP ,\nBLIP , MARVEL ,\nALIGN ,\nFLAVA ,\nUniVL-DR ,\nUniIR , GME ,\nVISTA , ColPali , InternVideo , Ovis ,\nLLaVE\nMi-RAG\n, leaf, text width=53em\n]\n]\n]\n[\nModality-Centric\nRetrieval ( ), fill=red!15\n[\nText-Centric, fill=blue!15\n[\nContriever , GTE ,\nRe-Imagen ,\nBM25 ,\nMiniLM ,\nBGE-M3 , CapRet ,\nOMG-QA ,\nColBERT , PreFLMR ,\nRAFT ,\nCRAG ,\nM2-RAG\n, leaf, text width=53em\n]\n]\n[\nVision-Centric, fill=blue!15\n[\nVQA4CIR ,\nUnifashion ,\nJang et al.",
+    "char_start": 8392,
+    "char_end": 10053,
+    "sentence_index": 56,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": ", Pic2word , eClip , RAMM ,\nJoshi et al.",
+    "char_start": 10054,
+    "char_end": 10094,
+    "sentence_index": 57,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": ", VISA , ImgRet ,\nEchoSight ,\nXue et al.",
+    "char_start": 10095,
+    "char_end": 10135,
+    "sentence_index": 58,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": ", leaf, text width=53em\n]\n]\n[\nVideo-Centric, fill=blue!15\n[\niRAG , VideoRAG , VideoRAG ,\nT-Mass ,\nMV-Adapter , OmAgent ,\nCM2 ,\nVideo-RAG ,\nCTCH ,\nRTime , VideoMAE , DrVideo\n, leaf, text width=53em\n]\n]\n[\nAudio-Centric, fill=blue!15\n[\nCA-CLAP , Recap , SpeechRAG , WavRAG , SEAL ,\nAudiobox TTA-RAG , DRCap , P2PCAP ,\nLA-RAG ,\n10890057\n, leaf, text width=53em\n]\n]\n[\nDocument\nRetrieval, fill=blue!15\n[\nColPali ,\nColQwen2 , M3DocVQA ,\nViTLP ,\nDocLLM ,\nCREAM ,\nmPLUG-DocOwl 1.5 ,\nmPLUG-DocOwl 2 , VisDom , DSE\n,\nSV-RAG\n, leaf, text width=53em\n]\n]\n]\n[\nRe-ranking\nStrategies ( ), fill=red!15\n[\nOptimized\nExample\nSelection, fill=blue!15\n[\nMSIER ,\nHybrid RAG ,\nRULE , RAMM , M2RAAP\n, leaf, text width=53em\n]\n]\n[\nRelevance Score\nEvaluation, fill=blue!15\n[\nRAG-Check ,\nUniRaG , MR2AG ,\nLDRE , BM25 , RAGTrans , OMG-QA , EchoSight , EgoInstructor ,\nVR-RAG\n, leaf, text width=53em\n]\n]\n[\nFiltering\nMechanisms, fill=blue!15\n[\nMAIN-RAG ,\nMM-Embed , GME ,\nMuRAR\nRAFT\n, leaf, text width=53em\n]\n]\n]\n]\n[\nFusion\nMechanisms\n( ), fill=yellow!20\n[\nScore Fusion\nand Alignment ( ), fill=red!15\n[\nM3\n10535103 , Sharifymoghaddam2024UniRAGUR , REVEAL ,\nRAG-Driver ,\nC3Net ,\nLLM-RA ,\nriedler2024textoptimizingragmultimodal , VISA ,\nMA-LMM ,\nxue2024enhancedmultimodalragllmaccurate ,\nRA-BLIP ,\nRe-IMAGEN , MegaPairs ,\nWiki-LLaVA , VISRAG\n, leaf, text width=62.0em\n]\n]\n[\nAttention-Based\nMechanisms ( ), fill=red!15\n[\nRAMM , EMERGE , MORE , RAGTrans , AlzheimerRAG ,\nMV-Adapter , xu2024retrievalaugmentedegocentricvideocaptioning ,\nkim2024you ,\nM2-RAAP ,\nMu-RAG ,\nOu et al.",
+    "char_start": 10136,
+    "char_end": 11675,
+    "sentence_index": 59,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": ", CADMR\n, leaf, text width=62.0em\n]\n]\n[\nUnified Frameworks \\ Projections ( ), fill=red!15\n[\nHybrid-RAG , Dense2Sparse ,\nIRAMIG , M3DocRAG ,\nDQU-CIR ,\nPDF-MVQA ,\nSAM-RAG , UFineBench ,\nli2022blip\n, leaf, text width=62.0em\n]\n]\n]\n[\nAugmentation\nTechniques\n( ), fill=yellow!20\n[\nContext-Enrichment ( ), fill=red!15\n[\nEMERGE ,\nMiRAG ,\nWiki-LLaVA ,\nVideo-RAG ,\nImg2Loc ,\nxue2024enhancedmultimodalragllmaccurate\n, leaf, text width=62.0em\n]\n]\n[\nAdaptive and Iterative\nRetrieval ( ), fill=red!15\n[\nSKURG ,\nIRAMIG ,\nOMG-QA ,\nSAM-RAG ,\nMMed-RAG ,\nOmniSearch ,\nmR$^2$AG ,\nRAGAR ,\nUniversalRAG ,\nOMGM\n, leaf, text width=62.0em\n]\n]\n]\n[\nGeneration\nTechniques\n( ), fill=yellow!20\n[\nIn-Context Learning ( ), fill=red!15\n[\nRMR ,\nSharifymoghaddam2024UniRAGUR ,\nRA-CM3 ,\nRAG-Driver ,\nMSIER ,\nRaven\n, leaf, text width=62.0em\n]\n]\n[\nReasoning ( ), fill=red!15\n[\nRAGAR ,\nVisDoM ,\nSAM-RAG ,\nLDRE\n, leaf, text width=62.0em\n]\n]\n[\nInstruction Tuning ( ), fill=red!15\n[\nRA-BLIP ,\nRAGPT ,\nmR$^2$AG ,\nRagVL ,\njang2024visual ,\nMMed-RAG ,\nMegaPairs ,\nSurf ,\nRule\n, leaf, text width=62.0em\n]\n]\n[\nSource Attribution ( ), fill=red!15\n[\nMuRAR ,\nVISA ,\nOMG-QA\n, leaf, text width=62.0em\n]\n]\n[\nAgentic Generation and Interaction ( ), fill=red!15\n[\nAppAgent v2 ,\nUSER-LLM R1 , MMAD , yi2025multimodalmultiagentframeworkradiology , CollEX ,\nHM-RAG ,\nCogPlanner\n, leaf, text width=62.0em\n]\n]\n]\n[\nTraining\nStrategies\n( ), fill=yellow!20\n[\nAlignment ( ), fill=red!15\n[\nVISRAG ,\nMegaPairs ,\nSAM-RAG ,\nEchoSight ,\nHACL ,\n10535103 ,\nkumar2024improvingmedicalmultimodalcontrastive ,\nDense2Sparse\n, leaf, text width=62.0em\n]\n]\n[\nRobustness ( ), fill=red!15\n[\nbuettner-kovashka-2024-quantifying ,\nMORE ,\nAlzheimerRAG ,\nRAGTrans ,\nRA-BLIP ,\nRagVL ,\nRA-CM3\n, leaf, text width=62.0em\n]\n]\n]\n]\n]\n\nTaxonomy of recent advances in Multimodal RAG.",
+    "char_start": 11676,
+    "char_end": 13463,
+    "sentence_index": 60,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "Refer to Appendix ( ) for further details.",
+    "char_start": 13464,
+    "char_end": 13506,
+    "sentence_index": 61,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "-5mm\n\n-8mm\n\nEfficient Search and Similarity Retrieval\nModern multimodal RAG systems encode diverse input modalities into a unified embedding space to enable direct cross-modal retrieval.",
+    "char_start": 13508,
+    "char_end": 13694,
+    "sentence_index": 62,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "Early CLIP-based methods often struggled to balance retrieval precision and computational cost.",
+    "char_start": 13695,
+    "char_end": 13790,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "BLIP-inspired approaches addressed some of these trade-offs by integrating cross-modal attention during training, yielding richer alignments between visual and textual features.",
+    "char_start": 13791,
+    "char_end": 13968,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "To reconcile high accuracy with efficiency, contrastive retrieval frameworks such as MARVEL and Uni-IR improved inter-modal discrimination through hard-negative mining and balanced sampling strategies .",
+    "char_start": 13969,
+    "char_end": 14171,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "Despite these representational gains, direct search over millions of embeddings demands fast similarity computation.",
+    "char_start": 14172,
+    "char_end": 14288,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "Maximum inner product search (MIPS) variants offer sublinear lookup by approximating top-$k$ inner products .",
+    "char_start": 14289,
+    "char_end": 14398,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "However, coarse quantization can degrade recall.",
+    "char_start": 14399,
+    "char_end": 14447,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "To mitigate this, adaptive quantization methods dynamically allocate bits where the embedding distribution is dense, resulting in recall improvements over static schemes.",
+    "char_start": 14448,
+    "char_end": 14618,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "Hybrid sparse\u2013dense retrieval further complements dense embeddings with sparse lexical signals.",
+    "char_start": 14619,
+    "char_end": 14714,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Systems such as MuRAG and RA-CM3 employ approximate MIPS for efficient top-k candidate retrieval from large collections of image\u2013text embeddings.",
+    "char_start": 14715,
+    "char_end": 14860,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "Large-scale implementations leverage distributed MIPS techniques, such as TPU-KNN , for high-speed retrieval.",
+    "char_start": 14861,
+    "char_end": 14970,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "Other efficient similarity computation methods include ScaNN (Scalable Nearest Neighbors) , MAXSIM score , and approximate KNN methods .",
+    "char_start": 14971,
+    "char_end": 15107,
+    "sentence_index": 73,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "Emerging approaches explore learned index structures , which embed the search tree itself in neural parameters, aiming to adapt retrieval paths to the data distribution and reduce both latency and storage overhead.",
+    "char_start": 15108,
+    "char_end": 15322,
+    "sentence_index": 74,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": "-1pt\nModality-Based Retrieval\nModality-aware retrieval techniques optimize efficiency by leveraging the unique characteristics of each modality.",
+    "char_start": 15324,
+    "char_end": 15468,
+    "sentence_index": 75,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec005",
+    "text": "(i) Text-centric retrieval remains foundational in multimodal RAG systems, with both traditional methods like BM25 and dense retrievers such as MiniLM and BGE-M3 dominating text-based evidence retrieval .",
+    "char_start": 15469,
+    "char_end": 15673,
+    "sentence_index": 76,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec005",
+    "text": "Novel approaches also address the need for fine-grained semantic matching and domain specificity: For instance, ColBERT and PreFLMR employ token-level interaction mechanisms that preserve nuanced textual details to improve precision for multimodal queries, while RAFT and CRAG enhance retrieval by ensuring accurate citation of text spans.",
+    "char_start": 15674,
+    "char_end": 16013,
+    "sentence_index": 77,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec005",
+    "text": "(ii) Vision-centric retrieval leverages image representations for knowledge extraction .",
+    "char_start": 16014,
+    "char_end": 16102,
+    "sentence_index": 78,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec005",
+    "text": "Systems such as EchoSight and ImgRet retrieve visually similar content by using reference images as queries.",
+    "char_start": 16103,
+    "char_end": 16211,
+    "sentence_index": 79,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec005",
+    "text": "In addition, composed image retrieval methods integrate multiple image features into unified query representations, enabling zero-shot image retrieval.",
+    "char_start": 16212,
+    "char_end": 16363,
+    "sentence_index": 80,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec005",
+    "text": "(iii) Video-centric retrieval extends vision-based techniques by incorporating temporal dynamics and large video-language models.",
+    "char_start": 16364,
+    "char_end": 16493,
+    "sentence_index": 81,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec005",
+    "text": "For instance, iRAG enables incremental retrieval for sequential video understanding, addressing the need for temporal coherence, while T-Mass uses stochastic text embeddings to improve robustness in text-video alignment.",
+    "char_start": 16494,
+    "char_end": 16714,
+    "sentence_index": 82,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec005",
+    "text": "Tackling long-context processing, Video-RAG avoids reliance on proprietary models by using auxiliary OCR/ASR texts, whereas VideoRAG employs dual-channel architectures and graph-based knowledge grounding for extreme-length videos.",
+    "char_start": 16715,
+    "char_end": 16945,
+    "sentence_index": 83,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec005",
+    "text": "To capture temporal reasoning, CTCH applies contrastive transformer hashing for long-term dependencies, which RTime further refines by introducing reversed-video hard negatives for more robust causality benchmarking.",
+    "char_start": 16946,
+    "char_end": 17162,
+    "sentence_index": 84,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec005",
+    "text": "Finally, OmAgent addresses the challenge of complex video understanding with a divide-and-conquer framework, while DRVideo takes a complementary document-centric approach to enhance narrative preservation.",
+    "char_start": 17163,
+    "char_end": 17368,
+    "sentence_index": 85,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec005",
+    "text": "(iv) Audio-centric retrieval aims to bypass traditional ASR pipelines while improving contextual alignment and real-time processing .",
+    "char_start": 17369,
+    "char_end": 17502,
+    "sentence_index": 86,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec005",
+    "text": "Pioneering frameworks like WavRAG and SEAL introduce unified embedding architectures, directly mapping raw audio into a shared latent space to enable retrieval from hybrid knowledge bases.",
+    "char_start": 17503,
+    "char_end": 17691,
+    "sentence_index": 87,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec005",
+    "text": "Audiobox TTA-RAG conditions text-to-audio synthesis on retrieved acoustic samples, thereby enhancing zero-shot performance by enriching prompts with unlabeled audio context.",
+    "char_start": 17692,
+    "char_end": 17865,
+    "sentence_index": 88,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "For audio captioning, DRCap bridges the audio-text latent space of CLAP via text-only training for domain-adaptable descriptions without paired data.",
+    "char_start": 17866,
+    "char_end": 18015,
+    "sentence_index": 89,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec005",
+    "text": "In parallel, P2PCAP improves retrieval precision by regenerating captions as dynamic queries.",
+    "char_start": 18016,
+    "char_end": 18109,
+    "sentence_index": 90,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec005",
+    "text": "Further innovations address error correction and efficiency.",
+    "char_start": 18110,
+    "char_end": 18170,
+    "sentence_index": 91,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec005",
+    "text": "LA-RAG utilizes fine-grained speech-to-speech retrieval and forced alignment to enhance ASR accuracy through LLM in-context learning.",
+    "char_start": 18171,
+    "char_end": 18304,
+    "sentence_index": 92,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec005",
+    "text": "Meanwhile, hybrid systems, such as 10890057 , integrate LLMs to correct errors in noisy environments using retrieved text/audio context.",
+    "char_start": 18305,
+    "char_end": 18441,
+    "sentence_index": 93,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec005",
+    "text": "Document Retrieval and Layout Understanding\nRecent research has moved beyond traditional unimodal retrieval, developing models that process entire documents by integrating textual, visual, and layout information.",
+    "char_start": 18443,
+    "char_end": 18655,
+    "sentence_index": 94,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec005",
+    "text": "ColPali pioneers end-to-end document image retrieval by embedding page patches with a vision-language backbone, bypassing OCR entirely.",
+    "char_start": 18656,
+    "char_end": 18791,
+    "sentence_index": 95,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec005",
+    "text": "Models like ColQwen2 and M3DocVQA extend this paradigm with dynamic resolution handling and holistic multi-page reasoning.",
+    "char_start": 18792,
+    "char_end": 18914,
+    "sentence_index": 96,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec005",
+    "text": "Newer frameworks refine efficiency and layout understanding: ViTLP and DocLLM pre-train generative models to align spatial layouts with text, while CREAM employs coarse-to-fine retrieval with multimodal efficient tuning to balance accuracy and computational costs.",
+    "char_start": 18915,
+    "char_end": 19179,
+    "sentence_index": 97,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec005",
+    "text": "Finally, mPLUG-DocOwl 1.5 and 2 unify structure learning across formats (e.g., invoices, forms) without OCR dependencies, while SV-RAG leverages MLLMs' intrinsic retrieval capabilities via dual LoRA adapters: one for evidence page retrieval and the other for question answering.",
+    "char_start": 19180,
+    "char_end": 19458,
+    "sentence_index": 98,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec005",
+    "text": "Re-ranking and Selection Strategies\nEffective retrieval in multimodal RAG systems requires not only identifying relevant information but also prioritizing retrieved candidates.",
+    "char_start": 19460,
+    "char_end": 19636,
+    "sentence_index": 99,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec005",
+    "text": "Re-ranking and selection strategies improve retrieval quality through optimized example selection, refined relevance scoring, and filtering mechanisms.",
+    "char_start": 19637,
+    "char_end": 19788,
+    "sentence_index": 100,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec005",
+    "text": "(i) Optimized example selection techniques often employ multi-step retrieval, integrating both supervised and unsupervised selection approaches .",
+    "char_start": 19789,
+    "char_end": 19934,
+    "sentence_index": 101,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec005",
+    "text": "Supervised methods like su2024hybrid enhance multimodal inputs using probabilistic control keywords, whereas RULE calibrates retrieved context via statistical methods like the Bonferroni correction to mitigate factuality risks.",
+    "char_start": 19935,
+    "char_end": 20162,
+    "sentence_index": 102,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec005",
+    "text": "Clustering-based key-frame selection ensures diversity in video-based retrieval .",
+    "char_start": 20163,
+    "char_end": 20244,
+    "sentence_index": 103,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec005",
+    "text": "Advanced (ii) scoring mechanisms are employed by several methods to improve retrieval relevance .",
+    "char_start": 20245,
+    "char_end": 20342,
+    "sentence_index": 104,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec005",
+    "text": "Multimodal similarity measures, including structural similarity index measure (SSIM) , normalized cross-correlation (NCC), and BERTScore , aid in re-ranking documents.",
+    "char_start": 20343,
+    "char_end": 20510,
+    "sentence_index": 105,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec005",
+    "text": "Some frameworks combine similarity scores derived from various modalities for more robust re-ranking.",
+    "char_start": 20511,
+    "char_end": 20612,
+    "sentence_index": 106,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec005",
+    "text": "For example, VR-RAG proposes a visual re-ranking framework that combines cross-modal text-image similarity with intra-modal visual similarity using DINOv2 , demonstrating significant improvements in open-vocabulary recognition tasks.",
+    "char_start": 20613,
+    "char_end": 20846,
+    "sentence_index": 107,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec005",
+    "text": "Hierarchical post-processing integrates passage-level and answer confidence scores for improved ranking .",
+    "char_start": 20847,
+    "char_end": 20952,
+    "sentence_index": 108,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec005",
+    "text": "LDRE employs semantic ensemble methods to adaptively weigh multiple caption features, while RAGTrans and OMG-QA incorporate traditional ranking functions like BM25 .",
+    "char_start": 20953,
+    "char_end": 21118,
+    "sentence_index": 109,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec005",
+    "text": "(iii) Filtering methods ensure high-quality retrieval by eliminating irrelevant data.",
+    "char_start": 21119,
+    "char_end": 21204,
+    "sentence_index": 110,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec005",
+    "text": "Hard negative mining, as used in GME and MM-Embed , mitigates modality bias through modality-aware sampling and synthesized negatives.",
+    "char_start": 21205,
+    "char_end": 21339,
+    "sentence_index": 111,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec005",
+    "text": "Similarly, consensus-based filtering, seen in MuRAR and ColPali , employs source attribution and multi-vector mapping to filter out low-similarity candidates.",
+    "char_start": 21340,
+    "char_end": 21498,
+    "sentence_index": 112,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec005",
+    "text": "Dynamic modality filtering methods, such as RAFT and MAIN-RAG , train retrievers to disregard confusing data, improving multimodal retrieval robustness.",
+    "char_start": 21499,
+    "char_end": 21651,
+    "sentence_index": 113,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec006",
+    "text": "Score Fusion and Alignment\nModels in this category utilize distinct strategies to align multimodal representations.",
+    "char_start": 21653,
+    "char_end": 21768,
+    "sentence_index": 114,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec006",
+    "text": "10535103 convert text, tables, and images into a single textual format using a cross-encoder trained for relevance scoring.",
+    "char_start": 21769,
+    "char_end": 21892,
+    "sentence_index": 115,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec006",
+    "text": "Sharifymoghaddam2024UniRAGUR introduce interleaved image\u2013text pairs that vertically merge multiple few-shot images (as in LLaVA ), while aligning modalities via CLIP score fusion and BLIP feature fusion .",
+    "char_start": 21893,
+    "char_end": 22097,
+    "sentence_index": 116,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec006",
+    "text": "Wiki-LLaVA , C3Net , riedler2024textoptimizingragmultimodal , and MegaPairs embed images and queries into a shared CLIP space.",
+    "char_start": 22098,
+    "char_end": 22224,
+    "sentence_index": 117,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec006",
+    "text": "In particular, MegaPairs scales this approach by integrating both CLIP-based and MLLM-based retrieval, fusing their scores to leverage complementary strengths, but at the cost of increased inference complexity.",
+    "char_start": 22225,
+    "char_end": 22435,
+    "sentence_index": 118,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec006",
+    "text": "VISA employs the Document Screenshot Embedding (DSE) model to align textual queries with visual document representations by encoding both into a shared embedding space.",
+    "char_start": 22436,
+    "char_end": 22604,
+    "sentence_index": 119,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec006",
+    "text": "REVEAL injects retrieval scores into attention layers to minimize L2-norm differences between query and knowledge embeddings, and MA-LMM aligns video-text embeddings via a BLIP-inspired Query Transformer .",
+    "char_start": 22605,
+    "char_end": 22810,
+    "sentence_index": 120,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec006",
+    "text": "LLM-RA concatenates text and visual embeddings into joint queries to reduce retrieval noise, while RA-BLIP employs a 3-layer BERT-based adaptive fusion module to unify visual\u2013textual semantics.",
+    "char_start": 22811,
+    "char_end": 23004,
+    "sentence_index": 121,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec006",
+    "text": "xue2024enhancedmultimodalragllmaccurate use a prototype-based embedding network to map object-predicate pairs into a shared semantic space, aligning visual features with textual prototypes.",
+    "char_start": 23005,
+    "char_end": 23194,
+    "sentence_index": 122,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec006",
+    "text": "Re-IMAGEN balances creativity and entity fidelity in text-to-image synthesis via interleaved classifier-free guidance during diffusion sampling.",
+    "char_start": 23195,
+    "char_end": 23339,
+    "sentence_index": 123,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec006",
+    "text": "To improve multimodal alignment, VISRAG applies position-weighted mean pooling over VLM hidden states, giving higher relevance to later tokens.",
+    "char_start": 23340,
+    "char_end": 23483,
+    "sentence_index": 124,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec006",
+    "text": "In contrast, RAG-Driver aligns visual and language embeddings through visual instruction tuning and an MLP projector.",
+    "char_start": 23484,
+    "char_end": 23601,
+    "sentence_index": 125,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec006",
+    "text": "-1mm\nAttention-Based Mechanisms\nAttention-based methods dynamically modulate cross-modal interactions to enable fine-tuned reasoning across tasks, balancing specificity and interpretability.",
+    "char_start": 23603,
+    "char_end": 23793,
+    "sentence_index": 126,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec006",
+    "text": "Cross-attention is frequently used to integrate heterogeneous modalities, as in EMERGE , MORE , and AlzheimerRAG , though often requiring task-specific attention heads.",
+    "char_start": 23794,
+    "char_end": 23962,
+    "sentence_index": 127,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec006",
+    "text": "RAMM employs a dual-stream co-attention transformer, combining self-attention and cross-attention to fuse retrieved biomedical images/texts with input data.",
+    "char_start": 23963,
+    "char_end": 24119,
+    "sentence_index": 128,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec006",
+    "text": "RAGTrans applies user-aware attention to social media features.",
+    "char_start": 24120,
+    "char_end": 24183,
+    "sentence_index": 129,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec006",
+    "text": "MV-Adapter introduces Cross-Modality Tying to align video-text embeddings by sharing latent factors, improving robustness but reducing granularity of modality-specific features.",
+    "char_start": 24184,
+    "char_end": 24361,
+    "sentence_index": 130,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec006",
+    "text": "M2-RAAP enhances fusion through an auxiliary caption-guided strategy that re-weights frames and text captions based on intra-modal similarity, then uses a mutual-guided alignment head to filter misaligned features via dot-product similarity and frame-to-token attention; however, this method is computationally intensive.",
+    "char_start": 24362,
+    "char_end": 24683,
+    "sentence_index": 131,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec006",
+    "text": "xu2024retrievalaugmentedegocentricvideocaptioning condition text generation on visual features using gated cross-attention, optimizing controllability but requiring aligned supervision, and Mu-RAG employs intermediate cross-attention for open-domain QA.",
+    "char_start": 24684,
+    "char_end": 24937,
+    "sentence_index": 132,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec006",
+    "text": "kim2024you leverage cross-modal memory retrieval with pre-trained CLIP ViT-L/14 to map video-text pairs into a shared space, enabling dense captioning through the attention-based fusion of retrieved memories.",
+    "char_start": 24938,
+    "char_end": 25146,
+    "sentence_index": 133,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec006",
+    "text": "-1mm\nUnified Frameworks and Projections\nUnified frameworks and projection methods consolidate multimodal inputs into coherent representations.",
+    "char_start": 25148,
+    "char_end": 25290,
+    "sentence_index": 134,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec006",
+    "text": "su2024hybrid employ hierarchical cross-chains and late fusion for healthcare data, while IRAMIG iteratively integrates multimodal results into unified knowledge representations, enhancing consistency but requiring multiple reasoning passes.",
+    "char_start": 25291,
+    "char_end": 25531,
+    "sentence_index": 135,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec006",
+    "text": "M3DocRAG flattens multi-page documents into a single embedding tensor, and PDF-MVQA proposes a joint-grained retriever that fuses coarse-grained semantic entity representations with their fine-grained token-level textual content, creating a richer, unified representation.",
+    "char_start": 25532,
+    "char_end": 25804,
+    "sentence_index": 136,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec006",
+    "text": "DQU-CIR unifies raw data by converting images into text captions for complex queries and overlaying text onto images for simple ones, then fusing embeddings via MLP-learned weights.",
+    "char_start": 25805,
+    "char_end": 25986,
+    "sentence_index": 137,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec006",
+    "text": "SAM-RAG aligns image-text modalities by generating captions for images, converting the multimodal input to unimodal text for subsequent processing.",
+    "char_start": 25987,
+    "char_end": 26134,
+    "sentence_index": 138,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec006",
+    "text": "UFineBench uses a shared granularity decoder for ultra-fine text\u2013person retrieval.",
+    "char_start": 26135,
+    "char_end": 26217,
+    "sentence_index": 139,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec006",
+    "text": "nguyen2024multimodallearnedsparseretrieval introduce Dense2Sparse projection, converting dense embeddings from models like BLIP/ALBEF into sparse lexical vectors using layer normalization and probabilistic expansion control to optimize storage and interpretability.",
+    "char_start": 26218,
+    "char_end": 26483,
+    "sentence_index": 140,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec007",
+    "text": "Basic RAG systems typically retrieve content in a single step, directly passing it to generation, often leading to inefficiencies and suboptimal outputs.",
+    "char_start": 26485,
+    "char_end": 26638,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec007",
+    "text": "Augmentation techniques refine retrieved data beforehand, improving multimodal interpretation, structuring, and integration .",
+    "char_start": 26639,
+    "char_end": 26764,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec007",
+    "text": "Context Enrichment\nThis focuses on enhancing the relevance of retrieved knowledge by refining or expanding retrieved data.",
+    "char_start": 26766,
+    "char_end": 26888,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec007",
+    "text": "General approaches incorporate additional contextual elements (e.g., text chunks, image tokens, structured data) to provide a richer grounding for generation .",
+    "char_start": 26889,
+    "char_end": 27048,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec007",
+    "text": "EMERGE enriches context by integrating entity relationships and semantic descriptions.",
+    "char_start": 27049,
+    "char_end": 27135,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec007",
+    "text": "MiRAG expands initial queries through entity retrieval and reformulation, enhancing subsequent stages for the visual question-answering.",
+    "char_start": 27136,
+    "char_end": 27272,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec007",
+    "text": "Video-RAG enhances long-video understanding through Query Decoupling, which reformulates user queries into structured retrieval requests to extract auxiliary multimodal context.",
+    "char_start": 27273,
+    "char_end": 27450,
+    "sentence_index": 147,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec007",
+    "text": "Img2Loc boosts accuracy by including both similar and dissimilar points in prompts, helping rule out implausible locations.",
+    "char_start": 27451,
+    "char_end": 27574,
+    "sentence_index": 148,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec007",
+    "text": "Adaptive and Iterative Retrieval\nFor more complex queries, dynamic retrieval mechanisms have proven effective.",
+    "char_start": 27576,
+    "char_end": 27686,
+    "sentence_index": 149,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec007",
+    "text": "Adaptive retrieval approaches optimize relevance by adjusting retrieval dynamically.",
+    "char_start": 27687,
+    "char_end": 27771,
+    "sentence_index": 150,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec007",
+    "text": "For instance, UniversalRAG introduces a framework that adapts retrieval by dynamically routing queries to the most suitable corpus based on both the required modality and granularity (e.g., paragraph vs.",
+    "char_start": 27772,
+    "char_end": 27975,
+    "sentence_index": 151,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec007",
+    "text": "document, clip vs.",
+    "char_start": 27976,
+    "char_end": 27994,
+    "sentence_index": 152,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec007",
+    "text": "full video), thereby addressing the specific knowledge type and scope demanded by the query.",
+    "char_start": 27995,
+    "char_end": 28087,
+    "sentence_index": 153,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec007",
+    "text": "SKURG determines the number of retrieval hops based on query complexity.",
+    "char_start": 28088,
+    "char_end": 28160,
+    "sentence_index": 154,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec007",
+    "text": "SAM-RAG and mR$^2$AG dynamically assess the need for external knowledge and filter irrelevant content using MLLMs to retain only task-critical information.",
+    "char_start": 28161,
+    "char_end": 28316,
+    "sentence_index": 155,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec007",
+    "text": "MMed-RAG further improves retrieval precision by discarding low-relevance results, while OmniSearch decomposes multimodal queries into structured sub-questions, planning retrieval actions in real time.",
+    "char_start": 28317,
+    "char_end": 28518,
+    "sentence_index": 156,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec007",
+    "text": "Iterative approaches refine results over multiple steps by incorporating feedback from prior iterations.",
+    "char_start": 28519,
+    "char_end": 28623,
+    "sentence_index": 157,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec007",
+    "text": "For example, OMGM orchestrates a multi-step, coarse-to-fine retrieval process for knowledge-based visual question answering, starting with a broad entity search and progressively refining the selection through multimodal reranking and fine-grained textual filtering to pinpoint the most relevant knowledge, achieving superior retrieval performance in comparison to prior methods.",
+    "char_start": 28624,
+    "char_end": 29003,
+    "sentence_index": 158,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec007",
+    "text": "IRAMIG improves multimodal retrieval by dynamically updating queries based on retrieved content.",
+    "char_start": 29004,
+    "char_end": 29100,
+    "sentence_index": 159,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec007",
+    "text": "OMG-QA integrates episodic memory to refine retrieval across multiple rounds, ensuring continuity in reasoning.",
+    "char_start": 29101,
+    "char_end": 29212,
+    "sentence_index": 160,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec007",
+    "text": "RAGAR further enhances contextual consistency by iteratively adjusting retrieval based on prior responses and multimodal analysis.",
+    "char_start": 29213,
+    "char_end": 29343,
+    "sentence_index": 161,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec007",
+    "text": "-1mm\n\n-1.8em\nIn-Context Learning (ICL)\nICL with retrieval augmentation enhances reasoning in multimodal RAGs by leveraging retrieved content as few-shot examples without requiring retraining.",
+    "char_start": 29345,
+    "char_end": 29536,
+    "sentence_index": 162,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec008",
+    "text": "Models such as RMR , Sharifymoghaddam2024UniRAGUR , and RA-CM3 , extend this paradigm to multimodal RAG settings.",
+    "char_start": 29537,
+    "char_end": 29650,
+    "sentence_index": 163,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec008",
+    "text": "RAG-Driver refines ICL by retrieving relevant driving experiences from a memory database.",
+    "char_start": 29651,
+    "char_end": 29740,
+    "sentence_index": 164,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec008",
+    "text": "MSIER improves example selection with a multimodal supervised in-context examples retrieval framework, using an MLLM scorer to assess textual and visual relevance.",
+    "char_start": 29741,
+    "char_end": 29904,
+    "sentence_index": 165,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec008",
+    "text": "Raven introduces Fusion-in-Context Learning, integrating diverse in-context examples for superior performance over standard ICL.",
+    "char_start": 29905,
+    "char_end": 30033,
+    "sentence_index": 166,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec008",
+    "text": "-0.2em\nReasoning\nReasoning methods, like chain of thought (CoT), decompose complex reasoning into sequential steps, improving coherence and robustness in multimodal RAG.",
+    "char_start": 30034,
+    "char_end": 30203,
+    "sentence_index": 167,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec008",
+    "text": "RAGAR refines fact-checking queries and explores branching reasoning paths by introducing Chain of RAG and Tree of RAG, while VisDoM and SAM-RAG integrate CoT with evidence curation and multi-stage verification to enhance accuracy and support.",
+    "char_start": 30204,
+    "char_end": 30447,
+    "sentence_index": 168,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec008",
+    "text": "Notably, VisDoM performs well in scenarios where key information is distributed across modalities.",
+    "char_start": 30448,
+    "char_end": 30546,
+    "sentence_index": 169,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec008",
+    "text": "LDRE applies LLMs for divergent compositional reasoning by refining captions using dense descriptions and textual modifications, achieving superior zero-shot composed image retrieval results.",
+    "char_start": 30547,
+    "char_end": 30738,
+    "sentence_index": 170,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec008",
+    "text": "Instruction Tuning Several works have fine-tuned or instruct-tuned generation components for specific applications.",
+    "char_start": 30740,
+    "char_end": 30855,
+    "sentence_index": 171,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec008",
+    "text": "RA-BLIP leverages the Q-Former architecture from InstructBLIP to extract visual features based on question instructions, while RAGPT employs a context-aware prompter to generate dynamic prompts from relevant instances.",
+    "char_start": 30856,
+    "char_end": 31074,
+    "sentence_index": 172,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec008",
+    "text": "MR$^2$AG and RagVL train MLLMs to invoke retrieval adaptively, identify relevant evidence, and enhance ranking capabilities for improved response accuracy.",
+    "char_start": 31075,
+    "char_end": 31230,
+    "sentence_index": 173,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec008",
+    "text": "jang2024visual focus on distinguishing image differences to generate descriptive textual responses.",
+    "char_start": 31231,
+    "char_end": 31330,
+    "sentence_index": 174,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec008",
+    "text": "MMed-RAG applies preference fine-tuning to help models balance retrieved knowledge with internal reasoning.",
+    "char_start": 31331,
+    "char_end": 31438,
+    "sentence_index": 175,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec008",
+    "text": "To improve generation quality, MegaPairs and Surf construct multimodal instruction-tuning datasets from prior LLM errors, while Rule refines a medical large vision language model through direct preference optimization to mitigate overreliance on retrieved contexts.",
+    "char_start": 31439,
+    "char_end": 31704,
+    "sentence_index": 176,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec008",
+    "text": "Source Attribution and Evidence Transparency Ensuring source attribution in multimodal RAG systems is a significant research focus.",
+    "char_start": 31706,
+    "char_end": 31837,
+    "sentence_index": 177,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec008",
+    "text": "OMG-QA prompts LLMs for explicit evidence citation in generated responses.",
+    "char_start": 31838,
+    "char_end": 31912,
+    "sentence_index": 178,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec008",
+    "text": "MuRAR refines an LLM's initial response by integrating multimodal information from a source-based retriever to improve informativeness.",
+    "char_start": 31913,
+    "char_end": 32048,
+    "sentence_index": 179,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec008",
+    "text": "However, its recall is constrained, as the retriever may miss evidence spanning different sections or web documents.",
+    "char_start": 32049,
+    "char_end": 32165,
+    "sentence_index": 180,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec008",
+    "text": "Similarly, VISA employs vision-language models to generate answers with visual source attribution by highlighting evidence in retrieved screenshots.",
+    "char_start": 32166,
+    "char_end": 32314,
+    "sentence_index": 181,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec008",
+    "text": "Nevertheless, its attribution accuracy degrades when evidence spans multiple sections or requires cross-modal integration.",
+    "char_start": 32315,
+    "char_end": 32437,
+    "sentence_index": 182,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec008",
+    "text": "-0.2em\nAgentic Generation and Interaction\n\nAgent-driven multimodal RAG uses versatile autonomous/semi-autonomous systems across diverse interaction paradigms and specialized domains, often generating complex outputs.",
+    "char_start": 32439,
+    "char_end": 32655,
+    "sentence_index": 183,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec008",
+    "text": "For user interaction, AppAgent v2 enables mobile GUI navigation while USER-LLM R1 creates personalized conversational agents via dynamic profiling, particularly for elderly users.",
+    "char_start": 32656,
+    "char_end": 32835,
+    "sentence_index": 184,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec008",
+    "text": "In specialized applications, MMAD addresses industrial anomaly detection with training-free enhancement strategies, yi2025multimodalmultiagentframeworkradiology improve clinical report generation while reducing hallucination, and CollEX facilitates scientific collection exploration for researchers and learners.",
+    "char_start": 32836,
+    "char_end": 33148,
+    "sentence_index": 185,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec008",
+    "text": "For complex reasoning, HM-RAG coordinates hierarchical multi-agent collaboration across multimodal data streams, while CogPlanner introduces a cognitively inspired planning framework that iteratively refines queries and selects retrieval strategies adaptively.",
+    "char_start": 33149,
+    "char_end": 33409,
+    "sentence_index": 186,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec009",
+    "text": "Training multimodal RAG models follows a multi-stage process to effectively capture cross-modal interactions .",
+    "char_start": 33411,
+    "char_end": 33521,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec009",
+    "text": "Pretraining on large paired datasets establishes cross-modal relationships, while fine-tuning adapts models to task-specific objectives by aligning outputs with task requirements .",
+    "char_start": 33522,
+    "char_end": 33702,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec009",
+    "text": "For example, REVEAL integrates multiple training objectives.",
+    "char_start": 33703,
+    "char_end": 33763,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec009",
+    "text": "Its pretraining phase optimizes Prefix Language Modeling Loss (\\(L_ PrefixLM \\)), where text is predicted from a given prefix and an associated image.",
+    "char_start": 33764,
+    "char_end": 33914,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec009",
+    "text": "Supporting losses include Contrastive Loss (\\(L_ contra \\)) which aligns queries with pseudo-ground-truth knowledge, Disentangled Regularization Loss (\\(L_ decor \\)) to enhance embedding expressiveness, and Alignment Regularization Loss (\\(L_ align \\)) to refine query-knowledge alignment.",
+    "char_start": 33915,
+    "char_end": 34204,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec009",
+    "text": "Fine-tuning employs a cross-entropy objective for downstream tasks like visual question answering or image captioning.",
+    "char_start": 34205,
+    "char_end": 34323,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec009",
+    "text": "Details on robustness advancements and loss formulations are in Appendix ( ).",
+    "char_start": 34324,
+    "char_end": 34401,
+    "sentence_index": 193,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec009",
+    "text": "Alignment\nContrastive learning improves representation quality by pulling positive pairs closer and pushing negative pairs apart in the embedding space.",
+    "char_start": 34403,
+    "char_end": 34555,
+    "sentence_index": 194,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec009",
+    "text": "The InfoNCE loss is widely employed in multimodal RAG models, including VISRAG , MegaPairs , and SAM-RAG , to improve retrieval-augmented generation.",
+    "char_start": 34556,
+    "char_end": 34705,
+    "sentence_index": 195,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec009",
+    "text": "Several models introduce refinements to contrastive training.",
+    "char_start": 34706,
+    "char_end": 34767,
+    "sentence_index": 196,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec009",
+    "text": "EchoSight enhances retrieval accuracy by selecting visually similar yet semantically distinct negatives, while HACL mitigates hallucinations by incorporating adversarial captions as distractors.",
+    "char_start": 34768,
+    "char_end": 34962,
+    "sentence_index": 197,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec009",
+    "text": "Similarly, UniRaG improves retrieval robustness by leveraging hard negative documents to help the model discriminate between relevant and irrelevant contexts.",
+    "char_start": 34963,
+    "char_end": 35121,
+    "sentence_index": 198,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec009",
+    "text": "The eCLIP loss extends contrastive learning by integrating expert-annotated data and an auxiliary MSE loss to refine embedding quality.",
+    "char_start": 35122,
+    "char_end": 35257,
+    "sentence_index": 199,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec009",
+    "text": "Mixup strategies further improve generalization by generating synthetic positive pairs .",
+    "char_start": 35258,
+    "char_end": 35346,
+    "sentence_index": 200,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec009",
+    "text": "Dense2Sparse employs image-to-caption \\( (I C)\\) and caption-to-image \\( (C I)\\) losses, while enforcing sparsity through \\( 1\\) regularization, optimizing retrieval precision by balancing dense and sparse representations.",
+    "char_start": 35347,
+    "char_end": 35569,
+    "sentence_index": 201,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec010",
+    "text": "Additional challenges and future directions about long-context processing, scalability, efficiency, and personalization are discussed in Appendix ( ).",
+    "char_start": 35571,
+    "char_end": 35721,
+    "sentence_index": 202,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec010",
+    "text": "Generalization, Explainability, and Robustness\nMultimodal RAG systems often struggle with domain adaptation and exhibit modality biases, frequently over-relying on text for both retrieval and generation .",
+    "char_start": 35723,
+    "char_end": 35927,
+    "sentence_index": 203,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec010",
+    "text": "Explainability remains a major challenge, as these systems often attribute responses to broad sources, citing entire documents or large visual regions instead of pinpointing exact contributing elements across modalities .",
+    "char_start": 35928,
+    "char_end": 36149,
+    "sentence_index": 204,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec010",
+    "text": "Moreover, the interplay between modalities affects the outcome quality; for example, answers derived solely from text sources may differ in quality compared to those requiring a combination of text and image inputs .",
+    "char_start": 36150,
+    "char_end": 36366,
+    "sentence_index": 205,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec010",
+    "text": "They are also vulnerable to adversarial perturbations, such as misleading images influencing textual outputs, and their performance degrades when relying on low-quality or outdated sources .",
+    "char_start": 36367,
+    "char_end": 36557,
+    "sentence_index": 206,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec010",
+    "text": "MM-PoisonRAG and Poisoned-MRAG demonstrate that even a few adversarial knowledge injections can hijack cross-modal retrieval and derail generation, underscoring the imperative for robust defense mechanisms against knowledge poisoning in multimodal RAG systems.",
+    "char_start": 36558,
+    "char_end": 36818,
+    "sentence_index": 207,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec010",
+    "text": "While the trustworthiness of unimodal RAGs has been studied , ensuring robustness in multimodal RAGs remains an open challenge and a crucial research direction.",
+    "char_start": 36819,
+    "char_end": 36979,
+    "sentence_index": 208,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec010",
+    "text": "Reasoning, Alignment, and Retrieval Enhancement\nMultimodal RAGs struggle with compositional reasoning, requiring logical integration of information across modalities for coherent, context-rich outputs.",
+    "char_start": 36981,
+    "char_end": 37182,
+    "sentence_index": 209,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec010",
+    "text": "While cross-modal techniques like Multimodal-CoT have emerged, further advancements are needed to enhance coherence and contextual relevance.",
+    "char_start": 37183,
+    "char_end": 37324,
+    "sentence_index": 210,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec010",
+    "text": "Improving modality alignment and entity-aware retrieval is crucial.",
+    "char_start": 37325,
+    "char_end": 37392,
+    "sentence_index": 211,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec010",
+    "text": "Moreover, despite the potential of knowledge graphs to enrich cross-modal reasoning, they remain underexplored in multimodal RAGs compared to text-based RAGs .",
+    "char_start": 37393,
+    "char_end": 37552,
+    "sentence_index": 212,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec010",
+    "text": "Retrieval biases such as position sensitivity , redundancy , and biases from training data or retrieved content , pose significant challenges.",
+    "char_start": 37553,
+    "char_end": 37695,
+    "sentence_index": 213,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec010",
+    "text": "A promising direction is a unified embedding space for all modalities, enabling direct multimodal search without intermediary models (e.g., ASRs).",
+    "char_start": 37696,
+    "char_end": 37842,
+    "sentence_index": 214,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec010",
+    "text": "Despite progress, mapping multimodal knowledge into a unified space remains an open challenge with substantial potential.",
+    "char_start": 37843,
+    "char_end": 37964,
+    "sentence_index": 215,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec010",
+    "text": "Agent-Based and Self-Guided Systems\nRecent trends indicate a shift towards agent-based multimodal RAGs that integrate retrieval, reasoning, and generation across diverse domains.",
+    "char_start": 37966,
+    "char_end": 38144,
+    "sentence_index": 216,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec010",
+    "text": "Unlike static RAGs, future systems should incorporate interactive feedback and self-guided decision-making to iteratively refine outputs.",
+    "char_start": 38145,
+    "char_end": 38282,
+    "sentence_index": 217,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec010",
+    "text": "Existing feedback mechanisms often fail to determine whether errors stem from retrieval, generation, or other stages .",
+    "char_start": 38283,
+    "char_end": 38401,
+    "sentence_index": 218,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec010",
+    "text": "The incorporation of reinforcement learning and end-to-end human-aligned feedback remains largely overlooked but holds significant potential for\nassessing whether retrieval is necessary, evaluating the relevance of retrieved content, and dynamically determining the most suitable modalities for response generation.",
+    "char_start": 38402,
+    "char_end": 38717,
+    "sentence_index": 219,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec010",
+    "text": "Robust support for any-to-any modality is crucial for open-ended tasks .",
+    "char_start": 38718,
+    "char_end": 38790,
+    "sentence_index": 220,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec010",
+    "text": "Future multimodal RAGs should incorporate data from diverse real-world sources, such as environmental sensors, alongside traditional modalities to enhance situational awareness.",
+    "char_start": 38791,
+    "char_end": 38968,
+    "sentence_index": 221,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec010",
+    "text": "This progression aligns with the trend toward embodied AI, where models integrate knowledge with physical interaction, enabling applications in robotics, navigation, and physics-informed reasoning.",
+    "char_start": 38969,
+    "char_end": 39166,
+    "sentence_index": 222,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec010",
+    "text": "Bridging retrieval-based reasoning with real-world agency brings these systems closer to AGI.",
+    "char_start": 39167,
+    "char_end": 39260,
+    "sentence_index": 223,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec011",
+    "text": "This study provides a comprehensive review of multimodal RAG, categorizing key advancements in retrieval, multimodal fusion, augmentation, generation, training strategies, and agents.",
+    "char_start": 39262,
+    "char_end": 39445,
+    "sentence_index": 224,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec011",
+    "text": "We also examine task-specific applications, datasets, benchmarks, and evaluation methods while highlighting open challenges and promising future directions.",
+    "char_start": 39446,
+    "char_end": 39602,
+    "sentence_index": 225,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec011",
+    "text": "We hope this work inspires future research, particularly in enhancing cross-modal reasoning and retrieval, developing agent-based interactive systems, and advancing unified multimodal embedding spaces.",
+    "char_start": 39603,
+    "char_end": 39804,
+    "sentence_index": 226,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec012",
+    "text": "This study offers a comprehensive examination of multimodal RAG systems.",
+    "char_start": 39806,
+    "char_end": 39878,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec012",
+    "text": "Extended discussions, details of datasets and benchmarks, and additional relevant work are available in the Appendices.",
+    "char_start": 39879,
+    "char_end": 39998,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec012",
+    "text": "While we have made our maximum effort; however, some limits may persist.",
+    "char_start": 39999,
+    "char_end": 40071,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec012",
+    "text": "First, due to space constraints, our descriptions of individual methodologies are necessarily concise.",
+    "char_start": 40072,
+    "char_end": 40174,
+    "sentence_index": 230,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec012",
+    "text": "Second, although we curate studies from major venues (e.g., ACL, EMNLP, NeurIPS, CVPR, ICLR, ICML, ACM Multimedia) and arXiv, our selection may inadvertently overlook emerging or domain-specific research, with a primary focus on recent advancements.",
+    "char_start": 40175,
+    "char_end": 40424,
+    "sentence_index": 231,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec012",
+    "text": "Additionally, this work does not include a comparative performance evaluation of the various models, as task definitions, evaluation metrics, and implementation details vary significantly across studies, and executing these models requires substantial computational resources.",
+    "char_start": 40425,
+    "char_end": 40701,
+    "sentence_index": 232,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec012",
+    "text": "Furthermore, multimodal RAG is a rapidly evolving field with many open questions, such as optimizing fusion strategies for diverse modalities and addressing scalability challenges.",
+    "char_start": 40703,
+    "char_end": 40883,
+    "sentence_index": 233,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec012",
+    "text": "As new paradigms emerge, our taxonomy and conclusions will inevitably evolve.",
+    "char_start": 40884,
+    "char_end": 40961,
+    "sentence_index": 234,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec012",
+    "text": "To address these gaps, we plan to continuously monitor developments and update this survey and the corresponding repository to incorporate overlooked contributions and refine our perspectives.",
+    "char_start": 40962,
+    "char_end": 41154,
+    "sentence_index": 235,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec013",
+    "text": "This survey provides a comprehensive review of research on multimodal RAG systems, offering insights that we believe will be valuable to researchers in this evolving field.",
+    "char_start": 41156,
+    "char_end": 41328,
+    "sentence_index": 236,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec013",
+    "text": "All the studies, datasets, and benchmarks analyzed in this work are publicly available, with only a very small number of papers requiring institutional access.",
+    "char_start": 41329,
+    "char_end": 41488,
+    "sentence_index": 237,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec013",
+    "text": "Additionally, this survey does not involve personal data or user interactions, and we adhere to ethical guidelines throughout.",
+    "char_start": 41489,
+    "char_end": 41615,
+    "sentence_index": 238,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec013",
+    "text": "Since this work is purely a survey of existing literature and does not introduce new models, datasets, or experimental methodologies, it presents no potential risks.",
+    "char_start": 41617,
+    "char_end": 41782,
+    "sentence_index": 239,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec013",
+    "text": "However, we acknowledge that multimodal RAG systems inherently raise ethical concerns, including bias, misinformation, privacy, and intellectual property issues.",
+    "char_start": 41783,
+    "char_end": 41944,
+    "sentence_index": 240,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec013",
+    "text": "Bias can emerge from both retrieval and generation processes, potentially leading to skewed or unfair outputs.",
+    "char_start": 41945,
+    "char_end": 42055,
+    "sentence_index": 241,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec013",
+    "text": "Additionally, these models may hallucinate or propagate misinformation, particularly when retrieval mechanisms fail or rely on unreliable sources.",
+    "char_start": 42056,
+    "char_end": 42202,
+    "sentence_index": 242,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec013",
+    "text": "The handling of sensitive multimodal data also poses privacy risks, while content generation raises concerns about proper attribution and copyright compliance.",
+    "char_start": 42203,
+    "char_end": 42362,
+    "sentence_index": 243,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec013",
+    "text": "Addressing these challenges requires careful dataset curation, bias mitigation strategies, and transparent evaluation of retrieval and generation mechanisms.",
+    "char_start": 42363,
+    "char_end": 42520,
+    "sentence_index": 244,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec013",
+    "text": "acl_latex\n\nIn this section, we provide more details regarding the taxonomy of multimodal RAG systems, previously mentioned in fig:taxonomy_full .",
+    "char_start": 42522,
+    "char_end": 42667,
+    "sentence_index": 245,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec014",
+    "text": "Additionally, we present a classification of multimodal RAG application domains in fig:app_taxonomy .",
+    "char_start": 42668,
+    "char_end": 42769,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec014",
+    "text": "fig:taxonomy_full provides an overview of recent advances in multimodal RAG systems.",
+    "char_start": 42771,
+    "char_end": 42855,
+    "sentence_index": 247,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec014",
+    "text": "The taxonomy is organized into several key categories.",
+    "char_start": 42856,
+    "char_end": 42910,
+    "sentence_index": 248,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec014",
+    "text": "Retrieval strategies cover efficient search and similarity retrieval methods (including maximum inner product search (MIPS) variants and different multimodal encoders) and modality-centric techniques that distinguish between text-, vision-, audio-, and video-centric as well as document retrieval models.",
+    "char_start": 42911,
+    "char_end": 43215,
+    "sentence_index": 249,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec014",
+    "text": "Re-ranking strategies further refine these methods via optimized example selection, relevance scoring, and filtering.",
+    "char_start": 43216,
+    "char_end": 43333,
+    "sentence_index": 250,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec014",
+    "text": "Fusion mechanisms cover score fusion and alignment techniques, including CLIP score fusion and prototype-based embeddings that unify multimodal representations, attention-based methods such as cross-attention and co-attention transformers that dynamically weight cross-modal interactions, and unified frameworks and projections like hierarchical fusion and dense-to-sparse projections that consolidate multimodal inputs.",
+    "char_start": 43334,
+    "char_end": 43754,
+    "sentence_index": 251,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec014",
+    "text": "Augmentation techniques address context enrichment as well as adaptive and iterative retrieval.",
+    "char_start": 43755,
+    "char_end": 43850,
+    "sentence_index": 252,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec014",
+    "text": "Generation methods include in-context learning, reasoning, instruction tuning, source attribution, and agentic frameworks.",
+    "char_start": 43851,
+    "char_end": 43973,
+    "sentence_index": 253,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec014",
+    "text": "training strategies are characterized by approaches to alignment and robustness.",
+    "char_start": 43974,
+    "char_end": 44054,
+    "sentence_index": 254,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec014",
+    "text": "Detailed discussions of these categories are provided in the corresponding sections.",
+    "char_start": 44056,
+    "char_end": 44140,
+    "sentence_index": 255,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec014",
+    "text": "fig:app_taxonomy presents the taxonomy of application domains for multimodal RAG systems.",
+    "char_start": 44142,
+    "char_end": 44231,
+    "sentence_index": 256,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec014",
+    "text": "The identified domains include healthcare and medicine , software engineering , fashion and e-commerce , entertainment and social computing , and emerging applications .",
+    "char_start": 44232,
+    "char_end": 44401,
+    "sentence_index": 257,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec014",
+    "text": "This classification offers a concise overview of the diverse applications and serves as a framework for the more detailed analyses that follow.",
+    "char_start": 44402,
+    "char_end": 44545,
+    "sentence_index": 258,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec015",
+    "text": "Multimodal RAG research employs diverse datasets and benchmarks to evaluate retrieval, integration, and generation across heterogeneous sources.",
+    "char_start": 44547,
+    "char_end": 44691,
+    "sentence_index": 259,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec015",
+    "text": "Image\u2013text tasks, including captioning and retrieval, commonly use MS-COCO , Flickr30K , and LAION-400M , while visual question answering (QA) with external knowledge is supported by OK-VQA and WebQA .",
+    "char_start": 44692,
+    "char_end": 44893,
+    "sentence_index": 260,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec015",
+    "text": "For complex multimodal reasoning, MultimodalQA integrates text, images, and tables, whereas video-text tasks leverage ActivityNet and YouCook2 .",
+    "char_start": 44894,
+    "char_end": 45038,
+    "sentence_index": 261,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec015",
+    "text": "In the medical domain, MIMIC-CXR and CheXpert facilitate tasks such as medical report generation.",
+    "char_start": 45039,
+    "char_end": 45136,
+    "sentence_index": 262,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec015",
+    "text": "It should be noted that a number of these datasets are unimodal (e.g., solely text-based or image-based).",
+    "char_start": 45137,
+    "char_end": 45242,
+    "sentence_index": 263,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec015",
+    "text": "Unimodal datasets are frequently employed to represent a specific modality and are subsequently integrated with complementary datasets from other modalities.",
+    "char_start": 45243,
+    "char_end": 45400,
+    "sentence_index": 264,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec015",
+    "text": "This modular approach allows each dataset to contribute its domain-specific strengths, thereby enhancing the overall performance of the multimodal retrieval and generation processes.",
+    "char_start": 45401,
+    "char_end": 45583,
+    "sentence_index": 265,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec015",
+    "text": "Benchmarks assess multimodal RAG systems on visual reasoning, external knowledge integration, and dynamic retrieval.",
+    "char_start": 45585,
+    "char_end": 45701,
+    "sentence_index": 266,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec015",
+    "text": "The $M^ 2 RAG$ benchmark provides a unified evaluation framework that combines fine-grained text-modal and multimodal metrics to jointly assess both the quality of generated language and the effective integration of visual elements.",
+    "char_start": 45702,
+    "char_end": 45934,
+    "sentence_index": 267,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec015",
+    "text": "In addition, introduce another specialized benchmark for multimodal RAG that evaluates performance across image captioning, multi-modal question answering, fact verification, and image reranking in an open-domain retrieval setting.",
+    "char_start": 45935,
+    "char_end": 46166,
+    "sentence_index": 268,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec015",
+    "text": "Vision-focused evaluations, including MRAG-Bench , VQAv2 and VisDoMBench , test models on complex visual tasks.",
+    "char_start": 46167,
+    "char_end": 46278,
+    "sentence_index": 269,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec015",
+    "text": "Dyn-VQA , MMBench , and ScienceQA evaluate dynamic retrieval and multi-hop reasoning across textual, visual, and diagrammatic inputs.",
+    "char_start": 46279,
+    "char_end": 46412,
+    "sentence_index": 270,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec015",
+    "text": "Knowledge-intensive benchmarks, such as TriviaQA and Natural Questions , together with document-oriented evaluations such as OmniDocBench , measure integration of unstructured and structured data.",
+    "char_start": 46413,
+    "char_end": 46609,
+    "sentence_index": 271,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec015",
+    "text": "Advanced retrieval benchmarks such as RAG-Check evaluate retrieval relevance and system reliability, while specialized assessments like Counterfactual VQA test robustness against adversarial inputs.",
+    "char_start": 46610,
+    "char_end": 46808,
+    "sentence_index": 272,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec015",
+    "text": "Additionally, OCR impact studies such as OHRBench examine the cascading effects of errors on RAG systems.",
+    "char_start": 46809,
+    "char_end": 46914,
+    "sentence_index": 273,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec015",
+    "text": "The choice of dataset significantly influences the evaluation focus, ranging from foundational pre-training on large-scale image-text corpora like LAION-5B (5.85 billion pairs) or MINT-1T (3.4 billion images with 1 trillion text tokens), to more specialized tasks such as video understanding with HowTo100M (136 million video clips) or medical report generation using MIMIC-CXR (125,417 image-report pairs).",
+    "char_start": 46916,
+    "char_end": 47323,
+    "sentence_index": 274,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec015",
+    "text": "Datasets are often tailored for specific downstream tasks.",
+    "char_start": 47325,
+    "char_end": 47383,
+    "sentence_index": 275,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec015",
+    "text": "For visual question answering, VQA and A-OKVQA specifically require external knowledge, making them suitable for evaluating RAG systems' ability to retrieve and reason over such knowledge.",
+    "char_start": 47384,
+    "char_end": 47572,
+    "sentence_index": 276,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec015",
+    "text": "For document understanding, datasets such as DocVQA and M3DocVQA are essential.",
+    "char_start": 47573,
+    "char_end": 47652,
+    "sentence_index": 277,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec015",
+    "text": "As discussed in the benchmarks overview above, unified evaluation frameworks like $M^ 2 RAG$ provide a comprehensive assessment across multiple tasks, including image captioning, visual question answering, and fact verification.",
+    "char_start": 47653,
+    "char_end": 47881,
+    "sentence_index": 278,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec015",
+    "text": "Evaluating complex reasoning capabilities in multimodal RAG systems has become increasingly important.",
+    "char_start": 47883,
+    "char_end": 47985,
+    "sentence_index": 279,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec015",
+    "text": "Datasets such as MultimodalQA , WebQA , and ScienceQA are specifically designed to benchmark multi-hop reasoning abilities crucial for advanced RAG systems, with Dyn-VQA additionally focusing on robustness to changing information.",
+    "char_start": 47986,
+    "char_end": 48216,
+    "sentence_index": 280,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec015",
+    "text": "Comparative Analysis of Datasets\nUnderstanding the strategic trade-offs in dataset design is crucial for multimodal RAG development, as different dataset characteristics serve distinct purposes across the model development pipeline.",
+    "char_start": 48218,
+    "char_end": 48450,
+    "sentence_index": 281,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec015",
+    "text": "(i) Scale and Diversity vs.",
+    "char_start": 48452,
+    "char_end": 48479,
+    "sentence_index": 282,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec015",
+    "text": "Curation: Large-scale datasets such as LAION-5B and Conceptual Captions provide substantial scale essential for pre-training, enabling models to learn generalizable representations across diverse domains.",
+    "char_start": 48480,
+    "char_end": 48684,
+    "sentence_index": 283,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec015",
+    "text": "However, their reliance on web-crawled data introduces inherent noise that can compromise training quality.",
+    "char_start": 48685,
+    "char_end": 48792,
+    "sentence_index": 284,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec015",
+    "text": "Conversely, smaller, meticulously curated datasets like Flickr30K (31,000 images with human annotations) and domain-specific collections such as Fashionpedia (48,000 images with segmentation masks) prioritize annotation quality over scale, making them essential for fine-tuning models and assessing specialized performance.",
+    "char_start": 48793,
+    "char_end": 49116,
+    "sentence_index": 285,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec015",
+    "text": "(ii) Modality Focus and Combination: While many systems aggregate unimodal datasets to construct multimodal contexts, datasets explicitly designed for multimodal tasks demonstrate superior alignment between modalities.",
+    "char_start": 49118,
+    "char_end": 49336,
+    "sentence_index": 286,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec015",
+    "text": "Foundational datasets like MS-COCO and VQA establish benchmarks for image-text understanding, while specialized collections such as AudioSet (2 million audio clips) and AudioCaps (46,000 audio clips with captions) address audio-language integration.",
+    "char_start": 49337,
+    "char_end": 49586,
+    "sentence_index": 287,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec015",
+    "text": "Emerging modalities like 3D (e.g., ShapeNet ) remain underrepresented, yet are essential for expanding RAG applications into spatial reasoning domains.",
+    "char_start": 49587,
+    "char_end": 49738,
+    "sentence_index": 288,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec015",
+    "text": "tab:categorized_datasets and tab:benchmark_datasets present a comprehensive overview of datasets and benchmarks commonly employed in multimodal RAG research.",
+    "char_start": 49740,
+    "char_end": 49897,
+    "sentence_index": 289,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec015",
+    "text": "The table is organized into five columns:\nCategory: This column categorizes each dataset or benchmark based on its primary domain or modality.",
+    "char_start": 49898,
+    "char_end": 50040,
+    "sentence_index": 290,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec015",
+    "text": "The datasets are grouped into eight categories: Image\u2013Text General , Video\u2013Text , Audio\u2013Text , Medical , Fashion , 3D , Knowledge \\& QA , and Other .",
+    "char_start": 50041,
+    "char_end": 50190,
+    "sentence_index": 291,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec015",
+    "text": "The benchmarks are grouped into two categories: Cross-Modal Understanding and Text-Focused .",
+    "char_start": 50191,
+    "char_end": 50283,
+    "sentence_index": 292,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec015",
+    "text": "This classification facilitates a clearer understanding of each dataset or benchmark\u2019s role within a multimodal framework.",
+    "char_start": 50284,
+    "char_end": 50406,
+    "sentence_index": 293,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec015",
+    "text": "Name: The official name of the dataset or benchmarks is provided along with a citation for reference.",
+    "char_start": 50407,
+    "char_end": 50508,
+    "sentence_index": 294,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec015",
+    "text": "Statistics and Description: This column summarizes key details such as dataset size, the nature of the content (e.g., image\u2013text pairs, video captions, QA pairs), and the specific tasks or applications for which the dataset or benchmarks are used.",
+    "char_start": 50509,
+    "char_end": 50756,
+    "sentence_index": 295,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec015",
+    "text": "These descriptions are intended to convey the dataset\u2019s scope and its relevance to various multimodal RAG tasks.",
+    "char_start": 50757,
+    "char_end": 50869,
+    "sentence_index": 296,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec015",
+    "text": "Modalities: The modalities covered by each dataset or benchmark are indicated (e.g., Image, Text, Video, Audio, or 3D).",
+    "char_start": 50870,
+    "char_end": 50989,
+    "sentence_index": 297,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec015",
+    "text": "Notably, several datasets are unimodal; however, within multimodal RAG systems, these are combined with others to represent distinct aspects of a broader multimodal context.",
+    "char_start": 50990,
+    "char_end": 51163,
+    "sentence_index": 298,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec015",
+    "text": "Link: A hyperlink is provided to direct readers to the official repository or additional resources for the dataset or benchmark, thereby facilitating further exploration of its properties and applications.",
+    "char_start": 51164,
+    "char_end": 51369,
+    "sentence_index": 299,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec015",
+    "text": "Limitations of Existing Datasets and Benchmarks While the datasets and benchmarks discussed above have significantly advanced multimodal RAG research, several limitations persist that offer important avenues for future work:\n\n(i) Bias and Fairness: Large datasets, especially those scraped from the web, can inherit societal biases related to gender, race, or culture.",
+    "char_start": 51371,
+    "char_end": 51739,
+    "sentence_index": 300,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec015",
+    "text": "This can lead to skewed model behavior and unfair outcomes.",
+    "char_start": 51740,
+    "char_end": 51799,
+    "sentence_index": 301,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec015",
+    "text": "Efforts to create more balanced datasets are crucial, but comprehensive bias auditing across modalities remains a challenge.",
+    "char_start": 51800,
+    "char_end": 51924,
+    "sentence_index": 302,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec015",
+    "text": "(ii) Annotation Quality and Noise: The trade-off between dataset scale and annotation quality remains a persistent challenge.",
+    "char_start": 51926,
+    "char_end": 52051,
+    "sentence_index": 303,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec015",
+    "text": "While large datasets facilitate broad learning, their often noisy or weakly supervised labels (e.g., alt-text for images) can hinder precise model training.",
+    "char_start": 52052,
+    "char_end": 52208,
+    "sentence_index": 304,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec015",
+    "text": "As demonstrated by OHRBench , OCR errors exemplify how noise in one modality can cascade and affect overall RAG system performance.",
+    "char_start": 52209,
+    "char_end": 52340,
+    "sentence_index": 305,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec015",
+    "text": "(iii) Coverage and Generalization Gaps: Many datasets are domain-specific, which can limit the generalization of models to out-of-domain scenarios.",
+    "char_start": 52342,
+    "char_end": 52489,
+    "sentence_index": 306,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec015",
+    "text": "There is a need for more datasets covering a wider array of real-world contexts and less common modalities.",
+    "char_start": 52490,
+    "char_end": 52597,
+    "sentence_index": 307,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec015",
+    "text": "(iv) Real-World Complexity and Long-Context Understanding: Current datasets inadequately capture real-world multimodal information complexity.",
+    "char_start": 52599,
+    "char_end": 52741,
+    "sentence_index": 308,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec015",
+    "text": "Challenges include efficient sampling of relevant video frames, handling multi-page documents with numerous images, and processing dynamic information environments; benchmarks like Dyn-VQA are, however, beginning to address this latter challenge.",
+    "char_start": 52742,
+    "char_end": 52988,
+    "sentence_index": 309,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec015",
+    "text": "(v) Lack of Adversarial and Robustness Testing: While benchmarks like Counterfactual VQA specifically test robustness against certain perturbations, there is a general scarcity of datasets containing multimodal adversarial examples or structured negative instances.",
+    "char_start": 52990,
+    "char_end": 53255,
+    "sentence_index": 310,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec015",
+    "text": "Such datasets are vital for developing more robust and reliable RAG systems that can handle out-of-distribution inputs or misleading information.",
+    "char_start": 53256,
+    "char_end": 53401,
+    "sentence_index": 311,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec015",
+    "text": "(vi) Retrieval-Generation Integration: Many benchmarks evaluate retrieval and generation components separately rather than assessing their synergistic interplay.",
+    "char_start": 53403,
+    "char_end": 53564,
+    "sentence_index": 312,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec015",
+    "text": "More holistic evaluation frameworks are needed that jointly measure retrieval accuracy, relevance of retrieved multimodal context, and final output quality, as aimed by benchmarks like MRAG-Bench for visual integration and RAG-Check for retrieval relevance.",
+    "char_start": 53565,
+    "char_end": 53822,
+    "sentence_index": 313,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec015",
+    "text": "(vii) Limited Support for \"Any-to-Any\" Modalities: While current research primarily focuses on text, image, video, and audio, future RAG systems are envisioned to support any-to-any modality interactions.",
+    "char_start": 53824,
+    "char_end": 54028,
+    "sentence_index": 314,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec015",
+    "text": "Existing datasets offer limited support for such comprehensive multimodality.",
+    "char_start": 54029,
+    "char_end": 54106,
+    "sentence_index": 315,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec015",
+    "text": "[h]\n\nOverview of Popular Datasets in Multimodal RAG Research.",
+    "char_start": 54108,
+    "char_end": 54169,
+    "sentence_index": 316,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec015",
+    "text": "1.5\n!",
+    "char_start": 54171,
+    "char_end": 54176,
+    "sentence_index": 317,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec015",
+    "text": "c c l c l\n\n90 Category & Name & 1 c Statistics and Description & Modalities & 1 c Link\n\n13 * 90 Image-Text General\n& LAION-400M & 400M image\u2013text pairs; used for pre-training multimodal models.",
+    "char_start": 54177,
+    "char_end": 54370,
+    "sentence_index": 318,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://laion.ai/blog/laion-400-open-dataset/ LAION-400M\n\n& Conceptual-Captions (CC) & More than 3M image\u2013caption pairs; multilingual English\u2013German image descriptions.",
+    "char_start": 54371,
+    "char_end": 54555,
+    "sentence_index": 319,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/google-research-datasets/conceptual-captions Conceptual Captions\n\n& CIRR & 36,554 triplets from 21,552 images; focuses on natural image relationships.",
+    "char_start": 54556,
+    "char_end": 54741,
+    "sentence_index": 320,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/Cuberick-Orion/CIRR CIRR\n\n& MS-COCO & 330K images with captions; used for caption\u2013to\u2013image and image\u2013to\u2013caption generation.",
+    "char_start": 54742,
+    "char_end": 54900,
+    "sentence_index": 321,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://cocodataset.org/ MS-COCO\n\n& Flickr30K & 31K images annotated with five English captions per image.",
+    "char_start": 54901,
+    "char_end": 55023,
+    "sentence_index": 322,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://shannon.cs.illinois.edu/DenotationGraph/ Flickr30K\n\n& Multi30K & 30k German captions from native speakers and human\u2013translated captions.",
+    "char_start": 55024,
+    "char_end": 55184,
+    "sentence_index": 323,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/multi30k/dataset Multi30K\n\n& NoCaps & For zero\u2013shot image captioning evaluation; 15K images.",
+    "char_start": 55185,
+    "char_end": 55312,
+    "sentence_index": 324,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://nocaps.org/ NoCaps\n\n& Laion-5B & 5.85B image\u2013text pairs used as external memory for retrieval.",
+    "char_start": 55313,
+    "char_end": 55431,
+    "sentence_index": 325,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://laion.ai/blog/laion-5b/ LAION-5B\n\n& COCO-CN & 20,341 images for cross-lingual tagging and captioning with Chinese sentences.",
+    "char_start": 55432,
+    "char_end": 55580,
+    "sentence_index": 326,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/li-xirong/coco-cn COCO-CN\n\n& CIRCO & 1,020 queries with an average of 4.53 ground truths per query; for composed image retrieval.",
+    "char_start": 55581,
+    "char_end": 55745,
+    "sentence_index": 327,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/miccunifi/CIRCO CIRCO\n\n& MINT-1T & 1T text tokens and 3.4B images; 10x larger than existing open-source datasets.",
+    "char_start": 55746,
+    "char_end": 55894,
+    "sentence_index": 328,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://huggingface.co/datasets/mlfoundations/MINT-1T-HTML MINT-1T\n\n& ShareGPT4V & 1.2M images with GPT-4-generated captions, including spatial and factual details.",
+    "char_start": 55895,
+    "char_end": 56075,
+    "sentence_index": 329,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://sharegpt4v.github.io ShareGPT4V\n\n& OmniCorpus & 8.6B images and 1.7T tokens across 2.2B web documents; interleaved text-image layout.",
+    "char_start": 56076,
+    "char_end": 56233,
+    "sentence_index": 330,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/OpenGVLab/OmniCorpus OmniCorpus\n\n20 * 90 Video-Text\n& BDD-X & 77 hours of driving videos with expert textual explanations; for explainable driving behavior.",
+    "char_start": 56234,
+    "char_end": 56425,
+    "sentence_index": 331,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/JinkyuKimUCB/BDD-X-dataset BDD-X\n\n& YouCook2 & 2,000 cooking videos with aligned descriptions; focused on video\u2013text tasks.",
+    "char_start": 56426,
+    "char_end": 56584,
+    "sentence_index": 332,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://youcook2.eecs.umich.edu/ YouCook2\n\n& ActivityNet & 20,000 videos with multiple captions; used for video understanding and captioning.",
+    "char_start": 56585,
+    "char_end": 56742,
+    "sentence_index": 333,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec015",
+    "text": "& Video, Text & http://activity-net.org/ ActivityNet\n\n& SoccerNet & Videos and metadata for 550 soccer games; includes transcribed commentary and key event annotations.",
+    "char_start": 56743,
+    "char_end": 56911,
+    "sentence_index": 334,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://www.soccer-net.org/ SoccerNet\n\n& MSVD & 1,970 videos with approximately 40 captions per video.",
+    "char_start": 56912,
+    "char_end": 57030,
+    "sentence_index": 335,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://www.cs.utexas.edu/ ml/clamp/videoDescription/ MSVD\n\n& LSMDC & 118,081 video\u2013text pairs from 202 movies; a movie description dataset.",
+    "char_start": 57031,
+    "char_end": 57187,
+    "sentence_index": 336,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://paperswithcode.com/dataset/lsmdc LSMDC\n\n& DiDemo & 10,000 videos with four concatenated captions per video; with temporal localization of events.",
+    "char_start": 57188,
+    "char_end": 57357,
+    "sentence_index": 337,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/LisaAnne/TemporalLanguageRelease DiDemo\n\n& COIN & 11,827 instructional YouTube videos across 180 tasks; for comprehensive instructional video analysis.",
+    "char_start": 57358,
+    "char_end": 57544,
+    "sentence_index": 338,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://coin-dataset.github.io/ COIN\n\n& MSRVTT-QA & Video question answering benchmark.",
+    "char_start": 57545,
+    "char_end": 57648,
+    "sentence_index": 339,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/xudejing/video-question-answering MSRVTT-QA\n\n& ActivityNet-QA & 58,000 human\u2013annotated QA pairs on 5,800 videos; benchmark for video QA models.",
+    "char_start": 57649,
+    "char_end": 57827,
+    "sentence_index": 340,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/MILVLG/activitynet-qa ActivityNet-QA\n\n& EpicKitchens-100 & 700 videos (100 hours of cooking activities) for online action prediction; egocentric vision dataset.",
+    "char_start": 57828,
+    "char_end": 58023,
+    "sentence_index": 341,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://epic-kitchens.github.io/2025 EPIC-KITCHENS-100\n\n& Ego4D & 4.3M video\u2013text pairs for egocentric videos; massive\u2013scale egocentric video dataset.",
+    "char_start": 58024,
+    "char_end": 58190,
+    "sentence_index": 342,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://ego4d-data.org/ Ego4D\n\n& HowTo100M & 136M video clips with captions from 1.2M YouTube videos; for learning text\u2013video embeddings.",
+    "char_start": 58191,
+    "char_end": 58344,
+    "sentence_index": 343,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://www.di.ens.fr/willow/research/howto100m/ HowTo100M\n\n& CharadesEgo & 68,536 activity instances from ego\u2013exo videos; used for evaluation.",
+    "char_start": 58345,
+    "char_end": 58504,
+    "sentence_index": 344,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://prior.allenai.org/projects/charades-ego Charades-Ego\n\n& ActivityNet Captions & 20K videos with 3.7 temporally localized sentences per video; dense\u2013captioning events in videos.",
+    "char_start": 58505,
+    "char_end": 58704,
+    "sentence_index": 345,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://cs.stanford.edu/people/ranjaykrishna/densevid/ ActivityNet Captions\n\n& VATEX & 34,991 videos, each with multiple captions; a multilingual video\u2013and\u2013language dataset.",
+    "char_start": 58705,
+    "char_end": 58894,
+    "sentence_index": 346,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://eric-xw.github.io/vatex-website/ VATEX\n\n& WebVid & 10M video\u2013text pairs (refined to WebVid-Refined-1M).",
+    "char_start": 58895,
+    "char_end": 59022,
+    "sentence_index": 347,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/m-bain/webvid WebVid\n\n& InternVid & 7M YouTube videos (760K hours), 234M clips, 4.1B words; used for video-text pretraining and representation learning.",
+    "char_start": 59023,
+    "char_end": 59210,
+    "sentence_index": 348,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/OpenGVLab/InternVideo/tree/main/Data/InternVid InternVid\n\n& OpenVid-1M & 1 million video-text pairs for multimodal learning.",
+    "char_start": 59211,
+    "char_end": 59370,
+    "sentence_index": 349,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/NJU-PCALab/OpenVid-1M OpenVid-1M\n\n& Youku-mPLUG & Chinese dataset with 10M video\u2013text pairs (refined to Youku-Refined-1M).",
+    "char_start": 59371,
+    "char_end": 59528,
+    "sentence_index": 350,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec015",
+    "text": "& Video, Text & https://github.com/X-PLUG/Youku-mPLUG Youku-mPLUG\n\n8 * 90 Audio-Text\n& LibriSpeech & 1,000 hours of read English speech with corresponding text; ASR corpus based on audiobooks.",
+    "char_start": 59529,
+    "char_end": 59721,
+    "sentence_index": 351,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://www.openslr.org/12 LibriSpeech\n\n& SpeechBrown & 55K paired speech-text samples; 15 categories covering diverse topics from religion to fiction.",
+    "char_start": 59722,
+    "char_end": 59889,
+    "sentence_index": 352,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://huggingface.co/datasets/llm-lab/SpeechBrown SpeechBrown\n\n& AudioCaps & 46K audio clips paired with human-written text captions.",
+    "char_start": 59890,
+    "char_end": 60041,
+    "sentence_index": 353,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://audiocaps.github.io/ AudioCaps\n\n& MusicCaps & It is composed of 5.5k music-text pairs, with rich text descriptions provided by human experts.",
+    "char_start": 60042,
+    "char_end": 60207,
+    "sentence_index": 354,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://www.kaggle.com/datasets/googleai/musiccaps MusicCaps\n\n& Clotho & Audio captioning dataset with diverse soundscapes.",
+    "char_start": 60208,
+    "char_end": 60347,
+    "sentence_index": 355,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://zenodo.org/record/3490684 Clotho\n\n& WavCaps & Large-scale weakly-labeled audio-text dataset, comprising approximately 400k audio clips with paired captions.",
+    "char_start": 60348,
+    "char_end": 60528,
+    "sentence_index": 356,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://github.com/XinhaoMei/WavCaps WavCaps\n\n& Spoken SQuAD & Audio version of the SQuAD dataset for spoken question answering, focusing on the listening comprehension task.",
+    "char_start": 60529,
+    "char_end": 60719,
+    "sentence_index": 357,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://github.com/chiahsuan156/Spoken-SQuAD Spoken SQuAD\n\n& AudioSet & 2,084,320 human\u2013labeled 10\u2013second sound clips from YouTube; 632 audio event classes.",
+    "char_start": 60720,
+    "char_end": 60892,
+    "sentence_index": 358,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec015",
+    "text": "& Audio, Text & https://research.google.com/audioset/ AudioSet\n\n6 * 90 Medical\n& MIMIC-CXR & 125,417 training pairs of chest X\u2013rays and reports.",
+    "char_start": 60893,
+    "char_end": 61037,
+    "sentence_index": 359,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://physionet.org/content/mimic-cxr/2.0.0/ MIMIC-CXR\n\n& CheXpert & 224,316 chest radiographs of 65,240 patients; focused on medical analysis.",
+    "char_start": 61038,
+    "char_end": 61199,
+    "sentence_index": 360,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://stanfordmlgroup.github.io/competitions/chexpert/ CheXpert\n\n& MIMIC-III & Health-related data from over 40K patients (text data).",
+    "char_start": 61200,
+    "char_end": 61352,
+    "sentence_index": 361,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec015",
+    "text": "& Text & https://mimic.physionet.org/ MIMIC-III\n\n& IU-Xray & 7,470 pairs of chest X\u2013rays and corresponding diagnostic reports.",
+    "char_start": 61353,
+    "char_end": 61479,
+    "sentence_index": 362,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://www.kaggle.com/datasets/raddar/chest-xrays-indiana-university IU X-ray\n\n& PubLayNet & 100,000 training samples and 2,160 test samples built from PubLayNet (tailored for the medical domain).",
+    "char_start": 61480,
+    "char_end": 61693,
+    "sentence_index": 363,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/ibm-aur-nlp/PubLayNet PubLayNet\n\n& Quilt-1M & 438K medical images with 768K text pairs; includes microscopic images and UMLS entities.",
+    "char_start": 61694,
+    "char_end": 61863,
+    "sentence_index": 364,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://quilt1m.github.io/ Quilt-1M\n\n5 * 90 Fashion\n& Fashion-IQ & 77,684 images across three categories; evaluated with Recall@10 and Recall@50.",
+    "char_start": 61864,
+    "char_end": 62025,
+    "sentence_index": 365,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/XiaoxiaoGuo/fashion-iq Fashion IQ\n\n& FashionGen & 260.5K image\u2013text pairs of fashion images and item descriptions.",
+    "char_start": 62026,
+    "char_end": 62175,
+    "sentence_index": 366,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://paperswithcode.com/dataset/fashion-gen Fashion-Gen\n\n& VITON-HD & 83K images for virtual try\u2013on; high\u2013resolution clothing items.",
+    "char_start": 62176,
+    "char_end": 62327,
+    "sentence_index": 367,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/shadow2496/VITON-HD VITON-HD\n\n& Fashionpedia & 48,000 fashion images annotated with segmentation masks and fine-grained attributes.",
+    "char_start": 62328,
+    "char_end": 62494,
+    "sentence_index": 368,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://paperswithcode.com/dataset/fashionpedia Fashionpedia\n\n& DeepFashion & Approximately 800K diverse fashion images for pseudo triplet generation.",
+    "char_start": 62495,
+    "char_end": 62661,
+    "sentence_index": 369,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://paperswithcode.com/dataset/deepfashion DeepFashion\n\n1 * 90 3D\n& ShapeNet & Covering 55 common object categories with 51,300 unique 3D models.",
+    "char_start": 62662,
+    "char_end": 62827,
+    "sentence_index": 370,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec015",
+    "text": "& Text, 3D & https://shapenet.org/ ShapeNet\n\n20 * 90 Knowledge \\& QA\n& VQA & 400K QA pairs with images for visual question answering.",
+    "char_start": 62828,
+    "char_end": 62961,
+    "sentence_index": 371,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://visualqa.org/ VQA\n\n& PAQ & 65M text\u2013based QA pairs; a large\u2013scale dataset.",
+    "char_start": 62962,
+    "char_end": 63060,
+    "sentence_index": 372,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec015",
+    "text": "& Text & https://github.com/facebookresearch/PAQ PAQ\n\n& ELI5 & 270K complex and diverse questions augmented with web pages and images.",
+    "char_start": 63061,
+    "char_end": 63195,
+    "sentence_index": 373,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec015",
+    "text": "& Text & https://facebookresearch.github.io/ELI5/ ELI5\n& MultimodalQA & 29,918 questions requiring multi-modal multi-hop reasoning over text, tables, and images.",
+    "char_start": 63196,
+    "char_end": 63357,
+    "sentence_index": 374,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec015",
+    "text": "& Image, Text, Table & https://allenai.github.io/multimodalqa/ MultimodalQA\n\n& ViQuAE & 11.8M passages from Wikipedia covering 2,397 unique entities; knowledge\u2013intensive QA.",
+    "char_start": 63358,
+    "char_end": 63531,
+    "sentence_index": 375,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec015",
+    "text": "& Text & https://github.com/PaulLerner/ViQuAE ViQuAE\n\n& OK-VQA & 14K questions requiring external knowledge for VQA.",
+    "char_start": 63532,
+    "char_end": 63648,
+    "sentence_index": 376,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://okvqa.allenai.org/ OK-VQA\n\n& WebQA & 46K queries that require reasoning across text and images.",
+    "char_start": 63649,
+    "char_end": 63768,
+    "sentence_index": 377,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec015",
+    "text": "& Text, Image & https://webqna.github.io/ WebQA\n\n& Infoseek & Fine-grained visual knowledge retrieval using a Wikipedia\u2013based knowledge base ( 6M passages).",
+    "char_start": 63769,
+    "char_end": 63925,
+    "sentence_index": 378,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://open-vision-language.github.io/infoseek/ Infoseek\n\n& ClueWeb22 & 10 billion web pages organized into three subsets; a large\u2013scale web corpus.",
+    "char_start": 63926,
+    "char_end": 64091,
+    "sentence_index": 379,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec015",
+    "text": "& Text & https://lemurproject.org/clueweb22/ ClueWeb22\n\n& MOCHEG & 15,601 claims annotated with truthfulness labels and accompanied by textual and image evidence.",
+    "char_start": 64092,
+    "char_end": 64254,
+    "sentence_index": 380,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec015",
+    "text": "& Text, Image & https://github.com/VT-NLP/Mocheg MOCHEG\n\n& VQA v2 & 1.1M questions (augmented with VG\u2013QA questions) for fine-tuning VQA models.",
+    "char_start": 64255,
+    "char_end": 64398,
+    "sentence_index": 381,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://visualqa.org/ VQA v2\n\n& A-OKVQA & Benchmark for visual question answering using world knowledge; around 25K questions.",
+    "char_start": 64399,
+    "char_end": 64541,
+    "sentence_index": 382,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/allenai/aokvqa A-OKVQA\n\n& XL-HeadTags & 415K news headline-article pairs consist of 20 languages across six diverse language families.",
+    "char_start": 64542,
+    "char_end": 64711,
+    "sentence_index": 383,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec015",
+    "text": "& Text & https://huggingface.co/datasets/faisaltareque/XL-HeadTags XL-HeadTags\n\n& DocVQA & 12,767 diverse document images with 50K QA pairs, categorized by reasoning type to evaluate DocVQA methods.",
+    "char_start": 64712,
+    "char_end": 64910,
+    "sentence_index": 384,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://www.docvqa.org/ DocVQA\n\n& ChartQA & 9.6K human-written QA pairs + 23.1K generated from chart summaries.",
+    "char_start": 64911,
+    "char_end": 65038,
+    "sentence_index": 385,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/vis-nlp/ChartQA ChartQA\n\n& DVQA & 3.5M QA pairs on 300K diagrams, evaluating structure, data retrieval, and reasoning.",
+    "char_start": 65039,
+    "char_end": 65192,
+    "sentence_index": 386,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/kushalkafle/DVQA_dataset DVQA\n\n& RETVQA & 416,000 QA samples where retrieval from a large image set is needed to answer questions; emphasizes RAG pipeline.",
+    "char_start": 65193,
+    "char_end": 65383,
+    "sentence_index": 387,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://vl2g.github.io/projects/retvqa/ RETVQA\n\n& SEED-Bench & 19K multiple\u2013choice questions with accurate human annotations across 12 evaluation dimensions.",
+    "char_start": 65384,
+    "char_end": 65557,
+    "sentence_index": 388,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec015",
+    "text": "& Text & https://github.com/AILab-CVC/SEED-Bench SEED-Bench\n\n& M3DocVQA & 2,441 multi-hop questions across 3,368 PDF documents; evaluates open-domain DocVQA.",
+    "char_start": 65558,
+    "char_end": 65715,
+    "sentence_index": 389,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://m3docrag.github.io/ M3DocVQA\n\n& MMLongBench-Doc & 135 lengthy PDFs with 1,091 questions; focuses on multi-hop reasoning in single documents.",
+    "char_start": 65716,
+    "char_end": 65880,
+    "sentence_index": 390,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://mayubo2333.github.io/MMLongBench-Doc/ MMLongBench-Doc\n\n4 * 90 Other\n\n& GeoDE & 61,940 images from 40 classes across 6 world regions; emphasizes geographic diversity in object recognition.",
+    "char_start": 65881,
+    "char_end": 66092,
+    "sentence_index": 391,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec015",
+    "text": "& Image & https://github.com/AliRamazani/GeoDE GeoDE\n\n& RU-AI & 1.47M samples of real vs AI-generated content for fake detection robustness.",
+    "char_start": 66093,
+    "char_end": 66233,
+    "sentence_index": 392,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec015",
+    "text": "& Image, Text, Audio & https://github.com/ZhihaoZhang97/RU-AI RU-AI\n\n& MIMIC-IT & 2.8M multimodal instruction-response pairs for model alignment.",
+    "char_start": 66234,
+    "char_end": 66379,
+    "sentence_index": 393,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec015",
+    "text": "& Image, Video, Text & https://github.com/Luodian/Otter MIMIC-IT\n\n& MMVQA & 262K question-answer pairs across 3,146 multipage research PDFs for robust multimodal information retrieval.",
+    "char_start": 66380,
+    "char_end": 66564,
+    "sentence_index": 394,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec015",
+    "text": "& Image, Text & https://github.com/adlnlp/mmvqa MMVQA\n\n[t]\n\nOverview of Popular Benchmarks in Multimodal RAG Research.",
+    "char_start": 66565,
+    "char_end": 66683,
+    "sentence_index": 395,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec015",
+    "text": "3.8\n!",
+    "char_start": 66685,
+    "char_end": 66690,
+    "sentence_index": 396,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec015",
+    "text": "c c l c l\n\n90 Category & Name & 1 c Statistics and Description & Modalities & 1 c Link\n\n6 * 90 Cross-Modal Understanding\n& MRAG-Bench & Evaluates visual retrieval, integration, and robustness to irrelevant visual information.",
+    "char_start": 66691,
+    "char_end": 66916,
+    "sentence_index": 397,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec015",
+    "text": "& Images & https://mragbench.github.io/ MRAG-Bench\n\n& $M^ 2 RAG$ & Benchmarks multimodal RAG; evaluates retrieval, multi-hop reasoning, and integration.",
+    "char_start": 66917,
+    "char_end": 67069,
+    "sentence_index": 398,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec015",
+    "text": "& Images + Text & https://arxiv.org/abs/2411.16365 $M^ 2 RAG$\n\n& Dyn-VQA & Focuses on dynamic retrieval, multi-hop reasoning, and robustness to changing information.",
+    "char_start": 67070,
+    "char_end": 67235,
+    "sentence_index": 399,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec015",
+    "text": "& Images + Text & https://openreview.net/forum?id=VvDEuyVXkG Dyn-VQA\n\n& MMBench & Covers VQA, captioning, retrieval; evaluates cross-modal understanding across vision, text, and audio.",
+    "char_start": 67236,
+    "char_end": 67420,
+    "sentence_index": 400,
+    "section_sentence_index": 141
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec015",
+    "text": "& Images + Text + Audio & https://github.com/open-compass/MMBench MMBench\n\n& ScienceQA & Contains 21,208 questions; tests scientific reasoning with text, diagrams, and images.",
+    "char_start": 67421,
+    "char_end": 67596,
+    "sentence_index": 401,
+    "section_sentence_index": 142
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec015",
+    "text": "& Images + Diagrams + Text & https://scienceqa.github.io/ ScienceQA\n\n& SK-VQA & Offers 2 million question-answer pairs; focuses on synthetic knowledge, multimodal reasoning, and external knowledge integration.",
+    "char_start": 67597,
+    "char_end": 67806,
+    "sentence_index": 402,
+    "section_sentence_index": 143
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec015",
+    "text": "& Images + Text & https://arxiv.org/abs/2406.19593 SK-VQA\n\n& SMMQG & Includes 1,024 question-answer pairs; focuses on synthetic multimodal data and controlled question generation.",
+    "char_start": 67807,
+    "char_end": 67986,
+    "sentence_index": 403,
+    "section_sentence_index": 144
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec015",
+    "text": "& Images + Text & https://arxiv.org/abs/2407.02233 SMMQG\n\n2 * 90 Text-Focused\n& TriviaQA & Provides 650K question-answer pairs; reading comprehension dataset, adaptable for multimodal RAG.",
+    "char_start": 67987,
+    "char_end": 68175,
+    "sentence_index": 404,
+    "section_sentence_index": 145
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec015",
+    "text": "& Text & https://nlp.cs.washington.edu/triviaqa/ TriviaQA\n\n& Natural Questions & Contains 307,373 training examples; real-world search queries, adaptable with visual contexts.",
+    "char_start": 68176,
+    "char_end": 68351,
+    "sentence_index": 405,
+    "section_sentence_index": 146
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec015",
+    "text": "& Text & https://paperswithcode.com/dataset/natural-questions Natural Questions\n\n[t]\n\n!",
+    "char_start": 68352,
+    "char_end": 68439,
+    "sentence_index": 406,
+    "section_sentence_index": 147
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec015",
+    "text": "forked edges,\nfor tree=\nchild anchor=west,\nparent anchor=east,\ngrow'=east,\nanchor=west,\nbase=left,\nfont= ,\nrectangle,\ndraw=hidden-black,\nrounded corners,\nminimum height=2em,\nminimum width=4em,\nedge+= darkgray, line width=1pt ,\ns sep=3pt,\ninner xsep=0.4em,\ninner ysep=0.6em,\nline width=0.8pt,\ntext width=8.5em,\nver/.style=\nrotate=90,\nchild anchor=north,\nparent anchor=south,\nanchor=center,\ntext width=17em,\nfont= ,\nminimum height=3em,\nminimum width=5em,\n,\nleaf/.style=\nfill=green!20,\ntext= black,\ntext width=44.5em,\nfont= ,\ninner xsep=0.4em,\ninner ysep=0.6em,\ndraw,\n,\nintermediate/.style=\nfont= ,\nminimum height=2.5em,\nminimum width=18em,\ntext width=18em,\ndraw,\n\n,\n[\nMultimodal RAG Application Domains, ver , fill=white!20\n[\nHealthcare and Medicine ( ) , fill=yellow!20, intermediate\n[\nMMED-RAG ,\nRULE ,\nAsthmaBot ,\nRealm ,\nsu2024hybrid ,\nFactMM-RAG ,\nRA-RRG\n, leaf\n]\n]\n[\nSoftware Engineering ( ) , fill=yellow!20, intermediate\n[\nDocPrompting ,\nRACE ,\nCEDAR ,\nREDCODER\n, leaf\n]\n]\n[\nFashion and E-Commerce ( ) , fill=yellow!20, intermediate\n[\nUnifashion ,\ndang2024multi ,\nFashion-RAG ,\nLLM4DESIGN\n, leaf\n]\n]\n[\nEntertainment and Social Computing ( ) , fill=yellow!20, intermediate\n[\nSoccerRAG ,\nMMRA\n, leaf\n]\n]\n[\nEmerging Applications ( ) , fill=yellow!20, intermediate\n[\nRAG-Driver ,\nENWAR ,\nriedler2024textoptimizingragmultimodal ,\nImg2Loc\n, leaf\n]\n]\n]\n\nTaxonomy of application domains for Multimodal Retrieval-Augmented Generation systems.",
+    "char_start": 68441,
+    "char_end": 69880,
+    "sentence_index": 407,
+    "section_sentence_index": 148
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec016",
+    "text": "Evaluating multimodal RAG models is complex due to their varied input types and complex structure.",
+    "char_start": 69882,
+    "char_end": 69980,
+    "sentence_index": 408,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec016",
+    "text": "The evaluation combines metrics from VLMs, generative AI, and retrieval systems to assess capabilities like text/image generation and information retrieval.",
+    "char_start": 69981,
+    "char_end": 70137,
+    "sentence_index": 409,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec016",
+    "text": "Our review found about 60 different metrics used in the field.",
+    "char_start": 70138,
+    "char_end": 70200,
+    "sentence_index": 410,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec016",
+    "text": "In the following paragraphs, we will examine the most important and widely used metrics for evaluating multimodal RAG.",
+    "char_start": 70201,
+    "char_end": 70319,
+    "sentence_index": 411,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec016",
+    "text": "Retrieval Evaluation Retrieval performance is measured through accuracy, recall, and precision metrics, with an F1 score combining recall and precision.",
+    "char_start": 70321,
+    "char_end": 70473,
+    "sentence_index": 412,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec016",
+    "text": "Accuracy is typically defined as the ratio of correctly predicted instances to the total instances.",
+    "char_start": 70474,
+    "char_end": 70573,
+    "sentence_index": 413,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec016",
+    "text": "In retrieval-based tasks, Top-K Accuracy is defined as:\n\nTop-K Accuracy (y, f ) &= 1 n _ i=0 ^ n-1 _ j=1 ^ k 1 ( f _ i,j = y_i)\n\nRecall@K, which examines relevant items in top K results, is preferred over standard recall.",
+    "char_start": 70574,
+    "char_end": 70795,
+    "sentence_index": 414,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec016",
+    "text": "Mean Reciprocal Rank (MRR) serves as another key metric for evaluation, which is utilized by .",
+    "char_start": 70796,
+    "char_end": 70890,
+    "sentence_index": 415,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec016",
+    "text": "MRR measures the rank position of the first relevant result in the returned list.",
+    "char_start": 70891,
+    "char_end": 70972,
+    "sentence_index": 416,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec016",
+    "text": "The formula for calculating MRR is:\n\nMRR = 1 Q _ q=1 ^ Q 1 rank _q\n\nwhere $Q$ is the total number of queries.",
+    "char_start": 70973,
+    "char_end": 71082,
+    "sentence_index": 417,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec016",
+    "text": "$rank_q$ is the rank of the first relevant result for query $q$.",
+    "char_start": 71083,
+    "char_end": 71147,
+    "sentence_index": 418,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec016",
+    "text": "Modality Evaluation Modality-based evaluations primarily focus on text and image, assessing their alignment, text fluency, and image caption quality.",
+    "char_start": 71149,
+    "char_end": 71298,
+    "sentence_index": 419,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec016",
+    "text": "For text evaluation, metrics include Exact Match (EM), BLEU , ROUGE , and METEOR .",
+    "char_start": 71299,
+    "char_end": 71381,
+    "sentence_index": 420,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec016",
+    "text": "The ROUGE metric is commonly used to evaluate text summarization and generation.",
+    "char_start": 71382,
+    "char_end": 71462,
+    "sentence_index": 421,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec016",
+    "text": "ROUGE-N measures the overlap of N-grams between the generated and reference text.",
+    "char_start": 71463,
+    "char_end": 71544,
+    "sentence_index": 422,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec016",
+    "text": "The formula for ROUGE-N is:\n\nROUGE-N &= _ gram _N Ref Count _ match ( gram _N) _ gram _N Ref Count ( gram _N)\n\nROUGE-L measures the longest common subsequence (LCS) between generated and reference text.",
+    "char_start": 71545,
+    "char_end": 71747,
+    "sentence_index": 423,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec016",
+    "text": "The formula for ROUGE-L is:\n\nROUGE-L &= LCS(X, Y) |Y|\n\nBLEU is another metric used for assessing text generation.",
+    "char_start": 71748,
+    "char_end": 71861,
+    "sentence_index": 424,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec016",
+    "text": "The formula for calculating BLEU is:\n\nBLEU (p_n, BP ) = BP ( _ n=1 ^ N w_n p_n )\n\nHere, $p_n$ represents the precision of n-grams, $w_n$ denotes the weight assigned to the n-gram precision, and the Brevity Penalty (BP) is defined as:\n\nBP =\n\n1 & length > $rl$\n\n( 1 - $rl$ $cl$ ) & length $rl$\n\nHere, $rl$ represents the reference length and $cl$ represents the candidate length.",
+    "char_start": 71862,
+    "char_end": 72239,
+    "sentence_index": 425,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec016",
+    "text": "MultiRAGen uses Multilingual ROUGE for multilingual settings.",
+    "char_start": 72241,
+    "char_end": 72302,
+    "sentence_index": 426,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec016",
+    "text": "For image captioning, CIDEr (Consensus-Based Image Description Evaluation) measures caption quality using TF-IDF and cosine similarity , while SPICE (Semantic Propositional Image Caption Evaluation) focuses on semantics.",
+    "char_start": 72304,
+    "char_end": 72524,
+    "sentence_index": 427,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec016",
+    "text": "SPIDEr , used in , combines both metrics.",
+    "char_start": 72525,
+    "char_end": 72566,
+    "sentence_index": 428,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec016",
+    "text": "For semantic alignment, BERTScore compares BERT embeddings , and evaluates fluency .",
+    "char_start": 72568,
+    "char_end": 72652,
+    "sentence_index": 429,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec016",
+    "text": "CLIP Score , used in , measures image-text similarity using CLIP .",
+    "char_start": 72654,
+    "char_end": 72720,
+    "sentence_index": 430,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec016",
+    "text": "The formula for calculating CLIPScore is:\n\nCLIPScore = t .",
+    "char_start": 72721,
+    "char_end": 72779,
+    "sentence_index": 431,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec016",
+    "text": "i \\| t \\| \\| i \\|\n\nwhere t and i are text and image embedding, respectively.",
+    "char_start": 72780,
+    "char_end": 72856,
+    "sentence_index": 432,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec016",
+    "text": "For image quality, FID (Fr\u00e9chet Inception Distance) compares feature distributions , while KID (Kernel Inception Distance) provides an unbiased alternative.",
+    "char_start": 72858,
+    "char_end": 73014,
+    "sentence_index": 433,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec016",
+    "text": "The formula for FID is:\n\nFID &= \\| _r - _g\\|^2 + tr( _r + _g - 2 _r _g )\n\nwhere $ _r$ and $ _r$ are the mean and covariance of real images' feature representations, respectively.",
+    "char_start": 73015,
+    "char_end": 73193,
+    "sentence_index": 434,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec016",
+    "text": "$ _g$ and $ _g$ are the mean and covariance of generated images' feature representations, respectively.",
+    "char_start": 73194,
+    "char_end": 73297,
+    "sentence_index": 435,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec016",
+    "text": "To extract features, InceptionV3 is typically used.",
+    "char_start": 73298,
+    "char_end": 73349,
+    "sentence_index": 436,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec016",
+    "text": "Inception Score (IS) evaluates image diversity and quality through classification probabilities .",
+    "char_start": 73351,
+    "char_end": 73448,
+    "sentence_index": 437,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec016",
+    "text": "For audio evaluation, zhang2024c3net use human annotators to assess sound quality (OVL) and text relevance (REL), while also employing Fr\u00e9chet Audio Distance (FAD) , an audio-specific variant of FID.",
+    "char_start": 73449,
+    "char_end": 73648,
+    "sentence_index": 438,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec016",
+    "text": "System efficiency is measured through FLOPs, execution time, response time, and retrieval time per query .",
+    "char_start": 73650,
+    "char_end": 73756,
+    "sentence_index": 439,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec016",
+    "text": "Domain-specific metrics include geodesic distance for geographical accuracy , and Clinical Relevance for medical applications .",
+    "char_start": 73757,
+    "char_end": 73884,
+    "sentence_index": 440,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec017",
+    "text": "Multimodal training faces challenges such as noise and modality-specific biases .",
+    "char_start": 73886,
+    "char_end": 73967,
+    "sentence_index": 441,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec018",
+    "text": "Managing noisy retrieval inputs is critical for maintaining model performance.",
+    "char_start": 73968,
+    "char_end": 74046,
+    "sentence_index": 442,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec018",
+    "text": "MORE injects irrelevant results during training to enhance focus on relevant inputs.",
+    "char_start": 74047,
+    "char_end": 74131,
+    "sentence_index": 443,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec018",
+    "text": "AlzheimerRAG uses progressive knowledge distillation to reduce noise while maintaining multimodal alignment.",
+    "char_start": 74132,
+    "char_end": 74240,
+    "sentence_index": 444,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec018",
+    "text": "RAGTrans leverages hypergraph-based knowledge aggregation to refine multimodal representations, ensuring more effective propagation of relevant information.",
+    "char_start": 74241,
+    "char_end": 74397,
+    "sentence_index": 445,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec018",
+    "text": "RA-BLIP introduces the Adaptive Selection Knowledge Generation (ASKG) strategy, which leverages the implicit capabilities of LLMs to filter relevant knowledge for generation through a denoising-enhanced loss term, eliminating the need for fine-tuning.",
+    "char_start": 74398,
+    "char_end": 74649,
+    "sentence_index": 446,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec018",
+    "text": "This approach achieves strong performance compared to baselines while significantly reducing computational overhead by minimizing trainable parameters.",
+    "char_start": 74650,
+    "char_end": 74801,
+    "sentence_index": 447,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec018",
+    "text": "RagVL improves robustness through noise-injected training by adding hard negative samples at the data level and applying Gaussian noise with loss reweighting at the token level, enhancing the model\u2019s resilience to multimodal noise.",
+    "char_start": 74802,
+    "char_end": 75033,
+    "sentence_index": 448,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec018",
+    "text": "Finally, RA-CM3 enhances generalization using Query Dropout, which randomly removes query tokens during retrieval, serving as a regularization method that improves generator performance.",
+    "char_start": 75034,
+    "char_end": 75220,
+    "sentence_index": 449,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec019",
+    "text": "InfoNCE (Information Noise Contrastive Estimation) : The InfoNCE loss is commonly used in self-supervised learning, especially in contrastive learning methods.",
+    "char_start": 75222,
+    "char_end": 75381,
+    "sentence_index": 450,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec019",
+    "text": "The formula for InfoNCE loss is:\n\nL _ InfoNCE = - ( sim (z_i, z_j)/ ) _ k=1 ^ K ( sim (z_i, z_k)/ )\n\nwhere $z_i$ and $z_j$ are the embeddings of a positive pair and $ $ is a temperature parameter.",
+    "char_start": 75382,
+    "char_end": 75578,
+    "sentence_index": 451,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec019",
+    "text": "GAN (Generative Adversarial Network) : The GAN loss consists of two parts: the discriminator loss and the generator loss.",
+    "char_start": 75580,
+    "char_end": 75701,
+    "sentence_index": 452,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec019",
+    "text": "The discriminator loss formula is:\n\nL _D = - E _ x p_ data (x) [ D(x)] - E _ z p_z(z) [ (1 - D(G(z)))]\n\nwhere $x$ is a real sample from the data distribution.",
+    "char_start": 75702,
+    "char_end": 75860,
+    "sentence_index": 453,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec019",
+    "text": "$G(z)$ is the generated sample from the generator, where\n$z$ is a noise vector.",
+    "char_start": 75861,
+    "char_end": 75940,
+    "sentence_index": 454,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec019",
+    "text": "$D(x)$ is the probability that $x$ is real.",
+    "char_start": 75941,
+    "char_end": 75984,
+    "sentence_index": 455,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec019",
+    "text": "The Generator loss formula is:\n\nL _G = E _ z p_z(z) [ (1 - D(G(z)))]\n\nTriplet Loss : Triplet Loss is used in metric learning to ensure that similar data points are closer together while dissimilar ones are farther apart in the embedding space.",
+    "char_start": 75986,
+    "char_end": 76229,
+    "sentence_index": 456,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec019",
+    "text": "The Triplet loss formula is:\n\nL = _ i=1 ^ N (0, \\| f(x_a^i) - f(x_p^i) \\|^2 - \\| f(x_a^i) - f(x_n^i) \\|^2 + )\n\nwhere $x_a^i$ is the anchor sample.",
+    "char_start": 76230,
+    "char_end": 76376,
+    "sentence_index": 457,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec019",
+    "text": "$x_p^i$ and $x_n^i$ are the positive and negative samples, respectively.",
+    "char_start": 76377,
+    "char_end": 76449,
+    "sentence_index": 458,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec019",
+    "text": "$f(x)$ is the neural network.",
+    "char_start": 76450,
+    "char_end": 76479,
+    "sentence_index": 459,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec020",
+    "text": "Multimodal RAG extends traditional RAG beyond unimodal settings to cross-modal tasks.",
+    "char_start": 76481,
+    "char_end": 76566,
+    "sentence_index": 460,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec020",
+    "text": "In content generation, it enhances image captioning and text-to-image synthesis by retrieving relevant contextual information.",
+    "char_start": 76567,
+    "char_end": 76693,
+    "sentence_index": 461,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec020",
+    "text": "It also improves coherence in visual storytelling and factual alignment in multimodal summarization .",
+    "char_start": 76694,
+    "char_end": 76795,
+    "sentence_index": 462,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec020",
+    "text": "In knowledge-intensive applications, multimodal RAG supports open-domain QA , video-based QA , fact verification , and zero-shot image\u2013text retrieval , grounding responses in retrieved knowledge and thereby mitigating hallucinations.",
+    "char_start": 76796,
+    "char_end": 77029,
+    "sentence_index": 463,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec020",
+    "text": "Additionally, the incorporation of chain-of-thought reasoning further enhances complex problem-solving and inference.",
+    "char_start": 77031,
+    "char_end": 77148,
+    "sentence_index": 464,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec020",
+    "text": "Finally, their integration into AI assistants such as Gemini enables natural language-driven visual search, document understanding, and multimodal reasoning.",
+    "char_start": 77149,
+    "char_end": 77306,
+    "sentence_index": 465,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec020",
+    "text": "Multimodal RAGs are increasingly applied across diverse domains, including healthcare, software engineering, and creative industries (e.g., fashion and design automation).",
+    "char_start": 77308,
+    "char_end": 77479,
+    "sentence_index": 466,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec020",
+    "text": "The taxonomy of application domains can be seen in fig:app_taxonomy .",
+    "char_start": 77480,
+    "char_end": 77549,
+    "sentence_index": 467,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec020",
+    "text": "The following sections explore domain-specific adaptations of these techniques in greater depth.",
+    "char_start": 77550,
+    "char_end": 77646,
+    "sentence_index": 468,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec020",
+    "text": "Healthcare and Medicine\nMultimodal RAG enhances clinical decision-making through integrated analysis of medical imaging, electronic health records, and biomedical literature.",
+    "char_start": 77648,
+    "char_end": 77822,
+    "sentence_index": 469,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec020",
+    "text": "Systems like MMED-RAG address diagnostic uncertainty in medical visual question answering by aligning radiology images with contextual patient data.",
+    "char_start": 77823,
+    "char_end": 77971,
+    "sentence_index": 470,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec020",
+    "text": "In automated report generation, RULE mitigates hallucinations through dynamic retrieval of clinically similar cases.",
+    "char_start": 77972,
+    "char_end": 78088,
+    "sentence_index": 471,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec020",
+    "text": "Similarly, RA-RRG first leverages an LLM to extract key textual phrases from a report corpus, then employs a multimodal retriever to link the visual features to these relevant phrases.",
+    "char_start": 78089,
+    "char_end": 78273,
+    "sentence_index": 472,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec020",
+    "text": "The coherent report is generated after being retrieved by another LLM without fine-tuning, thereby reducing hallucinations.",
+    "char_start": 78274,
+    "char_end": 78397,
+    "sentence_index": 473,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec020",
+    "text": "FactMM-RAG further automates radiology report drafting by retrieving biomarker correlations from medical ontologies, exemplifying the paradigm\u2019s capacity to operationalize expert knowledge at scale.",
+    "char_start": 78398,
+    "char_end": 78596,
+    "sentence_index": 474,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec020",
+    "text": "AsthmaBot introduces a multimodal RAG-based approach for supporting asthma patients across multiple languages, enabling structured, language-specific semantic searches.",
+    "char_start": 78597,
+    "char_end": 78765,
+    "sentence_index": 475,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec020",
+    "text": "Predictive frameworks such as Realm demonstrate robust risk assessment by fusing heterogeneous patient data streams, while su2024hybrid advance privacy-preserving architectures for federated clinical data integration.",
+    "char_start": 78766,
+    "char_end": 78983,
+    "sentence_index": 476,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec020",
+    "text": "Software Engineering\nCode generation systems leverage multimodal RAG to synthesize context-aware solutions from technical documentation and version histories.",
+    "char_start": 78985,
+    "char_end": 79143,
+    "sentence_index": 477,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec020",
+    "text": "DocPrompting improves semantic coherence in code completion by retrieving API specifications and debugging patterns.",
+    "char_start": 79144,
+    "char_end": 79260,
+    "sentence_index": 478,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec020",
+    "text": "Commit message generation models like RACE contextualize code diffs against historical repository activity, while CEDAR optimizes few-shot learning through retrieval-based prompt engineering.",
+    "char_start": 79261,
+    "char_end": 79452,
+    "sentence_index": 479,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec020",
+    "text": "REDCODER enhances code summarization via semantic search across open-source repositories, preserving syntactic conventions across programming paradigms.",
+    "char_start": 79453,
+    "char_end": 79605,
+    "sentence_index": 480,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec020",
+    "text": "Fashion and E-Commerce\nCross-modal alignment drives advancements in product discovery and design automation.",
+    "char_start": 79607,
+    "char_end": 79715,
+    "sentence_index": 481,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec020",
+    "text": "UniFashion enables style-aware retrieval by jointly embedding garment images and textual descriptors, while dang2024multi reduces search friction through multimodal query expansion.",
+    "char_start": 79716,
+    "char_end": 79897,
+    "sentence_index": 482,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec020",
+    "text": "For fashion image editing, Fashion-RAG employs a retrieval-augmented approach, retrieving garments that match textual descriptions and integrating their attributes into image generation via textual inversion techniques within diffusion models, ensuring personalized and contextually relevant outputs.",
+    "char_start": 79898,
+    "char_end": 80198,
+    "sentence_index": 483,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec020",
+    "text": "LLM4DESIGN demonstrates architectural design automation by retrieving compliance constraints and environmental impact assessments, underscoring RAG\u2019s adaptability to creative domains.",
+    "char_start": 80199,
+    "char_end": 80382,
+    "sentence_index": 484,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec020",
+    "text": "Entertainment and Social Computing Multimedia analytics benefit from RAG\u2019s capacity to correlate heterogeneous signals.",
+    "char_start": 80384,
+    "char_end": 80503,
+    "sentence_index": 485,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec020",
+    "text": "SoccerRAG derives tactical insights by linking match footage with player statistics.",
+    "char_start": 80504,
+    "char_end": 80588,
+    "sentence_index": 486,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec020",
+    "text": "MMRA predicts content virality through joint modeling of visual aesthetics and linguistic engagement patterns.",
+    "char_start": 80589,
+    "char_end": 80699,
+    "sentence_index": 487,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec020",
+    "text": "Emerging Applications Autonomous systems adopt multimodal RAG for explainable decision-making, as seen in RAG-Driver\u2019s real-time retrieval of traffic scenarios during navigation.",
+    "char_start": 80701,
+    "char_end": 80879,
+    "sentence_index": 488,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec020",
+    "text": "ENWAR enhances wireless network resilience through multi-sensor fusion, while riedler2024textoptimizingragmultimodal streamline equipment maintenance by retrieving schematics during fault diagnosis.",
+    "char_start": 80880,
+    "char_end": 81078,
+    "sentence_index": 489,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec020",
+    "text": "Geospatial systems such as Img2Loc advance image geolocalization through cross-modal landmark correlation.",
+    "char_start": 81079,
+    "char_end": 81185,
+    "sentence_index": 490,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec021",
+    "text": "High computational costs in video frame sampling and memory bottlenecks in processing multi-page documents with images remain key challenges in long-context processing.",
+    "char_start": 81187,
+    "char_end": 81355,
+    "sentence_index": 491,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec021",
+    "text": "Fixed extraction rates struggle to capture relevant frames, requiring adaptive selection based on content complexity and movement .",
+    "char_start": 81356,
+    "char_end": 81487,
+    "sentence_index": 492,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec021",
+    "text": "Additionally, retrieval speed-accuracy trade-offs in edge deployments and redundant computations in cross-modal fusion layers emphasize the need for efficient, scalable architectures.",
+    "char_start": 81488,
+    "char_end": 81671,
+    "sentence_index": 493,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec021",
+    "text": "Personalization mechanisms, like user-specific retrieval (e.g., adapting to medical history), remain underexplored.",
+    "char_start": 81672,
+    "char_end": 81787,
+    "sentence_index": 494,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec021",
+    "text": "As these systems evolve, ensuring privacy and preventing sensitive data leakage in multimodal outputs is critical.",
+    "char_start": 81788,
+    "char_end": 81902,
+    "sentence_index": 495,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec021",
+    "text": "Lastly, the lack of datasets with complex reasoning tasks and multimodal adversarial examples limits robust evaluation.",
+    "char_start": 81903,
+    "char_end": 82022,
+    "sentence_index": 496,
+    "section_sentence_index": 5
+  }
+]

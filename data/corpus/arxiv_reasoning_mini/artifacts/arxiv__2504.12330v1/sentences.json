@@ -1,0 +1,2090 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "While Retrieval-Augmented Generation (RAG) augments Large Language Models (LLMs) with external knowledge, conventional single-agent RAG remains fundamentally limited in resolving complex queries demanding coordinated reasoning across heterogeneous data ecosystems.",
+    "char_start": 0,
+    "char_end": 264,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "We present , a novel Hierarchical Multi-agent Multimodal RAG framework that pioneers collaborative intelligence for dynamic knowledge synthesis across structured, unstructured, and graph-based data.",
+    "char_start": 265,
+    "char_end": 463,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "The framework is composed of three-tiered architecture with specialized agents: a Decomposition Agent that dissects complex queries into contextually coherent sub-tasks via semantic-aware query rewriting and schema-guided context augmentation; Multi-source Retrieval Agents that carry out parallel, modality-specific retrieval using plug-and-play modules designed for vector, graph, and web-based databases; and a Decision Agent that uses consistency voting to integrate multi-source answers and resolve discrepancies in retrieval results through Expert Model Refinement.",
+    "char_start": 464,
+    "char_end": 1035,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "This architecture attains comprehensive query understanding by combining textual, graph-relational, and web-derived evidence, resulting in a remarkable 12.95\\% improvement in answer accuracy and a 3.56\\% boost in question classification accuracy over baseline RAG systems on the ScienceQA and CrisisMMD benchmarks.",
+    "char_start": 1036,
+    "char_end": 1350,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Notably, HM-RAG establishes state-of-the-art results in zero-shot settings on both datasets.",
+    "char_start": 1351,
+    "char_end": 1443,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Its modular architecture ensures seamless integration of new data modalities while maintaining strict data governance, marking a significant advancement in addressing the critical challenges of multimodal reasoning and knowledge synthesis in RAG systems.",
+    "char_start": 1444,
+    "char_end": 1698,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Code is available at .",
+    "char_start": 1699,
+    "char_end": 1721,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "pre_model.pdf\nComparison of ($a$) single-agent single-modal RAG and ($b$) multi-agent multimodal RAG.",
+    "char_start": 1723,
+    "char_end": 1824,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "The multi-agent multimodal RAG processes multimodal data by converting them into vector and graph databases.",
+    "char_start": 1825,
+    "char_end": 1933,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "It leverages multi-source retrieval across vector, graph, and web-based databases, enabling more comprehensive and efficient information retrieval.",
+    "char_start": 1934,
+    "char_end": 2081,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "This advanced approach allows the multi-agent multimodal RAG to achieve superior performance in handling complex queries and diverse data types, setting it apart from the more limited single-agent single-modal RAG.",
+    "char_start": 2082,
+    "char_end": 2296,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "In an era defined by the rapid proliferation of data, the ability to efficiently retrieve relevant information from heterogeneous sources has emerged as a fundamental pillar of modern information systems .",
+    "char_start": 2298,
+    "char_end": 2503,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Multimodal retrieval systems, which integrate text, images, vectorized data, and web-based content, are becoming indispensable across domains such as e-commerce, healthcare, and scientific research .",
+    "char_start": 2504,
+    "char_end": 2703,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "These systems enable the seamless navigation of diverse data types, empowering users to derive actionable insights across multiple modalities.",
+    "char_start": 2704,
+    "char_end": 2846,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "However, despite remarkable progress in recent years, multimodal retrieval continues to present significant challenges.",
+    "char_start": 2847,
+    "char_end": 2966,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "The complexity arises from the need to reconcile the diversity of query types, the heterogeneity of data formats, and the varying objectives of retrieval tasks, all of which demand sophisticated solutions to bridge the gap between data representation and user intent.",
+    "char_start": 2967,
+    "char_end": 3234,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "The evolution of retrieval technologies has historically centered on single-modal architectures, where queries and retrieval mechanisms operate within a single predefined modality .",
+    "char_start": 3236,
+    "char_end": 3417,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "While text-based retrieval-augmented generation (RAG) systems have demonstrated robust performance in processing linguistic information , their inability to handle visual content has spurred the development of image-based RAG approaches .",
+    "char_start": 3418,
+    "char_end": 3656,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "However, current multimodal implementations face a critical bottleneck: Although image-based RAG systems excel at visual content processing, they often fail to establish coherent cross-modal correlations between visual elements and textual context.",
+    "char_start": 3657,
+    "char_end": 3905,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "This limitation is particularly acute in multimodal question answering, where systems must integrate visual perception with textual semantics to generate contextually relevant responses.",
+    "char_start": 3906,
+    "char_end": 4092,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Recently, graph-based retrieval frameworks have been proposed to enhance the modeling of textual interdependencies based on the construction of knowledge graphs, represented by GraphRAG and LightRAG .",
+    "char_start": 4094,
+    "char_end": 4294,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "These approaches are further extended to processing multimodal inputs , where graph structures are leveraged for the accurate capture of cross-modal relationships.",
+    "char_start": 4295,
+    "char_end": 4458,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Despite these advances, graph-based methods face an inherent trade-off: while they effectively capture high-level modality interactions, they often sacrifice fine-grained information fidelity.",
+    "char_start": 4459,
+    "char_end": 4651,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "This becomes problematic in scenarios requiring precise textual segment retrieval, as the abstraction process inherent to graph modeling obscures granular textual details critical for nuanced analysis.",
+    "char_start": 4652,
+    "char_end": 4853,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Meanwhile, another critical challenge has been noticed in reconciling the complementary strengths of\ndifferent modalities .",
+    "char_start": 4855,
+    "char_end": 4978,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Textual modalities excel at encoding granular semantic details and conceptual relationships, while visual modalities, by contrast, are capable of capturing spatial context and facilitating spatial relationship understanding.",
+    "char_start": 4979,
+    "char_end": 5203,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Current modality-specific systems exhibit critical limitations in cross-modal synthesis, producing retrieval outcomes that are either overspecialized in textual precision or confined to visual pattern recognition.",
+    "char_start": 5204,
+    "char_end": 5417,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This modality isolation creates systemic vulnerabilities in heterogeneous data environments, where the absence of cross-modal alignment protocols risks critical information loss during retrieval operations.",
+    "char_start": 5418,
+    "char_end": 5624,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "For instance, visual queries in text-centric systems fail to map conceptual questions to illustrative elements, while text-intensive inquiries in vision-oriented frameworks lack mechanisms for lexical disambiguation.",
+    "char_start": 5625,
+    "char_end": 5841,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "These architectural gaps highlight the urgent need for frameworks that can harmonize granular semantic detail with cross-modal contextual coherence.",
+    "char_start": 5842,
+    "char_end": 5990,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "To address these challenges, we introduce Hierarchical Multi-Agent Retrieval-Augmented Generation ( ), a novel framework that enhances multimodal retrieval through coordinated multi-agent collaboration.",
+    "char_start": 5992,
+    "char_end": 6194,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "employs a three-tiered architecture with specialized agents operating in the RAG pipelines.",
+    "char_start": 6195,
+    "char_end": 6286,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "The Decomposition Agent analyzes query intent and dynamically rewrites requests to ensure cross-modal compatibility.",
+    "char_start": 6287,
+    "char_end": 6403,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "The Multi-Source Retrieval Agent conducts parallel knowledge acquisition via lightweight multimodal retrievals across diverse data sources, including vectors, graphs, and web-based databases.",
+    "char_start": 6404,
+    "char_end": 6595,
+    "sentence_index": 33,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Finally, the Decision Agent synthesizes and refines candidate responses using domain-specific verification strategies to ensure accuracy and coherence.",
+    "char_start": 6596,
+    "char_end": 6747,
+    "sentence_index": 34,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "This hierarchical design systematically orchestrates text-image evidence integration through structured agent interactions, enabling layered reasoning.",
+    "char_start": 6748,
+    "char_end": 6899,
+    "sentence_index": 35,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Unlike conventional approaches, combines query decomposition, parallelized information retrieval, and expert-guided answer refinement to achieve efficient and contextually relevant responses.",
+    "char_start": 6900,
+    "char_end": 7091,
+    "sentence_index": 36,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Our contributions are summarized as follows:\n\nWe propose a novel Modularized Hierarchical Framework that modularizes query processing into specialized agent-based components, and this facilitates scalable and efficient multimodal retrieval.",
+    "char_start": 7092,
+    "char_end": 7332,
+    "sentence_index": 37,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "We enable Multi-source Plug-and-play Retrieval Integration , which offers seamless connectivity across diverse data sources.",
+    "char_start": 7334,
+    "char_end": 7458,
+    "sentence_index": 38,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "By efficiently routing queries to vector, graph, and web-based retrieval agents, our approach ensures flexibility and efficiency in handling heterogeneous data environments, streamlining complex information retrieval processes.",
+    "char_start": 7459,
+    "char_end": 7686,
+    "sentence_index": 39,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "We employ Expert-guided Refinement processes to enhance response quality to ensure both operational efficiency and contextual precision through minimal expert oversight.",
+    "char_start": 7687,
+    "char_end": 7856,
+    "sentence_index": 40,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "We demonstrate the effectiveness of through extensive experiments on benchmark datasets, and the results attain State-of-the-art Performance on the ScienceQA and CrisisMMD benchmarks.",
+    "char_start": 7857,
+    "char_end": 8040,
+    "sentence_index": 41,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "RAG systems have evolved significantly to enhance their multimodal reasoning capabilities .",
+    "char_start": 8042,
+    "char_end": 8133,
+    "sentence_index": 42,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "Initially, text-based RAG systems integrated Large Language Models (LLMs) with external textual knowledge, improving performance in question answering by retrieving relevant text fragments .",
+    "char_start": 8134,
+    "char_end": 8324,
+    "sentence_index": 43,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "However, as visually rich documents became more prevalent, the limitations of text-only systems became evident, prompting the development of image-based RAG approaches .",
+    "char_start": 8325,
+    "char_end": 8494,
+    "sentence_index": 44,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "While these methods aimed to retrieve visual content for Large Vision-Language Models (VLMs), they faced challenges in effectively integrating text and image modalities, as the retrieval processes were largely independent, hindering a deep understanding of their interrelationships.",
+    "char_start": 8495,
+    "char_end": 8777,
+    "sentence_index": 45,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "To address these challenges, graph-based RAG systems emerged, leveraging structured knowledge representations to capture both inter-modal and intra-modal semantic relationships .",
+    "char_start": 8779,
+    "char_end": 8957,
+    "sentence_index": 46,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "These systems utilize vector-space embeddings and topological relationships to model complex document structures, enabling the retrieval of semantically coherent contexts that go beyond simple text fragments .",
+    "char_start": 8958,
+    "char_end": 9167,
+    "sentence_index": 47,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "Graph-based RAG systems are particularly effective in understanding relationships between text and images, as well as extracting relationships within the text itself .",
+    "char_start": 9168,
+    "char_end": 9335,
+    "sentence_index": 48,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "However, current RAG implementations often rely on single-source retrieval, limiting their ability to handle complex queries that require simultaneous processing of vector, graph, and web-based databases .",
+    "char_start": 9336,
+    "char_end": 9541,
+    "sentence_index": 49,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "This limitation is particularly significant in applications requiring private data retrieval and real-time updates, where the absence of integrated multi-source retrieval capabilities can lead to incomplete or outdated information.",
+    "char_start": 9542,
+    "char_end": 9773,
+    "sentence_index": 50,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "To fully leverage the strengths of each data modality and meet the demands of dynamic and heterogeneous data environments, RAG systems must evolve to support coordinated multi-source retrieval and synthesis.",
+    "char_start": 9774,
+    "char_end": 9981,
+    "sentence_index": 51,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "RAG has become a key paradigm for knowledge-intensive tasks by integrating retrieval mechanisms with generative models, significantly enhancing language model capabilities.",
+    "char_start": 9983,
+    "char_end": 10155,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "However, traditional RAG implementations often rely on static pipelines that struggle with multimodal query processing .",
+    "char_start": 10156,
+    "char_end": 10276,
+    "sentence_index": 53,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Recent agent-based RAG architectures have addressed these limitations by improving system modularity and operational flexibility .",
+    "char_start": 10277,
+    "char_end": 10407,
+    "sentence_index": 54,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "The agent-oriented approach breaks down query processing into specialized components like semantic parsing, cross-modal retrieval, and context-aware generation, allowing targeted optimization while maintaining overall adaptability.",
+    "char_start": 10408,
+    "char_end": 10639,
+    "sentence_index": 55,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "PaperQA exemplifies this by leveraging academic literature to generate evidence-based responses, reducing hallucinations in scientific applications.",
+    "char_start": 10640,
+    "char_end": 10788,
+    "sentence_index": 56,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Building on this, Active RAG methodologies like FLARE introduce temporal dynamism through anticipatory retrieval, enhancing performance in extended text generation.",
+    "char_start": 10790,
+    "char_end": 10954,
+    "sentence_index": 57,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Despite these advances, challenges in multimodal integration persist.",
+    "char_start": 10955,
+    "char_end": 11024,
+    "sentence_index": 58,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Emerging Dynamic RAG approaches propose entity-aware augmentation strategies to dynamically incorporate retrieved entity representations, addressing context window limitations while preserving semantic coherence.",
+    "char_start": 11025,
+    "char_end": 11237,
+    "sentence_index": 59,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "Our framework synthesizes these innovations through a hierarchical multi-agent architecture leveraging LLMs' semantic comprehension.",
+    "char_start": 11238,
+    "char_end": 11370,
+    "sentence_index": 60,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "This design enables dynamic query adaptation and multimodal retrieval, providing an optimized solution for complex information retrieval and generation tasks across diverse data modalities.",
+    "char_start": 11371,
+    "char_end": 11560,
+    "sentence_index": 61,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "By integrating these advancements, addresses key challenges in multimodal reasoning and knowledge synthesis, paving the way for more robust and adaptable RAG systems.",
+    "char_start": 11561,
+    "char_end": 11727,
+    "sentence_index": 62,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "We introduce , a novel framework tackling complex challenges in RAG systems.",
+    "char_start": 11729,
+    "char_end": 11805,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "As depicted in Figure , features an innovative multi-agent, multimodal architecture with specialized agents for information extraction and multi-source retrieval.",
+    "char_start": 11806,
+    "char_end": 11968,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Given a natural language question $q$ and a reference document $ D $, RAG retrieves semantically relevant content from $ D $, integrating it with generative language models to produce answers strictly grounded in $ D $.",
+    "char_start": 11969,
+    "char_end": 12188,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "This approach advances multimodal question answering and multi-agent RAG capabilities.",
+    "char_start": 12189,
+    "char_end": 12275,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "The subsequent sections provide a detailed exposition of 's architectural design.",
+    "char_start": 12276,
+    "char_end": 12357,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "Through this systematic description, we elucidate the framework's core mechanisms for effectively integrating and utilizing multimodal information and multi-source retrieval, ultimately leading to enhanced accuracy in RAG applications.",
+    "char_start": 12358,
+    "char_end": 12593,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "architecture.jpg\nOverview of .",
+    "char_start": 12595,
+    "char_end": 12625,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "A multi-agent multi-modal framework operates in three stages: First, the Decomposition Agent uses an LLM to rewrite and decompose the question into several sub-queries.",
+    "char_start": 12626,
+    "char_end": 12794,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Second, the Multi-source Retrieval Agent retrieves the top-k relevant documents from vector-, graph- and web-based sources as needed.",
+    "char_start": 12795,
+    "char_end": 12928,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "Finally, the Decision Agent provides a voting mechanism and refinement process to generate the final answer.",
+    "char_start": 12929,
+    "char_end": 13037,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "This section focuses on multimodal data processing, aiming to convert textual data and visual images into vector and graph database representations for enhanced retrieval operations.",
+    "char_start": 13039,
+    "char_end": 13221,
+    "sentence_index": 73,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "Our methodology employs VLMs to transcode visual information into textual representations, which are subsequently integrated with original text corpora to jointly construct vector and graph databases.",
+    "char_start": 13222,
+    "char_end": 13422,
+    "sentence_index": 74,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "Conventional entity-centric approaches for multimodal knowledge extraction rely on predefined categorical boundaries, limiting their capacity to recognize novel visual concepts.",
+    "char_start": 13424,
+    "char_end": 13601,
+    "sentence_index": 75,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "We utilize the BLIP-2's framework to harness the open vocabulary potential of pretrained VLMs.",
+    "char_start": 13602,
+    "char_end": 13696,
+    "sentence_index": 76,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "Building upon the generalized vision to language conversion paradigm:\n\nT_ v = D _ blip2 ( f_ align ( E _ blip2 (I_v)))\n\nwhere visual encoder $ E _ blip2 $ extracts features from input image $I_v$ and cross-modal alignment module $f_ align $ bridges vision-language semantics.",
+    "char_start": 13697,
+    "char_end": 13972,
+    "sentence_index": 77,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "Our framework addresses the critical limitation of oversimplified machine-generated descriptions, particularly addressing BLIP-2's over-condensed outputs that lack visual specificity, through contextual refinement mechanisms leveraging original textual data.",
+    "char_start": 13973,
+    "char_end": 14231,
+    "sentence_index": 78,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "This process is divided into three synergistic phases.",
+    "char_start": 14233,
+    "char_end": 14287,
+    "sentence_index": 79,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "Hierarchical visual encoding via established architectures to generate patch embeddings $V_i R ^ d_v N_p $.",
+    "char_start": 14288,
+    "char_end": 14395,
+    "sentence_index": 80,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "Cross-modal interaction where learnable queries $Q_i R ^ d_q L_q $ attend to visual features through scaled dot product attention, dynamically weighting spatial semantic correlations.",
+    "char_start": 14396,
+    "char_end": 14579,
+    "sentence_index": 81,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "Context-aware text generation that fuses latent text features from prior descriptions $T_v^ i,t $ with cross-modal representations for autoregressive decoding.",
+    "char_start": 14580,
+    "char_end": 14739,
+    "sentence_index": 82,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "Contextual refinement during this phase enhances semantic alignment, achieving measurable reductions in descriptive ambiguity and lexical sparsity for the final output $T_v$.",
+    "char_start": 14740,
+    "char_end": 14914,
+    "sentence_index": 83,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "The resultant multimodal textual knowledge base is subsequently formed through the systematic integration of original textual inputs with generated textualizations.",
+    "char_start": 14916,
+    "char_end": 15080,
+    "sentence_index": 84,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "T_ m = Concate(T, T_ v )\n\nwhere $T$ corresponds to the source textual corpus and $T_m$ represents the multimodal textual aggregation formed through heterogeneous fusion processes.",
+    "char_start": 15082,
+    "char_end": 15261,
+    "sentence_index": 85,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec009",
+    "text": "We establish multimodal knowledge graphs (MMKGs) by synergizing VLM-enhanced descriptions with LLM-based structural reasoning.",
+    "char_start": 15263,
+    "char_end": 15389,
+    "sentence_index": 86,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec009",
+    "text": "Building upon the refined visual descriptions $T_v$ generated by VLMs, optionally fused with external textual knowledge $T$, we employ the LightRAG framework for efficient multi-hop reasoning and dynamic knowledge integration:\n\nG = LightRAG(T_v, T)\n\nLightRAG processes multimodal inputs through a hybrid extraction strategy.",
+    "char_start": 15390,
+    "char_end": 15714,
+    "sentence_index": 87,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "Entity-Relation Extraction : a specialized function $f$ decomposes inputs into entities $E=\\ e_1, , e_n\\ $ and relation triplets $R=\\ (h_i,r_i,t_i)\\ $, where $h, t E$ represent head/tail entities and $r R$ denotes relations.",
+    "char_start": 15715,
+    "char_end": 15939,
+    "sentence_index": 88,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "Dual-level Reasoning Augmentation: Dual-scale retrieval mechanisms $Retrieve_ global+local $ dynamically fetch relevant triplets during inference; global retrieval identifies thematic clusters while local extraction focuses on entity-specific connections.",
+    "char_start": 15940,
+    "char_end": 16195,
+    "sentence_index": 89,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "The constructed MMKG $G=(E,R)$ formalizes knowledge as triplets\n$(h,r,t)$, where entities encompass both visual concepts from\n$T_v$ and textual knowledge from $T$.",
+    "char_start": 16197,
+    "char_end": 16360,
+    "sentence_index": 90,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "Crucially, visual data storage locations are embedded during graph construction, enabling cross-modal grounding.",
+    "char_start": 16361,
+    "char_end": 16473,
+    "sentence_index": 91,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "This architecture establishes a bidirectional knowledge enhancement framework: language models achieve visual-contextualized reasoning through visual-semantic relationships embedded in $G$, and vision-language models dynamically update knowledge embeddings via continuous multimodal integration, effectively mitigating hallucination probabilities through representation consistency constraints.",
+    "char_start": 16474,
+    "char_end": 16868,
+    "sentence_index": 92,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec010",
+    "text": "The Decomposition Agent is a pivotal component of the proposed framework, designed to break down complex, multi-intent user queries into coherent and executable sub-tasks.",
+    "char_start": 16870,
+    "char_end": 17041,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec010",
+    "text": "This agent addresses a critical limitation of traditional systems, which often struggle to process compound queries requiring joint reasoning across multiple data sources.",
+    "char_start": 17042,
+    "char_end": 17213,
+    "sentence_index": 94,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec010",
+    "text": "By leveraging a hierarchical parsing mechanism, the Decomposition Agent identifies the underlying structure of user queries and decomposes them into atomic units, with each targeting a specific data modality or retrieval task.",
+    "char_start": 17214,
+    "char_end": 17440,
+    "sentence_index": 95,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "The proposed framework operates in two stages, both driven by task-specific LLM-prompting strategies.",
+    "char_start": 17442,
+    "char_end": 17543,
+    "sentence_index": 96,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "Decomposition Necessity Judgment.",
+    "char_start": 17544,
+    "char_end": 17577,
+    "sentence_index": 97,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "The agent first determines whether the input question $Q$ contains multiple intents using a binary decision prompt that instructs the LLM to classify it as single-intent or multi-intent.",
+    "char_start": 17578,
+    "char_end": 17764,
+    "sentence_index": 98,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "If the output is multi-intent, $Q$ proceeds to decomposition.",
+    "char_start": 17765,
+    "char_end": 17826,
+    "sentence_index": 99,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "Otherwise, return question $Q$ directly.",
+    "char_start": 17827,
+    "char_end": 17867,
+    "sentence_index": 100,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Intent Decomposition.",
+    "char_start": 17868,
+    "char_end": 17889,
+    "sentence_index": 101,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "The LLM decomposes\n$Q$ into candidate sub-questions $q = \\ q_1, , q_n\\ $ using a structured prompt: \"Decompose the reasoning steps of the original question into 2 to 3 simply and logically connected sub-questions based on its intent while retaining keywords from the original question.\" inspired by .",
+    "char_start": 17890,
+    "char_end": 18190,
+    "sentence_index": 102,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec011",
+    "text": "We propose a modular multi-agent retrieval framework that dynamically composes heterogeneous multimodal search strategies through standardized interfaces.",
+    "char_start": 18192,
+    "char_end": 18346,
+    "sentence_index": 103,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec011",
+    "text": "By decoupling retrieval functionalities into three specialized agents\u2014vector-based retrieval agent, graph-based retrieval agent, and web-based retrieval agent\u2014the system achieves domain-agnostic adaptability while ensuring interoperability across diverse search scenarios.",
+    "char_start": 18347,
+    "char_end": 18619,
+    "sentence_index": 104,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec011",
+    "text": "Each agent adheres to unified communication protocols, enabling seamless integration of vector semantic search, graph topological exploration, and real-time web retrieval capabilities.",
+    "char_start": 18620,
+    "char_end": 18804,
+    "sentence_index": 105,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec011",
+    "text": "This design allows each retrieval agent to function as a plug-and-play component, ensuring that they can be easily integrated or replaced without affecting the overall system performance.",
+    "char_start": 18805,
+    "char_end": 18992,
+    "sentence_index": 106,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec011",
+    "text": "This modularity not only enhances flexibility but also maintains task-specific optimization objectives, making the framework highly adaptable to various applications and data modalities.",
+    "char_start": 18993,
+    "char_end": 19179,
+    "sentence_index": 107,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec012",
+    "text": "This agent leverages a naive retrieval architecture to search unstructured textual corpora efficiently.",
+    "char_start": 19181,
+    "char_end": 19284,
+    "sentence_index": 108,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec012",
+    "text": "Given the user query $q$, the system first computes its semantic embedding $h_q$ using an encoder $ E _ text $:\n\nh_q = E _ text (q)\n\nwhere $h_q R ^d$ represents the query's embedding in a $d$-dimensional vector space.",
+    "char_start": 19285,
+    "char_end": 19502,
+    "sentence_index": 109,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec012",
+    "text": "Next, the system computes the semantic similarity between the query embedding $h_q$ and all document embeddings $h_j$ using cosine similarity:\n\ns_j = h_q^Th_j ||h_q||||h_j|| , j [1, M]\n\nwhere $j [1,M]$, with $M$ being the total number of documents.",
+    "char_start": 19504,
+    "char_end": 19752,
+    "sentence_index": 110,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec012",
+    "text": "The similarity score $s_j$ quantifies how closely each document aligns with the query, forming the basis for ranking retrieved documents.",
+    "char_start": 19753,
+    "char_end": 19890,
+    "sentence_index": 111,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec012",
+    "text": "Based on the similarity scores, the system retrieves the top-$k$ most relevant documents:\n\nR _k = \\ c_1, ,c_k\\ s.t.",
+    "char_start": 19892,
+    "char_end": 20007,
+    "sentence_index": 112,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec012",
+    "text": "s_1 s_2 s_k\n\nwhere $ R _k$ denotes the set of top-$k$ retrieved contexts, ensuring that only the most relevant information is used for subsequent processing.",
+    "char_start": 20008,
+    "char_end": 20165,
+    "sentence_index": 113,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec012",
+    "text": "Subsequently, the language model generates answers $ A _v$ conditioned on retrieved contexts through constrained decoding:\n\nA _v = P (q, R _k) = Concate(q, Context, \\ c_1, ,c_k\\ )\n\nwhere $ P $ represents the generation process, which concatenates the query $q$, retrieved contexts $\\ c_1, ,c_k\\ $, and additional contextual information to produce the final answer.",
+    "char_start": 20167,
+    "char_end": 20531,
+    "sentence_index": 114,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec012",
+    "text": "Specifically, the conditional probability of generating a token sequence y given the query q and retrieved contexts $ R _k$ is modeled as:\n\np(y|q, R _K) = _ t=1 ^Tp_ lm (y_t|y_ <t ,q, R _K)\n\nwhere $p_ lm $ denotes the conditional probability of a token in the auto-regressive generation process of a language model, ensuring that the generated answer is contextually coherent.",
+    "char_start": 20533,
+    "char_end": 20909,
+    "sentence_index": 115,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec012",
+    "text": "Furthermore, the attention mechanism explicitly incorporates retrieved content into the generation process:\n\nAttention(Q,K,V)=softmax( Q[h_q;H_ R ]^T d_k )[h_q;H_ R ]\n\nwhere $H_ R R ^ K d $ stacks the embeddings of retrieved chunks, and $[h_q;H_ R ]$ concatenates the query embedding with the retrieved chunk embeddings, enhancing the model's ability to focus on relevant information.",
+    "char_start": 20911,
+    "char_end": 21295,
+    "sentence_index": 116,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "To ensure the reliability of the generated answers, constraints enforce top-$p=1.0$ and a temperature of 0, ensuring deterministic decoding based on the highest probability tokens.",
+    "char_start": 21296,
+    "char_end": 21476,
+    "sentence_index": 117,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "This minimizes the risk of hallucination and ensures factual accuracy.",
+    "char_start": 21477,
+    "char_end": 21547,
+    "sentence_index": 118,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec013",
+    "text": "This agent leverages LightRAG's graph traversal capabilities to resolve multi-hop semantic queries over MMKGs .",
+    "char_start": 21549,
+    "char_end": 21660,
+    "sentence_index": 119,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec013",
+    "text": "Given an input query $q$, the agent constructs a context-aware subgraph $G_q G$ by dynamically retrieving entities and relations through the joint attention mechanism of LightRAG.",
+    "char_start": 21661,
+    "char_end": 21840,
+    "sentence_index": 120,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec013",
+    "text": "The subgraph is defined as:\n\nG_q = \\ (h,r,t)|LightRAG_ graph (q,h,r,t) > \\\n\nwhere $LightRAG_ graph $ computes relevance scores by aligning query embeddings with graph triplet representations through cross-modal attention, ensuring that only highly relevant triplets are included in the subgraph.",
+    "char_start": 21841,
+    "char_end": 22136,
+    "sentence_index": 121,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "To efficiently address complex queries, the agent employs a hierarchical search strategy that balances efficiency and comprehensiveness.",
+    "char_start": 22138,
+    "char_end": 22274,
+    "sentence_index": 122,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec013",
+    "text": "First, the agent prioritizes local 1-hop neighbors of query-relevant entities using relation-specific attention weights.",
+    "char_start": 22275,
+    "char_end": 22395,
+    "sentence_index": 123,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec013",
+    "text": "This ensures that directly connected entities and relations are retrieved first, providing a foundation for further exploration.",
+    "char_start": 22396,
+    "char_end": 22524,
+    "sentence_index": 124,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "Next, the agent expands the search globally by identifying cross-modal paths through iterative message passing.",
+    "char_start": 22525,
+    "char_end": 22636,
+    "sentence_index": 125,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "This allows the agent to explore deeper semantic relationships beyond immediate neighbors, enhancing the richness of the retrieved information.",
+    "char_start": 22637,
+    "char_end": 22780,
+    "sentence_index": 126,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "Furthermore, the framework is a dual-level retrieval framework that integrates graph-structured knowledge with vector representations through a three-phase retrieval process.",
+    "char_start": 22782,
+    "char_end": 22956,
+    "sentence_index": 127,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "First, the framework performs semantic decomposition of the input query $q$ to derive local keywords $q_l$ and global keywords $q_g$.",
+    "char_start": 22957,
+    "char_end": 23090,
+    "sentence_index": 128,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "This step captures both fine-grained and high-level semantic information.",
+    "char_start": 23091,
+    "char_end": 23164,
+    "sentence_index": 129,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "Second, the framework executes hybrid graph-vector matching.",
+    "char_start": 23165,
+    "char_end": 23225,
+    "sentence_index": 130,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "An optimized vector database aligns $q_l$ with entity attributes while mapping $q_g$ to relational patterns in the knowledge graph $G=( V , E )$.",
+    "char_start": 23226,
+    "char_end": 23371,
+    "sentence_index": 131,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "This hybrid approach ensures that both explicit entity attributes and latent relational semantics are considered.",
+    "char_start": 23372,
+    "char_end": 23485,
+    "sentence_index": 132,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "Finally, to enhance retrieval completeness, the framework performs higher-order context expansion.",
+    "char_start": 23487,
+    "char_end": 23585,
+    "sentence_index": 133,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "The retrieved subgraph is expanded to include one-hop neighbors of both retrieved nodes and edges:\n\nA _g = \\ v_i V (v_i N _v v_i N _e)\\\n\nwhere $ N _v$ and $ N _e$ denote the one-hop neighbors of retrieved nodes and edges, respectively.",
+    "char_start": 23586,
+    "char_end": 23821,
+    "sentence_index": 134,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "This step ensures that the retrieved subgraph retains structural integrity while capturing broader contextual relationships.",
+    "char_start": 23822,
+    "char_end": 23946,
+    "sentence_index": 135,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "The final answer $ A _g$ is generated using $ A _g = LLM( A _g)$ with a lightweight LLM.",
+    "char_start": 23947,
+    "char_end": 24035,
+    "sentence_index": 136,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "The web retrieval component serves as a critical bridge between information retrieval and natural language generation, significantly enhancing the semantic fidelity and factual grounding of generated text.",
+    "char_start": 24037,
+    "char_end": 24242,
+    "sentence_index": 137,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "Our work utilizes the Google Serper API.",
+    "char_start": 24243,
+    "char_end": 24283,
+    "sentence_index": 138,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "The system acquires knowledge through parameterized API requests to Google's search engine.",
+    "char_start": 24284,
+    "char_end": 24375,
+    "sentence_index": 139,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "For an input query $q$, the retrieval process is formalized as:\n\nR = Google(q; _ search )\n\nwhere $ _ search $ specifies search configuration parameters.",
+    "char_start": 24376,
+    "char_end": 24528,
+    "sentence_index": 140,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "We adopt the setting that $ _ search = \\ num_ results =k,language=en,type=web\\ $.",
+    "char_start": 24529,
+    "char_end": 24610,
+    "sentence_index": 141,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "The API returns structured results $ A _w = \\ a_i\\ _ i=1 ^k$, each containing a title, a snippet, a URL, and positional ranking metadata.",
+    "char_start": 24611,
+    "char_end": 24748,
+    "sentence_index": 142,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "The Google Serper framework demonstrates particular efficacy in real-world deployment scenarios through three principal operational modalities, each addressing the critical requirements of modern knowledge-aware systems.",
+    "char_start": 24750,
+    "char_end": 24970,
+    "sentence_index": 143,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "First, the real-time fact verification module computes factual validity scores through neural memory interrogation.",
+    "char_start": 24971,
+    "char_end": 25086,
+    "sentence_index": 144,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "Second, the attribution-aware generation protocol ensures traceability through dual-phase attention routing.",
+    "char_start": 25087,
+    "char_end": 25195,
+    "sentence_index": 145,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "Third, the adaptive query expansion mechanism addresses vocabulary mismatch through differential term weighting.",
+    "char_start": 25196,
+    "char_end": 25308,
+    "sentence_index": 146,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec015",
+    "text": "Consistency Voting.",
+    "char_start": 25310,
+    "char_end": 25329,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec015",
+    "text": "The framework evaluates the semantic agreement among answers $\\ A _v, A _g, A _w\\ $ generated by vector-based, graph-based, and web-based retrieval systems using ROUGE-L and BLEU metrics.",
+    "char_start": 25330,
+    "char_end": 25517,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec015",
+    "text": "Summaries $\\ S _v, S _g, S _w\\ $ are first generated for each answer.",
+    "char_start": 25518,
+    "char_end": 25587,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec015",
+    "text": "ROUGE-L measures the overlap of key information using the Longest Common Subsequence (LCS), defined as:\n\nR_L = LCS( S _i, S _j) max(| S _i|, | S _j|)\n\nwhere the numerator represents the length of the LCS between summaries, while the denominator normalizes the score.",
+    "char_start": 25588,
+    "char_end": 25854,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec015",
+    "text": "This metric emphasizes consistency in retaining critical factual information.",
+    "char_start": 25855,
+    "char_end": 25932,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec015",
+    "text": "BLEU evaluates the localized precision of n-gram matches between summaries, defined as:\n\nBLEU = exp( _ n=1 ^k w_nlog p_n) min(1, | S _j| | S _i| )\n\nwhere $p_n$ represents $n$-gram precision, and $w_n$ denotes weight coefficients.",
+    "char_start": 25934,
+    "char_end": 26163,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec015",
+    "text": "This metric excels in detecting precise matches of terminologies or numerical values.",
+    "char_start": 26164,
+    "char_end": 26249,
+    "sentence_index": 153,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec015",
+    "text": "A weighted fusion of $R_L$ and $BLEU$ is then applied to balance macro-level semantic alignment with micro-level detail consistency, measuring the similarity between any two answers.",
+    "char_start": 26251,
+    "char_end": 26433,
+    "sentence_index": 154,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec015",
+    "text": "If the pairwise similarity exceeds a predefined threshold, the result is refined using a Lightweight Language Model (LLM) to produce the final answer A.",
+    "char_start": 26434,
+    "char_end": 26586,
+    "sentence_index": 155,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec015",
+    "text": "The framework proceeds to expert model refinement if the similarity is below the threshold.",
+    "char_start": 26587,
+    "char_end": 26678,
+    "sentence_index": 156,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec015",
+    "text": "Expert Model Refinement.",
+    "char_start": 26680,
+    "char_end": 26704,
+    "sentence_index": 157,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "For conflicting answers, the framework employs LLMs, Multimodal LLMs (MLLMs) or Cot-based language models (Cot-LMs) to synthesize a refined response by integrating multi-source evidence.",
+    "char_start": 26705,
+    "char_end": 26891,
+    "sentence_index": 158,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "The LLM or MLLM processes the original query $q$ and the retrieved evidence to generate the final answer $ A $.",
+    "char_start": 26892,
+    "char_end": 27003,
+    "sentence_index": 159,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "This step serves as an expert-guidance,ensuring that the final response is both contextually coherent and factually accurate, even when initial answers exhibit discrepancies.",
+    "char_start": 27004,
+    "char_end": 27178,
+    "sentence_index": 160,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec016",
+    "text": "Dataset.",
+    "char_start": 27180,
+    "char_end": 27188,
+    "sentence_index": 161,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec017",
+    "text": "We conduct experiments across two multimodal reasoning benchmarks spanning divergent modality configurations, including complex question answering (ScienceQA) and crisis event classification (CrisisMMD).",
+    "char_start": 27189,
+    "char_end": 27392,
+    "sentence_index": 162,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec017",
+    "text": "ScienceQA .",
+    "char_start": 27394,
+    "char_end": 27405,
+    "sentence_index": 163,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec017",
+    "text": "This dataset is the first large-scale multimodal benchmark for scientific question answering spanning 3 core disciplines (Natural Science, Social Science, and Formal Science).",
+    "char_start": 27406,
+    "char_end": 27581,
+    "sentence_index": 164,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec017",
+    "text": "The dataset contains 21,208 carefully curated examples organized hierarchically across 26 topics, 127 categories, and 379 distinct reasoning skills.",
+    "char_start": 27582,
+    "char_end": 27730,
+    "sentence_index": 165,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec017",
+    "text": "Each instance combines textual questions with optional visual contexts (diagrams, charts, or photographs), with a balanced split of 12,726 training, 4,214 validation, and 4,268 test samples.",
+    "char_start": 27731,
+    "char_end": 27921,
+    "sentence_index": 166,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec017",
+    "text": "Following the evaluation protocol established in LLaVA , we report averaged accuracy across all test samples to assess model performance in multimodal understanding and multi-step scientific reasoning.",
+    "char_start": 27922,
+    "char_end": 28123,
+    "sentence_index": 167,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec017",
+    "text": "Notably, 34.6\\% of test questions require simultaneous processing of both visual and textual information to derive correct answers.",
+    "char_start": 28124,
+    "char_end": 28255,
+    "sentence_index": 168,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec017",
+    "text": "CrisisMMD .",
+    "char_start": 28257,
+    "char_end": 28268,
+    "sentence_index": 169,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec017",
+    "text": "This dataset presents a challenging multimodal collection for disaster response applications, comprising approximately 35,000 social media posts containing both visual and textual content from real-world crisis events.",
+    "char_start": 28269,
+    "char_end": 28487,
+    "sentence_index": 170,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec017",
+    "text": "It features a comprehensive annotation scheme with seven distinct disaster categories and four granular severity levels.",
+    "char_start": 28488,
+    "char_end": 28608,
+    "sentence_index": 171,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec017",
+    "text": "Its unique value lies in capturing authentic user-generated content that preserves natural noise patterns and complex cross-modal relationships inherent in crisis communication.",
+    "char_start": 28609,
+    "char_end": 28786,
+    "sentence_index": 172,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec017",
+    "text": "These characteristics make it particularly suitable for evaluating zero-shot adaptation models, as successful performance on this benchmark directly correlates with practical deployment capabilities in dynamic emergency scenarios where clean data and explicit modality alignments are typically unavailable.",
+    "char_start": 28787,
+    "char_end": 29093,
+    "sentence_index": 173,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec017",
+    "text": "Implementation Details.",
+    "char_start": 29095,
+    "char_end": 29118,
+    "sentence_index": 174,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec017",
+    "text": "We utilize DeepSeek-R1-70B for dynamic graph construction and optimize LightRAG's hybrid retrieval mechanism through Qwen2.5-7B's parameter adaptation framework, which is consistent with VaLik .",
+    "char_start": 29119,
+    "char_end": 29313,
+    "sentence_index": 175,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec017",
+    "text": "During decision refinement, we employ GPT-4o for ScienceQA dataset processing and GPT-4 for CrisisMMD dataset analysis.",
+    "char_start": 29314,
+    "char_end": 29433,
+    "sentence_index": 176,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec017",
+    "text": "All multimodal reasoning workflows operate on a single NVIDIA A800-80GB GPU, seamlessly supporting the concurrent execution of graph neural network computations and retrieval-augmented generation tasks through memory-optimized parallelization.",
+    "char_start": 29434,
+    "char_end": 29677,
+    "sentence_index": 177,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec017",
+    "text": "[ht]\n\nTop-1 retrieval performance comparison (Accuracy \\%) on the ScienceQA Dataset.",
+    "char_start": 29679,
+    "char_end": 29763,
+    "sentence_index": 178,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec017",
+    "text": "\\#P denotes the number of trainable parameters.",
+    "char_start": 29764,
+    "char_end": 29811,
+    "sentence_index": 179,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec017",
+    "text": "Categories include: NAT (Natural Science), SOC (Social Science), LAN (Language Science), TXT (Text Context), IMG (Image Context), NO (No Context), G1-6 (Grades 1-6), and G7-12 (Grades 7-12).",
+    "char_start": 29812,
+    "char_end": 30002,
+    "sentence_index": 180,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec017",
+    "text": "The comparisons presented are based on the state-of-the-art zero-shot learning results obtained from the ScienceQA leaderboard .",
+    "char_start": 30003,
+    "char_end": 30131,
+    "sentence_index": 181,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec017",
+    "text": "c|l|c|ccc|ccc|cc|c\n\n2 * Learning & 2 * Models & 2 * \\#P & 3 c| Subject & 3 c| Context Modality & 2 c| Grade & 2 * Average\n\n4-11\n& & & NAT & SOC & LAN & TXT & IMG & NO & G1-6 & G7-12 &\n\n1 * Baseline & Human & -& 90.23 & 84.97 & 87.48 & 89.60 & 87.50 & 88.10 & 91.59 & 82.42 & 88.40\n\n5 * Zero-shot LLMs & ChatGPT & - & - &- &- &- &-& - &- &- &69.41\n\n& GPT-3 (0-shot) & 173B & 75.04& 66.59& 78.00 &74.24& 65.74 &79.58 &76.36 &69.87 &74.04\n\n& DDCoT (GPT-3) & 175B & 78.60& 73.90& 80.45& 77.27 &69.96& 82.93& 80.65 &73.50 &78.09\n\n& CoT GPT-3 + Doc & 173B & - &- &- &- &- & - & - & - &79.91\n\n& DDCoT (ChatGPT) & 175B&80.15&76.72&82.82&78.89 &72.53 &85.02&82.86&75.21&80.15\n\n5 * Zero-shot VLMs & LaVIN-13B & - & - &- &- &- &- & - & - & -& 77.54\n\n& LLaMA-SciTune & 7B &84.50& 94.15& 82.91& 88.35& 83.64& 88.74& 85.05& 85.60& 86.11\n\n& LG-VQA (BLIP-2) & - & - &- &- &- &- & - & - & - & 86.32\n\n& LG-VQA (CLIP) & - & - &- &- &- &- & - & - & - & 87.22\n\n& LLaMA-SciTune & 13B &89.30 &95.61 &87.00 &93.08 &86.67 &91.75& 84.37& 91.30 &90.03\n\n& Vector-based & 7B & 84.54 &74.24 &86.91& 82.74 &72.53 &90.03 &84.51 &80.28& 82.98\n\nZero-shot & Graph-based & 7B & 84.15& 75.14& 87.64& 82.99& 73.18& 89.69 &84.40& 80.95& 83.16\n\nSingle-agent RAG& Web-based &7B &83.79 & 72.89 & 91.82 & 81.09 & 70.55 & 94.01 & 85.98 & 79.30 & 83.59\n\n& GPT-4o &- &92.72 & 93.48 & 86.09 & 92.67 & 90.88 & 87.60 & 92.91 & 88.00 & 91.16\n\n1 * Zero-shot & 2 * & 2 * - & 2 * 94.36 & 2 * 90.66 & 2 * 94.91 & 2 * 93.79 & 2 * 89.94 & 2 * 96.03 & 2 * 94.42 & 2 * 92.49 & 2 * 93.73\n\n1 * Multi-agent RAG & & & & & & & & & &\n\nTop-1 retrieval performance comparison (Accuracy \\%) on the CrisisMMD Dataset.",
+    "char_start": 30132,
+    "char_end": 31781,
+    "sentence_index": 182,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec017",
+    "text": "The -I indicates instruction-tuned variants.",
+    "char_start": 31782,
+    "char_end": 31826,
+    "sentence_index": 183,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec017",
+    "text": "Bold denotes the highest value.",
+    "char_start": 31827,
+    "char_end": 31858,
+    "sentence_index": 184,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec017",
+    "text": "Task 1 is a binary classification task, while Task 2 and Task 2 Merged are multi-classification tasks.",
+    "char_start": 31859,
+    "char_end": 31961,
+    "sentence_index": 185,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec017",
+    "text": "The comparisons are sourced from , which represents the pioneering LLM-based work on the CrisisMMD Dataset.",
+    "char_start": 31962,
+    "char_end": 32069,
+    "sentence_index": 186,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec017",
+    "text": "0.90\nc|c|ccc|c\n\n2 * Method & 2 * \\#P & 2 * Task 1 & 2 * Task 2 & Task 2 & 2 * Average\n\n& & & & Merged &\n\n6 l Single-modal LLMs\n\n3 * LLaMA-2 & 7B &62.32& 18.32&21.45 & 34.03\n\n& 13B &63.80&21.82&33.15 &39.59\n\n& 70B &63.15&28.87&36.89 &42.97\n\n2-6\n\n3 * Qwen2.5 &7B &65.04&44.52&45.33 &51.63\n\n&32B &67.28 & 46.94& 47.07&53.76\n\n& 72B&67.95 & 50.51 & 50.29&56.25\n\n2-6\nGPT-4 &- &66.83&47.25&49.44 &54.51\n\n6 l Multimodal VLMs\n\n3 * Qwen2-VL & 2B-I & 47.56 & 7.60 & 7.42 & 20.86\n\n& 7B-I & 62.45 & 32.68 & 34.20 & 43.11\n\n& 72B-I & 65.80 & 47.21 & 48.28 & 53.76\n\n2-6\n3 * LLaVA & 7B & 54.00 & 28.01 & 30.61 & 37.54\n\n& 13B & 60.58 & 20.14 & 23.44 & 34.72\n\n& 34B &56.44 & 25.15 & 25.07 & 35.55\n\n2-6\n\n2-6\nCLIP & - & 43.36 & 17.88 & 20.79 &27.34\n\nGPT-4o & -& 68.20 & 47.58 & 49.55 & 55.11\n\n6 l Single-agent RAG\n\nVector-based &7B & 67.49& 45.11&45.94 & 52.85\n\nGraph-based &7B &68.90&50.02&50.69 & 56.54\n\n6 l Multi-agent RAG\n\n2 * HM-RAG & 2 * - & 2 * 72.06 & 2 * 51.50 & 2 * 52.09 & 2 * 58.55\n\n& & & & &\n\nIn this section, we conduct a systematic evaluation of against state-of-the-art zero-shot LLMs, VLMs, and RAG-enhanced approaches across multiple benchmarks.",
+    "char_start": 32070,
+    "char_end": 33212,
+    "sentence_index": 187,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec018",
+    "text": "The results are presented in Table and Table , which demonstrate the consistent superiority of over all comparative methods .",
+    "char_start": 33213,
+    "char_end": 33338,
+    "sentence_index": 188,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec019",
+    "text": "Table systematically quantifies the multimodal question-answering performance of and existing zero-shot approaches\non the ScienceQA dataset.",
+    "char_start": 33340,
+    "char_end": 33480,
+    "sentence_index": 189,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec019",
+    "text": "As shown in the table, HM-RAG establishes the state-of-the-art average accuracy of 93.73\\%, surpassing the previous best zero-shot VLM method LLaMA-SciTune and GPT-4o by 4.11\\% and 2.82\\%, respectively, and significantly outperforming the single-agent RAG variants.",
+    "char_start": 33481,
+    "char_end": 33746,
+    "sentence_index": 190,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec019",
+    "text": "Compared to vector-based, graph-based, and web-based baselines, HM-RAG achieves 12.95\\%, 12.71\\%, and 12.13\\% absolute improvements, respectively.",
+    "char_start": 33747,
+    "char_end": 33893,
+    "sentence_index": 191,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec019",
+    "text": "Notable gains are observed in the accuracy of Social Science (SOC) tasks, where the improvements over web-based and graph-based baselines reach 24.38\\% and 20.65\\%, respectively.",
+    "char_start": 33894,
+    "char_end": 34072,
+    "sentence_index": 192,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec019",
+    "text": "The framework also exceeds human expert performance by 6.03\\%.",
+    "char_start": 34073,
+    "char_end": 34135,
+    "sentence_index": 193,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec020",
+    "text": "Table presents a comprehensive evaluation of multimodal understanding capabilities on the CrisisMMD benchmark.",
+    "char_start": 34137,
+    "char_end": 34247,
+    "sentence_index": 194,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec020",
+    "text": "Our analysis reveals three key observations.",
+    "char_start": 34248,
+    "char_end": 34292,
+    "sentence_index": 195,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec020",
+    "text": "First, multimodal enhanced LLMs consistently outperform both text-only LLMs and specialized VLMs across all tasks.",
+    "char_start": 34293,
+    "char_end": 34407,
+    "sentence_index": 196,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec020",
+    "text": "The proposed method achieves state-of-the-art performance with an average accuracy of 58.55\\%, representing 2.44\\% and 3.44\\% absolute improvements over the strongest baseline (GPT-4o) and text-only variant (Qwen2.5-72B), respectively, despite using only 7B parameters.",
+    "char_start": 34408,
+    "char_end": 34677,
+    "sentence_index": 197,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec020",
+    "text": "Second, the model scale exhibits a non-linear correlation with performance gains.",
+    "char_start": 34679,
+    "char_end": 34760,
+    "sentence_index": 198,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec020",
+    "text": "While Qwen2.5-72B (text-only) achieves 56.25\\% average accuracy, our 7B multimodal enhanced variant attains an absolute improvement of 2.3\\%, demonstrating superior parameter efficiency.",
+    "char_start": 34761,
+    "char_end": 34947,
+    "sentence_index": 199,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec020",
+    "text": "This trend holds across modalities, with Qwen2-VL-72B-I (VLM) underperforming our method by 4.79\\% despite equivalent parameter counts.",
+    "char_start": 34948,
+    "char_end": 35083,
+    "sentence_index": 200,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec020",
+    "text": "Third, multimodal integration significantly impacts task performance.",
+    "char_start": 35085,
+    "char_end": 35154,
+    "sentence_index": 201,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec020",
+    "text": "Our method shows 5.7\\% and 2.01\\% improvements in average accuracy over its text-only and graph-only variants, respectively, which highlights the effectiveness of multi-source reasoning.",
+    "char_start": 35155,
+    "char_end": 35341,
+    "sentence_index": 202,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec020",
+    "text": "Notably, the accuracy of 72.06\\% on Task 1 establishes a new benchmark, outperforming GPT-4o by 3.86\\% and demonstrating robust visual-textual alignment capabilities.",
+    "char_start": 35342,
+    "char_end": 35508,
+    "sentence_index": 203,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec020",
+    "text": "exp_fig2.pdf\nCase Study: Comparison Between and the Baseline Methods (Vector-based, Graph-based, and Web-based Retrieval Agent).",
+    "char_start": 35510,
+    "char_end": 35638,
+    "sentence_index": 204,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec020",
+    "text": "[h]\n\nPerformance comparison across different variants of on the ScienceQA Dataset.",
+    "char_start": 35640,
+    "char_end": 35722,
+    "sentence_index": 205,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec020",
+    "text": "Components include: VA (Vector-based Retrieval Agent), GA (Graph-based Retrieval Agent), WA (Web-based Retrieval Agent), and DA (Decision Agent).",
+    "char_start": 35723,
+    "char_end": 35868,
+    "sentence_index": 206,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec020",
+    "text": "cccc|ccccccccc\n\n4 c| Agent Configuration & 2 * NAT & 2 * SOC & 2 * LAN & 2 * TXT & 2 * IMG & 2 * NO & 2 * G1-6 & 2 * G7-12 & 2 * Average\n\n0-3\nVA & GA & WA & DA & & & & & & & & &\n\n$ $ & $ $ & $ $ & $ $ & 90.72 & 88.08 & 94.09 & 89.30 & 84.58 & 95.68 & 92.47 & 88.46 & 91.04\n\n$ $ & $ $ & $ $ & $ $ & 91.21 & 87.96 & 94.73 & 90.32 & 85.62 & 95.61 & 92.22 & 90.05 & 91.44\n\n$ $ & $ $ & $ $ & $ $ & 88.99 & 84.81 & 90.27 & 88.17 & 83.09 & 91.78 & 89.46 & 86.62 & 88.45\n\n$ $ & $ $ & $ $ & $ $ & 83.79 & 72.89 & 91.82 & 81.09 & 70.55 & 94.01 & 85.98 & 79.30 & 83.59\n\n$ $ & $ $ & $ $ & $ $ & 94.36 & 90.66 & 94.91 & 93.79 & 89.94 & 96.03 & 94.42 & 92.49 & 93.73\n\nWe provide a prediction example as shown in Figure to demonstrate the effectiveness of our proposed model.",
+    "char_start": 35869,
+    "char_end": 36629,
+    "sentence_index": 207,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec021",
+    "text": "This example was carefully chosen to showcase the model's ability to handle complex patterns and make accurate choices.",
+    "char_start": 36630,
+    "char_end": 36749,
+    "sentence_index": 208,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec021",
+    "text": "For readers interested in additional cases, a more detailed set of examples is provided in Appendix .",
+    "char_start": 36750,
+    "char_end": 36851,
+    "sentence_index": 209,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec021",
+    "text": "In the given example, the multi-source retrieval agents all produce incorrect results since there is no relevant information recorded for this question in the database.",
+    "char_start": 36852,
+    "char_end": 37020,
+    "sentence_index": 210,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec021",
+    "text": "To cope with the situation, the expert refinement in the decision agent is used to perform high-level thinking to derive the correct result.",
+    "char_start": 37021,
+    "char_end": 37161,
+    "sentence_index": 211,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec021",
+    "text": "This manifests the proficiency of our model in informed decision-making, which assures enhanced robustness compared to relying on a single type of retrieval mechanism.",
+    "char_start": 37162,
+    "char_end": 37329,
+    "sentence_index": 212,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec022",
+    "text": "Table presents a systematic evaluation of individual agent components' contributions through controlled ablation studies on ScienceQA.",
+    "char_start": 37331,
+    "char_end": 37465,
+    "sentence_index": 213,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec022",
+    "text": "Three key insights emerge regarding the framework's design.",
+    "char_start": 37466,
+    "char_end": 37525,
+    "sentence_index": 214,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec022",
+    "text": "First, the decision agent (DA) establishes itself as the most critical element, with its removal triggering the most substantial performance decline at 10.82\\%.",
+    "char_start": 37526,
+    "char_end": 37686,
+    "sentence_index": 215,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec022",
+    "text": "This component proves particularly vital for synthesizing multi-source decisions, as evidenced by significant accuracy reductions of 21.56\\% in image-based tasks and 19.60\\% in social reasoning tasks when DA is disabled.",
+    "char_start": 37687,
+    "char_end": 37907,
+    "sentence_index": 216,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec022",
+    "text": "Second, the web-based retrieval agent (WA) demonstrates robust integration capabilities.",
+    "char_start": 37908,
+    "char_end": 37996,
+    "sentence_index": 217,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec022",
+    "text": "Deactivating WA leads to an average performance decrease of 5.63\\%, with a more pronounced impact on grade 7-12 tasks, showing a 6.35\\% accuracy drop.",
+    "char_start": 37997,
+    "char_end": 38147,
+    "sentence_index": 218,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec022",
+    "text": "Third, the fully integrated agent system achieves peak performance at 93.73\\%, surpassing the best ablated configuration by a notable margin of 2.44\\%.",
+    "char_start": 38148,
+    "char_end": 38299,
+    "sentence_index": 219,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec022",
+    "text": "This optimal configuration delivers consistent enhancements across all task categories, particularly excelling in multimodal scenarios with 3.70\\% improvement in text-based tasks and 4.80\\% in image-based tasks compared to the baselines.",
+    "char_start": 38300,
+    "char_end": 38537,
+    "sentence_index": 220,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec022",
+    "text": "The framework also shows superior handling of complex queries, attaining 2.64\\% higher accuracy for grade 7-12 problems.",
+    "char_start": 38538,
+    "char_end": 38658,
+    "sentence_index": 221,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec022",
+    "text": "These empirical outcomes substantiate the architectural effectiveness in orchestrating specialized agents for holistic multimodal reasoning.",
+    "char_start": 38659,
+    "char_end": 38799,
+    "sentence_index": 222,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec023",
+    "text": "In this paper, we introduced , a novel Hierarchical Multi-Agent Multimodal Retrieval-Augmented Generation framework designed to address the challenges of complex multimodal query processing and knowledge synthesis.",
+    "char_start": 38801,
+    "char_end": 39015,
+    "sentence_index": 223,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec023",
+    "text": "HM-RAG pioneers collaborative intelligence by integrating specialized agents for query decomposition, multi-source retrieval, and decision refinement, enabling dynamic knowledge synthesis across structured, unstructured, and graph-based data.",
+    "char_start": 39016,
+    "char_end": 39258,
+    "sentence_index": 224,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec023",
+    "text": "Through extensive experiments on the ScienceQA and CrisisMMD benchmarks, demonstrated state-of-the-art performance in the accuracy of multimodal question answering and classification, with significant improvements over all categories of baseline methods.",
+    "char_start": 39259,
+    "char_end": 39513,
+    "sentence_index": 225,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec023",
+    "text": "Our work advances RAG systems by effectively addressing critical challenges in multimodal reasoning and knowledge synthesis, paving the way for more robust and adaptable information retrieval and generation systems in diverse application domains.",
+    "char_start": 39515,
+    "char_end": 39761,
+    "sentence_index": 226,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec023",
+    "text": "ACM-Reference-Format\nmain\n\nWe present additional predicted examples in Figure .",
+    "char_start": 39763,
+    "char_end": 39842,
+    "sentence_index": 227,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec024",
+    "text": "Furthermore, we include two representative questions with or without image context to assess the models' language reasoning capabilities.",
+    "char_start": 39843,
+    "char_end": 39980,
+    "sentence_index": 228,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec024",
+    "text": "consistently produces accurate answers.",
+    "char_start": 39981,
+    "char_end": 40020,
+    "sentence_index": 229,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec024",
+    "text": "[b]\n\nappendix3.pdf\nComparison on single-modal question answering.",
+    "char_start": 40022,
+    "char_end": 40087,
+    "sentence_index": 230,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec024",
+    "text": "[h]\n\nappendix2.pdf\nComparison on multimodal question answering.",
+    "char_start": 40089,
+    "char_end": 40152,
+    "sentence_index": 231,
+    "section_sentence_index": 3
+  }
+]

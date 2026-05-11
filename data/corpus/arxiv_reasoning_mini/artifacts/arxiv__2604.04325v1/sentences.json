@@ -1,0 +1,3431 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language models (LLMs) achieve high accuracy in medical diagnosis when all clinical information is provided in a single turn, yet how they behave under multi-turn evidence accumulation closer to real clinical reasoning remains unexplored.",
+    "char_start": 0,
+    "char_end": 244,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "We introduce MINT ( M edical I ncremental N - T urn Benchmark), a high-fidelity, multi-turn medical diagnosis benchmark comprising 1,035 cases with clinically labeled evidence shards, controlled turn granularity, and information-preserving decomposition.",
+    "char_start": 245,
+    "char_end": 499,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Through systematic evaluation of 11 LLMs on MINT, we uncover three persistent behavioral patterns that significantly impact diagnostic decisions: (1) intent to answer , models rush to answer before sufficient evidence has been observed, with over 55\\% of answers committed within the first two turns; (2) self-correction , incorrect-to-correct answer revisions occur at up to 10.6$ $ the rate of correct-to-incorrect flips, revealing a latent capacity for self-correction that premature commitment forecloses; and (3) strong lures , clinically salient information such as laboratory results trigger premature answering even when models are explicitly instructed to wait.",
+    "char_start": 500,
+    "char_end": 1170,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "We translate these findings into clinically actionable guidance: deferring the diagnostic question to later turns reduces premature answering and improves accuracy at the first point of commitment by up to 62.6\\%, while reserving salient clinical evidence for later turns prevents a catastrophic accuracy drop of up to 23.3\\% caused by premature commitment.",
+    "char_start": 1171,
+    "char_end": 1528,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Our work provides both a controlled evaluation framework and concrete recommendations for improving the reliability of LLMs in multi-turn medical diagnosis.",
+    "char_start": 1529,
+    "char_end": 1685,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "The data and code will be released upon publication.",
+    "char_start": 1687,
+    "char_end": 1739,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Large language models (LLMs) have demonstrated strong performance in medical diagnosis under standard single-turn evaluation, where all clinical information is presented at once chen2025medbullets,wang2024direct .",
+    "char_start": 1741,
+    "char_end": 1954,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "However, real-world clinical reasoning rarely follows this static paradigm liu2025interactive,fan2025aihospital,li2024mediqquestionaskingllmsbenchmark .",
+    "char_start": 1955,
+    "char_end": 2107,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "In practice, clinicians gather evidence sequentially through multi-turn interactions (e.g., history taking, iterative diagnostic workup), gradually refining their judgment as new information emerges liu2025interactive,fan2025aihospital,li2024mediqquestionaskingllmsbenchmark .",
+    "char_start": 2108,
+    "char_end": 2384,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "This discrepancy raises a critical question: can LLMs maintain reliable diagnostic reasoning in sequential, multi-turn settings?",
+    "char_start": 2385,
+    "char_end": 2513,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Recent observations suggest that LLM performance degrades substantially when transitioning from single-turn to multi-turn settings laban2026lost,deshpande2025multichallenge , particularly in high-stakes domains such as medicine liu2025interactive,fan2025aihospital,li2024mediqquestionaskingllmsbenchmark .",
+    "char_start": 2515,
+    "char_end": 2820,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Several hypotheses have been proposed to explain this degradation.",
+    "char_start": 2821,
+    "char_end": 2887,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "One line of reasoning attributes it to the model's tendency to commit prematurely to an answer upon receiving partial information, without sufficient reasoning laban2026lost,li2024mediqquestionaskingllmsbenchmark .",
+    "char_start": 2888,
+    "char_end": 3102,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Another suggests that models lose track of relevant context over extended interactions laban2026lost,deshpande2025multichallenge,li2025structflowbench .",
+    "char_start": 3103,
+    "char_end": 3255,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Despite these accounts, a fundamental research gap remains: existing evaluations lack a controlled benchmark that can disentangle the effects of decision timing ( hold ), restoration ( self-correction ), and information exposure ( lure ) on model performance.",
+    "char_start": 3256,
+    "char_end": 3515,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Without such a benchmark, it remains unclear whether observed degradation stems from genuine model limitations or from artifacts introduced by uncontrolled data construction and evaluation protocols.",
+    "char_start": 3516,
+    "char_end": 3715,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To address this gap, we construct MINT, a high-fidelity, fine-grained, multi-turn medical diagnosis benchmark that enables systematic investigation of model behavior under sequential evidence accumulation.",
+    "char_start": 3717,
+    "char_end": 3922,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "MINT is built around three design principles: information preservation, controlled turn granularity, and clinically labeled evidence shards.",
+    "char_start": 3923,
+    "char_end": 4063,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Building on MINT, we conduct a comprehensive analysis of the mechanisms underlying multi-turn performance degradation and identify three persistent behavioral patterns: (1) Intent to answer.",
+    "char_start": 4064,
+    "char_end": 4254,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "By controlling when diagnostic questions are presented, we observe a large gap between initial and final answer accuracy when questions are presented early, indicating that premature answering significantly harms performance.",
+    "char_start": 4255,
+    "char_end": 4480,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Withholding the diagnostic question until all clinical information has been revealed largely restores accuracy to single-turn levels, demonstrating that models retain strong diagnostic potential when early answering is prevented.",
+    "char_start": 4481,
+    "char_end": 4710,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "This result offers a key distinction from prior work, which has documented premature answering as a failure mode li2024mediqquestionaskingllmsbenchmark, laban2026lost, luo2025clarifymt but has not systematically isolated answer timing as a controlled variable: models retain strong diagnostic potential when commitment is deferred to later turns.",
+    "char_start": 4712,
+    "char_end": 5058,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "(2) Self-correction.",
+    "char_start": 5059,
+    "char_end": 5079,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "We further analyze how holding intent shapes model reasoning dynamics across turns.",
+    "char_start": 5080,
+    "char_end": 5163,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Notably, transitions from incorrect to correct answers occur at a significantly higher rate (10.6$ $) than transitions from correct to incorrect.",
+    "char_start": 5164,
+    "char_end": 5309,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "This finding suggests that holding intent does not merely delay answering, but actively unlocks the model's capacity for self-correction during multi-turn reasoning.",
+    "char_start": 5310,
+    "char_end": 5475,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "(3) Strong lures.",
+    "char_start": 5476,
+    "char_end": 5493,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Certain types of clinical information (e.g., lab results) act as strong lures that trigger immediate answering behavior.",
+    "char_start": 5494,
+    "char_end": 5614,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Models are significantly more likely to answer prematurely when laboratory results appear in early turns, an effect especially pronounced for lab-dependent diseases, leading to substantially higher error rates.",
+    "char_start": 5615,
+    "char_end": 5825,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "These findings reveal that answering behavior is driven not only by internal intent, but also by the type and timing of incoming clinical evidence.",
+    "char_start": 5826,
+    "char_end": 5973,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "[t]\n\nfigures/figure1.pdf\n\nOverview of MINT benchmark construction and evaluation settings.",
+    "char_start": 5975,
+    "char_end": 6065,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "In summary, this work makes the following novel contributions (illustrated in Figure ):\n[leftmargin=*]\nMINT Benchmark.",
+    "char_start": 6067,
+    "char_end": 6185,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We construct a high-fidelity, fine-grained multi-turn medical diagnosis benchmark, MINT, with controlled decomposition, verification, and structured labeling, enabling rigorous study of LLM behavior in multi-turn medical diagnosis.",
+    "char_start": 6186,
+    "char_end": 6417,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Intent to Answer.",
+    "char_start": 6418,
+    "char_end": 6435,
+    "sentence_index": 33,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "By controlling when diagnostic questions are posed, we identify a universal pattern of premature commitment across all evaluated models and demonstrate that deferring the question to later turns substantially recovers diagnostic accuracy.",
+    "char_start": 6436,
+    "char_end": 6674,
+    "sentence_index": 34,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Self-Correction.",
+    "char_start": 6676,
+    "char_end": 6692,
+    "sentence_index": 35,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "By tracking reasoning dynamics across turns, we demonstrate a persistent pattern of strong self-correction across all models, with commercial LLMs demonstrating up to 10.6$ $ higher rates of turning incorrect answers into correct ones.",
+    "char_start": 6693,
+    "char_end": 6928,
+    "sentence_index": 36,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Strong Lures.",
+    "char_start": 6929,
+    "char_end": 6942,
+    "sentence_index": 37,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "By presenting clinically salient information (e.g., lab results) in early turns, we uncover a consistent pattern in which strong lures reliably trigger premature diagnostic decisions, leading to substantially higher error rates.",
+    "char_start": 6943,
+    "char_end": 7171,
+    "sentence_index": 38,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Multi-turn Degradation in LLMs.",
+    "char_start": 7173,
+    "char_end": 7204,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Prior work has consistently shown that LLMs are less reliable in multi-turn than in single-turn settings.",
+    "char_start": 7205,
+    "char_end": 7310,
+    "sentence_index": 40,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "Multi-turn competence varies widely across tasks deshpande2025multichallenge , instruction-following degrades across turns sun2024parrot , and even frontier commercial models struggle with sustained contextual reasoning deshpande2025multichallenge,laban2026lost .",
+    "char_start": 7311,
+    "char_end": 7574,
+    "sentence_index": 41,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "These failures often stem not from longer context per se, but from structured cross-turn dependencies, where models fail to preserve earlier constraints or reconcile conflicting instructions introduced at different turns laban2026lost .",
+    "char_start": 7575,
+    "char_end": 7811,
+    "sentence_index": 42,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Recent work further characterizes this as models getting ''lost'' in multi-turn conversations laban2026lost,graf2026turnwise,hankache2025evaluating , suggesting that prior context alone can distort downstream behavior.",
+    "char_start": 7812,
+    "char_end": 8030,
+    "sentence_index": 43,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "However, these studies do not examine how diagnostic commitment unfolds under controlled sequential evidence.",
+    "char_start": 8031,
+    "char_end": 8140,
+    "sentence_index": 44,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "MINT brings this question into medicine by analyzing when models answer and how their predictions evolve across turns.",
+    "char_start": 8141,
+    "char_end": 8259,
+    "sentence_index": 45,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Hold, Abstention, and Premature Answering.",
+    "char_start": 8261,
+    "char_end": 8303,
+    "sentence_index": 46,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Prior work has identified premature answering under incomplete information as a recurring failure mode in multi-turn interactions luo2025clarifymt,zhao2026and , where LLMs often form early assumptions and become less reliable as later context arrives laban2026lost,liu2026intent .",
+    "char_start": 8304,
+    "char_end": 8584,
+    "sentence_index": 47,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "This concern is especially consequential in medicine, where diagnosis unfolds through physician--patient dialogue, history taking, and adaptive questioning tu2025towards,johri2025evaluation,Werthaim2026Q4Dx , making premature or overconfident answers particularly prone to unsafe or unreliable outcomes draelos2026large,griot2025large .",
+    "char_start": 8585,
+    "char_end": 8921,
+    "sentence_index": 48,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "One line encourages models to continue gathering information by asking clarifying or follow-up questions rather than committing when evidence is insufficient li2024mediqquestionaskingllmsbenchmark,gatto2025follow,zhao2026and .",
+    "char_start": 8922,
+    "char_end": 9148,
+    "sentence_index": 49,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "Another studies uncertainty-aware abstention machcha2025large,machcha2026knowing,dang2026knowguard , enabling models to defer or withhold a response when available evidence does not yet support a reliable decision dang2026knowguard,watanabe2026clindet .",
+    "char_start": 9149,
+    "char_end": 9402,
+    "sentence_index": 50,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Recent work further shows that in clinical multi-turn settings, models may abandon correct early assessments in favor of later suggestions guo2026stop .",
+    "char_start": 9403,
+    "char_end": 9555,
+    "sentence_index": 51,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "However, these studies primarily treat delayed answering as a defensive mechanism.",
+    "char_start": 9556,
+    "char_end": 9638,
+    "sentence_index": 52,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "It remains unclear whether withholding answers improves performance, whether self-correction emerges as evidence accumulates, and whether certain clinical evidence disproportionately triggers premature decisions.",
+    "char_start": 9639,
+    "char_end": 9851,
+    "sentence_index": 53,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "Multi-Turn Evaluation in Medicine.",
+    "char_start": 9853,
+    "char_end": 9887,
+    "sentence_index": 54,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "Recent work has emphasized evaluating LLMs in multi-turn medical settings, moving beyond static question answering toward doctor--patient dialogue that more closely reflects clinical practice johri2025evaluation,liao2024automatic,liu2025interactive,tu2025towards .",
+    "char_start": 9888,
+    "char_end": 10152,
+    "sentence_index": 55,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "Yet current medical benchmarks remain insufficient for assessing clinical readiness in real-world settings hager2024evaluation,johri2025evaluation,wang2025novel .",
+    "char_start": 10153,
+    "char_end": 10315,
+    "sentence_index": 56,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": "Prior work has therefore introduced interactive evaluation frameworks for multi-turn consultations, including state-aware patient simulators and task-oriented dialogue settings that emphasize proactive communication and overall consultation ability liao2024automatic,liu2025interactive .",
+    "char_start": 10316,
+    "char_end": 10603,
+    "sentence_index": 57,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "However, existing studies mainly evaluate consultation quality, communication ability, or overall diagnostic performance in simulated interactions johri2025evaluation,liao2024automatic,liu2025interactive,tu2025towards , rather than isolating how model predictions evolve when the same clinical case is revealed progressively under controlled conditions.",
+    "char_start": 10604,
+    "char_end": 10957,
+    "sentence_index": 58,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "In particular, they do not systematically control how clinical information is distributed across turns, verify information preservation after turn conversion, or manipulate the timing, granularity, and clinically salient type of evidence to study when models answer, revise, or continue to wait.",
+    "char_start": 10958,
+    "char_end": 11253,
+    "sentence_index": 59,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "To address this gap, MINT enables systematic study of how model predictions evolve under sequential evidence accumulation when the same clinical case is presented in a controlled, information-preserving manner, and how the timing, granularity, and type of clinical evidence jointly shape diagnostic behavior across turns.",
+    "char_start": 11254,
+    "char_end": 11575,
+    "sentence_index": 60,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "-0.5em\n\n=10000\n=30pt\n\nData Sources.",
+    "char_start": 11576,
+    "char_end": 11611,
+    "sentence_index": 61,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec004",
+    "text": "We construct our multi-turn medical diagnosis benchmark called MINT (Medical Incremental N-Turn Benchmark) based on five established medical Q\\&A datasets including:\n\n1) MedQA (N = 600) johri2025evaluation, jin2020diseasedoespatienthave .",
+    "char_start": 11612,
+    "char_end": 11850,
+    "sentence_index": 62,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec004",
+    "text": "We use the version curated in CRAFT-MD, containing 1,804 case vignettes across 12 disease categories.",
+    "char_start": 11851,
+    "char_end": 11952,
+    "sentence_index": 63,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec004",
+    "text": "To ensure balanced coverage for each disease, we apply stratified sampling based on disease categories and retain 50 examples per category, resulting in 600 cases; 2) MedMCQA (N = 174) pal2022medmcqa .",
+    "char_start": 11953,
+    "char_end": 12154,
+    "sentence_index": 64,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec004",
+    "text": "It has over 194,000 questions from medical entrance examinations across 21 medical subjects including pharmacology, surgery, pediatrics, ophthalmology, dermatology, orthopedics, radiology, psychiatry, and more.",
+    "char_start": 12155,
+    "char_end": 12365,
+    "sentence_index": 65,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec004",
+    "text": "We retain diagnosis-focused questions and exclude vignettes shorter than 100 words, resulting in 174 cases; 3) Derm-Public (N = 100) johri2025evaluation .",
+    "char_start": 12366,
+    "char_end": 12520,
+    "sentence_index": 66,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec004",
+    "text": "It contains 100 dermatology case vignettes sourced from public educational materials.",
+    "char_start": 12521,
+    "char_end": 12606,
+    "sentence_index": 67,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec004",
+    "text": "We manually add diagnostic questions; 4) Derm-Private (N = 99) johri2025evaluation .",
+    "char_start": 12607,
+    "char_end": 12691,
+    "sentence_index": 68,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec004",
+    "text": "This dataset has 100 dermatology case vignettes created by three board-certified dermatologists.",
+    "char_start": 12692,
+    "char_end": 12788,
+    "sentence_index": 69,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec004",
+    "text": "We remove one mislabeled case and manually add the missing diagnostic question, resulting in 99 cases; and 5) MedBullets (N = 62) chen2025medbullets .",
+    "char_start": 12789,
+    "char_end": 12939,
+    "sentence_index": 70,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec004",
+    "text": "It contains 308 clinical questions with expert-written explanations.",
+    "char_start": 12940,
+    "char_end": 13008,
+    "sentence_index": 71,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec004",
+    "text": "We select the subset of five-option questions related to medical diagnosis, yielding 62 cases.",
+    "char_start": 13009,
+    "char_end": 13103,
+    "sentence_index": 72,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec004",
+    "text": "Additional dataset-level summary statistics are provided in Appendix .",
+    "char_start": 13104,
+    "char_end": 13174,
+    "sentence_index": 73,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec004",
+    "text": "Quality Control and Information Preservation.",
+    "char_start": 13176,
+    "char_end": 13221,
+    "sentence_index": 74,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec004",
+    "text": "To minimize information loss and unintended distortions when converting cases from single-turn to multi-turn format, we implement an explicit information-preservation verification protocol for MINT.",
+    "char_start": 13222,
+    "char_end": 13420,
+    "sentence_index": 75,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec004",
+    "text": "After decomposing each case into sequential shards, we reconstruct the original input by concatenating all shards into a single prompt (the CONCAT setting) and compare model performance against the original full single-turn input (the FULL setting) using Qwen3-32B.",
+    "char_start": 13421,
+    "char_end": 13686,
+    "sentence_index": 76,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec004",
+    "text": "Prediction accuracy remains consistent across the FULL and CONCAT settings (Table ), indicating minimal information loss.",
+    "char_start": 13687,
+    "char_end": 13808,
+    "sentence_index": 77,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec004",
+    "text": "This confirms that performance differences observed in multi-turn settings reflect changes introduced by the multi-turn structure itself, rather than degradation caused by information loss during conversion.",
+    "char_start": 13809,
+    "char_end": 14016,
+    "sentence_index": 78,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec004",
+    "text": "Annotation of Clinical Evidence .",
+    "char_start": 14018,
+    "char_end": 14051,
+    "sentence_index": 79,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec004",
+    "text": "Each shard in the clinically structured setting is annotated using Qwen3-32B with a label drawn from a predefined taxonomy of 13 clinical categories: patient background (e.g., demographics, social history, family history), clinical presentation (e.g., chief complaint, history of present illness, vital signs, physical examination), medical context (e.g., past medical history, medication history), and diagnostic evidence (e.g., laboratory results, imaging, pathology) bickley2020bates .",
+    "char_start": 14052,
+    "char_end": 14540,
+    "sentence_index": 80,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec004",
+    "text": "These clinically labeled shards provide a structured and interpretable multi-turn format, grounding evidence sequencing in established clinical categories rather than arbitrary text segmentation.",
+    "char_start": 14541,
+    "char_end": 14736,
+    "sentence_index": 81,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec004",
+    "text": "Multi-Turn Construction with Controlled Granularity.",
+    "char_start": 14738,
+    "char_end": 14790,
+    "sentence_index": 82,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec004",
+    "text": "We construct multiple multi-turn variants of each case to support controlled analysis of sequential reasoning: 1) MINT-ClinicalCategoryShard.",
+    "char_start": 14791,
+    "char_end": 14932,
+    "sentence_index": 83,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec004",
+    "text": "Using Qwen3-32B with a fixed instruction template (Appendix ), we segment each clinical vignette into sequential shards and assign one of 13 clinical category labels to each shard.",
+    "char_start": 14933,
+    "char_end": 15113,
+    "sentence_index": 84,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec004",
+    "text": "2) MINT-FixedTurns.",
+    "char_start": 15114,
+    "char_end": 15133,
+    "sentence_index": 85,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec004",
+    "text": "We introduce a turn-granularity setting by repartitioning each case into a fixed number of turns (i.e., 4, 8, 12, 16), enabling fair comparison across turn lengths while preserving the original content and ordering of each case.",
+    "char_start": 15134,
+    "char_end": 15362,
+    "sentence_index": 86,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec004",
+    "text": "All variants are generated using Qwen3-32B with a consistent prompting pipeline and deterministic decoding (temperature = 0), ensuring reproducibility across settings.",
+    "char_start": 15363,
+    "char_end": 15530,
+    "sentence_index": 87,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec004",
+    "text": "Overall statistics for MINT are reported in Table in Appendix .",
+    "char_start": 15531,
+    "char_end": 15594,
+    "sentence_index": 88,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec005",
+    "text": "In this section, we evaluate a diverse set of models spanning open-source general-purpose LLMs (Qwen2.5-3B and Qwen3-4B yang2025qwen3 , OLMo-2-7B olmo2025olmo2 , and GPT-OSS-20B openai2025gptoss120bgptoss20bmodel ), commercial frontier LLMs (Claude Sonnet 4.6 anthropic2026claude46 , GPT-5-mini openai2025gpt5 , and o4-mini openai2025o4mini ), to medical-finetuned LLMs (Med42-v2-8B, Med42-v2-70B med42v2 , MedGemma-1.5-4B, and MedGemma-27B sellergren2025medgemma ).",
+    "char_start": 15596,
+    "char_end": 16062,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "Setting.",
+    "char_start": 16064,
+    "char_end": 16072,
+    "sentence_index": 90,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "We compare two multi-turn settings that differ only in when the diagnostic question is presented: Ask-Question-First (Q-First) and Ask-Question-Last (Q-Last).",
+    "char_start": 16073,
+    "char_end": 16231,
+    "sentence_index": 91,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "In Q-First , the question and answer options are shown upfront, and the model is explicitly instructed to wait until it believes the currently available information is sufficient before answering.",
+    "char_start": 16232,
+    "char_end": 16428,
+    "sentence_index": 92,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "As evidence shards are revealed sequentially, the model may continue to hold, answer at any turn, and revise its answer later if subsequent information changes its judgment.",
+    "char_start": 16429,
+    "char_end": 16602,
+    "sentence_index": 93,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "In Q-Last , the same shard sequence is shown, but the diagnostic question is withheld until the final turn, so the model answers only once after observing all clinical information.",
+    "char_start": 16603,
+    "char_end": 16783,
+    "sentence_index": 94,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "Because both settings use the same cases and shard sequences, this design isolates the effect of answer timing.",
+    "char_start": 16784,
+    "char_end": 16895,
+    "sentence_index": 95,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "Here, hold denotes choosing not to answer at an intermediate turn, whereas abstention denotes failing to produce a final answer after all turns.",
+    "char_start": 16896,
+    "char_end": 17040,
+    "sentence_index": 96,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "[t]\n\n2.2pt\n1.2\n-3ex\n!",
+    "char_start": 17042,
+    "char_end": 17063,
+    "sentence_index": 97,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "l ccccccc| ccccccc| ccccccc| ccccccc| ccccccc|\n\n& 7 c MedQA\n& 7 c Derm-Public\n& 7 c Derm-Private\n& 7 c MedBullets\n& 7 c MedMCQA\n\n& 2 c Single-turn\n& 5 c| Multi-turn\n& 2 c Single-turn\n& 5 c| Multi-turn\n& 2 c Single-turn\n& 5 c| Multi-turn\n& 2 c Single-turn\n& 5 c| Multi-turn\n& 2 c Single-turn\n& 5 c Multi-turn\n\n& 2 c\n& 3 c Q-First & 2 c| Q-Last\n& 2 c\n& 3 c Q-First & 2 c| Q-Last\n& 2 c\n& 3 c Q-First & 2 c| Q-Last\n& 2 c\n& 3 c Q-First & 2 c| Q-Last\n& 2 c\n& 3 c Q-First & 2 c Q-Last\n\n(lr) 2-8 (lr) 9-15 (lr) 16-22\n(lr) 23-29 (lr) 30-36\n\nModel\n& Full & Conc.",
+    "char_start": 17064,
+    "char_end": 17616,
+    "sentence_index": 98,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "& Ini.",
+    "char_start": 17617,
+    "char_end": 17623,
+    "sentence_index": 99,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "& Final & 1 c| Abs.",
+    "char_start": 17624,
+    "char_end": 17643,
+    "sentence_index": 100,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "& Ans.",
+    "char_start": 17644,
+    "char_end": 17650,
+    "sentence_index": 101,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "& Abs.",
+    "char_start": 17651,
+    "char_end": 17657,
+    "sentence_index": 102,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "& Full & Conc.",
+    "char_start": 17658,
+    "char_end": 17672,
+    "sentence_index": 103,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "& Ini.",
+    "char_start": 17673,
+    "char_end": 17679,
+    "sentence_index": 104,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "& Final & 1 c| Abs.",
+    "char_start": 17680,
+    "char_end": 17699,
+    "sentence_index": 105,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec006",
+    "text": "& Ans.",
+    "char_start": 17700,
+    "char_end": 17706,
+    "sentence_index": 106,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec006",
+    "text": "& Abs.",
+    "char_start": 17707,
+    "char_end": 17713,
+    "sentence_index": 107,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec006",
+    "text": "& Full & Conc.",
+    "char_start": 17714,
+    "char_end": 17728,
+    "sentence_index": 108,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec006",
+    "text": "& Ini.",
+    "char_start": 17729,
+    "char_end": 17735,
+    "sentence_index": 109,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec006",
+    "text": "& Final & 1 c| Abs.",
+    "char_start": 17736,
+    "char_end": 17755,
+    "sentence_index": 110,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec006",
+    "text": "& Ans.",
+    "char_start": 17756,
+    "char_end": 17762,
+    "sentence_index": 111,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec006",
+    "text": "& Abs.",
+    "char_start": 17763,
+    "char_end": 17769,
+    "sentence_index": 112,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec006",
+    "text": "& Full & Conc.",
+    "char_start": 17770,
+    "char_end": 17784,
+    "sentence_index": 113,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec006",
+    "text": "& Ini.",
+    "char_start": 17785,
+    "char_end": 17791,
+    "sentence_index": 114,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec006",
+    "text": "& Final & 1 c| Abs.",
+    "char_start": 17792,
+    "char_end": 17811,
+    "sentence_index": 115,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec006",
+    "text": "& Ans.",
+    "char_start": 17812,
+    "char_end": 17818,
+    "sentence_index": 116,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec006",
+    "text": "& Abs.",
+    "char_start": 17819,
+    "char_end": 17825,
+    "sentence_index": 117,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec006",
+    "text": "& Full & Conc.",
+    "char_start": 17826,
+    "char_end": 17840,
+    "sentence_index": 118,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec006",
+    "text": "& Ini.",
+    "char_start": 17841,
+    "char_end": 17847,
+    "sentence_index": 119,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec006",
+    "text": "& Final & 1 c| Abs.",
+    "char_start": 17848,
+    "char_end": 17867,
+    "sentence_index": 120,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec006",
+    "text": "& Ans.",
+    "char_start": 17868,
+    "char_end": 17874,
+    "sentence_index": 121,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec006",
+    "text": "& Abs.",
+    "char_start": 17875,
+    "char_end": 17881,
+    "sentence_index": 122,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec006",
+    "text": "36 l Open-Source General LLMs\n[2pt]\n\nQwen2.5-3B\n& 53.3 & 51.3 & red!17 36.2 & red!24 29.8 & 27.2 & red!3 50.2 & 0.0\n& 64.0 & 69.0 & red!25 39.1 & red!36 28.1 & 36.0 & red!4 60.0 & 0.0\n& 74.8 & 75.8 & red!27 48.0 & red!45 29.9 & 22.2 & red!8 66.7 & 0.0\n& 40.3 & 41.9 & red!7 33.3 & red!14 26.7 & 27.4 & 40.3 & 0.0\n& 73.0 & 70.7 & red!26 47.5 & red!29 44.5 & 21.3 & red!5 68.4 & 0.0\n\nQwen3-4B\n& 63.8 & 65.2 & red!11 53.0 & red!5 58.8 & 8.5 & red!5 58.9 & 0.2\n& 82.0 & 79.0 & red!15 67.0 & red!8 74.0 & 0.0 & red!3 79.0 & 0.0\n& 87.9 & 84.8 & red!29 58.8 & red!15 73.2 & 2.0 & red!1 86.9 & 0.0\n& 48.4 & 48.4 & red!6 42.9 & red!4 44.6 & 9.7 & green!8 56.5 & 0.0\n& 84.1 & 80.6 & red!25 58.7 & red!12 71.9 & 4.0 & red!7 77.3 & 0.0\n\nOLMo-2-7B\n& 46.5 & 44.8 & red!15 31.1 & red!17 29.4 & 0.3 & red!8 39.0 & 0.0\n& 52.0 & 60.0 & red!20 32.0 & red!16 36.0 & 0.0 & red!6 46.0 & 0.0\n& 72.7 & 66.7 & red!46 27.3 & red!38 34.3 & 0.0 & red!19 53.5 & 0.0\n& 33.9 & 33.9 & red!18 16.1 & red!13 21.0 & 0.0 & red!8 25.8 & 0.0\n& 53.5 & 52.9 & red!29 24.1 & red!22 31.6 & 0.0 & red!4 49.4 & 0.0\n\nGPT-OSS-20B\n& 90.0 & 89.8 & red!29 61.4 & red!1 88.8 & 0.2 & red!4 86.0 & 0.0\n& 90.0 & 89.8 & red!22 68.0 & 90.0 & 0.0 & red!4 86.0 & 0.0\n& 95.0 & 96.0 & red!30 64.7 & 95.0 & 0.0 & green!1 95.9 & 0.0\n& 70.0 & 67.2 & red!25 45.2 & red!1 69.3 & 0.0 & red!6 64.5 & 0.0\n& 94.2 & 93.7 & red!19 75.7 & 94.2 & 0.6 & red!1 93.7 & 0.0\n\n36 l Commercial Models\n[2pt]\n\nClaude Sonnet 4.6\n& 94.1 & 93.3 & red!7 87.7 & red!1 93.2 & 21.7 & red!3 91.2 & 2.0\n& 94.0 & 96.0 & red!4 89.8 & green!4 97.7 & 12.0 & 94.0 & 0.0\n& 99.0 & 98.0 & red!4 94.8 & 99.0 & 2.0 & green!1 100.0 & 2.0\n& 78.7 & 75.4 & red!7 71.7 & 78.3 & 25.8 & red!5 73.8 & 1.6\n& 97.7 & 97.7 & red!8 89.6 & red!2 95.7 & 6.3 & red!2 95.4 & 1.1\n\nGPT-5-mini\n& 95.5 & 95.0 & red!19 76.5 & red!1 94.8 & 0.8 & red!1 95.0 & 1.5\n& 94.0 & 96.0 & red!16 78.0 & red!1 93.0 & 0.0 & 94.0 & 0.0\n& 98.1 & 97.1 & red!13 84.8 & green!1 99.0 & 0.0 & green!2 100.0 & 0.0\n& 80.3 & 77.0 & red!33 47.5 & red!2 78.7 & 1.6 & 80.3 & 1.6\n& 97.7 & 96.5 & red!13 84.4 & 97.7 & 0.6 & red!1 97.1 & 1.7\n\no4-mini\n& 95.3 & 95.3 & red!19 76.3 & red!2 93.6 & 1.3 & red!1 94.8 & 1.3\n& 96.0 & 96.0 & red!16 80.0 & red!1 95.0 & 0.0 & red!1 95.0 & 0.0\n& 99.0 & 99.0 & red!14 84.7 & 99.0 & 1.0 & 99.0 & 0.0\n& 77.0 & 80.0 & red!16 61.0 & green!3 79.7 & 4.8 & green!7 83.6 & 1.6\n& 98.8 & 97.7 & red!13 86.1 & red!2 96.5 & 0.6 & red!2 97.1 & 0.6\n\n36 l Medical-Domain LLMs\n[2pt]\n\nMed42-v2-8B\n& 72.5 & 70.5 & red!34 38.7 & red!24 48.9 & 1.8 & red!10 62.5 & 0.3\n& 84.0 & 76.0 & red!43 41.0 & red!21 63.0 & 0.0 & red!9 75.0 & 0.0\n& 85.9 & 89.9 & red!52 33.7 & red!14 71.4 & 1.0 & red!16 69.7 & 0.0\n& 61.3 & 51.6 & red!32 29.0 & red!15 46.8 & 0.0 & red!7 54.8 & 0.0\n& 89.1 & 86.8 & red!39 50.0 & red!18 70.9 & 1.1 & red!9 79.9 & 0.0\n\nMed42-v2-70B\n& 86.3 & 85.3 & red!48 38.5 & red!18 68.3 & 0.0 & red!7 79.0 & 0.0\n& 86.0 & 88.0 & red!37 49.0 & red!7 79.0 & 0.0 & 86.0 & 0.0\n& 95.0 & 96.0 & red!66 29.3 & red!5 89.9 & 0.0 & red!3 91.9 & 0.0\n& 72.6 & 64.5 & red!48 24.2 & red!11 61.3 & 0.0 & red!8 64.5 & 0.0\n& 96.5 & 96.0 & red!46 50.6 & red!9 87.4 & 0.0 & red!4 92.5 & 0.0\n\nMedGemma-1.5-4B\n& 67.9 & 68.5 & red!36 31.8 & red!36 32.4 & 11.8 & red!11 57.0 & 1.3\n& 69.0 & 71.0 & red!27 42.4 & red!27 42.4 & 11.0 & red!13 56.0 & 0.0\n& 81.6 & 83.8 & red!43 38.4 & red!44 37.2 & 8.1 & red!11 70.7 & 0.0\n& 56.5 & 51.6 & red!36 20.8 & red!38 18.9 & 12.9 & red!10 46.8 & 0.0\n& 82.2 & 82.1 & red!44 37.8 & red!42 39.7 & 8.6 & red!11 71.0 & 2.9\n\nMedGemma-27B\n& 78.3 & 77.8 & red!5 73.1 & red!2 76.4 & 50.3 & red!3 75.6 & 0.3\n& 83.0 & 81.0 & red!4 79.0 & red!2 80.7 & 38.0 & 83.0 & 0.0\n& 91.9 & 91.9 & red!16 76.2 & red!12 79.8 & 15.2 & green!2 93.9 & 0.0\n& 67.7 & 66.1 & red!22 45.8 & red!22 45.8 & 61.3 & red!2 66.1 & 0.0\n& 89.1 & 89.1 & red!11 78.5 & red!9 80.2 & 33.3 & red!1 87.9 & 0.0\n\nPerformance (\\%) under two single-turn settings, Full and Conc.",
+    "char_start": 17883,
+    "char_end": 21796,
+    "sentence_index": 123,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec006",
+    "text": ", and two multi-turn settings, Ask-Question-First ( Q-First ) and Ask-Question-Last ( Q-Last ).",
+    "char_start": 21797,
+    "char_end": 21892,
+    "sentence_index": 124,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec006",
+    "text": "Under Q-First , we report Ini.",
+    "char_start": 21893,
+    "char_end": 21923,
+    "sentence_index": 125,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec006",
+    "text": "(accuracy at the first turn where the model answers), Final (accuracy at the final turn after all evidence shards are revealed), and Abs.",
+    "char_start": 21924,
+    "char_end": 22061,
+    "sentence_index": 126,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec006",
+    "text": "(abstention rate).",
+    "char_start": 22062,
+    "char_end": 22080,
+    "sentence_index": 127,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec006",
+    "text": "Under Q-Last , we report Ans.",
+    "char_start": 22081,
+    "char_end": 22110,
+    "sentence_index": 128,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec006",
+    "text": "(final-answer accuracy when the question is revealed only at the last turn).",
+    "char_start": 22111,
+    "char_end": 22187,
+    "sentence_index": 129,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec006",
+    "text": "Conc.",
+    "char_start": 22188,
+    "char_end": 22193,
+    "sentence_index": 130,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec006",
+    "text": "denotes the concatenated-shards single-turn input.",
+    "char_start": 22194,
+    "char_end": 22244,
+    "sentence_index": 131,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec006",
+    "text": "Cell background color indicates the change relative to the same model's Full setting: darker red indicates a larger decrease, and darker green indicates a larger increase.",
+    "char_start": 22245,
+    "char_end": 22416,
+    "sentence_index": 132,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec006",
+    "text": "Result.",
+    "char_start": 22418,
+    "char_end": 22425,
+    "sentence_index": 133,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec006",
+    "text": "Across datasets and model families, Table shows a consistent pattern.",
+    "char_start": 22426,
+    "char_end": 22495,
+    "sentence_index": 134,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec006",
+    "text": "CONCAT remains close to FULL, indicating minimal information loss from sharding (avg -0.76\\%), whereas initial-answer accuracy under Q-First is substantially lower than the single-turn baseline (max 65.7\\%).",
+    "char_start": 22496,
+    "char_end": 22703,
+    "sentence_index": 135,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec006",
+    "text": "By contrast, Q-Last recovers much of this loss, often approaching FULL (avg -4.1\\%).",
+    "char_start": 22704,
+    "char_end": 22788,
+    "sentence_index": 136,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec006",
+    "text": "When asking the question first, we observe a large gap (-18.1\\% to 60.6\\%) between the model's initial and final answer, indicating that initial answering significantly harms performance (up to max 60.6\\% drop).",
+    "char_start": 22789,
+    "char_end": 23000,
+    "sentence_index": 137,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec006",
+    "text": "When the question is withheld until all clinical information has been presented (Q-Last), performance is consistently higher than Q-First initial-answer accuracy (avg 20.1\\%), with models recovering to near single-turn levels.",
+    "char_start": 23001,
+    "char_end": 23227,
+    "sentence_index": 138,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec006",
+    "text": "This suggests that models without early answering intent can perform well in multi-turn settings.",
+    "char_start": 23228,
+    "char_end": 23325,
+    "sentence_index": 139,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec006",
+    "text": "We further examine how models behave as information is incrementally revealed.",
+    "char_start": 23327,
+    "char_end": 23405,
+    "sentence_index": 140,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec006",
+    "text": "Figure a shows the distribution of first-answer turns under Q-First across different conversation lengths (N = 4, 8, 12, 16), indicating a persistent pattern of rushing to answer across all settings.",
+    "char_start": 23406,
+    "char_end": 23605,
+    "sentence_index": 141,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec006",
+    "text": "In fact, over 55.3\\% of answers are given within the first two turns, before sufficient clinical information has been presented.",
+    "char_start": 23606,
+    "char_end": 23734,
+    "sentence_index": 142,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec006",
+    "text": "Furthermore, 18.5\\% of these initial answers are incorrect, demonstrating that errors are disproportionately concentrated in early turns.",
+    "char_start": 23735,
+    "char_end": 23872,
+    "sentence_index": 143,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec006",
+    "text": "Figure b illustrates that as GPT-5-mini observes more information shards (1 to 6 out of 6), the proportion of holds decreases while committed answers (correct in green, incorrect in red) increase.",
+    "char_start": 23873,
+    "char_end": 24069,
+    "sentence_index": 144,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec006",
+    "text": "This reflects the model's tendency to commit to a diagnosis as evidence accumulates; notably, holding longer can increase accuracy significantly (by 11.7\\%).",
+    "char_start": 24070,
+    "char_end": 24227,
+    "sentence_index": 145,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec006",
+    "text": "A striking finding is that some models produce an answer based solely on the diagnostic question, before receiving any clinical information.",
+    "char_start": 24229,
+    "char_end": 24369,
+    "sentence_index": 146,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec006",
+    "text": "In the Q-First setting, models are explicitly instructed to WAIT, yet some still answer immediately upon seeing only the diagnostic question and the multiple-choice options.",
+    "char_start": 24370,
+    "char_end": 24543,
+    "sentence_index": 147,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec006",
+    "text": "We quantify this behavior as the guess rate , defined as the proportion of cases where the model answers at the initial question-only step.",
+    "char_start": 24544,
+    "char_end": 24683,
+    "sentence_index": 148,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec006",
+    "text": "As shown in Figure c, the guess rate is substantial for several models, reaching 99.9\\% for Med42-70B.",
+    "char_start": 24684,
+    "char_end": 24786,
+    "sentence_index": 149,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec006",
+    "text": "Conversely, frontier commercial models such as GPT-5-mini (5.9\\%) and Claude Sonnet 4.6 (3.7\\%) demonstrate a much greater tendency to wait.",
+    "char_start": 24787,
+    "char_end": 24927,
+    "sentence_index": 150,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec006",
+    "text": "Summary.",
+    "char_start": 24929,
+    "char_end": 24937,
+    "sentence_index": 151,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec006",
+    "text": "Early answering is the primary driver of performance degradation in multi-turn medical diagnosis, yet deferring the diagnostic question (Q-Last) largely recovers this loss, supporting the view that diagnostic impatience is a major failure mode in our controlled multi-turn setting.",
+    "char_start": 24938,
+    "char_end": 25219,
+    "sentence_index": 152,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec006",
+    "text": "[t]\n\n-5ex\nfigures/panel_figure.pdf\n-0.5em\n\nDiagnostic impatience across information accumulation and model types.",
+    "char_start": 25221,
+    "char_end": 25334,
+    "sentence_index": 153,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec006",
+    "text": "Colors denote =1pt bghold Ay hold , =1pt bgcorrect Ay correct , and =1pt bgincorrect Ay incorrect responses.",
+    "char_start": 25335,
+    "char_end": 25443,
+    "sentence_index": 154,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec006",
+    "text": "(a) Distribution of initial-answer turns under different conversation lengths (N=4, 8, 12, 16) for GPT-5-mini.",
+    "char_start": 25444,
+    "char_end": 25554,
+    "sentence_index": 155,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec006",
+    "text": "(b) Turn-level distribution of hold, correct, and incorrect responses for GPT-5-mini by number of shards seen.",
+    "char_start": 25555,
+    "char_end": 25665,
+    "sentence_index": 156,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec006",
+    "text": "(c) Guess rates across models.",
+    "char_start": 25666,
+    "char_end": 25696,
+    "sentence_index": 157,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec006",
+    "text": "-1em\n\n[t]\n\n-1em\n6.5 8\n1pt\n1.0\n2pt\n6pt\nlccccc\n\nModel & Avg Ini.",
+    "char_start": 25698,
+    "char_end": 25760,
+    "sentence_index": 158,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec007",
+    "text": "Turn & Abs & Ini.",
+    "char_start": 25761,
+    "char_end": 25778,
+    "sentence_index": 159,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec007",
+    "text": "& Full & $ $\n\nMedGemma-27B & $7.2\\!",
+    "char_start": 25779,
+    "char_end": 25814,
+    "sentence_index": 160,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec007",
+    "text": "\\!2.1$ & 46.7 & 77.3 & 86.6 & -9.3\n\nClaude Sonnet 4.6 & $6.5\\!",
+    "char_start": 25815,
+    "char_end": 25877,
+    "sentence_index": 161,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec007",
+    "text": "\\!2.2$ & 22.0 & 90.1 & 96.5 & -6.4\n\nQwen3-4B & $4.9\\!",
+    "char_start": 25878,
+    "char_end": 25931,
+    "sentence_index": 162,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec007",
+    "text": "\\!2.5$ & 7.1 & 56.8 & 77.5 & -20.7\n\no4-mini & $4.1\\!",
+    "char_start": 25932,
+    "char_end": 25984,
+    "sentence_index": 163,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec007",
+    "text": "\\!1.7$ & 2.2 & 82.0 & 96.1 & -14.1\n\nGPT-5-mini & $3.7\\!",
+    "char_start": 25985,
+    "char_end": 26040,
+    "sentence_index": 164,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec007",
+    "text": "\\!1.4$ & 1.6 & 80.4 & 96.1 & -15.7\n\nGPT-OSS-20B & $3.1\\!",
+    "char_start": 26041,
+    "char_end": 26097,
+    "sentence_index": 165,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec007",
+    "text": "\\!1.2$ & 1.1 & 67.8 & 90.0 & -22.2\n\nMed42-8B & $2.4\\!",
+    "char_start": 26098,
+    "char_end": 26151,
+    "sentence_index": 166,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec007",
+    "text": "\\!2.0$ & 26.4 & 44.8 & 82.8 & -38.0\n\nMedGemma-1.5-4B & $1.2\\!",
+    "char_start": 26152,
+    "char_end": 26213,
+    "sentence_index": 167,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec007",
+    "text": "\\!0.7$ & 13.7 & 34.4 & 72.0 & -37.6\n\nMed42-70B & $1.0\\!",
+    "char_start": 26214,
+    "char_end": 26269,
+    "sentence_index": 168,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec007",
+    "text": "\\!0.0$ & 0.0 & 40.7 & 90.7 & -50.0\n\nComparison of model performance in the 9-turn setting.",
+    "char_start": 26270,
+    "char_end": 26360,
+    "sentence_index": 169,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec007",
+    "text": "We report the average turn at which each model produces its first answer ($ $), the abstention rate, the accuracy of the model's initial answer ( Ini.",
+    "char_start": 26361,
+    "char_end": 26511,
+    "sentence_index": 170,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec007",
+    "text": "), the accuracy when all information is provided ( Full ), and the accuracy drop from Full to Ini.",
+    "char_start": 26512,
+    "char_end": 26610,
+    "sentence_index": 171,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec007",
+    "text": "$ $ .",
+    "char_start": 26611,
+    "char_end": 26616,
+    "sentence_index": 172,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec007",
+    "text": "Setting.",
+    "char_start": 26618,
+    "char_end": 26626,
+    "sentence_index": 173,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec007",
+    "text": "Motivated by the observation that models frequently answer early and incur large performance drops (avg 24.2\\%), we study whether controlling the intent-to-answer can improve performance by comparing Q-First and Q-Last.",
+    "char_start": 26627,
+    "char_end": 26846,
+    "sentence_index": 174,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec007",
+    "text": "We examine: 1) the accuracy difference between the model\u2019s first committed answer (Q-First Ini) and Q-Last, 2) answer revisions within a multi-turn conversation using F2T (incorrect-to-correct, measuring the proportion of cases in which the model\u2019s initial committed answer is incorrect but its final committed answer is correct) and T2F (correct-to-incorrect, measuring the proportion of cases in which the model\u2019s initial committed answer is correct but its final committed answer is incorrect), 3) accuracy across different turns (4, 8, 12, 16), 4) model-level statistics such as average Ini (Avg Ini) and Abstention Rate, 5) specific subsets of cases (e.g., 9-turn cases), and 6) turn-level dynamics in Figure .",
+    "char_start": 26847,
+    "char_end": 27562,
+    "sentence_index": 175,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec007",
+    "text": "Result.",
+    "char_start": 27564,
+    "char_end": 27571,
+    "sentence_index": 176,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec007",
+    "text": "Table shows that Q-Last is consistently higher (avg 20.1\\%) than Q-First Ini.",
+    "char_start": 27572,
+    "char_end": 27649,
+    "sentence_index": 177,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec007",
+    "text": "across MINT datasets and models, indicating that delayed commitment improves performance.",
+    "char_start": 27650,
+    "char_end": 27739,
+    "sentence_index": 178,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec007",
+    "text": "Furthermore, this advantage is also pronounced across the 4-, 8-, 12-, and 16-turn settings, where Q-Last remains consistently higher (avg 14.7\\%) than Q-First Ini.",
+    "char_start": 27740,
+    "char_end": 27904,
+    "sentence_index": 179,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec007",
+    "text": "in Table .",
+    "char_start": 27905,
+    "char_end": 27915,
+    "sentence_index": 180,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec007",
+    "text": "The same pattern is reflected in Table under the 9-turn setting: models with a later Avg Ini.",
+    "char_start": 27916,
+    "char_end": 28009,
+    "sentence_index": 181,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec007",
+    "text": "Turn and a higher abstention rate tend to show smaller drops (9.3\\%), whereas models that answer early exhibit much larger drops (50\\%) in Full$ $Ini.",
+    "char_start": 28010,
+    "char_end": 28160,
+    "sentence_index": 182,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec007",
+    "text": "$ $.",
+    "char_start": 28161,
+    "char_end": 28165,
+    "sentence_index": 183,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec007",
+    "text": "In short, greater patience is associated with a smaller performance drop.",
+    "char_start": 28166,
+    "char_end": 28239,
+    "sentence_index": 184,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec007",
+    "text": "[t]\n\n3.2pt\n1.15\n!",
+    "char_start": 28241,
+    "char_end": 28258,
+    "sentence_index": 185,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec007",
+    "text": "l ccccc| ccccc| ccccc| ccccc| ccccc\n\n& 5 c| MedQA\n& 5 c| Derm-Public\n& 5 c| Derm-Private\n& 5 c| MedBullets\n& 5 c MedMCQA\n\n(lr) 2-6 (lr) 7-11 (lr) 12-16 (lr) 17-21 (lr) 22-26\n\\# Turns\n& Q.F & FR & T2F & F2T & Q.L\n& Q.F & FR & T2F & F2T & Q.L\n& Q.F & FR & T2F & F2T & Q.L\n& Q.F & FR & T2F & F2T & Q.L\n& Q.F & FR & T2F & F2T & Q.L\n\n(lr) 2-5 (lr) 6-6 (lr) 7-10 (lr) 11-11 (lr) 12-15 (lr) 16-16 (lr) 17-20 (lr) 21-21 (lr) 22-25 (lr) 26-26\n\n4\n& 80.7 & 20.7 & 0.8 & 16.7 & 96.5\n& 82.9 & 15.0 & 1.2 & 11.2 & 92.7\n& 90.6 & 10.6 & 0.0 & 9.4 & 100.0\n& 63.8 & 30.9 & 3.6 & 25.5 & 80.3\n& 85.0 & 17.2 & 1.3 & 14.6 & 98.1\n\n8\n& 76.3 & 27.0 & 1.5 & 20.3 & 94.9\n& 79.3 & 22.0 & 2.4 & 17.1 & 95.1\n& 90.1 & 13.6 & 0.0 & 8.6 & 100.0\n& 55.9 & 40.7 & 3.4 & 28.8 & 78.3\n& 84.1 & 19.2 & 0.6 & 14.7 & 98.1\n\n12\n& 77.2 & 28.9 & 1.6 & 19.8 & 93.8\n& 83.1 & 16.9 & 1.2 & 10.8 & 92.8\n& 84.7 & 17.6 & 0.0 & 15.3 & 100.0\n& 60.0 & 34.5 & 1.8 & 20.0 & 76.4\n& 86.1 & 20.5 & 2.0 & 12.6 & 98.0\n\n16\n& 77.5 & 27.3 & 1.1 & 19.2 & 95.8\n& 80.7 & 21.7 & 2.4 & 14.5 & 94.0\n& 83.5 & 18.8 & 0.0 & 15.3 & 100.0\n& 59.3 & 39.0 & 3.4 & 23.7 & 79.7\n& 87.3 & 18.4 & 1.3 & 11.4 & 98.1\n\n-0.5em\n\nPerformance under different total numbers of turns across five medical benchmarks.",
+    "char_start": 28259,
+    "char_end": 29480,
+    "sentence_index": 186,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec007",
+    "text": "Q.F (Ask Question First) reports accuracy at the model's initial answer, and Q.L (Ask Question Last) reports final diagnostic accuracy when the question is revealed only after all information has been provided.",
+    "char_start": 29481,
+    "char_end": 29691,
+    "sentence_index": 187,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec007",
+    "text": "FR denotes flip rate, T2F denotes true-to-false rate, and F2T denotes false-to-true rate.",
+    "char_start": 29692,
+    "char_end": 29781,
+    "sentence_index": 188,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec007",
+    "text": "[t]\n\n-0.5em figures/figure2_hold_acc_11models.pdf\n-0.5em\nProportion of Correct, Incorrect, and Hold responses across six turns for 11 models.",
+    "char_start": 29783,
+    "char_end": 29924,
+    "sentence_index": 189,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec007",
+    "text": "For most models, hold responses decrease over turns while the proportion of correct answers increases by the final turn.",
+    "char_start": 29925,
+    "char_end": 30045,
+    "sentence_index": 190,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec007",
+    "text": "-1em\n\nWe further analyze how holding intent affects model performance over multi-turns.",
+    "char_start": 30046,
+    "char_end": 30133,
+    "sentence_index": 191,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec007",
+    "text": "Across models, delayed commitment not only reduces premature errors but also preserves the opportunity for later answer revision.",
+    "char_start": 30134,
+    "char_end": 30263,
+    "sentence_index": 192,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec007",
+    "text": "This pattern is consistent with the revision dynamics in Table , where F2T is often larger (avg 11.9\\%) than T2F in Table , where the same trend holds across different turn settings in with commercial LLMs having 10.6$ $ restoration rate (F2T/T2F).",
+    "char_start": 30264,
+    "char_end": 30512,
+    "sentence_index": 193,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec007",
+    "text": "Figure provides a turn-level view: for most models, the proportion of correct answers increases by the final turn as hold responses decrease over time.",
+    "char_start": 30513,
+    "char_end": 30664,
+    "sentence_index": 194,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec007",
+    "text": "These results show that holding the diagnosis does not merely delay answering, but actively improves reliability by preserving the model's opportunity to self-correct as more evidence is revealed.",
+    "char_start": 30665,
+    "char_end": 30861,
+    "sentence_index": 195,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec007",
+    "text": "Additional analyses of the turn-level accuracy plateau and post-plateau gains are provided in Appendix .",
+    "char_start": 30862,
+    "char_end": 30966,
+    "sentence_index": 196,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec007",
+    "text": "[t]\n\n3.0pt\n1.18\n!",
+    "char_start": 30968,
+    "char_end": 30985,
+    "sentence_index": 197,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec007",
+    "text": "l cccc| cccc| cccc| cccc| cccc\n\n& 4 c| MedQA\n& 4 c| Derm-Public\n& 4 c| Derm-Private\n& 4 c| MedBullets\n& 4 c MedMCQA\n\n(lr) 2-5 (lr) 6-9 (lr) 10-13 (lr) 14-17 (lr) 18-21\nModel\n& FR & T2F & F2T & RR\n& FR & T2F & F2T & RR\n& FR & T2F & F2T & RR\n& FR & T2F & F2T & RR\n& FR & T2F & F2T & RR\n\n21 l Open-Source General LLMs\n[2pt]\n\nQwen2.5-3B\n& 52.2 & 16.0 & 9.6 & 0.60\n& 53.1 & 20.3 & 9.4 & 0.46\n& 50.7 & 22.1 & 3.9 & 0.18\n& 46.7 & 17.8 & 11.1 & 0.62\n& 45.3 & 14.6 & 11.7 & 0.80\n\nQwen3-4B\n& 27.0 & 4.5 & 10.4 & 2.31\n& 13.0 & 0.0 & 7.0 & N/A\n& 19.6 & 0.0 & 14.4 & N/A\n& 17.9 & 1.8 & 3.6 & 2.00\n& 25.8 & 1.8 & 15.0 & 8.33\n\nOLMo-2-7B\n& 93.0 & 19.2 & 17.6 & 0.92\n& 87.0 & 19.0 & 23.0 & 1.21\n& 94.9 & 19.2 & 26.3 & 1.37\n& 93.6 & 6.5 & 11.3 & 1.74\n& 92.0 & 16.7 & 24.1 & 1.44\n\nGPT-OSS-20B\n& 52.3 & 3.5 & 30.9 & 8.83\n& 37.0 & 2.0 & 24.0 & 12.00\n& 40.4 & 1.0 & 31.3 & 31.30\n& 54.8 & 3.2 & 27.4 & 8.56\n& 35.8 & 1.2 & 19.7 & 16.42\n\n21 l Commercial Models\n[2pt]\n\nClaude Sonnet 4.6\n& 7.7 & 0.6 & 6.2 & 10.33\n& 8.0 & 0.0 & 8.0 & N/A\n& 4.1 & 0.0 & 4.1 & N/A\n& 10.9 & 0.0 & 6.5 & N/A\n& 6.8 & 0.0 & 6.1 & N/A\n\nGPT-5-mini\n& 26.7 & 1.7 & 20.0 & 11.76\n& 21.0 & 0.0 & 15.0 & N/A\n& 16.2 & 0.0 & 14.1 & N/A\n& 42.6 & 0.0 & 31.1 & N/A\n& 19.1 & 0.6 & 13.9 & 23.17\n\no4-mini\n& 30.1 & 1.7 & 18.9 & 11.12\n& 28.0 & 3.0 & 18.0 & 6.00\n& 17.4 & 0.0 & 14.3 & N/A\n& 42.4 & 5.1 & 23.7 & 4.65\n& 19.1 & 1.7 & 12.1 & 7.12\n\n21 l Medical-Domain LLMs\n[2pt]\n\nMed42-v2-8B\n& 54.3 & 9.5 & 19.7 & 2.07\n& 50.0 & 4.0 & 26.0 & 6.50\n& 56.1 & 1.0 & 38.8 & 38.80\n& 61.3 & 9.7 & 27.4 & 2.82\n& 48.3 & 5.2 & 26.2 & 5.04\n\nMed42-v2-70B\n& 58.3 & 4.3 & 34.2 & 7.95\n& 49.0 & 2.0 & 32.0 & 16.00\n& 69.7 & 0.0 & 60.6 & N/A\n& 75.8 & 1.6 & 38.7 & 24.19\n& 55.8 & 2.9 & 39.7 & 13.69\n\nMedGemma-1.5-4B\n& 8.4 & 1.6 & 2.1 & 1.31\n& 8.2 & 1.2 & 1.2 & 1.00\n& 4.7 & 1.2 & 0.0 & 0.00\n& 5.7 & 1.9 & 0.0 & 0.00\n& 10.9 & 0.6 & 2.6 & 4.33\n\nMedGemma-27B\n& 14.8 & 3.0 & 6.4 & 2.13\n& 8.1 & 1.6 & 3.2 & 2.00\n& 21.4 & 7.1 & 10.7 & 1.51\n& 16.7 & 4.2 & 4.2 & 1.00\n& 16.4 & 4.3 & 6.0 & 1.40\n\n-0.5em\n\nAnswer-revision behavior across five medical benchmarks.",
+    "char_start": 30986,
+    "char_end": 33044,
+    "sentence_index": 198,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec007",
+    "text": "FR denotes flip rate, T2F denotes true-to-false rate, F2T denotes false-to-true rate, and RR denotes restoration rate, computed as $ F2T / T2F $, under the multi-turn Q-First setting.",
+    "char_start": 33045,
+    "char_end": 33228,
+    "sentence_index": 199,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec007",
+    "text": "When T2F is 0, RR is N/A .",
+    "char_start": 33229,
+    "char_end": 33255,
+    "sentence_index": 200,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec007",
+    "text": "-1em\n\nSummary.",
+    "char_start": 33257,
+    "char_end": 33271,
+    "sentence_index": 201,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec007",
+    "text": "Holding the diagnosis improves reliability in two ways (Figure ): it avoids some early errors and, critically, preserves the opportunity for self-correction to take effect.",
+    "char_start": 33272,
+    "char_end": 33444,
+    "sentence_index": 202,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec008",
+    "text": "Setting.",
+    "char_start": 33446,
+    "char_end": 33454,
+    "sentence_index": 203,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec008",
+    "text": "To investigate how different types of clinical information influence LLMs\u2019 answering behavior, we conduct a controlled reordering analysis under fixed-turn settings with turn 0 as the questions with the corresponding multiple choices.",
+    "char_start": 33455,
+    "char_end": 33689,
+    "sentence_index": 204,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec008",
+    "text": "We hold the underlying cases and laboratory findings constant, and vary only the position of the lab-result shard, placing it early, middle, or late in the multi-turn settings.",
+    "char_start": 33690,
+    "char_end": 33866,
+    "sentence_index": 205,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec008",
+    "text": "In the 10-turn setting, the lab-result shard is placed at turn 2 (early), turn 5 (middle), or turn 10 (late).",
+    "char_start": 33867,
+    "char_end": 33976,
+    "sentence_index": 206,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec008",
+    "text": "To enable a clinically meaningful analysis, we further group cases into two categories: cases with lab-dependent diseases (e.g., Endocrinology, Infectious Diseases, Hematology and Oncology), where laboratory evidence plays a central role in diagnosis, and cases with non-lab-dependent diseases (e.g., Dermatology, Neurology, Pediatrics), where diagnosis relies less directly on lab results caliendo2013better .",
+    "char_start": 33977,
+    "char_end": 34387,
+    "sentence_index": 207,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec008",
+    "text": "All experiments are conducted on MedQA cases that contain laboratory findings (n=249), to avoid confounding from cross-dataset differences.",
+    "char_start": 34388,
+    "char_end": 34527,
+    "sentence_index": 208,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec008",
+    "text": "In addition, we analyze answer revision behavior using window size, defined as the turn difference between the first occurrence of two prediction states (e.g., incorrect-to-correct or correct-to-incorrect).",
+    "char_start": 34528,
+    "char_end": 34734,
+    "sentence_index": 209,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec008",
+    "text": "Result.",
+    "char_start": 34736,
+    "char_end": 34743,
+    "sentence_index": 210,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec008",
+    "text": "Prompting alone cannot reliably suppress early answering, and certain clinical information still triggers immediate answers even when models are instructed to wait.",
+    "char_start": 34744,
+    "char_end": 34908,
+    "sentence_index": 211,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec008",
+    "text": "In particular, laboratory results act as strong lures that induce early answering.",
+    "char_start": 34909,
+    "char_end": 34991,
+    "sentence_index": 212,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec008",
+    "text": "As shown in Figure a, the position of the lab-result shard causes a clear shift in the distribution of initial answer turns.",
+    "char_start": 34992,
+    "char_end": 35116,
+    "sentence_index": 213,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec008",
+    "text": "When lab results appear early, models show a strong tendency (75.0\\%) to answer immediately, whereas moving the same lab information to later turns substantially diminishes this urge (13.9\\% vs.",
+    "char_start": 35117,
+    "char_end": 35311,
+    "sentence_index": 214,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec008",
+    "text": "8.3\\%), compared with middle and late placements.",
+    "char_start": 35312,
+    "char_end": 35361,
+    "sentence_index": 215,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec008",
+    "text": "This effect is especially pronounced for lab-dependent diseases (Figure a): when lab results appear at turn 2, 88.0\\% of lab-dependent cases produce their first answer at that turn, compared with 45.5\\% for non-lab-dependent cases.",
+    "char_start": 35362,
+    "char_end": 35593,
+    "sentence_index": 216,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec008",
+    "text": "When the lab-result shard is moved to the middle (turn 5), immediate answering weakens significantly (16.0\\%), and in the late condition (turn 10), only 8.0\\% of lab-dependent cases answer immediately after the lab-result turn.",
+    "char_start": 35594,
+    "char_end": 35821,
+    "sentence_index": 217,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec008",
+    "text": "Importantly, this behavior is not limited to lab-driven diagnoses: even for non-lab-dependent diseases, placing lab results early shifts answering to earlier turns (45.5\\% vs.",
+    "char_start": 35822,
+    "char_end": 35997,
+    "sentence_index": 218,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec008",
+    "text": "9.1\\% in middle and late settings), indicating that laboratory evidence broadly acts as a strong trigger for premature answering.",
+    "char_start": 35998,
+    "char_end": 36127,
+    "sentence_index": 219,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec008",
+    "text": "Further descriptive statistics and additional experimental details for this analysis are reported in Appendix .",
+    "char_start": 36128,
+    "char_end": 36239,
+    "sentence_index": 220,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec008",
+    "text": "[t]\n\n-2em figures/lab-result-panel.pdf\n-1.2em\nEffects of lab-result timing on response behavior and self-correction for GPT-5 mini in 10-turn cases.",
+    "char_start": 36241,
+    "char_end": 36389,
+    "sentence_index": 221,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec008",
+    "text": "(a) Distribution of the first-answer turn under early, middle, and late lab-result placement, shown separately for lab-dependent and non-lab-dependent diseases.",
+    "char_start": 36390,
+    "char_end": 36550,
+    "sentence_index": 222,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec008",
+    "text": "(b) Turn-level response composition for each lab-result order, showing correct, incorrect, and hold states across turns.",
+    "char_start": 36551,
+    "char_end": 36671,
+    "sentence_index": 223,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec008",
+    "text": "(c) Heatmaps of False-to-True (left) and True-to-False (right) transitions by window size/turn gap, stratified by disease type and lab-result placement.",
+    "char_start": 36672,
+    "char_end": 36824,
+    "sentence_index": 224,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec008",
+    "text": "-1em\n\nIntent-to-answer driven by strong lures directly affects diagnostic outcomes.",
+    "char_start": 36825,
+    "char_end": 36908,
+    "sentence_index": 225,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec008",
+    "text": "Figure b shows that when lab results appear early, the proportion of unanswered cases drops sharply immediately after the lab-result turn, indicating that many cases transition into committed answers at that point.",
+    "char_start": 36909,
+    "char_end": 37123,
+    "sentence_index": 226,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec008",
+    "text": "However, this earlier commitment is not uniformly beneficial: part of this shift corresponds to incorrect answers, showing that lab-induced early answering can accelerate both correct and incorrect decisions.",
+    "char_start": 37124,
+    "char_end": 37332,
+    "sentence_index": 227,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec008",
+    "text": "When lab results are moved to later positions, answering becomes more gradual and early-answer errors are reduced.",
+    "char_start": 37333,
+    "char_end": 37447,
+    "sentence_index": 228,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec008",
+    "text": "Notably, the impact differs across disease types.",
+    "char_start": 37448,
+    "char_end": 37497,
+    "sentence_index": 229,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec008",
+    "text": "For lab-dependent diseases, early answering induced by lab results leads to relatively smaller performance degradation, as lab information is often diagnostically central.",
+    "char_start": 37498,
+    "char_end": 37669,
+    "sentence_index": 230,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec008",
+    "text": "In contrast, for non-lab-dependent diseases, premature answering triggered by lab results leads to substantially higher error rates, since diagnosis relies less directly on laboratory evidence.",
+    "char_start": 37670,
+    "char_end": 37863,
+    "sentence_index": 231,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec008",
+    "text": "Finally, we analyze how lab-result position affects answer revision dynamics (Figure c).",
+    "char_start": 37864,
+    "char_end": 37952,
+    "sentence_index": 232,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec008",
+    "text": "Answer changes are mostly concentrated within small window sizes, indicating that revisions are typically local.",
+    "char_start": 37953,
+    "char_end": 38065,
+    "sentence_index": 233,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec008",
+    "text": "When lab results appear early or in the middle, F2T transitions are highly concentrated at window size 1 (e.g., 77.8\\% and 80.0\\% for lab-dependent diseases), suggesting immediate self-correction following the introduction of lab evidence.",
+    "char_start": 38066,
+    "char_end": 38305,
+    "sentence_index": 234,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec008",
+    "text": "In contrast, when lab results appear late, self-correction becomes more distributed across larger window sizes, indicating that corrections unfold more gradually over subsequent turns.",
+    "char_start": 38306,
+    "char_end": 38490,
+    "sentence_index": 235,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec008",
+    "text": "Summary.",
+    "char_start": 38492,
+    "char_end": 38500,
+    "sentence_index": 236,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec008",
+    "text": "These results show that answering behavior depends not only on internal answer tendency, but also on the type of clinical evidence.",
+    "char_start": 38501,
+    "char_end": 38632,
+    "sentence_index": 237,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec008",
+    "text": "Clinically salient signals such as laboratory results can act as strong triggers that induce early answering and reshape both error patterns and self-correction dynamics in multi-turn diagnosis.",
+    "char_start": 38633,
+    "char_end": 38827,
+    "sentence_index": 238,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec008",
+    "text": "Representative qualitative case studies of these behaviors, including rush-to-answer, self-correction, and lab-triggered premature answering, are provided in Appendix .",
+    "char_start": 38829,
+    "char_end": 38997,
+    "sentence_index": 239,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec009",
+    "text": "In this work, we build MINT, a controlled benchmark for evaluating LLM behaviors in multi-turn medical diagnosis.",
+    "char_start": 38999,
+    "char_end": 39112,
+    "sentence_index": 240,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec009",
+    "text": "Through three complementary lenses, Hold, Self-Correction, and Lure, we demonstrate that multi-turn performance degradation is driven primarily by premature commitment rather than insufficient diagnostic capability.",
+    "char_start": 39113,
+    "char_end": 39328,
+    "sentence_index": 241,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec009",
+    "text": "Deferring the diagnostic question recovers accuracy to near single-turn levels, incorrect-to-correct revisions dominate the reverse by up to 10.6$ $, and early placement of laboratory results reliably triggers the premature answering that causes diagnostic errors.",
+    "char_start": 39330,
+    "char_end": 39594,
+    "sentence_index": 242,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec009",
+    "text": "These findings reframe the central challenge: the bottleneck is not whether a model can reason, but whether it can govern commitment timing as evidence unfolds.",
+    "char_start": 39595,
+    "char_end": 39755,
+    "sentence_index": 243,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec009",
+    "text": "An important direction for future work is to develop commitment-aware diagnostic systems that explicitly optimize when to answer alongside what to diagnose.",
+    "char_start": 39756,
+    "char_end": 39912,
+    "sentence_index": 244,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec010",
+    "text": "All five datasets used to construct MINT (MedQA, MedMCQA, Derm-Public, Derm-Private, and MedBullets) are publicly available.",
+    "char_start": 39914,
+    "char_end": 40038,
+    "sentence_index": 245,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec010",
+    "text": "Detailed descriptions of each dataset, including preprocessing steps, annotation procedures, and shard construction pipelines, are provided in Appendix and .",
+    "char_start": 40039,
+    "char_end": 40196,
+    "sentence_index": 246,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec010",
+    "text": "Section describes the full experimental setup, including model configurations, prompting templates, and decoding parameters.",
+    "char_start": 40197,
+    "char_end": 40321,
+    "sentence_index": 247,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec010",
+    "text": "All multi-turn variants are generated using deterministic decoding (temperature = 0) to ensure reproducibility across settings.",
+    "char_start": 40322,
+    "char_end": 40449,
+    "sentence_index": 248,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec010",
+    "text": "The complete MINT benchmark, including all shard variants, evaluation scripts, and prompting templates, will be open-sourced upon publication.",
+    "char_start": 40450,
+    "char_end": 40592,
+    "sentence_index": 249,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec011",
+    "text": "MINT is constructed from publicly available medical question-answering datasets and does not involve patient-identifiable data or human subjects.",
+    "char_start": 40594,
+    "char_end": 40739,
+    "sentence_index": 250,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec011",
+    "text": "Our evaluation involves the use of commercial LLM APIs, including OpenAI and Anthropic services.",
+    "char_start": 40740,
+    "char_end": 40836,
+    "sentence_index": 251,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec011",
+    "text": "We adhere to the data usage guidelines of each respective API provider.",
+    "char_start": 40837,
+    "char_end": 40908,
+    "sentence_index": 252,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec011",
+    "text": "This work is intended to improve understanding of LLM behavior in medical diagnosis settings and does not constitute clinical validation or endorsement of any model for clinical deployment.",
+    "char_start": 40909,
+    "char_end": 41098,
+    "sentence_index": 253,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec011",
+    "text": "We do not foresee additional ethical concerns arising from this study.",
+    "char_start": 41099,
+    "char_end": 41169,
+    "sentence_index": 254,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec011",
+    "text": "colm2026_conference\ncolm2026_conference\n\nSeveral limitations remain.",
+    "char_start": 41171,
+    "char_end": 41239,
+    "sentence_index": 255,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec012",
+    "text": "First, our benchmark is constructed by converting existing single-turn medical QA cases into sequential evidence streams, rather than collecting naturally occurring doctor\u2013patient interactions.",
+    "char_start": 41240,
+    "char_end": 41433,
+    "sentence_index": 256,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec012",
+    "text": "Second, our central intervention, holding commitment by revealing the diagnostic question only after all evidence has been presented, is primarily an analytic control, not a realistic deployment protocol.",
+    "char_start": 41434,
+    "char_end": 41638,
+    "sentence_index": 257,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec012",
+    "text": "Third, although we explicitly verify information preservation by comparing FULL and CONCAT, this verification is still limited.",
+    "char_start": 41639,
+    "char_end": 41766,
+    "sentence_index": 258,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec012",
+    "text": "Fourth, the benchmark remains limited in coverage and ecological diversity.",
+    "char_start": 41767,
+    "char_end": 41842,
+    "sentence_index": 259,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec012",
+    "text": "Fifth, our evaluation focuses on multiple-choice diagnostic commitment, which is analytically clean but narrower than real clinical reasoning.",
+    "char_start": 41843,
+    "char_end": 41985,
+    "sentence_index": 260,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec012",
+    "text": "Sixth, while our results strongly support the importance of premature commitment, they do not fully eliminate other explanations for multi-turn degradation.",
+    "char_start": 41986,
+    "char_end": 42142,
+    "sentence_index": 261,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec012",
+    "text": "Our controlled setup isolates answer timing, turn granularity, and evidence type, but real multi-turn failure may also reflect longer-horizon state tracking, memory errors, prompt sensitivity, instruction drift, or interaction effects between reasoning style and dialogue context.",
+    "char_start": 42143,
+    "char_end": 42423,
+    "sentence_index": 262,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec012",
+    "text": "All these limitations point out interesting future work directions, especially the bold direction of uncovering mechanism of whether LLMs can decide when to wait, when to answer, and when to revise under partial information.",
+    "char_start": 42424,
+    "char_end": 42648,
+    "sentence_index": 263,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec012",
+    "text": "In this sense, reliable multi-turn medical diagnosis may require not only stronger reasoning models, but more decision-aware and action-oriented systems.",
+    "char_start": 42649,
+    "char_end": 42802,
+    "sentence_index": 264,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec013",
+    "text": "Table provides additional summary statistics for the five source datasets included in MINT.",
+    "char_start": 42804,
+    "char_end": 42895,
+    "sentence_index": 265,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec013",
+    "text": "We report the number of cases, the average and median number of turns after sharding, the average case length, and the number and proportion of laboratory-result shards.",
+    "char_start": 42896,
+    "char_end": 43065,
+    "sentence_index": 266,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec013",
+    "text": "[!htbp]\n\n3pt\n1.1\nlccccc\n\nMINT & N & Mean/Turn & Median/Turn & Len./Case & Lab/Shard\n\nMedQA johri2025evaluation & 600 & 9.92 & 10 & 128.39 & 249 (41.5\\%)\n\nMedMCQA pal2022medmcqa & 174 & 8.75 & 8 & 88.98 & 86 (49.4\\%)\n\nDerm-Public johri2025evaluation & 100 & 7.79 & 8 & 155.29 & 8 (8.0\\%)\n\nDerm-Private johri2025evaluation & 99 & 7.75 & 8 & 139.31 & 7 (7.1\\%)\n\nMedBullets chen2025medbullets & 62 & 10.74 & 11 & 169.63 & 20 (32.3\\%)\n\nOverall & 1035 & 9.36 & 9 & 124.63 & 370 (35.7\\%)\n\nDescriptive statistics of the source dataset.",
+    "char_start": 43067,
+    "char_end": 43594,
+    "sentence_index": 267,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec014",
+    "text": "[ht!]\n\nfigures/panel_figure2_bc.pdf\n(a) Running answer states across turns for GPT-5-mini under different shard counts ($N = 4, 8, 12, 16$).",
+    "char_start": 43596,
+    "char_end": 43736,
+    "sentence_index": 268,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec014",
+    "text": "As more evidence is revealed, the model\u2019s current answer state can still improve, with some initially incorrect states later corrected.",
+    "char_start": 43737,
+    "char_end": 43872,
+    "sentence_index": 269,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec014",
+    "text": "(b) Cumulative first-answer outcomes across turns.",
+    "char_start": 43873,
+    "char_end": 43923,
+    "sentence_index": 270,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec014",
+    "text": "Most first committed answers occur early, and many of these early commitments are incorrect.",
+    "char_start": 43924,
+    "char_end": 44016,
+    "sentence_index": 271,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec014",
+    "text": "Figure a shows that initial-answer accuracy tends to plateau after the first few turns, suggesting that the marginal gain in first committed answers becomes limited once the model has already formed an early diagnosis.",
+    "char_start": 44018,
+    "char_end": 44236,
+    "sentence_index": 272,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec014",
+    "text": "However, Figure b shows that overall accuracy can continue to improve beyond this plateau when later answer revisions are allowed.",
+    "char_start": 44237,
+    "char_end": 44367,
+    "sentence_index": 273,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec014",
+    "text": "This divergence arises because false-to-true transitions occur more often than true-to-false transitions, so additional evidence more often corrects an earlier mistake than overturns a correct early answer.",
+    "char_start": 44368,
+    "char_end": 44574,
+    "sentence_index": 274,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec014",
+    "text": "In this sense, post-plateau gains are largely driven by self-correction rather than by continued improvement in first-answer accuracy.",
+    "char_start": 44575,
+    "char_end": 44709,
+    "sentence_index": 275,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec015",
+    "text": "Figure shows the distribution of lab-result cases.",
+    "char_start": 44711,
+    "char_end": 44761,
+    "sentence_index": 276,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec016",
+    "text": "Approximately 80\\% of cases include a single shard containing a lab result record.",
+    "char_start": 44762,
+    "char_end": 44844,
+    "sentence_index": 277,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec016",
+    "text": "Lab-result cases are most concentrated between 7 and 12 turns.",
+    "char_start": 44845,
+    "char_end": 44907,
+    "sentence_index": 278,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec016",
+    "text": "[ht!]\n\nfigures/lab-result-desc-bucket-panel.pdf\nDistribution of lab-result cases by total turn count and by number of lab results.",
+    "char_start": 44909,
+    "char_end": 45039,
+    "sentence_index": 279,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec017",
+    "text": "To provide a more fine-grained view of the lab-result reordering analysis, Table reports first-answer accuracy under the Ask Question First setting, broken down by disease and lab-result order.",
+    "char_start": 45041,
+    "char_end": 45234,
+    "sentence_index": 280,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec017",
+    "text": "Results are shown for early, middle, and late lab-result placement with the number of turns fixed at 10.",
+    "char_start": 45235,
+    "char_end": 45339,
+    "sentence_index": 281,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec017",
+    "text": "Bold disease names denote lab-dependent diseases.",
+    "char_start": 45340,
+    "char_end": 45389,
+    "sentence_index": 282,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec017",
+    "text": "[ht]\n\n4pt\n1.15\n!",
+    "char_start": 45390,
+    "char_end": 45406,
+    "sentence_index": 283,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec017",
+    "text": "l ccc| ccc| ccc| ccc\n\nDisease & 3 c| GPT-5-mini & 3 c| Claude Sonnet 4.6 & 3 c| Qwen3-4B & 3 c MedGemma-27B\n\n& Early & Middle & Late & Early & Middle & Late & Early & Middle & Late & Early & Middle & Late\n\nCardiovascular System & 63.64 & green!27 90.91 & green!27 90.91 & 45.45 & green!18 63.64 & green!18 63.64 & 54.55 & green!9 63.64 & green!9 63.64 & 27.27 & green!9 36.36 & 27.27\n\nDermatology & 54.55 & green!9 63.64 & green!36 90.91 & 54.55 & red!9 45.45 & green!9 63.64 & 18.18 & green!9 27.27 & green!9 27.27 & 45.45 & green!9 54.55 & red!18 27.27\n\nEndocrinology & 86.11 & green!3 88.89 & red!6 80.56 & 72.22 & green!22 94.44 & green!3 75.00 & 36.11 & green!6 41.67 & green!8 44.44 & 36.11 & red!3 33.33 & green!3 38.89\n\nGastrointestinal System & 79.17 & red!4 75.00 & green!4 83.33 & 75.00 & green!8 83.33 & red!17 58.33 & 54.17 & red!8 45.83 & 54.17 & 45.83 & green!13 58.33 & green!8 54.17\n\nHematology and Oncology & 87.88 & red!6 81.82 & 87.88 & 81.82 & green!3 84.85 & red!9 72.73 & 60.61 & red!3 57.58 & red!12 48.48 & 42.42 & green!6 48.48 & red!6 36.36\n\nInfectious Diseases & 57.89 & green!11 68.42 & green!11 68.42 & 63.16 & red!5 57.89 & green!5 68.42 & 26.32 & green!16 42.11 & green!5 31.58 & 36.84 & 36.84 & red!21 15.79\n\nNeurology & 60.00 & green!10 70.00 & green!20 80.00 & 50.00 & green!30 80.00 & green!40 90.00 & 30.00 & 30.00 & 30.00 & 20.00 & green!20 40.00 & green!20 40.00\n\nObstetrics and Gynecology & 65.22 & red!9 56.52 & red!17 47.83 & 69.57 & red!4 65.22 & red!9 60.87 & 39.13 & green!4 43.48 & green!4 43.48 & 43.48 & green!17 60.87 & red!4 39.13\n\nOther & 83.33 & red!33 50.00 & 83.33 & 83.33 & red!17 66.67 & 83.33 & 83.33 & 83.33 & 83.33 & 66.67 & red!17 50.00 & red!17 50.00\n\nPediatrics and Neonatology & 80.00 & green!10 90.00 & 80.00 & 60.00 & green!10 70.00 & red!20 40.00 & 60.00 & red!10 50.00 & 60.00 & 40.00 & green!20 60.00 & 40.00\n\nRheumatology & 84.00 & red!4 80.00 & red!8 76.00 & 80.00 & green!4 84.00 & 80.00 & 60.00 & red!4 56.00 & red!4 56.00 & 36.00 & green!16 52.00 & green!16 52.00\n\nUrology and Nephrology & 82.93 & green!2 85.37 & red!10 73.17 & 75.61 & red!10 65.85 & red!10 65.85 & 56.10 & green!2 58.54 & green!7 63.41 & 36.59 & red!5 31.71 & 36.59\n\nFirst-answer accuracy (\\%) under Ask Question First , broken down by disease and lab-result order.",
+    "char_start": 45407,
+    "char_end": 47714,
+    "sentence_index": 284,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec017",
+    "text": "Results are shown for Early , Middle , and Late lab-result placement, with the number of turns fixed at 10.",
+    "char_start": 47715,
+    "char_end": 47822,
+    "sentence_index": 285,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec017",
+    "text": "Bold disease names denote lab-dependent diseases.",
+    "char_start": 47823,
+    "char_end": 47872,
+    "sentence_index": 286,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec018",
+    "text": "Table summarizes overall model performance under different lab-result orders.",
+    "char_start": 47874,
+    "char_end": 47951,
+    "sentence_index": 287,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec018",
+    "text": "We report results for both Ask Question First and Ask Question Last.",
+    "char_start": 47952,
+    "char_end": 48020,
+    "sentence_index": 288,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec018",
+    "text": "For Ask Question First, we report initial-answer accuracy, final-answer accuracy, and abstention rate; for Ask Question Last, we report final-answer accuracy and abstention rate.",
+    "char_start": 48021,
+    "char_end": 48199,
+    "sentence_index": 289,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec018",
+    "text": "We found that when the question is asked late, reserving clinically salient information for later turns helps prevent a catastrophic accuracy drop (up to 23.3\\%).",
+    "char_start": 48200,
+    "char_end": 48362,
+    "sentence_index": 290,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec018",
+    "text": "[t]\n\n6pt\n1.12\nllccccc\n\nModel & Order & 3 c Ask Q First & 2 c Ask Q Last\n\n(lr) 3-5 (lr) 6-7\n& & Ini.",
+    "char_start": 48364,
+    "char_end": 48463,
+    "sentence_index": 291,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec018",
+    "text": "& Final & Abs.",
+    "char_start": 48464,
+    "char_end": 48478,
+    "sentence_index": 292,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec018",
+    "text": "& Final & Abs.",
+    "char_start": 48479,
+    "char_end": 48493,
+    "sentence_index": 293,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec018",
+    "text": "3 * GPT-5-mini\n& Early & 76.83 & 95.12 & 0.00 & 96.34 & 0.00\n\n& Middle & green!3 77.64 & red!3 94.31 & green!2 0.40 & red!2 95.93 & green!2 0.40\n\n& Late & green!1 77.11 & green!7 96.79 & green!2 0.40 & red!3 95.58 & green!2 0.40\n\n3 * Claude Sonnet 4.6\n& Early & 71.54 & 80.89 & 7.23 & 93.50 & 0.40\n\n& Middle & green!16 75.61 & red!10 78.46 & green!18 11.65 & red!13 90.24 & red!2 0.00\n\n& Late & red!10 69.08 & red!39 71.08 & green!22 12.85 & red!5 92.37 & green!3 1.20\n\n3 * Qwen3-4B\n& Early & 48.19 & 58.23 & 1.20 & 59.04 & 0.40\n\n& Middle & green!6 49.80 & red!8 56.22 & green!13 4.42 & green!2 59.44 & 0.40\n\n& Late & green!8 50.20 & red!19 53.41 & green!10 3.61 & red!2 58.63 & 0.40\n\n3 * MedGemma-27B\n& Early & 58.23 & 64.66 & 8.43 & 77.11 & 3.21\n\n& Middle & green!14 61.85 & green!8 66.67 & green!6 10.04 & green!2 77.51 & green!6 4.82\n\n& Late & green!3 59.04 & 64.66 & green!21 13.65 & green!11 79.92 & green!2 3.61\n\nOverall performance (\\%) under different lab-result orders.",
+    "char_start": 48495,
+    "char_end": 49474,
+    "sentence_index": 294,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec018",
+    "text": "Results are shown for Early , Middle , and Late lab-result placement.",
+    "char_start": 49475,
+    "char_end": 49544,
+    "sentence_index": 295,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec018",
+    "text": "We report initial-answer accuracy, final-answer accuracy, and abstention rate for Ask Question First , and final-answer accuracy and abstention rate for Ask Question Last .",
+    "char_start": 49545,
+    "char_end": 49717,
+    "sentence_index": 296,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec019",
+    "text": "We provide representative response trajectories to illustrate how lab-result timing changes answer behavior at the turn level.",
+    "char_start": 49719,
+    "char_end": 49845,
+    "sentence_index": 297,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec019",
+    "text": "Figure shows three example trajectories under early-, middle-, and late lab-result.",
+    "char_start": 49846,
+    "char_end": 49929,
+    "sentence_index": 298,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec019",
+    "text": "These examples visually complement the aggregate results in Section by showing how early lab disclosure can trigger immediate commitment, while later disclosure can delay answering and sometimes preserve opportunities for correction.",
+    "char_start": 49930,
+    "char_end": 50163,
+    "sentence_index": 299,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec019",
+    "text": "[ht!]\n\nfigures/lab-result-example.pdf\n\nRepresentative response trajectories under different lab-result orders.",
+    "char_start": 50165,
+    "char_end": 50275,
+    "sentence_index": 300,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec019",
+    "text": "For GPT-5-mini on 10-turn cases, each row shows an example case trajectory when the key lab result is introduced early, middle, or late.",
+    "char_start": 50276,
+    "char_end": 50412,
+    "sentence_index": 301,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec019",
+    "text": "Cells indicate whether the model gives no answer (N), a correct answer (T), or an incorrect answer (F) at each turn; outlined cells mark the turn where the lab result is revealed.",
+    "char_start": 50413,
+    "char_end": 50592,
+    "sentence_index": 302,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec020",
+    "text": "[ht!]\n\nfigures/case_study/case_study.pdf\nRepresentative behavioral patterns observed in Claude Sonnet 4.6.",
+    "char_start": 50594,
+    "char_end": 50700,
+    "sentence_index": 303,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec020",
+    "text": "Left: Rush to Answer .",
+    "char_start": 50701,
+    "char_end": 50723,
+    "sentence_index": 304,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec020",
+    "text": "(a) The model guesses at Turn 1 with no clinical context, and (b) it answers at an early turn with minimal information.",
+    "char_start": 50724,
+    "char_end": 50843,
+    "sentence_index": 305,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec020",
+    "text": "Middle: Self-correction .",
+    "char_start": 50844,
+    "char_end": 50869,
+    "sentence_index": 306,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec020",
+    "text": "The model initially answers incorrectly but revises to the correct option over subsequent turns.",
+    "char_start": 50870,
+    "char_end": 50966,
+    "sentence_index": 307,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec020",
+    "text": "Right: Lure to Answer .",
+    "char_start": 50967,
+    "char_end": 50990,
+    "sentence_index": 308,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec020",
+    "text": "The same question under two lab result placements (early vs.\\ middle, marked with Lab badges); early placement triggers earlier responses.",
+    "char_start": 50991,
+    "char_end": 51129,
+    "sentence_index": 309,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec020",
+    "text": "Green and red borders indicate correct and incorrect answers, respectively.",
+    "char_start": 51130,
+    "char_end": 51205,
+    "sentence_index": 310,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec020",
+    "text": "Rush to Answer.",
+    "char_start": 51207,
+    "char_end": 51222,
+    "sentence_index": 311,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec020",
+    "text": "Figure (left) illustrates models may rush to answer without waiting for sufficient information.",
+    "char_start": 51223,
+    "char_end": 51318,
+    "sentence_index": 312,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec020",
+    "text": "In case (a), the model answers at Turn 1 before any clinical information is revealed, guessing based on the question alone.",
+    "char_start": 51319,
+    "char_end": 51442,
+    "sentence_index": 313,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec020",
+    "text": "In case (b), the model waits through the first turn but answers at Turn 3 with only basic demographic and history information.",
+    "char_start": 51443,
+    "char_end": 51569,
+    "sentence_index": 314,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec020",
+    "text": "Both cases suggest that models may rush to answer without waiting for sufficient information.",
+    "char_start": 51570,
+    "char_end": 51663,
+    "sentence_index": 315,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec020",
+    "text": "Self-correction.",
+    "char_start": 51665,
+    "char_end": 51681,
+    "sentence_index": 316,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec020",
+    "text": "The middle panel of Figure shows the model's capacity for self-correction.",
+    "char_start": 51682,
+    "char_end": 51756,
+    "sentence_index": 317,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec020",
+    "text": "The model initially provides a wrong answer at Turn 3 and persists through Turn 4, but revises it to the correct option by Turn 5 as more information are revealed.",
+    "char_start": 51757,
+    "char_end": 51920,
+    "sentence_index": 318,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec020",
+    "text": "This suggests that premature responses are not always final.",
+    "char_start": 51921,
+    "char_end": 51981,
+    "sentence_index": 319,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec020",
+    "text": "Models may recover when subsequent evidence is provided.",
+    "char_start": 51982,
+    "char_end": 52038,
+    "sentence_index": 320,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec020",
+    "text": "Lab Results as Answering Triggers.",
+    "char_start": 52040,
+    "char_end": 52074,
+    "sentence_index": 321,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec020",
+    "text": "The right panel of Figure compares two orderings of the same question that differ only in when laboratory results are revealed (marked with Lab badges).",
+    "char_start": 52075,
+    "char_end": 52227,
+    "sentence_index": 322,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec020",
+    "text": "When lab results appear at an early turn (left), the model answers as early as Turn 2; when the same laboratory results are deferred to a middle turn (right), the model waits longer and answers correctly on the first attempt.",
+    "char_start": 52228,
+    "char_end": 52453,
+    "sentence_index": 323,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec020",
+    "text": "This indicates that laboratory findings serve as strong answering signals that can lure models into responding earlier, regardless of whether the surrounding clinical context is sufficient.",
+    "char_start": 52454,
+    "char_end": 52643,
+    "sentence_index": 324,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec021",
+    "text": "[Sharding Prompt]\n\nYou are helping to convert a medical multiple-choice question into a multi-turn conversational format for a reasoning dataset.",
+    "char_start": 52645,
+    "char_end": 52790,
+    "sentence_index": 325,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec022",
+    "text": "Your task is to:\n\nSegment the question into clinically meaningful pieces\nAssign each segment a clinical category label\nRephrase each segment into a natural conversational shard\n\nred Clinical categories:\n\nDEMOGRAPHICS: patient age, sex, occupation\nCHIEF\\_COMPLAINT: primary symptom or reason for visit, duration\nHISTORY\\_OF\\_PRESENT\\_ILLNESS: onset, progression, associated symptoms\nPAST\\_MEDICAL\\_HISTORY: prior diagnoses, previous episodes\nMEDICATION\\_HISTORY: current or recent medications\nSOCIAL\\_HISTORY: smoking, alcohol, drug use, living situation\nFAMILY\\_HISTORY: relevant family conditions\nVITAL\\_SIGNS: temperature, blood pressure, pulse, respiration, oxygen saturation\nPHYSICAL\\_EXAM: findings on inspection, palpation, auscultation, percussion\nLAB\\_RESULTS: blood tests, urine tests, cultures\nIMAGING\\_OR\\_DIAGNOSTICS: X-ray, CT, MRI, EKG, ultrasound\nPATHOLOGY\\_OR\\_SMEAR: biopsy, smear, histology findings\nOTHER\\_CLINICAL\\_INFO: any clinical information that does not fit the above categories\nQUESTION\\_STEM: the final diagnostic question sentence\n\nred Segmentation guidelines:\n\nEach segment must belong to exactly ONE clinical category.",
+    "char_start": 52792,
+    "char_end": 53941,
+    "sentence_index": 326,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec022",
+    "text": "Each segment must be copied VERBATIM from the original question.",
+    "char_start": 53942,
+    "char_end": 54006,
+    "sentence_index": 327,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec022",
+    "text": "Do not rephrase or add words.",
+    "char_start": 54007,
+    "char_end": 54036,
+    "sentence_index": 328,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec022",
+    "text": "Segments must be non-overlapping and together cover the entire question text including the final question sentence.",
+    "char_start": 54037,
+    "char_end": 54152,
+    "sentence_index": 329,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec022",
+    "text": "If multiple findings belong to the same clinical category and appear in the same sentence or clause, keep them as ONE segment rather than splitting.",
+    "char_start": 54153,
+    "char_end": 54301,
+    "sentence_index": 330,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec022",
+    "text": "If one sentence contains information from multiple categories, split it at the category boundary.",
+    "char_start": 54302,
+    "char_end": 54399,
+    "sentence_index": 331,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec022",
+    "text": "Do not start a segment with conjunctions like ``and'' or ``but'' --- merge them with the previous segment instead.",
+    "char_start": 54400,
+    "char_end": 54514,
+    "sentence_index": 332,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec022",
+    "text": "Assign a sequential id to each segment starting from 1, reflecting the original order in the question.",
+    "char_start": 54515,
+    "char_end": 54617,
+    "sentence_index": 333,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec022",
+    "text": "The answer choices are NOT segmented --- ignore them.",
+    "char_start": 54618,
+    "char_end": 54671,
+    "sentence_index": 334,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec022",
+    "text": "red Rephrasing guidelines:\n\nRephrase each segment into a complete, natural clinical sentence.",
+    "char_start": 54673,
+    "char_end": 54766,
+    "sentence_index": 335,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec022",
+    "text": "Preserve the original order of segments --- do not reorder.",
+    "char_start": 54767,
+    "char_end": 54826,
+    "sentence_index": 336,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec022",
+    "text": "Do not reveal or hint at the correct answer anywhere in the shards.",
+    "char_start": 54827,
+    "char_end": 54894,
+    "sentence_index": 337,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec022",
+    "text": "Each shard must have proper capitalization and punctuation.",
+    "char_start": 54895,
+    "char_end": 54954,
+    "sentence_index": 338,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec022",
+    "text": "red Output format:\n\n\"shards\": [\n\n\"id\": 1,\n\"segment\": \"[verbatim excerpt from the question]\",\n\"shard\": \"conversational rephrasing of this segment\",\n\"label\": \"CATEGORY\"\n\n]\n\nExample:\n\nQuestion: ``A 66-year-old man presents with fatigue.",
+    "char_start": 54956,
+    "char_end": 55189,
+    "sentence_index": 339,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec022",
+    "text": "He has hypertension and drinks 3 beers a day.",
+    "char_start": 55190,
+    "char_end": 55235,
+    "sentence_index": 340,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec022",
+    "text": "His temperature is 37.1\u00b0C and pulse is 78.",
+    "char_start": 55236,
+    "char_end": 55278,
+    "sentence_index": 341,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec022",
+    "text": "Which of the following is the most likely diagnosis?''\n\nOutput:\n\n\"shards\": [\n\n\"id\": 1,\n\"segment\": \"A 66-year-old man\",\n\"shard\": \"The patient is a 66-year-old man.\",\n\"label\": \"DEMOGRAPHICS\"\n,\n\n\"id\": 2,\n\"segment\": \"presents with fatigue.\",\n\"shard\": \"He presents with a chief complaint of fatigue.\",\n\"label\": \"CHIEF_COMPLAINT\"\n,\n\n\"id\": 3,\n\"segment\": \"He has hypertension\",\n\"shard\": \"The patient has a history of hypertension.\",\n\"label\": \"PAST_MEDICAL_HISTORY\"\n,\n\n\"id\": 4,\n\"segment\": \"and drinks 3 beers a day.\",\n\"shard\": \"He reports drinking 3 beers per day.\",\n\"label\": \"SOCIAL_HISTORY\"\n,\n\n\"id\": 5,\n\"segment\": \"His temperature is 37.1\u00b0C and pulse is 78.\",\n\"shard\": \"Vital signs show a temperature of 37.1\u00b0C and a pulse of 78.\",\n\"label\": \"VITAL_SIGNS\"\n,\n\n\"id\": 6,\n\"segment\": \"Which of the following is the most likely diagnosis?\",\n\"shard\": \"What is the most likely diagnosis given these findings?\",\n\"label\": \"QUESTION_STEM\"\n\n]\n\nNow complete the task for the following question:\n\n<question>\n[[QUESTION]]\n</question>\n\nOutput only valid JSON, no explanation.",
+    "char_start": 55279,
+    "char_end": 56330,
+    "sentence_index": 342,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec023",
+    "text": "[Turn-Granularity Repartitioning Prompt]\n\nTurn 1 (stem + all answer options) is fixed in the pipeline from raw data.",
+    "char_start": 56332,
+    "char_end": 56448,
+    "sentence_index": 343,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec023",
+    "text": "You must only repartition the vignette below into exactly [[N\\_MINUS\\_1]] shards, which will become user turns 2..",
+    "char_start": 56449,
+    "char_end": 56563,
+    "sentence_index": 344,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec023",
+    "text": "[[N]] .",
+    "char_start": 56564,
+    "char_end": 56571,
+    "sentence_index": 345,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec023",
+    "text": "Goal: produce exactly [[N]] total turns overall, counting the fixed Turn 1.",
+    "char_start": 56573,
+    "char_end": 56648,
+    "sentence_index": 346,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec023",
+    "text": "You may rephrase the vignette for fluency, but you must preserve all source information faithfully.",
+    "char_start": 56649,
+    "char_end": 56748,
+    "sentence_index": 347,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec023",
+    "text": "red Fixed turn 1 (reference only --- do NOT output this; do NOT repeat or paraphrase stem/options in your shards):\n\n[[TURN1\\_REFERENCE]]\n\nred Vignette source --- split and rephrase ONLY this block:\n\n[[VIGNETTE\\_SOURCE]]\n\nred Instructions:\n\nOutput exactly [[N\\_MINUS\\_1]] shards.",
+    "char_start": 56750,
+    "char_end": 57028,
+    "sentence_index": 348,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec023",
+    "text": "Preserve every clinical fact from the source, including all symptoms, negated findings, time expressions, quantities, measurements, lab values, exam findings, treatments, and chronology.",
+    "char_start": 57029,
+    "char_end": 57215,
+    "sentence_index": 349,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec023",
+    "text": "Do not omit, invent, generalize, or contradict any information.",
+    "char_start": 57216,
+    "char_end": 57279,
+    "sentence_index": 350,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec023",
+    "text": "Preserve the original order of information from the source; do not reorder facts across shards.",
+    "char_start": 57280,
+    "char_end": 57375,
+    "sentence_index": 351,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec023",
+    "text": "Prefer splitting at clinically natural boundaries (e.g., demographics/chief complaint, history of present illness, past history, exam, labs/imaging, treatment/course) rather than arbitrary sentence breaks.",
+    "char_start": 57376,
+    "char_end": 57581,
+    "sentence_index": 352,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec023",
+    "text": "Avoid trivial shards that contain only a fragment or isolated modifier unless necessary to satisfy the exact shard count.",
+    "char_start": 57582,
+    "char_end": 57703,
+    "sentence_index": 353,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec023",
+    "text": "Each shard should read naturally as a coherent user turn.",
+    "char_start": 57704,
+    "char_end": 57761,
+    "sentence_index": 354,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec023",
+    "text": "red Hard rule:\n\nDo not include or paraphrase the diagnostic question.",
+    "char_start": 57763,
+    "char_end": 57832,
+    "sentence_index": 355,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec023",
+    "text": "Do not include or paraphrase any answer option text.",
+    "char_start": 57833,
+    "char_end": 57885,
+    "sentence_index": 356,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec023",
+    "text": "Do not include option letters such as (A), (B), (C), or (D).",
+    "char_start": 57886,
+    "char_end": 57946,
+    "sentence_index": 357,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec023",
+    "text": "If any sentence mixes clinical content with question/option wording, keep only the clinical content.",
+    "char_start": 57947,
+    "char_end": 58047,
+    "sentence_index": 358,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec023",
+    "text": "Do not use external knowledge beyond the vignette source.",
+    "char_start": 58049,
+    "char_end": 58106,
+    "sentence_index": 359,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec023",
+    "text": "Before finalizing, internally verify that all source facts are preserved across the shards and that the shard count is exactly [[N\\_MINUS\\_1]] .",
+    "char_start": 58108,
+    "char_end": 58252,
+    "sentence_index": 360,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec023",
+    "text": "red Output format:\n\nReturn valid JSON only, with exactly one top-level key: \"vignette\\_shards\" .",
+    "char_start": 58254,
+    "char_end": 58350,
+    "sentence_index": 361,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec023",
+    "text": "\"vignette_shards\": [\n\"shard_id\": 2, \"shard\": \"...\" ,\n\"shard_id\": 3, \"shard\": \"...\"\n]\n\nRequirements:\n\nUse exactly [[N\\_MINUS\\_1]] objects in the array.",
+    "char_start": 58352,
+    "char_end": 58502,
+    "sentence_index": 362,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec023",
+    "text": "Use shard\\_id values 2, 3, ..., [[N]] in order.",
+    "char_start": 58503,
+    "char_end": 58550,
+    "sentence_index": 363,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec023",
+    "text": "Do not output any text before or after the JSON object.",
+    "char_start": 58551,
+    "char_end": 58606,
+    "sentence_index": 364,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec024",
+    "text": "[Single-Turn Baseline Prompt]\n\nYou are a clinical expert.",
+    "char_start": 58608,
+    "char_end": 58665,
+    "sentence_index": 365,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec024",
+    "text": "Given the following medical question, select the correct answer.",
+    "char_start": 58666,
+    "char_end": 58730,
+    "sentence_index": 366,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec024",
+    "text": "Return JSON only (no markdown, no extra text) with exactly this key:\n\n\"answer\":\"<option letter or exact option text>\"\n\nExamples: red 123\"answer\":\"A\" 125 , red 123\"answer\":\"(A) Androgenetic alopecia\" 125\n\nNo explanation, red JSON only .",
+    "char_start": 58732,
+    "char_end": 58967,
+    "sentence_index": 367,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec025",
+    "text": "[Ask-Question-First System Prompt]\n\nYou are a clinical expert for multi-turn MedQA with question shown first.",
+    "char_start": 58969,
+    "char_end": 59078,
+    "sentence_index": 368,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec025",
+    "text": "At every turn, return JSON only (no markdown, no extra text) with exactly these keys:\n\n\"action\": \"wait|answer|change\",\n\"answer\": \"<option letter or exact option text>\",\n\"confidence\": <0.00-1.00>\n\nred Rules:\n\nIf information is insufficient, set red \"action\":\"wait\" .",
+    "char_start": 59080,
+    "char_end": 59345,
+    "sentence_index": 369,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec025",
+    "text": "On the first wait, \"answer\" can be empty: \"\" .",
+    "char_start": 59346,
+    "char_end": 59392,
+    "sentence_index": 370,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec025",
+    "text": "If you have already provided an answer and now choose \"action\":\"wait\" , keep the same previous answer in \"answer\" .",
+    "char_start": 59393,
+    "char_end": 59508,
+    "sentence_index": 371,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec025",
+    "text": "Use red \"action\":\"answer\" for your first answer.",
+    "char_start": 59509,
+    "char_end": 59557,
+    "sentence_index": 372,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec025",
+    "text": "Use red \"action\":\"change\" when you want to change your mind; \"answer\" must be the new option.",
+    "char_start": 59558,
+    "char_end": 59651,
+    "sentence_index": 373,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec025",
+    "text": "\"confidence\" must always be a number between 0.00 and 1.00.",
+    "char_start": 59652,
+    "char_end": 59711,
+    "sentence_index": 374,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec025",
+    "text": "No explanation text, no additional keys, JSON only.",
+    "char_start": 59712,
+    "char_end": 59763,
+    "sentence_index": 375,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec026",
+    "text": "[Ask-Question-Last System Prompt]\n\nYou are a clinical expert for multi-turn MedQA with question shown last.",
+    "char_start": 59765,
+    "char_end": 59872,
+    "sentence_index": 376,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec026",
+    "text": "At every turn, return JSON only (no markdown, no extra text) with exactly these keys:\n\n\"action\": \"wait|answer|change\",\n\"answer\": \"<option letter or exact option text>\",\n\"confidence\": <0.00-1.00>\n\nred Rules:\n\nIf the message contains only clinical information (no question with options), set red \"action\":\"wait\" and \"answer\":\"\" .",
+    "char_start": 59874,
+    "char_end": 60201,
+    "sentence_index": 377,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec026",
+    "text": "If the message contains a medical question with answer options: use red \"action\":\"answer\" for your first answer, or red \"action\":\"change\" if you want to change your previous answer.",
+    "char_start": 60202,
+    "char_end": 60383,
+    "sentence_index": 378,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec026",
+    "text": "\"confidence\" must always be a number between 0.00 and 1.00.",
+    "char_start": 60384,
+    "char_end": 60443,
+    "sentence_index": 379,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec026",
+    "text": "No explanation text, no additional keys, JSON only.",
+    "char_start": 60444,
+    "char_end": 60495,
+    "sentence_index": 380,
+    "section_sentence_index": 4
+  }
+]

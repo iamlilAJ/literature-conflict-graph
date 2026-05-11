@@ -1,0 +1,4502 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large Language Models (LLMs) have demonstrated remarkable capabilities in complex tasks.",
+    "char_start": 0,
+    "char_end": 88,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Recent advancements in Large Reasoning Models (LRMs), such as OpenAI o1 and DeepSeek-R1, have further improved performance in System-2 reasoning domains like mathematics and programming by harnessing supervised fine-tuning (SFT) and reinforcement learning (RL) techniques to enhance the Chain-of-Thought (CoT) reasoning.",
+    "char_start": 89,
+    "char_end": 409,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, while longer CoT reasoning sequences improve performance, they also introduce significant computational overhead due to verbose and redundant outputs, known as the ``overthinking phenomenon''.",
+    "char_start": 411,
+    "char_end": 612,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Efficient Reasoning , which seeks to optimize reasoning length while preserving reasoning capabilities, offers practical benefits such as reduced computational costs and improved responsiveness for real-world applications.",
+    "char_start": 614,
+    "char_end": 836,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Despite its potential, efficient reasoning remains in the early stages of research.",
+    "char_start": 838,
+    "char_end": 921,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "In this paper, we provide the first structured survey to systematically investigate and explore the current progress toward achieving efficient reasoning in LLMs.",
+    "char_start": 923,
+    "char_end": 1085,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Overall, relying on the inherent mechanism of LLMs, we categorize existing works into several key directions: (1) model-based efficient reasoning , which considers optimizing full-length reasoning models into more concise reasoning models or directly training efficient reasoning models; (2) reasoning output-based efficient reasoning , which aims to dynamically reduce reasoning steps and length during inference; (3) input prompts-based efficient reasoning , which seeks to enhance reasoning efficiency based on input prompt properties such as difficulty or length control.",
+    "char_start": 1087,
+    "char_end": 1662,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Additionally, we introduce the use of efficient data for training reasoning models, explore the reasoning capabilities of small language models, and discuss evaluation methods and benchmarking.",
+    "char_start": 1664,
+    "char_end": 1857,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "We maintain a public repository to continuously track and update the latest research in this promising area.",
+    "char_start": 1859,
+    "char_end": 1967,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) have emerged as exceptionally powerful AI tools, demonstrating advanced capabilities in natural language understanding and complex reasoning.",
+    "char_start": 1969,
+    "char_end": 2139,
+    "sentence_index": 9,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Recently, the rise of reasoning-focused LLMs, also referred to as reasoning-capable models or Large Reasoning Models (LRMs) such as OpenAI o1 and DeepSeek-R1 , has significantly improved performance in System-2 reasoning domains , particularly in challenging mathematics and programming tasks .",
+    "char_start": 2140,
+    "char_end": 2434,
+    "sentence_index": 10,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Evolving from foundational pretrained models (e.g., LLaMA ) trained with next-token prediction , these models typically leverage Chain-of-Thought (CoT) reasoning chains to generate explicit, step-by-step reasoning sequences before arriving at a final answer, significantly improving their effectiveness in reasoning-intensive tasks.",
+    "char_start": 2435,
+    "char_end": 2767,
+    "sentence_index": 11,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Such reasoning abilities in LLMs are typically developed through supervised fine-tuning (SFT) and reinforcement learning (RL), which promote iterative and systematic problem-solving abilities.",
+    "char_start": 2769,
+    "char_end": 2961,
+    "sentence_index": 12,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "For instance, DeepSeek-R1 undergoes multiple rounds of SFT and RL training, emphasizing structured thinking templates and rule-based reward mechanisms.",
+    "char_start": 2962,
+    "char_end": 3113,
+    "sentence_index": 13,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "In particular, the rule-based rewards provides precise and explicit feedback signals during training, effectively enhancing the general reasoning capabilities beyond the pretrained LLM.",
+    "char_start": 3114,
+    "char_end": 3299,
+    "sentence_index": 14,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "However, while long CoT reasoning significantly boosts accuracy, step-by-step thinking mechanisms also lead to lengthy output responses, resulting in substantial computational overhead and increased reasoning time.",
+    "char_start": 3301,
+    "char_end": 3515,
+    "sentence_index": 15,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "For instance, the \"overthinking problem\" arises when answering a simple question like, \" what is the answer of 2 plus 3?",
+    "char_start": 3516,
+    "char_end": 3636,
+    "sentence_index": 16,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "\" Some reasoning models, especially smaller ones, can generate reasoning sequences spanning thousands of tokens.",
+    "char_start": 3637,
+    "char_end": 3749,
+    "sentence_index": 17,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "This verbosity significantly increases both inference costs and latency, limiting the practical application of reasoning models in computation-sensitive real-world scenarios, such as real-time autonomous driving systems, interactive conversational assistants, precision robotic control tasks, and large-scale online search engines.",
+    "char_start": 3750,
+    "char_end": 4081,
+    "sentence_index": 18,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Efficient reasoning, particularly the reduction of reasoning length, offers significant benefits in such regards, providing direct cost reduction and improved feasibility for real-world deployments.",
+    "char_start": 4083,
+    "char_end": 4281,
+    "sentence_index": 19,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Recently, numerous studies have explored ways to develop more concise reasoning paths, making efficient reasoning a rapidly evolving research area.",
+    "char_start": 4282,
+    "char_end": 4429,
+    "sentence_index": 20,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "In this paper, we present the first structured survey systematically exploring the progress in efficient reasoning for LLMs.",
+    "char_start": 4431,
+    "char_end": 4555,
+    "sentence_index": 21,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "As illustrated in Figure , we categorize existing work into three key directions:\n(1) Model-based efficient reasoning , which focuses on optimizing full-length reasoning models into more concise variants or directly training efficient reasoning models.",
+    "char_start": 4556,
+    "char_end": 4808,
+    "sentence_index": 22,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "(2) Reasoning output-based efficient reasoning , which dynamically reduces reasoning steps and length during inference.",
+    "char_start": 4809,
+    "char_end": 4928,
+    "sentence_index": 23,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "(3) Input prompts-based efficient reasoning , which enhances reasoning efficiency based on input properties such as difficulty or length control.",
+    "char_start": 4929,
+    "char_end": 5074,
+    "sentence_index": 24,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Unlike model compression techniques such as quantization or KV cache compression , which focus on reducing model size for lightweight inference, efficient reasoning in LLMs emphasizes smart and concise reasoning by optimizing the length of generated reasoning sequences and reducing unnecessary thinking steps.",
+    "char_start": 5075,
+    "char_end": 5385,
+    "sentence_index": 25,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Overall, we provide a summary of the current key approaches to efficient reasoning, organizing them into the following categories:\n\nReinforcement Learning with Length-Based Reward Design (Section )\nSupervised Fine-Tuning with Variable-Length CoT Data (Section )\nCompressing Reasoning Steps into Fewer Latent Representations (Section )\nDynamic Reasoning Paradigms During Inference (Section )\nPrompt-Guided Efficient Reasoning (Section )\nRouting Prompts to Optimize Reasoning Efficiency (Section )\n\nAdditionally, we explore other relevant topics, including:\n\nTraining Reasoning Models with Efficient Data (Section )\nReasoning Abilities of Small Language Models and Model Compression (Section )\nEvaluation and Benchmarking of Efficient Reasoning Models (Section )\n\n[t]\n\nfigs/overview.pdf\n2mm\n\nOverview of efficient reasoning methods, which can be summarized as model-oriented (Left: I , II ) and reasoning output-oriented (Middle: III , IV ), and input prompts-oriented (Right: V, VI ) methods.",
+    "char_start": 5387,
+    "char_end": 6378,
+    "sentence_index": 26,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Specifically, (I) Reinforcement Learning with Length Reward Design (Section ); (II) Supervised Fine-Tuning with Variable-Length CoT Data (Section ); (III) Compressing Reasoning Steps into Fewer Latent Representation (Section ); (IV) Dynamic Reasoning Paradigm during Inference (Section ); (V) Prompt-guided Efficient Reasoning (Section ); (VI) Routing Prompts to Optimize Reasoning Efficiency (Section );\n\nmy node/.style=\ndraw=black,\nfill=blue!1,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nERT node/.style=\ndraw=black,\nfill=yellow!5,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nERI node/.style=\ndraw=black,\nfill=blue!3,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nOER node/.style=\ndraw=black,\nfill=teal!10,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nCP node/.style=\ndraw=black,\nfill=red!7,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nBI node/.style=\ndraw=black,\nfill=green!5,\nthick,\nrounded corners=5pt,\ntext width=3.0cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=0.8cm,\n,\nleaf node/.style=\ndraw=black,\nfill=gray!5,\nthick,\nrounded corners=5pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\nERTleaf node/.style=\ndraw=black,\nfill=yellow!5,\nthick,\nrounded corners=10pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\nERIleaf node/.style=\ndraw=black,\nfill=blue!3,\nthick,\nrounded corners=10pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\nCPleaf node/.style=\ndraw=black,\nfill=red!7,\nthick,\nrounded corners=10pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\nBIleaf node/.style=\ndraw=black,\nfill=green!5,\nthick,\nrounded corners=10pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\nOERleaf node/.style=\ndraw=black,\nfill=teal!10,\nthick,\nrounded corners=10pt,\ntext width=15cm,\nalign=left,\nfont= ,\ndrop shadow,\ninner sep=5pt,\nminimum height=1.6cm,\n,\ntaxonomy node/.style=\ndraw=black,\nfill=gray!3,\nthick,\nfont= ,\ntext width=0.8cm,\nalign=center,\nrotate=0,\ninner sep=4pt,\nminimum height=2.0cm,\n,\nsubtaxonomy node/.style=\ndraw=black,\nfill=white!20,\nthick,\nfont= ,\ntext width=0.8cm,\nalign=center,\nrotate=0,\ninner sep=4pt,\nminimum height=2.0cm,\n,\nlevel 1/.style= edge= thick, black ,\nlevel 2/.style= edge= thick, black!70 ,\nlevel 3/.style= edge= thick, black!50 ,\n\n[t]\n\n!",
+    "char_start": 6379,
+    "char_end": 9141,
+    "sentence_index": 27,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "for tree=\ngrow'=east,\nedge= thick ,\nparent anchor=east,\nchild anchor=west,\nl sep+=15pt,\ns sep+=25pt,\nif n children=0 leaf node my node ,\nedge path=\n[draw, edge ] (!u.parent anchor) -- +(12pt,0) -| (.child anchor) edge label ;\n,\nif= isodd(n_children())\nfor children=\nif= equal(n,(n_children(\"!u\")+1)/2) calign with current\n\n[ 90 Taxonomy , taxonomy node\n[ 3cm Model-based\nEfficient Reasoning , ERT node\n[ 3cm RL Optimization via Length Reward , ERT node\n[ 15cm\ne.g.",
+    "char_start": 9143,
+    "char_end": 9607,
+    "sentence_index": 28,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Kimi k1.5 ; O1-Pruner ; L1 ; Training ; Demystifying ; DAST ; MRT ; Self-adaptive ; HAWKEYE ; ThinkPrune ; LongShort ; ConciseRL ; Bingo ; Concise Reasoning ; Elastic Reasoning ; S-GRPO ; TLDR ; SelfBudgeter ; Short-RL ; BRPO ; LASER ; ACPO ; LIMOPro ; L-GRPO ; GRPO-$ $ ; AutoThink ; AdaptThink ; DeGRPO ; HGPO ; DTO ; REO-RL ; ALP ; PLP ; LC-R1 ; AdapThink ; AALC ; DuP-PO ; SCPO ; FCS ; CurriculumGRPO ; GFPO ; SABER ; VSRM ; DR.SAF ; ASRR ; AdaCoT ;\n\n,\nERTleaf node]\n]\n[ 3cm SFT with Variable-Length CoT , ERT node\n[ 15cm\ne.g.",
+    "char_start": 9608,
+    "char_end": 10138,
+    "sentence_index": 29,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Distilling 2-1 ; C3oT ; TokenSkip ; CoT-Valve ; Self-Training ; Learn to Skip ; Token-Budget ; Verbosity ; Stepwise ; Z1 ; Prune-on-Logic ; LS-Mixture SFT ; DRP ; AutoL2S ; Assembly of Experts ; Ada-R1 ; ConCISE ; VeriThinker ; R1-Compress ; CTS ; A$^*$-Thought ; TLDR ; OThink-R1 ; PNS ; ReCUT ; StepEntropy ; ASAP ;\n\n,\nERTleaf node]\n]\n]\n[ 0 3cm Reasoning Output-based\nEfficient Reasoning , OER node\n[ 3cm Latent Representation Compression , OER node\n[ 15cm\ne.g.",
+    "char_start": 10139,
+    "char_end": 10602,
+    "sentence_index": 30,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "Coconut ; CODI ; CCoT ; Heima ; Token Assorted ; Loop ; SoftCoT ;\nBack Attention ; CoLaR ; SEAL ; Overclocking ; Controlling ;\n\n,\nOERleaf node]\n]\n[ 3cm Dynamic Reasoning Paradigm , OER node\n[ 15cm\ne.g.",
+    "char_start": 10603,
+    "char_end": 10804,
+    "sentence_index": 31,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Speculative Rejection ; Sampling-Efficient TTS ; DPTS ; Certaindex ; Dynasor-CoT ; Fast MCTS ; ST-BoN ; More is Less ; RSD ; Speculative Thinking ; SCoT ; SpecSearch ; ValueFree ; GG ; VGS ; DO ; FFS ; DORA ; SPECS ; Best-Route ; LightThinker ; INFTYTHINK ; SCoT ; RASC ; Adaptive Reasoning ; AdaptiveStep ; Self-Calib ; CISC ; ESC ; DSC ; PathC ; RPC ; Sleep-time Compute ; SpecReason ; TOPS ; Retro-Search ; ThinkDeepFast ; AlphaOne ; CAR ; Collaborative ; STAND ; GoGI ; FracCoT ; FlashThink ; RPC ; ThinkLess ;\nPlan and Budget ; TrimR ; CoThink ; AnswerConvergence ; NOWAIT ; Self-Affirmation ;\nBudgetGuidance ; Self-Guided ; ASC ; MUR ;\nR-Stitch ;\nTTPI ;\nCGRS ;\n,\nOERleaf node]\n]\n]\n[ 0 3cm Input Prompts-based\nEfficient Reasoning , ERI node\n[ 3cm Prompt-Guided Efficient Reasoning , ERI node\n[ 15cm\ne.g.",
+    "char_start": 10805,
+    "char_end": 11613,
+    "sentence_index": 32,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Token-Budget ; Chain of Draft ; Token Complexity ; Concise Chain-of-Thought (CCoT) ; MARP ; ThoughtMani ; NoThinking ; Brevity ; PREMISE ; ConciseHint ;\n,\nERIleaf node]\n]\n[ 3cm Routing by Question Attributes , ERI node\n[ 15cm\ne.g.",
+    "char_start": 11614,
+    "char_end": 11844,
+    "sentence_index": 33,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Claude 3.7 Sonnet ; SoT ; Self-REF ; Confident ; RouteLLM ; THOUGHTTERMINATOR ; ThinkSwitcher ; SwitchCoT ; SynapseRoute ;\n,\nERIleaf node]\n]\n]\n[ 0 3cm Efficient Data and Models , CP node\n[ 3cm Less Training Data , CP node\n[ 15cm\ne.g.",
+    "char_start": 11845,
+    "char_end": 12078,
+    "sentence_index": 34,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "LIMO ; s1 ; S$^2$R ; Light-R1 ;\n,\nCPleaf node]\n]\n[ 3cm Pruning \\& Quantization \\& Distillation , CP node\n[ 15cm\ne.g.",
+    "char_start": 12079,
+    "char_end": 12195,
+    "sentence_index": 35,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Struggle ; Strong Verifiers ; TinyR1-32B-Preview ; Mixed Distillation ; Counterfactual Distillation ; Feedback-Driven Distillation ; SKIntern ; Adaptive Thinking ; PRR ; CompressionReasoning ; TwT ;\n,\nCPleaf node]\n]\n]\n[ 0 3cm Benchmark \\& Insights , BI node\n[ 3cm Evaluation \\& Benchmarks , BI node\n[ 15cm\ne.g.",
+    "char_start": 12196,
+    "char_end": 12506,
+    "sentence_index": 36,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "1B vs.",
+    "char_start": 12507,
+    "char_end": 12513,
+    "sentence_index": 37,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "405B ; Sys2Bench ; Danger ; Inference-time Computation ; Impact ; S1-Bench ; CompressionReasoning ; QuantRM ; SmallRM ;\n,\nBIleaf node]\n]\n]\n]\n\nTaxonomy of existing literature on efficient reasoning for LLMs.",
+    "char_start": 12514,
+    "char_end": 12720,
+    "sentence_index": 38,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Chain-of-Thought (CoT) reasoning is a key approach that has been purposefully introduced in LLMs to enhance their reasoning capabilities.",
+    "char_start": 12722,
+    "char_end": 12859,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "In this setting, models are typically prompted to generate a structured reasoning chain before arriving at a final answer.",
+    "char_start": 12860,
+    "char_end": 12982,
+    "sentence_index": 40,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "Techniques in this domain have been shown to improve overall accuracy since a higher-quality generation context often leads to more consistent and reliable final results.",
+    "char_start": 12983,
+    "char_end": 13153,
+    "sentence_index": 41,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "Several notable CoT variants have been developed: Self-Consistency CoT replaces the standard greedy decoding approach by sampling diverse reasoning paths and selecting the most consistent answer through marginalization and aggregation.",
+    "char_start": 13154,
+    "char_end": 13389,
+    "sentence_index": 42,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "Tree-of-Thought (ToT) prompting further structures the reasoning process as a tree with backtracking, significantly improving efficiency in solving parallelizable subtasks.",
+    "char_start": 13390,
+    "char_end": 13562,
+    "sentence_index": 43,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "Graph-of-Thoughts (GoT) prompting extends this concept by structuring thoughts into a graph, allowing iterative refinement of individual reasoning steps.",
+    "char_start": 13563,
+    "char_end": 13716,
+    "sentence_index": 44,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "While many CoT variants exist, they generally involve different prompting techniques to guide the behavior of models, sometimes incorporating controller-like mechanisms to manage thought progression and usage.",
+    "char_start": 13717,
+    "char_end": 13926,
+    "sentence_index": 45,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "Multi-step reasoning refers to the ability of LLMs ability to generate structured reasoning steps before committing to a final answer.",
+    "char_start": 13928,
+    "char_end": 14062,
+    "sentence_index": 46,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "This capability is particularly beneficial for logic-intensive tasks such as mathematics and programming.",
+    "char_start": 14063,
+    "char_end": 14168,
+    "sentence_index": 47,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "More broadly, reasoning-capable models are often favored by human users over their non-reasoning counterparts, as evidenced by rankings in the Chatbot Arena LLM Leaderboard.",
+    "char_start": 14169,
+    "char_end": 14342,
+    "sentence_index": 48,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "A community-driven evaluation of leading LLMs and AI chatbots: .",
+    "char_start": 14343,
+    "char_end": 14407,
+    "sentence_index": 49,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "Recent reasoning models, such as DeepSeek-R1 and OpenAI o1 , are known or believed to have internalized reasoning behaviors, reducing reliance on explicit test-time augmentations.",
+    "char_start": 14409,
+    "char_end": 14588,
+    "sentence_index": 50,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "These models generate detailed CoT reasoning by iteratively producing intermediate steps and refining solutions sequentially until reaching a final answer.",
+    "char_start": 14589,
+    "char_end": 14744,
+    "sentence_index": 51,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "Unlike traditional CoT approaches, which rely on prompting, these reasoning models internalize their reasoning capability through extensive training.",
+    "char_start": 14745,
+    "char_end": 14894,
+    "sentence_index": 52,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "The OpenAI o1 model is speculated to employ a tree-based search approach, such as Monte Carlo Tree Search (MCTS) , combined with a Process Reward Model (PRM) to explore reasoning paths and determine optimal solutions through guided simulations.",
+    "char_start": 14896,
+    "char_end": 15140,
+    "sentence_index": 53,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "There is no official confirmation regarding OpenAI o1\u2019s training details and mechanisms.",
+    "char_start": 15141,
+    "char_end": 15229,
+    "sentence_index": 54,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "However, sources such as and discuss these speculations in detail and are recommended for interested readers.",
+    "char_start": 15230,
+    "char_end": 15339,
+    "sentence_index": 55,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "DeepSeek-R1, on the other hand, explicitly learns its reasoning capability through supervised fine-tuning and reinforcement learning, with a particular emphasis on rule-based rewards for math and coding tasks.",
+    "char_start": 15340,
+    "char_end": 15549,
+    "sentence_index": 56,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "These models are trained to generate reasoning steps in a predefined format before arriving at their final answers.",
+    "char_start": 15550,
+    "char_end": 15665,
+    "sentence_index": 57,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "[t]\n\nfigs/overthinking.pdf\nAn example of the ``overthinking phenomenon'': when asked ``Which is larger, 0.9 or 0.11?'' , the reasoning model takes an unnecessarily long time (e.g., 19 seconds for QwQ-32B and 42 seconds for DeepSeek-R1 ) to arrive at the correct answer.",
+    "char_start": 15667,
+    "char_end": 15936,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "This example was tested in March 2025.",
+    "char_start": 15937,
+    "char_end": 15975,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "The ``overthinking phenomenon'' in long CoT reasoning models refers to situations where LLMs generate excessively detailed or unnecessarily elaborate reasoning steps, ultimately reducing their problem-solving efficiency.",
+    "char_start": 15977,
+    "char_end": 16197,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "In particular, many modern reasoning models, especially those with smaller parameter scales, tend to produce verbose reasoning or redundant intermediate steps, making them unable to provide answers within the user-defined token budget.",
+    "char_start": 16198,
+    "char_end": 16433,
+    "sentence_index": 61,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec006",
+    "text": "In worse cases, excessive reasoning steps introduce errors or obscure logical clarity, leading to incorrect answers.",
+    "char_start": 16434,
+    "char_end": 16550,
+    "sentence_index": 62,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec006",
+    "text": "Figure illustrates an example of overthinking.",
+    "char_start": 16552,
+    "char_end": 16598,
+    "sentence_index": 63,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "Even though the model arrives at the correct answer early in its reasoning process, it continues generating unnecessary intermediate steps, leading to inefficiencies.",
+    "char_start": 16599,
+    "char_end": 16765,
+    "sentence_index": 64,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Given the substantial resource costs associated with LLM inference (e.g., OpenAI o1 costs \\$60 per 1M generated tokens), such behavior is highly undesirable.",
+    "char_start": 16766,
+    "char_end": 16923,
+    "sentence_index": 65,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Moreover, the problem becomes even worse if longer reasoning leads to wrong answers.",
+    "char_start": 16924,
+    "char_end": 17008,
+    "sentence_index": 66,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "In contrast, efficient reasoning models would use fewer reasoning steps to obtain correct answers while reducing inference costs.",
+    "char_start": 17009,
+    "char_end": 17138,
+    "sentence_index": 67,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "Addressing this challenge is particularly difficult because the pretraining recipes for reasoning-capable models often explicitly encourage generating extended reasoning steps to improve accuracy.",
+    "char_start": 17140,
+    "char_end": 17336,
+    "sentence_index": 68,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "For example, DeepSeek-R1-Zero, a more or less a development prototype of DeepSeek-R1, exhibits a direct correlation between increased training duration with longer response lengths and improved benchmark performance .",
+    "char_start": 17337,
+    "char_end": 17554,
+    "sentence_index": 69,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "These trends are often viewed as proxies for successful reasoning training.",
+    "char_start": 17555,
+    "char_end": 17630,
+    "sentence_index": 70,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Consequently, improving inference efficiency requires working against certain pretraining objectives, making it a non-trivial challenge.",
+    "char_start": 17631,
+    "char_end": 17767,
+    "sentence_index": 71,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "This paper aims to systematically summarize various approaches and methodologies toward achieving the challenging yet valuable goal of developing reasoning models with high efficiency and strong reasoning capabilities.",
+    "char_start": 17769,
+    "char_end": 17987,
+    "sentence_index": 72,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec007",
+    "text": "From the model perspective, these works focus on fine-tuning LLMs to improve their intrinsic ability to reason concisely and efficiently.",
+    "char_start": 17989,
+    "char_end": 18126,
+    "sentence_index": 73,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "Most reasoning models are trained using RL-based methods (e.g., DeepSeek-R1 , DeepSeek-R1-Zero , OpenAI o1 , QwQ-32B-Preview ) which focus on the accuracy reward and format rewards .",
+    "char_start": 18128,
+    "char_end": 18310,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "To enhance reasoning-length efficiency, some studies propose integrating a length reward into the RL framework, which effectively shortens the reasoning process (as shown in Table ).",
+    "char_start": 18311,
+    "char_end": 18493,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "In principle, the length reward assigns higher scores to short, correct answers while penalizing lengthy or incorrect ones, thereby optimizing the length of the reasoning path.",
+    "char_start": 18494,
+    "char_end": 18670,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "[t]\n\nComparison of different length reward-based RL methods.",
+    "char_start": 18672,
+    "char_end": 18732,
+    "sentence_index": 77,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "$L( )$ denotes the way of calculating the prediction length.",
+    "char_start": 18733,
+    "char_end": 18793,
+    "sentence_index": 78,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "$r_0^c/r_0^w$ denotes reward (correct/wrong) for $L( )$=0.",
+    "char_start": 18794,
+    "char_end": 18852,
+    "sentence_index": 79,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "$r_L^c/r_L^w$ Reward (correct/wrong) for $L( ) = L_ max ( )$.",
+    "char_start": 18853,
+    "char_end": 18914,
+    "sentence_index": 80,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "$r_e$ is the exceed length penalty.",
+    "char_start": 18915,
+    "char_end": 18950,
+    "sentence_index": 81,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "$y_ GT $ represents the ground truth answer of input data $x$.",
+    "char_start": 18951,
+    "char_end": 19013,
+    "sentence_index": 82,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "$ _ ref $ is the policy of reference model.",
+    "char_start": 19014,
+    "char_end": 19057,
+    "sentence_index": 83,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "!\nl|c|c|c|c\n\nMethod & RL & Length Constraint Reward & Data & Model\n\nO1-Pruner & PPO & $ E _ x D - 1 ]\n$ & GSM8K\nGaoKao\nMATH-500 & Marco-o1-7B\nQwQ-32B-Preview\n\nDemystifying & PPO & $\n\\; r_0^c + 0.5 (r_L^c - r_0^c)(1 + ( L(y_ pred ) L_ ), & if correct ,\n\n\\; r_0^c + 0.5 (r_L^w - r_0^w)(1 + ( L(y_ pred ) L_ ), & if wrong\n\n\\; r_e, & if L(y_ pred ) = L_ , $\n& MATH-500\nAIME-2024\nTheoremQA\nMMLU-Pro-1k & LLaMA-3.1-8B\nQwen2.5-7B-Math\n\nL1 & GRPO & $\n\\; x_ new = CONCAT (x, \u201cThink for N tokens.\u201d ),\n\n\\; r(y, y_ GT , L(y_ GT )) = I (y_ pred = y_ GT ) - |L(y_ GT ) - L(y_ pred )|\n$\n& AMC\nGPQA\nLAST\nMMLU\nMATH-500\nAIME-2024\nOlympiad-Bench & DeepSeek-R1-Distill-Qwen-1.5B\n\nDAST & SimPO & Trained with constructed length preference data & MATH-500\nAIME-2024 & DeepSeek-R1-Distill-Qwen-7B\nDeepSeek-R1-Distill-Qwen-32B\n\nTraining & PG & $ E _ x D $ & GSM8K\nMATH-500\nAIME-2024 & DeepSeek-R1-Distill-Qwen-1.5B\nDeepSeek-R1-Distill-Qwen-7B\n\n[t]\n\nComparison of different policy optimization methods in CoT length controls.",
+    "char_start": 19059,
+    "char_end": 20059,
+    "sentence_index": 84,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "$ R _t$ represents the reward model.",
+    "char_start": 20060,
+    "char_end": 20096,
+    "sentence_index": 85,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "$ _ ref $ is the policy of reference model.",
+    "char_start": 20097,
+    "char_end": 20140,
+    "sentence_index": 86,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "$ $ is a target reward margin term for SimPO.",
+    "char_start": 20141,
+    "char_end": 20186,
+    "sentence_index": 87,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "$ $ is a clipping-related hyper-parameter.",
+    "char_start": 20187,
+    "char_end": 20229,
+    "sentence_index": 88,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "The $y_w$ is for winning responses, and $y_l$ is for losing responses, where some with $G$ on superscript denote the outputs of different sampled groups.",
+    "char_start": 20230,
+    "char_end": 20383,
+    "sentence_index": 89,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "0.9\nl|c\n\nMethod & Optimization Objective\n\nPolicy Gradient (PG) & $ E _ _ $\n\nPPO & $ E $\n\nSimPO & $ E $\n\nGRPO & $ E ]$\n\nThe key question is: How to formulate the length reward in RL?",
+    "char_start": 20385,
+    "char_end": 20566,
+    "sentence_index": 90,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "[h]\n\nfigs/rl.pdf\nIllustration of the method for RL fine-tuning with length reward designs.",
+    "char_start": 20568,
+    "char_end": 20658,
+    "sentence_index": 91,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "In principle, the length reward assigns higher rewards to short, correct answers and penalizes lengthy or wrong answers to achieve efficient reasoning LLMs.",
+    "char_start": 20659,
+    "char_end": 20815,
+    "sentence_index": 92,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Existing works leverage traditional RL optimization techniques combined with explicit length-based reward to control the length of CoT reasoning.",
+    "char_start": 20817,
+    "char_end": 20962,
+    "sentence_index": 93,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "Some detailed length rewards are shown in Table .",
+    "char_start": 20963,
+    "char_end": 21012,
+    "sentence_index": 94,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "The work proposes utilizing length-based rewards conditioned on correctness, where shorter correct answers receive higher rewards.",
+    "char_start": 21013,
+    "char_end": 21143,
+    "sentence_index": 95,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "They then apply traditional policy gradient methods guided by this reward scheme to encourage LLMs to produce concise reasoning steps.",
+    "char_start": 21144,
+    "char_end": 21278,
+    "sentence_index": 96,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "Expanding from the policy gradient, the following discussed work is primarily built upon proximal policy optimization (PPO) with CoT length penalty.",
+    "char_start": 21279,
+    "char_end": 21427,
+    "sentence_index": 97,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "Demystifying presents empirical findings from RL experiments examining how reasoning capability is influenced by length.",
+    "char_start": 21428,
+    "char_end": 21548,
+    "sentence_index": 98,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "They demonstrate that RL does not consistently or reliably increase the length and complexity of CoT reasoning, emphasizing the necessity of controlling CoT length growth to ensure stable performance.",
+    "char_start": 21549,
+    "char_end": 21749,
+    "sentence_index": 99,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "To mitigate these issues, they proposed a Cosine Reward based on a Dirichlet function of concise reward formula and the proposed ``exceed length penalty'' scores.",
+    "char_start": 21750,
+    "char_end": 21912,
+    "sentence_index": 100,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "Due to the performance impact of CoT length, Kimi k1.5 incorporates a length penalty into its policy optimization (a variant of online policy mirror decent ) to improve long CoT activations and facilitate effective model merging.",
+    "char_start": 21913,
+    "char_end": 22142,
+    "sentence_index": 101,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "Besides optimizing with length penalty reward, L1 modify the training data with the designated length constraint instruction (i.e., Think for $N$ tokens) before launching the policy optimization with pre-trained reasoning LLMs.",
+    "char_start": 22143,
+    "char_end": 22370,
+    "sentence_index": 102,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "O1-Pruner introduces the Length-Harmonizing Reward, combined with a PPO-style loss, to optimize reasoning LLMs by effectively shortening the CoT length.",
+    "char_start": 22371,
+    "char_end": 22523,
+    "sentence_index": 103,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "Specifically, the Length-Harmonizing Reward is computed based on the ratio of CoT lengths between the reference model output and the predicted results.",
+    "char_start": 22524,
+    "char_end": 22675,
+    "sentence_index": 104,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "Additionally, this reward incorporates accuracy-based constraints comparing predictions to the reference model outputs, ensuring that shortening the reasoning process does not degrade task performance.",
+    "char_start": 22676,
+    "char_end": 22877,
+    "sentence_index": 105,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "Without relying on a reference model, DAST employs SimPO to fine-tune reasoning LLMs using a constructed length-preference dataset.",
+    "char_start": 22878,
+    "char_end": 23009,
+    "sentence_index": 106,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "This dataset is generated based on a self-defined token-length budget measurement $L_ budget $, defined as a linear combination of the average token length of correct responses and the maximum allowed generation length.",
+    "char_start": 23010,
+    "char_end": 23229,
+    "sentence_index": 107,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "These RL-based methods enable the mitigation of overthinking in reasoning-capable LLMs, where overthinking refers to unnecessarily extended reasoning processes, leading to longer inference times and exceeding computational budgets.",
+    "char_start": 23231,
+    "char_end": 23462,
+    "sentence_index": 108,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec008",
+    "text": "By achieving nearly lossless alignment with the original reasoning capabilities of LLMs, these budget-efficient RL strategies democratize the deployment of reasoning LLMs in resource-constrained scenarios.",
+    "char_start": 23463,
+    "char_end": 23668,
+    "sentence_index": 109,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "Fine-tuning LLMs with variable-length CoT data is an effective way to improve the efficiency of reasoning.",
+    "char_start": 23670,
+    "char_end": 23776,
+    "sentence_index": 110,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec009",
+    "text": "As shown in Figure , this series of works typically involves: (1) Constructing variable-length CoT reasoning datasets via various methods, and (2) Applying SFT with collected data on reasoning models to enable LLMs to learn compact reasoning chains that encapsulate effective knowledge.",
+    "char_start": 23777,
+    "char_end": 24063,
+    "sentence_index": 111,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec009",
+    "text": "Note that this method is not limited to RL-trained reasoning models; it can also directly enhance reasoning models by injecting efficient reasoning capabilities, similar to those used in distilled reasoning models.(e.g., DeepSeek-R1-Distill-Qwen ).",
+    "char_start": 24064,
+    "char_end": 24312,
+    "sentence_index": 112,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec009",
+    "text": "The key question is: How to collect variable-length CoT reasoning data, especially for short CoT data?",
+    "char_start": 24314,
+    "char_end": 24416,
+    "sentence_index": 113,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec009",
+    "text": "[h]\n\nfigs/sft.pdf\n\nIllustration of methods for utilizing SFT with variable-length CoT reasoning datasets.",
+    "char_start": 24418,
+    "char_end": 24523,
+    "sentence_index": 114,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec009",
+    "text": "[ht]\n\nComparison of various approaches that utilize SFT with variable-length CoT reasoning datasets.",
+    "char_start": 24525,
+    "char_end": 24625,
+    "sentence_index": 115,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec009",
+    "text": "!\nl|cccccccccc\n\nMethod & Source Data & Reasoning Pruning & SFT & LLMs\n\nSelf-Training & GSM8K\nMATH & Sampling $N$\nreasoning then select\nthe shortest one & Standard & Llama-3.2-\\ 1B,3B\\\nLlama-3.1-8B\n\nTokenSkip & GSM8K\nMATH & Skip tokens according to\nsemantic importance & Standard & LLaMA-3.1-8B-Instruct\nQwen2.5-Instruct\n\nC3oT & GSM8K\nMathQA\nECQA\nStrategyQA & GPT-4 as compressor\nto make concise\nreasoning & Standard & Llama-2-chat-\\ 7B,13B\\\n\nDistilling2-1 & OASST2 & Removing reasoning & Standard & Llama-2-70B-chat\n\nToken-Budget & GSM8K\nGSM8K-Z\nMathBench & Persuing an optimal\ntoken budget for LLMs\nto complete the reasoning & Standard & Llama-3.1-8B-Instruct\n\nCoT-Valve & GSM8K\nPRM800k & Merging parameters\nof non-reasoning and\nlong reasoning LLMs & Progressive & QwQ-32B-Preview\nDeepSeek-R1-Distill-Llama-8B\nLLaMA-3.1-8B\nLLaMA-3.2-1B\nQwen32B-Instruct\n\nLearnSkip & Analog of Algebra\nMulti-digit Addition\nDirectional Reasoning & Stage 1: Manually skipping\nStage 2: Prompting LLMs\nfor shorter reasoning & Standard \\&\nProgressive & Llama-2-7B\nPhi-3-mini (3.8B)\n\nVariable-length CoT reasoning datasets refer to datasets of long/short reasoning steps that could guide LLMs to achieve correct answers.",
+    "char_start": 24627,
+    "char_end": 25824,
+    "sentence_index": 116,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Existing works typically gather long CoT data by prompting pre-trained reasoning models with questions.",
+    "char_start": 25826,
+    "char_end": 25929,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Based on the long CoT data, the key challenge is: How to collect short CoT data?",
+    "char_start": 25930,
+    "char_end": 26010,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Overall, variable-length CoT reasoning datasets can be created via either post-reasoning or during-reasoning.",
+    "char_start": 26011,
+    "char_end": 26120,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "We list some detailed approaches in Table .",
+    "char_start": 26121,
+    "char_end": 26164,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Post-reasoning CoT Compression.",
+    "char_start": 26166,
+    "char_end": 26197,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "This approach collects short CoT data by reducing redundant reasoning steps after full-length reasoning, either by heuristic criterion or LLMs, as proposed in , , and .",
+    "char_start": 26198,
+    "char_end": 26366,
+    "sentence_index": 122,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "Specifically, uses reasoning-capable LLMs to generate the reasoning and answers.",
+    "char_start": 26367,
+    "char_end": 26447,
+    "sentence_index": 123,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "After generating full-length CoT data, they discard the reasoning process, only using the questions and answers to distill system-1 LLMs.",
+    "char_start": 26448,
+    "char_end": 26585,
+    "sentence_index": 124,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "Another work C3oT improves the reasoning efficiency by compressing the reasoning process .",
+    "char_start": 26586,
+    "char_end": 26676,
+    "sentence_index": 125,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "The long CoT reasoning steps were generated by explicitly prompting LLMs.",
+    "char_start": 26677,
+    "char_end": 26750,
+    "sentence_index": 126,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "Then, it employs GPT-4 as a compressor to reduce the length of the reasoning process while ensuring the compressed reasoning retains all key information and removes redundant words.",
+    "char_start": 26751,
+    "char_end": 26932,
+    "sentence_index": 127,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "In addition, TokenSkip reduce the reasoning steps driven by interpretation .",
+    "char_start": 26933,
+    "char_end": 27009,
+    "sentence_index": 128,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "It estimates the semantic importance of each reasoning part to the final answer and reduces the reasoning tokens.",
+    "char_start": 27010,
+    "char_end": 27123,
+    "sentence_index": 129,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "The important parts preserve the key reasoning steps that could improve the accuracy of the final answer.",
+    "char_start": 27124,
+    "char_end": 27229,
+    "sentence_index": 130,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "The advantage of post-reasoning CoT compression is that it can achieve a higher reduction rate of the reasoning steps, which advances more efficient reasoning.",
+    "char_start": 27230,
+    "char_end": 27389,
+    "sentence_index": 131,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "Obtaining Compressed CoT Data during Reasoning.",
+    "char_start": 27391,
+    "char_end": 27438,
+    "sentence_index": 132,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "This approach collects short CoT data by prompting LLMs to generate short reasoning steps during inference and reasoning, as proposed in , , , and .",
+    "char_start": 27439,
+    "char_end": 27587,
+    "sentence_index": 133,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "Specifically, proposes a human-like step-skipping method for generating shorter reasoning steps.",
+    "char_start": 27588,
+    "char_end": 27684,
+    "sentence_index": 134,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "In the first stage, based on the original training datasets, they manually create solutions by skipping steps, either guided by human expertise or by randomly merging or removing steps.",
+    "char_start": 27685,
+    "char_end": 27870,
+    "sentence_index": 135,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec010",
+    "text": "Further, these concise data are labeled with prompts such as \u201cSolve it in $n$ steps.\u201d.",
+    "char_start": 27871,
+    "char_end": 27957,
+    "sentence_index": 136,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "After SFT, the model is able to generate shorter reasoning paths.",
+    "char_start": 27958,
+    "char_end": 28023,
+    "sentence_index": 137,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "In the second stage, they prompt this model to solve problems by intrinsically skipping or compressing steps during reasoning.",
+    "char_start": 28024,
+    "char_end": 28150,
+    "sentence_index": 138,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "The generated concise reasoning steps with questions and answers are collected as datasets, which are then used in SFT to make LLMs solve problems with fewer steps.",
+    "char_start": 28151,
+    "char_end": 28315,
+    "sentence_index": 139,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "Moreover, Token-Budget has an important insight: an optimal token budget helps LLMs actively follow the token constraint to complete the reasoning process.",
+    "char_start": 28316,
+    "char_end": 28471,
+    "sentence_index": 140,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "Motivated by this insight, it proposes a binary search-based method to achieve the optimal token budgets, and follow these budgets to generate short reasoning steps.",
+    "char_start": 28472,
+    "char_end": 28637,
+    "sentence_index": 141,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "In addition, proposes a sampling-based method to improve reasoning efficiency.",
+    "char_start": 28638,
+    "char_end": 28716,
+    "sentence_index": 142,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec010",
+    "text": "Specifically, it examines the distribution of reasoning lengths and finds that shorter solutions appear more frequently than the typical reasoning length.",
+    "char_start": 28717,
+    "char_end": 28871,
+    "sentence_index": 143,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec010",
+    "text": "Driven by this finding, it proposes a Best-of-N (BoN) Sampling at test time, which generates $N$ paths of reasoning and selects the shortest one.",
+    "char_start": 28872,
+    "char_end": 29017,
+    "sentence_index": 144,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec010",
+    "text": "These short reasoning paths are collected as the dataset.",
+    "char_start": 29018,
+    "char_end": 29075,
+    "sentence_index": 145,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec010",
+    "text": "Finally, CoT-Valve controls the reasoning length by mix-up the parameters of long reasoning and non-reasoning LLMs for generating variable-length reasoning steps.",
+    "char_start": 29076,
+    "char_end": 29238,
+    "sentence_index": 146,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec010",
+    "text": "The advantage of CoT compression during reasoning is that the naturally generated reasoning steps align with the intrinsic knowledge of LLMs, which advances more effective learning of LLMs.",
+    "char_start": 29239,
+    "char_end": 29428,
+    "sentence_index": 147,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec011",
+    "text": "After collecting variable-length CoT data, existing works fine-tune LLMs to achieve efficient reasoning in several ways, which include standard fine-tuning (e.g., parameter-efficient fine-tuning such as LoRA or full fine-tuning) and progressive fine-tuning.",
+    "char_start": 29430,
+    "char_end": 29687,
+    "sentence_index": 148,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec011",
+    "text": "Standard Fine-tuning.",
+    "char_start": 29689,
+    "char_end": 29710,
+    "sentence_index": 149,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec011",
+    "text": "Most of the work adopts standard methods to fine-tune LLMs .",
+    "char_start": 29711,
+    "char_end": 29771,
+    "sentence_index": 150,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec011",
+    "text": "Specifically, these approaches adopt LoRA or full fine-tuning to minimize the perplexity loss function or DPO loss function on the reasoning-efficient datasets.",
+    "char_start": 29772,
+    "char_end": 29932,
+    "sentence_index": 151,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec011",
+    "text": "The LoRA enables LLMs to adapt to short reasoning steps with less than $1\\%$ of the parameters tuned.",
+    "char_start": 29933,
+    "char_end": 30034,
+    "sentence_index": 152,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec011",
+    "text": "In addition, observed the growing reasoning efficiency can generalize to out-of-domains beyond the collected datasets.",
+    "char_start": 30035,
+    "char_end": 30153,
+    "sentence_index": 153,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec011",
+    "text": "Progressive Fine-tuning.",
+    "char_start": 30155,
+    "char_end": 30179,
+    "sentence_index": 154,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec011",
+    "text": "Progressive fine-tuning aims to smoothly reduce the reasoning steps during fine-tuning .",
+    "char_start": 30180,
+    "char_end": 30268,
+    "sentence_index": 155,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec011",
+    "text": "One way is to progressively reduce the reasoning steps of data during fine-tuning LLMs, as employed in .",
+    "char_start": 30269,
+    "char_end": 30373,
+    "sentence_index": 156,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec011",
+    "text": "Another effective way is to progressively adjust the generation of reasoning steps, as proposed by CoT-Valve .",
+    "char_start": 30374,
+    "char_end": 30484,
+    "sentence_index": 157,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec011",
+    "text": "Specifically, it first learns LoRA adaptor $ _ N $ and $ _ L $, where LLMs with $ _ N $ have no reasoning steps, and that with $ _ L $ have long reasoning.",
+    "char_start": 30485,
+    "char_end": 30640,
+    "sentence_index": 158,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec011",
+    "text": "Then, it mix-up $ _ N $ and $ _ long $ by\n$ _ N + (1- ) _ L $ to generate a dataset reasoning with variable length.",
+    "char_start": 30641,
+    "char_end": 30756,
+    "sentence_index": 159,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec011",
+    "text": "Here $0 < < 1$ controls the parameter to shift from $ _ N $ to $ _ L $, controlling the reasoning length generated by LLMs.",
+    "char_start": 30757,
+    "char_end": 30880,
+    "sentence_index": 160,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec011",
+    "text": "Finally, it fine-tunes LLMs on the generated data while progressively reducing $ $ from 1 to 0.",
+    "char_start": 30881,
+    "char_end": 30976,
+    "sentence_index": 161,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec011",
+    "text": "In this way, reasoning efficiency is progressively improved during fine-tuning.",
+    "char_start": 30977,
+    "char_end": 31056,
+    "sentence_index": 162,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec011",
+    "text": "Model Merging.",
+    "char_start": 31058,
+    "char_end": 31072,
+    "sentence_index": 163,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec011",
+    "text": "Beyond fine-tuning reasoning models using the above CoT data, several works have explored model merging to improve reasoning efficiency in LLMs.",
+    "char_start": 31073,
+    "char_end": 31217,
+    "sentence_index": 164,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec011",
+    "text": "Kimi k1.5 investigates merging strategies that transform models producing lengthy CoT traces into ones that generate shorter, more concise reasoning outputs.",
+    "char_start": 31218,
+    "char_end": 31375,
+    "sentence_index": 165,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec011",
+    "text": "Unlocking conducts an empirical study on model merging for efficient reasoning with various methods, including task-vector-based, SVD-based, and activation-informed merging.",
+    "char_start": 31376,
+    "char_end": 31549,
+    "sentence_index": 166,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec012",
+    "text": "From the perspective of reasoning steps in the output, these works focus on modifying the output paradigm to enhance the ability of LLMs to reason concisely and efficiently.",
+    "char_start": 31551,
+    "char_end": 31724,
+    "sentence_index": 167,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec013",
+    "text": "Although standard CoT methods improve LLM performance by explicitly writing reasoning steps, recent work has shown that simply adding intermediate ``thinking'' tokens, or even meaningless filler (e.g., ``......'') , can also increase performance.",
+    "char_start": 31726,
+    "char_end": 31972,
+    "sentence_index": 168,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec013",
+    "text": "scales up deeper reasoning through recurrent expansions in the hidden space rather than verbose text.",
+    "char_start": 31973,
+    "char_end": 32074,
+    "sentence_index": 169,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec013",
+    "text": "These findings highlight that the benefit often lies in more hidden computation rather than purely textual decompositions.",
+    "char_start": 32075,
+    "char_end": 32197,
+    "sentence_index": 170,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec013",
+    "text": "Building on the insight that latent reasoning can allow LLMs to reason more efficiently and flexibly, with fewer (or no) explicit textual intermediate steps, several new methods focus on compressing or replacing explicit CoT with more compact latent representations.",
+    "char_start": 32198,
+    "char_end": 32464,
+    "sentence_index": 171,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec013",
+    "text": "The key question is: How to compress reasoning steps into latent space?",
+    "char_start": 32466,
+    "char_end": 32537,
+    "sentence_index": 172,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec013",
+    "text": "[h]\n\nfigs/latent.pdf\n\nComparison of methods of compressing reasoning steps into fewer latent representations.",
+    "char_start": 32539,
+    "char_end": 32648,
+    "sentence_index": 173,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec013",
+    "text": "In general, these methods can be categorized into two types: training LLMs to inference using latent representations or using an auxiliary model.",
+    "char_start": 32650,
+    "char_end": 32795,
+    "sentence_index": 174,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec013",
+    "text": "A visualized comparison of some of these approaches is presented in Figure .",
+    "char_start": 32796,
+    "char_end": 32872,
+    "sentence_index": 175,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec013",
+    "text": "Training LLMs to Leverage Latent Representations.",
+    "char_start": 32874,
+    "char_end": 32923,
+    "sentence_index": 176,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec013",
+    "text": "Among the first explorations, Coconut (Chain of Continuous Thought) treats the final-layer hidden states of an LLM as ``continuous thought'' to replace traditional discrete tokens.",
+    "char_start": 32925,
+    "char_end": 33105,
+    "sentence_index": 177,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec013",
+    "text": "It then reuses these hidden states as the next input embeddings.",
+    "char_start": 33106,
+    "char_end": 33170,
+    "sentence_index": 178,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec013",
+    "text": "Trained step by step, Coconut gradually adds these latent CoT tokens.",
+    "char_start": 33171,
+    "char_end": 33240,
+    "sentence_index": 179,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec013",
+    "text": "The results suggest that compressing tokens into latent representations improves both accuracy and efficiency by reducing the number of intermediate ``thinking'' tokens.",
+    "char_start": 33241,
+    "char_end": 33410,
+    "sentence_index": 180,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec013",
+    "text": "CODI leverages a different training process compared to Coconut, which learns the continuous latent CoT via self-distillation .",
+    "char_start": 33412,
+    "char_end": 33539,
+    "sentence_index": 181,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec013",
+    "text": "In CODI, the model serves both teacher and student, jointly learning explicit and implicit CoT while aligning hidden activations on the token, generating the final answer.",
+    "char_start": 33540,
+    "char_end": 33711,
+    "sentence_index": 182,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec013",
+    "text": "This self-distillation process enables LLMs to perform reasoning internally without generating explicit CoT tokens.",
+    "char_start": 33712,
+    "char_end": 33827,
+    "sentence_index": 183,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec013",
+    "text": "Similarly, CCOT condenses long CoT reasoning into short contentful and continuous contemplation tokens .",
+    "char_start": 33829,
+    "char_end": 33933,
+    "sentence_index": 184,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec013",
+    "text": "First, it precomputes the full CoT for a query and selects the most important hidden states as a gold standard for compression.",
+    "char_start": 33934,
+    "char_end": 34061,
+    "sentence_index": 185,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec013",
+    "text": "The CCOT module (a LoRA) is trained to predict these key tokens.",
+    "char_start": 34062,
+    "char_end": 34126,
+    "sentence_index": 186,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec013",
+    "text": "Then, the DECODE module (another LoRA) is trained on the query plus compressed tokens.",
+    "char_start": 34127,
+    "char_end": 34213,
+    "sentence_index": 187,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec013",
+    "text": "During inference, CCOT generates compressed tokens, which DECODE uses to produce concise reasoning steps.",
+    "char_start": 34214,
+    "char_end": 34319,
+    "sentence_index": 188,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec013",
+    "text": "Another type of work, summarization-based dynamic reasoning, as mentioned in Section explores compressing and summarizing reasoning steps in discrete space during inference, which is similar to the introduction of ``contemplation token''.",
+    "char_start": 34320,
+    "char_end": 34558,
+    "sentence_index": 189,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec013",
+    "text": "Another work, Heima , inspired by Coconut , brings latent reasoning into Multimodal Large Langue Models (MLLMs).",
+    "char_start": 34560,
+    "char_end": 34672,
+    "sentence_index": 190,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec013",
+    "text": "Instead of always using full, lengthy reasoning explanations, Heima replaces each stage of detailed reasoning with a single ``thinking token''.",
+    "char_start": 34673,
+    "char_end": 34816,
+    "sentence_index": 191,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec013",
+    "text": "With this change, the training data is updated.",
+    "char_start": 34817,
+    "char_end": 34864,
+    "sentence_index": 192,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec013",
+    "text": "Instead of long textual explanations, each reasoning stage is just one of these thinking tokens.",
+    "char_start": 34865,
+    "char_end": 34961,
+    "sentence_index": 193,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec013",
+    "text": "Then, they continue fine-tuning the model to achieve efficient reasoning.",
+    "char_start": 34962,
+    "char_end": 35035,
+    "sentence_index": 194,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec013",
+    "text": "Token Assorted adopts a hybrid approach.",
+    "char_start": 35037,
+    "char_end": 35077,
+    "sentence_index": 195,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec013",
+    "text": "During training, part of the CoT is replaced by discrete latent tokens learned via a VQ-VAE , and then the LLM is trained with a partial and high-level abstract of the reasoning steps.",
+    "char_start": 35078,
+    "char_end": 35262,
+    "sentence_index": 196,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec013",
+    "text": "The authors show that mixing text tokens with latent tokens can facilitate training and inference by representing some reasoning steps in a compact latent form.",
+    "char_start": 35263,
+    "char_end": 35423,
+    "sentence_index": 197,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec013",
+    "text": "Other than explicitly compressing the discrete tokens into latent space, demonstrates that looping a $k$-layer transformer $L$ times can emulate the performance of a $kL$-layer model.",
+    "char_start": 35425,
+    "char_end": 35608,
+    "sentence_index": 198,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec013",
+    "text": "This looping mechanism effectively increases the depth of the model depth without adding parameters, enabling iterative reasoning processes within the latent space.",
+    "char_start": 35609,
+    "char_end": 35773,
+    "sentence_index": 199,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec013",
+    "text": "The study reveals that looped models implicitly generate latent thoughts , allowing them to simulate multiple steps of CoT reasoning through successive loops.",
+    "char_start": 35774,
+    "char_end": 35932,
+    "sentence_index": 200,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec013",
+    "text": "Training Auxiliary Modules while Keeping LLMs Frozen.",
+    "char_start": 35934,
+    "char_end": 35987,
+    "sentence_index": 201,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec013",
+    "text": "While most methods for continuous-space reasoning fine-tune the pre-trained LLM, SoftCoT keeps the underlying LLM frozen.",
+    "char_start": 35989,
+    "char_end": 36110,
+    "sentence_index": 202,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec013",
+    "text": "A lightweight auxiliary model generates instance-specific soft thought tokens projected into the embedding space of the frozen LLM.",
+    "char_start": 36111,
+    "char_end": 36242,
+    "sentence_index": 203,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec013",
+    "text": "Experiments show that SoftCoT consistently boosts performance, demonstrating the viability of augmenting LLMs with external latent reasoning tokens.",
+    "char_start": 36243,
+    "char_end": 36391,
+    "sentence_index": 204,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec013",
+    "text": "These methods hint at a broader move toward latent reasoning, where critical thinking occurs in compressed, non-textual forms.",
+    "char_start": 36393,
+    "char_end": 36519,
+    "sentence_index": 205,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec013",
+    "text": "Such approaches can unlock improved speed, adaptive inference, parallel backtracking, and new ways to interpret or partially reveal the model reasoning.",
+    "char_start": 36520,
+    "char_end": 36672,
+    "sentence_index": 206,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec013",
+    "text": "As LLMs grow larger and tasks become more complex, balancing thorough reasoning with computational efficiency is greatly beneficial from these flexible and compact latent CoT paradigms.",
+    "char_start": 36673,
+    "char_end": 36858,
+    "sentence_index": 207,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec014",
+    "text": "Existing works focus on modifying the reasoning paradigm for more efficient inference.",
+    "char_start": 36860,
+    "char_end": 36946,
+    "sentence_index": 208,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec014",
+    "text": "The key during inference is choosing the proper criterion to guide the reasoning strategy.",
+    "char_start": 36947,
+    "char_end": 37037,
+    "sentence_index": 209,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec014",
+    "text": "Current training-free approaches explore dynamic reasoning using various criteria, such as reward-guided, confidence-based, and consistency-based selective reasoning.",
+    "char_start": 37038,
+    "char_end": 37204,
+    "sentence_index": 210,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec014",
+    "text": "Additionally, a summarization-based dynamic reasoning method intrinsically integrates the output summarization paradigm of LLMs during training.",
+    "char_start": 37205,
+    "char_end": 37349,
+    "sentence_index": 211,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec014",
+    "text": "The key question is: Which criterion to guide the inference?",
+    "char_start": 37351,
+    "char_end": 37411,
+    "sentence_index": 212,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec014",
+    "text": "What is the appropriate efficient inference paradigm?",
+    "char_start": 37412,
+    "char_end": 37465,
+    "sentence_index": 213,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec014",
+    "text": "[htbp]\n\nComparison of different methods of dynamic reasoning paradigm of test time compute during inference.",
+    "char_start": 37467,
+    "char_end": 37575,
+    "sentence_index": 214,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec014",
+    "text": "0.99\np 1.5cm p 2cm p 0.8cm p 3cm p 4cm\n\nCategory & Method & Training-free?",
+    "char_start": 37576,
+    "char_end": 37650,
+    "sentence_index": 215,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec014",
+    "text": "& Baseline and Its Drawbacks & Method Description\n\n2 * 1.7cm Reward-guided Efficient Reasoning\n& Speculative Rejection & Yes & Best-of-N (BoN) Decoding : underutilizes GPU memory and computational resources during the early stages, leading to lower final rewards.",
+    "char_start": 37651,
+    "char_end": 37914,
+    "sentence_index": 216,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec014",
+    "text": "& Starts BoN with a large initial batch size and rejects unpromising sequences periodically, efficiently achieving higher rewards.",
+    "char_start": 37915,
+    "char_end": 38045,
+    "sentence_index": 217,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec014",
+    "text": "(l) 2-5\n& Reward-Guided Speculative Decoding (RSD) & Yes & Speculative Decoding : strictly enforces unbiasedness, discarding useful intermediate outputs and leading to computational inefficiency.",
+    "char_start": 38047,
+    "char_end": 38242,
+    "sentence_index": 218,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec014",
+    "text": "& A speculative decoding method that leverages a reward model (PRM) to selectively accept high-quality outputs from a lightweight draft model, reducing computation while preserving accuracy.",
+    "char_start": 38243,
+    "char_end": 38433,
+    "sentence_index": 219,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec014",
+    "text": "4 * 1.7cm Confidence/ Certainty-based Adaptive Reasoning & Dynamic Parallel Tree Search & Yes & Tree-of-Thoughts: difficult to parallelize due to frequent switching of reasoning focus, and inefficient because of redundant exploration of suboptimal solutions & Dynamically parallelizes node expansion through adaptive batching and implements a search-and-transition mechanism (including Early Stop and Deep Seek ) to prune unpromising paths early.",
+    "char_start": 38435,
+    "char_end": 38881,
+    "sentence_index": 220,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec014",
+    "text": "(l) 2-5\n& Dynasor (Certaindex-based Scheduling) & Yes & Serving systems with uniform resource allocation : allocate compute uniformly, leading to inefficient resource usage and unmet latency targets & Dynamically allocates compute for reasoning queries based on Certaindex , a statistical measure of reasoning progress, to maximize accuracy within resource constraints.",
+    "char_start": 38883,
+    "char_end": 39252,
+    "sentence_index": 221,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec014",
+    "text": "(l) 2-5\n& FastMCTS & Yes & Rejection Sampling : inefficient, discards intermediate steps, and fails to balance problem difficulty & An MCTS-inspired sampling strategy that efficiently generates high-quality multi-step reasoning data, providing step-level evaluation signals and balanced sampling across problem difficulties.",
+    "char_start": 39254,
+    "char_end": 39578,
+    "sentence_index": 222,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec014",
+    "text": "(l) 2-5\n& Length-filtered Vote & Yes & Majority Voting : ignores reasoning quality, includes suboptimal CoT lengths, and suffers from noisy predictions & A voting strategy that selects answers with the optimal CoT length by filtering out excessively short or long reasoning paths.",
+    "char_start": 39580,
+    "char_end": 39860,
+    "sentence_index": 223,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec014",
+    "text": "Consistency-based Selective Reasoning & Self-Truncation Best-of-N (ST-BoN) & Yes & Best-of-N Sampling : fully generates all samples and relies on costly reward models & Estimates the most promising sample early via internal embedding consistency, truncating inferior samples prematurely.",
+    "char_start": 39862,
+    "char_end": 40149,
+    "sentence_index": 224,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec014",
+    "text": "2 * 1.7cm Summarization-based Dynamic Reasoning & LightThinker & No & Chain-of-Thought (CoT) : high memory and computational overhead due to the generation of an excessive number of tokens & Trains LLMs to learn when and how to compress intermediate thoughts, condensing long reasoning chains into gist tokens, and uses a sparse-patterned attention mask during inference to enhance computational efficiency.",
+    "char_start": 40151,
+    "char_end": 40558,
+    "sentence_index": 225,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec014",
+    "text": "(l) 2-5\n& InftyThink & No & Monolithic Reasoning : reasoning output is verbose, and can quickly exceed the context window limit of the LLM, resulting in poor performance & An iterative reasoning paradigm that interleaves reasoning steps with intermediate summarization, enabling unbounded reasoning depth without architectural modifications.",
+    "char_start": 40560,
+    "char_end": 40901,
+    "sentence_index": 226,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec015",
+    "text": "Train-time scaling with RL can significantly enhance the reasoning ability of LLMs.",
+    "char_start": 40903,
+    "char_end": 40986,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec015",
+    "text": "However, it requires substantial computational resources to scale up the model training, making it prohibitively expensive .",
+    "char_start": 40987,
+    "char_end": 41111,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec015",
+    "text": "As an alternative, researchers have explored test-time reasoning, also known as test-time scaling .",
+    "char_start": 41112,
+    "char_end": 41211,
+    "sentence_index": 229,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec015",
+    "text": "Instead of relying on training to learn CoT reasoning steps, test-time scaling leverages various inference strategies that allow models to ``think longer and broader'' on complex problems.",
+    "char_start": 41212,
+    "char_end": 41400,
+    "sentence_index": 230,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec015",
+    "text": "This approach consistently improves performance on challenging math and code problems that require reasoning by increasing the computational resources allocated during inference .",
+    "char_start": 41401,
+    "char_end": 41580,
+    "sentence_index": 231,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec015",
+    "text": "Test-time scaling utilizes various inference strategies to generate longer and higher-quality CoT responses.",
+    "char_start": 41582,
+    "char_end": 41690,
+    "sentence_index": 232,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec015",
+    "text": "There are several ways to scale up the inference.",
+    "char_start": 41691,
+    "char_end": 41740,
+    "sentence_index": 233,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec015",
+    "text": "(1) Best-of-N sampling involves generating multiple responses for a given prompt, expanding the search space to identify better solutions.",
+    "char_start": 41741,
+    "char_end": 41879,
+    "sentence_index": 234,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec015",
+    "text": "After generation, the best response is selected using either majority voting, where the most frequently occurring response is chosen; or by a reward model, which evaluates response quality based on pre-defined criteria.",
+    "char_start": 41880,
+    "char_end": 42099,
+    "sentence_index": 235,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec015",
+    "text": "This method has been shown to significantly enhance the reasoning capabilities of LLMs .",
+    "char_start": 42100,
+    "char_end": 42188,
+    "sentence_index": 236,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec015",
+    "text": "(2) Beam-based searching , which differs from Best-of-N by structuring generation into multiple steps.",
+    "char_start": 42189,
+    "char_end": 42291,
+    "sentence_index": 237,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec015",
+    "text": "Instead of generating an entire response in one pass, beam search selects the most promising intermediate outputs with process reward model at each step, while discarding less the optimal ones.",
+    "char_start": 42292,
+    "char_end": 42485,
+    "sentence_index": 238,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec015",
+    "text": "This enables a more fine-grained optimization of both response generation and evaluation.",
+    "char_start": 42486,
+    "char_end": 42575,
+    "sentence_index": 239,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec015",
+    "text": "(3) Monte Carlo Tree Search (MCTS) , where multiple solution paths are explored in parallel.",
+    "char_start": 42576,
+    "char_end": 42668,
+    "sentence_index": 240,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec015",
+    "text": "MCTS generates partial responses along different branches of a solution tree, evaluates them, and back-propagates reward values to earlier nodes.",
+    "char_start": 42669,
+    "char_end": 42814,
+    "sentence_index": 241,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec015",
+    "text": "The model then selects the branch with the highest cumulative reward, ensuring a more refined selection process compared to traditional beam search.",
+    "char_start": 42815,
+    "char_end": 42963,
+    "sentence_index": 242,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec015",
+    "text": "Although test-time scaling can significantly reduce train-time scaling up overhead , the large number of generated responses still makes inference computationally expensive.",
+    "char_start": 42965,
+    "char_end": 43138,
+    "sentence_index": 243,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec015",
+    "text": "To address this, recent works have been exploring methods to optimize test-time scaling.",
+    "char_start": 43139,
+    "char_end": 43227,
+    "sentence_index": 244,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec015",
+    "text": "Reward-guided Efficient Reasoning.",
+    "char_start": 43229,
+    "char_end": 43263,
+    "sentence_index": 245,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec015",
+    "text": "Speculative Rejection is an efficient inference-time reasoning algorithm that optimizes Best-of-N (BoN) decoding by dynamically reducing computational overhead (as shown in Figure , left).",
+    "char_start": 43265,
+    "char_end": 43453,
+    "sentence_index": 246,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec015",
+    "text": "It generates multiple responses until memory limits are nearly reached, then discards low-quality outputs based on evaluation by a reward model .",
+    "char_start": 43454,
+    "char_end": 43599,
+    "sentence_index": 247,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec015",
+    "text": "This adaptive filtering substantially reduces inference costs compared to vanilla BoN.",
+    "char_start": 43600,
+    "char_end": 43686,
+    "sentence_index": 248,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec015",
+    "text": "On the other hand, Reward-Guided Speculative Decoding (RSD) enhances the efficiency of speculative decoding specifically for multi-step reasoning tasks.",
+    "char_start": 43688,
+    "char_end": 43840,
+    "sentence_index": 249,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec015",
+    "text": "Unlike traditional speculative decoding methods, which strictly require exact token matching between the draft model and target model, RSD leverages a Process Reward Model (PRM) to dynamically evaluate intermediate outputs from the smaller, more efficient draft model.",
+    "char_start": 43841,
+    "char_end": 44109,
+    "sentence_index": 250,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec015",
+    "text": "Outputs with high reward scores are directly accepted, while those with lower scores are further refined by a larger, more capable target model.",
+    "char_start": 44110,
+    "char_end": 44254,
+    "sentence_index": 251,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec015",
+    "text": "Confidence/Certainty-based Adaptive Reasoning.",
+    "char_start": 44256,
+    "char_end": 44302,
+    "sentence_index": 252,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec015",
+    "text": "Dynamic Parallel Tree Search (DPTS) optimizes tree-based reasoning in LLMs by addressing two main inefficiencies by introducing: (1) Parallelism Streamline optimizes memory and compute by storing only incremental KV cache updates and dynamically adjusting the number of extended nodes based on available GPU memory, (2) Search and Transition Mechanism balances exploration and exploitation using confidence-based criteria.",
+    "char_start": 44304,
+    "char_end": 44726,
+    "sentence_index": 253,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec015",
+    "text": "Overall, during inference, the system cuts off uncertain paths to save time.",
+    "char_start": 44727,
+    "char_end": 44803,
+    "sentence_index": 254,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec015",
+    "text": "FastMCTS is another confidence-based method that aims to optimize multi-step reasoning data synthesis.",
+    "char_start": 44805,
+    "char_end": 44907,
+    "sentence_index": 255,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec015",
+    "text": "Traditional rejection sampling generates multiple candidate responses independently, selecting only the correct ones, but it is often inefficient and struggles with imbalanced sampling.",
+    "char_start": 44908,
+    "char_end": 45093,
+    "sentence_index": 256,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec015",
+    "text": "Inspired by MCTS, FastMCTS prioritizes high-confidence traces for deep reasoning.",
+    "char_start": 45094,
+    "char_end": 45175,
+    "sentence_index": 257,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec015",
+    "text": "Additionally, it adjusts tree expansion based on problem complexity, improving both efficiency and reasoning diversity.",
+    "char_start": 45176,
+    "char_end": 45295,
+    "sentence_index": 258,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec015",
+    "text": "Another line of research leverages certainty or uncertainty measures to guide adaptive reasoning.",
+    "char_start": 45297,
+    "char_end": 45394,
+    "sentence_index": 259,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec015",
+    "text": "Certaindex , a certainty metric, quantifies the confidence of LLMs throughout reasoning using semantic entropy, reward model scores, or a combination of both.",
+    "char_start": 45395,
+    "char_end": 45553,
+    "sentence_index": 260,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec015",
+    "text": "A higher certaindex indicates that further reasoning steps are unlikely to change the final answer, allowing early termination to free resources for more challenging queries.",
+    "char_start": 45554,
+    "char_end": 45728,
+    "sentence_index": 261,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec015",
+    "text": "Dynasor, an inference system built on this principle, optimizes compute scheduling by dynamically tracking reasoning progress instead of allocating resources uniformly.",
+    "char_start": 45729,
+    "char_end": 45897,
+    "sentence_index": 262,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec015",
+    "text": "Dynasor-CoT uses a probing scheme to exit early if the model is confident enough.",
+    "char_start": 45898,
+    "char_end": 45979,
+    "sentence_index": 263,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec015",
+    "text": "Length-filtered Vote is another work that leverages uncertainty to improve CoT reasoning.",
+    "char_start": 45981,
+    "char_end": 46070,
+    "sentence_index": 264,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec015",
+    "text": "The study finds that longer reasoning chains do not always improve accuracy; instead, performance initially improves but eventually declines due to error accumulation.",
+    "char_start": 46071,
+    "char_end": 46238,
+    "sentence_index": 265,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec015",
+    "text": "The authors provide a mathematical analysis proving the existence of an optimal CoT length, determined by model capability and task difficulty.",
+    "char_start": 46239,
+    "char_end": 46382,
+    "sentence_index": 266,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec015",
+    "text": "To exploit this, they propose Length-filtered Voting, a length-aware majority voting method that groups answers by CoT length and selects the most reliable group based on prediction uncertainty.",
+    "char_start": 46383,
+    "char_end": 46577,
+    "sentence_index": 267,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec015",
+    "text": "Self-Calib introduces confidence-driven adaptive scaling strategies at test time to efficiently address queries with differing complexity levels, including Early-Stopping mechanisms for Best-of-N sampling and confidence-calibrated Self-Consistency approaches.",
+    "char_start": 46579,
+    "char_end": 46838,
+    "sentence_index": 268,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec015",
+    "text": "CISC implements a weighted majority voting scheme utilizing model-derived confidence scores.",
+    "char_start": 46840,
+    "char_end": 46932,
+    "sentence_index": 269,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec015",
+    "text": "By emphasizing reasoning paths with higher confidence, it efficiently determines the correct response with substantially fewer samples.",
+    "char_start": 46933,
+    "char_end": 47068,
+    "sentence_index": 270,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec015",
+    "text": "Consistency-based Selective Reasoning.",
+    "char_start": 47070,
+    "char_end": 47108,
+    "sentence_index": 271,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec015",
+    "text": "Self-Truncation Best-of-N (ST-BoN) enhances BoN sampling efficiency by introducing early termination (as shown in Figure , right), similar to Speculative Rejection .",
+    "char_start": 47109,
+    "char_end": 47274,
+    "sentence_index": 272,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec015",
+    "text": "However, unlike Speculative Rejection using reward models, ST-BoN leverages consistency as the metric to measure the importance.",
+    "char_start": 47275,
+    "char_end": 47403,
+    "sentence_index": 273,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec015",
+    "text": "Specifically, it leverages the consistency of latent embeddings to evaluate response quality.",
+    "char_start": 47404,
+    "char_end": 47497,
+    "sentence_index": 274,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec015",
+    "text": "The core insight is that ``the closer a sample is to others, the more likely its path will lead to the correct answer''.",
+    "char_start": 47498,
+    "char_end": 47618,
+    "sentence_index": 275,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec015",
+    "text": "Then, ST-BoN selects the most consistent Chain-of-Embedding (CoE) to others and regards it as the optimal sample.",
+    "char_start": 47619,
+    "char_end": 47732,
+    "sentence_index": 276,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec015",
+    "text": "[t]\n\nfigs/testtimecompute.pdf\nExamples of efficient Best-of-N sampling methods.",
+    "char_start": 47734,
+    "char_end": 47813,
+    "sentence_index": 277,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec015",
+    "text": "(Left) Speculative Rejection uses a reward model to estimate partial generation quality.",
+    "char_start": 47814,
+    "char_end": 47902,
+    "sentence_index": 278,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec015",
+    "text": "It then early stops the sampled sequence with lower scores.",
+    "char_start": 47903,
+    "char_end": 47962,
+    "sentence_index": 279,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec015",
+    "text": "(Right) ST-BoN evaluates the latent embedding of the early generation.",
+    "char_start": 47963,
+    "char_end": 48033,
+    "sentence_index": 280,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec015",
+    "text": "The latent embedding of each thinking path will be used to calculate pairwise consistency between other tokens.",
+    "char_start": 48034,
+    "char_end": 48145,
+    "sentence_index": 281,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec015",
+    "text": "The sequence with the highest consistency is more likely to arrive at the correct answer.",
+    "char_start": 48146,
+    "char_end": 48235,
+    "sentence_index": 282,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec016",
+    "text": "Some existing methods choose to optimize reasoning efficiency by training LLMs to summarize intermediate thinking steps .",
+    "char_start": 48237,
+    "char_end": 48358,
+    "sentence_index": 283,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec016",
+    "text": "LightThinker proposes to train LLMs to learn when and how to compress intermediate reasoning steps.",
+    "char_start": 48360,
+    "char_end": 48459,
+    "sentence_index": 284,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec016",
+    "text": "Instead of storing long thought chains, LightThinker compresses verbose reasoning into compact ``gist tokens'' to reduce memory and computational costs.",
+    "char_start": 48460,
+    "char_end": 48612,
+    "sentence_index": 285,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec016",
+    "text": "Implementing this summarization paradigm requires a sparse-patterned attention mask, ensuring the model focuses only on essential compressed representations.",
+    "char_start": 48613,
+    "char_end": 48770,
+    "sentence_index": 286,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec016",
+    "text": "InftyThink introduces an iterative reasoning method that enables essentially infinite reasoning chains while maintaining strong accuracy without surpassing the context window limit.",
+    "char_start": 48772,
+    "char_end": 48953,
+    "sentence_index": 287,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec016",
+    "text": "It achieves this by iteratively generating a thought, summarizing it, and discarding previous thoughts and summaries, retaining only the most recent summary.",
+    "char_start": 48954,
+    "char_end": 49111,
+    "sentence_index": 288,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec016",
+    "text": "Additionally, InftyThink provides a technique for converting existing reasoning datasets into an iterative format for training models under this paradigm.",
+    "char_start": 49112,
+    "char_end": 49266,
+    "sentence_index": 289,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec017",
+    "text": "From the perspective of input prompts and questions, these works focus on enforcing length constraints or routing LLMs based on the characteristics of input prompts to enable concise and efficient reasoning.",
+    "char_start": 49268,
+    "char_end": 49475,
+    "sentence_index": 290,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec018",
+    "text": "Prompt-guided efficient reasoning explicitly instructs LLMs to generate fewer reasoning steps , can be a straightforward and highly effective method for improving the efficiency of reasoning models.",
+    "char_start": 49477,
+    "char_end": 49675,
+    "sentence_index": 291,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec018",
+    "text": "As shown in Table , different methods propose different prompts to ensure concise reasoning outputs from the model.",
+    "char_start": 49676,
+    "char_end": 49791,
+    "sentence_index": 292,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec018",
+    "text": "The key question is: Which prompts can accurately control the reasoning length of LLMs?",
+    "char_start": 49793,
+    "char_end": 49880,
+    "sentence_index": 293,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec018",
+    "text": "[t]\n\n4pt\n1.2\nA summary of prompts used with reasoning models to generate concise reasoning outputs.",
+    "char_start": 49882,
+    "char_end": 49981,
+    "sentence_index": 294,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec018",
+    "text": "For further details, refer to Section .",
+    "char_start": 49982,
+    "char_end": 50021,
+    "sentence_index": 295,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec018",
+    "text": "lX\n\nMethod & Prompt\n\nTALE-EP & Budget Estimation : (...) Task: Analyze the given question and estimate the minimum number of tokens required to generate a complete and accurate response.",
+    "char_start": 50022,
+    "char_end": 50208,
+    "sentence_index": 296,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec018",
+    "text": "Please give the response by strictly following this format: [[budget]], for example, Budget: [[12]].",
+    "char_start": 50209,
+    "char_end": 50309,
+    "sentence_index": 297,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec018",
+    "text": "& Token-budget-aware CoT : Please answer the above question.",
+    "char_start": 50311,
+    "char_end": 50371,
+    "sentence_index": 298,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec018",
+    "text": "Let's think step by step and use less than <Token-Budget> tokens.",
+    "char_start": 50372,
+    "char_end": 50437,
+    "sentence_index": 299,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec018",
+    "text": "CoD & Think step by step, but only keep a minimum draft for each thinking step, with 5 words at most.",
+    "char_start": 50439,
+    "char_end": 50540,
+    "sentence_index": 300,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec018",
+    "text": "Return the answer at the end of the response after a separator \\#\\#\\#\\# .",
+    "char_start": 50541,
+    "char_end": 50614,
+    "sentence_index": 301,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec018",
+    "text": "CCoT & Be concise.",
+    "char_start": 50616,
+    "char_end": 50634,
+    "sentence_index": 302,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec018",
+    "text": "Token Complexity & BulletPoints (...) only use bullet points.",
+    "char_start": 50636,
+    "char_end": 50697,
+    "sentence_index": 303,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec018",
+    "text": "& OnlyNumbers (...) only use numbers or equations.",
+    "char_start": 50699,
+    "char_end": 50749,
+    "sentence_index": 304,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec018",
+    "text": "& NoSpaces (...) do not use any spaces or line breaks.",
+    "char_start": 50751,
+    "char_end": 50805,
+    "sentence_index": 305,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec018",
+    "text": "& NoProperGrammar (...) do not use proper grammar.",
+    "char_start": 50807,
+    "char_end": 50857,
+    "sentence_index": 306,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec018",
+    "text": "& AbbreviateWords (...) abbreviate words as much as possible.",
+    "char_start": 50859,
+    "char_end": 50920,
+    "sentence_index": 307,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec018",
+    "text": "& WordLimit(k) (...) use at most $k$ words.",
+    "char_start": 50922,
+    "char_end": 50965,
+    "sentence_index": 308,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec018",
+    "text": "$k \\ 1, , 100\\ $\n\n& CharLimit(k) (...) use at most $k$ letters.",
+    "char_start": 50966,
+    "char_end": 51029,
+    "sentence_index": 309,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec018",
+    "text": "$k \\ 1, , 500\\ $\n\n& TokenLimit(k) (...) use at most $k$ tokens.",
+    "char_start": 51030,
+    "char_end": 51093,
+    "sentence_index": 310,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec018",
+    "text": "$k \\ 1, , 500\\ $\n\n& StepLimit(k) (...) use at most $k$ steps.",
+    "char_start": 51094,
+    "char_end": 51155,
+    "sentence_index": 311,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec018",
+    "text": "$k \\ 1, , 5\\ $\n\n& ChineseCoT (...) Respond in Chinese\n\n& ChineseCoT(k) (...) Use at most $k$ Chinese characters.",
+    "char_start": 51156,
+    "char_end": 51268,
+    "sentence_index": 312,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec018",
+    "text": "$k \\ 1, , 500\\ $\n\nEnforcing Concise Reasoning via Varying Prompts.",
+    "char_start": 51269,
+    "char_end": 51335,
+    "sentence_index": 313,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec018",
+    "text": "Token-Budget proposes setting a token budget in prompts to reduce unnecessary reasoning tokens.",
+    "char_start": 51337,
+    "char_end": 51432,
+    "sentence_index": 314,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec018",
+    "text": "To optimize efficiency while preserving accuracy, introduced TALE-EP, a training-free, zero-shot method for budget estimation.",
+    "char_start": 51433,
+    "char_end": 51559,
+    "sentence_index": 315,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec018",
+    "text": "TALE-EP first estimates a reasonable token budget by prompting the LLM itself.",
+    "char_start": 51560,
+    "char_end": 51638,
+    "sentence_index": 316,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec018",
+    "text": "It then incorporates this estimate into a prompt that specifies the token constraint, guiding the LLM to generate a more token-efficient yet accurate response.",
+    "char_start": 51639,
+    "char_end": 51798,
+    "sentence_index": 317,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec018",
+    "text": "This work is also categorized in Section with further SFT.",
+    "char_start": 51799,
+    "char_end": 51857,
+    "sentence_index": 318,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec018",
+    "text": "CoD observes that LLMs often generate excessively verbose reasoning steps, whereas humans typically record only the most essential insights.",
+    "char_start": 51859,
+    "char_end": 51999,
+    "sentence_index": 319,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec018",
+    "text": "To enhance reasoning efficiency, they propose Chain-of-Draft prompting.",
+    "char_start": 52000,
+    "char_end": 52071,
+    "sentence_index": 320,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec018",
+    "text": "Similar to CoT prompting, CoD encourages step-by-step reasoning but introduces policies to limit verbosity.",
+    "char_start": 52072,
+    "char_end": 52179,
+    "sentence_index": 321,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec018",
+    "text": "For instance, their prompt instructs: `` Think step by step, but only keep a minimum draft for each thinking step, with at most five words.",
+    "char_start": 52180,
+    "char_end": 52319,
+    "sentence_index": 322,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec018",
+    "text": "'' They find that this approach preserves the necessary intermediate steps while maintaining accuracy, significantly reducing token usage.",
+    "char_start": 52320,
+    "char_end": 52458,
+    "sentence_index": 323,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec018",
+    "text": "systematically studies the relationship between reasoning length and model accuracy across various prompts with explicit compression instructions (e.g., `` use 10 words or less '').",
+    "char_start": 52460,
+    "char_end": 52641,
+    "sentence_index": 324,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec018",
+    "text": "Their analysis reveals a universal trade-off between reasoning length and accuracy, showing that different prompt-based compression strategies align on the same accuracy-compression curve.",
+    "char_start": 52642,
+    "char_end": 52830,
+    "sentence_index": 325,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec018",
+    "text": "They hypothesize that each task has an intrinsic token complexity , the minimum number of tokens required for successful problem-solving.",
+    "char_start": 52831,
+    "char_end": 52968,
+    "sentence_index": 326,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec018",
+    "text": "By computing information-theoretic limits on the accuracy-compression trade-off, they found that existing prompt-based compression methods fall far short of these limits, indicating significant room for improvement.",
+    "char_start": 52969,
+    "char_end": 53184,
+    "sentence_index": 327,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec018",
+    "text": "introduced Concise Chain-of-Thought (CCoT) prompting, a technique that prompts LLMs to perform step-by-step reasoning while explicitly instructing them to `` be concise.",
+    "char_start": 53186,
+    "char_end": 53355,
+    "sentence_index": 328,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec018",
+    "text": "''\n\nMARP introduces modifying prompts to limit single-step computations, effectively refining the reasoning boundary.",
+    "char_start": 53356,
+    "char_end": 53473,
+    "sentence_index": 329,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec018",
+    "text": "Further, they increase the per-step computation and decrease global planning steps.",
+    "char_start": 53474,
+    "char_end": 53557,
+    "sentence_index": 330,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec018",
+    "text": "Fine-tuning after Prompting.",
+    "char_start": 53559,
+    "char_end": 53587,
+    "sentence_index": 331,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec018",
+    "text": "As noted in Section , some approaches collect short CoT data using prompt-based methods, then apply SFT to develop an efficient reasoning model .",
+    "char_start": 53588,
+    "char_end": 53733,
+    "sentence_index": 332,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec018",
+    "text": "Beyond performing direct prompt-based reasoning, these fine-tuned models often deliver more promising performance when tackling complex reasoning challenges.",
+    "char_start": 53734,
+    "char_end": 53891,
+    "sentence_index": 333,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec019",
+    "text": "User-provided prompts can range from easy to difficult tasks.",
+    "char_start": 53893,
+    "char_end": 53954,
+    "sentence_index": 334,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec019",
+    "text": "Routing strategies for efficient reasoning dynamically determine how language models handle queries based on their complexity and uncertainty.",
+    "char_start": 53955,
+    "char_end": 54097,
+    "sentence_index": 335,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec019",
+    "text": "Ideally, reasoning models can automatically assign simpler queries to faster but less reasoning-capable LLMs, while directing more complicated queries to slower but stronger reasoning LLMs.",
+    "char_start": 54098,
+    "char_end": 54287,
+    "sentence_index": 336,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec019",
+    "text": "The key question is: What criterion should be used to determine the attributes (e.g., difficulty) of prompts?",
+    "char_start": 54289,
+    "char_end": 54398,
+    "sentence_index": 337,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec019",
+    "text": "Unknown Criteria.",
+    "char_start": 54400,
+    "char_end": 54417,
+    "sentence_index": 338,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec019",
+    "text": "Anthropic releases Claude 3.7 Sonnet , notable for being the first hybrid reasoning model.",
+    "char_start": 54418,
+    "char_end": 54508,
+    "sentence_index": 339,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec019",
+    "text": "Claude 3.7 Sonnet was developed through RL, enabling it to allocate more time to complex reasoning tasks that require deeper analysis, ultimately producing better results.",
+    "char_start": 54509,
+    "char_end": 54680,
+    "sentence_index": 340,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec019",
+    "text": "The model offers two response modes: quick answers or step-by-step thinking.",
+    "char_start": 54681,
+    "char_end": 54757,
+    "sentence_index": 341,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec019",
+    "text": "Users can leverage API to manage the amount of time the model spends thinking.",
+    "char_start": 54758,
+    "char_end": 54836,
+    "sentence_index": 342,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec019",
+    "text": "Although the specifics of the routing criterion remain unclear, Claude 3.7 Sonnet represents the first hybrid reasoning model, setting a foundation for subsequent routing-based large reasoning models.",
+    "char_start": 54837,
+    "char_end": 55037,
+    "sentence_index": 343,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec019",
+    "text": "Training a Classifier.",
+    "char_start": 55039,
+    "char_end": 55061,
+    "sentence_index": 344,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec019",
+    "text": "RouteLLM trains a query router to dispatch incoming queries to suitable LLMs based on complexity.",
+    "char_start": 55062,
+    "char_end": 55159,
+    "sentence_index": 345,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec019",
+    "text": "The authors utilize a substantial amount of preference data collected from Chatbot Arena as training data, enabling effective routing decisions for question-answering and reasoning tasks.",
+    "char_start": 55160,
+    "char_end": 55347,
+    "sentence_index": 346,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec019",
+    "text": "Consequently, simpler queries are directed to low-latency LLMs, while complex queries are assigned to higher-latency, more powerful LLMs, significantly accelerating overall reasoning efficiency.",
+    "char_start": 55348,
+    "char_end": 55542,
+    "sentence_index": 347,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec019",
+    "text": "Sketch-of-Thought (SoT) leverages routing and prompting to minimize token usage during reasoning.",
+    "char_start": 55543,
+    "char_end": 55640,
+    "sentence_index": 348,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec019",
+    "text": "A lightweight DistilBERT-based router dynamically selects the most suitable paradigm based on the characteristics of the questions.",
+    "char_start": 55641,
+    "char_end": 55772,
+    "sentence_index": 349,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec019",
+    "text": "Inspired by cognitive science, SoT employs three distinct paradigms: Conceptual Chaining , which connects ideas with minimal verbalization; Chunked Symbolism , which structures mathematical reasoning into concise symbolic representations; and Expert Lexicons , which adopts domain-specific shorthand used by experts.",
+    "char_start": 55773,
+    "char_end": 56089,
+    "sentence_index": 350,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec019",
+    "text": "Uncertainty.",
+    "char_start": 56091,
+    "char_end": 56103,
+    "sentence_index": 351,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec019",
+    "text": "Besides relying on additional routers, Self-Ref enables LLMs to autonomously decide when to route by extracting intrinsic uncertainty scores as self-routing indicators.",
+    "char_start": 56104,
+    "char_end": 56272,
+    "sentence_index": 352,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec019",
+    "text": "Specifically, they fine-tune uncertainty-specialized tokens within the LLMs to align uncertainty predictions with prediction correctness in both question-answering and reasoning tasks.",
+    "char_start": 56273,
+    "char_end": 56457,
+    "sentence_index": 353,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec019",
+    "text": "This ensures that only uncertain or incorrect outputs trigger routing to more capable LLMs, which decreases the latency of LLM inference.",
+    "char_start": 56458,
+    "char_end": 56595,
+    "sentence_index": 354,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec019",
+    "text": "Confident or Seek Stronger aims to provide calibrated data for predicting and initializing routing strategies in both LLM question-answering and reasoning tasks without requiring access to user queries.",
+    "char_start": 56596,
+    "char_end": 56798,
+    "sentence_index": 355,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec019",
+    "text": "This approach enables more efficient and reliable decision-making in determining whether an LLM should confidently generate an answer or escort the query to a stronger model, ultimately improving reasoning efficiency from a query-level perspective in online LLM service scenarios.",
+    "char_start": 56799,
+    "char_end": 57079,
+    "sentence_index": 356,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec020",
+    "text": "Improving the efficiency of reasoning models requires optimizing not just the model architecture but also the data used for training.",
+    "char_start": 57081,
+    "char_end": 57214,
+    "sentence_index": 357,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec021",
+    "text": "Recent work has shown that carefully selecting, structuring, and leveraging training data can significantly reduce data requirements while maintaining or even improving reasoning performance.",
+    "char_start": 57215,
+    "char_end": 57406,
+    "sentence_index": 358,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec021",
+    "text": "Although all approaches focus on efficient data selection, they vary in defining and utilizing efficiency.",
+    "char_start": 57407,
+    "char_end": 57513,
+    "sentence_index": 359,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec021",
+    "text": "The key question is: How to construct less but high-quality training data?",
+    "char_start": 57515,
+    "char_end": 57589,
+    "sentence_index": 360,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec021",
+    "text": "Minimal but High-Impact Data Selection.",
+    "char_start": 57591,
+    "char_end": 57630,
+    "sentence_index": 361,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec021",
+    "text": "LIMO challenges the conventional belief that complex reasoning tasks require extensive training data.",
+    "char_start": 57631,
+    "char_end": 57732,
+    "sentence_index": 362,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec021",
+    "text": "They introduce LIMO, a framework that elicits sophisticated reasoning abilities using minimal but precisely curated examples.",
+    "char_start": 57733,
+    "char_end": 57858,
+    "sentence_index": 363,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec021",
+    "text": "By choosing high-quality questions based on Level of difficulty, Generality, and Knowledge Diversity and high-quality solutions based on Optimal Structural Organization, Effective Cognitive Scaffolding, and Rigorous Verification , with only 817 carefully selected training samples, LIMO can outperform previous models that utilized over 100,000 examples.",
+    "char_start": 57859,
+    "char_end": 58213,
+    "sentence_index": 364,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec021",
+    "text": "s1 focuses on enhancing reasoning performance by controlling test-time computational resources.",
+    "char_start": 58215,
+    "char_end": 58310,
+    "sentence_index": 365,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec021",
+    "text": "They curate a compact dataset based on Quality , Difficulty and Diversity , s1K, comprising 1,000 high-quality questions paired with reasoning traces.",
+    "char_start": 58311,
+    "char_end": 58461,
+    "sentence_index": 366,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec021",
+    "text": "Through supervised fine-tuning on this dataset and implementing ``budget forcing'', which regulates the reasoning duration during inference, s1-32B exceeds OpenAI o1-preview on MATH and AIME24, demonstrating that strategic test time scaling can effectively enhance reasoning capabilities without extensive training data.",
+    "char_start": 58462,
+    "char_end": 58782,
+    "sentence_index": 367,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec021",
+    "text": "Self-Verification as a Data-Efficient Training Signal.",
+    "char_start": 58784,
+    "char_end": 58838,
+    "sentence_index": 368,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec021",
+    "text": "S$^2$R infuse LLMs with self-verification and self-correction abilities through RL.",
+    "char_start": 58839,
+    "char_end": 58922,
+    "sentence_index": 369,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec021",
+    "text": "Initially, models are fine-tuned on a curated dataset to establish these capabilities.",
+    "char_start": 58923,
+    "char_end": 59009,
+    "sentence_index": 370,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec021",
+    "text": "Subsequently, RL both at the outcome level and the process level is employed to enhance these skills further.",
+    "char_start": 59010,
+    "char_end": 59119,
+    "sentence_index": 371,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec021",
+    "text": "With only 3,100 initialization samples, their fine-tuned models consistently improve the performance on reasoning tasks among all base models.",
+    "char_start": 59120,
+    "char_end": 59262,
+    "sentence_index": 372,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec021",
+    "text": "S$^2$R fine-tuned Qwen2.5-Math-7B can outperform models trained on comparable amounts of long CoT distilled data on the MATH500 and GSM8K.",
+    "char_start": 59263,
+    "char_end": 59401,
+    "sentence_index": 373,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec022",
+    "text": "LLMs have demonstrated remarkable reasoning capabilities across various complex tasks, benefiting from their extensive training on diverse datasets.",
+    "char_start": 59403,
+    "char_end": 59551,
+    "sentence_index": 374,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec022",
+    "text": "However, their substantial computational and memory demands pose challenges for deployment in resource-constrained environments, such as edge devices, mobile applications, and real-time systems.",
+    "char_start": 59552,
+    "char_end": 59746,
+    "sentence_index": 375,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec022",
+    "text": "In scenarios where efficiency, cost, or latency is a primary concern, Small Language Models (SLMs) offer a viable alternative.",
+    "char_start": 59747,
+    "char_end": 59873,
+    "sentence_index": 376,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec022",
+    "text": "The ability of SLMs to retain strong reasoning capabilities while operating under strict resource constraints is crucial for expanding the accessibility and practicality of AI-powered reasoning systems.",
+    "char_start": 59874,
+    "char_end": 60076,
+    "sentence_index": 377,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec022",
+    "text": "To achieve this, two main categories of approach are explored: Distillation and Model Compression.",
+    "char_start": 60077,
+    "char_end": 60175,
+    "sentence_index": 378,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec022",
+    "text": "The key question is: How do small language models perform on reasoning tasks?",
+    "char_start": 60177,
+    "char_end": 60254,
+    "sentence_index": 379,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec022",
+    "text": "What impact does model compression (e.g., quantization) have on their reasoning abilities?",
+    "char_start": 60255,
+    "char_end": 60345,
+    "sentence_index": 380,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec022",
+    "text": "Distillation.",
+    "char_start": 60347,
+    "char_end": 60360,
+    "sentence_index": 381,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec022",
+    "text": "Distillation is a crucial technique for transferring the reasoning capabilities of LLMs to SLMs while maintaining efficiency.",
+    "char_start": 60362,
+    "char_end": 60487,
+    "sentence_index": 382,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec022",
+    "text": "However, finds a phenomenon named Small Model Learnability Gap , which highlights the challenges of distilling complex reasoning processes from large model to small model, showing that SLMs struggle to emulate the reasoning depth of their larger counterparts.",
+    "char_start": 60488,
+    "char_end": 60747,
+    "sentence_index": 383,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec022",
+    "text": "To address this, various approaches have been proposed.",
+    "char_start": 60748,
+    "char_end": 60803,
+    "sentence_index": 384,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec022",
+    "text": "Both and explored mixed distillation, with blending long and short CoT reasoning examples, while combined CoT and PoT (Program of Thought) to improve the effectiveness of knowledge distillation from LLMs to SLMs on specific tasks.",
+    "char_start": 60804,
+    "char_end": 61034,
+    "sentence_index": 385,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec022",
+    "text": "In comparison, introduced counterfactual distillation, augmenting the training set by masking causal features in the original question, prompting the LLM to complete the masked text, and generating multi-view CoT (positive and negative views) of each data for enhancing the effectiveness of knowledge distillation.",
+    "char_start": 61035,
+    "char_end": 61349,
+    "sentence_index": 386,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec022",
+    "text": "In addition, developed a feedback-driven distillation technique that iteratively refines distillation datasets.",
+    "char_start": 61351,
+    "char_end": 61462,
+    "sentence_index": 387,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec022",
+    "text": "They first prompt an LLM to generate an initial distillation dataset, then expand it by creating diverse and complex questions from existing ones, and finally, this enriched dataset is used to fine-tune SLMs.",
+    "char_start": 61463,
+    "char_end": 61671,
+    "sentence_index": 388,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec022",
+    "text": "Another strategy, proposed by , incorporates probing and retrieval mechanisms into the distillation pipeline.",
+    "char_start": 61672,
+    "char_end": 61781,
+    "sentence_index": 389,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec022",
+    "text": "It trains two complementary distilled SLMs, a probing model and a reasoning model, where the probing model retrieves relevant knowledge, which the reasoning model then uses to construct a step-by-step rationale for the answer.",
+    "char_start": 61782,
+    "char_end": 62008,
+    "sentence_index": 390,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec022",
+    "text": "introduced adaptive thinking during distillation, allowing the models to dynamically adjust reasoning strategies based on the complexity of the task.",
+    "char_start": 62009,
+    "char_end": 62158,
+    "sentence_index": 391,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec022",
+    "text": "Furthermore, proposed SKIntern, a framework that internalizes symbolic knowledge into SLM to improve CoT reasoning quality and efficiency, while introduces SCORE, a pipeline that generates self-correction data from SLMs and fine-tunes the model to function as a self-correcting reasoner.",
+    "char_start": 62160,
+    "char_end": 62447,
+    "sentence_index": 392,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec022",
+    "text": "These diverse distillation techniques demonstrate that efficiently transferring reasoning capabilities from LLMs to SLMs requires not only reducing the model size but also carefully and strategically structuring the knowledge transfer process to preserve logical depth and generalization.",
+    "char_start": 62448,
+    "char_end": 62736,
+    "sentence_index": 393,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec022",
+    "text": "Pruning and Quantization.",
+    "char_start": 62738,
+    "char_end": 62763,
+    "sentence_index": 394,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec022",
+    "text": "Beyond directly distilling knowledge from LLMs to SLMs, an alternative approach involves compressing an LLM into an SLM using techniques such as quantization and pruning.",
+    "char_start": 62764,
+    "char_end": 62934,
+    "sentence_index": 395,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec022",
+    "text": "conducted a comprehensive study analyzing the impact of various model compression techniques on reasoning ability.",
+    "char_start": 62935,
+    "char_end": 63049,
+    "sentence_index": 396,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec022",
+    "text": "Their findings reveal that quantization, which reduces model precision to lower-bit representations, preserves reasoning performance remarkably well , allowing SLMs to maintain logical coherence and problem-solving capabilities while significantly reducing memory and computational costs.",
+    "char_start": 63050,
+    "char_end": 63338,
+    "sentence_index": 397,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec022",
+    "text": "In contrast, pruning, which removes specific weights or neurons in the model based on their importance, leads to severe degradation in reasoning quality , disrupting the model's ability to follow multi-step logical processes.",
+    "char_start": 63340,
+    "char_end": 63565,
+    "sentence_index": 398,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec022",
+    "text": "This suggests that compression-based approaches are more effective than training SLMs from scratch, as they allow models to retain reasoning structures inherited from LLMs.",
+    "char_start": 63566,
+    "char_end": 63738,
+    "sentence_index": 399,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec022",
+    "text": "However, a critical challenge remains: SLMs often struggle with the instruction following, indicating that compression alone is insufficient.",
+    "char_start": 63739,
+    "char_end": 63880,
+    "sentence_index": 400,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec022",
+    "text": "Additional fine-tuning or adaptation methods may be required to align compressed models with user intent and ensure they can effectively interpret and execute complex reasoning tasks.",
+    "char_start": 63881,
+    "char_end": 64064,
+    "sentence_index": 401,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec023",
+    "text": "Recent research has introduced innovative benchmarks and evaluation frameworks to systematically assess the reasoning capabilities of LLMs.",
+    "char_start": 64066,
+    "char_end": 64205,
+    "sentence_index": 402,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec023",
+    "text": "As LLMs continue to advance in their ability to perform complex reasoning tasks, the need for rigorous, standardized evaluation metrics and frameworks has become increasingly important.",
+    "char_start": 64206,
+    "char_end": 64391,
+    "sentence_index": 403,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec023",
+    "text": "Inference-time Computation.",
+    "char_start": 64393,
+    "char_end": 64420,
+    "sentence_index": 404,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec023",
+    "text": "develops Sys2Bench, which is a comprehensive suite designed to evaluate LLMs across five reasoning categories, including arithmetic, logical, commonsense, algorithmic, and planning tasks.",
+    "char_start": 64421,
+    "char_end": 64608,
+    "sentence_index": 405,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec023",
+    "text": "This benchmark comprises eleven diverse datasets, covering various reasoning tasks.",
+    "char_start": 64609,
+    "char_end": 64692,
+    "sentence_index": 406,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec023",
+    "text": "It includes GSM8K and AQuA for arithmetic problems, StrategyQA and HotPotQA for commonsense reasoning, ProntoQA for logical reasoning, Game of 24 and Bin Packing for algorithmic tasks, and BlocksWorld, Rubik\u2019s Cube, TripPlan, and Calendar Plan for planning tasks.",
+    "char_start": 64693,
+    "char_end": 64956,
+    "sentence_index": 407,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec023",
+    "text": "The study revealed that scaling inference-time computation alone has limitations, as no single technique consistently excels across all reasoning tasks, and this emphasizes the need for diverse approaches to enhance LLM reasoning capabilities.",
+    "char_start": 64957,
+    "char_end": 65200,
+    "sentence_index": 408,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec023",
+    "text": "Bag of Tricks examines how various commonly used strategies affect the reasoning capabilities of LLMs.",
+    "char_start": 65201,
+    "char_end": 65303,
+    "sentence_index": 409,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec023",
+    "text": "Furthermore, it benchmarks multiple inference-time computation methods within a predefined budget, enabling controlled token usage through a flexible N-sample strategy.",
+    "char_start": 65304,
+    "char_end": 65472,
+    "sentence_index": 410,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec023",
+    "text": "investigates the impact of Test-Time Scaling (TTS) strategies on LLM performance, focusing on how policy models, process reward models, and problem difficulty influence TTS effectiveness.",
+    "char_start": 65473,
+    "char_end": 65660,
+    "sentence_index": 411,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec023",
+    "text": "Their findings indicate that compute-optimal TTS strategies are highly dependent on these factors.",
+    "char_start": 65661,
+    "char_end": 65759,
+    "sentence_index": 412,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec023",
+    "text": "The paper finds that, with appropriate TTS strategies, smaller models (e.g., a 1B parameter LLM) are able to outperform significantly larger models (e.g., a 405B parameter LLM) on complex reasoning tasks like MATH-500, and this underscores the importance of tailored TTS approaches in evaluating and enhancing LLM reasoning.",
+    "char_start": 65760,
+    "char_end": 66084,
+    "sentence_index": 413,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec023",
+    "text": "Evaluating Overthinking.",
+    "char_start": 66086,
+    "char_end": 66110,
+    "sentence_index": 414,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec023",
+    "text": "introduces a framework to systematically analyze the \"overthinking\" in LLMs, where models favor extended internal reasoning over necessary environmental interactions.",
+    "char_start": 66111,
+    "char_end": 66277,
+    "sentence_index": 415,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec023",
+    "text": "By examining 4,018 trajectories in agentic tasks, the study identified patterns such as Analysis Paralysis, Rogue Actions, and Premature Disengagement.",
+    "char_start": 66278,
+    "char_end": 66429,
+    "sentence_index": 416,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec023",
+    "text": "also proposed a novel ``overthinking score'' and showed a strong correlation between higher scores and decreased task performance.",
+    "char_start": 66430,
+    "char_end": 66560,
+    "sentence_index": 417,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec023",
+    "text": "Mitigation strategies such as selecting solutions with lower overthinking scores can improve performance by 30\\% and at the same time reduce computational overhead by 43\\%.",
+    "char_start": 66561,
+    "char_end": 66733,
+    "sentence_index": 418,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec023",
+    "text": "uses six comprehensive tasks from the overthinking literature to guide the design of evaluation benchmarks for testing CoT failures in LLMs.",
+    "char_start": 66734,
+    "char_end": 66874,
+    "sentence_index": 419,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec023",
+    "text": "It reveals that, in many cases where humans tend to fail due to excessive deliberation, LLMs employing CoT reasoning exhibit similar failure patterns.",
+    "char_start": 66875,
+    "char_end": 67025,
+    "sentence_index": 420,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec023",
+    "text": "S1-Bench evaluates large reasoning models on straightforward tasks aligned with System 1 thinking, focusing on intuitive and fast reasoning rather than the more complex, deliberative processes associated with System 2.",
+    "char_start": 67026,
+    "char_end": 67244,
+    "sentence_index": 421,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec023",
+    "text": "Effect of Long CoT Reasoning.",
+    "char_start": 67246,
+    "char_end": 67275,
+    "sentence_index": 422,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec023",
+    "text": "provides a comprehensive analysis of the mechanism underlying long CoT reasoning.",
+    "char_start": 67276,
+    "char_end": 67357,
+    "sentence_index": 423,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec023",
+    "text": "In addition to presenting several key insights, they propose a reward design to enhance the stability of reasoning ability during training and reduce the CoT length, which is also shown in Section .",
+    "char_start": 67358,
+    "char_end": 67556,
+    "sentence_index": 424,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec023",
+    "text": "reveals a strong relationship between the length of the reasoning chain and the effectiveness of model outputs.",
+    "char_start": 67557,
+    "char_end": 67668,
+    "sentence_index": 425,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec023",
+    "text": "Models tend to perform better with extended reasoning steps, suggesting the CoT length is more crucial than accuracy for effective problem-solving.",
+    "char_start": 67669,
+    "char_end": 67816,
+    "sentence_index": 426,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec023",
+    "text": "CriticalThinking investigates the optimal reasoning length of LLMs based on using deterministic finite automata (DFAs).",
+    "char_start": 67817,
+    "char_end": 67936,
+    "sentence_index": 427,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec023",
+    "text": "MiP-Overthinking discovers that when the reasoning models get questions missing key information, they tend to keep ``thinking'' over and over instead of admitting they fail to answer.",
+    "char_start": 67937,
+    "char_end": 68120,
+    "sentence_index": 428,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec023",
+    "text": "By studying this behavior, they show that current training methods push models to generate long, repetitive reasoning steps rather than recognize unsolvable problems and stop early.",
+    "char_start": 68121,
+    "char_end": 68302,
+    "sentence_index": 429,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec023",
+    "text": "Effect of Compression on Reasoning Models.",
+    "char_start": 68304,
+    "char_end": 68346,
+    "sentence_index": 430,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec023",
+    "text": "CompressionReasoning benchmarks compression techniques including quantization, distillation, and pruning, on reasoning tasks.",
+    "char_start": 68347,
+    "char_end": 68472,
+    "sentence_index": 431,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec023",
+    "text": "The results indicate that parameter count has a greater impact on knowledge retention than on reasoning ability, and that generating shorter outputs generally leads to improved performance.",
+    "char_start": 68473,
+    "char_end": 68662,
+    "sentence_index": 432,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec023",
+    "text": "QuantRM provides a benchmark evaluating weight quantization, KV\u2011cache quantization, and activation quantization across various algorithms and bit\u2011width configurations.",
+    "char_start": 68663,
+    "char_end": 68830,
+    "sentence_index": 433,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec024",
+    "text": "Autonomic Driving.",
+    "char_start": 68832,
+    "char_end": 68850,
+    "sentence_index": 434,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec025",
+    "text": "Efficient reasoning LLMs are able to greatly improve autonomic driving by helping them understand large amounts of sensor data in a human-like way.",
+    "char_start": 68851,
+    "char_end": 68998,
+    "sentence_index": 435,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec025",
+    "text": "They make the cars better at making decisions, so the vehicles can plan for difficult driving situations and react quickly when unexpected events occur.",
+    "char_start": 68999,
+    "char_end": 69151,
+    "sentence_index": 436,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec025",
+    "text": "By combining information from cameras, LiDAR, radar, and other sensors, these models help cars drive more safely, choose better routes, and assess risks as they happen.",
+    "char_start": 69152,
+    "char_end": 69320,
+    "sentence_index": 437,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec025",
+    "text": "Moreover, because they can explain why they make certain decisions, both passengers and regulators feel more confident in the technology, and the cars can interact more smoothly with smart road systems.",
+    "char_start": 69321,
+    "char_end": 69523,
+    "sentence_index": 438,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec025",
+    "text": "Embodied AI.",
+    "char_start": 69525,
+    "char_end": 69537,
+    "sentence_index": 439,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec025",
+    "text": "Efficient reasoning LLMs make embodied AI much smarter by helping robots and smart devices understand and react to the world around them.",
+    "char_start": 69538,
+    "char_end": 69675,
+    "sentence_index": 440,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec025",
+    "text": "These models process lots of data from cameras, sensors, and other inputs in a way that resembles human thinking.",
+    "char_start": 69676,
+    "char_end": 69789,
+    "sentence_index": 441,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec025",
+    "text": "This deep understanding means that a robot can quickly decide the best way to move, handle unexpected changes, and interact safely with people.",
+    "char_start": 69790,
+    "char_end": 69933,
+    "sentence_index": 442,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec025",
+    "text": "For example, in a busy factory or a home setting, a robot using these models can navigate obstacles, adjust to new situations, and even explain its actions in simple terms.",
+    "char_start": 69934,
+    "char_end": 70106,
+    "sentence_index": 443,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec025",
+    "text": "Altogether, efficient reasoning LLMs boost the reliability, safety, and usefulness of embodied AI systems in daily environments.",
+    "char_start": 70107,
+    "char_end": 70235,
+    "sentence_index": 444,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec025",
+    "text": "Healthcare.",
+    "char_start": 70237,
+    "char_end": 70248,
+    "sentence_index": 445,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec025",
+    "text": "Efficient reasoning LLMs would improve healthcare by helping doctors and researchers work with large amounts of medical data more easily.",
+    "char_start": 70249,
+    "char_end": 70386,
+    "sentence_index": 446,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec025",
+    "text": "They can quickly analyze patient records, test results, and medical research to spot important trends and patterns that might be hard to see otherwise.",
+    "char_start": 70387,
+    "char_end": 70538,
+    "sentence_index": 447,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec025",
+    "text": "This support can lead to faster and more accurate diagnoses, better treatment recommendations, and fewer mistakes.",
+    "char_start": 70539,
+    "char_end": 70653,
+    "sentence_index": 448,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec025",
+    "text": "In addition, these models can break down complex medical information into plain language, making it easier for both medical professionals and patients to understand.",
+    "char_start": 70654,
+    "char_end": 70819,
+    "sentence_index": 449,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec025",
+    "text": "Generally, efficient reasoning LLMs make healthcare processes smoother and more reliable, leading to better care and outcomes for patients.",
+    "char_start": 70820,
+    "char_end": 70959,
+    "sentence_index": 450,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec025",
+    "text": "Recommender System.",
+    "char_start": 70961,
+    "char_end": 70980,
+    "sentence_index": 451,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec025",
+    "text": "Efficient reasoning LLMs can greatly enhance recommender systems by enabling more accurate, personalized, and context-aware suggestions across various domains such as e-commerce, entertainment, and education.",
+    "char_start": 70981,
+    "char_end": 71189,
+    "sentence_index": 452,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec025",
+    "text": "These models can reason over diverse and dynamic user behavior, preferences, and historical interactions to uncover subtle patterns and relationships that traditional models might overlook.",
+    "char_start": 71190,
+    "char_end": 71379,
+    "sentence_index": 453,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec025",
+    "text": "By efficiently processing complex input data, LLMs can generate high-quality recommendations with fewer computational resources.",
+    "char_start": 71380,
+    "char_end": 71508,
+    "sentence_index": 454,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec025",
+    "text": "For instance, in an online shopping platform, an efficient reasoning model can anticipate evolving user interests, adapt to seasonal trends, and explain recommendations in a user-friendly way.",
+    "char_start": 71509,
+    "char_end": 71701,
+    "sentence_index": 455,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec025",
+    "text": "Overall, efficient reasoning LLMs improve the scalability, transparency, and responsiveness of recommender systems, leading to better user satisfaction and engagement.",
+    "char_start": 71702,
+    "char_end": 71869,
+    "sentence_index": 456,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec025",
+    "text": "ReaRec proposes a latent reasoning framework for recommender systems.",
+    "char_start": 71870,
+    "char_end": 71939,
+    "sentence_index": 457,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec025",
+    "text": "Inspired by the think-before-action paradigm in LLMs, ReaRec enables implicit multi-step reasoning at inference time, significantly improving performance, particularly for long-tail users and items.",
+    "char_start": 71940,
+    "char_end": 72138,
+    "sentence_index": 458,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec026",
+    "text": "Improving Reasoning Ability.",
+    "char_start": 72140,
+    "char_end": 72168,
+    "sentence_index": 459,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec026",
+    "text": "From another perspective on efficiency, improving reasoning performance is an important topic .",
+    "char_start": 72169,
+    "char_end": 72264,
+    "sentence_index": 460,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec026",
+    "text": "To prioritize promising avenues by discarding ineffective strategies early, Meta-Reasoner leverages contextual multi-armed bandits for evaluating reasoning progress and selecting the optimal strategy.",
+    "char_start": 72265,
+    "char_end": 72465,
+    "sentence_index": 461,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec026",
+    "text": "In each round, the LLM produces a new reasoning step, and the meta-reasoner evaluates its output and generates a progress report, the meta-reasoner uses contextual multi-arm bandit to choose the best guidance strategy for the reasoning step.",
+    "char_start": 72466,
+    "char_end": 72707,
+    "sentence_index": 462,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec026",
+    "text": "ITT treats each transformer layer as a step in an internal thinking process.",
+    "char_start": 72708,
+    "char_end": 72784,
+    "sentence_index": 463,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec026",
+    "text": "By dynamically allocating extra processing to difficult tokens through adaptive routing, ITT enables smaller language models to achieve performance comparable to larger models while using fewer training resources.",
+    "char_start": 72785,
+    "char_end": 72998,
+    "sentence_index": 464,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec026",
+    "text": "SyzygyoT introduces Minimal Free Resolution (MFR), which is inspired by algebraic geometry, to break down complex tasks into logically complete and minimal subproblems.",
+    "char_start": 72999,
+    "char_end": 73167,
+    "sentence_index": 465,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec026",
+    "text": "This decomposition enhances the structural efficiency of CoT reasoning, enabling more precise and efficient problem-solving.",
+    "char_start": 73168,
+    "char_end": 73292,
+    "sentence_index": 466,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec026",
+    "text": "Safety of Efficient Reasoning.",
+    "char_start": 73294,
+    "char_end": 73324,
+    "sentence_index": 467,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec026",
+    "text": "Safety and efficiency in LLMs often pull in opposite directions, as optimizing one always leads to the performance degradation of the other.",
+    "char_start": 73325,
+    "char_end": 73465,
+    "sentence_index": 468,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec026",
+    "text": "When enhancing safety, such as filtering harmful content, mitigating adversarial attacks, and enabling self-correction, the reasoning model typically requires additional computational resources and longer reasoning sequences, leading to increased inference costs and slower response times.",
+    "char_start": 73466,
+    "char_end": 73755,
+    "sentence_index": 469,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec026",
+    "text": "Conversely, prioritizing efficiency by minimizing token usage and computational overhead may reduce the reasoning ability to self-reflect, verify its outputs, or defend against adversarial manipulations.",
+    "char_start": 73756,
+    "char_end": 73959,
+    "sentence_index": 470,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec026",
+    "text": "This trade-off reflects the well-known principle that there is no ``free lunch'', making it crucial to strike a careful balance between safety and efficiency.",
+    "char_start": 73960,
+    "char_end": 74118,
+    "sentence_index": 471,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec026",
+    "text": "investigates the robustness of safety checks in large CoT reasoning models, revealing severe security flaws in commercial systems.",
+    "char_start": 74119,
+    "char_end": 74249,
+    "sentence_index": 472,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec026",
+    "text": "They introduce the malicious-educator benchmark and demonstrate that with their hijacking Chain-of-Thought (H-CoT) attack, models can drastically reduce their refusal rates, leading to the generation of harmful content.",
+    "char_start": 74250,
+    "char_end": 74469,
+    "sentence_index": 473,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec026",
+    "text": "investigates the safety of long reasoning models.",
+    "char_start": 74470,
+    "char_end": 74519,
+    "sentence_index": 474,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec026",
+    "text": "It is observed that while longer outputs enable self-correction and enhance safety, some attack strategies exploit extended generations.",
+    "char_start": 74520,
+    "char_end": 74656,
+    "sentence_index": 475,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec026",
+    "text": "They propose a dynamic output length control via an RL-based method to maintain both reasoning quality and security.",
+    "char_start": 74657,
+    "char_end": 74773,
+    "sentence_index": 476,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec026",
+    "text": "Balancing safety and efficiency in long reasoning models remains a challenging yet crucial area of investigation.",
+    "char_start": 74774,
+    "char_end": 74887,
+    "sentence_index": 477,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec026",
+    "text": "proposes an indirect prompt injection attack targeting reasoning LLMs applied to untrusted data sources and substantially degrades reasoning efficiency.",
+    "char_start": 74888,
+    "char_end": 75040,
+    "sentence_index": 478,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec026",
+    "text": "SafeMLRM provides a safety analysis of multi-modal large reasoning models (MLRMs).",
+    "char_start": 75041,
+    "char_end": 75123,
+    "sentence_index": 479,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec026",
+    "text": "Efficient LLMs for Agentic AI.",
+    "char_start": 75125,
+    "char_end": 75155,
+    "sentence_index": 480,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec026",
+    "text": "Efficient reasoning is essential to the advancement of agentic AI systems , as it directly influences their decision-making speed, resource utilization, and overall effectiveness in real-world applications.",
+    "char_start": 75156,
+    "char_end": 75362,
+    "sentence_index": 481,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec026",
+    "text": "Recent research efforts have extensively investigated methods for improving agent efficiency by optimizing internal reasoning processes.",
+    "char_start": 75363,
+    "char_end": 75499,
+    "sentence_index": 482,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec026",
+    "text": "Notable approaches include merging multiple planning trees to reduce computational redundancy , as well as consolidating and structuring memory representations to enhance efficiency and adaptability in dynamic environments .",
+    "char_start": 75500,
+    "char_end": 75724,
+    "sentence_index": 483,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec026",
+    "text": "CoA enhances the capability of LLMs in managing complex tasks, especially in scenarios demanding real-time or domain-specific knowledge, with an efficient verification module leveraging our MRFS framework to refine LLM-generated responses using retrieved information.",
+    "char_start": 75725,
+    "char_end": 75992,
+    "sentence_index": 484,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec026",
+    "text": "These innovations collectively contribute toward the development of more responsive, scalable, and practical AI agents capable of operating effectively under constrained computational resources.",
+    "char_start": 75993,
+    "char_end": 76187,
+    "sentence_index": 485,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec026",
+    "text": "DOWN proposes an adaptive multi\u2011agent debate framework that only triggers debate when the initial confidence of an agent is low, then uses the confidence\u2011weighted inputs of participating agents to collaboratively refine the final answer.",
+    "char_start": 76188,
+    "char_end": 76425,
+    "sentence_index": 486,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec026",
+    "text": "RL vs.",
+    "char_start": 76427,
+    "char_end": 76433,
+    "sentence_index": 487,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec026",
+    "text": "SFT, which is better?",
+    "char_start": 76434,
+    "char_end": 76455,
+    "sentence_index": 488,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec026",
+    "text": "When comparing RL (Section ) and SFT (Section ) for creating efficient reasoning language models, the answer is unclear as each method has its own strengths.",
+    "char_start": 76456,
+    "char_end": 76613,
+    "sentence_index": 489,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec026",
+    "text": "RL allows a model to learn by trial and error, rewarding it for satisfactory decisions, which can assist it find creative ways to solve problems in new situations.",
+    "char_start": 76614,
+    "char_end": 76777,
+    "sentence_index": 490,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec026",
+    "text": "However, this approach can sometimes be unpredictable and require a lot of training.",
+    "char_start": 76778,
+    "char_end": 76862,
+    "sentence_index": 491,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec026",
+    "text": "On the other hand, SFT teaches the model using carefully chosen efficient CoT examples constructed by either humans or models, leading to more consistent behavior and easier control.",
+    "char_start": 76863,
+    "char_end": 77045,
+    "sentence_index": 492,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec026",
+    "text": "Yet, SFT might struggle when faced with challenges that are not covered in its training data.",
+    "char_start": 77046,
+    "char_end": 77139,
+    "sentence_index": 493,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec026",
+    "text": "In practice, combining both methods might be a promising direction and potentially works best because it harnesses the creativity of RL and the reliability of SFT, resulting in a model that is both adaptable and stable.",
+    "char_start": 77140,
+    "char_end": 77359,
+    "sentence_index": 494,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec027",
+    "text": "This paper provides the first structured survey of efficient reasoning in LLMs, categorizing existing approaches into three areas: model-based, reasoning output-based, and input prompts-based methods.",
+    "char_start": 77361,
+    "char_end": 77561,
+    "sentence_index": 495,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec027",
+    "text": "Additionally, it discusses efficient data utilization, reasoning capabilities of smaller models, evaluation techniques, and benchmarking, accompanied by a continuously updated public repository to support future research.",
+    "char_start": 77562,
+    "char_end": 77783,
+    "sentence_index": 496,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0498",
+    "section_id": "sec027",
+    "text": "Crucially, efficient reasoning approaches offer significant practical benefits across various domains: reducing computational costs in healthcare diagnostics, enhancing real-time decision-making and safety in autonomous driving, boosting the reliability and usefulness of embodied AI systems, and enabling quicker, more profitable responses in financial algorithmic trading and risk assessment.",
+    "char_start": 77784,
+    "char_end": 78178,
+    "sentence_index": 497,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0499",
+    "section_id": "sec027",
+    "text": "These advancements highlight the broad economic and societal value of efficient reasoning in LLMs.",
+    "char_start": 78179,
+    "char_end": 78277,
+    "sentence_index": 498,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0500",
+    "section_id": "sec027",
+    "text": "plain\nref",
+    "char_start": 78279,
+    "char_end": 78288,
+    "sentence_index": 499,
+    "section_sentence_index": 4
+  }
+]

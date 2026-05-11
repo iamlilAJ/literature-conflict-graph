@@ -1,0 +1,2765 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Enhancing large language models (LLMs) with real-time APIs can help generate more accurate and up-to-date responses.",
+    "char_start": 0,
+    "char_end": 116,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, evaluating the function calling abilities of LLMs in real-world scenarios remains under-explored due to the complexity of data collection and evaluation.",
+    "char_start": 117,
+    "char_end": 279,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "In this work, we introduce ComplexFuncBench , a benchmark for complex function calling across five real-world scenarios.",
+    "char_start": 280,
+    "char_end": 400,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Compared to existing benchmarks, ComplexFuncBench encompasses multi-step and constrained function calling, which requires long-parameter filing, parameter value reasoning, and 128k long context.",
+    "char_start": 401,
+    "char_end": 595,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Additionally, we propose an automatic framework, ComplexEval , for quantitatively evaluating complex function calling tasks.",
+    "char_start": 596,
+    "char_end": 720,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Through comprehensive experiments, we demonstrate the deficiencies of state-of-the-art LLMs in function calling and suggest future directions for optimizing these capabilities.",
+    "char_start": 721,
+    "char_end": 897,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "The data and code are available at .",
+    "char_start": 898,
+    "char_end": 934,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) achieve remarkable results on many general tasks .",
+    "char_start": 936,
+    "char_end": 1015,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "However, LLMs lack real-time and factual knowledge because they can only respond based on the information they were trained on .",
+    "char_start": 1016,
+    "char_end": 1144,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "To address this limitation, recent research focuses on enhancing LLMs with function calling capabilities .",
+    "char_start": 1145,
+    "char_end": 1251,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "By integrating external tools and APIs, LLMs can deliver more accurate and up-to-date outputs.",
+    "char_start": 1252,
+    "char_end": 1346,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "While many models are enhanced with function calling capabilities, evaluating function calling, especially complex calls, is still challenging.",
+    "char_start": 1348,
+    "char_end": 1491,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Researchers try various methods to evaluate the function calling capabilities of LLMs.",
+    "char_start": 1492,
+    "char_end": 1578,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Some works propose the prompt-based methods to assess the tool planning ability of LLMs, but these do not assess the correctness of calling parameters.",
+    "char_start": 1579,
+    "char_end": 1730,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Meanwhile, some works evaluate the final state of the execution environments , yet ignore the correctness of the intermediate process.",
+    "char_start": 1731,
+    "char_end": 1865,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Moreover, some work uses rule-based matching methods to calculate the precision of function calls, but these methods are limited to simple scenarios and cannot effectively assess complex function calls.",
+    "char_start": 1866,
+    "char_end": 2068,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "[]\n\nimages/Introduction.pdf\n(a) Simple Function Calling.",
+    "char_start": 2070,
+    "char_end": 2126,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "(b) Complex Function Calling with 0.85, 0.701, 0.25 multi-step , 0.513, 0.619, 0.772 constraints , 0.654, 0.485, 0.595 parameter value reasoning , 0.415, 0.579, 0.552 long parameter values and 0.831, 0.380, 0.361 long context .",
+    "char_start": 2127,
+    "char_end": 2354,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Different colors correspond to the corresponding features marked in the figure.",
+    "char_start": 2355,
+    "char_end": 2434,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "-0.4cm\n\n[t]\n\n0.7\nccccccc\n\n& Real API Response & Multi-Step& Constraints& Parameter Value Reasoning & Long Parameter Values& Long-Context\n\nAPI-Bench & red 55 & red 55 & red 55 & red 55 & red 55 & red 55\n\nToolBench & green 51 & green 51 & red 55 & red 55 & red 55 & red 55\n\nT-Eval & green 51 & green 51 & red 55 & red 55 & red 55 & red 55\n\nBFCL & red 55 & green 51 & red 55 & red 55 & green 51 & green 51\n\nTool Sandbox & red 55 & green 51 & red 55 & red 55 & red 55 & red 55\n\nComplexFuncBench & green 51 & green 51 & green 51 & green 51 & green 51 & green 51\n\nComplexFuncBench compare with other function calling benchmarks.",
+    "char_start": 2436,
+    "char_end": 3058,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "-0.3cm\n\nAs shown in Figure , existing benchmarks directly provide parameters in the query and only require one-step function calling.",
+    "char_start": 3060,
+    "char_end": 3193,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "In contrast, in real-world scenarios, users often implicitly provide parameter values rather than explicitly.",
+    "char_start": 3194,
+    "char_end": 3303,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "LLMs are expected to infer the correct parameter values based on user constraints and API responses.",
+    "char_start": 3304,
+    "char_end": 3404,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Therefore, we define complex function calling from five aspects: (1) Multi-step in a single turn; (2) User-provided constraints ; (3) Parameter value reasoning from implicit information; (4) Long parameter values ; and (5) 128k long context length .",
+    "char_start": 3405,
+    "char_end": 3654,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "The evaluation of complex function calling is currently underexplored due to several challenges.",
+    "char_start": 3656,
+    "char_end": 3752,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "First, data annotation for complex function calling is time-consuming and laborious.",
+    "char_start": 3753,
+    "char_end": 3837,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Since current LLMs cannot do this task well, specially-trained senior annotators are required for annotation.",
+    "char_start": 3838,
+    "char_end": 3947,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Second, annotating a single valid path without disambiguating API response is challenging.",
+    "char_start": 3948,
+    "char_end": 4038,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Real-time API responses may contain multiple choices that satisfy user constraints at the current step, resulting in ambiguities in the parameters for subsequent calls.",
+    "char_start": 4039,
+    "char_end": 4207,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Third, traditional rule-based matching methods are inadequate for evaluating complex function calling since function calls with slightly different parameters can be equivalent.",
+    "char_start": 4208,
+    "char_end": 4384,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "For example, parameter values can be expressed differently, such as NY and New York .",
+    "char_start": 4385,
+    "char_end": 4470,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "To address the above problems, we introduce ComplexFuncBench , a complex function calling benchmark with multi-step and constrained function calling under long-context scenario.",
+    "char_start": 4472,
+    "char_end": 4649,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We collect functions from the Booking.com https://rapidapi.com/DataCrawler/api/booking-com15 website and manually annotate 1,000 complex function calling samples across five real-world domains.",
+    "char_start": 4650,
+    "char_end": 4843,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "The annotation process is divided into three stages.",
+    "char_start": 4844,
+    "char_end": 4896,
+    "sentence_index": 33,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "At the coarse generation stage, we use GPT-4o to generate 1,000 queries along with the corresponding function calling paths to build a preliminary dataset to reduce the costs of human annotation.",
+    "char_start": 4897,
+    "char_end": 5092,
+    "sentence_index": 34,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "At the fine-grained annotation stage, we train senior annotators to select and label 100 complex samples with different function call paths based on the preliminary dataset to build a template dataset.",
+    "char_start": 5093,
+    "char_end": 5294,
+    "sentence_index": 35,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Specifically, we first ensure that the annotated function calling path is the shortest one that fully addresses the query requirements while correcting any errors in parameter values.",
+    "char_start": 5295,
+    "char_end": 5478,
+    "sentence_index": 36,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Then, we remove ambiguous information from API responses to ensure a single valid function calling path for each sample, avoiding parameter ambiguity during evaluation.",
+    "char_start": 5479,
+    "char_end": 5647,
+    "sentence_index": 37,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "At the generalization stage, we train junior annotators to generalize the template dataset from 100 to 1,000 samples by modifying specific information in the template queries to build ComplexFuncBench .",
+    "char_start": 5648,
+    "char_end": 5850,
+    "sentence_index": 38,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Table shows the difference between ComplexFuncBench and other function calling benchmarks.",
+    "char_start": 5851,
+    "char_end": 5941,
+    "sentence_index": 39,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "We further propose an automatic evaluation framework ComplexEval for complex function calling evaluation.",
+    "char_start": 5943,
+    "char_end": 6048,
+    "sentence_index": 40,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "ComplexEval overcomes the limitations of traditional exact matching methods by using a multi-dimensional matching approach:\n(1)\\ Rule-based matching treats two identical function calls as equivalent.",
+    "char_start": 6049,
+    "char_end": 6248,
+    "sentence_index": 41,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "(2)\\ Response-based matching treats function calls with the same API responses as equivalent.",
+    "char_start": 6249,
+    "char_end": 6342,
+    "sentence_index": 42,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "(3)\\ LLM-based matching prompts LLMs to decide the equivalence of function calls, allowing for different expressions of parameter values.",
+    "char_start": 6343,
+    "char_end": 6480,
+    "sentence_index": 43,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "Additionally, ComplexEval provides error information as the API response to assess the self-correction ability of LLMs.",
+    "char_start": 6481,
+    "char_end": 6600,
+    "sentence_index": 44,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "Furthermore, we utilize LLMs to evaluate the completeness and correctness of the final model-generated responses.",
+    "char_start": 6601,
+    "char_end": 6714,
+    "sentence_index": 45,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "[t]\n\nimages/data_collection.pdf\n-0.1cm\nOverview of the data collection process.",
+    "char_start": 6716,
+    "char_end": 6795,
+    "sentence_index": 46,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "(a) is the high-level process of data collection.",
+    "char_start": 6796,
+    "char_end": 6845,
+    "sentence_index": 47,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "(b) is the example of human correction process.(c) is the example of disambiguation process.",
+    "char_start": 6846,
+    "char_end": 6938,
+    "sentence_index": 48,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "The 0.5, 0.5, 0.5 grey part is removed during annotation.",
+    "char_start": 6939,
+    "char_end": 6996,
+    "sentence_index": 49,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "A detailed annotation example is shown in Appendix .",
+    "char_start": 6997,
+    "char_end": 7049,
+    "sentence_index": 50,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "-0.2cm\n\nWe conduct extensive experiments on various LLMs on ComplexFuncBench .",
+    "char_start": 7051,
+    "char_end": 7129,
+    "sentence_index": 51,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "We find that a significant portion of errors come from parameter value errors.",
+    "char_start": 7130,
+    "char_end": 7208,
+    "sentence_index": 52,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec002",
+    "text": "Additionally, different models exhibit specific weaknesses in particular scenarios.",
+    "char_start": 7209,
+    "char_end": 7292,
+    "sentence_index": 53,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec002",
+    "text": "Our contributions are as follows:\n\n-0.1cm\nWe propose ComplexFuncBench , a dataset consisting of 1,000 samples with multi-step and constrained function calling that requires 128k long context.",
+    "char_start": 7293,
+    "char_end": 7484,
+    "sentence_index": 54,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec002",
+    "text": "-0.1cm\nWe propose ComplexEval , an automatic evaluation framework for complex function calling.",
+    "char_start": 7485,
+    "char_end": 7580,
+    "sentence_index": 55,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec002",
+    "text": "ComplexEval addresses previous evaluation challenges by integrating a multi-dimensional matching method.",
+    "char_start": 7581,
+    "char_end": 7685,
+    "sentence_index": 56,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec002",
+    "text": "-0.1cm\nThe detailed analysis of the experiment results will guide future optimization of function calling capabilities.",
+    "char_start": 7686,
+    "char_end": 7805,
+    "sentence_index": 57,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "We collect daily-life APIs from Booking.com provided by RapidAPI to build our candidate function set, which includes 43 real-time APIs across five domains: Hotel , Flight , Attraction , Car Rental , and Taxi .",
+    "char_start": 7807,
+    "char_end": 8016,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "We find that the function descriptions from the website are incomplete and even incorrect.",
+    "char_start": 8017,
+    "char_end": 8107,
+    "sentence_index": 59,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec004",
+    "text": "Therefore, we manually correct and annotate the detailed function description for each function to build a high-quality function set.",
+    "char_start": 8108,
+    "char_end": 8241,
+    "sentence_index": 60,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec004",
+    "text": "The ComplexFuncBench dataset collection has three stages: coarse generation, fine-grained annotation, and generalization.",
+    "char_start": 8243,
+    "char_end": 8364,
+    "sentence_index": 61,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec004",
+    "text": "The overview of the data collection process is shown in Figure .",
+    "char_start": 8365,
+    "char_end": 8429,
+    "sentence_index": 62,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "Annotating complex function calling samples is a multifaceted process that includes query construction, parameter annotation, function call order arrangement, and API response disambiguation.",
+    "char_start": 8431,
+    "char_end": 8622,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "To mitigate the costs of human annotation, we leverage the function calling ability of GPT-4o to generate 1,000 preliminary complex function calling samples as a reference to assist human annotators.",
+    "char_start": 8623,
+    "char_end": 8822,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "Specifically, we randomly sampled several functions from the function set and specially designed a prompt for GPT-4o to generate 1,000 queries requiring complex function calling across different domains.",
+    "char_start": 8824,
+    "char_end": 9027,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "The detailed prompt is shown in Appendix .",
+    "char_start": 9028,
+    "char_end": 9070,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "We leverage GPT-4o's function calling interface to automatically annotate these queries with function calling results to construct a preliminary dataset.",
+    "char_start": 9071,
+    "char_end": 9224,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "However, the automatically annotated data exhibits severe errors due to current models' limited complex function calling capabilities, such as parameter value and function call order errors.",
+    "char_start": 9225,
+    "char_end": 9415,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "To ensure the precision and reliability of the benchmark dataset, we propose a fine-grained annotation process to refine the preliminary dataset.",
+    "char_start": 9417,
+    "char_end": 9562,
+    "sentence_index": 69,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Many automatically generated samples in the preliminary dataset failed at the first step, making subsequent human annotation difficult.",
+    "char_start": 9563,
+    "char_end": 9698,
+    "sentence_index": 70,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Therefore, we engage human annotators to select 100 samples with relatively complete function calling paths from the preliminary dataset, encompassing various function calling steps and different function calling paths.",
+    "char_start": 9699,
+    "char_end": 9918,
+    "sentence_index": 71,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "A senior annotator will annotate the selected samples through the following steps.",
+    "char_start": 9919,
+    "char_end": 10001,
+    "sentence_index": 72,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "Correction Annotators must correct the GPT-generated samples from three aspects.",
+    "char_start": 10003,
+    "char_end": 10083,
+    "sentence_index": 73,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "First, rewrite the query with detailed information, like the arrive\\_time of the taxi and the check\\_in\\_date of the hotel.",
+    "char_start": 10084,
+    "char_end": 10207,
+    "sentence_index": 74,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "Second, annotate the function call order.",
+    "char_start": 10208,
+    "char_end": 10249,
+    "sentence_index": 75,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Specifically, they add missing function calls and remove unnecessary ones to get the whole function call path that can comprehensively address the query requirements.",
+    "char_start": 10250,
+    "char_end": 10416,
+    "sentence_index": 76,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "Then, they adjust the function call order to build the shortest function call path as the final annotated path.",
+    "char_start": 10417,
+    "char_end": 10528,
+    "sentence_index": 77,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "As shown in Figure (b), a query may have multiple valid calling paths to complete the task.",
+    "char_start": 10529,
+    "char_end": 10620,
+    "sentence_index": 78,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "We annotate the shortest path for quantitative evaluation later.",
+    "char_start": 10621,
+    "char_end": 10685,
+    "sentence_index": 79,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "Third, correct function calling parameter errors, such as parameter type mismatches, incorrect parameter values, parameter hallucinations, and missing parameters.",
+    "char_start": 10686,
+    "char_end": 10848,
+    "sentence_index": 80,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "Disambiguation After correction, human annotators must ensure that the functions and the calling parameters are unambiguous.",
+    "char_start": 10850,
+    "char_end": 10974,
+    "sentence_index": 81,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "First, overlapping functionalities are removed from the function list for each sample to eliminate ambiguity in functions.",
+    "char_start": 10975,
+    "char_end": 11097,
+    "sentence_index": 82,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec006",
+    "text": "For example, obtaining the latitude and longitude of a city can be achieved through both Search\\_Hotel\\_Destination and Location\\_lat\\_to\\_long function.",
+    "char_start": 11098,
+    "char_end": 11251,
+    "sentence_index": 83,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec006",
+    "text": "Therefore, these two functions will not be available in the same sample.",
+    "char_start": 11252,
+    "char_end": 11324,
+    "sentence_index": 84,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec006",
+    "text": "Second, to disambiguate the calling parameter values, we will delete API responses that may cause parameter ambiguity for subsequent function calls.",
+    "char_start": 11325,
+    "char_end": 11473,
+    "sentence_index": 85,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec006",
+    "text": "As shown in Figure (c), when searching hotels in New York City, the initial step might return multiple location IDs of NY(e.g., for downtown, airports, attractions, etc.).",
+    "char_start": 11474,
+    "char_end": 11645,
+    "sentence_index": 86,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "Only one of these location IDs is retained during the annotation process to prevent ambiguity in subsequent calls.",
+    "char_start": 11646,
+    "char_end": 11760,
+    "sentence_index": 87,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "Note that there is no need to delete results unrelated to New York City, as those do not introduce ambiguity.",
+    "char_start": 11761,
+    "char_end": 11870,
+    "sentence_index": 88,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "We perform quality checks on all 100 samples until there are no errors.",
+    "char_start": 11872,
+    "char_end": 11943,
+    "sentence_index": 89,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "Finally, we get 100 complex function calling paths, including single-domain and cross-domains.",
+    "char_start": 11944,
+    "char_end": 12038,
+    "sentence_index": 90,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec007",
+    "text": "To reduce the variance of the evaluation results, we generalize each sample in the template dataset to 10 samples.",
+    "char_start": 12040,
+    "char_end": 12154,
+    "sentence_index": 91,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec007",
+    "text": "This expansion increases the ComplexFuncBench dataset size from 100 to 1,000.",
+    "char_start": 12155,
+    "char_end": 12232,
+    "sentence_index": 92,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec007",
+    "text": "By building a larger dataset, we can get more reliable and stable results from the benchmark.",
+    "char_start": 12233,
+    "char_end": 12326,
+    "sentence_index": 93,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec007",
+    "text": "Specifically, we use the 100 queries in the template dataset as examples and design prompts for GPT-4o to modify elements such as locations and constraints, generating nine new queries for each original query.",
+    "char_start": 12328,
+    "char_end": 12537,
+    "sentence_index": 94,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec007",
+    "text": "The detailed prompt is shown in Appendix .",
+    "char_start": 12538,
+    "char_end": 12580,
+    "sentence_index": 95,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec007",
+    "text": "These 10 queries share the same function calling path but differ in parameter values for each call.",
+    "char_start": 12581,
+    "char_end": 12680,
+    "sentence_index": 96,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec007",
+    "text": "We then trained junior annotators to fill in the respective function call parameter values based on the given path, delete API responses to avoid disambiguation, and obtain a new complex function calling sample.",
+    "char_start": 12681,
+    "char_end": 12892,
+    "sentence_index": 97,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec007",
+    "text": "The annotation difficulty and human effort required for generalization are significantly lower than the cost of fine-grained annotation, enabling several junior annotators to complete large-scale annotations effectively.",
+    "char_start": 12893,
+    "char_end": 13113,
+    "sentence_index": 98,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "Finally, we obtained 1,000 complex function calling samples, which comprises 600 single-domain samples, with 150 samples each from the Hotels , Flights , Car Rental , and Attraction domains, and 400 cross-domain samples.",
+    "char_start": 13115,
+    "char_end": 13335,
+    "sentence_index": 99,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "The taxi domain only has two functions, so it is only used for cross-domain.",
+    "char_start": 13336,
+    "char_end": 13412,
+    "sentence_index": 100,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "The average number of function calling steps in ComplexFuncBench is 3.26, while the average number of function calls per sample is 5.07.",
+    "char_start": 13413,
+    "char_end": 13549,
+    "sentence_index": 101,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "Detailed statistics are shown in Appendix .",
+    "char_start": 13550,
+    "char_end": 13593,
+    "sentence_index": 102,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "[]\n\nimages/automated_evaluation.pdf\n\n-0.1cm\nOverview of ComplexEval .",
+    "char_start": 13595,
+    "char_end": 13664,
+    "sentence_index": 103,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec008",
+    "text": "Different colors represent different API response types.",
+    "char_start": 13665,
+    "char_end": 13721,
+    "sentence_index": 104,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec008",
+    "text": "Color blue blue represents format error with specific error message.",
+    "char_start": 13722,
+    "char_end": 13790,
+    "sentence_index": 105,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec008",
+    "text": "Color 0.0, 0.5, 0.0 green represents correct function call with corresponding golden API response.",
+    "char_start": 13791,
+    "char_end": 13889,
+    "sentence_index": 106,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "Color red red represents invalid function call with general error message.",
+    "char_start": 13890,
+    "char_end": 13964,
+    "sentence_index": 107,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "-0.2cm\n\n: Automatic Evaluation\nWe propose ComplexEval to quantitatively evaluate models' complex function calling ability and response generation ability.",
+    "char_start": 13966,
+    "char_end": 14120,
+    "sentence_index": 108,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Figure is the overview of ComplexEval .",
+    "char_start": 14121,
+    "char_end": 14160,
+    "sentence_index": 109,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Given the user query $q$ and the available function list $f$, the model continually generates the next-step function calls until the final response is generated.",
+    "char_start": 14162,
+    "char_end": 14323,
+    "sentence_index": 110,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "Specifically, at step $t$, the model generates a list consisting of $n$ predicted function calls, denote as $[p_ t ^ 0 , , p_ t ^ n ]$.",
+    "char_start": 14325,
+    "char_end": 14460,
+    "sentence_index": 111,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "And the golden function call list contains $m$ function calls $[g_ t ^ 0 , , g_ t ^ m ]$.",
+    "char_start": 14461,
+    "char_end": 14550,
+    "sentence_index": 112,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "We aim to evaluate the correctness of each predicted function call $p_ t ^ i $ against the golden function call list.",
+    "char_start": 14551,
+    "char_end": 14668,
+    "sentence_index": 113,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "We will append the corresponding API response to the dialogue history for each $p_ t ^ i $.",
+    "char_start": 14669,
+    "char_end": 14760,
+    "sentence_index": 114,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "Based on the updated dialogue history, the model then predicts the next-step function calls.",
+    "char_start": 14761,
+    "char_end": 14853,
+    "sentence_index": 115,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "The evaluation process includes format checking, Hungarian mapping for function calls, and multi-dimensional matching.",
+    "char_start": 14854,
+    "char_end": 14972,
+    "sentence_index": 116,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Format Checking First, we check the format of each $p_ t ^ i $ in the predicted function call list.",
+    "char_start": 14974,
+    "char_end": 15073,
+    "sentence_index": 117,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "The format check includes three parts: (1) verifying that the called function is in the available function list, (2) ensuring that all required parameters are included in the call, and (3) confirming that the type of each parameter meets the requirement in the function description.",
+    "char_start": 15074,
+    "char_end": 15356,
+    "sentence_index": 118,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "If $p_ t ^ i $ fails the format checking, we use a specific error message as the API response.",
+    "char_start": 15357,
+    "char_end": 15451,
+    "sentence_index": 119,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "This approach allows the model to undergo a trial-and-error process, and we can evaluate the model's self-correction ability.",
+    "char_start": 15452,
+    "char_end": 15577,
+    "sentence_index": 120,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Hungarian Mapping For remaining predicted function calls with correct formats, we use bge-large-en-v1.5 model to obtain the text embedding for each function call.",
+    "char_start": 15579,
+    "char_end": 15741,
+    "sentence_index": 121,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "Specifically, we concatenate the function name and parameters into a single string for text encoding.",
+    "char_start": 15742,
+    "char_end": 15843,
+    "sentence_index": 122,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "The predicted and golden function calls list embedding are denoted as $ e _p$ and $ e _g$, respectively.",
+    "char_start": 15844,
+    "char_end": 15948,
+    "sentence_index": 123,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "Then, we calculate the cosine similarity between $ e _p$ and $ e _g$ and employ the Hungarian mapping algorithm to get a mapping list, e.g., $(p_t^i, g_t^j)$ denotes the $i_ th $ predict function call mapping with the $j_ th $ golden function call in at step $t$.",
+    "char_start": 15949,
+    "char_end": 16212,
+    "sentence_index": 124,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "(i, j) = HungarianMatch (- e _p e _ g ^T)\n\nMulti-Dimensional Matching Based on the mapping list, we propose a multi-dimensional matching method to decide the equivalence between $p_t^i$ and $g_t^j$.",
+    "char_start": 16214,
+    "char_end": 16412,
+    "sentence_index": 125,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "Rule-based Matching determines equivalence through exact matching.",
+    "char_start": 16414,
+    "char_end": 16480,
+    "sentence_index": 126,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "Two identical function calls are considered equivalent.",
+    "char_start": 16481,
+    "char_end": 16536,
+    "sentence_index": 127,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "Response-based Matching determines equivalence by comparing the returned API response of the two function calls.",
+    "char_start": 16537,
+    "char_end": 16649,
+    "sentence_index": 128,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "Two function calls are considered equivalent when the returned results are identical.",
+    "char_start": 16650,
+    "char_end": 16735,
+    "sentence_index": 129,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "For example, if parameter adults default value is 1, then Search\\_Hotel(New\\_York, adults=1) and Search\\_Hotel(New\\_York) are equivalent.",
+    "char_start": 16736,
+    "char_end": 16873,
+    "sentence_index": 130,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "LLM-based Matching leverages GPT-4o to determine the equivalence.",
+    "char_start": 16874,
+    "char_end": 16939,
+    "sentence_index": 131,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "Specifically, Parameter values can be expressed in different forms as long as the meaning is the same.",
+    "char_start": 16940,
+    "char_end": 17042,
+    "sentence_index": 132,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "For example, New York and NY , Narita International Airport and Tokyo Narita International Airport are equivalent.",
+    "char_start": 17043,
+    "char_end": 17157,
+    "sentence_index": 133,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "Detailed prompt is shown in Appendix .",
+    "char_start": 17158,
+    "char_end": 17196,
+    "sentence_index": 134,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "If $p_t^i$ is equivalent to $g_t^j$, the annotated API response of $g_t^j$ is used as the API response of $p_t^i$.",
+    "char_start": 17198,
+    "char_end": 17312,
+    "sentence_index": 135,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec010",
+    "text": "If $p_t^i$ is not equivalent to $g_t^j$, we use a fixed system error message as the API response of $p_t^i$.",
+    "char_start": 17313,
+    "char_end": 17421,
+    "sentence_index": 136,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "We will update the golden function call list by removing successfully matched calls and adding the next-step calls, as shown in Appendix .",
+    "char_start": 17422,
+    "char_end": 17560,
+    "sentence_index": 137,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "We continually call the model to generate the next-step function calls until the final model response is generated.",
+    "char_start": 17561,
+    "char_end": 17676,
+    "sentence_index": 138,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "Metrics We use Success Rate and Call Accuracy as metrics.",
+    "char_start": 17678,
+    "char_end": 17735,
+    "sentence_index": 139,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "Success Rate measures the overall task completion by calculating the proportion of samples that successfully complete the task.",
+    "char_start": 17736,
+    "char_end": 17863,
+    "sentence_index": 140,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "Call Accuracy calculates the proportion of correct function calls as in equation ( ).",
+    "char_start": 17864,
+    "char_end": 17949,
+    "sentence_index": 141,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "Call Acc = _ i=1 ^N c_i _ i=1 ^N n_i\n\nwhere $N$ is the number of samples, $n_i$ is the total number of function calls in sample $i$, and $c_i$ is the number of correct function calls in sample $i$.",
+    "char_start": 17951,
+    "char_end": 18148,
+    "sentence_index": 142,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec011",
+    "text": "After obtaining the model's final response, we use GPT-4o to further evaluate the response quality from two aspects: completeness and correctness.",
+    "char_start": 18150,
+    "char_end": 18296,
+    "sentence_index": 143,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec011",
+    "text": "The detailed prompt is shown in Appendix\nCompleteness Whether the response comprehensively addresses all the requirements proposed by the user.",
+    "char_start": 18297,
+    "char_end": 18440,
+    "sentence_index": 144,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec011",
+    "text": "Given the query $q$ and generated response $r_ gen $, GPT-4o will give a $ score \\ 0, 1, 2\\ $ as the completeness score.",
+    "char_start": 18441,
+    "char_end": 18561,
+    "sentence_index": 145,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec011",
+    "text": "$ score = 0$ indicates none of the user requirements were addressed, $ score =1$ indicates partial fulfillment and $ score =2$ indicates full fulfillment.",
+    "char_start": 18562,
+    "char_end": 18716,
+    "sentence_index": 146,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec011",
+    "text": "We calculate the average score of all samples as the final completeness score.",
+    "char_start": 18717,
+    "char_end": 18795,
+    "sentence_index": 147,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec011",
+    "text": "Correctness Whether the provided answers are accurate and align with the API response.",
+    "char_start": 18797,
+    "char_end": 18883,
+    "sentence_index": 148,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec011",
+    "text": "Given the complete dialogue history $h$ and generated response $r_ gen $, GPT-4o will give a $ score \\ 0, 1, 2\\ $ as the correctness score.",
+    "char_start": 18884,
+    "char_end": 19023,
+    "sentence_index": 149,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec011",
+    "text": "$ score = 0$ indicates totally incorrect, $ score =1$ indicates partially correct and $ score =2$ indicates totally correct.",
+    "char_start": 19024,
+    "char_end": 19148,
+    "sentence_index": 150,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec011",
+    "text": "We calculate the average score of all samples as the final correctness score.",
+    "char_start": 19149,
+    "char_end": 19226,
+    "sentence_index": 151,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec012",
+    "text": "We select function calling models with 128k context length, encompassing 12 models from 6 institutions, to comprehensively investigate current model performance on ComplexFuncBench .",
+    "char_start": 19228,
+    "char_end": 19410,
+    "sentence_index": 152,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec013",
+    "text": "Concretely, for closed-source models, we evaluate the latest version of GPT-4o and GPT-4-Turbo , Claude 3.5 Sonnet and Haiku and GLM-4-Long .",
+    "char_start": 19411,
+    "char_end": 19552,
+    "sentence_index": 153,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec013",
+    "text": "For open-source models, we evaluate Llama-3.1 series from 8B to 405B , Qwen2.5 7B and 72B, and Mistral Large 2 .",
+    "char_start": 19553,
+    "char_end": 19665,
+    "sentence_index": 154,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec014",
+    "text": "[htbp]\n\n0.55\nccccccccccccccc\n\n3 * Model & 2 c Hotels & 2 c Flights & 2 c Car Rental & 2 c Attraction & 2 c Cross & 2 c Overall & 2 * Completeness & 2 * Correctness\n\n2-13\n& Success& Call Acc & Success& Call Acc& Success& Call Acc& Success& Call Acc& Success& Call Acc& Success&Call Acc\n\n0.95 15 c close-source models\n\nClaude-3.5-Haiku& 36.00& 50.62& 50.67& 75.63& 59.33& 74.05& 58.00& 75.37& 38.00& 70.00& 45.80&69.50 & 1.79 & 1.71\n\nClaude-3.5-Sonnet& 54.67& 68.17& 54.00& 79.50& 76.67 & 86.01 & 69.33& 83.33 & 57.00 & 79.33 & 61.00 & 79.27 & 1.84 & 1.85\n\nGLM-4-Long& 56.00 & 63.98& 66.67 & 84.38 & 77.33 & 85.71& 72.67 & 83.33 & 40.50& 72.75& 57.10& 76.35& 1.72 & 1.74\n\nGPT-4-Turbo& 54.67& 68.48 & 48.67& 76.5& 44.67& 71.14& 70.67& 76.48& 41.75& 69.38& 49.50& 71.38& 1.72& 1.81\n\nGPT-4o& 70.00 & 81.99 & 65.33 & 85.50 & 72.00& 86.88 & 82.00 & 87.59 & 42.75 & 75.13 & 60.50 & 80.55 & 1.66& 1.75\n\n0.95 15 c open-source models\n\nQwen2.5-7B& 2.00 & 20.65 & 0.00& 5.13 & 4.67 & 6.41 & 14.67 & 35.18 & 4.5 & 21.41 & 5.0 & 18.19 & 1.5 & 1.47\n\nLlama-3.1-8B& 0.00& 0.00& 0.00& 1.00& 0.00& 1.89& 0.67& 2.78& 0.00& 1.00& 0.10&1.34 & 0.18 & 0.09\n\nGLM-4-9B& 19.33 & 31.52 & 11.33 & 34.00 & 16.0 & 25.36 & 10.67 & 29.26 & 2.00 & 25.46 & 9.40 & 27.97 & 1.15 & 1.03\n\nLlama-3.1-70B& 2.00& 10.71& 0.67& 2.63& 6.67& 10.06& 4.67& 11.11& 1.50& 8.13& 2.70&8.17 & 0.67 & 0.36\n\nLlama-3.1-405B& 3.33& 13.51& 2.66& 10.75& 4.00& 15.74& 14.00& 18.52& 1.00& 9.21& 4.00&11.87 & 0.43 & 0.30\n\nQwen2.5-72B& 40.00 & 60.24 & 31.33 & 49.25 & 48.67 & 57.58 & 63.33 & 67.41 & 31.50 & 59.00 & 40.10 & 58.32 & 1.80 & 1.75\n\nMistral Large 2& 19.33 & 34.32 & 20.67 & 52.88 & 40.67 & 58.16 & 25.33 & 40.18 & 10.50 & 50.54 & 20.10 & 48.78 & 0.94 & 1.0\n\nMain Results .",
+    "char_start": 19667,
+    "char_end": 21387,
+    "sentence_index": 155,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec014",
+    "text": "We categorize models as close-source, open-source under 10B, and open-source above 10B.",
+    "char_start": 21388,
+    "char_end": 21475,
+    "sentence_index": 156,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "Top two results for each category are highlighted in bold and underline .",
+    "char_start": 21476,
+    "char_end": 21549,
+    "sentence_index": 157,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec014",
+    "text": "The specific endpoint of open-source models are: gpt-4o-2024-08-06 , gpt-4-turbo-2024-04-09 , claude-3-5-sonnet-20241022 and claude-3-5-haiku-20241022 .",
+    "char_start": 21550,
+    "char_end": 21702,
+    "sentence_index": 158,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec014",
+    "text": "The main results of function call evaluation and model response evaluation are shown in Table .",
+    "char_start": 21704,
+    "char_end": 21799,
+    "sentence_index": 159,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec014",
+    "text": "Function Call Evaluation The complex function calling ability of the closed-source models is superior to that of the open-source models.",
+    "char_start": 21801,
+    "char_end": 21937,
+    "sentence_index": 160,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec014",
+    "text": "Claude-3.5-Sonnet, GPT-4o, and GLM-4-Long perform comparably among the closed-source models, with overall success rates of 61.0\\%, 60.5\\%, and 57.1\\%, respectively.",
+    "char_start": 21938,
+    "char_end": 22102,
+    "sentence_index": 161,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec014",
+    "text": "Among the open-source models, Qwen2.5-72B performs the best, achieving a task success rate of 40.1\\%.",
+    "char_start": 22103,
+    "char_end": 22204,
+    "sentence_index": 162,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec014",
+    "text": "The Llama3.1 series models do not possess the ability for complex function calling; the experiment results indicate that Llama3.1 suffers from disordered function call sequences and severe parameter hallucinations during the function calling process.",
+    "char_start": 22205,
+    "char_end": 22455,
+    "sentence_index": 163,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec014",
+    "text": "Moreover, models with less than 10B parameters cannot handle the complex function calling well; the best-performing model, GLM-4-9B, only achieved a success rate of 8.4\\%.",
+    "char_start": 22456,
+    "char_end": 22627,
+    "sentence_index": 164,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec014",
+    "text": "Different models' performance varies in different domains due to the distinct challenges presented by each domain.",
+    "char_start": 22629,
+    "char_end": 22743,
+    "sentence_index": 165,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec014",
+    "text": "Specifically, GPT-4o achieved notable success rates of 70\\% and 82\\% in the Hotel and Attraction domains, respectively, significantly outperforming other models.",
+    "char_start": 22744,
+    "char_end": 22905,
+    "sentence_index": 166,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec014",
+    "text": "These domains require a model to comprehensively understand the function descriptions to infer the function calling order.",
+    "char_start": 22906,
+    "char_end": 23028,
+    "sentence_index": 167,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec014",
+    "text": "Conversely, Claude-3.5-Sonnet handles more complex function calls in cross-domain scenarios better.",
+    "char_start": 23029,
+    "char_end": 23128,
+    "sentence_index": 168,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec014",
+    "text": "Meanwhile, GLM-4-Long excelled in the Flights and Car Rental domains, which require handing long parameter values approaching 600 characters.",
+    "char_start": 23129,
+    "char_end": 23270,
+    "sentence_index": 169,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec014",
+    "text": "Model Response Evaluation For closed-source models, Claude-3.5-Sonnet outperforms other models in both the completeness and correctness of responses, achieving scores of 1.84 and 1.85, respectively.",
+    "char_start": 23272,
+    "char_end": 23470,
+    "sentence_index": 170,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec014",
+    "text": "However, despite GPT-4o's high success rate, it shows the least complete performance with a score of 1.66.",
+    "char_start": 23471,
+    "char_end": 23577,
+    "sentence_index": 171,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec014",
+    "text": "For the open-source model, Qwen2.5-72B generates the most complete and correct response, with completeness and correctness scores of 1.80 and 1.75, which is superior to other open-source models.",
+    "char_start": 23578,
+    "char_end": 23772,
+    "sentence_index": 172,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "To compare the performance between different models more precisely, we select the top three closed-source models and the leading open-source model for in-depth analysis.",
+    "char_start": 23774,
+    "char_end": 23943,
+    "sentence_index": 173,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec016",
+    "text": "[htbp]\n\nimages/error_analysis.png\n\n-0.1cm\nError type analysis for different models.",
+    "char_start": 23945,
+    "char_end": 24028,
+    "sentence_index": 174,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec016",
+    "text": "-0.2cm\n\nWe classify the errors encountered during the complex function calling process into five types: func\\_error , param\\_missing , hallucination , value\\_error , and stop\\_early .",
+    "char_start": 24030,
+    "char_end": 24213,
+    "sentence_index": 175,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec016",
+    "text": "func\\_error indicates calling a wrong or invalid function.",
+    "char_start": 24214,
+    "char_end": 24272,
+    "sentence_index": 176,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "param\\_missing refers to the omission of crucial parameters.",
+    "char_start": 24273,
+    "char_end": 24333,
+    "sentence_index": 177,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec016",
+    "text": "hallucination refers to generating random parameters not provided by the user.",
+    "char_start": 24334,
+    "char_end": 24412,
+    "sentence_index": 178,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec016",
+    "text": "value\\_error denotes parameter values errors.",
+    "char_start": 24413,
+    "char_end": 24458,
+    "sentence_index": 179,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "stop\\_early means generating the final response without calling all required functions.",
+    "char_start": 24459,
+    "char_end": 24546,
+    "sentence_index": 180,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "Figure presents the error analysis results for four models.",
+    "char_start": 24548,
+    "char_end": 24607,
+    "sentence_index": 181,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "We can see that value\\_error accounts for a significant portion of errors in all models, particularly for Qwen2.5-72B, which has a value\\_error rate of 78.8\\%.",
+    "char_start": 24608,
+    "char_end": 24767,
+    "sentence_index": 182,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "The high value\\_error rate indicates that ComplexFuncBench poses significant challenges for LLMs in constrained parameter value reasoning and long-context parameter extraction.",
+    "char_start": 24768,
+    "char_end": 24944,
+    "sentence_index": 183,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "In addition to value\\_error , all four models tend to stop function calling without gathering complete information.",
+    "char_start": 24945,
+    "char_end": 25060,
+    "sentence_index": 184,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "This issue is especially severe for Claude-3.5-Sonnet and GPT-4o, with stop\\_early rates of 19.7\\% and 21.0\\%, respectively.",
+    "char_start": 25061,
+    "char_end": 25185,
+    "sentence_index": 185,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "Moreover, GLM-4-Long suffers from missing parameters with a param\\_missing rate of 11.0\\%, while other models show fewer parameter missing problems.",
+    "char_start": 25186,
+    "char_end": 25334,
+    "sentence_index": 186,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "Although less common compared to value\\_error , func\\_error still occurs, showing the model lacks understanding of function documentation.",
+    "char_start": 25335,
+    "char_end": 25473,
+    "sentence_index": 187,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "[htbp]\n\nimages/value_error_distribution.png\n\n-0.1cm\nError rates for each parameter type of different models\n\n-0.2cm\n\nWe analyze the error rate for each parameter type to further investigate the causes of the value\\_error in different models.",
+    "char_start": 25475,
+    "char_end": 25716,
+    "sentence_index": 188,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "Specifically, we divide all parameters into different types, such as date-related, time-related, and location-related parameters.",
+    "char_start": 25717,
+    "char_end": 25846,
+    "sentence_index": 189,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "Appendix gives examples of different parameter types.",
+    "char_start": 25847,
+    "char_end": 25900,
+    "sentence_index": 190,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "Then, we calculate the error rates of different models on different parameter types.",
+    "char_start": 25901,
+    "char_end": 25985,
+    "sentence_index": 191,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "The result is shown in Figure .",
+    "char_start": 25986,
+    "char_end": 26017,
+    "sentence_index": 192,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec016",
+    "text": "Although slight variations exist in the error distribution for different models, the incorrect parameters related to $filter$ and $legs$ are relatively higher than other parameters.",
+    "char_start": 26019,
+    "char_end": 26200,
+    "sentence_index": 193,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec016",
+    "text": "The $filter$ parameter challenges the model to infer function calling orders from the parameter description.",
+    "char_start": 26201,
+    "char_end": 26309,
+    "sentence_index": 194,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec016",
+    "text": "GLM-4-Long fails more than 40\\% on this parameter.",
+    "char_start": 26310,
+    "char_end": 26360,
+    "sentence_index": 195,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec016",
+    "text": "The $legs$ parameter needs the model to gather multiple information from the user query and API response.",
+    "char_start": 26361,
+    "char_end": 26466,
+    "sentence_index": 196,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec016",
+    "text": "Qwen2.5-72B fails 38.1\\% on this parameter.",
+    "char_start": 26467,
+    "char_end": 26510,
+    "sentence_index": 197,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec016",
+    "text": "Claude-3.5-Sonnet cannot understand the constrained user query and consistently retrieves the wrong $token$ parameter.",
+    "char_start": 26511,
+    "char_end": 26629,
+    "sentence_index": 198,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec016",
+    "text": "Claude-3.5-Sonnet and GPT-4o cannot understand the relationships between parameters specified in the function description and often retrieve the wrong $slug$ parameter from the API response.",
+    "char_start": 26630,
+    "char_end": 26820,
+    "sentence_index": 199,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec016",
+    "text": "The results indicate that it is challenging for models to complete complex function calling with constraints and long context, and there is still room for improvement.",
+    "char_start": 26821,
+    "char_end": 26988,
+    "sentence_index": 200,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec017",
+    "text": "[htbp]\n\nimages/length_distribution.pdf\n\n-0.5cm\nFunction calling steps distribution.",
+    "char_start": 26990,
+    "char_end": 27073,
+    "sentence_index": 201,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec017",
+    "text": "-0.2cm\n\nFigure compares the annotated shortest calling steps with the predicted calling steps among different models.",
+    "char_start": 27075,
+    "char_end": 27192,
+    "sentence_index": 202,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec017",
+    "text": "We can see that the predicted calling steps often exceed the shortest calling steps due to the models' distinct planning strategies.",
+    "char_start": 27193,
+    "char_end": 27325,
+    "sentence_index": 203,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec017",
+    "text": "Specifically, Claude-3.5-Sonnet and Qwen2.5-72B require an average of 4.47 and 4.28 steps, respectively, beyond the shortest steps.",
+    "char_start": 27326,
+    "char_end": 27457,
+    "sentence_index": 204,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec017",
+    "text": "These models generally need 1\u20133 extra steps more than the shortest steps.",
+    "char_start": 27458,
+    "char_end": 27531,
+    "sentence_index": 205,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec017",
+    "text": "As the task complexity increases, these models need more than 10 steps for task completion.",
+    "char_start": 27532,
+    "char_end": 27623,
+    "sentence_index": 206,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec017",
+    "text": "In contrast, models such as GLM-4-Long and GPT-4o tend to complete tasks with fewer steps.",
+    "char_start": 27624,
+    "char_end": 27714,
+    "sentence_index": 207,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec017",
+    "text": "The GLM-4-Long's average calling step is only 0.13 steps longer than the shortest steps.",
+    "char_start": 27715,
+    "char_end": 27803,
+    "sentence_index": 208,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec018",
+    "text": "Function Calling with LLMs Numerous models have been developed to enable function calling within Large Language Models (LLMs) to address challenges in real-world applications.",
+    "char_start": 27805,
+    "char_end": 27980,
+    "sentence_index": 209,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec018",
+    "text": "Some foundation models are inherently equipped with native function calling capabilities, allowing seamless integration of API functionalities.",
+    "char_start": 27981,
+    "char_end": 28124,
+    "sentence_index": 210,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec018",
+    "text": "In addition to these, some work proposes to fine-tune base models with specialized function calling datasets .",
+    "char_start": 28125,
+    "char_end": 28235,
+    "sentence_index": 211,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec018",
+    "text": "By training models on curated datasets, these works enable the models to dynamically generate function calls and execute functions, bridging the gap between language model generation and real-world scenarios.",
+    "char_start": 28236,
+    "char_end": 28444,
+    "sentence_index": 212,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec018",
+    "text": "Function Calling Evaluation A reliable and comprehensive function calling benchmark is crucial for providing optimization directions for function calling models.",
+    "char_start": 28446,
+    "char_end": 28607,
+    "sentence_index": 213,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec018",
+    "text": "Several works propose to use llm-based methods to evaluate the tool planning capabilities of LLMs .",
+    "char_start": 28608,
+    "char_end": 28707,
+    "sentence_index": 214,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec018",
+    "text": "However, these methods can not capture the correctness of the function call parameters since they generate natural language thoughts instead of formatted function calls.",
+    "char_start": 28708,
+    "char_end": 28877,
+    "sentence_index": 215,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec018",
+    "text": "Therefore, some studies propose rule-based matching methods, such as AST tree analysis, to evaluate the precision of function calling .",
+    "char_start": 28878,
+    "char_end": 29013,
+    "sentence_index": 216,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "However, these studies only evaluate single function calling without assessing complex function calling scenarios.",
+    "char_start": 29014,
+    "char_end": 29128,
+    "sentence_index": 217,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec018",
+    "text": "Furthermore, some work proposes to use state-based methods to evaluate the final state of the system without considering the intermediate function call procedure, resulting in the randomness of the evaluation results.",
+    "char_start": 29129,
+    "char_end": 29346,
+    "sentence_index": 218,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec018",
+    "text": "While previous research lacks a thorough evaluation of complex function calling in real-world scenarios, this work introduces a benchmark for function calling in more complex settings.",
+    "char_start": 29347,
+    "char_end": 29531,
+    "sentence_index": 219,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec019",
+    "text": "In this work, we introduce ComplexFuncBench , a benchmark dataset consisting of 1,000 samples from five realistic scenarios, and an automatic evaluation framework ComplexEval for complex function calling.",
+    "char_start": 29533,
+    "char_end": 29737,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec019",
+    "text": "Unlike existing benchmarks, ComplexFuncBench features multi-step and constrained function calling with parameter value reasoning, long-context parameter extraction, and long parameter value filling.",
+    "char_start": 29738,
+    "char_end": 29936,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec019",
+    "text": "We show the deficiency of current state-of-the-art function calling models through comprehensive experiments.",
+    "char_start": 29937,
+    "char_end": 30046,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec019",
+    "text": "We hope ComplexFuncBench can guide the research community in developing function calling capabilities of foundation models.",
+    "char_start": 30047,
+    "char_end": 30170,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec019",
+    "text": "custom\n\nTable gives a detailed example of the annotation process.",
+    "char_start": 30172,
+    "char_end": 30237,
+    "sentence_index": 224,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec022",
+    "text": "The data statistics for ComplexFuncBench are shown in Table .",
+    "char_start": 30239,
+    "char_end": 30300,
+    "sentence_index": 225,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec022",
+    "text": "[h]\n\n0.65\nlcccccc\n\n& Hotels& Flights& Car Rental& Attraction& Cross&Total\n\n\\# Samples& 150& 150& 150& 150& 400&1000\n\nAvg.",
+    "char_start": 30302,
+    "char_end": 30423,
+    "sentence_index": 226,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "Steps& 3.33& 3.33& 2.87& 2.86& 3.5&3.26\n\nAvg.",
+    "char_start": 30424,
+    "char_end": 30469,
+    "sentence_index": 227,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec022",
+    "text": "Calls& 4.29& 5.33& 4.57& 3.6& 6.0&5.07\n\nData statistics for ComplexFuncBench.",
+    "char_start": 30470,
+    "char_end": 30547,
+    "sentence_index": 228,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec023",
+    "text": "Prompt for query generation is shown in Figure .",
+    "char_start": 30549,
+    "char_end": 30597,
+    "sentence_index": 229,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec024",
+    "text": "Prompt for query generalization at the generalization stage is shown in Figure .",
+    "char_start": 30599,
+    "char_end": 30679,
+    "sentence_index": 230,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec025",
+    "text": "For a fair comparison of the LLM's complex function calling, we use the same generation parameter for all models.",
+    "char_start": 30681,
+    "char_end": 30794,
+    "sentence_index": 231,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec026",
+    "text": "We use greedy sampling during generation and the max generation token is set to 2048.",
+    "char_start": 30795,
+    "char_end": 30880,
+    "sentence_index": 232,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec026",
+    "text": "For close-source models, we set $ tool\\_choice =\"auto\"$ to let the LLM decide which tool to choose.",
+    "char_start": 30881,
+    "char_end": 30980,
+    "sentence_index": 233,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec027",
+    "text": "As shown in Algorithm , the model predicts a function call list with $n$ function calls at step $t$, denoted as $p_t = [p_ t ^ 0 , , p_ t ^ n ]$, while the golden function call list contains $m$ function calls $g_t = [g_ t ^ 0 , , g_ t ^ m ]$.",
+    "char_start": 30982,
+    "char_end": 31225,
+    "sentence_index": 234,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec027",
+    "text": "We aim to evaluate the correctness of $p_ t ^ i $ based on $g_t$.",
+    "char_start": 31226,
+    "char_end": 31291,
+    "sentence_index": 235,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec027",
+    "text": "If Any $p_t^i$ matched with $g_t^j$ under the multi-dimensional matching method, the annotated API response of $g_t^j$ is used as the API response of $p_t^i$, and we will update the golden function call list by adding the next-step golden function calls.",
+    "char_start": 31292,
+    "char_end": 31546,
+    "sentence_index": 236,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec027",
+    "text": "Figure is an example if golden function call updating where $t=0$.",
+    "char_start": 31547,
+    "char_end": 31613,
+    "sentence_index": 237,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/update.pdf\n-0.1cm\nAn example for golden function call updating.",
+    "char_start": 31615,
+    "char_end": 31690,
+    "sentence_index": 238,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec027",
+    "text": "Path on the left is the annotated shortest function call path with three steps.",
+    "char_start": 31691,
+    "char_end": 31770,
+    "sentence_index": 239,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec027",
+    "text": "-0.2cm\n\nInput:\nOutput:\nGolden Function Call List Updating Strategy\n\n[1]\nAnnotated shortest function call path: $ G = [[g_0^1, , g_0^ m_1 ], ,[g_s^1, , g_s^ m_s ]]$\nInitialization: $ind 0, t 0$\nGolden function calls at current step $t$: $ g_t = G [ind] = G [0] = [g_0^1, , g_0^ m_1 ]$\n\nModel predict function calls at current step $t$: $p_t = [p_ t ^ 0 , , p_ t ^ n ]$\nEvaluation $p_t$ based on $g_t$ based on Section\nObtain the success matched golden function calls list $g_t^ success = [g_t^j, , g_t^k]$\nRemain golden function calls $g_t' = g_t - g_t^ success $\n$ind < s$\n$ind ind + 1$\nUpdate Golden function calls $g_ t+1 = g_t' + G [ind]$\n\nUpdate Golden function calls $g_ t+1 = g_t'$\n\n$t t + 1$\nModel generate the final response\n\nPrompt for llm-based match is shown in Figure .",
+    "char_start": 31772,
+    "char_end": 32553,
+    "sentence_index": 240,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec029",
+    "text": "Prompt for model response evaluation are shown in Figure and Figure .",
+    "char_start": 32555,
+    "char_end": 32624,
+    "sentence_index": 241,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec030",
+    "text": "Specific examples of each parameter type are shown in Table .",
+    "char_start": 32626,
+    "char_end": 32687,
+    "sentence_index": 242,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec030",
+    "text": "0.8\ncp 6cm p 12cm\nParameter & Example & Explanation\n\nfilter & filter = \"facility::433, facility::107\") &\nThe $filter$ parameter can be retrieved from the API response of the Get\\_Filter function.",
+    "char_start": 32689,
+    "char_end": 32884,
+    "sentence_index": 243,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec030",
+    "text": "It often appears in queries with constraints, like: Find a few hotels with a pool and free wifi.",
+    "char_start": 32885,
+    "char_end": 32981,
+    "sentence_index": 244,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec030",
+    "text": "\"facility::433\" and \"facility::107\" denote pool and free wifi, respectively.",
+    "char_start": 32982,
+    "char_end": 33058,
+    "sentence_index": 245,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec030",
+    "text": "legs & legs=[\\ \"fromId\": \"DFW.CITY\", \"toId\": \"MUC.AIRPORT\", \"date\": \"2024-11-25\"\\ ,\\ \"fromId\": \"MUC.AIRPORT\", \"toId\": \"STO.CITY\", \"date\": \"2024-11-26\"\\ , \\ \"fromId\": \"STO.CITY\",\"toId\": \"DFW.CITY\",\"date\": \"2024-12-09\"\\ ])& The $legs$ parameter is the multi-stop flights list which contains location and date.",
+    "char_start": 33060,
+    "char_end": 33367,
+    "sentence_index": 246,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec030",
+    "text": "token & token=\"d7699\\_H4sIAAAAAAAA\\_ ...",
+    "char_start": 33369,
+    "char_end": 33409,
+    "sentence_index": 247,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec030",
+    "text": "AAA.\"& The $token$ parameter can be retrieved from the API response of multiple functions.",
+    "char_start": 33410,
+    "char_end": 33500,
+    "sentence_index": 248,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec030",
+    "text": "For example, the Search\\_Flights function will return the $token$ for different flights.",
+    "char_start": 33501,
+    "char_end": 33589,
+    "sentence_index": 249,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec030",
+    "text": "slug & slug=\"pr7jepixwlvr-private-guided-tour-orsay-museum-rare-languages\"& The $slug$ parameter can be retrieved from the API response of Search\\_Attraction\\_Location function as as 'productSlug' inside 'products' or 'destinations'.",
+    "char_start": 33591,
+    "char_end": 33824,
+    "sentence_index": 250,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec030",
+    "text": "date & date=\"2024-11-22\" & Parameters related to dates, like: check-in-date, check-out-date,etc.",
+    "char_start": 33826,
+    "char_end": 33922,
+    "sentence_index": 251,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec030",
+    "text": "location & location=\"Amsterdam\"& Parameters related to locations, like: country, city ,etc.",
+    "char_start": 33924,
+    "char_end": 34015,
+    "sentence_index": 252,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec030",
+    "text": "key & key= \"eyJkcml2ZXJzQWdlIjozMCwiZ HJvcE...19GRUVTIl19\" & The $key$ parameter can be retrieved from the API response of multiple functions.",
+    "char_start": 34017,
+    "char_end": 34159,
+    "sentence_index": 253,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec030",
+    "text": "For example, the Search\\_Car\\_Rentals function will return the $key$ for different cars.",
+    "char_start": 34160,
+    "char_end": 34248,
+    "sentence_index": 254,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec030",
+    "text": "id & id=\"eyJ1ZmkiOi01NjQwNjR9\" & The $id$ parameter can be retrieved from the API response of multiple functions.",
+    "char_start": 34250,
+    "char_end": 34363,
+    "sentence_index": 255,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec030",
+    "text": "For example, the Search\\_Attraction\\_Location function will return the $id$ for different attractions.",
+    "char_start": 34364,
+    "char_end": 34466,
+    "sentence_index": 256,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec030",
+    "text": "time & time=\"08:00\"& Parameters related to time, like: pick-up-time, drop-off-time,etc.",
+    "char_start": 34468,
+    "char_end": 34555,
+    "sentence_index": 257,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec030",
+    "text": "sort\\_by & sort\\_by=\"popularity\"& The $sort\\_by$ parameter controls the order in which hotel or flight results are presented.",
+    "char_start": 34557,
+    "char_end": 34682,
+    "sentence_index": 258,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec030",
+    "text": "For example, the hotels can be sorted by price or popularity.",
+    "char_start": 34683,
+    "char_end": 34744,
+    "sentence_index": 259,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec030",
+    "text": "type & type=\"landmark\"& The $type$ parameter is the entity type, like landmark, city, etc.",
+    "char_start": 34746,
+    "char_end": 34836,
+    "sentence_index": 260,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec030",
+    "text": "age & age=\"8\"& The $age$ parameter is the age of people.",
+    "char_start": 34838,
+    "char_end": 34894,
+    "sentence_index": 261,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec030",
+    "text": "people & people=2 & The $people$ parameter is the number of people.",
+    "char_start": 34896,
+    "char_end": 34963,
+    "sentence_index": 262,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec030",
+    "text": "Examples of different parameter types.",
+    "char_start": 34965,
+    "char_end": 35003,
+    "sentence_index": 263,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec030",
+    "text": "images/query-generation-prompt.pdf\n\n-0.1cm\nPrompt for Query Generation.",
+    "char_start": 35005,
+    "char_end": 35076,
+    "sentence_index": 264,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec030",
+    "text": "-0.2cm\n\nimages/query-generalization.pdf\n\n-0.1cm\nPrompt for Query Generalization.",
+    "char_start": 35078,
+    "char_end": 35158,
+    "sentence_index": 265,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec030",
+    "text": "-0.2cm\n\nimages/llm-based.pdf\n\n-0.1cm\nPrompt for LLM-based Match.",
+    "char_start": 35160,
+    "char_end": 35224,
+    "sentence_index": 266,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec030",
+    "text": "-0.2cm\n\nimages/completeness.pdf\n\n-0.1cm\nPrompt for Completeness Evaluation.",
+    "char_start": 35226,
+    "char_end": 35301,
+    "sentence_index": 267,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec030",
+    "text": "-0.2cm\n\nimages/correctness.pdf\n\n-0.1cm\nPrompt for Correctness Evaluation.",
+    "char_start": 35303,
+    "char_end": 35376,
+    "sentence_index": 268,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec030",
+    "text": "-0.2cm\n\n[htbp]\n\n4pt\n@ rp 14cm @\n\nGainsboro 2 l Query\n\nInitial & My friend is planning a trip between December 15, 2024 and December 20, 2024 and he wants to fly from Sydney to Melbourne.",
+    "char_start": 35378,
+    "char_end": 35564,
+    "sentence_index": 269,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec030",
+    "text": "Please help find the best flight options and book a 4\\-star hotel near Fitzroy Gardens.",
+    "char_start": 35565,
+    "char_end": 35652,
+    "sentence_index": 270,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec030",
+    "text": "They also need to rent a car and a taxi service from Melbourne Airport to the hotel.",
+    "char_start": 35653,
+    "char_end": 35737,
+    "sentence_index": 271,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec030",
+    "text": "0em 1pt 1pt\n\n0em 1pt 1pt\n\nHuman Annotated & Please help my friend finds the best flight from Sydney to Melbourne on 15 December 2024 and book a hotel within 10km of Fitzroy Gardens, Melbourne darkgreen for one night .",
+    "char_start": 35739,
+    "char_end": 35956,
+    "sentence_index": 272,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec030",
+    "text": "Remember to book a taxi to darkgreen pick him up from the airport to the hotel an hour after the plane lands.",
+    "char_start": 35957,
+    "char_end": 36066,
+    "sentence_index": 273,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec030",
+    "text": "0em 1pt 1pt\n\n0em 1pt 1pt\n\nExplanation & Correction .",
+    "char_start": 36068,
+    "char_end": 36120,
+    "sentence_index": 274,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec030",
+    "text": "Rewrite query for clarity, such as the number of days for the hotel reservation, the departure location, and the time for the taxi.",
+    "char_start": 36121,
+    "char_end": 36252,
+    "sentence_index": 275,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec030",
+    "text": "0em 1pt 1pt\n\n0em 1pt 1pt\nGainsboro 2 l Function call at step 1\n\n4 * GPT Generated\n& 1.",
+    "char_start": 36254,
+    "char_end": 36340,
+    "sentence_index": 276,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flight\\_Location\", \"arguments\": \\ \"query\": \"Sydney\"\\ \\\n\n& 2.",
+    "char_start": 36341,
+    "char_end": 36420,
+    "sentence_index": 277,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flight\\_Location\", \"arguments\": \\ \"query\": \"Melbourne\"\\ \\\n\n& 3.",
+    "char_start": 36421,
+    "char_end": 36503,
+    "sentence_index": 278,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Location\\_to\\_Lat\\_Long\", \"arguments\": \\ \"query\": \"Fitzroy Gardens, Melbourne\"\\ \\\n\n& red 4.",
+    "char_start": 36504,
+    "char_end": 36606,
+    "sentence_index": 279,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Taxi\\_Search\\_Location\", \"arguments\": \\ \"query\": \"Melbourne Airport\"\\ \\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\n3 * Human Annotated\n& 1.",
+    "char_start": 36607,
+    "char_end": 36741,
+    "sentence_index": 280,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flight\\_Location\", \"arguments\": \\ \"query\": \"Sydney\"\\ \\\n\n& 2.",
+    "char_start": 36742,
+    "char_end": 36821,
+    "sentence_index": 281,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flight\\_Location\", \"arguments\": \\ \"query\": \"Melbourne\"\\ \\\n\n& 3.",
+    "char_start": 36822,
+    "char_end": 36904,
+    "sentence_index": 282,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Location\\_to\\_Lat\\_Long\", \"arguments\": \\ \"query\": \"Fitzroy Gardens, Melbourne\"\\ \\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\nExplanation & Correction .",
+    "char_start": 36905,
+    "char_end": 37051,
+    "sentence_index": 283,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec030",
+    "text": "The arrive airport for the best flight may not be \"Melbourne Airport\".",
+    "char_start": 37052,
+    "char_end": 37122,
+    "sentence_index": 284,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec030",
+    "text": "The model need to get the arrive airports before use \"Taxi\\_Search\\_Location\".",
+    "char_start": 37123,
+    "char_end": 37201,
+    "sentence_index": 285,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec030",
+    "text": "0em 1pt 1pt\n\n0em 1pt 1pt\nGainsboro 2 l API response at step 1\n\n4 * Initial\n& 1.",
+    "char_start": 37203,
+    "char_end": 37282,
+    "sentence_index": 286,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"id\": \"SYD.AIRPORT\", \"name\": \"Sydney Kingsford Smith Airport\"\\ , blue \\ \"id\": \"YQY.AIRPORT\", \"name\": \"Sydney (Nova Scotia) Airport\"\\ ]\\\n\n& 2.",
+    "char_start": 37283,
+    "char_end": 37459,
+    "sentence_index": 287,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"id\": \"MEL.CITY\", \"name\": \"Melbourne\"\\ , blue \\ \"id\": \"MEL.AIRPORT\", \"name\": \"Melbourne Airport\"\\ , \\ \"id\": \"AVV.AIRPORT\", \"name\": \"Avalon Airport\"\\ , \\ \"id\": \"MEB.AIRPORT\", \"name\": \"Essendon Fields Airport\"\\ , \\ \"id\": \"MLB.AIRPORT\", \"name\": \"Melbourne International Airport\"\\ ]\\\n\n& 3.",
+    "char_start": 37460,
+    "char_end": 37780,
+    "sentence_index": 288,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"business\\_status\": \"OPERATIONAL\", \"formatted\\_address\": \"Wellington Parade, East Melbourne VIC 3002, Australia\" \"geometry\": \\ \"location\": \\ \"lat\": -37.81272149999999, \"lng\": 144.9800679\\ \\ ,\"name\": \"Fitzroy Gardens\"\\ ]\\\n\n& red 4.",
+    "char_start": 37781,
+    "char_end": 38046,
+    "sentence_index": 289,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"longitude\": 144.849, \"city\": \"Melbourne\", \"name\": \"Melbourne Airport\", \"latitude\": -37.6696\\ , \\ \"city\": \"Melbourne\", \"longitude\": -80.6456, \"name\": \"Melbourne International Airport\", \"latitude\": 28.1025\\ ]\\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\n3 * Human Annotated\n& 1.",
+    "char_start": 38047,
+    "char_end": 38342,
+    "sentence_index": 290,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"id\": \"SYD.AIRPORT\", \"name\": \"Sydney Kingsford Smith Airport\"\\ ]\\ ,\n\n& 2.",
+    "char_start": 38343,
+    "char_end": 38451,
+    "sentence_index": 291,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"id\": \"MEL.CITY\", \"name\": \"Melbourne\"\\ ]\\ ,\n\n& 3.",
+    "char_start": 38452,
+    "char_end": 38536,
+    "sentence_index": 292,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec030",
+    "text": "\\ \"message\": \"Success\", \"data\": [\\ \"business\\_status\": \"OPERATIONAL\", \"formatted\\_address\": \"Wellington Parade, East Melbourne VIC 3002, Australia\" \"geometry\": \\ \"location\": \\ \"lat\": -37.81272149999999, \"lng\": 144.9800679\\ \\ ,\"name\": \"Fitzroy Gardens\"\\ ]\\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\nExplanation & Disambiguation .",
+    "char_start": 38537,
+    "char_end": 38850,
+    "sentence_index": 293,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec030",
+    "text": "Delete API response that may cause ambiguation for subsequent steps.",
+    "char_start": 38851,
+    "char_end": 38919,
+    "sentence_index": 294,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec030",
+    "text": "0em 1pt 1pt\n\n0em 1pt 1pt\nGainsboro 2 l Function call at step 2\n\n5 * GPT Generated\n& 1.",
+    "char_start": 38921,
+    "char_end": 39007,
+    "sentence_index": 295,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flights\", \"arguments\": \\ \"fromId\": \"SYD.AIRPORT\", \"toId\": \"MEL.CITY\", \"departDate\": \"2024-12-15\", \"sort\": \"BEST\"\\ \\\n\n& red 2.",
+    "char_start": 39008,
+    "char_end": 39152,
+    "sentence_index": 296,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flights\", \"arguments\": \\ \"fromId\": \"YQY.AIRPORT\", \"toId\": \"MEL.CITY\", \"departDate\": \"2024-12-15\", \"sort\": \"BEST\"\\ \\\n\n& red 3.",
+    "char_start": 39153,
+    "char_end": 39297,
+    "sentence_index": 297,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flights\", \"arguments\": \\ \"fromId\": \"SYD.AIRPORT\", \"toId\": \"AVV.AIRPORT\", \"departDate\": \"2024-12-15\", \"sort\": \"BEST\"\\ \\\n\n& red 4.",
+    "char_start": 39298,
+    "char_end": 39445,
+    "sentence_index": 298,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flights\", \"arguments\": \\ \"fromId\": \"YQY.AIRPORT\", \"toId\": \"AVV.AIRPORT\", \"departDate\": \"2024-12-15\", \"sort\": \"BEST\"\\ \\\n\n& 5.",
+    "char_start": 39446,
+    "char_end": 39589,
+    "sentence_index": 299,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Hotels\\_By\\_Coordinates\", \"arguments\": \\ \"latitude\": \"-37.81272149999999\", \"longitude\": \"144.9800679\", \"arrival\\_date\": \"2024-12-15\", \"departure\\_date\": \"2024-12-20\", \"radius\": 10\\ \\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\n2 * Human Annotated\n& 1.",
+    "char_start": 39590,
+    "char_end": 39843,
+    "sentence_index": 300,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Flights\", \"arguments\": \\ \"fromId\": \"SYD.AIRPORT\", \"toId\": \"MEL.CITY\", \"departDate\": \"2024-12-15\", \"sort\": \"BEST\"\\ \\\n\n& 2.",
+    "char_start": 39844,
+    "char_end": 39984,
+    "sentence_index": 301,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec030",
+    "text": "\\ \"name\": \"Search\\_Hotels\\_By\\_Coordinates\", \"arguments\": \\ \"latitude\": \"-37.81272149999999\", \"longitude\": \"144.9800679\", \"arrival\\_date\": \"2024-12-15\", \"departure\\_date\": \"2024-12-20\", \"radius\": 10\\ \\\n\n0em 1pt 1pt\n\n0em 1pt 1pt\n\nExplanation & Correction .",
+    "char_start": 39985,
+    "char_end": 40240,
+    "sentence_index": 302,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec030",
+    "text": "After delete ambiguous information in the API response, we need to remove redundant function calls.",
+    "char_start": 40241,
+    "char_end": 40340,
+    "sentence_index": 303,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec030",
+    "text": "Annotation Example.",
+    "char_start": 40342,
+    "char_end": 40361,
+    "sentence_index": 304,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec030",
+    "text": "To make the content easy for reading, we have removed most of the content from the API response.",
+    "char_start": 40362,
+    "char_end": 40458,
+    "sentence_index": 305,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec030",
+    "text": "The actual API response contains a large amount of information, reaching a context length of 128k.",
+    "char_start": 40459,
+    "char_end": 40557,
+    "sentence_index": 306,
+    "section_sentence_index": 64
+  }
+]

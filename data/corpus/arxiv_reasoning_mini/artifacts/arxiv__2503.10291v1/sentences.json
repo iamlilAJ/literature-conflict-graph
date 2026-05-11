@@ -1,0 +1,2621 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "We introduce , an advanced multimodal Process Reward Model (PRM) with 8B parameters, which improves the reasoning abilities of existing Multimodal Large Language Models (MLLMs) across different model scales and families with Best-of-N (BoN) evaluation strategies.",
+    "char_start": 0,
+    "char_end": 263,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Specifically, our model improves the reasoning performance of three types of MLLMs and four different model scales.",
+    "char_start": 264,
+    "char_end": 379,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Even when applied to the highly capable InternVL2.5-78B, it achieves a 5.9-point improvement across seven multimodal reasoning benchmarks.",
+    "char_start": 380,
+    "char_end": 518,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Experimental results show that our model exhibits superior performance compared to Outcome Reward Models and Self-Consistency during BoN evaluation.",
+    "char_start": 519,
+    "char_end": 667,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "To facilitate the training of multimodal PRMs, we construct a multimodal process supervision dataset using an automated data pipeline.",
+    "char_start": 668,
+    "char_end": 802,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "For the evaluation of multimodal PRMs, we propose , a benchmark with human-annotated step-wise correctness labels, to measure the abilities of PRMs to detect erroneous steps in multimodal reasoning tasks.",
+    "char_start": 803,
+    "char_end": 1007,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "We hope that our work can inspire more future research and contribute to the development of MLLMs.",
+    "char_start": 1008,
+    "char_end": 1106,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Our model, data, and benchmark are released in this https://internvl.github.io/blog/2025-03-13-VisualPRM/ page .",
+    "char_start": 1107,
+    "char_end": 1219,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "[t]\n\nfig/teaser.pdf\n\nThe overall Best-of-8 evaluation results across seven multimodal reasoning benchmarks with different critic models.",
+    "char_start": 1221,
+    "char_end": 1357,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Our greatly enhances the overall performance, while InternVL2.5-8B struggles to be an effective critic model.",
+    "char_start": 1358,
+    "char_end": 1467,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "-3mm\n\nWith the remarkable success of Large Language Models (LLMs) in natural language processing, Multimodal Large Language Models (MLLMs) have also achieved significant advancements across various vision-language tasks.",
+    "char_start": 1469,
+    "char_end": 1689,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Despite their strong performance in perception and recognition, a large gap remains in reasoning capabilities between open-source and proprietary models.",
+    "char_start": 1690,
+    "char_end": 1843,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "A series of studies have explored methods to enhance reasoning abilities, focusing on the perspectives of data collection and construction , offline preference optimization , and online reinforcement learning .",
+    "char_start": 1844,
+    "char_end": 2054,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Additionally, another line of research investigates utilizing Test-Time Scaling (TTS) to enhance the reasoning abilities of LLMs.",
+    "char_start": 2055,
+    "char_end": 2184,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "This approach requires the policy model to generate multiple response candidates and select the best one, based on the quality estimation of a critic model, thereby improving the response quality at the cost of higher inference time.",
+    "char_start": 2185,
+    "char_end": 2418,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "However, TTS for MLLMs remains largely unexplored.",
+    "char_start": 2419,
+    "char_end": 2469,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "This work investigates the application of TTS for MLLMs, focusing on the Best-of-N (BoN) evaluation strategies.",
+    "char_start": 2471,
+    "char_end": 2582,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "The challenges of adapting TTS for MLLMs involves:\n(1) Lack of effective critic models.",
+    "char_start": 2583,
+    "char_end": 2670,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "In BoN evaluation, a critic model is required to estimate the quality of each response candidate.",
+    "char_start": 2671,
+    "char_end": 2768,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "However, as shown in Figure , existing open-source MLLMs struggle to serve as critic models, leading to marginal improvements compared to models without TTS.",
+    "char_start": 2769,
+    "char_end": 2926,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "This limitation stems from the lack of sufficient critic data in their training corpus.",
+    "char_start": 2927,
+    "char_end": 3014,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "(2) Lack of evaluation benchmarks for multimodal critic models.",
+    "char_start": 3015,
+    "char_end": 3078,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "The effectiveness of TTS heavily depends on the performance of the critic model.",
+    "char_start": 3079,
+    "char_end": 3159,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "However, directly evaluating critics under BoN settings poses two key issues.",
+    "char_start": 3160,
+    "char_end": 3237,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "First, the evaluation cost of BoN is expensive.",
+    "char_start": 3238,
+    "char_end": 3285,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Although the focus is on the performance of critic models, the policy model is required to generate $N$ reasoning processes, with the majority of computational costs arising from the policy model.",
+    "char_start": 3286,
+    "char_end": 3482,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Second, BoN performance is also affected by the policy model, making it difficult to compare different critic models when paired with varying policy models.",
+    "char_start": 3483,
+    "char_end": 3639,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To solve these challenges, we first introduce , a dataset comprising approximately 400K multimodal process supervision data.",
+    "char_start": 3641,
+    "char_end": 3765,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Each sample includes an image, a question, a step-by-step solution, and correctness annotations for each step.",
+    "char_start": 3766,
+    "char_end": 3876,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Specifically, we collect question prompts from MMPR v1.1 and then generate process correctness using an automatic data pipeline .",
+    "char_start": 3877,
+    "char_end": 4006,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "This pipeline samples multiple continuations starting from a certain step and computes the expected accuracy of that step as the average accuracy of its continuations.",
+    "char_start": 4007,
+    "char_end": 4174,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "To facilitate the evaluation of multimodal critic models, we introduce , a benchmark for evaluating PRMs and MLLMs in detecting erroneous steps in multimodal reasoning tasks.",
+    "char_start": 4176,
+    "char_end": 4350,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "This benchmark includes 2,866 samples with 26,950 human-annotated step-wise correctness labels.",
+    "char_start": 4351,
+    "char_end": 4446,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Each sample includes a multimodal reasoning question, a step-by-step solution, and correctness labels for each step.",
+    "char_start": 4447,
+    "char_end": 4563,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "To ensure annotation accuracy, we employ human experts with at least a university degree to manually assess the correctness of each step.",
+    "char_start": 4564,
+    "char_end": 4701,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Unlike prior benchmarks , which require identifying only the first erroneous step, challenges models to detect all errors within a given solution.",
+    "char_start": 4702,
+    "char_end": 4848,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "This adjustment aligns with recent advancements in model reflection abilities, helping to reduce false negatives in evaluations.",
+    "char_start": 4849,
+    "char_end": 4977,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Evaluation results reveal that existing open-source MLLMs struggle to accurately assess step-wise correctness, highlighting the need for improved multimodal critic models.",
+    "char_start": 4978,
+    "char_end": 5149,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "Building upon the dataset and benchmark, we develop , an advanced multimodal Process Reward Model (PRM) with 8B parameters, to serve as the critic model in BoN evaluation.",
+    "char_start": 5151,
+    "char_end": 5322,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Each training sample is formulated as a multi-turn chat.",
+    "char_start": 5323,
+    "char_end": 5379,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "The first turn includes the image, the question, and the first solution step, while each subsequent turn presents a new step.",
+    "char_start": 5380,
+    "char_end": 5505,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "The model is trained to predict the correctness of the given step at each turn.",
+    "char_start": 5506,
+    "char_end": 5585,
+    "sentence_index": 41,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec002",
+    "text": "Experimental results demonstrate that enhances MLLM reasoning across different model families and scales.",
+    "char_start": 5586,
+    "char_end": 5691,
+    "sentence_index": 42,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec002",
+    "text": "Specifically, improves the overall reasoning performance of MiniCPM-V2.6, QwenVL2.5-7B, InternVL2.5-8B, and InternVL2.5-78B by 8.0, 3.7, 8.4, and 5.9 points, respectively, across seven multimodal reasoning benchmarks .",
+    "char_start": 5692,
+    "char_end": 5910,
+    "sentence_index": 43,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec002",
+    "text": "Additionally, we compare PRMs with Outcome Reward Models and Self-Consistency in BoN evaluation, finding that PRMs consistently outperform both approaches.",
+    "char_start": 5911,
+    "char_end": 6066,
+    "sentence_index": 44,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec002",
+    "text": "In summary, our main contributions are as follows:\n\n(1) We introduce , a dataset comprising approximately 400K multimodal process supervision data.",
+    "char_start": 6068,
+    "char_end": 6215,
+    "sentence_index": 45,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec002",
+    "text": "Building upon this dataset, we develop , an advanced multimodal PRM to serve as the critic model in the BoN evaluation.",
+    "char_start": 6216,
+    "char_end": 6335,
+    "sentence_index": 46,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec002",
+    "text": "(2) We construct , a benchmark designed to measure the abilities of PRMs and MLLMs to identify erroneous steps in multimodal reasoning tasks.",
+    "char_start": 6337,
+    "char_end": 6478,
+    "sentence_index": 47,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec002",
+    "text": "This benchmark comprises 2,866 samples with a total of 26,950 human-annotated step-wise correctness labels.",
+    "char_start": 6479,
+    "char_end": 6586,
+    "sentence_index": 48,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec002",
+    "text": "(3) Through extensive experiments, we demonstrate that PRMs can serve as effective critic models for test-time scaling of MLLMs.",
+    "char_start": 6588,
+    "char_end": 6716,
+    "sentence_index": 49,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec002",
+    "text": "Specifically, enhances the overall multimodal reasoning performance of MiniCPM-V2.6, QwenVL2.5-7B, InternVL2.5-8B, and InternVL2.5-78B by 8.0, 3.7, 8.4, and 5.9 points, respectively, across seven multimodal reasoning benchmarks.",
+    "char_start": 6717,
+    "char_end": 6945,
+    "sentence_index": 50,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec002",
+    "text": "Furthermore, our results show that PRMs consistently outperform both ORMs and SC in BoN evaluation.",
+    "char_start": 6946,
+    "char_end": 7045,
+    "sentence_index": 51,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec002",
+    "text": "Additionally, experiments on reveal that existing open-source MLLMs struggle to accurately assess the correctness of each step.",
+    "char_start": 7046,
+    "char_end": 7173,
+    "sentence_index": 52,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec002",
+    "text": "[t]\n\nfig/main-data-examples.pdf\n\nData examples in and .",
+    "char_start": 7175,
+    "char_end": 7230,
+    "sentence_index": 53,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec002",
+    "text": "For , we generate the data using an automatic data pipeline.",
+    "char_start": 7231,
+    "char_end": 7291,
+    "sentence_index": 54,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec002",
+    "text": "The key idea is to estimate the expected accuracy $mc_i$ of the given step $s_ i $ based on Monte Carlo sampling and consider the step correct if $mc_i>0$.",
+    "char_start": 7292,
+    "char_end": 7447,
+    "sentence_index": 55,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec002",
+    "text": "During the training process of , the data is formulated as multi-turn conversations and the model is required to predict the correctness of each step conditioned on the image, question, and previous steps.",
+    "char_start": 7448,
+    "char_end": 7653,
+    "sentence_index": 56,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec002",
+    "text": "For , we collect questions from existing multimodal reasoning benchmarks and generate the solutions using leading MLLMs .",
+    "char_start": 7654,
+    "char_end": 7775,
+    "sentence_index": 57,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec002",
+    "text": "Based on these questions and solutions, we employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.",
+    "char_start": 7776,
+    "char_end": 7951,
+    "sentence_index": 58,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "Multimodal Large Language Models.",
+    "char_start": 7953,
+    "char_end": 7986,
+    "sentence_index": 59,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "A wide range of efforts has been made to advance the development of MLLMs, including improvements in model architecture, data construction, and training algorithms.",
+    "char_start": 7987,
+    "char_end": 8151,
+    "sentence_index": 60,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "From an architectural perspective, several studies employ connectors to align visual embeddings from Vision Foundation Models (VFMs) with the latent space of LLMs , achieving promising performance.",
+    "char_start": 8152,
+    "char_end": 8349,
+    "sentence_index": 61,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "Another series of works extends pre-trained LLMs with additional layers to fuse visual features, reducing the number of required visual tokens while introducing extra training cost.",
+    "char_start": 8350,
+    "char_end": 8531,
+    "sentence_index": 62,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "In terms of data construction, recent studies have made significant progress .",
+    "char_start": 8532,
+    "char_end": 8610,
+    "sentence_index": 63,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "For example, OmniCorpus offers a noisy but large-scale multimodal corpus for pre-training, while MMInstruct provides an open-source, high-quality instruction-tuning dataset.",
+    "char_start": 8611,
+    "char_end": 8784,
+    "sentence_index": 64,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "Additionally, MMPR constructs a preference dataset focusing on multimodal reasoning abilities.",
+    "char_start": 8785,
+    "char_end": 8879,
+    "sentence_index": 65,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "Regarding training algorithms, the InternVL2.5 series proposes square loss and Mix Preference Optimization to enhance MLLM capabilities.",
+    "char_start": 8880,
+    "char_end": 9016,
+    "sentence_index": 66,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "Despite these advancements, existing works primarily focus on the training process of MLLMs, leaving Test-Time Scaling (TTS) for MLLMs largely underexplored.",
+    "char_start": 9017,
+    "char_end": 9174,
+    "sentence_index": 67,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec003",
+    "text": "In this work, we investigate TTS applications for MLLMs, specifically focusing on the Best-of-N evaluation to improve multimodal reasoning performance.",
+    "char_start": 9175,
+    "char_end": 9326,
+    "sentence_index": 68,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec003",
+    "text": "Process Reward Models.",
+    "char_start": 9328,
+    "char_end": 9350,
+    "sentence_index": 69,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec003",
+    "text": "Reward models play a crucial role in Reinforcement Learning (RL) and TTS .",
+    "char_start": 9351,
+    "char_end": 9425,
+    "sentence_index": 70,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec003",
+    "text": "Outcome Reward Models (ORMs) directly assign an overall score to the given response.",
+    "char_start": 9426,
+    "char_end": 9510,
+    "sentence_index": 71,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec003",
+    "text": "In contrast, Process Reward Models (PRMs) first estimate the quality of each step in the given response and then aggregate them into a final score.",
+    "char_start": 9511,
+    "char_end": 9658,
+    "sentence_index": 72,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec003",
+    "text": "PRM800K is the first open-source process supervision dataset, entirely annotated by human experts.",
+    "char_start": 9659,
+    "char_end": 9757,
+    "sentence_index": 73,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec003",
+    "text": "To reduce annotation costs, MathShepherd and OmegaPRM introduce a Monte Carlo sampling-based data pipeline to automatically estimate the quality of each step.",
+    "char_start": 9758,
+    "char_end": 9916,
+    "sentence_index": 74,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec003",
+    "text": "Despite these advancements in natural language processing, multimodal PRMs remain largely underexplored.",
+    "char_start": 9917,
+    "char_end": 10021,
+    "sentence_index": 75,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec003",
+    "text": "In this work, we introduce , the first multimodal process supervision dataset, and develop , a multimodal PRM trained on this dataset.",
+    "char_start": 10022,
+    "char_end": 10156,
+    "sentence_index": 76,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec003",
+    "text": "Benchmarks for Reward Models.",
+    "char_start": 10158,
+    "char_end": 10187,
+    "sentence_index": 77,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec003",
+    "text": "The evaluation of reward models (RMs) is a crucial research topic.",
+    "char_start": 10188,
+    "char_end": 10254,
+    "sentence_index": 78,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec003",
+    "text": "A series of benchmarks have been proposed to assess the effectiveness of RMs, typically formulated as a binary preference judgment task.",
+    "char_start": 10255,
+    "char_end": 10391,
+    "sentence_index": 79,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec003",
+    "text": "Building on this, subsequent work extends the evaluation settings and includes both pairwise and Best-of-N evaluations, providing a more comprehensive evaluation of RM performance.",
+    "char_start": 10392,
+    "char_end": 10572,
+    "sentence_index": 80,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec003",
+    "text": "With the rapid advancement of PRMs, a series of benchmarks have been introduced to evaluate their step-wise judgment capabilities.",
+    "char_start": 10573,
+    "char_end": 10703,
+    "sentence_index": 81,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec003",
+    "text": "Despite these developments, there remains a lack of a multimodal process benchmark.",
+    "char_start": 10704,
+    "char_end": 10787,
+    "sentence_index": 82,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec003",
+    "text": "To bridge this gap and support the development of multimodal PRMs, we introduce , a benchmark designed to evaluate the ability of PRMs and MLLMs to detect erroneous steps in multimodal reasoning tasks.",
+    "char_start": 10788,
+    "char_end": 10989,
+    "sentence_index": 83,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec004",
+    "text": "[t]\n\nfig/main-prm-modeling.pdf\n\nDifferent modeling methods for PRMs.",
+    "char_start": 10991,
+    "char_end": 11059,
+    "sentence_index": 84,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec004",
+    "text": "PRMs are developed to estimate the quality of each step in a given solution.",
+    "char_start": 11060,
+    "char_end": 11136,
+    "sentence_index": 85,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec004",
+    "text": "For value-based PRMs, the quality of a certain step is determined by its expected accuracy $mc_i$, where a step is considered correct if $mc_i>0$.",
+    "char_start": 11137,
+    "char_end": 11283,
+    "sentence_index": 86,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec004",
+    "text": "For advantage-based PRMs, the quality of a certain step is determined by the improvement of $mc_i$ over $mc_ i-1 $, where a step is considered good if $mc_i-mc_ i-1 >0$.",
+    "char_start": 11284,
+    "char_end": 11453,
+    "sentence_index": 87,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec004",
+    "text": "During the training stage, the output space of PRMs is discretized into specific tokens, while during the inference stage, we compute the step score as the weighted sum of the generation probability for these discretized tokens.",
+    "char_start": 11454,
+    "char_end": 11682,
+    "sentence_index": 88,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec004",
+    "text": "-3mm\n\nDuring Best-of-N (BoN) evaluation, a critic model is required to estimate the quality of each response candidate.",
+    "char_start": 11684,
+    "char_end": 11803,
+    "sentence_index": 89,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec004",
+    "text": "In this work, we formulate the critic model as a Process Reward Model (PRM).",
+    "char_start": 11804,
+    "char_end": 11880,
+    "sentence_index": 90,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec004",
+    "text": "To develop a multimodal PRM, we first construct , a dataset comprising about 400K multimodal process supervision data,\nas detailed in Section .",
+    "char_start": 11881,
+    "char_end": 12024,
+    "sentence_index": 91,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec004",
+    "text": "We then describe our PRM's modeling approach in Section .",
+    "char_start": 12025,
+    "char_end": 12082,
+    "sentence_index": 92,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec004",
+    "text": "Furthermore, to support the evaluation of critic models, we establish to measure the abilities of critic models to detect erroneous steps in multimodal reasoning, as introduced in Section .",
+    "char_start": 12083,
+    "char_end": 12272,
+    "sentence_index": 93,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec005",
+    "text": "Definition.",
+    "char_start": 12274,
+    "char_end": 12285,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec005",
+    "text": "As shown in Figure , each data sample in our consists of an image $I I $, a question $q Q $, a step-by-step solution $s=\\ s_0,s_1, ,s_n\\ S $, and the expected accuracy annotation $mc=\\ mc_0,mc_1, ,mc_n\\ ,mc_i R _ 0 $ for each step, where $n$ is the number of steps of a certain solution and $mc_i$ denotes the expected accuracy of step $s_i$.",
+    "char_start": 12286,
+    "char_end": 12628,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec005",
+    "text": "The image sets $ I $ and question sets $ Q $ are collected from MMPR v1.1 , while the step-by-step solutions $ S $ are sampled using InternVL2.5 series models .",
+    "char_start": 12629,
+    "char_end": 12789,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec005",
+    "text": "Process Supervision Generation.",
+    "char_start": 12791,
+    "char_end": 12822,
+    "sentence_index": 97,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec005",
+    "text": "Given an image $I$, a question $q$, and a solution $s=\\ s_0,s_1, ,s_n\\ $, we annotate the correctness of each step $s_i$ using an automatic data pipeline.",
+    "char_start": 12823,
+    "char_end": 12977,
+    "sentence_index": 98,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec005",
+    "text": "The key idea is to estimate the expected accuracy of given steps $s_ i $ based on Monte Carlo sampling.",
+    "char_start": 12978,
+    "char_end": 13081,
+    "sentence_index": 99,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec005",
+    "text": "Specifically, the model is required to complete the solution as follows:\n\ns _ > i M( s _ > i I,q, s_ i ),\n\nwhere $ s _ > i $ is the completion of $s_ i $.",
+    "char_start": 13082,
+    "char_end": 13236,
+    "sentence_index": 100,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec005",
+    "text": "Besides, the expected accuracy of $s_i$ is defined as:\n\nmc_i= num(correct completions) num(sampled completions) .",
+    "char_start": 13237,
+    "char_end": 13350,
+    "sentence_index": 101,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec005",
+    "text": "Notably, to reduce the data construction costs, we set the max number of steps to 12 and evenly merge the steps if the number of current steps exceeds the threshold.",
+    "char_start": 13352,
+    "char_end": 13517,
+    "sentence_index": 102,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec005",
+    "text": "Statistics.",
+    "char_start": 13519,
+    "char_end": 13530,
+    "sentence_index": 103,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec005",
+    "text": "During the construction process, we sample $4$ solutions for each image-question pair and split each of them into at most $12$ steps.",
+    "char_start": 13531,
+    "char_end": 13664,
+    "sentence_index": 104,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec005",
+    "text": "For each step, we sample $16$ continuations and compute $m_i$ according to these continuations.",
+    "char_start": 13665,
+    "char_end": 13760,
+    "sentence_index": 105,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec005",
+    "text": "The resulting dataset comprises approximately 400K samples and 2 million steps with process supervision.",
+    "char_start": 13761,
+    "char_end": 13865,
+    "sentence_index": 106,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec005",
+    "text": "Each response averages 126.9 words and 5.6 steps, while each step averages 22.6 words.",
+    "char_start": 13866,
+    "char_end": 13952,
+    "sentence_index": 107,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec005",
+    "text": "Among these steps, about 10\\% are incorrect steps.",
+    "char_start": 13953,
+    "char_end": 14003,
+    "sentence_index": 108,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec005",
+    "text": "Despite the imbalanced distribution of correct and incorrect steps, our PRM demonstrates promising performance, as shown in Section .",
+    "char_start": 14004,
+    "char_end": 14137,
+    "sentence_index": 109,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec006",
+    "text": "Overview.",
+    "char_start": 14139,
+    "char_end": 14148,
+    "sentence_index": 110,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec006",
+    "text": "During the training process, we formulate the process supervision problem as a multi-turn chat task so that we can effectively leverage the generation ability of MLLMs.",
+    "char_start": 14149,
+    "char_end": 14317,
+    "sentence_index": 111,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec006",
+    "text": "The image $I$, question $q$, and the first step $s_0$ of the solution to this question are included in the first turn and a new step is presented in each subsequent turn.",
+    "char_start": 14318,
+    "char_end": 14488,
+    "sentence_index": 112,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec006",
+    "text": "The model is required to predict the quality of the given step in each turn as follows:\n\ny_i M(y_i I,q, s_ i ),\n\nwhere $y_i$ denotes the quality of $i$-th step.",
+    "char_start": 14489,
+    "char_end": 14649,
+    "sentence_index": 113,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec006",
+    "text": "For value-based PRMs,\nthe quality of a certain step is determined by its expected accuracy $mc_i$, which is similar to the definition of the value function in reinforcement learning.",
+    "char_start": 14651,
+    "char_end": 14833,
+    "sentence_index": 114,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec006",
+    "text": "Following Math-Shepherd wang2023mathshepherd,dong2024rlhflow , we require the model to predict the correctness $c_i \\ +,-\\ $ of the given step, rather than the exact score of $mc_i$.",
+    "char_start": 14834,
+    "char_end": 15016,
+    "sentence_index": 115,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec006",
+    "text": "The $i$-th step is considered correct if $mc_i>0$.",
+    "char_start": 15017,
+    "char_end": 15067,
+    "sentence_index": 116,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec006",
+    "text": "We also try to set a threshold to reduce false positive steps, but find that such a threshold negatively impacts the PRM performance, as shown in Section .",
+    "char_start": 15068,
+    "char_end": 15223,
+    "sentence_index": 117,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec006",
+    "text": "Notably, unlike previous works , which choose to supervise only up to the first incorrect step, we always supervise all steps.",
+    "char_start": 15224,
+    "char_end": 15350,
+    "sentence_index": 118,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec006",
+    "text": "For advantage-based PRMs,\nthe quality of a certain step is determined by the improvement of $mc_i$ over $mc_ i-1 $, which is analogous to the definition of the advantage function in reinforcement learning.",
+    "char_start": 15352,
+    "char_end": 15557,
+    "sentence_index": 119,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec006",
+    "text": "Similar to value-based PRMs, the quality space is discretized into predefined values $\\ +,=,-\\ $, meaning that the $i$-th step $s_i$ results in a superior, comparable, or inferior situation.",
+    "char_start": 15558,
+    "char_end": 15748,
+    "sentence_index": 120,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec006",
+    "text": "During inference stage,\nwe first compute the scores of each step and then merge them to obtain the response score.",
+    "char_start": 15750,
+    "char_end": 15864,
+    "sentence_index": 121,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec006",
+    "text": "Specifically, the score for each step is defined as the weighted sum of the generation probability for the discretized scores.",
+    "char_start": 15865,
+    "char_end": 15991,
+    "sentence_index": 122,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec006",
+    "text": "For value-based PRMs, the weights for $\\ +,-\\ $ are $\\ 1,0\\ $.",
+    "char_start": 15992,
+    "char_end": 16054,
+    "sentence_index": 123,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec006",
+    "text": "For advantage-based PRMs, the weights for $\\ +,=,-\\ $ are $\\ 1,0,-1\\ $.",
+    "char_start": 16055,
+    "char_end": 16126,
+    "sentence_index": 124,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec006",
+    "text": "Without further explanation, we average the scores of each step as the response score.",
+    "char_start": 16127,
+    "char_end": 16213,
+    "sentence_index": 125,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec007",
+    "text": "[t]\n\n0.85\n\nlr\n\nStatistics & Number\n\nTotal Samples & 2866\n\n- MMMU & 267\n\n- MathVision & 712\n\n- MathVerse & 1026\n\n- DynaMath & 570\n\n- WeMath & 291\n\nSource Solutions & 2866\n\n- GPT-4o & 870\n\n- Claude-3.5-Sonnet & 865\n\n- QvQ-72B-Preview & 825\n\n- InternVL2.5-78B & 306\n\nTotal Steps & 26950\n\n- Correct Steps & 16585\n\n- Incorrect Steps & 7691\n\n- Neural Steps & 2674\n\nQuery Word Length Quartile & (22, 24, 50)\n\nResponse Word Length Quartile & (137, 193, 552)\n\nStep Word Length Quartile & (13, 31, 67)\n\nNumber of Steps per Solution & 9.4\n\nStatistics of .",
+    "char_start": 16215,
+    "char_end": 16759,
+    "sentence_index": 126,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec007",
+    "text": "-3mm\n\nDefinition.",
+    "char_start": 16761,
+    "char_end": 16778,
+    "sentence_index": 127,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec007",
+    "text": "Each sample in our benchmark consists of a multimodal reasoning question, a step-by-step solution, and correctness annotations for each step.",
+    "char_start": 16779,
+    "char_end": 16920,
+    "sentence_index": 128,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec007",
+    "text": "Considering that recent models begin to demonstrate reflection abilities to rectify their own reasoning process, the evaluation setting used in previous works , which only requires the model to find the first erroneous step, may lead to a false negative estimation.",
+    "char_start": 16921,
+    "char_end": 17186,
+    "sentence_index": 129,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec007",
+    "text": "Therefore, our benchmark requires the model to identify all erroneous steps in the given solution instead of only the first erroneous step.",
+    "char_start": 17187,
+    "char_end": 17326,
+    "sentence_index": 130,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec007",
+    "text": "Data Source.",
+    "char_start": 17328,
+    "char_end": 17340,
+    "sentence_index": 131,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec007",
+    "text": "Our benchmark focuses on multimodal reasoning tasks, collecting images and questions from existing representative multimodal reasoning benchmarks, including MMMU , MathVision , MathVerse , DynaMath , and WeMath .",
+    "char_start": 17341,
+    "char_end": 17553,
+    "sentence_index": 132,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec007",
+    "text": "Given these questions, we generate step-by-step solutions using leading MLLMs, including GPT-4o , Claude-3.5-Sonnet , Gemini-2.0-Flash , QvQ-72B-Preview , and InternVL2.5-78B .",
+    "char_start": 17554,
+    "char_end": 17730,
+    "sentence_index": 133,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec007",
+    "text": "The solutions are sampled from different MLLMs to ensure their diversity.",
+    "char_start": 17731,
+    "char_end": 17804,
+    "sentence_index": 134,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec007",
+    "text": "Step Correctness Annotation.",
+    "char_start": 17806,
+    "char_end": 17834,
+    "sentence_index": 135,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec007",
+    "text": "We employ a team of human experts with at least a university degree to manually annotate the correctness of each step in the solutions.",
+    "char_start": 17835,
+    "char_end": 17970,
+    "sentence_index": 136,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec007",
+    "text": "Specifically, 13 people worked for 3 days, resulting in a workload of 39 person-days.",
+    "char_start": 17971,
+    "char_end": 18056,
+    "sentence_index": 137,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec007",
+    "text": "The cost per person-day is approximately 37 dollars.",
+    "char_start": 18057,
+    "char_end": 18109,
+    "sentence_index": 138,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec007",
+    "text": "During the annotation process, annotators are provided with the image, question, ground truth answer, and each step of the solution.",
+    "char_start": 18110,
+    "char_end": 18242,
+    "sentence_index": 139,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec007",
+    "text": "Their task is to assign each step in the solution a label of positive, negative, or neutral, as illustrated in Figure .",
+    "char_start": 18243,
+    "char_end": 18362,
+    "sentence_index": 140,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec007",
+    "text": "A positive label indicates that the step is correct, while a negative label signifies an incorrect step.",
+    "char_start": 18363,
+    "char_end": 18467,
+    "sentence_index": 141,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec007",
+    "text": "The neural label is assigned to steps that do not involve any reasoning process or provide no additional information.",
+    "char_start": 18468,
+    "char_end": 18585,
+    "sentence_index": 142,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec007",
+    "text": "To ensure the annotation quality, annotators are permitted to skip questions they do not understand.",
+    "char_start": 18586,
+    "char_end": 18686,
+    "sentence_index": 143,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec007",
+    "text": "During the annotation process, our dataset is divided into 10 splits, each containing approximately 300 samples.",
+    "char_start": 18687,
+    "char_end": 18799,
+    "sentence_index": 144,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec007",
+    "text": "For each split, the authors of this paper manually review about 10\\% of the samples.",
+    "char_start": 18800,
+    "char_end": 18884,
+    "sentence_index": 145,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec007",
+    "text": "Splits with erroneous annotations are sent back for re-annotation.",
+    "char_start": 18885,
+    "char_end": 18951,
+    "sentence_index": 146,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec007",
+    "text": "See Section for more data examples.",
+    "char_start": 18952,
+    "char_end": 18987,
+    "sentence_index": 147,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec007",
+    "text": "Statistics.",
+    "char_start": 18989,
+    "char_end": 19000,
+    "sentence_index": 148,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec007",
+    "text": "As shown in Table , our benchmark comprises 2866 samples.",
+    "char_start": 19001,
+    "char_end": 19058,
+    "sentence_index": 149,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec007",
+    "text": "To enhance the diversity of our evaluation samples, we gather questions and solutions from a wide range of benchmarks and models while carefully regulating their distribution.",
+    "char_start": 19059,
+    "char_end": 19234,
+    "sentence_index": 150,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec007",
+    "text": "The statistics of step distribution are presented in Section .",
+    "char_start": 19235,
+    "char_end": 19297,
+    "sentence_index": 151,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec007",
+    "text": "Metrics.",
+    "char_start": 19299,
+    "char_end": 19307,
+    "sentence_index": 152,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec007",
+    "text": "In this work, we use macro F1 scores to compare model performance, aiming to mitigate the impact of the imbalanced distribution between correct and incorrect steps.",
+    "char_start": 19308,
+    "char_end": 19472,
+    "sentence_index": 153,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec007",
+    "text": "Specifically, we first compute the F1 scores separately for correct and incorrect steps and then take their average to obtain the overall score.",
+    "char_start": 19473,
+    "char_end": 19617,
+    "sentence_index": 154,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec008",
+    "text": "In this section, we first employ to evaluate various MLLMs using BoN evaluation strategies in Section , demonstrating that PRMs can significantly enhance the reasoning abilities of MLLMs.",
+    "char_start": 19619,
+    "char_end": 19806,
+    "sentence_index": 155,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec008",
+    "text": "Next, we evaluate our and other leading MLLMs on in Section .",
+    "char_start": 19807,
+    "char_end": 19868,
+    "sentence_index": 156,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec008",
+    "text": "Finally, the ablation studies are presented in Section and Section .",
+    "char_start": 19869,
+    "char_end": 19937,
+    "sentence_index": 157,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec008",
+    "text": "[t]\n\n4.5pt\n0.9\n\nlcccccccc\n\nModel & MMMU & MathVista & MathVision & MathVerse-VO & DynaMath & WeMath & LogicVista & Overall\n\n9 c Proprietary Models\n\nGPT-4o & 70.7 & 60.0 & 31.2 & 40.6 & 34.5 & 45.8 & 52.8 & 47.9\n\nGemini-2.0-Flash & 69.9 & 70.4 & 43.6 & 47.8 & 42.1 & 47.4 & 52.3 & 53.4\n\nClaude-3.5-Sonnet & 66.4 & 65.3 & 35.6 & 46.3 & 35.7 & 44.0 & 60.4 & 50.5\n\n9 c Open-source Models\n\nMiniCPM-V2.6-8B & 49.8 & 60.8 & 23.4 & 18.9 & 9.8 & 16.4 & 27.5 & 29.5\n\nmygray\n+ & 56.8 & 65.7 & 24.7 & 35.8 & 11.2 & 31.0 & 37.4 & 37.5\n\nmygray\n& red +7.0 & red +4.9 & red +1.3 & red +16.9 & red +1.4 & red +14.6 & red +9.8 & red +8.0\n\nQwen2.5-VL-7B & 55.0 & 67.8 & 25.4 & 41.1 & 21.0 & 35.2 & 44.1 & 41.4\n\nmygray\n+ & 58.6 & 70.3 & 31.3 & 44.3 & 23.0 & 39.8 & 48.3 & 45.1\n\nmygray\n& red +3.6 & red +2.5 & red +5.9 & red +3.2 & red +2.0 & red +4.6 & red +4.2 & red +3.7\n\nInternVL2.5-8B & 56.2 & 64.5 & 17.0 & 22.8 & 9.4 & 23.5 & 36.0 & 32.8\n\nmygray\n+ & 60.2 & 68.5 & 25.7 & 35.8 & 18.0 & 36.5 & 43.8 & 41.2\n\nmygray\n& red +4.0 & red +4.0 & red +8.7 & red +13.0 & red +8.6 & red +13.0 & red +7.8 & red +8.4\n\nInternVL2.5-26B & 60.7 & 68.2 & 23.4 & 24.0 & 11.4 & 30.9 & 39.6 & 36.9\n\nmygray\n+ & 63.9 & 73.1 & 29.6 & 39.1 & 23.2 & 40.8 & 51.0 & 45.8\n\nmygray\n& red +3.2 & red +4.9 & red +6.2 & red +15.1 & red +11.8 & red +9.9 & red +11.4 & red +8.9\n\nInternVL2.5-38B & 63.9 & 71.9 & 32.2 & 36.9 & 20.0 & 38.3 & 47.9 & 44.4\n\nmygray\n+ & 69.0 & 73.9 & 35.2 & 46.7 & 30.5 & 46.2 & 53.7 & 50.7\n\nmygray\n& red +5.1 & red +2.0 & red +3.0 & red +9.8 & red +10.5 & red +7.9 & red +5.8 & red +6.3\n\nInternVL2.5-78B & 70.0 & 72.3 & 32.2 & 39.2 & 19.2 & 39.8 & 49.0 & 46.0\n\nmygray\n+ & 70.7 & 75.1 & 35.9 & 47.1 & 31.3 & 49.1 & 53.9 & 51.9\n\nmygray\n& red +0.7 & red +2.8 & red +3.7 & red +7.9 & red +12.1 & red +9.3 & red +4.9 & red +5.9\n\nResults on seven multimodal reasoning benchmarks.",
+    "char_start": 19939,
+    "char_end": 21787,
+    "sentence_index": 158,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec008",
+    "text": "MMMU is a multidisciplinary reasoning benchmark.",
+    "char_start": 21788,
+    "char_end": 21836,
+    "sentence_index": 159,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec008",
+    "text": "MathVista , MathVision , MathVerse , DynaMath , and WeMath are mathematics benchmarks.",
+    "char_start": 21837,
+    "char_end": 21923,
+    "sentence_index": 160,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec008",
+    "text": "For MathVerse, we report the performance on Vision-Only (VO) split.",
+    "char_start": 21924,
+    "char_end": 21991,
+    "sentence_index": 161,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec008",
+    "text": "LogicVista is a logical reasoning benchmark.",
+    "char_start": 21992,
+    "char_end": 22036,
+    "sentence_index": 162,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec008",
+    "text": "Part of the results are collected from the OpenCompass leaderboard .",
+    "char_start": 22037,
+    "char_end": 22105,
+    "sentence_index": 163,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec008",
+    "text": "The overall score is the average score of the above benchmarks.",
+    "char_start": 22106,
+    "char_end": 22169,
+    "sentence_index": 164,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec008",
+    "text": "By using as the critic model, existing open-source MLLMs achieve significant improvements in reasoning ability under the Best-of-8 evaluation strategy.",
+    "char_start": 22170,
+    "char_end": 22321,
+    "sentence_index": 165,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec009",
+    "text": "Benchmarks.",
+    "char_start": 22323,
+    "char_end": 22334,
+    "sentence_index": 166,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec009",
+    "text": "We evaluate the reasoning abilities of MLLMs across seven benchmarks, including MMMU , MathVista , MathVision , MathVerse , DynaMath , WeMath , and LogicVista .",
+    "char_start": 22335,
+    "char_end": 22495,
+    "sentence_index": 167,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec009",
+    "text": "The evaluation samples include subject-based, mathematical, and logical reasoning problems.",
+    "char_start": 22496,
+    "char_end": 22587,
+    "sentence_index": 168,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec009",
+    "text": "We report the worst-case accuracy for DynaMath and the overall accuracy for the remaining benchmarks.",
+    "char_start": 22588,
+    "char_end": 22689,
+    "sentence_index": 169,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec009",
+    "text": "For MathVerse, we report the performance on the Vision-Only split.",
+    "char_start": 22690,
+    "char_end": 22756,
+    "sentence_index": 170,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec009",
+    "text": "Settings.",
+    "char_start": 22758,
+    "char_end": 22767,
+    "sentence_index": 171,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec009",
+    "text": "Without further explanation, we use as the critic model for BoN evaluation and set $N$ to $8$ by default.",
+    "char_start": 22768,
+    "char_end": 22873,
+    "sentence_index": 172,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec009",
+    "text": "The policy model is required to generate $N$ distinct step-by-step Chain-of-Thought (CoT) reasoning processes with a temperature of 0.7.",
+    "char_start": 22874,
+    "char_end": 23010,
+    "sentence_index": 173,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec009",
+    "text": "The response with the highest score is then selected to determine the correctness.",
+    "char_start": 23011,
+    "char_end": 23093,
+    "sentence_index": 174,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec009",
+    "text": "Results.",
+    "char_start": 23095,
+    "char_end": 23103,
+    "sentence_index": 175,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec009",
+    "text": "As shown in Table , greatly enhances the reasoning abilities of MLLMs across different model scales and families.",
+    "char_start": 23104,
+    "char_end": 23217,
+    "sentence_index": 176,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec009",
+    "text": "Specifically, for models with fewer than 10 billion parameters, the overall performance of InternVL2.5-8B, MiniCPM-V-8B, and Qwen2.5-VL-7B improves by 8.4, 8.0, and 3.7 points, respectively, demonstrating the effectiveness of test-time scaling across different model families.",
+    "char_start": 23218,
+    "char_end": 23494,
+    "sentence_index": 177,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec009",
+    "text": "For larger models, InternVL2.5-26B, InternVL2.5-38B, and InternVL2.5-78B also achieve substantial performance gains over their counterparts without TTS, further validating the scalability and effectiveness of TTS across different model sizes.",
+    "char_start": 23495,
+    "char_end": 23737,
+    "sentence_index": 178,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec010",
+    "text": "Settings.",
+    "char_start": 23739,
+    "char_end": 23748,
+    "sentence_index": 179,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec010",
+    "text": "For the evaluation of PRMs, a step is considered correct if the probability of outputting ``$+$'' exceeds that of outputting ``$-$'' by a certain threshold.",
+    "char_start": 23749,
+    "char_end": 23905,
+    "sentence_index": 180,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec010",
+    "text": "For the evaluation of MLLMs, the model is prompted to analyze each step and determine its correctness, classifying it as either correct or incorrect.",
+    "char_start": 23906,
+    "char_end": 24055,
+    "sentence_index": 181,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec010",
+    "text": "When computing the F1 score, we exclude steps labeled as neural by human annotators in Section .",
+    "char_start": 24056,
+    "char_end": 24152,
+    "sentence_index": 182,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec010",
+    "text": "Results.",
+    "char_start": 24154,
+    "char_end": 24162,
+    "sentence_index": 183,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec010",
+    "text": "As shown in Table , most existing MLLMs struggle to accurately assess the correctness of each step.",
+    "char_start": 24163,
+    "char_end": 24262,
+    "sentence_index": 184,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec010",
+    "text": "Specifically, the overall F1 score for random guessing is 50.0, while most open-source MLLMs achieve scores close to this baseline, highlighting their limitations as critic models.",
+    "char_start": 24263,
+    "char_end": 24443,
+    "sentence_index": 185,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec010",
+    "text": "We manually check the judgments of these open-source MLLMs and observe that these models tend to provide positive analysis and label most steps as correct.",
+    "char_start": 24444,
+    "char_end": 24599,
+    "sentence_index": 186,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec010",
+    "text": "For example, InternVL2.5-8B achieves an F1 score of 76.8 for positive steps, while its F1 score for negative steps is only 19.2, indicating that InternVL2.5-8B rarely identifies steps as incorrect.",
+    "char_start": 24600,
+    "char_end": 24797,
+    "sentence_index": 187,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec010",
+    "text": "Furthermore, compared to proprietary models, our demonstrates competitive performance, achieving an overall F1 score of 62.0---outperforming GPT-4o and GPT-4o-Mini, and performing on par with Gemini-2.0-Flash.",
+    "char_start": 24798,
+    "char_end": 25007,
+    "sentence_index": 188,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec010",
+    "text": "Notably, our model, with only 8 billion parameters, is more efficient than these proprietary counterparts.",
+    "char_start": 25008,
+    "char_end": 25114,
+    "sentence_index": 189,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec010",
+    "text": "[t]\n\n0.85\n\nlcccccc\n\nModel & MMMU & MathVision & MathVerse-VO & DynaMath & WeMath & Overall\n\nRandom Guessing & 50.0 & 50.0 & 50.0 & 50.0 & 50.0 & 50.0\n\n7 c Proprietary Models\n\nGPT-4o-Mini & 53.6 & 58.9 & 57.1 & 56.7 & 58.5 & 57.9\n\nGPT-4o & 56.3 & 60.2 & 59.7 & 59.0 & 63.3 & 60.3\n\nGemini-2.0-Flash & 58.5 & 60.1 & 62.8 & 66.7 & 58.7 & 62.3\n\n7 c Open-source Models\n\nMiniCPM-V2.6-8B & 44.9 & 50.9 & 58.9 & 46.7 & 57.4 & 50.4\n\nLLaVA-OV-7B & 45.7 & 43.0 & 42.2 & 44.7 & 52.5 & 44.4\n\nLLaVA-OV-72B & 46.1 & 48.4 & 53.0 & 57.0 & 57.3 & 52.3\n\nQwen2.5-VL-7B & 53.1 & 51.8 & 47.8 & 51.3 & 54.2 & 51.0\n\nQwen2.5-VL-72B & 59.2 & 59.0 & 59.7 & 62.9 & 62.3 & 60.5\n\nInternVL2.5-8B & 47.1 & 45.5 & 47.8 & 50.3 & 50.8 & 48.0\n\nInternVL2.5-26B & 48.8 & 47.4 & 49.2 & 50.4 & 51.4 & 49.2\n\nInternVL2.5-38B & 51.5 & 48.4 & 50.9 & 51.8 & 52.5 & 50.8\n\nInternVL2.5-78B & 52.0 & 51.7 & 53.7 & 50.8 & 52.5 & 52.6\n\nmygray\n(ours) & 58.5 & 62.1 & 61.0 & 62.7 & 61.8 & 62.0\n\nResults on .",
+    "char_start": 25116,
+    "char_end": 26069,
+    "sentence_index": 190,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec010",
+    "text": "We report the macro F1 of the correct and incorrect steps.",
+    "char_start": 26070,
+    "char_end": 26128,
+    "sentence_index": 191,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec010",
+    "text": "The overall score is the micro average of the score from different data sources.",
+    "char_start": 26129,
+    "char_end": 26209,
+    "sentence_index": 192,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec010",
+    "text": "Our exhibits state-of-the-art performance among open-source models.",
+    "char_start": 26210,
+    "char_end": 26277,
+    "sentence_index": 193,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec010",
+    "text": "-3mm\n\nEffects of BoN.",
+    "char_start": 26279,
+    "char_end": 26300,
+    "sentence_index": 194,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec011",
+    "text": "Here, we increase the number of response candidates sampled from InternVL2.5-8B and select the final response using Self-Consistency (SC) , Outcome Reward Model (ORM), and PRM.",
+    "char_start": 26301,
+    "char_end": 26477,
+    "sentence_index": 195,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec011",
+    "text": "The training data for ORM are nearly identical to those used for PRM, except that all steps are concatenated into a single step and step-wise correctness annotations are converted into a single correctness label for the outcome.",
+    "char_start": 26478,
+    "char_end": 26706,
+    "sentence_index": 196,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec011",
+    "text": "As shown in Figure , increasing the number of response candidates $N$ improves the reasoning performance of InternVL2.5-8B and MiniCPM-V2.6-8B when using SC, ORM, or PRM, with PRM yielding the most significant improvements.",
+    "char_start": 26707,
+    "char_end": 26930,
+    "sentence_index": 197,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec011",
+    "text": "Specifically, when using InternVL2.5-8B as the policy model, PRM outperforms SC and ORM by 2.4 and 1.5 points, respectively, under the Best-of-8 evaluation setting.",
+    "char_start": 26931,
+    "char_end": 27095,
+    "sentence_index": 198,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec011",
+    "text": "Moreover, this performance gap widens as $N$ increases, reaching 3.1 and 4.3 points when $N$ is set to $128$.",
+    "char_start": 27096,
+    "char_end": 27205,
+    "sentence_index": 199,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec011",
+    "text": "Notably, when using ORM as the critic model, although performance improves during Best-of-8 evaluation, further increasing $N$ does not lead to consistent gains for InternVL2.5-8B.",
+    "char_start": 27206,
+    "char_end": 27386,
+    "sentence_index": 200,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec011",
+    "text": "For example, the Best-of-128 performance is inferior to the Best-of-64 performance.",
+    "char_start": 27387,
+    "char_end": 27470,
+    "sentence_index": 201,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec011",
+    "text": "These results highlight the effectiveness of PRM in TTS.",
+    "char_start": 27471,
+    "char_end": 27527,
+    "sentence_index": 202,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec011",
+    "text": "Effects of PRM modeling methods.",
+    "char_start": 27529,
+    "char_end": 27561,
+    "sentence_index": 203,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec011",
+    "text": "Here, we compare the value-based PRM and the advantage-based PRM introduced in Section , along with different methods for aggregating step scores into a final score, including averaging, as well as selecting the maximum or minimum value.",
+    "char_start": 27562,
+    "char_end": 27799,
+    "sentence_index": 204,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec011",
+    "text": "The results are presented in Table .",
+    "char_start": 27800,
+    "char_end": 27836,
+    "sentence_index": 205,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec011",
+    "text": "We find that value-based PRMs outperform advantage-based PRMs in both BoN evaluation settings and VL-ProcessBench.",
+    "char_start": 27837,
+    "char_end": 27951,
+    "sentence_index": 206,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec011",
+    "text": "We attribute this to the inherent noise in our training data, which is generated through an automatic data pipeline, making it challenging to accurately determine whether a given step contributes to higher or lower expected accuracy.",
+    "char_start": 27952,
+    "char_end": 28185,
+    "sentence_index": 207,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec011",
+    "text": "We also compare two training strategies: supervising all steps ( , w/o early stop) versus supervising only up to the first incorrect step ( , w.",
+    "char_start": 28186,
+    "char_end": 28330,
+    "sentence_index": 208,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec011",
+    "text": "early stop) during training.",
+    "char_start": 28331,
+    "char_end": 28359,
+    "sentence_index": 209,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec011",
+    "text": "Experimental results show that the former yields better performance.",
+    "char_start": 28360,
+    "char_end": 28428,
+    "sentence_index": 210,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec011",
+    "text": "Regarding different score aggregation methods, we find that selecting the maximum value results in poorer performance compared to averaging or taking the minimum value.",
+    "char_start": 28429,
+    "char_end": 28597,
+    "sentence_index": 211,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec011",
+    "text": "Analyzing the generated scores reveals that most responses contain a high-scored step, close to $1$, at the beginning of the solution.",
+    "char_start": 28598,
+    "char_end": 28732,
+    "sentence_index": 212,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec011",
+    "text": "This phenomenon likely arises because most erroneous steps appear in the middle of the solution.",
+    "char_start": 28733,
+    "char_end": 28829,
+    "sentence_index": 213,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec011",
+    "text": "Our statistics of presented in Section further demonstrate this conclusion.",
+    "char_start": 28830,
+    "char_end": 28905,
+    "sentence_index": 214,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec011",
+    "text": "Furthermore, averaging performs better than selecting the maximum value, likely because the latter relies on a single step's score, while averaging accounts for multiple steps and can be considered as an ensemble approach, which benefits the step quality estimation.",
+    "char_start": 28906,
+    "char_end": 29172,
+    "sentence_index": 215,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec011",
+    "text": "[t]\n\n[b] 0.49\nfig/main-bon-internvl.pdf\n\n[b] 0.49\nfig/main-bon-minicpm.pdf\n\nOverall Best-of-N results across seven multimodal reasoning benchmarks with different policy and critic models.",
+    "char_start": 29174,
+    "char_end": 29361,
+    "sentence_index": 216,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec011",
+    "text": "consistently enhances reasoning performance of both InternVL2.5-8B and MiniCPM-V as $N$ increases and outperforms the improvement introduced by Self-Consistency and ORM, highlighting the effectiveness of PRM in Test-Time Scaling.",
+    "char_start": 29362,
+    "char_end": 29591,
+    "sentence_index": 217,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec011",
+    "text": "-3mm\n\n[t]\n\n0.9\n\n@ lcc@\n\nCritic Model & BoN & VL-ProcessBench\n\nPass@1 & 32.8 & -\n\nRandom Guessing & 33.0 & 50.0\n\nInternVL2.5-8B & 33.2 & 48.0\n\nInternVL2.5-78B & 34.2 & 52.6\n\nAdvantage-based PRM & &\n\n+Min & 36.8 & 55.0\n\n+Max & 36.9 & 55.0\n\n+Average & 37.4 & 55.0\n\nValue (w.",
+    "char_start": 29593,
+    "char_end": 29864,
+    "sentence_index": 218,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec011",
+    "text": "early stop) & &\n\n+Min & 40.3 & 61.6\n\n+Max & 37.0 & 61.6\n\n+Average & 40.6 & 61.6\n\nValue (w/o early stop) & &\n\n+Min & 40.4 & 62.0\n\n+Max & 35.9 & 62.0\n\n+Average & 41.1 & 62.0\n\nComparison of different critic models and score aggregation methods.",
+    "char_start": 29865,
+    "char_end": 30106,
+    "sentence_index": 219,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec011",
+    "text": "Note that score aggregation methods do not affect performance on , which focuses on step correctness judgement.",
+    "char_start": 30107,
+    "char_end": 30218,
+    "sentence_index": 220,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec011",
+    "text": "We find that supervising all steps (w/o early stop) during training perform slightly better than supervising only up to the first incorrect step (w.",
+    "char_start": 30219,
+    "char_end": 30367,
+    "sentence_index": 221,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec011",
+    "text": "early steop).",
+    "char_start": 30368,
+    "char_end": 30381,
+    "sentence_index": 222,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec011",
+    "text": "-3mm\n\nMLLM-as-a-Judger.",
+    "char_start": 30383,
+    "char_end": 30406,
+    "sentence_index": 223,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec011",
+    "text": "Existing MLLMs can be prompted to serve as a critic model.",
+    "char_start": 30407,
+    "char_end": 30465,
+    "sentence_index": 224,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec011",
+    "text": "However, as shown in Table , the InternVL2.5 series struggle to improve BoN performance, resulting in only marginal improvements.",
+    "char_start": 30466,
+    "char_end": 30595,
+    "sentence_index": 225,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec011",
+    "text": "Upon analyzing the generated scores, we find that these models assign similar scores to most solutions.",
+    "char_start": 30596,
+    "char_end": 30699,
+    "sentence_index": 226,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec011",
+    "text": "Consistent with our observations in Section , the InternVL2.5 series tend to generate positive judgments for most steps, which hinders their ability to effectively distinguish and select the truly superior response.",
+    "char_start": 30700,
+    "char_end": 30915,
+    "sentence_index": 227,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec011",
+    "text": "In addition to their effectiveness as critic models for MLLMs, their inference latency also limits efficiency.",
+    "char_start": 30916,
+    "char_end": 31026,
+    "sentence_index": 228,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec011",
+    "text": "Specifically, MLLMs generate judgments for each step in an autoregressive manner, which is time-consuming.",
+    "char_start": 31027,
+    "char_end": 31133,
+    "sentence_index": 229,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec011",
+    "text": "In contrast, our computes scores for all steps in a single forward pass by using a \u201c+\u201d as a placeholder for model responses and interpreting its generation probability as the step score.",
+    "char_start": 31134,
+    "char_end": 31320,
+    "sentence_index": 230,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec011",
+    "text": "Results on text-only performance.",
+    "char_start": 31322,
+    "char_end": 31355,
+    "sentence_index": 231,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec011",
+    "text": "To assess the effectiveness of on text-only inputs, we evaluate the Qwen2.5 series and InternVL2.5 series on three text reasoning benchmarks under BoN evaluation settings: GSM8K , MATH-500 , and GPQA-Diamond .",
+    "char_start": 31356,
+    "char_end": 31565,
+    "sentence_index": 232,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec011",
+    "text": "We report accuracy as the evaluation metric for these benchmarks.",
+    "char_start": 31566,
+    "char_end": 31631,
+    "sentence_index": 233,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec011",
+    "text": "As shown in Table , our model enhances the text reasoning abilities of both the Qwen2.5 series and the InternVL2.5 series.",
+    "char_start": 31632,
+    "char_end": 31754,
+    "sentence_index": 234,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec011",
+    "text": "Specifically, Qwen2.5-7B achieves improvements of 6.1 and 5.0 points on MATH-500 and GPQA-Diamond, respectively.",
+    "char_start": 31755,
+    "char_end": 31867,
+    "sentence_index": 235,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec011",
+    "text": "Similarly, Qwen2.5-72B demonstrates gains of 2.1 and 6.6 points on these benchmarks.",
+    "char_start": 31868,
+    "char_end": 31952,
+    "sentence_index": 236,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec011",
+    "text": "For the InternVL2.5 series, InternVL2.5-8B, InternVL2.5-38B, and InternVL2.5-78B achieve improvements of 9.4 and 5.0, 4.6 and 8.1, and 7.4 and 3.5 points, respectively, on MATH-500 and GPQA-Diamond.",
+    "char_start": 31953,
+    "char_end": 32151,
+    "sentence_index": 237,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec011",
+    "text": "These results demonstrate the effectiveness of our in text-only scenarios.",
+    "char_start": 32152,
+    "char_end": 32226,
+    "sentence_index": 238,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec011",
+    "text": "[t]\n\n0.88\n\nlccc\n\nModel & GSM8K & MATH-500 & GPQA\n\n4 c Large Language Models\n\nQwen2.5-7B & 91.6 & 75.5 & 36.4\n\nmygray\n+ & 94.5 & 81.6 & 41.4\n\nmygray\n& red +2.9 & red +6.1 & red +5.0\n\nQwen2.5-32B & 95.9 & 83.1 & 49.5\n\nmygray\n+ & 96.1 & 85.4 & 53.5\n\nmygray\n& red +0.2 & red +2.3 & red +4.0\n\nQwen2.5-72B & 95.8 & 83.1 & 49.0\n\nmygray\n+ & 96.5 & 85.2 & 55.6\n\nmygray\n& red +0.7 & red +2.1 & red +6.6\n\n4 c Multimodal Large Language Models\n\nInternVL2.5-8B & 81.9 & 56.8 & 29.3\n\nmygray\n+ & 82.9 & 66.2 & 34.3\n\nmygray\n& red +1.1 & red +9.4 & red +5.0\n\nInternVL2.5-38B & 94.6 & 75.4 & 44.4\n\nmygray\n+ & 95.6 & 80.0 & 52.5\n\nmygray\n& red +1.0 & red +4.6 & red +8.1\n\nInternVL2.5-78B & 93.6 & 70.4 & 47.5\n\nmygray\n+ & 94.5 & 77.8 & 51.0\n\nmygray\n& red +0.9 & red +7.4 & red +3.5\n\nResults on text reasoning benchmarks.",
+    "char_start": 32228,
+    "char_end": 33026,
+    "sentence_index": 239,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec011",
+    "text": "GSM8K and MATH500 are mathematics benchmarks, while GPQA is a multidisciplinary reasoning benchmark.",
+    "char_start": 33027,
+    "char_end": 33127,
+    "sentence_index": 240,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec011",
+    "text": "For GPQA, we report the performance on the Diamond split.",
+    "char_start": 33128,
+    "char_end": 33185,
+    "sentence_index": 241,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec011",
+    "text": "Our enhances the text reasoning abilities of both LLMs and MLLMs under the Best-of-8 evaluation settings.",
+    "char_start": 33186,
+    "char_end": 33291,
+    "sentence_index": 242,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec011",
+    "text": "-3mm\n\nIn this work, we construct , a dataset comprising about 400K multimodal process supervision data.",
+    "char_start": 33293,
+    "char_end": 33396,
+    "sentence_index": 243,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec012",
+    "text": "Building upon this dataset, we develop , an advanced multimodal Process Reward Model (PRM) capable of estimating the value score of each step during the reasoning process.",
+    "char_start": 33397,
+    "char_end": 33568,
+    "sentence_index": 244,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec012",
+    "text": "With the Best-of-N (BoN) evaluation strategies, our model improves the reasoning abilities of existing Multimodal Large Language Models (MLLMs) across different model scales and families.",
+    "char_start": 33569,
+    "char_end": 33756,
+    "sentence_index": 245,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec012",
+    "text": "Experimental results show that our model exhibits superior performance compared to Outcome Reward Models and Self-Consistency during BoN evaluation, highlighting the effectiveness of PRMs in Test-Time Scaling.",
+    "char_start": 33757,
+    "char_end": 33966,
+    "sentence_index": 246,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec012",
+    "text": "To further facilitate the development of multimodal critic models, we construct , a benchmark designed to measure the abilities of PRMs and MLLMs to detect incorrect steps in multimodal reasoning tasks.",
+    "char_start": 33967,
+    "char_end": 34169,
+    "sentence_index": 247,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec012",
+    "text": "Evaluation results show that existing open-source MLLMs struggle to effectively judge the correctness of each step.",
+    "char_start": 34170,
+    "char_end": 34285,
+    "sentence_index": 248,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec012",
+    "text": "We hope that our work can inspire more future research and contribute to the development of MLLMs.",
+    "char_start": 34286,
+    "char_end": 34384,
+    "sentence_index": 249,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec012",
+    "text": "ieeenat_fullname\nmain\n\npage 1\n\nDuring the training process of , the data-packing strategy is enabled during training.",
+    "char_start": 34386,
+    "char_end": 34503,
+    "sentence_index": 250,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec013",
+    "text": "We employ the AdamW optimizer with the $ _1$ of $0.9$, the $ _2$ of $0.999$, and the weight decay of $0.05$.",
+    "char_start": 34504,
+    "char_end": 34612,
+    "sentence_index": 251,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec013",
+    "text": "The learning rate is initialized as $1e - 5$.",
+    "char_start": 34613,
+    "char_end": 34658,
+    "sentence_index": 252,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec013",
+    "text": "The training phases include a linear warmup that lasts until the first 5\\% of training steps.",
+    "char_start": 34659,
+    "char_end": 34752,
+    "sentence_index": 253,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec013",
+    "text": "The warmup is followed by a cosine decay strategy with a minimum learning rate of 0.",
+    "char_start": 34753,
+    "char_end": 34837,
+    "sentence_index": 254,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec013",
+    "text": "We set the training epoch to 1.",
+    "char_start": 34838,
+    "char_end": 34869,
+    "sentence_index": 255,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec014",
+    "text": "When training our value-based Process Reward Model (PRM) using , we define a step as correct if its expected accuracy exceeds 0.",
+    "char_start": 34871,
+    "char_end": 34999,
+    "sentence_index": 256,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec015",
+    "text": "In this section, we analyze the impact of varying expected accuracy thresholds for determining step correctness.",
+    "char_start": 35000,
+    "char_end": 35112,
+    "sentence_index": 257,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec015",
+    "text": "As shown in Table , increasing the threshold results in a decline in both Best-of-8 evaluation performance and scores.",
+    "char_start": 35113,
+    "char_end": 35231,
+    "sentence_index": 258,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec015",
+    "text": "These results are consistent with the observation in Qwen2.5-Math-PRM .",
+    "char_start": 35232,
+    "char_end": 35303,
+    "sentence_index": 259,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec015",
+    "text": "Therefore, we suggest setting the threshold to $0$ during training.",
+    "char_start": 35304,
+    "char_end": 35371,
+    "sentence_index": 260,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec016",
+    "text": "In this section, we analyze the impact of generation temperature on the Best-of-8 evaluation.",
+    "char_start": 35373,
+    "char_end": 35466,
+    "sentence_index": 261,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec016",
+    "text": "As shown in Table , as the temperature increases from 0.3 to 1.3, the overall performance of InternVL2.5-8B first improves and then declines.",
+    "char_start": 35467,
+    "char_end": 35608,
+    "sentence_index": 262,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec016",
+    "text": "We attribute this phenomenon to the trade-off between response diversity and accuracy.",
+    "char_start": 35609,
+    "char_end": 35695,
+    "sentence_index": 263,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec016",
+    "text": "When the temperature is low ( , set to 0.3), the generated responses lack diversity, limiting the model's performance upper bound.",
+    "char_start": 35696,
+    "char_end": 35826,
+    "sentence_index": 264,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec016",
+    "text": "Conversely, when the temperature is high ( , set to 1.3), the responses become more random, reducing the accuracy of individual responses and lowering the model's overall performance ceiling.",
+    "char_start": 35827,
+    "char_end": 36018,
+    "sentence_index": 265,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec017",
+    "text": "In this section, we present the Best-of-N evaluation results as $N$ increases, as shown in Table and Table .",
+    "char_start": 36020,
+    "char_end": 36128,
+    "sentence_index": 266,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec017",
+    "text": "Our results indicate that as $N$ increases, consistently enhances the reasoning abilities of InternVL2.5-8B and MiniCPM-V2.6 .",
+    "char_start": 36129,
+    "char_end": 36255,
+    "sentence_index": 267,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec017",
+    "text": "Specifically, as $N$ increases from $8$ to $128$, the overall performance of InternVL2.5-8B improves from 41.2 to 44.0, while MiniCPM-V2.6 improves from 37.5 to 40.4, demonstrating the scalability of Test-Time Scaling for MLLMs.",
+    "char_start": 36256,
+    "char_end": 36484,
+    "sentence_index": 268,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec017",
+    "text": "[t]\n\n2.5pt\n\nlr|ccccccc|c\n\nModel & BoN & MMMU & MathVista & MathVision & MathVerse-VO & DynaMath & WeMath & LogicVista & Overall\n\n6 * Self Consistency & 1 & 56.2 & 64.5 & 17.0 & 22.8 & 9.4 & 23.5 & 36.0 & 32.8\n\n& 8 & 58.0 & 65.9 & 23.4 & 30.5 & 18.4 & 32.7 & 43.0 & 38.8\n\n& 16 & 58.6 & 65.8 & 26.3 & 32.1 & 19.4 & 33.0 & 43.4 & 39.8\n\n& 32 & 60.4 & 66.7 & 28.0 & 32.6 & 20.8 & 34.1 & 44.7 & 41.0\n\n& 64 & 59.7 & 66.7 & 26.6 & 33.2 & 20.6 & 35.8 & 43.4 & 40.9\n\n& 128 & 60.6 & 67.4 & 25.7 & 32.0 & 22.6 & 34.7 & 43.2 & 40.9\n\n6 * VisualORM & 1 & 56.2 & 64.5 & 17.0 & 22.8 & 9.4 & 23.5 & 36.0 & 32.8\n\n& 8 & 60.2 & 67.0 & 25.3 & 32.5 & 16.4 & 35.0 & 41.8 & 39.7\n\n& 16 & 58.3 & 67.7 & 27.0 & 33.6 & 16.6 & 33.1 & 39.1 & 39.3\n\n& 32 & 58.6 & 67.9 & 26.3 & 33.6 & 17.4 & 34.4 & 42.1 & 40.0\n\n& 64 & 59.4 & 66.8 & 28.6 & 33.9 & 17.8 & 34.1 & 42.3 & 40.4\n\n& 128 & 59.4 & 66.6 & 28.3 & 33.5 & 16.8 & 32.3 & 40.9 & 39.7\n\n6 * & 1 & 56.2 & 64.5 & 17.0 & 22.8 & 9.4 & 23.5 & 36.0 & 32.8\n\n& 8 & 60.2 & 68.5 & 25.7 & 35.8 & 18.0 & 36.5 & 43.8 & 41.2\n\n& 16 & 60.2 & 69.9 & 27.3 & 36.4 & 19.0 & 38.8 & 42.5 & 42.0\n\n& 32 & 60.3 & 70.4 & 29.6 & 37.8 & 17.2 & 40.3 & 43.4 & 42.7\n\n& 64 & 61.4 & 69.6 & 30.6 & 38.2 & 18.8 & 40.2 & 45.4 & 43.5\n\n& 128 & 61.7 & 70.8 & 30.3 & 39.3 & 19.4 & 40.9 & 45.4 & 44.0\n\nOverall Best-of-N results of InternVL2.5-8B across seven multimodal reasoning benchmarks with different critic models.",
+    "char_start": 36486,
+    "char_end": 37882,
+    "sentence_index": 269,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec017",
+    "text": "[t]\n\n2.5pt\n\nlr|ccccccc|c\n\nModel & BoN & MMMU & MathVista & MathVision & MathVerse-VO & DynaMath & WeMath & LogicVista & Overall\n\n6 * Self Consistency & 1 & 49.8 & 60.8 & 23.4 & 18.9 & 9.8 & 16.4 & 27.5 & 29.5\n\n& 8 & 51.8 & 58.9 & 21.7 & 31.5 & 10.0 & 22.6 & 35.6 & 33.2\n\n& 16 & 51.7 & 60.2 & 21.7 & 31.5 & 11.6 & 25.7 & 35.3 & 34.0\n\n& 32 & 52.2 & 60.1 & 24.3 & 33.1 & 11.4 & 24.3 & 36.0 & 34.5\n\n& 64 & 51.7 & 61.0 & 23.4 & 34.8 & 12.8 & 25.8 & 35.3 & 35.0\n\n& 128 & 53.2 & 61.7 & 25.7 & 33.5 & 13.0 & 25.6 & 35.6 & 35.5\n\n6 * VisualORM & 1 & 49.8 & 60.8 & 23.4 & 18.9 & 9.8 & 16.4 & 27.5 & 29.5\n\n& 8 & 55.7 & 66.0 & 22.0 & 33.5 & 10.2 & 24.1 & 38.9 & 35.8\n\n& 16 & 56.4 & 65.3 & 24.0 & 32.1 & 10.4 & 27.3 & 36.5 & 36.0\n\n& 32 & 58.8 & 64.8 & 19.7 & 35.7 & 12.0 & 29.4 & 38.5 & 37.0\n\n& 64 & 58.2 & 67.3 & 22.7 & 35.5 & 11.0 & 30.1 & 37.6 & 37.5\n\n& 128 & 58.2 & 66.5 & 25.3 & 35.4 & 11.6 & 30.0 & 40.7 & 38.2\n\n6 * & 1 & 49.8 & 60.8 & 23.4 & 18.9 & 9.8 & 16.4 & 27.5 & 29.5\n\n& 8 & 56.8 & 65.7 & 24.7 & 35.8 & 11.2 & 31.0 & 37.4 & 37.5\n\n& 16 & 58.8 & 68.6 & 24.0 & 37.3 & 12.4 & 32.7 & 39.8 & 39.1\n\n& 32 & 57.8 & 68.4 & 26.6 & 38.5 & 13.4 & 35.3 & 39.1 & 39.9\n\n& 64 & 58.6 & 69.4 & 25.3 & 39.7 & 12.2 & 38.2 & 36.9 & 40.0\n\n& 128 & 59.3 & 69.4 & 25.3 & 39.1 & 14.4 & 37.0 & 38.3 & 40.4\n\nOverall Best-of-N results of MiniCPM-V2.6 across seven multimodal reasoning benchmarks with different critic models.",
+    "char_start": 37884,
+    "char_end": 39278,
+    "sentence_index": 270,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec017",
+    "text": "[t]\n\n2pt\n\nlccccccccc\n\nModel & MMMU & MathVista & MathVision & MathVerse-VO & DynaMath & WeMath & LogicVista & Overall & VL-ProcessBench\n\n10 c Threshold\n\nThreshold=0.00 & 59.3 & 68.5 & 25.7 & 35.8 & 18.0 & 36.5 & 43.8 & 41.1 & 62.0\n\nThreshold=0.625 & 59.7 & 66.8 & 24.7 & 36.7 & 18.4 & 35.0 & 41.8 & 40.4 & 61.0\n\nThreshold=0.125 & 58.0 & 67.9 & 27.6 & 35.4 & 17.4 & 35.3 & 41.6 & 40.5 & 60.7\n\nThreshold=0.25 & 58.6 & 67.6 & 25.7 & 33.6 & 16.8 & 36.0 & 41.4 & 40.0 & 60.2\n\n10 c Temperature\n\nTemperature=0.3 & 59.7 & 69.4 & 26.0 & 32.6 & 17.6 & 35.5 & 42.7 & 40.5 & -\n\nTemperature=0.7 & 59.3 & 68.5 & 25.7 & 35.8 & 18.0 & 36.5 & 43.8 & 41.1 & -\n\nTemperature=1.0 & 61.7 & 67.2 & 27.3 & 35.8 & 16.6 & 34.2 & 43.2 & 40.9 & -\n\nTemperature=1.3 & 57.9 & 66.1 & 25.0 & 32.1 & 16.8 & 31.9 & 40.5 & 38.6 & -\n\nAblation studies about the effects of expected accuracy threshold and generationo temperaure.",
+    "char_start": 39280,
+    "char_end": 40170,
+    "sentence_index": 271,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec018",
+    "text": "[t!]\n\n[b] 0.47\nfig/suppl-dist-num-steps.pdf\n\n[b] 0.47\nfig/suppl-dist-incorrect-steps.pdf\n\nStep Distribution of .",
+    "char_start": 40172,
+    "char_end": 40284,
+    "sentence_index": 272,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec018",
+    "text": "The X-axis represents the step index.",
+    "char_start": 40285,
+    "char_end": 40322,
+    "sentence_index": 273,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec018",
+    "text": "(a) The Y-axis indicates the proportion of steps at each index relative to the total number of steps, reflecting the distribution of step positions in solutions.",
+    "char_start": 40323,
+    "char_end": 40484,
+    "sentence_index": 274,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec018",
+    "text": "(b) The Y-axis represents the error rate of steps at each index, showing the likelihood of errors occurring at different step positions.",
+    "char_start": 40485,
+    "char_end": 40621,
+    "sentence_index": 275,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec018",
+    "text": "-2mm\n\nThe statistics for step distribution of is presented in Figure .",
+    "char_start": 40623,
+    "char_end": 40693,
+    "sentence_index": 276,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec018",
+    "text": "We observe that most solutions consist of fewer than 15 steps.",
+    "char_start": 40694,
+    "char_end": 40756,
+    "sentence_index": 277,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec018",
+    "text": "Among these solutions with fewer than 15 steps, most solutions contain about 7 or 13 steps.",
+    "char_start": 40757,
+    "char_end": 40848,
+    "sentence_index": 278,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec018",
+    "text": "For the correctness of each step, we observe that the error rate is lower in the first three steps and then increases as the step index grows.",
+    "char_start": 40849,
+    "char_end": 40991,
+    "sentence_index": 279,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec018",
+    "text": "We attribute this to the fact that problems requiring more reasoning steps tend to be more challenging, leading to a gradual rise in step error rates.",
+    "char_start": 40992,
+    "char_end": 41142,
+    "sentence_index": 280,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec018",
+    "text": "Notably, starting from step 15, the error rate drops sharply.",
+    "char_start": 41143,
+    "char_end": 41204,
+    "sentence_index": 281,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec018",
+    "text": "This is because the number of steps in this range is relatively small, resulting in significant statistical fluctuations.",
+    "char_start": 41205,
+    "char_end": 41326,
+    "sentence_index": 282,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec019",
+    "text": "In this section, we provide more data examples of in Figure from different domains, including general visual question answering (VQA) , science , chart , mathematics , OCR , and document .",
+    "char_start": 41328,
+    "char_end": 41516,
+    "sentence_index": 283,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec020",
+    "text": "In this section, we provide more data examples in from different data sources.",
+    "char_start": 41518,
+    "char_end": 41596,
+    "sentence_index": 284,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec020",
+    "text": "Specifically, we randomly choose three examples from our benchmark and visualize them in Figure .",
+    "char_start": 41597,
+    "char_end": 41694,
+    "sentence_index": 285,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec020",
+    "text": "Additionally, in Figure , we provide an example where the model initially generates an incorrect answer and then autonomously corrects it.",
+    "char_start": 41695,
+    "char_end": 41833,
+    "sentence_index": 286,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec020",
+    "text": "[t]\n\n[b]\nfig/data-examples/suppl-data-ocr.pdf\n\n[b]\nfig/data-examples/suppl-data-doc.pdf\n\nfigure -1\n\n[t]\n\n[b]\nsubfigure 2\nfig/data-examples/suppl-data-math.pdf\n\n[b]\nfig/data-examples/suppl-data-science.pdf\n\n[b]\nfig/data-examples/suppl-data-general-vqa.pdf\n\n[b]\nfig/data-examples/suppl-data-chart.pdf\n\nMore data examples from .",
+    "char_start": 41835,
+    "char_end": 42160,
+    "sentence_index": 287,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec020",
+    "text": "[t]\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mmmu-1.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mmmu-2.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mmmu-4.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mathvision-1.pdf\n\nfigure -1\n\n[t]\n\n[b]\nsubfigure 4\nfig/benchmark-examples/suppl-benchmark-mathvision-2.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mathvision-3.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mathverse-3.pdf\n\nfigure -1\n\n[t]\n\n[b]\nsubfigure 7\nfig/benchmark-examples/suppl-benchmark-mathverse-1.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-mathverse-2.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-dynamath-1.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-dynamath-2.pdf\n\nfigure -1\n\n[t]\n\n[b]\nsubfigure 11\nfig/benchmark-examples/suppl-benchmark-dynamath-3.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-wemath-1.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-wemath-2.pdf\n\n[b]\nfig/benchmark-examples/suppl-benchmark-wemath-3.pdf\n\nMore data examples from .",
+    "char_start": 42162,
+    "char_end": 43153,
+    "sentence_index": 288,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec020",
+    "text": "[t]\n\nfig/benchmark-examples/suppl-reflection.pdf\n\nData example with model reflection from .",
+    "char_start": 43155,
+    "char_end": 43246,
+    "sentence_index": 289,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec020",
+    "text": "red Red highlights the incorrect answer, orange orange highlights the reflection words, and mygreen green highlights the correct answer.",
+    "char_start": 43247,
+    "char_end": 43383,
+    "sentence_index": 290,
+    "section_sentence_index": 6
+  }
+]

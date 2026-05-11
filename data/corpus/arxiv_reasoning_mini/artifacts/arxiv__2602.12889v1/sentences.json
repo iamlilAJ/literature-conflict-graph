@@ -1,0 +1,1730 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "We present BaziQA-Benchmark , a standardized benchmark for evaluating symbolic and temporally compositional reasoning in large language models.",
+    "char_start": 0,
+    "char_end": 143,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "The benchmark is derived from 200 professionally curated, multiple-choice problems from the Global Fortune-teller Competition (2021--2025), where each instance requires structured inference over a fixed symbolic chart and interacting temporal conditions.",
+    "char_start": 144,
+    "char_end": 398,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Unlike anecdotal or prompt-driven evaluations, BaziQA-Benchmark enables objective scoring and controlled comparison across years, domains, and model families.",
+    "char_start": 399,
+    "char_end": 557,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "We evaluate contemporary language models under a multi-turn setting and analyze performance variation across temporal difficulty, reasoning domains, and inference protocols.",
+    "char_start": 558,
+    "char_end": 731,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "To further probe reasoning behavior, we introduce a lightweight Structured Reasoning Protocol that constrains inference order without adding domain knowledge.",
+    "char_start": 732,
+    "char_end": 890,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Results show that models consistently outperform chance but remain far from saturation, exhibiting pronounced sensitivity to temporal composition and reasoning order, as well as systematic failures on precise temporal localization and multi-condition symbolic judgments.",
+    "char_start": 891,
+    "char_end": 1161,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Large language models (LLMs) have achieved substantial progress on a variety of reasoning-oriented benchmarks, including mathematical problem solving, program synthesis, symbolic manipulation, and multi-hop question answering .",
+    "char_start": 1163,
+    "char_end": 1390,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Large-scale evaluations such as BIG-Bench and its challenging subsets demonstrate that modern models can internalize non-trivial inference patterns beyond surface-level text generation .",
+    "char_start": 1391,
+    "char_end": 1577,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Complementary benchmarks based on academic examinations and knowledge-intensive reasoning further suggest that LLMs can generalize across heterogeneous reasoning formats .",
+    "char_start": 1578,
+    "char_end": 1749,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "However, most existing evaluations focus on domains with standardized semantics, formal operators, or well-defined symbolic languages.",
+    "char_start": 1750,
+    "char_end": 1884,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Systematic assessment of LLM reasoning in structured but non-standard symbolic systems , where inference depends on domain-specific interaction rules and heterogeneous symbolic effects, remains limited.",
+    "char_start": 1885,
+    "char_end": 2087,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Bazi (Eight Characters) astrology provides a distinctive testbed for such reasoning.",
+    "char_start": 2089,
+    "char_end": 2173,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "It is a traditional East Asian symbolic system in which conclusions about life events and personal attributes are derived from a natal chart composed of Heavenly Stems and Earthly Branches, together with interacting temporal layers such as decadal and annual cycles.",
+    "char_start": 2174,
+    "char_end": 2440,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Competition-grade Bazi problems require a constrained inference process: global chart assessment, prioritization of symbolic interactions, and mapping of dominant signals to concrete outcomes via predefined relational structures (e.g., Ten Gods and palaces).",
+    "char_start": 2441,
+    "char_end": 2699,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "As a result, Bazi reasoning more closely resembles multi-step symbolic inference under explicit constraints than free-form narrative generation.",
+    "char_start": 2700,
+    "char_end": 2844,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "For benchmarking purposes, a key challenge is that Bazi reasoning operates over a derived natal chart rather than raw birth information.",
+    "char_start": 2846,
+    "char_end": 2982,
+    "sentence_index": 15,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To isolate symbolic inference from calendrical conversion and chart derivation, BaziQA-Benchmark provides models with a pre-computed and consistently formatted chart context for each subject, and evaluates question answering conditioned on that fixed representation.",
+    "char_start": 2983,
+    "char_end": 3249,
+    "sentence_index": 16,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This design enables controlled comparison across models and prompting strategies under identical symbolic inputs.",
+    "char_start": 3250,
+    "char_end": 3363,
+    "sentence_index": 17,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Related work on long-context compression in other structured domains shows that preserving task-critical structure under constrained budgets is non-trivial, motivating standardized and consistent context representations in evaluation .",
+    "char_start": 3364,
+    "char_end": 3599,
+    "sentence_index": 18,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Existing evaluations of LLMs on culturally grounded or metaphysical reasoning tasks remain fragmented.",
+    "char_start": 3601,
+    "char_end": 3703,
+    "sentence_index": 19,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Many studies rely on anecdotal examples, qualitative case analyses, or prompt-driven demonstrations, limiting reproducibility and comparability.",
+    "char_start": 3704,
+    "char_end": 3848,
+    "sentence_index": 20,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "The most closely related BaZi-focused benchmark emphasizes persona consistency and character simulation under temporal settings .",
+    "char_start": 3849,
+    "char_end": 3978,
+    "sentence_index": 21,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "While valuable for studying generative behavior, such simulation-oriented tasks do not isolate symbolic inference accuracy under objective scoring.",
+    "char_start": 3979,
+    "char_end": 4126,
+    "sentence_index": 22,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "To date, there is no standardized benchmark that evaluates professional-grade Bazi reasoning across years, domains, and model families using competition-grade questions and reproducible protocols.",
+    "char_start": 4127,
+    "char_end": 4323,
+    "sentence_index": 23,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "In this work, we introduce BaziQA-Benchmark , a standardized evaluation suite constructed from 200 official problems of a global professional Bazi competition held between 2021 and 2025.",
+    "char_start": 4325,
+    "char_end": 4511,
+    "sentence_index": 24,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "All questions are multiple-choice and professionally curated, enabling objective scoring.",
+    "char_start": 4512,
+    "char_end": 4601,
+    "sentence_index": 25,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "The benchmark spans multiple application domains encountered in real-world Bazi practice, including marriage, career, health, wealth, personality, family relations, and annual fortune, and incorporates both static symbolic relations and temporally compositional reasoning.",
+    "char_start": 4602,
+    "char_end": 4874,
+    "sentence_index": 26,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Its design supports fine-grained analysis across competition years, reasoning domains, and interaction protocols under a unified evaluation setting.",
+    "char_start": 4875,
+    "char_end": 5023,
+    "sentence_index": 27,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Beyond benchmark construction, we examine the role of reasoning structure at inference time.",
+    "char_start": 5025,
+    "char_end": 5117,
+    "sentence_index": 28,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Prior work has shown that explicitly eliciting intermediate reasoning steps can improve performance on complex tasks , and that aggregation strategies such as self-consistency can reduce variability across reasoning trajectories .",
+    "char_start": 5118,
+    "char_end": 5348,
+    "sentence_index": 29,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Motivated by these findings, we introduce a three-stage Structured Reasoning Protocol as an evaluation scaffold for Bazi inference.",
+    "char_start": 5349,
+    "char_end": 5480,
+    "sentence_index": 30,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "The protocol decomposes reasoning into chart-level quantitative analysis, interaction severity grading, and domain-specific symbol-to-event mapping, without introducing additional domain knowledge or supervision.",
+    "char_start": 5481,
+    "char_end": 5693,
+    "sentence_index": 31,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "This enables controlled analysis of how reasoning structure affects accuracy, stability, and failure patterns.",
+    "char_start": 5694,
+    "char_end": 5804,
+    "sentence_index": 32,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Through experiments across several contemporary model families and five competition years, we show that modern LLMs perform significantly above chance on professional Bazi problems, but remain far from saturation.",
+    "char_start": 5806,
+    "char_end": 6019,
+    "sentence_index": 33,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Performance varies substantially across domains, years, and inference protocols, and structured reasoning yields heterogeneous effects rather than uniform gains.",
+    "char_start": 6020,
+    "char_end": 6181,
+    "sentence_index": 34,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Overall, BaziQA-Benchmark provides a controlled and reproducible testbed for studying symbolic and temporally compositional reasoning, clarifying both the capabilities and current limitations of large language models in this class of domains.",
+    "char_start": 6182,
+    "char_end": 6424,
+    "sentence_index": 35,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "The benchmark data, evaluation scripts, and accompanying technical report are publicly released at .",
+    "char_start": 6425,
+    "char_end": 6525,
+    "sentence_index": 36,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "This section specifies the construction of BaziQA-Benchmark and the evaluation protocol adopted in this work.",
+    "char_start": 6527,
+    "char_end": 6636,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "The benchmark is designed to formalize professional Bazi astrology reasoning as a reproducible, objectively scorable task,\nwhile preserving the symbolic structure and temporal dependencies encountered in real practice.",
+    "char_start": 6637,
+    "char_end": 6855,
+    "sentence_index": 38,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "BaziQA-Benchmark is constructed from official problems of a global professional Bazi competition held annually from 2021 to 2025.",
+    "char_start": 6857,
+    "char_end": 6986,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "All problems are authored and curated by experienced practitioners and used in competitive evaluation settings.",
+    "char_start": 6987,
+    "char_end": 7098,
+    "sentence_index": 40,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "Each competition year consists of eight subjects ( mingzhu ), where each subject corresponds to a fixed natal chart and is associated with five multiple-choice questions.",
+    "char_start": 7100,
+    "char_end": 7270,
+    "sentence_index": 41,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "This results in 40 questions per year and 200 questions in total.",
+    "char_start": 7271,
+    "char_end": 7336,
+    "sentence_index": 42,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "All questions are four-option multiple-choice (A/B/C/D), yielding a random-guess baseline accuracy of 25\\%.",
+    "char_start": 7337,
+    "char_end": 7444,
+    "sentence_index": 43,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "The benchmark is explicitly designed for objective scoring.",
+    "char_start": 7446,
+    "char_end": 7505,
+    "sentence_index": 44,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "Official answer keys are provided for all questions, eliminating the need for post-hoc interpretation or human adjudication.",
+    "char_start": 7506,
+    "char_end": 7630,
+    "sentence_index": 45,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "This property distinguishes BaziQA-Benchmark from open-ended narrative or simulation-based evaluations.",
+    "char_start": 7631,
+    "char_end": 7734,
+    "sentence_index": 46,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "Each subject\u2019s questions span multiple application domains commonly encountered in applied Bazi practice, including marriage, career, family relations, personality, health, wealth, education, and annual fortune.",
+    "char_start": 7736,
+    "char_end": 7947,
+    "sentence_index": 47,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "Questions within a subject are ordered to approximately reflect increasing inferential complexity, ranging from static chart interpretation to multi-factor and temporally compositional reasoning.",
+    "char_start": 7948,
+    "char_end": 8143,
+    "sentence_index": 48,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "The benchmark does not evaluate free-form explanation or narrative generation.",
+    "char_start": 8145,
+    "char_end": 8223,
+    "sentence_index": 49,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "Instead, each question requires a discrete symbolic judgment grounded in domain-specific rules and precedence relations.",
+    "char_start": 8224,
+    "char_end": 8344,
+    "sentence_index": 50,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "This formulation isolates reasoning correctness from stylistic fluency and enables controlled comparison across models and prompting protocols.",
+    "char_start": 8345,
+    "char_end": 8488,
+    "sentence_index": 51,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "In professional practice, Bazi reasoning is performed over a derived natal chart rather than raw birth information.",
+    "char_start": 8490,
+    "char_end": 8605,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "To isolate symbolic inference from calendrical conversion and chart derivation, BaziQA-Benchmark adopts a two-stage input construction process.",
+    "char_start": 8606,
+    "char_end": 8749,
+    "sentence_index": 53,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "For each subject, the dataset provides a birth profile (e.g., date and time of birth and related attributes).",
+    "char_start": 8751,
+    "char_end": 8860,
+    "sentence_index": 54,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "An external Bazi charting procedure is applied to compute the complete natal chart and its temporal expansions, including Heavenly Stems and Earthly Branches, Ten Gods relations, decadal luck cycles, and annual influences.",
+    "char_start": 8861,
+    "char_end": 9083,
+    "sentence_index": 55,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "The resulting chart is stored in structured form and rendered into a fixed, human-readable textual template.",
+    "char_start": 9084,
+    "char_end": 9192,
+    "sentence_index": 56,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "This formatted chart context is presented once at the beginning of each evaluation session and remains fixed while the model answers the five associated questions.",
+    "char_start": 9194,
+    "char_end": 9357,
+    "sentence_index": 57,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "All models therefore receive identical symbolic information.",
+    "char_start": 9358,
+    "char_end": 9418,
+    "sentence_index": 58,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "Personal identifiers are removed and replaced with anonymous subject IDs to avoid leakage of extraneous information.",
+    "char_start": 9419,
+    "char_end": 9535,
+    "sentence_index": 59,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "For each subject, the model is first provided with the formatted natal chart context.",
+    "char_start": 9537,
+    "char_end": 9622,
+    "sentence_index": 60,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec007",
+    "text": "The five associated questions are then answered sequentially within a single conversational session.",
+    "char_start": 9623,
+    "char_end": 9723,
+    "sentence_index": 61,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "This multi-turn design reflects realistic evaluation settings, where multiple judgments are made with respect to the same chart.",
+    "char_start": 9725,
+    "char_end": 9853,
+    "sentence_index": 62,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "It also enables analysis of contextual accumulation effects, such as whether earlier answers implicitly condition later reasoning.",
+    "char_start": 9854,
+    "char_end": 9984,
+    "sentence_index": 63,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec007",
+    "text": "Models do not receive feedback on answer correctness during the session.",
+    "char_start": 9985,
+    "char_end": 10057,
+    "sentence_index": 64,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "Bazi astrology reasoning involves multiple symbolic effects whose influences are heterogeneous and non-additive.",
+    "char_start": 10059,
+    "char_end": 10171,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "Correct inference therefore depends on identifying dominant interactions among competing factors rather than exhaustively enumerating all applicable rules.",
+    "char_start": 10172,
+    "char_end": 10327,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "To make this prioritization explicit, we introduce a Structured Reasoning Protocol (SRP) as an evaluation scaffold.",
+    "char_start": 10329,
+    "char_end": 10444,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec008",
+    "text": "The protocol constrains the reasoning process into a small number of ordered steps that reflect expert practice while remaining model-agnostic.",
+    "char_start": 10445,
+    "char_end": 10588,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec008",
+    "text": "Given a fixed natal chart and a target question, inference under SRP proceeds as follows:\n[leftmargin=1.2cm]\nQuantitative Scan : establish chart-level priors by assessing element balance, Day Master strength, and global structural patterns.",
+    "char_start": 10590,
+    "char_end": 10830,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec008",
+    "text": "Severity Grading : identify and rank symbolic interactions according to their relative dominance under the current temporal context.",
+    "char_start": 10831,
+    "char_end": 10963,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec008",
+    "text": "Event Mapping : map dominant symbolic signals to concrete outcomes using domain-specific rules, giving precedence to higher-severity interactions.",
+    "char_start": 10964,
+    "char_end": 11110,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec008",
+    "text": "The protocol does not introduce additional domain knowledge or supervision.",
+    "char_start": 11112,
+    "char_end": 11187,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "Its role is to constrain the order and completeness of inference steps, enabling controlled analysis of how reasoning structure affects accuracy, stability, and failure modes.",
+    "char_start": 11188,
+    "char_end": 11363,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "In this work, SRP is used exclusively at inference time and does not modify model parameters.",
+    "char_start": 11364,
+    "char_end": 11457,
+    "sentence_index": 74,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec009",
+    "text": "All models are evaluated without task-specific fine-tuning.",
+    "char_start": 11459,
+    "char_end": 11518,
+    "sentence_index": 75,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec009",
+    "text": "Unless otherwise stated, each model--year configuration is evaluated using multiple independent runs to account for stochasticity in decoding.",
+    "char_start": 11519,
+    "char_end": 11661,
+    "sentence_index": 76,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "Accuracy is computed as the proportion of correctly selected answers.",
+    "char_start": 11663,
+    "char_end": 11732,
+    "sentence_index": 77,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec009",
+    "text": "For aggregate reporting, we compute macro-average accuracy across subjects, years, and domains.",
+    "char_start": 11733,
+    "char_end": 11828,
+    "sentence_index": 78,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec009",
+    "text": "To characterize robustness, we additionally report dispersion measures capturing run-to-run and year-to-year variability.",
+    "char_start": 11829,
+    "char_end": 11950,
+    "sentence_index": 79,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec009",
+    "text": "Statistical comparisons against the random-guess baseline are conducted using standard proportion tests.",
+    "char_start": 11952,
+    "char_end": 12056,
+    "sentence_index": 80,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "Comparisons across prompting protocols and model families are reported using paired analyses where applicable.",
+    "char_start": 12057,
+    "char_end": 12167,
+    "sentence_index": 81,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec010",
+    "text": "This section presents the empirical evaluation of BaziQA-Benchmark under the benchmark protocol defined in Section .",
+    "char_start": 12169,
+    "char_end": 12285,
+    "sentence_index": 82,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec010",
+    "text": "Rather than pursuing a new state of the art, the objective is to characterize how contemporary large language models behave under a structured symbolic reasoning benchmark with temporal composition and domain heterogeneity.",
+    "char_start": 12286,
+    "char_end": 12509,
+    "sentence_index": 83,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec010",
+    "text": "Accordingly, we analyze overall benchmark difficulty, year-wise variation, domain-wise performance profiles, sensitivity to inference-time prompting strategies, and cross-model agreement patterns.",
+    "char_start": 12510,
+    "char_end": 12706,
+    "sentence_index": 84,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec010",
+    "text": "Unless otherwise specified, all results are obtained under the primary multi-turn evaluation setting.",
+    "char_start": 12708,
+    "char_end": 12809,
+    "sentence_index": 85,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec010",
+    "text": "Macro-average accuracy is computed by first averaging within each competition year and then averaging across years, treating each year as an equal evaluation unit.",
+    "char_start": 12810,
+    "char_end": 12973,
+    "sentence_index": 86,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec010",
+    "text": "This aggregation strategy avoids overweighting any single competition set and reflects the intended use of the benchmark as a longitudinal evaluation suite rather than a single static test.",
+    "char_start": 12974,
+    "char_end": 13163,
+    "sentence_index": 87,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec011",
+    "text": "Table reports macro-average accuracy over the five competition years (2021--2025).",
+    "char_start": 13165,
+    "char_end": 13247,
+    "sentence_index": 88,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec011",
+    "text": "Year-level 95\\% confidence intervals are computed by treating the five yearly accuracies as independent observations and applying a $t$-interval ($n=5$).",
+    "char_start": 13248,
+    "char_end": 13401,
+    "sentence_index": 89,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec011",
+    "text": "The substantial overlap among confidence intervals indicates that differences in macro-average accuracy should be interpreted as descriptive ordering rather than statistically decisive separation at the benchmark scale.",
+    "char_start": 13402,
+    "char_end": 13621,
+    "sentence_index": 90,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec011",
+    "text": "[t]\n\nMacro-average accuracy over five competition years (Multi-turn).",
+    "char_start": 13623,
+    "char_end": 13692,
+    "sentence_index": 91,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec011",
+    "text": "5pt\nlcc\n\nModel & Macro-Avg.",
+    "char_start": 13694,
+    "char_end": 13721,
+    "sentence_index": 92,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec011",
+    "text": "(\\%) & 95\\% CI\n\nDeepSeek-Chat-V3 & 36.7 & [33.2, 40.2]\n\nDeepSeek-R1 & 34.1 & [29.6, 38.6]\n\nGPT-5.1-Chat & 32.5 & [29.0, 36.0]\n\nGemini-2.5-Flash & 32.4 & [29.7, 35.1]\n\nGemini-3-Pro & 32.1 & [26.6, 37.6]\n\nAll evaluated models perform significantly above the 25\\% random baseline (binomial test, $p < 10^ -7 $ for all models), confirming that BaziQA-Benchmark captures non-trivial symbolic structure rather than superficial pattern matching.",
+    "char_start": 13722,
+    "char_end": 14160,
+    "sentence_index": 93,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec011",
+    "text": "At the same time, absolute accuracy remains far from saturation, with even the strongest models answering fewer than half of the questions correctly.",
+    "char_start": 14161,
+    "char_end": 14310,
+    "sentence_index": 94,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec011",
+    "text": "This gap highlights the intrinsic difficulty of professional-grade Bazi reasoning, where multiple symbolic effects must be prioritized and composed under temporal constraints.",
+    "char_start": 14311,
+    "char_end": 14486,
+    "sentence_index": 95,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec011",
+    "text": "Notably, the relatively narrow spread between models suggests that no single architecture or training paradigm yields a decisive advantage at the benchmark level.",
+    "char_start": 14488,
+    "char_end": 14650,
+    "sentence_index": 96,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec011",
+    "text": "Instead, differences appear to arise from domain-specific inductive biases and inference strategies, which are further examined in subsequent analyses.",
+    "char_start": 14651,
+    "char_end": 14802,
+    "sentence_index": 97,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "Performance varies non-monotonically across competition years.",
+    "char_start": 14804,
+    "char_end": 14866,
+    "sentence_index": 98,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "Table reports year-wise accuracy for each model, while Figure visualizes the corresponding mean and dispersion across runs.",
+    "char_start": 14867,
+    "char_end": 14990,
+    "sentence_index": 99,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec012",
+    "text": "Across all models, no consistent upward or downward trend is observed, indicating that later competition sets are neither systematically easier nor harder than earlier ones.",
+    "char_start": 14991,
+    "char_end": 15164,
+    "sentence_index": 100,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec012",
+    "text": "[t]\n\nYear-wise accuracy by competition year (Multi-turn).",
+    "char_start": 15166,
+    "char_end": 15223,
+    "sentence_index": 101,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec012",
+    "text": "6pt\nlccccc\n\nModel & 2021 & 2022 & 2023 & 2024 & 2025\n\nDeepSeek-Chat-V3 & 37.0 & 41.0 & 33.5 & 35.0 & 37.0\n\nDeepSeek-R1 & 31.5 & 40.0 & 32.5 & 35.0 & 31.5\n\nGPT-5.1-Chat & 35.0 & 30.5 & 36.0 & 31.5 & 29.5\n\nGemini-2.5-Flash & 29.0 & 32.5 & 33.0 & 32.5 & 35.0\n\nGemini-3-Pro & 33.5 & 30.0 & 26.5 & 38.5 & 32.0\n\n[t]\n\nFigures/contest8_yearwise_accuracy.png\nYear-wise accuracy across models (mean $ $ standard deviation).",
+    "char_start": 15225,
+    "char_end": 15638,
+    "sentence_index": 102,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec012",
+    "text": "The observed year-level variation reflects evolving question styles and reasoning demands in the underlying competitions.",
+    "char_start": 15640,
+    "char_end": 15761,
+    "sentence_index": 103,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec012",
+    "text": "In particular, certain years (e.g., 2022 and 2024) exhibit larger performance gaps across models, suggesting that these sets place greater emphasis on temporal composition or interaction prioritization.",
+    "char_start": 15762,
+    "char_end": 15964,
+    "sentence_index": 104,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec012",
+    "text": "This variability motivates treating each year as a distinct evaluation unit and cautions against interpreting single-year results as representative of overall model capability.",
+    "char_start": 15965,
+    "char_end": 16141,
+    "sentence_index": 105,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec013",
+    "text": "We next analyze performance variation across Bazi reasoning domains under the primary multi-turn setting.",
+    "char_start": 16143,
+    "char_end": 16248,
+    "sentence_index": 106,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec013",
+    "text": "Because the original competition problems do not provide gold-standard domain or question-type annotations, we adopt a reproducible heuristic labeling scheme based on question text.",
+    "char_start": 16249,
+    "char_end": 16430,
+    "sentence_index": 107,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec013",
+    "text": "The resulting domain categories are coarse-grained and intended solely for exploratory analysis; they may contain misclassification or omission errors and should not be interpreted as definitive task taxonomies.",
+    "char_start": 16431,
+    "char_end": 16642,
+    "sentence_index": 108,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec013",
+    "text": "Table reports domain-wise accuracy aggregated over all competition years (2021--2025), computed as the ratio of correct answers to total questions within each domain.",
+    "char_start": 16644,
+    "char_end": 16810,
+    "sentence_index": 109,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec013",
+    "text": "Despite the coarse labeling, several consistent patterns emerge.",
+    "char_start": 16811,
+    "char_end": 16875,
+    "sentence_index": 110,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec013",
+    "text": "[t]\n\nDomain-wise accuracy aggregated over all years (Multi-turn).",
+    "char_start": 16877,
+    "char_end": 16942,
+    "sentence_index": 111,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec013",
+    "text": "6pt\nlccccc\n\nDomain & DS-Chat-V3 & DS-R1 & GPT-5.1 & Gemini-2.5 & Gemini-3-Pro\n\nCareer & 27.8 & 23.3 & 31.1 & 25.6 & 23.3\n\nHealth & 32.0 & 48.0 & 20.0 & 36.0 & 60.0\n\nFamily & 53.0 & 42.0 & 38.0 & 45.0 & 40.0\n\nOther & 29.3 & 37.1 & 22.1 & 22.9 & 24.3\n\nEducation & 22.2 & 28.9 & 26.7 & 26.7 & 31.1\n\nPersonality & 52.7 & 45.5 & 36.4 & 34.5 & 50.9\n\nRomance & 35.1 & 27.0 & 25.9 & 28.6 & 31.9\n\nAnnual fortune & 37.9 & 36.4 & 40.3 & 36.7 & 30.6\n\nWealth & 36.7 & 20.0 & 33.3 & 33.3 & 30.0\n\nDomains dominated by relatively static chart attributes, such as personality and family relations, consistently yield higher accuracy across models.",
+    "char_start": 16944,
+    "char_end": 17574,
+    "sentence_index": 112,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec013",
+    "text": "DeepSeek-Chat-V3 achieves the strongest performance in these domains, suggesting greater robustness in extracting stable symbolic relations.",
+    "char_start": 17575,
+    "char_end": 17715,
+    "sentence_index": 113,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec013",
+    "text": "In contrast, domains requiring temporal composition and interaction prioritization, particularly annual fortune, remain challenging for all models, although GPT-5.1-Chat exhibits relatively stronger performance.",
+    "char_start": 17716,
+    "char_end": 17927,
+    "sentence_index": 114,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec013",
+    "text": "Health-related questions show the largest inter-model variance, with Gemini-3-Pro and DeepSeek-R1 performing substantially better than other models.",
+    "char_start": 17928,
+    "char_end": 18076,
+    "sentence_index": 115,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec013",
+    "text": "Overall, no single model dominates across all domains, highlighting complementary strengths and the importance of domain-aware evaluation.",
+    "char_start": 18077,
+    "char_end": 18215,
+    "sentence_index": 116,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec014",
+    "text": "We next examine the Structured Reasoning Protocol (SRP) as an inference-time prompting intervention.",
+    "char_start": 18217,
+    "char_end": 18317,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec014",
+    "text": "SRP enforces an explicit ordering of reasoning steps and constrains how models attend to symbolic cues, without introducing additional domain knowledge.",
+    "char_start": 18318,
+    "char_end": 18470,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec014",
+    "text": "Its purpose is not to improve performance per se, but to probe the sensitivity of model behavior to imposed reasoning structure under identical symbolic inputs.",
+    "char_start": 18471,
+    "char_end": 18631,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec014",
+    "text": "[t]\n\nFigures/contest8_structured_vs_multiturn_paired.png\nEffect of Structured Reasoning Protocol (SRP).",
+    "char_start": 18633,
+    "char_end": 18736,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec014",
+    "text": "Across models and years, SRP yields heterogeneous effects.",
+    "char_start": 18738,
+    "char_end": 18796,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec014",
+    "text": "In some settings, it improves stability and accuracy, while in others it degrades performance.",
+    "char_start": 18797,
+    "char_end": 18891,
+    "sentence_index": 122,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec014",
+    "text": "This variability indicates that structured prompting does not provide uniform gains.",
+    "char_start": 18892,
+    "char_end": 18976,
+    "sentence_index": 123,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec014",
+    "text": "Instead, SRP reveals that model performance is sensitive to the order in which symbolic evidence is considered, particularly in questions involving competing interactions or temporal overrides.",
+    "char_start": 18977,
+    "char_end": 19170,
+    "sentence_index": 124,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec014",
+    "text": "Domain-specific effects on the 2025 subset.",
+    "char_start": 19172,
+    "char_end": 19215,
+    "sentence_index": 125,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec014",
+    "text": "To further probe how reasoning structure interacts with domain characteristics, Table reports a domain-level comparison between the primary multi-turn setting and SRP for the 2025 competition set.",
+    "char_start": 19216,
+    "char_end": 19412,
+    "sentence_index": 126,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec014",
+    "text": "Because not all domains appear in 2025, this analysis is necessarily partial and should be interpreted qualitatively.",
+    "char_start": 19413,
+    "char_end": 19530,
+    "sentence_index": 127,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec014",
+    "text": "[t]\n\nDomain-wise accuracy change induced by Structured Reasoning Protocol (SRP) on the 2025 subset.",
+    "char_start": 19532,
+    "char_end": 19631,
+    "sentence_index": 128,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec014",
+    "text": "Values report $ $ accuracy (SRP $-$ Multi-turn) in percentage points.",
+    "char_start": 19632,
+    "char_end": 19701,
+    "sentence_index": 129,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec014",
+    "text": "Positive values indicate improvement under SRP.",
+    "char_start": 19702,
+    "char_end": 19749,
+    "sentence_index": 130,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec014",
+    "text": "6pt\nlcc\n\nDomain & DeepSeek-Chat-V3 & DeepSeek-R1\n\nRomance & +2.9 & +14.3\n\nCareer & $-$2.5 & +15.0\n\nEducation & +30.0 & $-$10.0\n\nFamily & $-$3.3 & $-$10.0\n\nPersonality & +10.0 & $-$20.0\n\nAnnual fortune & +8.0 & +10.0\n\nOther & +12.0 & $-$8.0\n\nThe domain-level decomposition suggests that SRP can yield gains in domains that benefit from explicit information organization or temporal alignment (e.g., annual fortune), while reducing accuracy in domains dominated by static symbolic associations.",
+    "char_start": 19751,
+    "char_end": 20243,
+    "sentence_index": 131,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec014",
+    "text": "These mixed effects reinforce the view that structured prompting should be treated as a conditional inference-time intervention rather than a universally beneficial strategy.",
+    "char_start": 20244,
+    "char_end": 20418,
+    "sentence_index": 132,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec015",
+    "text": "Finally, we analyze pairwise answer agreement to assess behavioral similarity and potential ensemble headroom.",
+    "char_start": 20420,
+    "char_end": 20530,
+    "sentence_index": 133,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec015",
+    "text": "Figure visualizes agreement rates between model pairs on the 2025 subset under majority-vote consolidation.",
+    "char_start": 20531,
+    "char_end": 20638,
+    "sentence_index": 134,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec015",
+    "text": "[t]\n\nFigures/contest8_2025_multiturn_model_agreement_heatmap.png\nPairwise model agreement on the 2025 subset (Multi-turn).",
+    "char_start": 20640,
+    "char_end": 20762,
+    "sentence_index": 135,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec015",
+    "text": "Agreement rates vary substantially, and no model pair exhibits near-perfect overlap.",
+    "char_start": 20764,
+    "char_end": 20848,
+    "sentence_index": 136,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec015",
+    "text": "This indicates that models fail on partially distinct subsets of questions, suggesting non-trivial ensemble headroom.",
+    "char_start": 20849,
+    "char_end": 20966,
+    "sentence_index": 137,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec015",
+    "text": "At the same time, moderate agreement levels imply shared failure modes, underscoring the intrinsic difficulty of temporally compositional symbolic reasoning in this domain.",
+    "char_start": 20967,
+    "char_end": 21139,
+    "sentence_index": 138,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec016",
+    "text": "This section discusses the implications of the empirical findings reported in Section .",
+    "char_start": 21141,
+    "char_end": 21228,
+    "sentence_index": 139,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec016",
+    "text": "The goal is not to re-state quantitative results, but to interpret what the observed patterns suggest about the nature of symbolic reasoning in BaziQA-Benchmark ,\nthe behavior of contemporary large language models under such conditions, and the design of future evaluation benchmarks.",
+    "char_start": 21229,
+    "char_end": 21513,
+    "sentence_index": 140,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec017",
+    "text": "The results indicate that BaziQA-Benchmark captures a form of reasoning that is neither purely factual recall nor unconstrained text generation.",
+    "char_start": 21515,
+    "char_end": 21659,
+    "sentence_index": 141,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec017",
+    "text": "Performance above the random baseline across all evaluated models confirms that the benchmark contains learnable structure.",
+    "char_start": 21660,
+    "char_end": 21783,
+    "sentence_index": 142,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec017",
+    "text": "At the same time, absolute accuracy remains far from saturation, suggesting that this structure is not trivially exploitable through surface heuristics alone.",
+    "char_start": 21784,
+    "char_end": 21942,
+    "sentence_index": 143,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec017",
+    "text": "Unlike many existing cultural or metaphysical evaluations, the benchmark emphasizes discrete decision-making under explicit symbolic constraints.",
+    "char_start": 21944,
+    "char_end": 22089,
+    "sentence_index": 144,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec017",
+    "text": "Each question requires the model to select one option from a fixed set, often under the interaction of multiple symbolic factors and temporal layers.",
+    "char_start": 22090,
+    "char_end": 22239,
+    "sentence_index": 145,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec017",
+    "text": "This design isolates reasoning correctness from stylistic fluency and verbosity, and therefore provides a more controlled probe of symbolic inference behavior.",
+    "char_start": 22240,
+    "char_end": 22399,
+    "sentence_index": 146,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec018",
+    "text": "One of the most consistent observations across models is substantial variation in performance across competition years.",
+    "char_start": 22401,
+    "char_end": 22520,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec018",
+    "text": "The absence of a monotonic trend suggests that year-wise difficulty is driven more by changes in reasoning structure than by incremental dataset difficulty.",
+    "char_start": 22521,
+    "char_end": 22677,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec018",
+    "text": "In particular, several years place stronger emphasis on temporal composition, requiring the integration of natal chart information with decadal and annual cycles.",
+    "char_start": 22679,
+    "char_end": 22841,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec018",
+    "text": "Such questions demand not only recognition of relevant symbolic elements, but also their prioritization under temporal context.",
+    "char_start": 22842,
+    "char_end": 22969,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec018",
+    "text": "The observed sensitivity to year-level variation indicates that temporal composition remains a major challenge for current models.",
+    "char_start": 22970,
+    "char_end": 23100,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec018",
+    "text": "This finding aligns with broader observations in symbolic and multi-step reasoning benchmarks, where models often struggle when multiple dependencies must be evaluated jointly rather than independently.",
+    "char_start": 23102,
+    "char_end": 23304,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec018",
+    "text": "BaziQA-Benchmark provides a naturally occurring instance of this difficulty, grounded in a real-world symbolic system.",
+    "char_start": 23305,
+    "char_end": 23423,
+    "sentence_index": 153,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec019",
+    "text": "Domain-wise analysis reveals substantial heterogeneity in model performance.",
+    "char_start": 23425,
+    "char_end": 23501,
+    "sentence_index": 154,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec019",
+    "text": "Domains dominated by static chart attributes, such as personality and family relations, tend to exhibit higher accuracy across models.",
+    "char_start": 23502,
+    "char_end": 23636,
+    "sentence_index": 155,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec019",
+    "text": "In contrast, domains involving temporal change or contingent outcomes, such as annual fortune, remain challenging even for the strongest models.",
+    "char_start": 23637,
+    "char_end": 23781,
+    "sentence_index": 156,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec019",
+    "text": "Importantly, no single model dominates across all domains.",
+    "char_start": 23783,
+    "char_end": 23841,
+    "sentence_index": 157,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec019",
+    "text": "This suggests that different model architectures or training regimes may favor different reasoning modes, such as static pattern recognition versus temporally conditioned inference.",
+    "char_start": 23842,
+    "char_end": 24023,
+    "sentence_index": 158,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec019",
+    "text": "From a benchmark design perspective, this heterogeneity is desirable, as it reduces the likelihood that overall performance is driven by a narrow subset of question types.",
+    "char_start": 24024,
+    "char_end": 24195,
+    "sentence_index": 159,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec019",
+    "text": "The observed domain imbalance further highlights the importance of reporting domain distributions alongside domain-wise accuracy.",
+    "char_start": 24197,
+    "char_end": 24326,
+    "sentence_index": 160,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec019",
+    "text": "Without such context, domain-level comparisons may be misleading, particularly for sparsely represented categories.",
+    "char_start": 24327,
+    "char_end": 24442,
+    "sentence_index": 161,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec020",
+    "text": "The Structured Reasoning Protocol (SRP) provides insight into how explicit reasoning constraints affect model behavior.",
+    "char_start": 24444,
+    "char_end": 24563,
+    "sentence_index": 162,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec020",
+    "text": "The results show that SRP does not uniformly improve accuracy across models or years.",
+    "char_start": 24564,
+    "char_end": 24649,
+    "sentence_index": 163,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec020",
+    "text": "Instead, its effect is heterogeneous and context-dependent.",
+    "char_start": 24650,
+    "char_end": 24709,
+    "sentence_index": 164,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec020",
+    "text": "At the macro level, SRP yields modest gains and reduced variance for some models, indicating more stable behavior across different evaluation conditions.",
+    "char_start": 24711,
+    "char_end": 24864,
+    "sentence_index": 165,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec020",
+    "text": "However, year-wise paired analysis reveals both positive and negative effects, suggesting that enforcing a fixed reasoning order can sometimes misalign with the structure of specific questions.",
+    "char_start": 24865,
+    "char_end": 25058,
+    "sentence_index": 166,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec020",
+    "text": "These findings caution against interpreting structured prompting as a general-purpose solution for symbolic reasoning.",
+    "char_start": 25060,
+    "char_end": 25178,
+    "sentence_index": 167,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec020",
+    "text": "Rather than serving as a performance enhancement, SRP functions more effectively as a diagnostic tool.",
+    "char_start": 25179,
+    "char_end": 25281,
+    "sentence_index": 168,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec020",
+    "text": "By constraining reasoning order, it exposes how models prioritize symbolic evidence and how sensitive they are to interaction ordering.",
+    "char_start": 25282,
+    "char_end": 25417,
+    "sentence_index": 169,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec020",
+    "text": "From an evaluation standpoint, this highlights the value of protocol-based analysis for understanding model behavior beyond aggregate accuracy.",
+    "char_start": 25419,
+    "char_end": 25562,
+    "sentence_index": 170,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec021",
+    "text": "The presence of hard items\u2014questions that no evaluated model answers correctly\u2014points to systematic limitations shared across architectures.",
+    "char_start": 25564,
+    "char_end": 25704,
+    "sentence_index": 171,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec021",
+    "text": "Many of these items require precise temporal localization or the simultaneous satisfaction of multiple symbolic conditions.",
+    "char_start": 25705,
+    "char_end": 25828,
+    "sentence_index": 172,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec021",
+    "text": "Error probability compounds across such sub-inferences, making joint correctness difficult even when individual components are moderately well handled.",
+    "char_start": 25829,
+    "char_end": 25980,
+    "sentence_index": 173,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec021",
+    "text": "At the same time, inter-model agreement analysis reveals that models do not fail on identical subsets of questions.",
+    "char_start": 25982,
+    "char_end": 26097,
+    "sentence_index": 174,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec021",
+    "text": "This diversity suggests that errors arise from different inductive biases rather than from a single shared weakness.",
+    "char_start": 26098,
+    "char_end": 26214,
+    "sentence_index": 175,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec021",
+    "text": "While this observation motivates potential ensemble approaches, it also underscores the importance of analyzing disagreement patterns when interpreting benchmark results.",
+    "char_start": 26215,
+    "char_end": 26385,
+    "sentence_index": 176,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec022",
+    "text": "Taken together, these observations suggest several considerations for future symbolic reasoning benchmarks.",
+    "char_start": 26387,
+    "char_end": 26494,
+    "sentence_index": 177,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec022",
+    "text": "First, temporal composition should be treated as a first-class evaluation dimension, rather than an incidental feature.",
+    "char_start": 26495,
+    "char_end": 26614,
+    "sentence_index": 178,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec022",
+    "text": "Second, domain heterogeneity should be preserved and explicitly reported to avoid overfitting to narrow reasoning modes.",
+    "char_start": 26615,
+    "char_end": 26735,
+    "sentence_index": 179,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec022",
+    "text": "Third, evaluation protocols themselves can serve as analytical instruments, revealing model sensitivities that are not apparent from single-shot accuracy.",
+    "char_start": 26736,
+    "char_end": 26890,
+    "sentence_index": 180,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec022",
+    "text": "BaziQA-Benchmark illustrates how culturally grounded symbolic systems can be used to construct rigorous and reproducible evaluation suites without relying on synthetic task design.",
+    "char_start": 26892,
+    "char_end": 27072,
+    "sentence_index": 181,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec022",
+    "text": "This approach complements existing benchmarks by introducing naturally structured, non-standard reasoning environments.",
+    "char_start": 27073,
+    "char_end": 27192,
+    "sentence_index": 182,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec023",
+    "text": "This paper introduces BaziQA-Benchmark , a standardized evaluation suite for assessing large language models on structured symbolic reasoning grounded in Bazi astrology.",
+    "char_start": 27194,
+    "char_end": 27363,
+    "sentence_index": 183,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec023",
+    "text": "The benchmark is constructed from professionally curated competition problems and supports objective scoring under controlled evaluation protocols.",
+    "char_start": 27364,
+    "char_end": 27511,
+    "sentence_index": 184,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec023",
+    "text": "Through extensive empirical analysis, we show that contemporary models exhibit non-trivial but limited capability on this benchmark.",
+    "char_start": 27513,
+    "char_end": 27645,
+    "sentence_index": 185,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec023",
+    "text": "Performance varies substantially across years and domains, remains sensitive to temporal composition, and is influenced by reasoning protocol design.",
+    "char_start": 27646,
+    "char_end": 27795,
+    "sentence_index": 186,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec023",
+    "text": "These properties distinguish the benchmark from anecdotal or prompt-driven evaluations and position it as a diagnostic tool for symbolic and temporally compositional reasoning.",
+    "char_start": 27796,
+    "char_end": 27972,
+    "sentence_index": 187,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec023",
+    "text": "Beyond reporting accuracy, this work emphasizes the importance of evaluation design itself.",
+    "char_start": 27974,
+    "char_end": 28065,
+    "sentence_index": 188,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec023",
+    "text": "By combining competition-grade data, multi-turn interaction, protocol-based analysis, and detailed diagnostics, BaziQA-Benchmark provides a framework for probing how models reason under structured, non-standard symbolic systems.",
+    "char_start": 28066,
+    "char_end": 28294,
+    "sentence_index": 189,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec023",
+    "text": "We hope this benchmark will support future research on symbolic reasoning, temporal inference, and evaluation methodology, and encourage the exploration of diverse knowledge systems as rigorous testbeds for language model assessment.",
+    "char_start": 28296,
+    "char_end": 28529,
+    "sentence_index": 190,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec023",
+    "text": "IEEEtran\nreferences",
+    "char_start": 28531,
+    "char_end": 28550,
+    "sentence_index": 191,
+    "section_sentence_index": 8
+  }
+]

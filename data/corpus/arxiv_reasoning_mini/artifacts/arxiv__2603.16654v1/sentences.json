@@ -1,0 +1,3008 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Reasoning-focused large language models (LLMs) have advanced in many NLP tasks, yet their evaluation remains challenging:\nfinal answers alone do not expose the intermediate reasoning steps, making it difficult to determine whether a model truly reasons correctly and where failures occur,\nwhile existing multi-hop QA benchmarks lack step-level annotations for diagnosing reasoning failures.",
+    "char_start": 0,
+    "char_end": 390,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "To address this gap, we propose Omanic, an open-domain multi-hop QA resource that provides decomposed sub-questions and intermediate answers as structural supervision for analyzing reasoning processes.",
+    "char_start": 391,
+    "char_end": 592,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "It contains 10,296 machine-generated training examples (OmanicSynth) and 967 expert-reviewed human-annotated evaluation examples (OmanicBench).",
+    "char_start": 593,
+    "char_end": 736,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Systematic evaluations show that state-of-the-art LLMs achieve only 73.11\\% multiple-choice accuracy on OmanicBench, confirming its high difficulty.",
+    "char_start": 737,
+    "char_end": 885,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Stepwise analysis reveals that CoT\u2019s performance hinges on factual completeness, with its gains diminishing under knowledge gaps and errors amplifying in later hops.",
+    "char_start": 886,
+    "char_end": 1051,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Additionally, supervised fine-tuning on OmanicSynth brings substantial transfer gains (7.41 average points) across six reasoning and math benchmarks, validating the dataset\u2019s quality and further supporting the effectiveness of OmanicSynth as supervision for reasoning-capability transfer.",
+    "char_start": 1052,
+    "char_end": 1340,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "We release the data at .",
+    "char_start": 1342,
+    "char_end": 1366,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Code at\n\nAs Large Language Models (LLMs) mature , the research frontier has progressively moved beyond single-task proficiency toward complex reasoning, with Chain-of-Thought (CoT) prompting emerging as a central technique for eliciting intermediate logical steps.",
+    "char_start": 1367,
+    "char_end": 1631,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Yet growing evidence reveals that LLMs often exhibit reasoning shortcuts , arriving at correct final answers through heuristic pattern matching rather than rigorous deduction, and that high end-to-end accuracy can mask systematic failures in intermediate steps .",
+    "char_start": 1632,
+    "char_end": 1894,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "This concern is especially acute in multi-hop reasoning, where existing benchmarks such as HotpotQA and MuSiQue , despite advancing evidence synthesis across documents, lack step-level structural annotations needed to diagnose where and why models fail along a reasoning chain.",
+    "char_start": 1895,
+    "char_end": 2172,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "The absence of such fine-grained ground truth creates a fundamental blind spot, making it difficult to distinguish genuine compositional reasoning from superficial shortcut exploitation .",
+    "char_start": 2173,
+    "char_end": 2360,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "To bridge this gap, we introduce OmanicBench ( O pen-domain M ulti-hop questions with AN notated reason I ng C hain), a multi-hop reasoning benchmark centered on a human-annotated evaluation set with step-level structural annotations, enabling fine-grained analysis of model reasoning behavior.",
+    "char_start": 2362,
+    "char_end": 2656,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "OmanicBench consists of 967 multi-hop questions, each manually annotated and expert-reviewed (over 300 hours of annotation effort), providing high-quality ground truth for analyzing reasoning behavior.",
+    "char_start": 2657,
+    "char_end": 2858,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Crucially, every question is decomposed into four cross-domain single-hop sub-questions with intermediate answers, drawing on rich factual knowledge and connected through mathematical reasoning.",
+    "char_start": 2859,
+    "char_end": 3053,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "These reasoning chains are organized under distinct graph topologies.",
+    "char_start": 3054,
+    "char_end": 3123,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Besides, we also release OmanicSynth, a machine-generated training set containing 10,296 instances for supervised training and transfer experiments.",
+    "char_start": 3124,
+    "char_end": 3272,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "[t]\n\nfigure/pipeline3.png\nOverview of Omanic construction pipeline, where rectangles denote entities and circles denote single-hop questions.",
+    "char_start": 3274,
+    "char_end": 3415,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "-4mm\n\nLeveraging the step-wise annotations in Omanic, we conduct a systematic analysis of multi-hop reasoning behaviors in state-of-the-art LLMs.",
+    "char_start": 3416,
+    "char_end": 3561,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Our study reveals two key phenomena.",
+    "char_start": 3562,
+    "char_end": 3598,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "First, we identify a knowledge floor effect, where CoT gains diminish sharply as required atomic facts become missing, eventually disappearing beyond a critical threshold.",
+    "char_start": 3599,
+    "char_end": 3770,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Second, we observe error propagation along reasoning chains: later hops consistently exhibit higher error rates, indicating that reasoning errors inherently amplify during sequential multi-hop inference.",
+    "char_start": 3771,
+    "char_end": 3974,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Together, these findings provide new evidence that reasoning and knowledge retrieval constitute separable capabilities of LLMs.",
+    "char_start": 3975,
+    "char_end": 4102,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "In summary, we make three main contributions.",
+    "char_start": 4104,
+    "char_end": 4149,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "First, we propose Omanic, the open-domain 4-hop QA benchmark with structural annotations for step-level reasoning diagnosis, containing 10,296 training and 967 expert-reviewed testing instances, where state-of-the-art LLMs only achieve 73.11\\% accuracy.",
+    "char_start": 4150,
+    "char_end": 4403,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Second, we evaluate various LLMs and fine-tune open-source models on OmanicSynth, obtaining 7.41 average points improvement across six external benchmarks, showing strong transferability and high data quality.",
+    "char_start": 4404,
+    "char_end": 4613,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Third, using single-hop decomposition, we empirically analyze the knowledge floor effect and error propagation in multi-hop reasoning, revealing that CoT benefits rely on factual completeness and errors amplify along the reasoning chain.",
+    "char_start": 4614,
+    "char_end": 4851,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec003",
+    "text": "The overview of the dataset construction pipeline is illustrated in Figure .",
+    "char_start": 4853,
+    "char_end": 4929,
+    "sentence_index": 26,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec003",
+    "text": "1.25\n\n[t]\n-8pt\n\n6pt\n\n> p 0.18\np 0.35\nY\n\nReasoning Graph & Multi-hop Question & Single-hop Composition\n\nfigure/graph1.png -2pt\n\n&\n-4pt\nIn the country of citizenship of the author of Candida, which political party was founded the same number of years before 1968 as the number of distinct 3-member committees that can be formed from a group of 7 candidates?",
+    "char_start": 4931,
+    "char_end": 5286,
+    "sentence_index": 27,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec003",
+    "text": "teal Fine Gael\n\n[A: Fine Gael B: Labour Party C: Fianna F\u00e1il D: Sinn F\u00e9in]\n&\n\n[leftmargin=*,nosep,topsep=0pt,partopsep=0pt]\n\nWho is the author of Candida?",
+    "char_start": 5287,
+    "char_end": 5441,
+    "sentence_index": 28,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec003",
+    "text": "orange!80!black Bernard Shaw\nWhat is the country of citizenship of orange!80!black Bernard Shaw\n?",
+    "char_start": 5442,
+    "char_end": 5539,
+    "sentence_index": 29,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec003",
+    "text": "magenta Ireland\nHow many distinct 3-member committees can be formed from a group of 7 candidates?",
+    "char_start": 5540,
+    "char_end": 5637,
+    "sentence_index": 30,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec003",
+    "text": "blue 35\nIn magenta Ireland , which political party was founded blue 35 years before 1968?",
+    "char_start": 5638,
+    "char_end": 5727,
+    "sentence_index": 31,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec003",
+    "text": "teal Fine Gael\n\n[-8pt]\n\nAn example illustrating the multi-hop reasoning graph and its step-by-step question decomposition.",
+    "char_start": 5728,
+    "char_end": 5850,
+    "sentence_index": 32,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec003",
+    "text": "-4mm\n\nTriplets Retrieval\n\nTo construct the Omanic dataset, we begin with the answers to the original 2-hop questions in MuSiQue , which are themselves composed of two single-hop questions.",
+    "char_start": 5852,
+    "char_end": 6040,
+    "sentence_index": 33,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "These answers serve as anchor subjects for retrieving corresponding $(subject, relation, object)$ triplets from Wikidata5M , a large-scale knowledge graph derived from Wikipedia.",
+    "char_start": 6041,
+    "char_end": 6219,
+    "sentence_index": 34,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "These retrieved triplets function as the foundational building blocks for our 4-hop expansion.",
+    "char_start": 6220,
+    "char_end": 6314,
+    "sentence_index": 35,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "Constrained Synthesis\nTo construct 4-hop queries, we merge original MuSiQue components with new single-hop questions synthesized from retrieved triplets, utilizing Claude-Sonnet-4.5.",
+    "char_start": 6316,
+    "char_end": 6498,
+    "sentence_index": 36,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "This process is governed by domain constraints and reasoning-graph topology.",
+    "char_start": 6499,
+    "char_end": 6575,
+    "sentence_index": 37,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Each synthesized single-hop question is assigned to one of eight predefined domains (e.g., History and Literature , Art and Architecture ), and the source Wikidata triplet is contextually refined to improve fluency and coherence.",
+    "char_start": 6576,
+    "char_end": 6805,
+    "sentence_index": 38,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Each 4-hop instance is also required to contain at least one mathematically grounded hop.",
+    "char_start": 6806,
+    "char_end": 6895,
+    "sentence_index": 39,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Numerical, temporal, or countable attributes are rewritten into sub-questions that require explicit quantitative reasoning, such as comparison, aggregation, counting, arithmetic composition, or temporal calculation.",
+    "char_start": 6896,
+    "char_end": 7111,
+    "sentence_index": 40,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "This mathematical hop is embedded into the chain rather than appended independently, so its inputs depend on earlier hops and its output can support later ones.",
+    "char_start": 7112,
+    "char_end": 7272,
+    "sentence_index": 41,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "For each query, we randomly choose one of three reasoning graph topologies (Figure ), which determines both question synthesis and final assembly.",
+    "char_start": 7273,
+    "char_end": 7419,
+    "sentence_index": 42,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "For example, under the Bridge pattern (Table ), the second hop depends on the first, and the fourth depends on both the second and third, preventing shortcut solutions that bypass intermediate reasoning.",
+    "char_start": 7420,
+    "char_end": 7623,
+    "sentence_index": 43,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Finally, each single-hop question is paired with three distractors, and the answer and options of the last hop are used as the ground truth and candidate set for the full 4-hop query.",
+    "char_start": 7624,
+    "char_end": 7807,
+    "sentence_index": 44,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Automated Filtering\n\nTo maintain a great difficulty ceiling, we filter the synthesized dataset using an ensemble of four models Including Llama-3.1-8B-Instruct, Qwen3-8B, Mistral-7B-Instruct-v0.3, and Gemma-3-4b-it .",
+    "char_start": 7809,
+    "char_end": 8025,
+    "sentence_index": 45,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Any question answered correctly by two or more models is deemed too simple and discarded.",
+    "char_start": 8026,
+    "char_end": 8115,
+    "sentence_index": 46,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "After pruning, 3,415 instances were removed, yielding a final training set of 10,296 examples.",
+    "char_start": 8116,
+    "char_end": 8210,
+    "sentence_index": 47,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "Expert Review\n\nTo ensure the high quality of the OmanicBench, 1,172 candidate instances undergo rigorous human audit conducted by 10 trained undergraduates and postgraduates over approximately 300 person-hours via the Label Studio platform .",
+    "char_start": 8212,
+    "char_end": 8453,
+    "sentence_index": 48,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "For each instance, annotators first verify the factual correctness of every sub-question and its answer by consulting the Wikipedia articles linked to the underlying triplets; for questions involving mathematical reasoning, annotators are additionally required to provide detailed step-by-step computations.",
+    "char_start": 8454,
+    "char_end": 8761,
+    "sentence_index": 49,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "They then examine the logical coherence of the full 4-hop reasoning chain, checking whether it conforms to the designated graph topology, and then assign quality scores across multiple dimensions (factual accuracy, distractor plausibility, fluency, and reasoning integrity) following a standardized rubric (detailed in Appendix ).",
+    "char_start": 8762,
+    "char_end": 9092,
+    "sentence_index": 50,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "They also verify the correctness of the required numerical operations in mathematically grounded hops, ensuring that intermediate calculations and final derived values are arithmetically consistent.",
+    "char_start": 9093,
+    "char_end": 9291,
+    "sentence_index": 51,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "Where deficiencies are identified, annotators directly correct the instance or supplement supporting references and derivations.",
+    "char_start": 9292,
+    "char_end": 9420,
+    "sentence_index": 52,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "Instances failing to meet predefined quality thresholds were excluded, yielding a final set of 967 high-quality instances as the eval set.",
+    "char_start": 9421,
+    "char_end": 9559,
+    "sentence_index": 53,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "An instance is shown in Table .",
+    "char_start": 9560,
+    "char_end": 9591,
+    "sentence_index": 54,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "[t]\n\n!",
+    "char_start": 9593,
+    "char_end": 9599,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "lccc\n\n& MCQ & Exact Match & F1-Score\n\nProprietary LLMs\n\nGPT-5.4 & 49.22 & 22.85 & 32.22\n\nsoftpeach\nGPT-5.4$_ CoT $ & 70.84 & 27.09 & 43.58\n\nClaude-Sonnet-4.6 & 55.43 & 20.73 & 37.15\n\nsoftpeach\nClaude-Sonnet-4.6$_ CoT $ & 73.11 & 14.81$^ $ & 32.27$^ $\n\nGemini-3.1-flash-lite & 44.88 & 23.47 & 32.31\n\nsoftpeach\nGemini-3.1-flash-lite$_ CoT $ & 72.60 & 23.99 & 35.72\n\nQwen3-Max & 49.02 & 17.79 & 26.31\n\nsoftpeach\nQwen3-Max$_ CoT $ & 72.08 & 35.99 & 45.51\n\nOpen-source LLMs\n\nQwen2.5-72B & 42.19 & 13.24 & 19.43\n\nQwen3-32B & 52.22 & 12.10 & 18.35\n\nQwen3-8B & 25.65 & 9.26 & 13.77\n\nsoftblue\nQwen3-8B$_ SFT $ & 53.62 & 10.97 & 16.60\n\nsoftblue\nQwen3-8B$_ SFT+GRPO $ & 53.77 & 11.79 & 17.98\n\nLLaMA-3.3-70B & 40.04 & 11.77 & 20.47\n\nsoftblue\nLLaMA-3.3-70B$_ SFT $ & 57.55 & 19.42 & 29.04\n\nPerformance comparison of proprietary and open-source LLMs on OmanicBench.",
+    "char_start": 9600,
+    "char_end": 10451,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "Subscripts indicate different prompting and training settings.",
+    "char_start": 10453,
+    "char_end": 10515,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "Bold marks the best result per metric.",
+    "char_start": 10516,
+    "char_end": 10554,
+    "sentence_index": 58,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "$^ $: discuss in Appendix .",
+    "char_start": 10555,
+    "char_end": 10582,
+    "sentence_index": 59,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec004",
+    "text": "-4mm\n\nTo assess the quality and utility of Omanic, we evaluate a diverse set of proprietary and open-source LLMs under multiple settings.",
+    "char_start": 10584,
+    "char_end": 10721,
+    "sentence_index": 60,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "For proprietary models (e.g., GPT-5 ), we evaluate both direct answering and CoT prompting.",
+    "char_start": 10722,
+    "char_end": 10813,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "For open-source models (e.g., Qwen3-8B ), we additionally fine-tune selected models on the Omanic training set via supervised fine-tuning (SFT) and GRPO-based reinforcement learning.",
+    "char_start": 10814,
+    "char_end": 10996,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "To examine whether training on OmanicSynth transfers to broader reasoning capabilities, we further evaluate the fine-tuned models across multiple reasoning benchmarks (e.g., MATH ).",
+    "char_start": 10997,
+    "char_end": 11178,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "For evaluation on OmanicBench, we report three complementary metrics across two evaluation paradigms.",
+    "char_start": 11179,
+    "char_end": 11280,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "For the multiple-choice question setting, we use Multiple-Choice Question(MCQ) accuracy , which measures selection accuracy over four candidate options.",
+    "char_start": 11281,
+    "char_end": 11433,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "For the open-ended generation setting, we report Exact Match (EM), which requires strict string equivalence with the gold answer, and F1-Score, which captures partial credit at the token level .",
+    "char_start": 11434,
+    "char_end": 11628,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "[h]\n\nfigure/radar_chart.png\nComparison of accuracy across benchmarks between the vanilla model and its counterparts fine-tuned on OmanicSynth.",
+    "char_start": 11630,
+    "char_end": 11772,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "-4mm\n\nTable presents the overall performance of all evaluated models on OmanicBench.",
+    "char_start": 11774,
+    "char_end": 11858,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "Proprietary LLMs consistently outperform open-source counterparts, and CoT prompting yields notable gains across all proprietary models on MCQ.",
+    "char_start": 11859,
+    "char_end": 12002,
+    "sentence_index": 69,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Among proprietary models, Claude-Sonnet-4.6$_ CoT $ achieves the highest MCQ accuracy (73.11), while Qwen3-Max$_ CoT $ leads in open-ended generation.",
+    "char_start": 12003,
+    "char_end": 12153,
+    "sentence_index": 70,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "For open-source models, after training on OmanicSynth, we observe substantial improvements across all fine-tuned models (e.g., Qwen3-8B MCQ: 25.65 $ $ 53.77), confirming that OmanicBench poses a genuine challenge for current LLMs while remaining amenable to targeted training.",
+    "char_start": 12154,
+    "char_end": 12430,
+    "sentence_index": 71,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "Notably, we also compare the output length, as shown in Table , the performance gains from CoT for some models come at substantially higher inference costs.",
+    "char_start": 12431,
+    "char_end": 12587,
+    "sentence_index": 72,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "While Qwen3-Max$_ CoT $ achieves the best open-ended performance, its output token length far exceeds that of all other models.",
+    "char_start": 12588,
+    "char_end": 12715,
+    "sentence_index": 73,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "In contrast, GPT-5.4$_ CoT $ is considerably more efficient in practice.",
+    "char_start": 12716,
+    "char_end": 12788,
+    "sentence_index": 74,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "To further assess the transferability of skills acquired from OmanicSynth, we evaluate the fine-tuned models on established reasoning and mathematics benchmarks.",
+    "char_start": 12790,
+    "char_end": 12951,
+    "sentence_index": 75,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "As shown in Figure , fine-tuned models consistently outperform their vanilla counterparts, demonstrating that OmanicSynth comprises high-quality, non-trivial instances that cultivate genuine complex logical reasoning and mathematical reasoning capabilities rather than superficial pattern matching or factual knowledge retrieval alone.",
+    "char_start": 12952,
+    "char_end": 13287,
+    "sentence_index": 76,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "All implementation details are provided in the Appendix .",
+    "char_start": 13288,
+    "char_end": 13345,
+    "sentence_index": 77,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "Beyond aggregate performance, the step-level annotations in OmanicBench allow us to quantitatively examine two research questions about multi-hop reasoning behavior.",
+    "char_start": 13347,
+    "char_end": 13512,
+    "sentence_index": 78,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "[b]\n\nfigure/combined_analysis.png\n\nResults averaged across LLMs under Direct and CoT prompting.",
+    "char_start": 13514,
+    "char_end": 13609,
+    "sentence_index": 79,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "Left: Multi-hop accuracy by number of single-hop errors.",
+    "char_start": 13610,
+    "char_end": 13666,
+    "sentence_index": 80,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "Right: Step-wise error rates under independent and chain evaluation.",
+    "char_start": 13667,
+    "char_end": 13735,
+    "sentence_index": 81,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "-3mm\n\nRQ1: To what extent does CoT rely on a sufficient knowledge foundation?",
+    "char_start": 13737,
+    "char_end": 13814,
+    "sentence_index": 82,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "To investigate this question, we group multi-hop questions by the number of constituent single-hop questions answered incorrectly, and then measure multi-hop accuracy within each group.",
+    "char_start": 13815,
+    "char_end": 14000,
+    "sentence_index": 83,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "As shown in Figure (left), even in the zero-error group, multi-hop accuracy under Direct prompting reaches only about 60\\%, well below ceiling, indicating that multi-hop reasoning and single-hop knowledge retrieval are not equivalent.",
+    "char_start": 14001,
+    "char_end": 14235,
+    "sentence_index": 84,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec007",
+    "text": "Meanwhile, CoT gain decreases monotonically as the number of erroneous single-hop steps increases, dropping to near zero ($-$0.7) when three steps are incorrect, while the largest gain (+21.9) is observed in the zero-error group.",
+    "char_start": 14236,
+    "char_end": 14465,
+    "sentence_index": 85,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec007",
+    "text": "These results quantify a clear knowledge floor on OmanicBench: effective CoT requires sufficient factual grounding, sharpening compositional inference but not substituting for missing facts.",
+    "char_start": 14466,
+    "char_end": 14656,
+    "sentence_index": 86,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec007",
+    "text": "RQ2: To what extent do errors amplify toward the end of a multi-hop reasoning chain?",
+    "char_start": 14658,
+    "char_end": 14742,
+    "sentence_index": 87,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec007",
+    "text": "To quantify this effect, we compare two evaluation protocols: independent evaluation, where each step receives the gold answer to prior single-hop questions; and chain evaluation, where answers from previous steps propagate to subsequent steps.",
+    "char_start": 14743,
+    "char_end": 14987,
+    "sentence_index": 88,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec007",
+    "text": "As shown in Figure (right), even under independent evaluation, Step 4 already exhibits a substantially higher error rate than earlier steps, revealing an inherent difficulty gradient in OmanicBench beyond pure propagation effects.",
+    "char_start": 14988,
+    "char_end": 15218,
+    "sentence_index": 89,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec007",
+    "text": "Under chain evaluation, errors compound: Step 4 reaches a 33.0\\% error rate under Direct prompting, 4.7 points higher than under independent evaluation.",
+    "char_start": 15219,
+    "char_end": 15371,
+    "sentence_index": 90,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec007",
+    "text": "While CoT reduces absolute error rates at every step, the amplification pattern remains intact, suggesting that sequential multi-hop inference is intrinsically more fragile in later hops.",
+    "char_start": 15372,
+    "char_end": 15559,
+    "sentence_index": 91,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec007",
+    "text": "Taken together, these analyses show that OmanicBench is not only a benchmark for end-to-end accuracy, but also a diagnostic testbed for quantifying where reasoning breaks down and how strongly errors compound across hops.",
+    "char_start": 15560,
+    "char_end": 15781,
+    "sentence_index": 92,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "We present Omanic, an open-domain multi-hop QA benchmark integrating mathematical reasoning and factual inference, with decomposed single-hop sub-questions as reasoning annotations.",
+    "char_start": 15783,
+    "char_end": 15964,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "Analysis shows that CoT gains depend on factual completeness and that errors propagate along the reasoning chain.",
+    "char_start": 15965,
+    "char_end": 16078,
+    "sentence_index": 94,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "We release Omanic as a diagnostic benchmark to facilitate future research on multi-hop reasoning.",
+    "char_start": 16079,
+    "char_end": 16176,
+    "sentence_index": 95,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Omanic has several limitations that suggest directions for future work.",
+    "char_start": 16178,
+    "char_end": 16249,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "First, the benchmark is restricted to English only, limiting its applicability to multilingual reasoning evaluation.",
+    "char_start": 16250,
+    "char_end": 16366,
+    "sentence_index": 97,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "Second, while 4-hop questions represent a meaningful increase in complexity over existing 2-hop benchmarks, extending to longer reasoning chains (e.g., 6-hop or 8-hop) would further test the limits of compositional reasoning.",
+    "char_start": 16367,
+    "char_end": 16592,
+    "sentence_index": 98,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "Third, although Omanic spans eight knowledge domains, certain specialized domains (e.g., legal, biomedical) remain underrepresented.",
+    "char_start": 16593,
+    "char_end": 16725,
+    "sentence_index": 99,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "Fourth, the dataset scale (10,296 training and 967 test instances) is moderate; scaling up through broader knowledge graph coverage could improve both training utility and evaluation robustness\n\ncustom\n\nWe recruit 10 undergraduate and graduate students to conduct the human correction and scoring process.",
+    "char_start": 16726,
+    "char_end": 17031,
+    "sentence_index": 100,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "To ensure ethical research practices, all annotators are compensated at a rate exceeding the local minimum wage.",
+    "char_start": 17032,
+    "char_end": 17144,
+    "sentence_index": 101,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "The entire project encompasses a cumulative total of 200 person-hours.",
+    "char_start": 17145,
+    "char_end": 17215,
+    "sentence_index": 102,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "The detailed human annotation guidance is listed in the following:\n\nFor single-hop questions:\n\n[leftmargin=15pt]\nFactuality and Accuracy : This criterion assesses the truthfulness and precision of the question-answer pair within real-world contexts, specific subject areas, or the provided knowledge source.",
+    "char_start": 17216,
+    "char_end": 17523,
+    "sentence_index": 103,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nCore Element Extraction.",
+    "char_start": 17524,
+    "char_end": 17602,
+    "sentence_index": 104,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "Identify key entities (names, locations, events, dates) and logical relationships in the question.",
+    "char_start": 17603,
+    "char_end": 17701,
+    "sentence_index": 105,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "Cross-Source Verification.",
+    "char_start": 17702,
+    "char_end": 17728,
+    "sentence_index": 106,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "Verify each entity's attributes using reliable databases, encyclopedias, or authoritative references.",
+    "char_start": 17729,
+    "char_end": 17830,
+    "sentence_index": 107,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": "Terminology and Value Audit.",
+    "char_start": 17831,
+    "char_end": 17859,
+    "sentence_index": 108,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "Check that specialized terms are spelled correctly and that any numerical computations are error-free.",
+    "char_start": 17860,
+    "char_end": 17962,
+    "sentence_index": 109,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 17963,
+    "char_end": 17977,
+    "sentence_index": 110,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "Assign a score based on the number and severity of errors (critical vs.\\ minor).",
+    "char_start": 17978,
+    "char_end": 18058,
+    "sentence_index": 111,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : All key terms, concepts, dates, and numerical values are entirely accurate.",
+    "char_start": 18060,
+    "char_end": 18169,
+    "sentence_index": 112,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "The content is supported by authoritative evidence, remains free of \"hallucinations\" or misleading information, and utilizes precise terminology consistent with field conventions.",
+    "char_start": 18170,
+    "char_end": 18349,
+    "sentence_index": 113,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "4 (Good) : Most facts are accurate, with only minor flaws in non-core details that do not hinder overall understanding.",
+    "char_start": 18350,
+    "char_end": 18469,
+    "sentence_index": 114,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "Terminology is generally correct, though it may be slightly simplified while remaining acceptable within the domain.",
+    "char_start": 18470,
+    "char_end": 18586,
+    "sentence_index": 115,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : Core facts are fundamentally correct, but errors exist that could lead to partial misunderstanding.",
+    "char_start": 18587,
+    "char_end": 18705,
+    "sentence_index": 116,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Some key terms may be poorly translated or expressed, requiring the reader to infer the true intent based on common sense.",
+    "char_start": 18706,
+    "char_end": 18828,
+    "sentence_index": 117,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "2 (Poor) : Multiple critical facts or numerical values are incorrect, significantly impacting the understanding of the problem.",
+    "char_start": 18829,
+    "char_end": 18956,
+    "sentence_index": 118,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Evident misuse of terminology or factual conflicts severely damages the professionalism of the content.",
+    "char_start": 18957,
+    "char_end": 19060,
+    "sentence_index": 119,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : Contains severe factual errors, false statements, or entirely fabricated \"hallucinations.\" The question and answer fail to correspond, or most content contradicts known facts.",
+    "char_start": 19061,
+    "char_end": 19252,
+    "sentence_index": 120,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Distractor Quality : This criterion evaluates whether the three incorrect options (distractors) are sufficiently deceptive and belong to a plausible logical category.",
+    "char_start": 19254,
+    "char_end": 19420,
+    "sentence_index": 121,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nCategory Consistency Check.",
+    "char_start": 19421,
+    "char_end": 19502,
+    "sentence_index": 122,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "Verify that all distractors belong to the same logical category as the correct answer (e.g., if the answer is a location, distractors must also be locations).",
+    "char_start": 19503,
+    "char_end": 19661,
+    "sentence_index": 123,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "Domain Relevance Analysis.",
+    "char_start": 19662,
+    "char_end": 19688,
+    "sentence_index": 124,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "Assess whether distractors share geographic, temporal, or thematic proximity with the correct answer within the same domain.",
+    "char_start": 19689,
+    "char_end": 19813,
+    "sentence_index": 125,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "Trap Logic Identification.",
+    "char_start": 19814,
+    "char_end": 19840,
+    "sentence_index": 126,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "Examine whether distractors exploit plausible intermediate-step errors or common over-simplifications (e.g., arithmetic near-misses or temporally adjacent entities).",
+    "char_start": 19841,
+    "char_end": 20006,
+    "sentence_index": 127,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 20007,
+    "char_end": 20021,
+    "sentence_index": 128,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "Assign a score: if distractors are nearly indistinguishable without full reasoning, score 5; if they span unrelated categories, score 1--2.",
+    "char_start": 20022,
+    "char_end": 20161,
+    "sentence_index": 129,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Highly Deceptive) : All distractors belong to the same domain.",
+    "char_start": 20163,
+    "char_end": 20246,
+    "sentence_index": 130,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "Numerical options represent logical \"traps\" (e.g., calculation near-misses), while semantic options consist of easily confused synonyms, similar institutions, or entities derived from intermediate reasoning steps.",
+    "char_start": 20247,
+    "char_end": 20460,
+    "sentence_index": 131,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "4 (Effective) : Distractors are within a reasonable scope (e.g., for a question about Europe, all distractors are European).",
+    "char_start": 20461,
+    "char_end": 20585,
+    "sentence_index": 132,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "The format is highly consistent with the answer, making them impossible to exclude via simple word-class or logical loopholes.",
+    "char_start": 20586,
+    "char_end": 20712,
+    "sentence_index": 133,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "3 (Moderate) : Distractors share attributes with the answer (e.g., both are years or locations), but one or two options can be quickly excluded using general knowledge or obvious context clues.",
+    "char_start": 20713,
+    "char_end": 20906,
+    "sentence_index": 134,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "2 (Weak) : Distractors belong to the same broad category but possess obvious attribute differences (e.g., asking for a university name while providing a country name as a distractor) or inconsistent formatting.",
+    "char_start": 20907,
+    "char_end": 21117,
+    "sentence_index": 135,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec010",
+    "text": "1 (Non-existent) : Distractors are completely irrelevant or cross-domain (e.g., a \"year\" question with \"apple\" as an option).",
+    "char_start": 21118,
+    "char_end": 21243,
+    "sentence_index": 136,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "These are illogical \"fillers\" that can be instantly identified.",
+    "char_start": 21244,
+    "char_end": 21307,
+    "sentence_index": 137,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "Fluency and Completeness : This criterion evaluates whether the language is natural, the logic is clear, the grammar is correct, and all necessary constraints for a unique answer are provided.",
+    "char_start": 21309,
+    "char_end": 21501,
+    "sentence_index": 138,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nNaturalness First-Read.",
+    "char_start": 21502,
+    "char_end": 21579,
+    "sentence_index": 139,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec010",
+    "text": "Read the question as a native speaker, checking for awkward phrasing, inverted word order, or logical discontinuities---paying special attention to subordinate clauses and pronoun references in longer sentences.",
+    "char_start": 21580,
+    "char_end": 21791,
+    "sentence_index": 140,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec010",
+    "text": "Constraint Completeness Scan.",
+    "char_start": 21792,
+    "char_end": 21821,
+    "sentence_index": 141,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec010",
+    "text": "Verify that the question stem contains every constraint necessary to derive a unique correct answer (e.g., specific years, inclusive/exclusive conditions).",
+    "char_start": 21822,
+    "char_end": 21977,
+    "sentence_index": 142,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec010",
+    "text": "Grammar and Spelling Check.",
+    "char_start": 21978,
+    "char_end": 22005,
+    "sentence_index": 143,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec010",
+    "text": "Inspect punctuation, capitalization of proper nouns, and tense consistency.",
+    "char_start": 22006,
+    "char_end": 22081,
+    "sentence_index": 144,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 22082,
+    "char_end": 22096,
+    "sentence_index": 145,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec010",
+    "text": "Assign a score: flawless grammar with a self-contained information loop scores 5; translation artifacts or missing critical constraints lower the score accordingly.",
+    "char_start": 22097,
+    "char_end": 22261,
+    "sentence_index": 146,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : Expression is extremely natural and smooth, fully adhering to native usage habits.",
+    "char_start": 22263,
+    "char_end": 22379,
+    "sentence_index": 147,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec010",
+    "text": "The structure is rigorous with appropriate logical connectives and zero grammatical errors.",
+    "char_start": 22380,
+    "char_end": 22471,
+    "sentence_index": 148,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec010",
+    "text": "All original details and necessary constraints are preserved without omission.",
+    "char_start": 22472,
+    "char_end": 22550,
+    "sentence_index": 149,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec010",
+    "text": "4 (Good) : Expression is basically natural with only minor linguistic flaws.",
+    "char_start": 22551,
+    "char_end": 22627,
+    "sentence_index": 150,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec010",
+    "text": "The main meaning is preserved, though some non-critical descriptive details may be missing.",
+    "char_start": 22628,
+    "char_end": 22719,
+    "sentence_index": 151,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec010",
+    "text": "Sentence structures follow standard norms with negligible errors.",
+    "char_start": 22720,
+    "char_end": 22785,
+    "sentence_index": 152,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : Expression is slightly rigid or exhibits a \"translation-ese\" tone.",
+    "char_start": 22786,
+    "char_end": 22871,
+    "sentence_index": 153,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec010",
+    "text": "While the core meaning is conveyed, it may omit some important constraints or include irrelevant information; grammar errors are present but the meaning remains clear.",
+    "char_start": 22872,
+    "char_end": 23039,
+    "sentence_index": 154,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec010",
+    "text": "2 (Poor) : Lacks fluency with abrupt transitions and unclear logical connections.",
+    "char_start": 23040,
+    "char_end": 23121,
+    "sentence_index": 155,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec010",
+    "text": "Core information is incomplete, containing significant omissions or serious errors that affect the ability to judge the correct answer.",
+    "char_start": 23122,
+    "char_end": 23257,
+    "sentence_index": 156,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : Language is extremely unnatural or unintelligible, containing severe grammatical and logical errors.",
+    "char_start": 23258,
+    "char_end": 23374,
+    "sentence_index": 157,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec010",
+    "text": "The content organization is chaotic and fails to reflect the original intent of the question.",
+    "char_start": 23375,
+    "char_end": 23468,
+    "sentence_index": 158,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec010",
+    "text": "For 4-hop questions:\n\n[leftmargin=15pt]\nLogical Integrity and Technical Formatting : This criterion evaluates the structural rigor of the multi-hop reasoning chain and the standardized use of LaTeX, technical terminology, and code formatting.",
+    "char_start": 23470,
+    "char_end": 23712,
+    "sentence_index": 159,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nLogic Chain Decomposition.",
+    "char_start": 23713,
+    "char_end": 23793,
+    "sentence_index": 160,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec010",
+    "text": "Break the multi-hop question into an explicit path $A B C D$ and identify each intermediate node.",
+    "char_start": 23794,
+    "char_end": 23891,
+    "sentence_index": 161,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec010",
+    "text": "Input--Output Matching.",
+    "char_start": 23892,
+    "char_end": 23915,
+    "sentence_index": 162,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec010",
+    "text": "Verify that the output of each preceding hop is correctly used as the input condition for the subsequent hop.",
+    "char_start": 23916,
+    "char_end": 24025,
+    "sentence_index": 163,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec010",
+    "text": "Symbol and Code Audit.",
+    "char_start": 24026,
+    "char_end": 24048,
+    "sentence_index": 164,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec010",
+    "text": "Check that all LaTeX formulas, mathematical notation, currency symbols, and code blocks are correctly rendered and unaltered.",
+    "char_start": 24049,
+    "char_end": 24174,
+    "sentence_index": 165,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec010",
+    "text": "Consistency Determination.",
+    "char_start": 24175,
+    "char_end": 24201,
+    "sentence_index": 166,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec010",
+    "text": "Confirm that the logic chain forms a closed loop with no breaks or circular reasoning.",
+    "char_start": 24202,
+    "char_end": 24288,
+    "sentence_index": 167,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : The reasoning chain is perfectly airtight without gaps or circularity.",
+    "char_start": 24290,
+    "char_end": 24394,
+    "sentence_index": 168,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec010",
+    "text": "All LaTeX symbols, mathematical formulas, and currency signs (\\$) are technically flawless and correctly rendered.",
+    "char_start": 24395,
+    "char_end": 24509,
+    "sentence_index": 169,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec010",
+    "text": "4 (Good) : The logical chain is complete and sound, though the natural language transitions between hops may feel slightly rigid.",
+    "char_start": 24510,
+    "char_end": 24639,
+    "sentence_index": 170,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec010",
+    "text": "Technical formatting is basically standardized with only negligible layout flaws.",
+    "char_start": 24640,
+    "char_end": 24721,
+    "sentence_index": 171,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : A minor logical flaw exists (e.g., ambiguous pronoun reference like \"the artist\" when multiple artists are mentioned), requiring the reader to re-read to clarify the steps.",
+    "char_start": 24722,
+    "char_end": 24913,
+    "sentence_index": 172,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec010",
+    "text": "Terminology or LaTeX symbols may show slight formatting deviations.",
+    "char_start": 24914,
+    "char_end": 24981,
+    "sentence_index": 173,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec010",
+    "text": "2 (Poor) : Relationships between multiple hops are unclear, or critical premises are lost due to poor phrasing, preventing a successful logical \"closed-loop.\" Formatting is chaotic, with LaTeX symbols or code blocks appearing garbled.",
+    "char_start": 24982,
+    "char_end": 25216,
+    "sentence_index": 174,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : The logical chain is entirely broken or results in a paradox (e.g., asking for a \"year\" but requiring a \"monetary amount\" as the answer).",
+    "char_start": 25217,
+    "char_end": 25370,
+    "sentence_index": 175,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec010",
+    "text": "Terminology is highly unprofessional, and formatting has completely collapsed.",
+    "char_start": 25371,
+    "char_end": 25449,
+    "sentence_index": 176,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec010",
+    "text": "Contextual Fact Consistency : This criterion verifies whether all single-hop facts remain factually accurate and conflict-free when amalgamated into a multi-hop narrative.",
+    "char_start": 25451,
+    "char_end": 25622,
+    "sentence_index": 177,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nAtomic Fact Backtracking.",
+    "char_start": 25623,
+    "char_end": 25702,
+    "sentence_index": 178,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec010",
+    "text": "Compare each background claim in the multi-hop question (e.g., a date, a title, a numeric value) against the original single-hop data.",
+    "char_start": 25703,
+    "char_end": 25837,
+    "sentence_index": 179,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec010",
+    "text": "Spatiotemporal Conflict Detection.",
+    "char_start": 25838,
+    "char_end": 25872,
+    "sentence_index": 180,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec010",
+    "text": "Verify that the combined timeline is logically coherent (e.g., an appointment in 1877 requires the predecessor's tenure to overlap or precede that date).",
+    "char_start": 25873,
+    "char_end": 26026,
+    "sentence_index": 181,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec010",
+    "text": "Modifier Verification.",
+    "char_start": 26027,
+    "char_end": 26049,
+    "sentence_index": 182,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec010",
+    "text": "Check whether qualifiers added during composition (e.g., ``the large art school'') inadvertently alter the original meaning.",
+    "char_start": 26050,
+    "char_end": 26174,
+    "sentence_index": 183,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 26175,
+    "char_end": 26189,
+    "sentence_index": 184,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec010",
+    "text": "If all intermediate-node facts are correct and transitions are natural, assign the full score.",
+    "char_start": 26190,
+    "char_end": 26284,
+    "sentence_index": 185,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : All integrated facts (dates, locations, values) are logically consistent with one another and the real-world background.",
+    "char_start": 26286,
+    "char_end": 26440,
+    "sentence_index": 186,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec010",
+    "text": "The combined scenario is realistic (e.g., a museum established in 2000 is correctly described as existing in 2005).",
+    "char_start": 26441,
+    "char_end": 26556,
+    "sentence_index": 187,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec010",
+    "text": "4 (Good) : Core facts are accurate, but minor descriptive biases in non-essential details (e.g., secondary institutional titles or honorifics) occur during amalgamation without affecting the final answer.",
+    "char_start": 26557,
+    "char_end": 26761,
+    "sentence_index": 188,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : Core facts remain fundamentally correct, but the timeline or logical background across hops feels slightly \"awkward\" or strained, though no direct factual conflict is present.",
+    "char_start": 26762,
+    "char_end": 26956,
+    "sentence_index": 189,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec010",
+    "text": "2 (Poor) : Significant factual flaws appear in intermediate steps (e.g., a single-hop answer is \"11 years\" but is treated as \"12 years\" during the multi-hop calculation), rendering the final result unreliable.",
+    "char_start": 26957,
+    "char_end": 27166,
+    "sentence_index": 190,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : A severe factual error exists in at least one intermediate step, or the timeline is logically impossible (e.g., a divorce occurring before the marriage).",
+    "char_start": 27167,
+    "char_end": 27336,
+    "sentence_index": 191,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec010",
+    "text": "Answer Obscurity and Leakage Prevention : This criterion evaluates whether the question stem accidentally reveals the final answer or if the reasoning steps provide a sufficient challenge.",
+    "char_start": 27338,
+    "char_end": 27526,
+    "sentence_index": 192,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nKeyword Filtering.",
+    "char_start": 27527,
+    "char_end": 27599,
+    "sentence_index": 193,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec010",
+    "text": "Search the question stem for the final answer itself or any strongly characteristic cues that directly point to it.",
+    "char_start": 27600,
+    "char_end": 27715,
+    "sentence_index": 194,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec010",
+    "text": "Shortcut Test.",
+    "char_start": 27716,
+    "char_end": 27730,
+    "sentence_index": 195,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec010",
+    "text": "Attempt to reach the correct answer without completing the intermediate hops---relying only on the final segment of the question or general knowledge.",
+    "char_start": 27731,
+    "char_end": 27881,
+    "sentence_index": 196,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec010",
+    "text": "Distractor Elimination Check.",
+    "char_start": 27882,
+    "char_end": 27911,
+    "sentence_index": 197,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec010",
+    "text": "Assess whether the stem provides enough non-logical information to rule out all incorrect options without genuine reasoning.",
+    "char_start": 27912,
+    "char_end": 28036,
+    "sentence_index": 198,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 28037,
+    "char_end": 28051,
+    "sentence_index": 199,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec010",
+    "text": "If every reasoning step is indispensable for reaching the answer, score 5; if the final segment alone makes the answer obvious, lower the score accordingly.",
+    "char_start": 28052,
+    "char_end": 28208,
+    "sentence_index": 200,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : No leakage.",
+    "char_start": 28210,
+    "char_end": 28255,
+    "sentence_index": 201,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec010",
+    "text": "The solver must complete every reasoning step to find the answer.",
+    "char_start": 28256,
+    "char_end": 28321,
+    "sentence_index": 202,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec010",
+    "text": "The final answer or its distinct characteristics do not appear, directly or indirectly, within the question stem.",
+    "char_start": 28322,
+    "char_end": 28435,
+    "sentence_index": 203,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec010",
+    "text": "4 (Good) : The reasoning chain is intact, though some background descriptions might allow a model to narrow down the answer range via a process of elimination rather than pure deduction.",
+    "char_start": 28436,
+    "char_end": 28622,
+    "sentence_index": 204,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : Partial leakage occurs.",
+    "char_start": 28623,
+    "char_end": 28665,
+    "sentence_index": 205,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec010",
+    "text": "Certain phrasing is too direct (e.g., mentioning a highly unique year or rare proper noun), allowing experienced annotators or models to \"guess\" the answer via shortcuts or common sense.",
+    "char_start": 28666,
+    "char_end": 28852,
+    "sentence_index": 206,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec010",
+    "text": "2 (Poor) : The question contains obvious hints that make the reasoning chain significantly easier to bypass.",
+    "char_start": 28853,
+    "char_end": 28961,
+    "sentence_index": 207,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : Direct leakage.",
+    "char_start": 28962,
+    "char_end": 28993,
+    "sentence_index": 208,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec010",
+    "text": "The final answer appears within the multi-hop description, or the question is phrased in a way that renders the logical steps meaningless.",
+    "char_start": 28994,
+    "char_end": 29132,
+    "sentence_index": 209,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec010",
+    "text": "Semantic Completeness and Linguistic Fluency : This criterion evaluates the retention of all necessary constraints and the naturalness of the linguistic expression.",
+    "char_start": 29134,
+    "char_end": 29298,
+    "sentence_index": 210,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nGrammar and Rhetoric Scan.",
+    "char_start": 29299,
+    "char_end": 29379,
+    "sentence_index": 211,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec010",
+    "text": "Check long, complex sentences for grammatical errors and ambiguous references (e.g., multiple uses of ``the artist'' when several artists are mentioned).",
+    "char_start": 29380,
+    "char_end": 29533,
+    "sentence_index": 212,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec010",
+    "text": "Constraint Condition Checklist.",
+    "char_start": 29534,
+    "char_end": 29565,
+    "sentence_index": 213,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec010",
+    "text": "Confirm that all critical constraints from the single-hop questions (e.g., ``since 1855,'' ``prior to'') are faithfully carried over into the multi-hop question.",
+    "char_start": 29566,
+    "char_end": 29727,
+    "sentence_index": 214,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec010",
+    "text": "Logical Connector Check.",
+    "char_start": 29728,
+    "char_end": 29752,
+    "sentence_index": 215,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec010",
+    "text": "Verify that connectors such as ``prior to,'' ``who,'' and ``where'' accurately reflect the inter-hop relationships.",
+    "char_start": 29753,
+    "char_end": 29868,
+    "sentence_index": 216,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec010",
+    "text": "Final Scoring.",
+    "char_start": 29869,
+    "char_end": 29883,
+    "sentence_index": 217,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec010",
+    "text": "A question that reads fluently and preserves all constraints scores 5; noticeable ``translation-ese'' or ambiguous references lower the score to 3 or below.",
+    "char_start": 29884,
+    "char_end": 30040,
+    "sentence_index": 218,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : All necessary constraints (e.g., specific year ranges, \"inclusive,\" rounding requirements) are perfectly preserved.",
+    "char_start": 30042,
+    "char_end": 30191,
+    "sentence_index": 219,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec010",
+    "text": "The language is natural, smooth, and adheres to native-speaker habits with precise logical connectives.",
+    "char_start": 30192,
+    "char_end": 30295,
+    "sentence_index": 220,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec010",
+    "text": "4 (Good) : Constraints are complete, but the phrasing is slightly wordy.",
+    "char_start": 30296,
+    "char_end": 30368,
+    "sentence_index": 221,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec010",
+    "text": "Language is fluent, though the choice of logical connectors (e.g., \"prior to,\" \"who\") may be repetitive.",
+    "char_start": 30369,
+    "char_end": 30473,
+    "sentence_index": 222,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : The core meaning is clear, but some non-essential constraints are omitted (e.g., missing a rounding instruction).",
+    "char_start": 30474,
+    "char_end": 30606,
+    "sentence_index": 223,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec010",
+    "text": "The expression is rigid and exhibits \"translation-ese\" or a formulaic tone.",
+    "char_start": 30607,
+    "char_end": 30682,
+    "sentence_index": 224,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec010",
+    "text": "2 (Poor) : Critical constraints required for derivation are missing, or redundant information is added that interferes with understanding.",
+    "char_start": 30683,
+    "char_end": 30821,
+    "sentence_index": 225,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec010",
+    "text": "Logical connectors are used incorrectly.",
+    "char_start": 30822,
+    "char_end": 30862,
+    "sentence_index": 226,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : Key constraints are missing, making it impossible to determine a unique answer.",
+    "char_start": 30863,
+    "char_end": 30958,
+    "sentence_index": 227,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec010",
+    "text": "The language is broken and the logical relationships are erroneous, making the text unreadable.",
+    "char_start": 30959,
+    "char_end": 31054,
+    "sentence_index": 228,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec010",
+    "text": "Reasoning Complexity and Domain Diversity : This criterion measures the degree of cross-domain complexity and the depth of the logical jumps.",
+    "char_start": 31056,
+    "char_end": 31197,
+    "sentence_index": 229,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec010",
+    "text": "Annotators follow four steps:\n[leftmargin=15pt,nosep]\nDomain Counting.",
+    "char_start": 31198,
+    "char_end": 31268,
+    "sentence_index": 230,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec010",
+    "text": "Identify the number of distinct knowledge domains spanned by the question (e.g., Literature, Geography, Art History, Arithmetic).",
+    "char_start": 31269,
+    "char_end": 31398,
+    "sentence_index": 231,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec010",
+    "text": "Hop Counting.",
+    "char_start": 31399,
+    "char_end": 31412,
+    "sentence_index": 232,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec010",
+    "text": "Count the number of explicit logical transitions from the starting entity to the final answer.",
+    "char_start": 31413,
+    "char_end": 31507,
+    "sentence_index": 233,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec010",
+    "text": "Depth and Dependency Analysis.",
+    "char_start": 31508,
+    "char_end": 31538,
+    "sentence_index": 234,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec010",
+    "text": "Determine whether each hop requires domain-specific knowledge that cannot be bypassed through common sense alone.",
+    "char_start": 31539,
+    "char_end": 31652,
+    "sentence_index": 235,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec010",
+    "text": "Level Determination.",
+    "char_start": 31653,
+    "char_end": 31673,
+    "sentence_index": 236,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec010",
+    "text": "Assign a score based on the number of domains crossed (4+ domains = top tier) and the number of non-trivial hops.",
+    "char_start": 31674,
+    "char_end": 31787,
+    "sentence_index": 237,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec010",
+    "text": "[leftmargin=10pt]\n5 (Excellent) : The logical chain spans 4 or more distinct domains (e.g., Art History $ $ Geography $ $ Law $ $ Financial Arithmetic).",
+    "char_start": 31789,
+    "char_end": 31941,
+    "sentence_index": 238,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec010",
+    "text": "Each step is strictly dependent on the previous one and cannot be bypassed via common sense.",
+    "char_start": 31942,
+    "char_end": 32034,
+    "sentence_index": 239,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec010",
+    "text": "4 (Good) : The logic spans 3 distinct domains and involves at least 4 explicit logical jumps.",
+    "char_start": 32035,
+    "char_end": 32128,
+    "sentence_index": 240,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec010",
+    "text": "3 (Satisfactory) : The reasoning chain involves 3 or more deep logical steps within at least 2 distinct domains.",
+    "char_start": 32129,
+    "char_end": 32241,
+    "sentence_index": 241,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec010",
+    "text": "It effectively distinguishes models with single-domain knowledge.",
+    "char_start": 32242,
+    "char_end": 32307,
+    "sentence_index": 242,
+    "section_sentence_index": 141
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec010",
+    "text": "2 (Poor) : The chain involves 2 domains but only 1\u20132 simple logical jumps, or one of the domains relies on common knowledge.",
+    "char_start": 32308,
+    "char_end": 32432,
+    "sentence_index": 243,
+    "section_sentence_index": 142
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec010",
+    "text": "1 (Very Poor) : \"Pseudo-multi-hop.\" The logic is extremely simple, consisting merely of the additive stacking of facts within the same domain.",
+    "char_start": 32433,
+    "char_end": 32575,
+    "sentence_index": 244,
+    "section_sentence_index": 143
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigure/single.png\nAnnotation interface for single-hop question.",
+    "char_start": 32577,
+    "char_end": 32645,
+    "sentence_index": 245,
+    "section_sentence_index": 144
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigure/4hop.png\nAnnotation interface for 4-hop question.",
+    "char_start": 32647,
+    "char_end": 32708,
+    "sentence_index": 246,
+    "section_sentence_index": 145
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec010",
+    "text": "[t]\n\nlccc\n\n4 c Single-hop Sub-questions\n\n& Factuality & Distractor & Fluency\n\nMean$_ STD $ & $4.62_ 0.54 $ & $4.31_ 0.72 $ & $4.47_ 0.61 $\n\n4 c 4-hop Questions\n\n& Logic & Consistency & Obscurity\n\nMean$_ STD $ & $4.53_ 0.58 $ & $4.41_ 0.65 $ & $4.18_ 0.79 $\n\n& Fluency & Complexity &\n\nMean$_ STD $ & $4.44_ 0.62 $ & $4.56_ 0.53 $ &\n\nHuman annotation scores on a 1--5 scale over 967 test instances.",
+    "char_start": 32710,
+    "char_end": 33106,
+    "sentence_index": 247,
+    "section_sentence_index": 146
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec010",
+    "text": "Each cell reports the mean score with the standard deviation in subscript (mean$_ std $).",
+    "char_start": 33107,
+    "char_end": 33196,
+    "sentence_index": 248,
+    "section_sentence_index": 147
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec010",
+    "text": "1.25\n\n[t]\n-8pt\n\n8pt\n\n> p 0.18\np 0.28\nY\n\nReasoning Graph & Multi-hop Question & Single-hop Composition\n\n0pt figure/graph2.png\n\n&\n-2.4pt\nIf a political regime began in 1969 and lasted for a number of years equal to 7 times the count of Apollo moon landing missions that occurred during the presidency of Eisenhower's vice president, and if the U.S.",
+    "char_start": 33198,
+    "char_end": 33544,
+    "sentence_index": 249,
+    "section_sentence_index": 148
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec010",
+    "text": "was one of 2 major powers that recognized this regime's leader early on, what was the other major power?",
+    "char_start": 33545,
+    "char_end": 33649,
+    "sentence_index": 250,
+    "section_sentence_index": 149
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec010",
+    "text": "teal Soviet Union\n\n[A: United Kingdom B: France C: Soviet Union D: West Germany]\n\n&\n[leftmargin=*,nosep,topsep=0pt,partopsep=0pt]\nWho served as Eisenhower's vice president?",
+    "char_start": 33650,
+    "char_end": 33822,
+    "sentence_index": 251,
+    "section_sentence_index": 150
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec010",
+    "text": "orange!80!black Nixon\nHow many successful Apollo moon landing missions occurred while orange!80!black Nixon was president of the U.S.?",
+    "char_start": 33823,
+    "char_end": 33957,
+    "sentence_index": 252,
+    "section_sentence_index": 151
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec010",
+    "text": "magenta 6\nIf a political regime lasted for magenta 6 times 7 years starting from 1969, whose face was most closely associated with Libya's government during this period?",
+    "char_start": 33958,
+    "char_end": 34127,
+    "sentence_index": 253,
+    "section_sentence_index": 152
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec010",
+    "text": "blue Gaddafi\nIf the U.S.",
+    "char_start": 34128,
+    "char_end": 34152,
+    "sentence_index": 254,
+    "section_sentence_index": 153
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec010",
+    "text": "was one major power that recognized blue Gaddafi 's government at an early date, and there were 2 major powers total that did so early on, what was the other major power besides the U.S.?",
+    "char_start": 34153,
+    "char_end": 34340,
+    "sentence_index": 255,
+    "section_sentence_index": 154
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec010",
+    "text": "teal Soviet Union\n\n[-6pt]\n\n0pt figure/graph3.png\n\n&\n-2.0pt\nGreat American Ball Park is the home stadium of an MLB team that has won the World Series multiple times.",
+    "char_start": 34341,
+    "char_end": 34505,
+    "sentence_index": 256,
+    "section_sentence_index": 155
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec010",
+    "text": "Multiply their total championship count by the number of players permanently banned for fixing the 1919 World Series in the Black Sox Scandal.",
+    "char_start": 34506,
+    "char_end": 34648,
+    "sentence_index": 257,
+    "section_sentence_index": 156
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec010",
+    "text": "The carrier named after the president with that ordinal number replaced which vessel at Naval Station Yokosuka, Japan, in 2015?",
+    "char_start": 34649,
+    "char_end": 34776,
+    "sentence_index": 258,
+    "section_sentence_index": 157
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec010",
+    "text": "teal USS George Washington\n\n[A: USS Nimitz B: USS Carl Vinson C: USS George Washington D: USS John C.",
+    "char_start": 34777,
+    "char_end": 34878,
+    "sentence_index": 259,
+    "section_sentence_index": 158
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec010",
+    "text": "Stennis]\n\n&\n\n[leftmargin=*,nosep,topsep=0pt,partopsep=0pt]\nIn which U.S.",
+    "char_start": 34879,
+    "char_end": 34951,
+    "sentence_index": 260,
+    "section_sentence_index": 159
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec010",
+    "text": "city is Great American Ball Park located?",
+    "char_start": 34952,
+    "char_end": 34993,
+    "sentence_index": 261,
+    "section_sentence_index": 160
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec010",
+    "text": "orange!80!black Cincinnati\nHow many World Series championships have the Cincinnati Reds won in total?",
+    "char_start": 34994,
+    "char_end": 35095,
+    "sentence_index": 262,
+    "section_sentence_index": 161
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec010",
+    "text": "magenta 5\nEight Chicago White Sox players were permanently banned from baseball for their role in fixing the 1919 World Series (the Black Sox Scandal).",
+    "char_start": 35096,
+    "char_end": 35247,
+    "sentence_index": 263,
+    "section_sentence_index": 162
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec010",
+    "text": "Multiply this number by the orange!80!black Cincinnati Reds' total World Series championships ( magenta 5 ).",
+    "char_start": 35248,
+    "char_end": 35356,
+    "sentence_index": 264,
+    "section_sentence_index": 163
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec010",
+    "text": "Which U.S.",
+    "char_start": 35357,
+    "char_end": 35367,
+    "sentence_index": 265,
+    "section_sentence_index": 164
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec010",
+    "text": "President held the ordinal number equal to this product?",
+    "char_start": 35368,
+    "char_end": 35424,
+    "sentence_index": 266,
+    "section_sentence_index": 165
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec010",
+    "text": "blue Ronald Reagan\nUSS blue Ronald Reagan replaced which aircraft carrier as the U.S.",
+    "char_start": 35425,
+    "char_end": 35510,
+    "sentence_index": 267,
+    "section_sentence_index": 166
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec010",
+    "text": "Navy's forward-deployed vessel at Naval Station Yokosuka, Japan, in 2015?",
+    "char_start": 35511,
+    "char_end": 35584,
+    "sentence_index": 268,
+    "section_sentence_index": 167
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec010",
+    "text": "teal USS George Washington\n\n[-6pt]\n\nExample multi-hop reasoning graph and its step-by-step question decomposition.",
+    "char_start": 35585,
+    "char_end": 35699,
+    "sentence_index": 269,
+    "section_sentence_index": 168
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec010",
+    "text": "[t]\n\n!",
+    "char_start": 35701,
+    "char_end": 35707,
+    "sentence_index": 270,
+    "section_sentence_index": 169
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec010",
+    "text": "lcccccc\n\nDataset & Open Domain & \\# Hops & Explicit step-wise chain & \\# Topologies & Math reasoning & Expert-review\n\nMuSiQue & Yes & 2-4 & No & 3 & No & Yes\n\nFanOutQA & Yes & 5-6 & Yes & 1 & No & Yes\n\nCofCA & Yes & 2-4 & No & 3 & No & No\n\nSynthWorlds & No & 2-4 & No & 3 & No & No\n\nOmanicBench (ours) & Yes & 4 & Yes & 3 & Yes & Yes\n\nQualitative comparison between OmanicBench and representative multi-hop or reasoning benchmarks.",
+    "char_start": 35708,
+    "char_end": 36139,
+    "sentence_index": 271,
+    "section_sentence_index": 170
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec010",
+    "text": "``\\# Hops'' reports the supported hop range; for MuSiQue and CofCA, around 80\\% of the questions are 2-hop.",
+    "char_start": 36140,
+    "char_end": 36247,
+    "sentence_index": 272,
+    "section_sentence_index": 171
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec010",
+    "text": "``Explicit step-wise chain'' indicates whether a benchmark provides explicit step-level annotations, such as decomposed sub-questions and intermediate answers, for diagnosing reasoning failures.",
+    "char_start": 36248,
+    "char_end": 36442,
+    "sentence_index": 273,
+    "section_sentence_index": 172
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec010",
+    "text": "``\\# Topologies'' counts the number of reasoning topologies defined for questions at the maximum hop level of each benchmark.",
+    "char_start": 36443,
+    "char_end": 36568,
+    "sentence_index": 274,
+    "section_sentence_index": 173
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec010",
+    "text": "[t]\n\nc@ 0.8em c@ 0.8em c\nfigure/graph1_.png &\nfigure/graph2_.png &\nfigure/graph3_rot.png\n[6pt]\n(a) Bridge & (b) Chain & (c) Converging\n\nThree reasoning graph topologies used in Omanic for organizing 4-hop questions.",
+    "char_start": 36570,
+    "char_end": 36785,
+    "sentence_index": 275,
+    "section_sentence_index": 174
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigure/domain_distribution.png\nDomain distribution of single-hop sub-questions across OmanicSynth, OmanicBench, and the overall dataset.",
+    "char_start": 36787,
+    "char_end": 36928,
+    "sentence_index": 276,
+    "section_sentence_index": 175
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigure/graph_topology_distribution_combined.png\nReasoning graph topology distribution across OmanicSynth, OmanicBench, and the overall dataset.",
+    "char_start": 36930,
+    "char_end": 37078,
+    "sentence_index": 277,
+    "section_sentence_index": 176
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec011",
+    "text": "For supervised fine-tuning, we construct a mixed training set in which half of the instances are formatted as multi-choice question examples and the other half are formatted as open-ended generation examples.",
+    "char_start": 37080,
+    "char_end": 37288,
+    "sentence_index": 278,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec012",
+    "text": "For Qwen3-8B, we adopt a two-stage training framework: we first perform full-parameter SFT, and then conduct GRPO-based reinforcement learning starting from the fine-tuned model.",
+    "char_start": 37289,
+    "char_end": 37467,
+    "sentence_index": 279,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec012",
+    "text": "For LLaMA-3.3-70B, we perform LoRA-based SFT on the same mixed training data.",
+    "char_start": 37468,
+    "char_end": 37545,
+    "sentence_index": 280,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec012",
+    "text": "All experiments are conducted on four 96GB H100 NVL GPUs, and the detailed training hyperparameters are reported in Tables , , and .",
+    "char_start": 37546,
+    "char_end": 37678,
+    "sentence_index": 281,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec012",
+    "text": "The evaluation templates are summarized in Table .",
+    "char_start": 37679,
+    "char_end": 37729,
+    "sentence_index": 282,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec012",
+    "text": "[h]\n\nlY\n\nSetting & Template\n\nDirect multi-choice question & Select the correct option from four candidates and return only the answer letter (A/B/C/D).",
+    "char_start": 37731,
+    "char_end": 37882,
+    "sentence_index": 283,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec012",
+    "text": "Direct open-ended & Answer as concisely as possible and provide only the final answer without explanation.",
+    "char_start": 37884,
+    "char_end": 37990,
+    "sentence_index": 284,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec012",
+    "text": "CoT multi-choice question & Think step by step and end the response with ``The answer is X'', where X is A, B, C, or D.",
+    "char_start": 37992,
+    "char_end": 38111,
+    "sentence_index": 285,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec012",
+    "text": "CoT open-ended & Think step by step and write the final answer on a separate line in the format ``FINAL ANSWER: <answer>''.",
+    "char_start": 38113,
+    "char_end": 38236,
+    "sentence_index": 286,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec012",
+    "text": "Evaluation templates for direct and CoT prompting.",
+    "char_start": 38238,
+    "char_end": 38288,
+    "sentence_index": 287,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec012",
+    "text": "[h]\n\nlY\n\nParameter & Value\n\nCutoff length & 2048\n\nPer-device batch size & 32\n\nGradient accumulation & 2\n\nLearning rate & $1.0 10^ -5 $\n\nEpochs & 3.0\n\nLR scheduler & Cosine\n\nWarmup ratio & 0.1\n\nPrecision & BF16\n\nHyperparameters for Qwen3-8B Full SFT.",
+    "char_start": 38290,
+    "char_end": 38539,
+    "sentence_index": 288,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec012",
+    "text": "[h]\n\nlY\n\nParameter & Value\n\nTrain batch size & 512\n\nMax prompt length & 1024\n\nMax response length & 1024\n\nActor learning rate & $1.0 10^ -5 $\n\nPPO mini-batch size & 512\n\nPPO micro-batch size / GPU & 32\n\nPPO epochs & 1\n\nKL loss & Enabled\n\nKL coefficient & 0.01\n\nNumber of rollouts & 5\n\nTotal epochs & 3\n\nHyperparameters for Qwen3-8B GRPO training.",
+    "char_start": 38541,
+    "char_end": 38887,
+    "sentence_index": 289,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec012",
+    "text": "[h]\n\nlY\n\nParameter & Value\n\nLoRA rank & 8\n\nCutoff length & 2048\n\nPer-device batch size & 32\n\nGradient accumulation & 2\n\nLearning rate & $1.0 10^ -4 $\n\nEpochs & 3.0\n\nPrecision & BF16\n\nHyperparameters for LLaMA-3.3-70B LoRA SFT.",
+    "char_start": 38889,
+    "char_end": 39115,
+    "sentence_index": 290,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec012",
+    "text": "[h]\n\n!",
+    "char_start": 39117,
+    "char_end": 39123,
+    "sentence_index": 291,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec012",
+    "text": "lrr\n\n& Direct & CoT\n\nOpenAI\n\nGPT-5.4 & 13 & 451\n\nGPT-5.2 & 15 & 502\n\nGPT-5.1 & 12 & 1,126\n\nGPT-4o & 16 & 1,314\n\nAnthropic\n\nClaude-Sonnet-4.6 & 611 & 1,812\n\nClaude-Sonnet-4.5 & 82 & 1,379\n\nClaude-Opus-4.5 & 332 & 1,469\n\nClaude-Opus-4.1 & 196 & 1,221\n\nClaude-Sonnet-4 & 76 & 1,316\n\nClaude-Opus-4 & 112 & 1,223\n\nGoogle\n\nGemini-3.1-flash-Lite & 10 & 1,423\n\nGemini-3-Flash-Preview & 9 & 1,587\n\nGemini-2.5-Flash & 8 & 3,837\n\nGemini-2.5-Flash-Lite & 8 & 6,453\n\nMeta\n\nLLaMA-3.3-70B & 38 & 1,694\n\nLLaMA-3-8B & 22 & 1,469\n\nLLaMA-3-70B & 11 & 735\n\nAlibaba\n\nQwen3-Max & 14 & 4,841\n\nQwen3-32B & 33 & 920\n\nQwen3-8B & 24 & 357\n\nQwen2.5-72B & 12 & 1,260\n\nQwen2.5-7B & 15 & 1,313\n\nDeepSeek\n\nDeepSeek-V3.2 & 11 & 2,548\n\nDeepSeek-R1-Distill-LLaMA-70B & 111 & 652\n\nDeepSeek-R1-Distill-Qwen-32B & 68 & 429\n\nAverage output length under Direct and CoT prompting.",
+    "char_start": 39124,
+    "char_end": 39963,
+    "sentence_index": 292,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec013",
+    "text": "As marked by $^ $ in Table , Claude-Sonnet-4.6 exhibits a unique failure mode under CoT prompting: its MCQ accuracy improves substantially, yet open-ended performance (EM/F1) degrades.",
+    "char_start": 39965,
+    "char_end": 40149,
+    "sentence_index": 293,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec013",
+    "text": "Manual inspection reveals that Claude's CoT responses are substantially longer (avg.",
+    "char_start": 40150,
+    "char_end": 40234,
+    "sentence_index": 294,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec013",
+    "text": "1,812 tokens vs.",
+    "char_start": 40235,
+    "char_end": 40251,
+    "sentence_index": 295,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec013",
+    "text": "GPT-5.4's 451 tokens), with the final answer frequently buried in extended prose rather than presented in an extractable format.",
+    "char_start": 40252,
+    "char_end": 40380,
+    "sentence_index": 296,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec013",
+    "text": "This suggests the degradation reflects an answer extraction failure rather than a reasoning regression, underscoring the importance of evaluating reasoning capability (MCQ) and answer articulation (EM/F1) as complementary, not interchangeable, axes.",
+    "char_start": 40381,
+    "char_end": 40630,
+    "sentence_index": 297,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec013",
+    "text": "[t]\n\n!",
+    "char_start": 40632,
+    "char_end": 40638,
+    "sentence_index": 298,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec013",
+    "text": "lccc\n\n& MCQ & Exact Match & F1-Score\n\nOpenAI\n\nGPT-5.2 & 38.51 & 18.20 & 29.09\n\nsoftpeach\nGPT-5.2$_ CoT $ & 65.98 & 34.13 & 46.93\n\nGPT-5.1 & 39.40 & 18.55 & 26.62\n\nsoftpeach\nGPT-5.1$_ CoT $ & 71.68 & 39.96 & 51.18\n\nGPT-4o & 39.50 & 16.65 & 28.93\n\nsoftpeach\nGPT-4o$_ CoT $ & 66.91 & 37.85 & 47.04\n\nAnthropic\n\nClaude-Sonnet-4.5 & 51.24 & 24.56 & 34.04\n\nsoftpeach\nClaude-Sonnet-4.5$_ CoT $ & 75.88 & 44.40 & 54.89\n\nClaude-Opus-4.5 & 61.97 & 10.17 & 16.00\n\nsoftpeach\nClaude-Opus-4.5$_ CoT $ & 76.68 & 44.50 & 55.44\n\nClaude-Opus-4.1 & 54.40 & 19.31 & 28.50\n\nsoftpeach\nClaude-Opus-4.1$_ CoT $ & 76.95 & 39.75 & 49.81\n\nClaude-Sonnet-4 & 51.40 & 21.92 & 31.80\n\nsoftpeach\nClaude-Sonnet-4$_ CoT $ & 74.15 & 39.09 & 49.40\n\nClaude-Opus-4 & 52.02 & 22.45 & 32.16\n\nsoftpeach\nClaude-Opus-4$_ CoT $ & 73.10 & 40.44 & 50.18\n\nGoogle\n\nGemini-3-Flash-Preview & 67.22 & 21.30 & 31.34\n\nsoftpeach\nGemini-3-Flash-Preview$_ CoT $ & 75.90 & 40.54 & 50.19\n\nGemini-2.5-Flash & 62.77 & 18.20 & 25.10\n\nsoftpeach\nGemini-2.5-Flash$_ CoT $ & 54.60 & 27.71 & 36.55\n\nGemini-2.5-Flash-Lite & 32.68 & 9.31 & 14.04\n\nsoftpeach\nGemini-2.5-Flash-Lite$_ CoT $ & 32.26 & 22.54 & 29.24\n\nExpanded proprietary LLMs results on OmanicBench.",
+    "char_start": 40639,
+    "char_end": 41830,
+    "sentence_index": 299,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec013",
+    "text": "[t]\n\n!",
+    "char_start": 41832,
+    "char_end": 41838,
+    "sentence_index": 300,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec013",
+    "text": "lccc\n\n& MCQ & Exact Match & F1-Score\n\nMeta\n\nLLaMA-3.3-70B & 40.04 & 11.77 & 20.47\n\nsoftpeach\nLLaMA-3.3-70B$_ CoT $ & 59.57 & 31.33 & 39.43\n\nLLaMA-3-8B & 25.23 & 4.96 & 8.78\n\nsoftpeach\nLLaMA-3-8B$_ CoT $ & 42.50 & 16.55 & 22.78\n\nLLaMA-3-70B & 38.47 & 12.10 & 18.84\n\nsoftpeach\nLLaMA-3-70B$_ CoT $ & 57.39 & 29.09 & 37.49\n\nAlibaba\n\nQwen3-32B & 52.22 & 12.10 & 18.35\n\nsoftpeach\nQwen3-32B$_ CoT $ & 54.86 & 30.37 & 38.98\n\nQwen3-8B & 25.65 & 9.26 & 13.77\n\nsoftpeach\nQwen3-8B$_ CoT $ & 56.44 & 21.76 & 29.97\n\nQwen2.5-72B & 42.19 & 13.24 & 19.43\n\nsoftpeach\nQwen2.5-72B$_ CoT $ & 60.81 & 32.06 & 41.31\n\nQwen2.5-7B & 30.51 & 7.76 & 14.31\n\nsoftpeach\nQwen2.5-7B$_ CoT $ & 46.85 & 19.44 & 25.60\n\nDeepSeek\n\nDeepSeek-V3.2 & 43.33 & 12.82 & 19.36\n\nsoftpeach\nDeepSeek-V3.2$_ CoT $ & 70.94 & 35.92 & 46.19\n\nDeepSeek-R1-Distill-LLaMA-70B & 75.92 & 1.72 & 13.71\n\nsoftpeach\nDeepSeek-R1-Distill-LLaMA-70B$_ CoT $ & 72.67 & 41.27 & 51.08\n\nDeepSeek-R1-Distill-Qwen-32B & 69.52 & 11.92 & 22.99\n\nsoftpeach\nDeepSeek-R1-Distill-Qwen-32B$_ CoT $ & 69.29 & 35.51 & 46.00\n\nExpanded Open-source LLMs results on OmanicBench.",
+    "char_start": 41839,
+    "char_end": 42930,
+    "sentence_index": 301,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec014",
+    "text": "For the step-wise error rates under chain evaluation, we exclude single-hop questions that can be answered without relying on preceding steps, since they do not reflect dependency-sensitive error propagation.",
+    "char_start": 42932,
+    "char_end": 43140,
+    "sentence_index": 302,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec014",
+    "text": "For example, under the Bridge topology, the third hop is omitted because it can be answered independently of earlier hops.",
+    "char_start": 43141,
+    "char_end": 43263,
+    "sentence_index": 303,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_2_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for GPT-5.2.",
+    "char_start": 43265,
+    "char_end": 43390,
+    "sentence_index": 304,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_1_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for GPT-5.1.",
+    "char_start": 43392,
+    "char_end": 43517,
+    "sentence_index": 305,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_4o_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for GPT-4o.",
+    "char_start": 43519,
+    "char_end": 43642,
+    "sentence_index": 306,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_4_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for GPT-5.4.",
+    "char_start": 43644,
+    "char_end": 43769,
+    "sentence_index": 307,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_5_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Sonnet-4.5.",
+    "char_start": 43771,
+    "char_end": 43916,
+    "sentence_index": 308,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_5_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Opus-4.5.",
+    "char_start": 43918,
+    "char_end": 44059,
+    "sentence_index": 309,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_1_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Opus-4.1.",
+    "char_start": 44061,
+    "char_end": 44202,
+    "sentence_index": 310,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Sonnet-4.",
+    "char_start": 44204,
+    "char_end": 44345,
+    "sentence_index": 311,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Opus-4.",
+    "char_start": 44347,
+    "char_end": 44484,
+    "sentence_index": 312,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_6_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Claude-Sonnet-4.6.",
+    "char_start": 44486,
+    "char_end": 44631,
+    "sentence_index": 313,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_3_flash_preview_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Gemini-3-Flash-Preview.",
+    "char_start": 44633,
+    "char_end": 44788,
+    "sentence_index": 314,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_2_5_flash_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Gemini-2.5-Flash.",
+    "char_start": 44790,
+    "char_end": 44933,
+    "sentence_index": 315,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_2_5_flash_lite_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Gemini-2.5-Flash-Lite.",
+    "char_start": 44935,
+    "char_end": 45088,
+    "sentence_index": 316,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_3_1_flash_lite_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Gemini-3.1-flash-lite.",
+    "char_start": 45090,
+    "char_end": 45243,
+    "sentence_index": 317,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/qwen3_max_multihop_accuracy_by_errors.png\nMulti-hop accuracy by number of single-hop errors for Qwen3-Max.",
+    "char_start": 45245,
+    "char_end": 45374,
+    "sentence_index": 318,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_2_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for GPT-5.2.",
+    "char_start": 45376,
+    "char_end": 45505,
+    "sentence_index": 319,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_1_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for GPT-5.1.",
+    "char_start": 45507,
+    "char_end": 45636,
+    "sentence_index": 320,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_4o_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for GPT-4o.",
+    "char_start": 45638,
+    "char_end": 45765,
+    "sentence_index": 321,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gpt_5_4_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for GPT-5.4.",
+    "char_start": 45767,
+    "char_end": 45896,
+    "sentence_index": 322,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_5_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Sonnet-4.5.",
+    "char_start": 45898,
+    "char_end": 46047,
+    "sentence_index": 323,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_5_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Opus-4.5.",
+    "char_start": 46049,
+    "char_end": 46194,
+    "sentence_index": 324,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_1_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Opus-4.1.",
+    "char_start": 46196,
+    "char_end": 46341,
+    "sentence_index": 325,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Sonnet-4.",
+    "char_start": 46343,
+    "char_end": 46488,
+    "sentence_index": 326,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_opus_4_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Opus-4.",
+    "char_start": 46490,
+    "char_end": 46631,
+    "sentence_index": 327,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/claude_sonnet_4_6_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Claude-Sonnet-4.6.",
+    "char_start": 46633,
+    "char_end": 46782,
+    "sentence_index": 328,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_3_flash_preview_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Gemini-3-Flash-Preview.",
+    "char_start": 46784,
+    "char_end": 46943,
+    "sentence_index": 329,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_2_5_flash_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Gemini-2.5-Flash.",
+    "char_start": 46945,
+    "char_end": 47092,
+    "sentence_index": 330,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_2_5_flash_lite_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Gemini-2.5-Flash-Lite.",
+    "char_start": 47094,
+    "char_end": 47251,
+    "sentence_index": 331,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/gemini_3_1_flash_lite_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Gemini-3.1-flash-lite.",
+    "char_start": 47253,
+    "char_end": 47410,
+    "sentence_index": 332,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec014",
+    "text": "[h]\n\nfigure/figure_app/qwen3_max_stepwise_error_rates.png\nStep-wise error rates under independent and chain evaluation for Qwen3-Max.",
+    "char_start": 47412,
+    "char_end": 47545,
+    "sentence_index": 333,
+    "section_sentence_index": 31
+  }
+]

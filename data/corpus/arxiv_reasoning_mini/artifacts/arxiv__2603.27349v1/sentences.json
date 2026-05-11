@@ -1,0 +1,2486 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Vision-language models (VLMs) excel at image--text retrieval yet persistently fail at compositional reasoning , distinguishing captions that share the same words but differ in relational structure.",
+    "char_start": 0,
+    "char_end": 197,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "We present a unified evaluation and augmentation framework benchmarking four architecturally diverse VLMs , CLIP, BLIP, LLaVA, and Qwen3-VL-8B-Thinking , on the Winoground benchmark under plain and scene-graph-augmented regimes.",
+    "char_start": 199,
+    "char_end": 427,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce a dependency-based TextSceneGraphParser (spaCy) extracting subject--relation--object triples, and a Graph Asymmetry Scorer using optimal bipartite matching to inject structural relational priors.",
+    "char_start": 428,
+    "char_end": 636,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Caption ablation experiments (subject/object masking and swapping) reveal that Qwen3-VL-8B-Thinking achieves a group score of 62.8 , far above all encoder-based models, while a proposed multi-turn SG filtering strategy further lifts it to 66.0 , surpassing prior open-source state-of-the-art.",
+    "char_start": 638,
+    "char_end": 930,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We analyze the capability--augmentation tradeoff and find that SG augmentation benefits already-capable models while providing negligible or negative gains for weaker baselines.",
+    "char_start": 931,
+    "char_end": 1108,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Code: https://github.com/amartyacodes/Inference-Time-Structural-Reasoning-for-Compositional-Vision-Language-Understanding https://github.com/amartyacodes/Inference-Time-Structural-Reasoning-for-Compositional-Vision-Language-Understanding\n\nModern VLMs achieve remarkable performance on image captioning, visual question answering, and cross-modal retrieval.",
+    "char_start": 1110,
+    "char_end": 1466,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "Yet a fundamental question persists: do these models truly understand the compositional structure of language grounded in visual scenes?",
+    "char_start": 1467,
+    "char_end": 1603,
+    "sentence_index": 6,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Consider the minimal pair: ``The dog is chasing the cat'' vs.\\ ``The cat is chasing the dog.'' Both share identical content words; they differ solely in the agent--patient assignment.",
+    "char_start": 1605,
+    "char_end": 1788,
+    "sentence_index": 7,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "A model relying on bag-of-words statistics assigns nearly identical scores to both captions for any image, failing this basic compositional test.",
+    "char_start": 1789,
+    "char_end": 1934,
+    "sentence_index": 8,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "The Winoground benchmark thrush2022winoground operationalizes this challenge through 400 carefully curated minimally contrastive image--caption pairs (Figure ).",
+    "char_start": 1936,
+    "char_end": 2096,
+    "sentence_index": 9,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Initial evaluations revealed CLIP performing only marginally above random chance, motivating the search for structural augmentation strategies.",
+    "char_start": 2097,
+    "char_end": 2240,
+    "sentence_index": 10,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Our work is motivated by three observations.",
+    "char_start": 2242,
+    "char_end": 2286,
+    "sentence_index": 11,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "First, architectural diversity matters : dual-encoder, cross-attention, and generative VLMs process compositional information through different mechanisms.",
+    "char_start": 2287,
+    "char_end": 2442,
+    "sentence_index": 12,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Second, explicit structure can help : scene graphs provide a structural representation absent from raw embeddings.",
+    "char_start": 2443,
+    "char_end": 2557,
+    "sentence_index": 13,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Third, integration must be architecture-appropriate : an additive score prior suits embedding models; prompt injection suits generative models.",
+    "char_start": 2558,
+    "char_end": 2701,
+    "sentence_index": 14,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec003",
+    "text": "(1) A unified evaluation framework for four VLMs on Winoground;\n(2) a TextSceneGraphParser covering SVO, prepositional, copular, existential, and possessive constructions;\n(3) a Graph Asymmetry Scorer via optimal bipartite matching targeting agent--patient role reversal;\n(4) systematic caption ablation experiments quantifying entity-identity vs.\\ relational-syntax reliance;\n(5) a multi-turn SG filtering strategy achieving group score 66.0, a new open-source state-of-the-art on Winoground.",
+    "char_start": 2703,
+    "char_end": 3196,
+    "sentence_index": 15,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec003",
+    "text": "[t]\n\nexample1.png\nexample3.png\nWinoground examples.",
+    "char_start": 3198,
+    "char_end": 3249,
+    "sentence_index": 16,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec003",
+    "text": "Captions share the same words arranged differently; images share the same visual elements interacting differently.",
+    "char_start": 3250,
+    "char_end": 3364,
+    "sentence_index": 17,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec003",
+    "text": "Models must correctly pair each caption with its image.",
+    "char_start": 3365,
+    "char_end": 3420,
+    "sentence_index": 18,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec003",
+    "text": "[t]\n\ntext_graph.png\nTextSceneGraphParser architecture (spaCy rule-based).",
+    "char_start": 3422,
+    "char_end": 3495,
+    "sentence_index": 19,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec003",
+    "text": "Five parallel extraction rules produce triples that are deduplicated and cached per caption string.",
+    "char_start": 3496,
+    "char_end": 3595,
+    "sentence_index": 20,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec003",
+    "text": "[t]\n\nablation.png\nCaption ablation pipeline.",
+    "char_start": 3597,
+    "char_end": 3641,
+    "sentence_index": 21,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec003",
+    "text": "spaCy identifies semantic spans offline; captions are transformed (mask/swap subject, object, or both) and evaluated without SG injection.",
+    "char_start": 3642,
+    "char_end": 3780,
+    "sentence_index": 22,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec004",
+    "text": "thrush2022winoground introduced Winoground, demonstrating that all VLMs tested performed near random chance on compositional image--caption matching.",
+    "char_start": 3782,
+    "char_end": 3931,
+    "sentence_index": 23,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec005",
+    "text": "diwan2022winoground analyzed failure modes, categorizing them as visual difficulty, linguistic ambiguity, and genuine compositional failure.",
+    "char_start": 3932,
+    "char_end": 4072,
+    "sentence_index": 24,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec005",
+    "text": "Concurrently, yuksekgonul2023and introduced the ARO benchmark (Attribution, Relation, Order) with over 50,000 test cases from Visual Genome and COCO, demonstrating that contrastive VLMs systematically act as bag-of-words models , for example, BLIP assigns higher probability to ``the grass is eating the horse'' over the correct caption with 81\\% confidence.",
+    "char_start": 4073,
+    "char_end": 4431,
+    "sentence_index": 25,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec005",
+    "text": "hsieh2024sugarcrepe followed with SugarCrepe , identifying biases in ARO's hard negative construction and proposing LLM-generated fluent negatives across seven edit categories (replace/swap/add object, attribute, relation) that drive blind text models to chance accuracy.",
+    "char_start": 4432,
+    "char_end": 4703,
+    "sentence_index": 26,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec006",
+    "text": "A key family of methods improves compositional reasoning at inference time without retraining.",
+    "char_start": 4705,
+    "char_end": 4799,
+    "sentence_index": 27,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec006",
+    "text": "jiang2024comclip proposed ComCLIP , a training-free approach that disentangles input images into subject, object, and action sub-images and performs evolving matching over compositional embeddings, mitigating spurious entity co-occurrence biases in CLIP, SLIP, and BLIP-2 across Winoground, VL-Checklist, SVO, and ComVG.",
+    "char_start": 4800,
+    "char_end": 5120,
+    "sentence_index": 28,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec006",
+    "text": "mitra2024ccot introduced CCoT (Compositional Chain-of-Thought, CVPR 2024), a zero-shot prompting method that first instructs the model to generate a scene graph from the input image, then uses that graph as a structured intermediate reasoning step , improving compositional performance on Winoground, WHOOPS!, and general multimodal benchmarks without fine-tuning.",
+    "char_start": 5121,
+    "char_end": 5485,
+    "sentence_index": 29,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec006",
+    "text": "Our multi-turn SG is closely related to both: like ComCLIP we operate at inference time, and like CCoT we leverage scene graph structure, but we use text scene graphs extracted from captions (requiring no visual SG generator) and inject them via a formally defined asymmetry scoring mechanism or multi-turn self-filtering.",
+    "char_start": 5486,
+    "char_end": 5808,
+    "sentence_index": 30,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec007",
+    "text": "yuksekgonul2023and proposed NegCLIP , fine-tuning CLIP with POS-tag-based hard negative captions, achieving substantial ARO improvements with minimal downstream degradation.",
+    "char_start": 5810,
+    "char_end": 5983,
+    "sentence_index": 31,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec007",
+    "text": "mishra2025scramble proposed SCRAMBLe (ICCV Workshops 2025), generating compositional hard negatives via chain-of-thought LLM prompting and adversarial filtering, then applying direct preference optimization to Molmo-7B , achieving 54.8\\% group score on Winoground, the prior open-source state-of-the-art.",
+    "char_start": 5984,
+    "char_end": 6288,
+    "sentence_index": 32,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec007",
+    "text": "herzig2023incorporating proposed SGVL , incorporating Visual Genome scene graph annotations into CLIP fine-tuning via learnable graph tokens that attend to patch embeddings, improving compositional performance across multiple benchmarks.",
+    "char_start": 6289,
+    "char_end": 6526,
+    "sentence_index": 33,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec007",
+    "text": "Our method surpasses SCRAMBLe (66.0 vs.\\ 54.8\\%) without any retraining, positioning inference-time structural reasoning in sufficiently capable base models as a compelling alternative to preference tuning.",
+    "char_start": 6527,
+    "char_end": 6733,
+    "sentence_index": 34,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec008",
+    "text": "The shift to billion-parameter generative VLMs has produced striking Winoground gains.",
+    "char_start": 6735,
+    "char_end": 6821,
+    "sentence_index": 35,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec008",
+    "text": "liu2023visual showed LLaVA-1.5-13B achieves 36.5\\% group via yes/no scoring.",
+    "char_start": 6822,
+    "char_end": 6898,
+    "sentence_index": 36,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec008",
+    "text": "lin2024evaluating introduced VQAScore , using a VQA model to compute image--text alignment as the probability of ``yes'' to ``Does this image show \\ caption\\ ?'', providing richer compositional signal than cosine similarity.",
+    "char_start": 6899,
+    "char_end": 7123,
+    "sentence_index": 37,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec008",
+    "text": "Most recently, wu2025testtime showed that reframing evaluation as a global matching problem (GroupMatch) and applying test-time self-training enables SigLIP-B16 to reach 67\\% group score and GPT-4.1 to surpass human performance (91.4\\%) , revealing that standard GroupScore metrics systematically underestimate hidden model capabilities.",
+    "char_start": 7124,
+    "char_end": 7461,
+    "sentence_index": 38,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec009",
+    "text": "Scene graphs , directed graphs encoding objects, attributes, and relations , have been used for image retrieval johnson2015image , VQA shi2019explainable , and image generation johnson2018image .",
+    "char_start": 7463,
+    "char_end": 7658,
+    "sentence_index": 39,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec009",
+    "text": "Text scene graphs parse captions into triple structures analogously.",
+    "char_start": 7659,
+    "char_end": 7727,
+    "sentence_index": 40,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec009",
+    "text": "Our TextSceneGraphParser is most closely related to spaCy-based parsers used in SGVL herzig2023incorporating and CCoT mitra2024ccot , but operates purely on caption text with explicit handling of five syntactic construction types.",
+    "char_start": 7728,
+    "char_end": 7958,
+    "sentence_index": 41,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec010",
+    "text": "Each example $(I_0, I_1, c_0, c_1, )$ consists of two images, two captions sharing the same content words but differing in relational structure, and a linguistic-phenomenon tag.",
+    "char_start": 7960,
+    "char_end": 8137,
+    "sentence_index": 42,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec010",
+    "text": "Given scoring function $s : I C $, we compute four scores $s_ 00 , s_ 10 , s_ 01 , s_ 11 $ and define:\n\nText &= 1 [s_ 00 >s_ 10 ] 1 [s_ 11 >s_ 01 ]\n\nImage &= 1 [s_ 00 >s_ 01 ] 1 [s_ 11 >s_ 10 ]\n\nGroup &= Text Image\n\nRandom-chance baselines: Text = Image = 0.25, Group $ 0.063$.",
+    "char_start": 8138,
+    "char_end": 8415,
+    "sentence_index": 43,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec011",
+    "text": "We evaluate four VLMs spanning the major architectural paradigms (Table ).",
+    "char_start": 8417,
+    "char_end": 8491,
+    "sentence_index": 44,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec011",
+    "text": "[h]\n\nBase scoring functions per model.",
+    "char_start": 8493,
+    "char_end": 8531,
+    "sentence_index": 45,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec011",
+    "text": "@ lll@\n\nModel & Architecture & Scoring\n\nCLIP ViT-B/32 & Dual encoder & CLS cosine\n\nBLIP ITM Base & Cross-attention & $P( match )$\n\nLLaVA 1.5-7B & Generative decoder & $P( yes )$\n\nQwen3-VL-8B & Generative decoder (MoE) & EOS cosine\n\nCLIP radford2021learning uses cosine similarity between $ _2$-normalised CLS-token embeddings: $s_ CLIP (I,c) = 1 2 (1 + (f_ img (I), f_ txt (c)))$.",
+    "char_start": 8533,
+    "char_end": 8913,
+    "sentence_index": 46,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec011",
+    "text": "BLIP li2022blip uses a cross-attention ITM head: $s_ BLIP (I,c) = ([v_ no , v_ yes ])_1$.",
+    "char_start": 8915,
+    "char_end": 9004,
+    "sentence_index": 47,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec011",
+    "text": "LLaVA liu2023visual scores via yes/no logits after an image-grounded prompt: $s_ LLaVA (I,c) = (z_ yes )/( (z_ yes )+ (z_ no ))$.",
+    "char_start": 9006,
+    "char_end": 9135,
+    "sentence_index": 48,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec011",
+    "text": "Qwen3-VL-8B-Thinking qwen3vl uses EOS-token pooling from a generative Mixture-of-Experts decoder, scored as CLIP but with richer contextual representations from grounding training.",
+    "char_start": 9137,
+    "char_end": 9317,
+    "sentence_index": 49,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec012",
+    "text": "Figure shows the parser pipeline.",
+    "char_start": 9319,
+    "char_end": 9352,
+    "sentence_index": 50,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec012",
+    "text": "A text scene graph for caption $c$ is:\n$ G (c) = \\ s_k r_k o_k \\ _ k=1 ^K$\nwhere $s_k, o_k$ are noun-phrase entities and $r_k$ a relation (verb, preposition, or copula).",
+    "char_start": 9353,
+    "char_end": 9522,
+    "sentence_index": 51,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec012",
+    "text": "Noun phrases are enriched with adjectival and compound modifiers.",
+    "char_start": 9523,
+    "char_end": 9588,
+    "sentence_index": 52,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec012",
+    "text": "Five rules operate on spaCy's dependency tree honnibal2020spacy : (R1) SVO , transitive/intransitive verbs with relative/subordinate clause handling and negation; (R2) Prepositional , spatial/temporal relations via prep / pobj arcs; (R3) Existential , ``there is/are'' constructions; (R4) Copular , linking-verb sentences; (R5) Possessive , ``has'' triples from poss arcs.",
+    "char_start": 9590,
+    "char_end": 9962,
+    "sentence_index": 53,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec012",
+    "text": "Invalid triples are discarded and results cached for efficiency.",
+    "char_start": 9963,
+    "char_end": 10027,
+    "sentence_index": 54,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec013",
+    "text": "Given triples $t_a = s_a r_a o_a $ and $t_b = s_b r_b o_b $ with text embedding function $ $, the pairwise asymmetry is:\n\nA(t_a, t_b) = ( (s_a,s_b) - (s_a,o_b) ) + ( (o_a,o_b) -\n(o_a,s_b) )\n\nwhere $ (x,y)= ( (x), (y))$ and $ = =1.0$.",
+    "char_start": 10029,
+    "char_end": 10262,
+    "sentence_index": 55,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec013",
+    "text": "The relation term cancels in the forward--flipped difference, specifically targeting agent--patient role reversal.",
+    "char_start": 10263,
+    "char_end": 10377,
+    "sentence_index": 56,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec013",
+    "text": "For graphs $ G _a, G _b$, we build cost matrix $C_ ij =A(t_a^i, t_b^j)$ and solve optimal bipartite matching via the Hungarian algorithm kuhn1955hungarian :\n\n( G _a, G _b) = 1 | matched | _k C_ ^*(k), ^*(k)\n\nWhen either graph is empty, $ = 0$, ensuring graceful degradation.",
+    "char_start": 10379,
+    "char_end": 10653,
+    "sentence_index": 57,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec014",
+    "text": "$s_ SG (I,c; G _c, G _ c' ) = s_ base (I,c) + ( G _c, G _ c' )$, with $ =0.3$.",
+    "char_start": 10655,
+    "char_end": 10733,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec014",
+    "text": "Since the prior depends only on the caption pair, image scores are invariant ; only text and group scores can change.",
+    "char_start": 10734,
+    "char_end": 10851,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec015",
+    "text": "Triples are injected into the natural-language prompt, instructing the model to attend to agent--patient structure before the yes/no decision.",
+    "char_start": 10853,
+    "char_end": 10995,
+    "sentence_index": 60,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec016",
+    "text": "To mechanistically probe what information models rely on, we apply systematic caption transforms (Figure ) and measure group-score drop $ _ grp $ (Table ).",
+    "char_start": 10997,
+    "char_end": 11152,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec016",
+    "text": "[t]\n\nCaption ablation study across all four models.",
+    "char_start": 11154,
+    "char_end": 11205,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec016",
+    "text": "Each cell shows group score / $ _ grp $ vs.\\ original caption (negative = degradation).",
+    "char_start": 11206,
+    "char_end": 11293,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec016",
+    "text": "Text and Image scores are also reported for completeness.",
+    "char_start": 11294,
+    "char_end": 11351,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec016",
+    "text": "5pt\n@ l ccc ccc ccc ccc@\n\n& 3 c CLIP ViT-B/32 & 3 c BLIP ITM & 3 c LLaVA 1.5-7B & 3 c Qwen3-VL-8B-T\n\n(lr) 2-4 (lr) 5-7 (lr) 8-10 (lr) 11-13\nCondition & Text & Img & Grp & Text & Img & Grp & Text & Img & Grp & Text & Img & Grp\n\nRandom Chance & .250 & .250 & .063 & .250 & .250 & .063 & .250 & .250 & .063 & .250 & .250 & .063\n\nOriginal Caption & .308 & .113 & .090 & .485 & .240 & .200 & .453 & .368 & .275 & .745 & .720 & .628\n\nMask Subjects & .243 & .118 & .078 /$-$.013 & .370 & .213 & .158 /$-$.043 & .350 & .250 & .180 /$-$.095 & .573 & .543 & .450 /$-$.178\n\nMask Objects & .163 & .095 & .053 /$-$.038 & .258 & .178 & .133 /$-$.068 & .205 & .173 & .090 /$-$.185 & .420 & .460 & .338 /$-$.290\n\nMask Subj+Obj & .110 & .060 & .025 /$-$.065 & .135 & .120 & .073 /$-$.128 & .115 & .095 & .045 /$-$.230 & .270 & .305 & .223 /$-$.405\n\nSwap Subj$ $Obj & .248 & .103 & .075 /$-$.015 & .403 & .180 & .153 /$-$.048 & .360 & .290 & .203 /$-$.073 & .535 & .525 & .430 /$-$.198\n\n[t]\n\nWinoground results.",
+    "char_start": 11353,
+    "char_end": 12346,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec016",
+    "text": "Best per-model in bold .",
+    "char_start": 12347,
+    "char_end": 12371,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec016",
+    "text": "Random: Txt/Img = 0.25, Grp = 0.063.",
+    "char_start": 12372,
+    "char_end": 12408,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec016",
+    "text": "4pt\n@ llccc@\n\nStrategy & Model & Txt & Img & Grp\n\nRandom & , & .250 & .250 & .063\n\nclip & CLIP ViT-B/32 & .308 & .113 & .090\n\nclip+SG & CLIP ViT-B/32 & .308 & .113 & .090\n\nblip & BLIP ITM & .485 & .240 & .200\n\nblip+SG & BLIP ITM & .485 & .240 & .200\n\nllava & LLaVA 1.5-7B & .453 & .368 & .275\n\nllava+SG & LLaVA 1.5-7B & .365 & .308 & .203\n\nqwen3 & Qwen3-8B-T & .745 & .720 & .628\n\nqwen3+SG & Qwen3-8B-T & .745 & .735 & .642\n\nqwen3+SG (mt) & Qwen3-8B-T & .760 & .720 & .660\n\n[t]\n\nComparison with published methods on Winoground (\\%).",
+    "char_start": 12410,
+    "char_end": 12942,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec016",
+    "text": "4pt\n@ lccc@\n\nMethod & Text & Image & Group\n\nMTurk Human & 89.5 & 88.5 & 85.5\n\nRandom Chance & 25.0 & 25.0 & 6.3\n\nCLIP (ViT-B/32) & 30.8 & 10.5 & 8.0\n\nBLIP (ITM Large) & 35.0 & 22.0 & 22.0\n\nLLaVA-1.5-13B & 51.5 & 50.5 & 36.5\n\nCECE (LLaVA-1.5+1.6) & 55.0 & 61.3 & 47.5\n\nMolmo-7B & 62.8 & 61.8 & 49.5\n\nSCRAMBLe-Molmo-7B mishra2025scramble & 66.8 & 66.3 & 54.8\n\nQwen3-VL-Think (plain) & 74.5 & 72.0 & 62.8\n\nQwen3-VL-Think + SG & 74.5 & 73.5 & 64.2\n\nQwen3+SG (mt) & 76.0 & 72.0 & 66.0\n\nThree key findings: (1) Qwen3-VL shows the largest absolute drops across all conditions, confirming it relies most on entity identity and relational syntax.",
+    "char_start": 12944,
+    "char_end": 13581,
+    "sentence_index": 69,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec016",
+    "text": "(2) Masking objects consistently hurts more than masking subjects across all models.",
+    "char_start": 13582,
+    "char_end": 13666,
+    "sentence_index": 70,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec016",
+    "text": "(3) The swap condition ($ -0.20$ for Qwen3) confirms partial but imperfect compositional sensitivity , role reversal disrupts but does not destroy performance.",
+    "char_start": 13667,
+    "char_end": 13826,
+    "sentence_index": 71,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec017",
+    "text": "[t]\n\nmultiturn.png\nQwen3-VL-Thinking pipeline with multi-turn SG filtering.",
+    "char_start": 13828,
+    "char_end": 13903,
+    "sentence_index": 72,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec017",
+    "text": "Turn 1 identifies visually relevant SG relations; Turn 2 uses those filtered triples for the final match decision.",
+    "char_start": 13904,
+    "char_end": 14018,
+    "sentence_index": 73,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec017",
+    "text": "Figure shows three strategies for Qwen3-VL-8B-Thinking.",
+    "char_start": 14020,
+    "char_end": 14075,
+    "sentence_index": 74,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec017",
+    "text": "(S1) Plain : single-turn yes/no, no scene graph.",
+    "char_start": 14076,
+    "char_end": 14124,
+    "sentence_index": 75,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec017",
+    "text": "(S2) Flat SG injection : all extracted triples in a single prompt.",
+    "char_start": 14125,
+    "char_end": 14191,
+    "sentence_index": 76,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec017",
+    "text": "(S3) Multi-turn SG filtering (proposed): Turn 1 generates the visually relevant subset of triples via greedy decoding; Turn 2 uses only those filtered triples for the final match query (Figure ).",
+    "char_start": 14192,
+    "char_end": 14387,
+    "sentence_index": 77,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec017",
+    "text": "This visual grounding filter reduces noise from parser errors and irrelevant triples.",
+    "char_start": 14388,
+    "char_end": 14473,
+    "sentence_index": 78,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec017",
+    "text": "[h]\n\nscoring_mechanism.png\nScoring mechanism: last-token logits for ``yes''/``no'' are softmax-normalized to yield $P( yes I, c)$.",
+    "char_start": 14475,
+    "char_end": 14605,
+    "sentence_index": 79,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec018",
+    "text": "Table presents results for all strategies.",
+    "char_start": 14607,
+    "char_end": 14649,
+    "sentence_index": 80,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec019",
+    "text": "Qwen3-VL-8B-Thinking plain (62.8\\% group) already substantially outperforms all encoder-based models.",
+    "char_start": 14650,
+    "char_end": 14751,
+    "sentence_index": 81,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec019",
+    "text": "Multi-turn SG filtering further improves to 66.0\\%.",
+    "char_start": 14752,
+    "char_end": 14803,
+    "sentence_index": 82,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec020",
+    "text": "Table places results in context.",
+    "char_start": 14805,
+    "char_end": 14837,
+    "sentence_index": 83,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec020",
+    "text": "Qwen3+SG (multi-turn) achieves 66.0\\% group, surpassing SCRAMBLe-Molmo-7B (54.8\\%) by 11.2 points and approaching human performance (85.5\\%), without any additional training.",
+    "char_start": 14838,
+    "char_end": 15012,
+    "sentence_index": 84,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec021",
+    "text": "For weaker encoder-based models (CLIP, BLIP), the additive SG prior produces negligible gains , the prior's signal is too weak to overcome insufficient base compositional sensitivity.",
+    "char_start": 15014,
+    "char_end": 15197,
+    "sentence_index": 85,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec022",
+    "text": "For LLaVA, prompt injection hurts ($ _ grp =-0.073$): the model anchors on explicitly listed entities rather than integrating visual and structural evidence jointly.",
+    "char_start": 15198,
+    "char_end": 15363,
+    "sentence_index": 86,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec022",
+    "text": "By contrast, Qwen3-VL benefits from SG filtering as a compositional regulariser , improving consistency of relational judgments.",
+    "char_start": 15364,
+    "char_end": 15492,
+    "sentence_index": 87,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec022",
+    "text": "This pattern aligns with the view of mitra2024ccot that scene graph augmentation is most effective when the base model already possesses reasonable visual grounding capability.",
+    "char_start": 15493,
+    "char_end": 15669,
+    "sentence_index": 88,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec023",
+    "text": "The performance drop under SG prompt injection for LLaVA ($ _ grp =-0.073$) instantiates a well-documented phenomenon in structured prompting: over-specification , wherein explicitly enumerating relational triples in the prompt causes the model to anchor on listed entities and suppress its own visual inference mitra2024ccot .",
+    "char_start": 15671,
+    "char_end": 15998,
+    "sentence_index": 89,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec023",
+    "text": "Unlike Qwen3-VL, which uses scene graph information as a filter over its existing visual representations, LLaVA treats injected triples as primary evidence, overriding the image signal.",
+    "char_start": 15999,
+    "char_end": 16184,
+    "sentence_index": 90,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec023",
+    "text": "This suggests that SG injection is only beneficial when the model has sufficient capacity to integrate structural priors with visual evidence rather than substitute one for the other , a distinction with practical implications for prompt design in generative VLMs.",
+    "char_start": 16185,
+    "char_end": 16449,
+    "sentence_index": 91,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec024",
+    "text": "Flat SG injection yields a marginal gain (+1.4 group points).",
+    "char_start": 16451,
+    "char_end": 16512,
+    "sentence_index": 92,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec024",
+    "text": "The multi-turn strategy adds +1.8 more by using the model's own visual grounding to filter irrelevant triples before the final decision, directly addressing the known limitation of CCoT-style methods that injecting inaccurate SGs can hurt performance mitra2024ccot .",
+    "char_start": 16513,
+    "char_end": 16779,
+    "sentence_index": 93,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec025",
+    "text": "The multi-turn strategy can be understood as a form of structured self-consistency wang2023selfconsistency : Turn 1 acts as a visually-grounded filter that samples the model's belief about which relational triples are perceptually relevant, and Turn 2 conditions the final decision on this filtered intermediate.",
+    "char_start": 16781,
+    "char_end": 17093,
+    "sentence_index": 94,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec025",
+    "text": "This differs from standard self-consistency (majority voting over independent samples) in two ways: the intermediate is structured (a subset of parsed triples rather than a free-form chain-of-thought), and the two turns share a single context window, enabling the model to condition coherently.",
+    "char_start": 17094,
+    "char_end": 17388,
+    "sentence_index": 95,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec025",
+    "text": "The +1.8 group-point gain over flat injection thus reflects reduced noise from irrelevant triples rather than additional model computation per se, connecting our approach to the broader literature on inference-time compute allocation wu2025testtime .",
+    "char_start": 17389,
+    "char_end": 17639,
+    "sentence_index": 96,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec026",
+    "text": "Aggregate group scores obscure a likely interaction between linguistic phenomenon tag and SG augmentation efficacy.",
+    "char_start": 17641,
+    "char_end": 17756,
+    "sentence_index": 97,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec026",
+    "text": "Scene graph augmentation is structurally targeted at agent--patient role reversal, and should therefore benefit relational and action-based Winoground tags disproportionately, while providing little signal for non-visual tags (e.g., ``same/different'' constructions) or pragmatics tags where the relational structure is not the discriminating feature.",
+    "char_start": 17757,
+    "char_end": 18108,
+    "sentence_index": 98,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec026",
+    "text": "A per-tag breakdown of $ _ grp $ under SG augmentation would sharpen the capability--augmentation claim: rather than a model-level threshold, the effective condition may be tag-type $ $ model capability , with SG helping capable models specifically on relational examples.",
+    "char_start": 18109,
+    "char_end": 18381,
+    "sentence_index": 99,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec026",
+    "text": "We leave this decomposition to future work but note it as an important diagnostic for any augmentation strategy on Winoground.",
+    "char_start": 18382,
+    "char_end": 18508,
+    "sentence_index": 100,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec027",
+    "text": "Relative to CCoT mitra2024ccot we use text scene graphs (no visual SG generator required) with a formally defined asymmetry scorer, while CCoT generates visual SGs via LMM prompting.",
+    "char_start": 18510,
+    "char_end": 18692,
+    "sentence_index": 101,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec027",
+    "text": "Relative to SCRAMBLe mishra2025scramble we require no retraining and achieve +11.2 group points, suggesting inference-time structural reasoning in sufficiently capable models can outperform training-time preference tuning in smaller models.",
+    "char_start": 18693,
+    "char_end": 18933,
+    "sentence_index": 102,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec027",
+    "text": "Our results also complement wu2025testtime , who show that evaluation metric reframing reveals hidden compositional capability in models like GPT-4.1, while we demonstrate that structured inference-time augmentation can unlock complementary compositional gains in open-weight models.",
+    "char_start": 18934,
+    "char_end": 19217,
+    "sentence_index": 103,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec028",
+    "text": "The caption ablation experiments (Section ) yield a structured performance fingerprint , group score under subject masking, object masking, joint masking, and subject--object swap , that characterises each model's reliance on entity identity versus relational syntax independently of overall accuracy.",
+    "char_start": 19219,
+    "char_end": 19520,
+    "sentence_index": 104,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec028",
+    "text": "We propose this ablation diagnostic as a reusable evaluation protocol: applied to any new VLM on Winoground, it produces a four-dimensional profile that predicts whether SG augmentation is likely to help (high swap sensitivity, moderate mask sensitivity) or hurt (low overall sensitivity, suggesting bag-of-words processing).",
+    "char_start": 19521,
+    "char_end": 19846,
+    "sentence_index": 105,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec028",
+    "text": "Beyond this, the TextSceneGraphParser relies on spaCy's statistical dependency parser, which can fail on complex Winoground sentences.",
+    "char_start": 19847,
+    "char_end": 19981,
+    "sentence_index": 106,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec028",
+    "text": "Future work should explore: layer-wise probing to identify which transformer layers encode agent--patient distinctions; learned graph matching replacing the Hungarian algorithm; extension to ARO yuksekgonul2023and and SugarCrepe hsieh2024sugarcrepe ; per-tag SG benefit decomposition; and integration of visual scene graphs for image-side structural priors.",
+    "char_start": 19982,
+    "char_end": 20339,
+    "sentence_index": 107,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec029",
+    "text": "We presented Multi-turn SG, a unified framework for evaluating and augmenting compositional reasoning in VLMs on Winoground.",
+    "char_start": 20341,
+    "char_end": 20465,
+    "sentence_index": 108,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec029",
+    "text": "Our TextSceneGraphParser and Graph Asymmetry Scorer provide architecture-appropriate structural priors without retraining.",
+    "char_start": 20466,
+    "char_end": 20588,
+    "sentence_index": 109,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec029",
+    "text": "Caption ablation experiments reveal that Qwen3-VL-8B-Thinking encodes substantial but imperfect compositional structure, and multi-turn SG filtering consistently improves over both flat injection and plain baselines.",
+    "char_start": 20589,
+    "char_end": 20805,
+    "sentence_index": 110,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec029",
+    "text": "Our multi-turn strategy achieves 66.0\\% group score , a new open-source state-of-the-art , and our capability--augmentation tradeoff analysis provides a principled framework for understanding when structural priors help.",
+    "char_start": 20806,
+    "char_end": 21026,
+    "sentence_index": 111,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec029",
+    "text": "The ablation diagnostic introduced here offers a reusable protocol for predicting augmentation efficacy in future VLMs, and the structured self-consistency framing of multi-turn filtering opens a direction for principled inference-time compute allocation in compositional reasoning tasks.",
+    "char_start": 21027,
+    "char_end": 21315,
+    "sentence_index": 112,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec030",
+    "text": "This work was completed as a course project for COSC 189: Topics in Neurosymbolic AI at Dartmouth College.",
+    "char_start": 21317,
+    "char_end": 21423,
+    "sentence_index": 113,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec030",
+    "text": "The author thanks Professor Soroush Vosoughi for guidance and feedback throughout the project.",
+    "char_start": 21424,
+    "char_end": 21518,
+    "sentence_index": 114,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec030",
+    "text": "Figures were generated with the assistance of Google Gemini.",
+    "char_start": 21519,
+    "char_end": 21579,
+    "sentence_index": 115,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec030",
+    "text": "Code development was supported in part by Claude (Anthropic).",
+    "char_start": 21580,
+    "char_end": 21641,
+    "sentence_index": 116,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec030",
+    "text": "plainnat\n20\n\ndiwan2022winoground\nA.",
+    "char_start": 21643,
+    "char_end": 21678,
+    "sentence_index": 117,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec030",
+    "text": "Diwan, L.",
+    "char_start": 21679,
+    "char_end": 21688,
+    "sentence_index": 118,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec030",
+    "text": "Berry, E.",
+    "char_start": 21689,
+    "char_end": 21698,
+    "sentence_index": 119,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec030",
+    "text": "Choi, D.",
+    "char_start": 21699,
+    "char_end": 21707,
+    "sentence_index": 120,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec030",
+    "text": "Harwath, and K.",
+    "char_start": 21708,
+    "char_end": 21723,
+    "sentence_index": 121,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec030",
+    "text": "Mahowald.",
+    "char_start": 21724,
+    "char_end": 21733,
+    "sentence_index": 122,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec030",
+    "text": "Why is Winoground hard?",
+    "char_start": 21734,
+    "char_end": 21757,
+    "sentence_index": 123,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec030",
+    "text": "I nvestigating failures in visuolinguistic compositionality.",
+    "char_start": 21758,
+    "char_end": 21818,
+    "sentence_index": 124,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec030",
+    "text": "In Proceedings of EMNLP , 2022.",
+    "char_start": 21819,
+    "char_end": 21850,
+    "sentence_index": 125,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec030",
+    "text": "herzig2023incorporating\nR.",
+    "char_start": 21852,
+    "char_end": 21878,
+    "sentence_index": 126,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec030",
+    "text": "Herzig, R.",
+    "char_start": 21879,
+    "char_end": 21889,
+    "sentence_index": 127,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec030",
+    "text": "Panda, J.",
+    "char_start": 21890,
+    "char_end": 21899,
+    "sentence_index": 128,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec030",
+    "text": "Willette, D.",
+    "char_start": 21900,
+    "char_end": 21912,
+    "sentence_index": 129,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec030",
+    "text": "Kim, R.",
+    "char_start": 21913,
+    "char_end": 21920,
+    "sentence_index": 130,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec030",
+    "text": "Feris, S.",
+    "char_start": 21921,
+    "char_end": 21930,
+    "sentence_index": 131,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec030",
+    "text": "Ullman, and L.",
+    "char_start": 21931,
+    "char_end": 21945,
+    "sentence_index": 132,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec030",
+    "text": "Karlinsky.",
+    "char_start": 21946,
+    "char_end": 21956,
+    "sentence_index": 133,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec030",
+    "text": "Incorporating structured representations into pretrained vision \\& language models.",
+    "char_start": 21957,
+    "char_end": 22040,
+    "sentence_index": 134,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec030",
+    "text": "In Proceedings of EMNLP , 2023.",
+    "char_start": 22041,
+    "char_end": 22072,
+    "sentence_index": 135,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec030",
+    "text": "hsieh2024sugarcrepe\nC.-Y.",
+    "char_start": 22074,
+    "char_end": 22099,
+    "sentence_index": 136,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec030",
+    "text": "Hsieh, J.",
+    "char_start": 22100,
+    "char_end": 22109,
+    "sentence_index": 137,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec030",
+    "text": "Zhang, Z.",
+    "char_start": 22110,
+    "char_end": 22119,
+    "sentence_index": 138,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec030",
+    "text": "Ma, A.",
+    "char_start": 22120,
+    "char_end": 22126,
+    "sentence_index": 139,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec030",
+    "text": "Kembhavi, and R.",
+    "char_start": 22127,
+    "char_end": 22143,
+    "sentence_index": 140,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec030",
+    "text": "Krishna.",
+    "char_start": 22144,
+    "char_end": 22152,
+    "sentence_index": 141,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec030",
+    "text": "SugarCrepe : Fixing hackable benchmarks for vision-language compositionality.",
+    "char_start": 22153,
+    "char_end": 22230,
+    "sentence_index": 142,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec030",
+    "text": "In Proceedings of NeurIPS , 2024.",
+    "char_start": 22231,
+    "char_end": 22264,
+    "sentence_index": 143,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec030",
+    "text": "honnibal2020spacy\nM.",
+    "char_start": 22266,
+    "char_end": 22286,
+    "sentence_index": 144,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec030",
+    "text": "Honnibal, I.",
+    "char_start": 22287,
+    "char_end": 22299,
+    "sentence_index": 145,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec030",
+    "text": "Montani, S.",
+    "char_start": 22300,
+    "char_end": 22311,
+    "sentence_index": 146,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec030",
+    "text": "Van Landeghem, and A.",
+    "char_start": 22312,
+    "char_end": 22333,
+    "sentence_index": 147,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec030",
+    "text": "Boyd.",
+    "char_start": 22334,
+    "char_end": 22339,
+    "sentence_index": 148,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec030",
+    "text": "spaCy : Industrial-strength natural language processing in Python , 2020.",
+    "char_start": 22340,
+    "char_end": 22413,
+    "sentence_index": 149,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec030",
+    "text": "jiang2024comclip\nK.",
+    "char_start": 22415,
+    "char_end": 22434,
+    "sentence_index": 150,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec030",
+    "text": "Jiang, X.",
+    "char_start": 22435,
+    "char_end": 22444,
+    "sentence_index": 151,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec030",
+    "text": "He, R.",
+    "char_start": 22445,
+    "char_end": 22451,
+    "sentence_index": 152,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec030",
+    "text": "Xu, and X.",
+    "char_start": 22452,
+    "char_end": 22462,
+    "sentence_index": 153,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec030",
+    "text": "Wang.",
+    "char_start": 22463,
+    "char_end": 22468,
+    "sentence_index": 154,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec030",
+    "text": "ComCLIP : Training-free compositional image and text matching.",
+    "char_start": 22469,
+    "char_end": 22531,
+    "sentence_index": 155,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec030",
+    "text": "In Proceedings of NAACL , 2024.",
+    "char_start": 22532,
+    "char_end": 22563,
+    "sentence_index": 156,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec030",
+    "text": "johnson2015image\nJ.",
+    "char_start": 22565,
+    "char_end": 22584,
+    "sentence_index": 157,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec030",
+    "text": "Johnson, R.",
+    "char_start": 22585,
+    "char_end": 22596,
+    "sentence_index": 158,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec030",
+    "text": "Krishna, M.",
+    "char_start": 22597,
+    "char_end": 22608,
+    "sentence_index": 159,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec030",
+    "text": "Stark, L.-J.",
+    "char_start": 22609,
+    "char_end": 22621,
+    "sentence_index": 160,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec030",
+    "text": "Li, D.",
+    "char_start": 22622,
+    "char_end": 22628,
+    "sentence_index": 161,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec030",
+    "text": "Sheshkus, and L.",
+    "char_start": 22629,
+    "char_end": 22645,
+    "sentence_index": 162,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec030",
+    "text": "Fei-Fei.",
+    "char_start": 22646,
+    "char_end": 22654,
+    "sentence_index": 163,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec030",
+    "text": "Image retrieval using scene graphs.",
+    "char_start": 22655,
+    "char_end": 22690,
+    "sentence_index": 164,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec030",
+    "text": "In Proceedings of CVPR , 2015.",
+    "char_start": 22691,
+    "char_end": 22721,
+    "sentence_index": 165,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec030",
+    "text": "johnson2018image\nJ.",
+    "char_start": 22723,
+    "char_end": 22742,
+    "sentence_index": 166,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec030",
+    "text": "Johnson, A.",
+    "char_start": 22743,
+    "char_end": 22754,
+    "sentence_index": 167,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec030",
+    "text": "Gupta, and L.",
+    "char_start": 22755,
+    "char_end": 22768,
+    "sentence_index": 168,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec030",
+    "text": "Fei-Fei.",
+    "char_start": 22769,
+    "char_end": 22777,
+    "sentence_index": 169,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec030",
+    "text": "Image generation from scene graphs.",
+    "char_start": 22778,
+    "char_end": 22813,
+    "sentence_index": 170,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec030",
+    "text": "In Proceedings of CVPR , 2018.",
+    "char_start": 22814,
+    "char_end": 22844,
+    "sentence_index": 171,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec030",
+    "text": "kuhn1955hungarian\nH.",
+    "char_start": 22846,
+    "char_end": 22866,
+    "sentence_index": 172,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec030",
+    "text": "W.",
+    "char_start": 22867,
+    "char_end": 22869,
+    "sentence_index": 173,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec030",
+    "text": "Kuhn.",
+    "char_start": 22870,
+    "char_end": 22875,
+    "sentence_index": 174,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec030",
+    "text": "The Hungarian method for the assignment problem.",
+    "char_start": 22876,
+    "char_end": 22924,
+    "sentence_index": 175,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec030",
+    "text": "Naval Research Logistics Quarterly , 2(1-2):83--97, 1955.",
+    "char_start": 22925,
+    "char_end": 22982,
+    "sentence_index": 176,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec030",
+    "text": "li2022blip\nJ.",
+    "char_start": 22984,
+    "char_end": 22997,
+    "sentence_index": 177,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec030",
+    "text": "Li, D.",
+    "char_start": 22998,
+    "char_end": 23004,
+    "sentence_index": 178,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec030",
+    "text": "Li, C.",
+    "char_start": 23005,
+    "char_end": 23011,
+    "sentence_index": 179,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec030",
+    "text": "Xiong, and S.",
+    "char_start": 23012,
+    "char_end": 23025,
+    "sentence_index": 180,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec030",
+    "text": "Hoi.",
+    "char_start": 23026,
+    "char_end": 23030,
+    "sentence_index": 181,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec030",
+    "text": "BLIP : Bootstrapping language-image pre-training.",
+    "char_start": 23031,
+    "char_end": 23080,
+    "sentence_index": 182,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec030",
+    "text": "In Proceedings of ICML , 2022.",
+    "char_start": 23081,
+    "char_end": 23111,
+    "sentence_index": 183,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec030",
+    "text": "lin2024evaluating\nZ.",
+    "char_start": 23113,
+    "char_end": 23133,
+    "sentence_index": 184,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec030",
+    "text": "Lin, E.",
+    "char_start": 23134,
+    "char_end": 23141,
+    "sentence_index": 185,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec030",
+    "text": "Pathak, D.",
+    "char_start": 23142,
+    "char_end": 23152,
+    "sentence_index": 186,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec030",
+    "text": "Bau, A.",
+    "char_start": 23153,
+    "char_end": 23160,
+    "sentence_index": 187,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec030",
+    "text": "Torralba, and S.",
+    "char_start": 23161,
+    "char_end": 23177,
+    "sentence_index": 188,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec030",
+    "text": "X.",
+    "char_start": 23178,
+    "char_end": 23180,
+    "sentence_index": 189,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec030",
+    "text": "Hu.",
+    "char_start": 23181,
+    "char_end": 23184,
+    "sentence_index": 190,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec030",
+    "text": "Evaluating text-to-visual generation with image-to-text generation.",
+    "char_start": 23185,
+    "char_end": 23252,
+    "sentence_index": 191,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec030",
+    "text": "In Proceedings of ECCV , 2024.",
+    "char_start": 23253,
+    "char_end": 23283,
+    "sentence_index": 192,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec030",
+    "text": "liu2023visual\nH.",
+    "char_start": 23285,
+    "char_end": 23301,
+    "sentence_index": 193,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec030",
+    "text": "Liu, C.",
+    "char_start": 23302,
+    "char_end": 23309,
+    "sentence_index": 194,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec030",
+    "text": "Li, Q.",
+    "char_start": 23310,
+    "char_end": 23316,
+    "sentence_index": 195,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec030",
+    "text": "Wu, and Y.",
+    "char_start": 23317,
+    "char_end": 23327,
+    "sentence_index": 196,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec030",
+    "text": "J.",
+    "char_start": 23328,
+    "char_end": 23330,
+    "sentence_index": 197,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec030",
+    "text": "Lee.",
+    "char_start": 23331,
+    "char_end": 23335,
+    "sentence_index": 198,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec030",
+    "text": "Visual instruction tuning.",
+    "char_start": 23336,
+    "char_end": 23362,
+    "sentence_index": 199,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec030",
+    "text": "In Proceedings of NeurIPS , 2023.",
+    "char_start": 23363,
+    "char_end": 23396,
+    "sentence_index": 200,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec030",
+    "text": "mishra2025scramble\nS.",
+    "char_start": 23398,
+    "char_end": 23419,
+    "sentence_index": 201,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec030",
+    "text": "Mishra, K.",
+    "char_start": 23420,
+    "char_end": 23430,
+    "sentence_index": 202,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec030",
+    "text": "Saenko, and V.",
+    "char_start": 23431,
+    "char_end": 23445,
+    "sentence_index": 203,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec030",
+    "text": "Saligrama.",
+    "char_start": 23446,
+    "char_end": 23456,
+    "sentence_index": 204,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec030",
+    "text": "SCRAMBLe : Enhancing multimodal LLM compositionality with synthetic preference data.",
+    "char_start": 23457,
+    "char_end": 23541,
+    "sentence_index": 205,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec030",
+    "text": "In Proceedings of ICCV Workshops , 2025.",
+    "char_start": 23542,
+    "char_end": 23582,
+    "sentence_index": 206,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec030",
+    "text": "mitra2024ccot\nC.",
+    "char_start": 23584,
+    "char_end": 23600,
+    "sentence_index": 207,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec030",
+    "text": "Mitra, B.",
+    "char_start": 23601,
+    "char_end": 23610,
+    "sentence_index": 208,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec030",
+    "text": "Huang, T.",
+    "char_start": 23611,
+    "char_end": 23620,
+    "sentence_index": 209,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec030",
+    "text": "Darrell, and R.",
+    "char_start": 23621,
+    "char_end": 23636,
+    "sentence_index": 210,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec030",
+    "text": "Herzig.",
+    "char_start": 23637,
+    "char_end": 23644,
+    "sentence_index": 211,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec030",
+    "text": "Compositional chain-of-thought prompting for large multimodal models.",
+    "char_start": 23645,
+    "char_end": 23714,
+    "sentence_index": 212,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec030",
+    "text": "In Proceedings of CVPR , 2024.",
+    "char_start": 23715,
+    "char_end": 23745,
+    "sentence_index": 213,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec030",
+    "text": "qwen3vl\nQwen Team.",
+    "char_start": 23747,
+    "char_end": 23765,
+    "sentence_index": 214,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec030",
+    "text": "Qwen3- VL : Advancing multimodal reasoning with native resolution visual processing.",
+    "char_start": 23766,
+    "char_end": 23850,
+    "sentence_index": 215,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec030",
+    "text": "Technical report, Alibaba Cloud, 2025.",
+    "char_start": 23851,
+    "char_end": 23889,
+    "sentence_index": 216,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec030",
+    "text": "radford2021learning\nA.",
+    "char_start": 23891,
+    "char_end": 23913,
+    "sentence_index": 217,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec030",
+    "text": "Radford, J.",
+    "char_start": 23914,
+    "char_end": 23925,
+    "sentence_index": 218,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec030",
+    "text": "W.",
+    "char_start": 23926,
+    "char_end": 23928,
+    "sentence_index": 219,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec030",
+    "text": "Kim, C.",
+    "char_start": 23929,
+    "char_end": 23936,
+    "sentence_index": 220,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec030",
+    "text": "Hallacy, A.",
+    "char_start": 23937,
+    "char_end": 23948,
+    "sentence_index": 221,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec030",
+    "text": "Ramesh, G.",
+    "char_start": 23949,
+    "char_end": 23959,
+    "sentence_index": 222,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec030",
+    "text": "Goh, S.",
+    "char_start": 23960,
+    "char_end": 23967,
+    "sentence_index": 223,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec030",
+    "text": "Agarwal, G.",
+    "char_start": 23968,
+    "char_end": 23979,
+    "sentence_index": 224,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec030",
+    "text": "Sastry, A.",
+    "char_start": 23980,
+    "char_end": 23990,
+    "sentence_index": 225,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec030",
+    "text": "Askell, P.",
+    "char_start": 23991,
+    "char_end": 24001,
+    "sentence_index": 226,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec030",
+    "text": "Mishkin, J.",
+    "char_start": 24002,
+    "char_end": 24013,
+    "sentence_index": 227,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec030",
+    "text": "Clark, G.",
+    "char_start": 24014,
+    "char_end": 24023,
+    "sentence_index": 228,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec030",
+    "text": "Krueger, and I.",
+    "char_start": 24024,
+    "char_end": 24039,
+    "sentence_index": 229,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec030",
+    "text": "Sutskever.",
+    "char_start": 24040,
+    "char_end": 24050,
+    "sentence_index": 230,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec030",
+    "text": "Learning transferable visual models from natural language supervision.",
+    "char_start": 24051,
+    "char_end": 24121,
+    "sentence_index": 231,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec030",
+    "text": "In Proceedings of ICML , 2021.",
+    "char_start": 24122,
+    "char_end": 24152,
+    "sentence_index": 232,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec030",
+    "text": "shi2019explainable\nJ.",
+    "char_start": 24154,
+    "char_end": 24175,
+    "sentence_index": 233,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec030",
+    "text": "Shi, H.",
+    "char_start": 24176,
+    "char_end": 24183,
+    "sentence_index": 234,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec030",
+    "text": "Zhang, and J.",
+    "char_start": 24184,
+    "char_end": 24197,
+    "sentence_index": 235,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec030",
+    "text": "Li.",
+    "char_start": 24198,
+    "char_end": 24201,
+    "sentence_index": 236,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec030",
+    "text": "Explainable and explicit visual reasoning over scene graphs.",
+    "char_start": 24202,
+    "char_end": 24262,
+    "sentence_index": 237,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec030",
+    "text": "In Proceedings of CVPR , 2019.",
+    "char_start": 24263,
+    "char_end": 24293,
+    "sentence_index": 238,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec030",
+    "text": "thrush2022winoground\nT.",
+    "char_start": 24295,
+    "char_end": 24318,
+    "sentence_index": 239,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec030",
+    "text": "Thrush, R.",
+    "char_start": 24319,
+    "char_end": 24329,
+    "sentence_index": 240,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec030",
+    "text": "Jiang, M.",
+    "char_start": 24330,
+    "char_end": 24339,
+    "sentence_index": 241,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec030",
+    "text": "Bartolo, A.",
+    "char_start": 24340,
+    "char_end": 24351,
+    "sentence_index": 242,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec030",
+    "text": "Singh, A.",
+    "char_start": 24352,
+    "char_end": 24361,
+    "sentence_index": 243,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec030",
+    "text": "Williams, D.",
+    "char_start": 24362,
+    "char_end": 24374,
+    "sentence_index": 244,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec030",
+    "text": "Kiela, and C.",
+    "char_start": 24375,
+    "char_end": 24388,
+    "sentence_index": 245,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec030",
+    "text": "Ross.",
+    "char_start": 24389,
+    "char_end": 24394,
+    "sentence_index": 246,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec030",
+    "text": "Winoground: Probing vision and language models for visio-linguistic compositionality.",
+    "char_start": 24395,
+    "char_end": 24480,
+    "sentence_index": 247,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec030",
+    "text": "In Proceedings of CVPR , 2022.",
+    "char_start": 24481,
+    "char_end": 24511,
+    "sentence_index": 248,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec030",
+    "text": "wang2023selfconsistency\nX.",
+    "char_start": 24513,
+    "char_end": 24539,
+    "sentence_index": 249,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec030",
+    "text": "Wang, J.",
+    "char_start": 24540,
+    "char_end": 24548,
+    "sentence_index": 250,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec030",
+    "text": "Wei, D.",
+    "char_start": 24549,
+    "char_end": 24556,
+    "sentence_index": 251,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec030",
+    "text": "Schuurmans, Q.",
+    "char_start": 24557,
+    "char_end": 24571,
+    "sentence_index": 252,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec030",
+    "text": "Le, E.",
+    "char_start": 24572,
+    "char_end": 24578,
+    "sentence_index": 253,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec030",
+    "text": "Chi, S.",
+    "char_start": 24579,
+    "char_end": 24586,
+    "sentence_index": 254,
+    "section_sentence_index": 141
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec030",
+    "text": "Narang, A.",
+    "char_start": 24587,
+    "char_end": 24597,
+    "sentence_index": 255,
+    "section_sentence_index": 142
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec030",
+    "text": "Chowdhery, and D.",
+    "char_start": 24598,
+    "char_end": 24615,
+    "sentence_index": 256,
+    "section_sentence_index": 143
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec030",
+    "text": "Zhou.",
+    "char_start": 24616,
+    "char_end": 24621,
+    "sentence_index": 257,
+    "section_sentence_index": 144
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec030",
+    "text": "Self-consistency improves chain of thought reasoning in language models.",
+    "char_start": 24622,
+    "char_end": 24694,
+    "sentence_index": 258,
+    "section_sentence_index": 145
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec030",
+    "text": "In Proceedings of ICLR , 2023.",
+    "char_start": 24695,
+    "char_end": 24725,
+    "sentence_index": 259,
+    "section_sentence_index": 146
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec030",
+    "text": "wu2025testtime\nX.",
+    "char_start": 24727,
+    "char_end": 24744,
+    "sentence_index": 260,
+    "section_sentence_index": 147
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec030",
+    "text": "Wu, Y.",
+    "char_start": 24745,
+    "char_end": 24751,
+    "sentence_index": 261,
+    "section_sentence_index": 148
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec030",
+    "text": "Cai, M.",
+    "char_start": 24752,
+    "char_end": 24759,
+    "sentence_index": 262,
+    "section_sentence_index": 149
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec030",
+    "text": "Li, and Y.",
+    "char_start": 24760,
+    "char_end": 24770,
+    "sentence_index": 263,
+    "section_sentence_index": 150
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec030",
+    "text": "J.",
+    "char_start": 24771,
+    "char_end": 24773,
+    "sentence_index": 264,
+    "section_sentence_index": 151
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec030",
+    "text": "Lee.",
+    "char_start": 24774,
+    "char_end": 24778,
+    "sentence_index": 265,
+    "section_sentence_index": 152
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec030",
+    "text": "Test-time matching: Unlocking compositional reasoning in multimodal models.",
+    "char_start": 24779,
+    "char_end": 24854,
+    "sentence_index": 266,
+    "section_sentence_index": 153
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec030",
+    "text": "arXiv preprint arXiv:2510.07632 , 2025.",
+    "char_start": 24855,
+    "char_end": 24894,
+    "sentence_index": 267,
+    "section_sentence_index": 154
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec030",
+    "text": "yuksekgonul2023and\nM.",
+    "char_start": 24896,
+    "char_end": 24917,
+    "sentence_index": 268,
+    "section_sentence_index": 155
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec030",
+    "text": "Yuksekgonul, F.",
+    "char_start": 24918,
+    "char_end": 24933,
+    "sentence_index": 269,
+    "section_sentence_index": 156
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec030",
+    "text": "Bianchi, P.",
+    "char_start": 24934,
+    "char_end": 24945,
+    "sentence_index": 270,
+    "section_sentence_index": 157
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec030",
+    "text": "Kalluri, D.",
+    "char_start": 24946,
+    "char_end": 24957,
+    "sentence_index": 271,
+    "section_sentence_index": 158
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec030",
+    "text": "Jurafsky, and J.",
+    "char_start": 24958,
+    "char_end": 24974,
+    "sentence_index": 272,
+    "section_sentence_index": 159
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec030",
+    "text": "Zou.",
+    "char_start": 24975,
+    "char_end": 24979,
+    "sentence_index": 273,
+    "section_sentence_index": 160
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec030",
+    "text": "When and why vision-language models behave like bags-of-words, and what to do about it?",
+    "char_start": 24980,
+    "char_end": 25067,
+    "sentence_index": 274,
+    "section_sentence_index": 161
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec030",
+    "text": "In Proceedings of ICLR , 2023.",
+    "char_start": 25068,
+    "char_end": 25098,
+    "sentence_index": 275,
+    "section_sentence_index": 162
+  }
+]

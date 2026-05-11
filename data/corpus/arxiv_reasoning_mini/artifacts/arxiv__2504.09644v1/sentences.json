@@ -1,0 +1,2279 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Remote sensing has become critical for understanding environmental dynamics, urban planning, and disaster management.",
+    "char_start": 0,
+    "char_end": 117,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, traditional remote sensing workflows often rely on explicit segmentation or detection methods, which struggle to handle complex, implicit queries that require reasoning over spatial context, domain knowledge, and implicit user intent.",
+    "char_start": 118,
+    "char_end": 361,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Motivated by this, we introduce a new task, , geospatial pixel reasoning, which allows implicit querying and reasoning and generates the mask of the target region.",
+    "char_start": 362,
+    "char_end": 525,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To advance this task, we construct and release the first large-scale benchmark dataset called EarthReason, which comprises 5,434 manually annotated image masks with over 30,000 implicit question-answer pairs.",
+    "char_start": 526,
+    "char_end": 734,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Moreover, we propose SegEarth-R1, a simple yet effective language-guided segmentation baseline that integrates a hierarchical visual encoder, a large language model (LLM) for instruction parsing, and a tailored mask generator for spatial correlation.",
+    "char_start": 735,
+    "char_end": 985,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "The design of SegEarth-R1 incorporates domain-specific adaptations, including aggressive visual token compression to handle ultra-high-resolution remote sensing images, a description projection module to fuse language and multi-scale features, and a streamlined mask prediction pipeline that directly queries description embeddings.",
+    "char_start": 986,
+    "char_end": 1318,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Extensive experiments demonstrate that SegEarth-R1 achieves state-of-the-art performance on both reasoning and referring segmentation tasks, significantly outperforming traditional and LLM-based segmentation methods.",
+    "char_start": 1319,
+    "char_end": 1535,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Our data and code will be released at .",
+    "char_start": 1536,
+    "char_end": 1575,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Earth observation through remote sensing has emerged as a cornerstone of modern geospatial analysis, enabling unprecedented insights into environmental dynamics, urban planning, and disaster management .",
+    "char_start": 1577,
+    "char_end": 1780,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Satellite and aerial images provide a unique vantage point for monitoring planetary-scale phenomena, ranging from deforestation patterns to coastal erosion.",
+    "char_start": 1781,
+    "char_end": 1937,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "However, converting this raw pixel data into actionable insights requires more than traditional computer vision techniques; it demands models capable of reasoning about spatial context, domain knowledge, and implicit user intent.",
+    "char_start": 1938,
+    "char_end": 2167,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Conventional remote sensing workflows predominantly rely on explicit tasks, , semantic segmentation and referring segmentation , which operate within fixed taxonomies and require precise user instructions.",
+    "char_start": 2168,
+    "char_end": 2373,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "While effective for well-defined scenarios, these approaches struggle to accommodate complex, implicit queries\u2014for example, identifying regions at elevated risk of landslides based on slope, vegetation cover, and proximity to infrastructure.",
+    "char_start": 2374,
+    "char_end": 2615,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Such tasks limit implicit reasoning over heterogeneous spatial patterns, object relationships, and environmental metadata, exceeding the capabilities of standard segmentation or detection pipelines.",
+    "char_start": 2616,
+    "char_end": 2814,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Motivated by this, we introduce a new task, , geospatial pixel reasoning, which allows implicit querying and reasoning and generates the mask of the target region.",
+    "char_start": 2816,
+    "char_end": 2979,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "To enable research in this task, we build and release the first large-scale benchmark dataset, called EarthReason, which contains 5,434 manually annotated remote sensing image-mask pairs drawn from diverse classification sources, covering 28 scene categories at spatial resolutions ranging from 0.5m to 153m.",
+    "char_start": 2980,
+    "char_end": 3288,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Each image is paired with multiple implicit reasoning questions that require the model to infer target masks based on contextual and domain-specific knowledge, rather than explicit object names.",
+    "char_start": 3289,
+    "char_end": 3483,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "In addition, by incorporating empty target cases and varying spatial scales, EarthReason pushes models to generalize across complex real-world remote sensing scenarios.",
+    "char_start": 3484,
+    "char_end": 3652,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Recent progress in multimodal large language models (MLLMs) has demonstrated impressive performance in natural image domains, where models like LISA and PixelLM leverage large language models (LLMs) to interpret rich textual prompts and generate pixel-level outputs.",
+    "char_start": 3654,
+    "char_end": 3920,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "These frameworks excel at tasks such as reasoning segmentation , where the target mask is not directly specified but must be inferred from nuanced language cues.",
+    "char_start": 3921,
+    "char_end": 4082,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Unfortunately, directly transferring these methods to geospatial pixel reasoning is non-trivial since remote sensing images present extreme scale variation, densely packed small-scale objects and ultra-high resolution that violate assumptions of natural images.",
+    "char_start": 4083,
+    "char_end": 4344,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Moreover, different from natural images, remote sensing queries often require spatial correlations.",
+    "char_start": 4345,
+    "char_end": 4444,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "For instance, identifying ``informal settlements'' relies on detecting roof material irregularities, road network fragmentation, and spatial adjacency to legal land-use zones.",
+    "char_start": 4445,
+    "char_end": 4620,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "To address these challenges, we present SegEarth-R1, a simple yet effective language-guided segmentation model that integrates a hierarchical visual encoder, an LLM for instruction parsing, and a tailored mask generator designed for spatial correlation.",
+    "char_start": 4622,
+    "char_end": 4875,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Further, some components are also designed to adapt to the characteristics of remote sensing images.",
+    "char_start": 4876,
+    "char_end": 4976,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Specifically, we propose the aggressive visual token compression to handle ultra-high-resolution images, a description projection module to fuse language and multi-scale features, and a streamlined mask prediction pipeline that directly queries description embeddings.",
+    "char_start": 4977,
+    "char_end": 5245,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Despite its architectural simplicity, SegEarth-R1 achieves advanced performance on EarthReason and referring segmentation datasets, significantly outperforming both traditional and LLM-based segmentation methods.",
+    "char_start": 5246,
+    "char_end": 5458,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "In summary, our contributions are as follows:\n[leftmargin=8pt]\nWe introduce the geospatial pixel reasoning task, which requires models to infer segmentation masks from implicit natural language queries by reasoning over spatial context and domain knowledge.",
+    "char_start": 5460,
+    "char_end": 5717,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "We build and release the first large-scale benchmark with 5,434 image-mask pairs, 28 categories, and over 30,000 implicit question-answer pairs, fostering research in geospatial pixel reasoning.",
+    "char_start": 5718,
+    "char_end": 5912,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "We propose an LLM-based segmentation model, SegEarth-R1, which incorporates new segmentation capabilities in remote sensing, containing several domain-specific designs.",
+    "char_start": 5913,
+    "char_end": 6081,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Extensive experiments show that SegEarth-R1 achieves state-of-the-art performance on reasoning and referring segmentation tasks, compared to traditional methods and other LLM-based methods.",
+    "char_start": 6082,
+    "char_end": 6271,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec003",
+    "text": "Referring segmentation aims to segment targets in an image based on natural language descriptions, requiring precise alignment between linguistic expressions and visual content.",
+    "char_start": 6273,
+    "char_end": 6450,
+    "sentence_index": 31,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec004",
+    "text": "Early approaches adopted CNN-RNN/LSTM frameworks to extract visual features and encode textual queries, respectively.",
+    "char_start": 6451,
+    "char_end": 6568,
+    "sentence_index": 32,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec004",
+    "text": "However, these methods struggled with complex expressions due to limited local receptive fields and insufficient cross-modal interaction .",
+    "char_start": 6569,
+    "char_end": 6707,
+    "sentence_index": 33,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec004",
+    "text": "To address these limitations, attention mechanisms emerged as a pivotal technique .",
+    "char_start": 6708,
+    "char_end": 6791,
+    "sentence_index": 34,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "VLT dynamically generates adaptive query vectors based on image-text interactions, enabling precise localization through cross-modal attention.",
+    "char_start": 6792,
+    "char_end": 6935,
+    "sentence_index": 35,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec004",
+    "text": "LAVT further advances this paradigm by integrating hierarchical visual-linguistic fusion within a Swin Transformer backbone, where pixel-word attention refines multiscale features to achieve fine-grained semantic alignment.",
+    "char_start": 6936,
+    "char_end": 7159,
+    "sentence_index": 36,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec004",
+    "text": "In remote sensing, specifying segmentation for certain instances can improve interpretation efficiency and user interactivity.",
+    "char_start": 7160,
+    "char_end": 7286,
+    "sentence_index": 37,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "Recently, Yuan et al.",
+    "char_start": 7287,
+    "char_end": 7308,
+    "sentence_index": 38,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "introduced referring segmentation into satellite images for the first time.",
+    "char_start": 7309,
+    "char_end": 7384,
+    "sentence_index": 39,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "Subsequently, following the LAVT architecture, RMSIN also incorporated adaptive rotated convolutions to address scale and orientation variations.",
+    "char_start": 7385,
+    "char_end": 7530,
+    "sentence_index": 40,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "FIANet and CroBIM introduced elaborate cross-modal interactions for feature alignment.",
+    "char_start": 7531,
+    "char_end": 7617,
+    "sentence_index": 41,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "RSSep reformulated referring segmentation as a sequence-to-sequence task, predicting polygonal boundaries to handle scale variations and blurred edges .",
+    "char_start": 7618,
+    "char_end": 7770,
+    "sentence_index": 42,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "However, existing methods effectively follow explicit instructions for target segmentation but lack implicit intent reasoning.",
+    "char_start": 7771,
+    "char_end": 7897,
+    "sentence_index": 43,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "In this paper, the proposed geospatial pixel reasoning task advances beyond referring segmentation by employing LLMs' reasoning capabilities to interpret subtle instructions and accurately segment desired targets.",
+    "char_start": 7898,
+    "char_end": 8111,
+    "sentence_index": 44,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Recent advances in LLMs have significantly expanded their capabilities to integrate pixel-level segmentation with language reasoning .",
+    "char_start": 8113,
+    "char_end": 8247,
+    "sentence_index": 45,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "For instance, Florence-2 unified text, detection, and segmentation through a sequence-to-sequence framework with task instructions.",
+    "char_start": 8248,
+    "char_end": 8379,
+    "sentence_index": 46,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "To address the complexity of real-world segmentation scenarios, some works focus on architectural specialization and instruction-aware adaptation.",
+    "char_start": 8380,
+    "char_end": 8526,
+    "sentence_index": 47,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "LISA established the paradigm by introducing a [SEG] token to connect LLMs with segmentation decoders like SAM , enabling language-guided mask prediction.",
+    "char_start": 8527,
+    "char_end": 8681,
+    "sentence_index": 48,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec005",
+    "text": "Subsequent studies enhanced this paradigm: GSVA introduced shared-weight [SEG] tokens and [REJ] tokens for multi-target and empty-target handling , while GLaMM achieved pixel-grounded conversational capabilities through holistic segmentation .",
+    "char_start": 8682,
+    "char_end": 8925,
+    "sentence_index": 49,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "Parallel efforts focused on architectural unification - PSALM established a flexible input schema for multi-task segmentation, and OMG-LLaVA combined universal segmentation backbones with LLMs for pixel-level reasoning.",
+    "char_start": 8926,
+    "char_end": 9145,
+    "sentence_index": 50,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "Video understanding extensions emerged through VISA and InstructSeg , which integrated temporal reasoning.",
+    "char_start": 9146,
+    "char_end": 9252,
+    "sentence_index": 51,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "Notably, Text4Seg redefined segmentation as a text generation problem using semantic descriptors, eliminating the need for an additional decoder.",
+    "char_start": 9253,
+    "char_end": 9398,
+    "sentence_index": 52,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "In remote sensing, benefiting from the above paradigms , some unified models such as RSUniVLM , GeoGround and GeoPix are equipped with segmentation capabilities.",
+    "char_start": 9399,
+    "char_end": 9560,
+    "sentence_index": 53,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Although based on LLM, these models focus only on explicit text-guided segmentation.",
+    "char_start": 9561,
+    "char_end": 9645,
+    "sentence_index": 54,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "Further, GeoPixel introduced grounded conversation generation to remote sensing, but it still does not provide reasoning capability.",
+    "char_start": 9646,
+    "char_end": 9778,
+    "sentence_index": 55,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "Our SegEarth-R1 also follows the LLM-based segmentation paradigm, but is different from previous methods.",
+    "char_start": 9779,
+    "char_end": 9884,
+    "sentence_index": 56,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Specifically, SegEarth-R1 is the first work to support reasoning about the target region from implicit queries, and its components are specifically designed for the challenges in remote sensing.",
+    "char_start": 9885,
+    "char_end": 10079,
+    "sentence_index": 57,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec006",
+    "text": "Comparison between EarthReason and other related datasets.",
+    "char_start": 10081,
+    "char_end": 10139,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec006",
+    "text": "The white!50!black gray rendering denotes the natural image dataset.",
+    "char_start": 10140,
+    "char_end": 10208,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec006",
+    "text": "``Seg'', ``Det'', ``VG'', ``Cls'' denote segmentation, detection, visual grounding and classification datasets, respectively.",
+    "char_start": 10209,
+    "char_end": 10334,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec006",
+    "text": "0.63\n@ lcccccccccc@\n\nDataset & Mask Label & Reasoning Query & Spatial resolution & Image Size & Image Num & Image Source & Class Num\n\nwhite!50!black ReasonSeg & white!50!black & white!50!black & white!50!black - & white!50!black - & white!50!black 1,218 & white!50!black OpenImages (Seg) \\&\nwhite!50!black ScanNetv2 (Seg) & white!50!black -\n\nwhite!50!black LLM-Seg40K & white!50!black & white!50!black & white!50!black - & white!50!black - & white!50!black 14,000 & white!50!black LVIS (Seg) \\&\nwhite!50!black EgoObjects (Seg) & white!50!black -\n\nEarthVQA & 55 & & 0.3m & $1024^2$ & 6,000 & LoveDA (Seg) & 14\n\nRegSegRS & & 55 & 0.5m-30m & $800^2$ & 4,420 & SkyScapes (Seg) & 14\n\nRRSIS-D & & 55 & 0.13m & $512^2$ & 17,402 & RSVGD (VG) \\& DIOR (OD) & 20\n\nRISBench & & 55 & 0.1m-30m & $512^2$ & 52,472 & DOTAv2(OD) \\& DIOR (OD) & 26\n\nEarthReason & & & 0.5m-153m & $123^2$-$7617^2$ & 5,434 & AID (Cls) \\& fMoW (Cls) & 28\n\nWe analyze three types of tasks and datasets related to geospatial pixel reasoning, , natural image reasoning segmentation, remote sensing visual question answering (VQA), and remote sensing referring segmentation, as shown in Table .",
+    "char_start": 10336,
+    "char_end": 11488,
+    "sentence_index": 61,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec007",
+    "text": "RefSegRS and RRSIS-D provide early benchmarks with image-text-mask triplets.",
+    "char_start": 11489,
+    "char_end": 11565,
+    "sentence_index": 62,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec007",
+    "text": "RISBench , the largest RRSIS dataset to date, introduced 52,472 triplets with oriented bounding boxes and pixel-level masks generated via a semi-automatic pipeline.",
+    "char_start": 11566,
+    "char_end": 11730,
+    "sentence_index": 63,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec007",
+    "text": "These datasets address the limitations of earlier text-focused datasets ( , RSICD , EarthVQA , ) and enable comprehensive evaluation of multimodal models.",
+    "char_start": 11731,
+    "char_end": 11885,
+    "sentence_index": 64,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec007",
+    "text": "Compared to the previous referring segmentation datasets, our EarthReason datasets has the following features: (1) The mask labels in EarthReason are not explicitly specified by the query, but require further reasoning to determine the target, which challenges the model's reasoning ability.",
+    "char_start": 11886,
+    "char_end": 12177,
+    "sentence_index": 65,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec007",
+    "text": "(2) EarthReason uses a more raw data source.",
+    "char_start": 12178,
+    "char_end": 12222,
+    "sentence_index": 66,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec007",
+    "text": "The previous related datasets directly transform existing segmentation datasets or SAM-processed detection datasets , while our EarthReason uses images from classification datasets and we manually annotate them.",
+    "char_start": 12223,
+    "char_end": 12434,
+    "sentence_index": 67,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec007",
+    "text": "This allows EarthReason to provide more data gain when it comes to co-training of unified segmentation tasks.",
+    "char_start": 12435,
+    "char_end": 12544,
+    "sentence_index": 68,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec007",
+    "text": "(3) EarthReason has more diverse spatial resolutions and image sizes, which are conducive to solving the object scale spanning problem inherent in remote sensing images .",
+    "char_start": 12545,
+    "char_end": 12715,
+    "sentence_index": 69,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec007",
+    "text": "Compared to the first natural image reasoning segmentation dataset, ReasonSeg, EarthReason contains $4.46 $ more data than it.",
+    "char_start": 12716,
+    "char_end": 12842,
+    "sentence_index": 70,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec007",
+    "text": "Therefore, we believe that EarthReason, as the first geospatial pixel reasoning dataset in the remote sensing area, is capable of performing initial explorations of this task.",
+    "char_start": 12843,
+    "char_end": 13018,
+    "sentence_index": 71,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec008",
+    "text": "Our benchmark dataset EarthReason is generated according to the following three steps, i.e., image collection, question-answer pair generation, and object mask labeling.",
+    "char_start": 13020,
+    "char_end": 13189,
+    "sentence_index": 72,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec008",
+    "text": "Image Collection.",
+    "char_start": 13191,
+    "char_end": 13208,
+    "sentence_index": 73,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec008",
+    "text": "As mentioned above, to avoid potential data leakage in the future construction of unified segmentation models for remote sensing, we collect images from existing classification data.",
+    "char_start": 13209,
+    "char_end": 13391,
+    "sentence_index": 74,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec008",
+    "text": "Although this increases the annotation cost, it also motivates more diverse scenes.",
+    "char_start": 13392,
+    "char_end": 13475,
+    "sentence_index": 75,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec008",
+    "text": "Specifically, we first select the 28 categories that are more suitable for reasoning in the Million-AID dataset, and sample about 200 images for each category.",
+    "char_start": 13476,
+    "char_end": 13635,
+    "sentence_index": 76,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec008",
+    "text": "Then, we find that the actual geographic range contained in Million-AID's images is limited.",
+    "char_start": 13636,
+    "char_end": 13728,
+    "sentence_index": 77,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "Thus, we also collect 800 images in the fMoW dataset to enhance the model's reasoning ability in complex scenes.",
+    "char_start": 13729,
+    "char_end": 13841,
+    "sentence_index": 78,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "Further, to alleviate the factitious illusion issue , we add an extra 200 empty target images ( , the implied target is not in the image).",
+    "char_start": 13842,
+    "char_end": 13980,
+    "sentence_index": 79,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "Finally, some low-quality images are eliminated, and we obtain a total of 5,434 images.",
+    "char_start": 13981,
+    "char_end": 14068,
+    "sentence_index": 80,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "Question-Answer Pair Generation.",
+    "char_start": 14070,
+    "char_end": 14102,
+    "sentence_index": 81,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "We use GPT-4o to construct question-answer pairs, and given its excellent visual comprehension, we take the remote sensing image and the corresponding scene category (provided by Million-AID and fMoW) as part of the prompt to generate questions and answers that are closely related to the image.",
+    "char_start": 14103,
+    "char_end": 14398,
+    "sentence_index": 82,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "An example of such a prompt is illustrated in Appendix .",
+    "char_start": 14399,
+    "char_end": 14455,
+    "sentence_index": 83,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "In addition, following , to make the questions and answers diverse, we adapt GPT-3.5 to rephrase the instructional questions and answers, as shown in Appendix Figure .",
+    "char_start": 14456,
+    "char_end": 14623,
+    "sentence_index": 84,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "Object Mask Labeling.",
+    "char_start": 14625,
+    "char_end": 14646,
+    "sentence_index": 85,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "Different from previous referring and reasoning segmentation datasets (which use off-the-shelf masks or bounding boxes), we annotate images from scratch.",
+    "char_start": 14647,
+    "char_end": 14800,
+    "sentence_index": 86,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "Specifically, we employ multiple experts in remote sensing and vision, assign each expert a few hundred images to annotate, and cross-validate the annotations after they are completed.",
+    "char_start": 14801,
+    "char_end": 14985,
+    "sentence_index": 87,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "For simple targets ( , lake), SAM-H is used to assist in annotation; for complex targets ( , wind turbine), each point of the polygon is finely marked.",
+    "char_start": 14986,
+    "char_end": 15137,
+    "sentence_index": 88,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "A description of mask quality is provided in Appendix .",
+    "char_start": 15138,
+    "char_end": 15193,
+    "sentence_index": 89,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "Dataset Statistics.",
+    "char_start": 15195,
+    "char_end": 15214,
+    "sentence_index": 90,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "The EarthReason dataset is partitioned into training, validation, and testing sets, comprising 2,371, 1,135, and 1,928 images, respectively.",
+    "char_start": 15215,
+    "char_end": 15355,
+    "sentence_index": 91,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "In the training set, each image is annotated with an average of six questions and three corresponding answers.",
+    "char_start": 15356,
+    "char_end": 15466,
+    "sentence_index": 92,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "The average question length is 20.86 words, while the average answer length is 26.76 words.",
+    "char_start": 15467,
+    "char_end": 15558,
+    "sentence_index": 93,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "To assess the model\u2019s generalization capability, several semantic categories are deliberately reserved for the validation and test sets, ensuring they remain unseen during training.",
+    "char_start": 15559,
+    "char_end": 15740,
+    "sentence_index": 94,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "Additional dataset details are provided in the Appendix .",
+    "char_start": 15741,
+    "char_end": 15798,
+    "sentence_index": 95,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Compared with natural images, remote sensing images exhibit distinctive characteristics that demand specialized architectural designs for pixel-wise geospatial reasoning.",
+    "char_start": 15800,
+    "char_end": 15970,
+    "sentence_index": 96,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "In this work, we propose SegEarth-R1, a simple yet powerful baseline for geospatial pixel reasoning that effectively harnesses LLM capabilities while incorporating domain-specific adaptations.",
+    "char_start": 15971,
+    "char_end": 16163,
+    "sentence_index": 97,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "As illustrated in Figure , our architecture comprises three core parts: A visual encoder for image feature extraction, an LLM for instruction interpretation and semantic correlation, and a mask generator for spatial correlation and mask prediction.",
+    "char_start": 16164,
+    "char_end": 16412,
+    "sentence_index": 98,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "Each part incorporates critical design considerations to address the unique challenges of remote sensing images.",
+    "char_start": 16413,
+    "char_end": 16525,
+    "sentence_index": 99,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "[t]\n\nfigures/method2.pdf\nOverview of the proposed SegEarth-R1 architecture.",
+    "char_start": 16527,
+    "char_end": 16602,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Given an image $X_v$ and a text description $X_q$, a hierarchical visual encoder and a proposed connector are used to extract and compress visual tokens.",
+    "char_start": 16603,
+    "char_end": 16756,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "Then, the visual tokens figures/visual_token.png and description embeddings figures/text_token.png are fed into an LLM for instruction interpretation and semantic correlation.",
+    "char_start": 16757,
+    "char_end": 16932,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "Finally, description embeddings are directly mapped to the query vector and used for spatial correlation and segmentation mask generation.",
+    "char_start": 16933,
+    "char_end": 17071,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "-1em\n\nSatellite and aerial targets present two critical challenges: (1) extreme scale variations ranging from sub-meter objects to kilometer-scale geographical formations , and (2) densely distributed small objects requiring high-resolution analysis .",
+    "char_start": 17073,
+    "char_end": 17324,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "Conventional ViT-based encoders adopted in MLLMs ( , image encoder in CLIP and SAM ) prove suboptimal due to their fixed-scale feature extraction and information compression through aggressive patch merging.",
+    "char_start": 17325,
+    "char_end": 17532,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "To alleviate these limitations, following , SegEarth-R1 employs a Swin Transformer backbone enhanced with progressive feature hierarchy construction.",
+    "char_start": 17533,
+    "char_end": 17682,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "This architecture generates multi-scale feature maps $v_h, h [1,4]$ at 1/4, 1/8, 1/16, 1/32 of the original resolution through controlled downsampling operations, preserving high-resolution details for small objects while capturing contextual semantics at deeper layers.",
+    "char_start": 17683,
+    "char_end": 17953,
+    "sentence_index": 107,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec011",
+    "text": "SegEarth-R1 adopts the MLLM paradigm by jointly embedding visual tokens and textual instructions into a unified LLM input space for multimodal reasoning.",
+    "char_start": 17955,
+    "char_end": 18108,
+    "sentence_index": 108,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec011",
+    "text": "Unlike natural images, remote sensing data exhibits ultra-high-resolution coverage , posing computational challenges when processed through billion-level LLMs.",
+    "char_start": 18109,
+    "char_end": 18268,
+    "sentence_index": 109,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec011",
+    "text": "Therefore, we expect to compress the visual token to alleviate the computational cost and make only simple semantic correlations in LLM.",
+    "char_start": 18269,
+    "char_end": 18405,
+    "sentence_index": 110,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec012",
+    "text": "Redundancy Analysis.",
+    "char_start": 18407,
+    "char_end": 18427,
+    "sentence_index": 111,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec012",
+    "text": "Image redundancy quantifies the proportion of compressible, non-informative data within an image.",
+    "char_start": 18428,
+    "char_end": 18525,
+    "sentence_index": 112,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec012",
+    "text": "To investigate the feasibility of aggressive visual token compression for remote sensing images, we conduct a redundancy analysis from dual perspectives: pixel-level statistical redundancy and spatial structural redundancy.",
+    "char_start": 18526,
+    "char_end": 18749,
+    "sentence_index": 113,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec012",
+    "text": "[leftmargin=8pt]\nAccording to information theory , entropy measures the average uncertainty or information content of an image, while the maximum entropy corresponds to the idealized scenario where pixel values are uniformly distributed ( , no redundancy).",
+    "char_start": 18751,
+    "char_end": 19007,
+    "sentence_index": 114,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec012",
+    "text": "Thus, from the entropy perspective, the image redundancy can be defined as :\n\nR_e = 1 - - _ l=0 ^ L-1 p(l) _ 2 p(l) _ 2 L ,\n\nwhere $L$ denotes the number of distinct intensity levels ( , $L=256$ for an 8-bit grayscale image), and $p(l)$ denotes the probability mass function of the pixel intensity value $l$.",
+    "char_start": 19008,
+    "char_end": 19316,
+    "sentence_index": 115,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec012",
+    "text": "[leftmargin=8pt]\nBeyond pixel-level statistical redundancy, structural self-similarity reflects spatial redundancy caused by repetitive patterns ( , textures, geometric features).",
+    "char_start": 19318,
+    "char_end": 19497,
+    "sentence_index": 116,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "To quantify this, we leverage the Structural Similarity Index Matrix (SSIM) to measure inter-patch similarity.",
+    "char_start": 19498,
+    "char_end": 19608,
+    "sentence_index": 117,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "For an image partitioned into $N$ patches, the SSIM matrix $ M R ^ N N $ is defined as:\n\nM (i,j) = (2 _i _j + C_1)(2 _ ij + C_2) ( _i^2 + _j^2 + C_1)( _i^2 + _j^2 + C_2) , i,j 1, ..., N\n\nwhere $ _ i $, $ _ i $ denote the mean and variance of the $i$-th patch, $ _ ij $ is the covariance between patches $i$ and $j$, and $ C_ 1 $, $C_ 2 $ are stability constants.",
+    "char_start": 19609,
+    "char_end": 19971,
+    "sentence_index": 118,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "Then, the structural self-similarity redundancy $R_ s $ is derived by averaging off-diagonal elements of $ M $:\n\nR_s = 1 N(N-1) _ i j M (i,j).",
+    "char_start": 19972,
+    "char_end": 20114,
+    "sentence_index": 119,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "r 0.6\n\n-5pt\n\nfigures/redundancy_a.pdf\n\nfigures/redundancy_b.pdf\n\nRedundancy analysis of remote sensing datasets and natural images, and the former exhibits higher redundancy.",
+    "char_start": 20116,
+    "char_end": 20290,
+    "sentence_index": 120,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec012",
+    "text": "-1em\n\nWe evaluate six benchmark datasets spanning natural images (COCO , ADE20K , PASCAL ) and remote sensing images (LoveDA , DeepGlobe , xBD ) for redundancy analysis.",
+    "char_start": 20292,
+    "char_end": 20461,
+    "sentence_index": 121,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec012",
+    "text": "As shown in Figure , our analysis reveals two critical findings: 1) Remote sensing images demonstrate 1.9$ $3.3$ $ higher entropic redundancy than natural images, indicating greater pixel-level compressibility.",
+    "char_start": 20462,
+    "char_end": 20672,
+    "sentence_index": 122,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec012",
+    "text": "2) The average self-similarity for remote sensing data exceeds natural images by 42.6\\%, confirming the higher prevalence of repetitive textures and geometric patterns.",
+    "char_start": 20673,
+    "char_end": 20841,
+    "sentence_index": 123,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec012",
+    "text": "This insight justifies aggressive token compression for semantic-level comprehension in remote sensing images.",
+    "char_start": 20842,
+    "char_end": 20952,
+    "sentence_index": 124,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec012",
+    "text": "Token Compression Connector.",
+    "char_start": 20954,
+    "char_end": 20982,
+    "sentence_index": 125,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec012",
+    "text": "In modern MLLM, connectors such as Q-Former and MLP are designed to transform visual tokens into a multi-modal space.",
+    "char_start": 20983,
+    "char_end": 21100,
+    "sentence_index": 126,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec012",
+    "text": "However, some works point out that Q-Former may lead to loss of vision information and is difficult to train.",
+    "char_start": 21101,
+    "char_end": 21210,
+    "sentence_index": 127,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec012",
+    "text": "Therefore, in SegEarth-R1, we follow the MLP connector fashion in LLaVA and use a simple but effective connector, , stacked convolutional blocks and Layer Normalization (LN).",
+    "char_start": 21211,
+    "char_end": 21385,
+    "sentence_index": 128,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec012",
+    "text": "Here, convolutional blocks are used for spatial down-sampling to compress the size of the feature map, and LN is used to stabilize cross-modal training.",
+    "char_start": 21386,
+    "char_end": 21538,
+    "sentence_index": 129,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec012",
+    "text": "Specifically, our connector can be formulated as:\n\nv_ out =(Conv LN)^ d (v_4),\n\nwhere $ $ denotes the function composition operator, and $d$ denotes the number of stacked layers.",
+    "char_start": 21539,
+    "char_end": 21717,
+    "sentence_index": 130,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "Although the instructions involved in geospatial pixel reasoning are implicit and contain more words than referring segmentation, they still maintain the same data format.",
+    "char_start": 21719,
+    "char_end": 21890,
+    "sentence_index": 131,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "Therefore, it is easy to convert them into question-answer pairs using a template like `` USER : This is an image <IMAGE>, please doing geospatial pixel reasoning according to the following instruction: <DESCRIPTION>.",
+    "char_start": 21891,
+    "char_end": 22108,
+    "sentence_index": 132,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "ASSISTANT : <ANSWER>''.",
+    "char_start": 22109,
+    "char_end": 22132,
+    "sentence_index": 133,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "For referring segmentation task, the task name in the instruction is changed to ``referring segmentation''.",
+    "char_start": 22133,
+    "char_end": 22240,
+    "sentence_index": 134,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec014",
+    "text": "Some recent LLM-based segmentation models use Mask2Former paradigm as mask generator.",
+    "char_start": 22242,
+    "char_end": 22327,
+    "sentence_index": 135,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "They use $T$ learnable mask tokens (typically $T$=100) as queries in the transformer decoder to generate $T$ candidate masks with corresponding scores, which are then assigned to the description embeddings embeddings of <DESCRIPTION> in text instruction.",
+    "char_start": 22328,
+    "char_end": 22582,
+    "sentence_index": 136,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "by bipartite matching.",
+    "char_start": 22583,
+    "char_end": 22605,
+    "sentence_index": 137,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "Unlike the reasoning segmentation of natural images, which is more inclined to make inferences based on the attributes of the object itself.",
+    "char_start": 22606,
+    "char_end": 22746,
+    "sentence_index": 138,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "In geospatial pixel reasoning, the model must understand and extrapolate more based on the spatial layout and inter-object correlations within the image ( , identifying earthquake evacuation zones in Figure , which requires analyzing topological relationships between roads and buildings).",
+    "char_start": 22747,
+    "char_end": 23036,
+    "sentence_index": 139,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "In addition, we posit that the mask query mechanism is inflexible and redundant in language-guided segmentation, and we only need to generate variable numbers of masks based on the instruction.",
+    "char_start": 23037,
+    "char_end": 23230,
+    "sentence_index": 140,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "Motivated by the above, we propose to directly use description embedding as the query for the mask generator and explicitly associate it with the image spatial features.",
+    "char_start": 23231,
+    "char_end": 23400,
+    "sentence_index": 141,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "r 0.25\n-15pt\n\nfigures/pool.pdf\n-10pt\n$D$-Projector.",
+    "char_start": 23402,
+    "char_end": 23453,
+    "sentence_index": 142,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "-10pt\n\nThe length of description embeddings varies according to the user's instruction, whereas in our geospatial pixel reasoning or referring segmentation setting, the segmentation result can be represented by a single binary mask.",
+    "char_start": 23455,
+    "char_end": 23687,
+    "sentence_index": 143,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "Therefore, we introduce a description projection module ($D$-Projector), which converts the whole description into a single vector as shown in Figure .",
+    "char_start": 23688,
+    "char_end": 23839,
+    "sentence_index": 144,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "Specifically, the description embeddings are averaged into a global vector, which is then interacted with the flattened multi-scale visual features via a cross-attention operation, and a skip-connection and linear layer maps it into the query vector.",
+    "char_start": 23840,
+    "char_end": 24090,
+    "sentence_index": 145,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "Following this, the query vector is fed into the Transformer decoder of Mask2Former, which is composed of stacked masked attention, self-attention and FFN.",
+    "char_start": 24091,
+    "char_end": 24246,
+    "sentence_index": 146,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "Notably, since the mask query mechanism has been removed, the number of generated masks is the same as the number of queries, and therefore, score prediction and bipartite matching are also not required.",
+    "char_start": 24247,
+    "char_end": 24450,
+    "sentence_index": 147,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "Finally, the predicted mask is supervised with a linear combination of focal loss and dice loss .",
+    "char_start": 24451,
+    "char_end": 24548,
+    "sentence_index": 148,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec015",
+    "text": "Datasets and Tasks.",
+    "char_start": 24550,
+    "char_end": 24569,
+    "sentence_index": 149,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec016",
+    "text": "In addition to the geospatial pixel reasoning on EarthReason, we assess the basic geolocation capability with the explicit short query of our model.",
+    "char_start": 24570,
+    "char_end": 24718,
+    "sentence_index": 150,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec016",
+    "text": "We employed two benchmark referring image segmentation datasets: RefSegRS and RRSIS-D .",
+    "char_start": 24719,
+    "char_end": 24806,
+    "sentence_index": 151,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec016",
+    "text": "These datasets contain 14 and 20 semantic categories, respectively, with textual descriptions primarily focusing on direct visual attributes such as orientation, color, and size.",
+    "char_start": 24807,
+    "char_end": 24985,
+    "sentence_index": 152,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec016",
+    "text": "All models are trained on their own training set and evaluated on their validation and testing sets.",
+    "char_start": 24986,
+    "char_end": 25086,
+    "sentence_index": 153,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec016",
+    "text": "Evaluation metrics.",
+    "char_start": 25088,
+    "char_end": 25107,
+    "sentence_index": 154,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec016",
+    "text": "Following , we adopt two evaluation metrics: gIoU (per-image IoU average) and cIoU (cumulative intersection over union).",
+    "char_start": 25108,
+    "char_end": 25228,
+    "sentence_index": 155,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec016",
+    "text": "The latter is preferred because of its stability.",
+    "char_start": 25229,
+    "char_end": 25278,
+    "sentence_index": 156,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec016",
+    "text": "Network Architecture.",
+    "char_start": 25280,
+    "char_end": 25301,
+    "sentence_index": 157,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec016",
+    "text": "Unless otherwise specified, SegEarth-R1 use phi-1.5 (1.3B) as the LLM, and adopt the Swin-B as the visual encoder.",
+    "char_start": 25302,
+    "char_end": 25416,
+    "sentence_index": 158,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec016",
+    "text": "The token compression connector is configured with a layer number $d=2$.",
+    "char_start": 25417,
+    "char_end": 25489,
+    "sentence_index": 159,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec016",
+    "text": "The mask generator follows the Mask2Former architecture, but removes mask tokens as mentioned above.",
+    "char_start": 25490,
+    "char_end": 25590,
+    "sentence_index": 160,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec016",
+    "text": "Implementation details.",
+    "char_start": 25592,
+    "char_end": 25615,
+    "sentence_index": 161,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec016",
+    "text": "During training, we use bf16 precision and freeze the visual encoder.",
+    "char_start": 25616,
+    "char_end": 25685,
+    "sentence_index": 162,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec016",
+    "text": "The LLM is initialized from Phi-1.5, while both the Swin-B encoder and the mask generator are initialized with pretrained weights from Mask2Former.",
+    "char_start": 25686,
+    "char_end": 25833,
+    "sentence_index": 163,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec016",
+    "text": "All images are resized to $1024 1024$, maintaining the original aspect ratio by padding the shorter side.",
+    "char_start": 25834,
+    "char_end": 25939,
+    "sentence_index": 164,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "We adopt the AdamW optimizer with an initial learning rate of $1 10^ -4 $, cosine learning rate schedule, and no weight decay.",
+    "char_start": 25940,
+    "char_end": 26066,
+    "sentence_index": 165,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec016",
+    "text": "A uniform batch size of 16 is used across datasets, with training steps set to 7,610 (RRSIS-D), 5,400 (RefSegRS), and 2,220 (EarthReason).",
+    "char_start": 26067,
+    "char_end": 26205,
+    "sentence_index": 166,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec016",
+    "text": "All experiments are conducted on two NVIDIA A100 80GB GPUs.",
+    "char_start": 26206,
+    "char_end": 26265,
+    "sentence_index": 167,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec017",
+    "text": "l 0.7\n-1em\nGeospatial pixel reasoning results among SegEarth-R1 (ours) and previous related works.",
+    "char_start": 26267,
+    "char_end": 26365,
+    "sentence_index": 168,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec017",
+    "text": "0.75\n@ l|c|c|cc|cc@\n\n2 * Method & 2 * Visual Encoder & 2 * LLM Type & 2 c| cloU & 2 c gloU\n\n& & & Val & Test & Val & Test\n\nLISA & CLIP-L & Vicuna-7B & 57.39 & 59.10 & 61.04 & 60.88\n\nPixelLM & CLIP-L & Vicuna-7B & 57.79 & 59.22 & 57.94 & 60.01\n\nPSALM & Swin-B & phi-1.5 (1.3B) & 62.03 & 64.61 & 66.61 & 68.30\n\nSegEarth-R1 & Swin-B & phi-1.5 (1.3B) & 64.13 & 68.25 & 68.60 & 70.75\n\n-1em\n\nWe conduct a comparative evaluation of SOTA LLM-based methods and SegEarth-R1 on the EarthReason dataset.",
+    "char_start": 26367,
+    "char_end": 26858,
+    "sentence_index": 169,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec017",
+    "text": "As shown in Table , all models are trained solely on the training split of EarthReason to ensure a fair comparison.",
+    "char_start": 26859,
+    "char_end": 26974,
+    "sentence_index": 170,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec017",
+    "text": "LISA and PixelLM demonstrate comparable performance; however, despite leveraging larger LLM or MLLM, the quality of their predicted segmentation masks remains suboptimal.",
+    "char_start": 26975,
+    "char_end": 27145,
+    "sentence_index": 171,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec017",
+    "text": "This can be primarily attributed to their reliance on CLIP as the visual encoder, which tends to diminish the representation of small-scale geospatial targets.",
+    "char_start": 27146,
+    "char_end": 27305,
+    "sentence_index": 172,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec017",
+    "text": "As one of the baselines of SegEarth-R1, PSALM achieves notable improvements over LISA and PixelLM.",
+    "char_start": 27306,
+    "char_end": 27404,
+    "sentence_index": 173,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec017",
+    "text": "Nevertheless, PSALM does not adequately incorporate LLM-based segmentation and the Mask2Former paradigm, and lacks considerations for overhead images.",
+    "char_start": 27405,
+    "char_end": 27555,
+    "sentence_index": 174,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec017",
+    "text": "SegEarth-R1 achieves the best results on both metrics surpassing PSALM by 3.64\\% and 2.45\\% on the test set.",
+    "char_start": 27556,
+    "char_end": 27664,
+    "sentence_index": 175,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec017",
+    "text": "Importantly, SegEarth-R1 uses fewer visual tokens in LLM and reduces the number of queries in the mask generator, thus providing a lower inference cost.",
+    "char_start": 27665,
+    "char_end": 27817,
+    "sentence_index": 176,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec018",
+    "text": "r 0.55\n-1em\nReferring segmentation results among SegEarth-R1 and previous related works on RRSIS-D dataset.",
+    "char_start": 27819,
+    "char_end": 27926,
+    "sentence_index": 177,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec018",
+    "text": "0.65\n@ l|c|cc|cc|cc@\n\n2 * Method & & 2 c| P@0.5 & 2 c| cloU & 2 c gloU\n\n& & Val & Test & Val & Test & Val & Test\n\n8 @ l Traditional method:\n\nRRN & CVPR'18 & 51.09 & 51.07 & 66.53 & 66.43 & 46.06 & 45.64\n\nCSMC & CVPR'19 & 55.68 & 55.32 & 69.39 & 69.39 & 48.85 & 48.54\n\nLSCM & ECCV'20 & 57.12 & 56.02 & 69.05 & 69.28 & 50.36 & 49.92\n\nCMPC & CVPR'20 & 57.93 & 55.83 & 69.22 & 69.39 & 50.41 & 49.24\n\nBRINet & CVPR'20 & 58.79 & 56.90 & 70.73 & 69.88 & 51.14 & 49.65\n\nCMPC+ & TPAMI'20 & 59.19 & 57.65 & 70.14 & 68.64 & 51.41 & 50.24\n\nLGCE & TGRS'24 & 68.10 & 67.65 & 76.68 & 76.34 & 60.16 & 59.37\n\nRIS-DMMI & CVPR'23 & 70.40 & 68.74 & 77.01 & 76.20 & 60.72 & 60.12\n\nLAVT & CVPR'22 & 69.54 & 69.52 & 77.59 & 77.19 & 61.46 & 61.04\n\nRMSIN & CVPR'24 & 74.66 & 74.26 & 78.27 & 77.79 & 65.10 & 64.20\n\n8 @ l LLM-based method:\n\nLISA & CVPR'24 & 27.07 & 24.51 & - & - & 27.84 & 26.78\n\nPixelLM & CVPR'24 & 33.46 & 28.81 & - & - & 33.89 & 31.65\n\nNEXT-Chat & arXiv'23 & 28.97 & 26.37 & - & - & 26.98 & 24.98\n\nGeoGround & arXiv'25 & 68.69 & 67.50 & - & - & 61.10 & 60.50\n\n2 @ l| & 78.62 & 76.96 & 78.92 & 78.01 & 67.56 & 66.40\n\nSegEarth-R1 also supports basic explicit language-guided segmentation.",
+    "char_start": 27928,
+    "char_end": 29107,
+    "sentence_index": 178,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec018",
+    "text": "As shown in Table , we compare its performance with existing SOTA traditional methods (not based on LLM) as well as recent LLM-based methods.",
+    "char_start": 29108,
+    "char_end": 29249,
+    "sentence_index": 179,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec018",
+    "text": "Notably, prior to SegEarth-R1, LLM-based methods consistently underperformed in comparison to traditional methods on the referring segmentation task.",
+    "char_start": 29250,
+    "char_end": 29399,
+    "sentence_index": 180,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec018",
+    "text": "For instance, the advanced GeoGround lags behind RMSIN by 3.7\\% in terms of gIoU on the RRSIS-D dataset.",
+    "char_start": 29400,
+    "char_end": 29504,
+    "sentence_index": 181,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec018",
+    "text": "In contrast, SegEarth-R1, as a universal LLM-based language-guided segmentation method, surpasses traditional methods on the referring segmentation task for the first time with a 2.2\\% improvement.",
+    "char_start": 29505,
+    "char_end": 29702,
+    "sentence_index": 182,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec018",
+    "text": "This result highlights the enhanced generalization capability and practical potential of SegEarth-R1.",
+    "char_start": 29703,
+    "char_end": 29804,
+    "sentence_index": 183,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec018",
+    "text": "On the RefSegRS dataset, the improvement of SegEarth-R1 is more significant than the previous method, with an 8.33\\% and 9.87\\% improvement over RMSIN on the validation and testing sets, respectively, as listed in Table .",
+    "char_start": 29805,
+    "char_end": 30026,
+    "sentence_index": 184,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec018",
+    "text": "[h]\nReferring segmentation results among SegEarth-R1 and previous related works on RefSegRS dataset.",
+    "char_start": 30028,
+    "char_end": 30128,
+    "sentence_index": 185,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec018",
+    "text": "0.66\n@ l|c|cc|cc|cc|cc|cc|cc|cc@\n\n2 * Method & & 2 c| P@0.5 & 2 c| P@0.6 & 2 c| P@0.7 & 2 c| P@0.8 & 2 c| P@0.9 & 2 c| cloU & 2 c gloU\n\n& & Val & Test & Val & Test & Val & Test & Val & Test & Val & Test & Val & Test & Val & Test\n\nBRINet & CVPR'20 & 36.86 & 20.72 & 35.53 & 14.26 & 19.93 & 9.87 & 10.66 & 2.98 & 2.84 & 1.14 & 61.59 & 58.22 & 38.73 & 31.51\n\nLSCM & ECCV'20 & 56.82 & 31.54 & 41.24 & 20.41 & 21.85 & 9.51 & 12.11 & 5.29 & 2.51 & 0.84 & 62.82 & 61.27 & 40.59 & 35.54\n\nCMPC & CVPR'20 & 46.09 & 32.36 & 26.45 & 14.14 & 12.76 & 6.55 & 7.42 & 1.76 & 1.39 & 0.22 & 63.55 & 55.39 & 42.08 & 40.63\n\nCMSA & CVPR'19 & 39.24 & 28.07 & 38.44 & 20.25 & 20.39 & 12.71 & 11.79 & 5.61 & 1.52 & 0.83 & 65.84 & 64.53 & 43.62 & 41.47\n\nRRN & CVPR'18 & 55.43 & 30.26 & 42.98 & 23.01 & 23.11 & 14.87 & 13.72 & 7.17 & 2.64 & 0.98 & 69.24 & 65.06 & 50.81 & 41.88\n\nEVF-SAM & Arxiv'24 & 57.77 & 35.17 & 37.59 & 22.34 & 16.24 & 9.36 & 4.87 & 2.86 & 1.86 & 0.39 & 59.61 & 55.51 & 46.98 & 36.64\n\nCMPC+ & TPAMI'21 & 56.84 & 49.19 & 37.59 & 28.31 & 20.42 & 15.31 & 10.67 & 8.12 & 2.78 & 0.55 & 70.62 & 66.53 & 47.13 & 43.65\n\nCARIS & ACMMM'23 & 68.45 & 45.40 & 47.10 & 27.19 & 25.52 & 15.08 & 14.62 & 8.87 & 3.71 & 1.98 & 75.79 & 69.74 & 54.30 & 42.66\n\nCRIS & CVPR'22 & 53.13 & 35.77 & 36.19 & 24.11 & 24.36 & 14.36 & 11.83 & 6.38 & 2.55 & 1.21 & 72.14 & 65.87 & 53.74 & 43.26\n\nLAVT & CVPR'22 & 80.97 & 51.84 & 58.70 & 30.27 & 31.09 & 17.34 & 15.55 & 9.52 & 4.64 & 2.09 & 78.50 & 71.86 & 61.53 & 47.40\n\nRIS-DMMI & CVPR'23 & 86.17 & 63.89 & 74.71 & 44.30 & 38.05 & 19.81 & 18.10 & 6.49 & 3.25 & 1.00 & 74.02 & 68.58 & 65.72 & 52.15\n\nLGCE & TGRS'24 & 90.72 & 73.75 & 86.31 & 61.14 & 71.93 & 39.46 & 32.95 & 16.02 & 10.21 & 5.45 & 83.56 & 76.81 & 72.51 & 59.96\n\nRMSIN & CVPR'24 & 93.97 & 79.20 & 89.33 & 65.99 & 74.25 & 42.98 & 29.70 & 16.51 & 7.89 & 3.25 & 82.41 & 75.72 & 73.84 & 62.58\n\nSegEarth-R1 & & 95.82 & 86.30 & 93.27 & 79.53 & 88.86 & 69.57 & 78.19 & 48.87 & 22.04 & 10.73 & 85.01 & 79.00 & 82.17 & 72.45\n\n[t]\n\nfigures/res.pdf\nQualitative Results of SegEarth-R1 on EarthReason.",
+    "char_start": 30130,
+    "char_end": 32194,
+    "sentence_index": 186,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec019",
+    "text": "More results can be found in Appendix .",
+    "char_start": 32195,
+    "char_end": 32234,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec019",
+    "text": "-1em\n\n[t] 0.55\n\ntable\nAblation of SegEarth-R1 components on EarthReason: query description embedding (Query D.E.), description projector ($D$-Projector), token compression connector (T.C.",
+    "char_start": 32236,
+    "char_end": 32423,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec019",
+    "text": "Connector).",
+    "char_start": 32424,
+    "char_end": 32435,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec019",
+    "text": "0.7\n@ c|c|c|cc|cc@\n\n2 * Query D.E.",
+    "char_start": 32437,
+    "char_end": 32471,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec019",
+    "text": "& 2 * $D$-Projector & 2 * T.C.",
+    "char_start": 32472,
+    "char_end": 32502,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec019",
+    "text": "Connector & 2 c| cloU & 2 c gloU\n\n& & & Val & Test & Val & Test\n\n55 & 55 & 55 & 62.03 & 64.61 & 66.61 & 68.30\n\n& 55 & 55 & 63.34 & 66.19 & 67.42 & 69.15\n\n55 & & 55 & 63.32 & 66.31 & 67.22 & 69.21\n\n55 & 55 & & 63.47 & 65.41 & 68.31 & 69.20\n\n& & 55 & 64.12 & 66.71 & 68.61 & 69.61\n\n& & & 64.13 & 68.25 & 68.60 & 70.75\n\n[t] 0.45\n\n[t][0.105 ][t]\ntable\nAblation of LLM type on RRSIS-D.",
+    "char_start": 32503,
+    "char_end": 32883,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec019",
+    "text": "0.75\n@ l|cc|cc@\n\n2 * LLM Type & 2 c| cloU & 2 c gloU\n\n& Val & Test & Val & Test\n\nphi-1.5 (1.3B) & 78.92 & 78.01 & 67.56 & 66.40\n\nphi-2 (2B) & 78.98 & 78.35 & 67.91 & 66.67\n\nQwen2.5 (0.5B) & 78.53 & 77.87 & 67.70 & 66.49\n\n[t][0.01 ][t]\ntable\nAblation of $d$ on EarthReason Val set.",
+    "char_start": 32885,
+    "char_end": 33165,
+    "sentence_index": 193,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec019",
+    "text": "0.7\n@ c|c|c||c|c|c@\n\n$d$ & \\#Visual Token & gIoU & $d$ & \\#Visual Token & gIoU\n\n0 & 1024 & 68.28 & 2 & 64 & 68.60\n\n1 & 256 & 68.47 & 3 & 16 & 68.22\n\nComponents.",
+    "char_start": 33167,
+    "char_end": 33327,
+    "sentence_index": 194,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec019",
+    "text": "We conduct ablation studies on the EarthReason dataset to evaluate the effectiveness of the novel components involved in SegEarth-R1.",
+    "char_start": 33328,
+    "char_end": 33461,
+    "sentence_index": 195,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec019",
+    "text": "As listed in Table , the first row shows the results of the PSALM baseline.",
+    "char_start": 33462,
+    "char_end": 33537,
+    "sentence_index": 196,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec019",
+    "text": "Each proposed component contributes to performance enhancement, yielding improvements ranging from 0.85\\% to 0.9\\%.",
+    "char_start": 33538,
+    "char_end": 33653,
+    "sentence_index": 197,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec019",
+    "text": "The T.C.",
+    "char_start": 33654,
+    "char_end": 33662,
+    "sentence_index": 198,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec019",
+    "text": "Connector and Query D.E.",
+    "char_start": 33663,
+    "char_end": 33687,
+    "sentence_index": 199,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec019",
+    "text": "not only enhances performance but also reduces computational overhead.",
+    "char_start": 33688,
+    "char_end": 33758,
+    "sentence_index": 200,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec019",
+    "text": "Further, the proposed components can be well coupled, and when they are all activated, , complete SegEarth-R1, all metrics exhibit substantial gains over the baseline, confirming the effectiveness and compatibility of the proposed design.",
+    "char_start": 33759,
+    "char_end": 33997,
+    "sentence_index": 201,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec019",
+    "text": "In fact, although these components are initially designed with remote sensing scenarios in mind, their underlying principles offer transferable insights applicable to general image understanding.",
+    "char_start": 33998,
+    "char_end": 34193,
+    "sentence_index": 202,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec019",
+    "text": "LLM Type.",
+    "char_start": 34195,
+    "char_end": 34204,
+    "sentence_index": 203,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec019",
+    "text": "Given the limited scale of the dataset, we select some small LLM for comparation, as presented in Table .",
+    "char_start": 34205,
+    "char_end": 34310,
+    "sentence_index": 204,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec019",
+    "text": "SegEarth-R1 demonstrates consistently high performance across different LLM, indicating the robustness and architectural stability of the overall framework.",
+    "char_start": 34311,
+    "char_end": 34467,
+    "sentence_index": 205,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec019",
+    "text": "Notably, with Qwen2.5 (0.5B) , it still achieves competitive results, indicating its potential for edge deployment.",
+    "char_start": 34468,
+    "char_end": 34583,
+    "sentence_index": 206,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec019",
+    "text": "Layer Number of T.C.",
+    "char_start": 34585,
+    "char_end": 34605,
+    "sentence_index": 207,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec019",
+    "text": "Connector.",
+    "char_start": 34606,
+    "char_end": 34616,
+    "sentence_index": 208,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec019",
+    "text": "The layer number $d$ controls the number of visual tokens fed into the LLM.",
+    "char_start": 34617,
+    "char_end": 34692,
+    "sentence_index": 209,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec019",
+    "text": "As shown in Table , increasing token quantity does not improve performance.",
+    "char_start": 34693,
+    "char_end": 34768,
+    "sentence_index": 210,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec019",
+    "text": "This observation aligns with our earlier analysis, suggesting that appropriate compression of visual tokens is beneficial for the global understanding of a remote sensing image.",
+    "char_start": 34769,
+    "char_end": 34946,
+    "sentence_index": 211,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec019",
+    "text": "In SegEarth-R1, spatial correlations between the image and the instruction are primarily handled by the mask generator, while the LLM is only responsible for relatively semantic correlations.",
+    "char_start": 34947,
+    "char_end": 35138,
+    "sentence_index": 212,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec019",
+    "text": "This division of labor allows for more efficient use of computational resources without compromising performance.",
+    "char_start": 35139,
+    "char_end": 35252,
+    "sentence_index": 213,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec020",
+    "text": "In this paper, we introduce geospatial pixel reasoning, a new task in remote sensing that requires models to infer segmentation masks from implicit natural language queries by reasoning over spatial context and domain knowledge.",
+    "char_start": 35254,
+    "char_end": 35482,
+    "sentence_index": 214,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec020",
+    "text": "To enable research in this direction, we present EarthReason, the first large-scale benchmark dataset that emphasises complex reasoning scenarios.",
+    "char_start": 35483,
+    "char_end": 35629,
+    "sentence_index": 215,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec020",
+    "text": "To address the distinct challenges inherent in remote sensing, we propose SegEarth-R1, a language-guided segmentation model that integrates a hierarchical visual encoder, an LLM for instruction parsing and semantic correlation, and a tailored mask generator designed for spatial correlation.",
+    "char_start": 35630,
+    "char_end": 35921,
+    "sentence_index": 216,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec020",
+    "text": "Extensive experiments validate SegEarth-R1\u2019s superiority, achieving SOTA performance on both geospatial pixel reasoning and referring segmentation tasks.",
+    "char_start": 35922,
+    "char_end": 36075,
+    "sentence_index": 217,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec020",
+    "text": "This work pioneers the fusion of natural language reasoning with pixel-level geospatial analysis, offering transformative potential for applications like environmental monitoring and disaster response.",
+    "char_start": 36076,
+    "char_end": 36277,
+    "sentence_index": 218,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec020",
+    "text": "main\nplain\n\nEach sample of the EarthReason benchmark consists of an image, a corresponding mask, and six reasoning queries along with their respective answers.",
+    "char_start": 36279,
+    "char_end": 36438,
+    "sentence_index": 219,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec022",
+    "text": "Given that our metadata is derived from classification datasets, we employed GPT-4o and GPT-3.5 to generate textual annotations, and invited multiple remote sensing and vision experts to provide accurate and reliable mask annotations.",
+    "char_start": 36439,
+    "char_end": 36673,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec022",
+    "text": "Overall, our annotation process consists of the following three steps:\n\n[leftmargin=1.5em]\nStep-1: To fully leverage the powerful multimodal capabilities and extensive geographic knowledge of GPT-4o, we carefully design the prompt, which is then provided alongside images and their corresponding category labels to generate a reasoning question\u2013answer pair.",
+    "char_start": 36674,
+    "char_end": 37031,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec022",
+    "text": "The prompt is illustrated in Figure .",
+    "char_start": 37032,
+    "char_end": 37069,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec022",
+    "text": "Step-2: To avoid homogeneous question\u2013answer formats under a single prompt, we further employ the textual capabilities of GPT-3.5 to expand each generated question into six variations and each answer into three alternatives.",
+    "char_start": 37070,
+    "char_end": 37294,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec022",
+    "text": "The prompt used for this expansion is shown in Figure .",
+    "char_start": 37295,
+    "char_end": 37350,
+    "sentence_index": 224,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec022",
+    "text": "Step-3: Unlike previous methods that rely on semi-automatic mask annotation based on off-the-shelf bounding boxes or masks, we invite multiple remote sensing vision experts to perform accurate and efficient mask annotation guided by the generated questions.",
+    "char_start": 37351,
+    "char_end": 37608,
+    "sentence_index": 225,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec022",
+    "text": "To further improve annotation efficiency, we incorporate SAM-H as an auxiliary tool for some simple targets.",
+    "char_start": 37609,
+    "char_end": 37717,
+    "sentence_index": 226,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "Subsequently, we perform cross-validation of the annotation results and re-annotate the samples that do not meet the quality standards.",
+    "char_start": 37718,
+    "char_end": 37853,
+    "sentence_index": 227,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec022",
+    "text": "As shown in Figure , (a), (b), and (c), derived from the RRSIS-D dataset, illustrate the masks of semi-automatic annotation based on bounding boxes.",
+    "char_start": 37854,
+    "char_end": 38002,
+    "sentence_index": 228,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec022",
+    "text": "(a) and (c) exhibit noticeable annotation errors, while in (b), the query does not align with the annotation.",
+    "char_start": 38003,
+    "char_end": 38112,
+    "sentence_index": 229,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec022",
+    "text": "(d), (e), and (f) illustrate our high-quality manual annotations.",
+    "char_start": 38113,
+    "char_end": 38178,
+    "sentence_index": 230,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec022",
+    "text": "[h]\n\nfigures/data_gen3.pdf\nThe illustration of the prompt construction process for generating question-answer pairs for geospatial pixel reasoning.",
+    "char_start": 38180,
+    "char_end": 38327,
+    "sentence_index": 231,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec022",
+    "text": "[h]\n\nfigures/data_gen4.pdf\nThe illustration of the prompt construction process for expand question-answer pairs.",
+    "char_start": 38329,
+    "char_end": 38441,
+    "sentence_index": 232,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec022",
+    "text": "[h]\n\nfigures/quality.pdf\nComparison of annotation quality.",
+    "char_start": 38443,
+    "char_end": 38501,
+    "sentence_index": 233,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec022",
+    "text": "(a), (b) and (c) are from RRSIS-D dataset, (d), (e) and (f) are from our EarthReason dataset.",
+    "char_start": 38502,
+    "char_end": 38595,
+    "sentence_index": 234,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec023",
+    "text": "The EarthReason benchmark comprises 28 categories, and the number of samples in each category is shown in Figure (a).",
+    "char_start": 38597,
+    "char_end": 38714,
+    "sentence_index": 235,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec023",
+    "text": "It can be observed that the distribution of the 28 categories is relatively balanced.",
+    "char_start": 38715,
+    "char_end": 38800,
+    "sentence_index": 236,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec023",
+    "text": "Figure (b), (c), and (d) illustrate the category distributions in the training, validation, and test sets, respectively.",
+    "char_start": 38801,
+    "char_end": 38921,
+    "sentence_index": 237,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec023",
+    "text": "To evaluate the model's generalization capability, we specifically excluded four categories\u2014``basketball court'', ``island'', ``lake'', and ``stadium''\u2014from the training set.",
+    "char_start": 38922,
+    "char_end": 39096,
+    "sentence_index": 238,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec023",
+    "text": "Moreover, we introduced 119 empty target samples to mitigate potential hallucinations of the model.",
+    "char_start": 39097,
+    "char_end": 39196,
+    "sentence_index": 239,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec023",
+    "text": "[h]\n\nfigures/category.pdf\nThe category distribution of EarthReason.",
+    "char_start": 39198,
+    "char_end": 39265,
+    "sentence_index": 240,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec024",
+    "text": "Table presents the hyper-parameter settings used during the training of our model.",
+    "char_start": 39267,
+    "char_end": 39349,
+    "sentence_index": 241,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec025",
+    "text": "For training on the referring segmentation datasets, we employ only focal loss and dice loss to supervise mask generation.",
+    "char_start": 39350,
+    "char_end": 39472,
+    "sentence_index": 242,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec025",
+    "text": "In contrast, for training on geospatial pixel reasoning task, we additionally incorporate the cross-entropy loss from the large language model to supervise text answer generation.",
+    "char_start": 39473,
+    "char_end": 39652,
+    "sentence_index": 243,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec025",
+    "text": "[h]\n\nThe hyper-parameters for model training.",
+    "char_start": 39654,
+    "char_end": 39699,
+    "sentence_index": 244,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec025",
+    "text": "ll\n\nParameters & Value\n\nOptimizer & AdamW\n\nLearning Rate & $1 10^ -4 $\n\nBatch Size & 16\n\nNumber of Iteration & 7,610 / 5,400 / 2,220\n\nLearning Rate Schedule & Cosine Decay\n\nWeight Decay & 0.0\n\nWarmup Ratio & 0.03\n\n$ _1$ & 0.9\n\n$ _2$ & 0.999\n\nImage Size & 1024 $ $ 1024\n\nImage Processing & [t] @ l@ Resize long edge to 1024\nand padding short edge to 1024.",
+    "char_start": 39701,
+    "char_end": 40055,
+    "sentence_index": 245,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec026",
+    "text": "Figure presents a comparison between SegEarth-R1 and other models on the EarthReason dataset.",
+    "char_start": 40057,
+    "char_end": 40150,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec027",
+    "text": "It can be observed that our model demonstrates a better understanding of long reasoning instructions and produces more accurate mask generation.",
+    "char_start": 40151,
+    "char_end": 40295,
+    "sentence_index": 247,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec028",
+    "text": "Figure presents a comparison between SegEarth-R1 and PSALM on the RRSIS-D dataset.",
+    "char_start": 40297,
+    "char_end": 40379,
+    "sentence_index": 248,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec028",
+    "text": "Our model demonstrates a better understanding of direct geographical attributes such as location, color, and size compared to PSALM.",
+    "char_start": 40380,
+    "char_end": 40512,
+    "sentence_index": 249,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec028",
+    "text": "This improvement is attributed to the removal of indirect mask prediction using mask tokens, allowing semantic information (description embeddings) to directly interact with image features to generate masks.",
+    "char_start": 40513,
+    "char_end": 40720,
+    "sentence_index": 250,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec028",
+    "text": "[h]\n\nfigures/vis_reason.pdf\nComparison with other models on EarthReason.",
+    "char_start": 40722,
+    "char_end": 40794,
+    "sentence_index": 251,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec028",
+    "text": "[h]\n\nfigures/vis_ref.pdf\nComparison with PSALM on RRSIS-D.",
+    "char_start": 40796,
+    "char_end": 40854,
+    "sentence_index": 252,
+    "section_sentence_index": 4
+  }
+]

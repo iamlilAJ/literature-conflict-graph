@@ -22,7 +22,16 @@ _GENERIC_CONCEPT_TOKENS = frozenset({
     "evaluation", "performance", "framework", "use", "uses", "using",
     "based", "general", "generic",
 })
-_BRIDGE_MIN_MEANINGFUL_TOKENS = 3
+# THAW 2026-05-10 (v0.7-frozen §7): relaxed from 3 -> 2.
+# (method, task) key tokenization yields short token sets — typical
+# (method, task) pairs in our reasoning corpus produce 4-5 meaningful
+# tokens after stripping generic-content words. Requiring 3-overlap
+# meant pairs needed to share 3 of ~4 tokens, effectively forcing
+# near-identical (method, task) pairs and dropping 99.9% of candidate
+# pairs. Two-overlap captures pairs that share method OR task domain
+# (e.g. (rag, multi-hop-qa) vs (rag, multi-step-reasoning)) which is
+# the bridge-detection intent.
+_BRIDGE_MIN_MEANINGFUL_TOKENS = 2
 _BRIDGE_MIN_CLUSTER_PAPERS = 5
 _BRIDGE_REFERENCED_WORKS_COVERAGE = 0.5
 _FOLLOW_VERB_RE = re.compile(

@@ -1,0 +1,5060 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large Language Models (LLMs) have significantly advanced artificial intelligence by enabling human-like text generation and natural language understanding.",
+    "char_start": 0,
+    "char_end": 155,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, their reliance on static training data limits their ability to respond to dynamic, real-time queries, resulting in outdated or inaccurate outputs.",
+    "char_start": 156,
+    "char_end": 311,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Retrieval-Augmented Generation (RAG) has emerged as a solution, enhancing LLMs by integrating real-time data retrieval to provide contextually relevant and up-to-date responses.",
+    "char_start": 312,
+    "char_end": 489,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Despite its promise, traditional RAG systems are constrained by static workflows and lack the adaptability required for multi-step reasoning and complex task management.",
+    "char_start": 490,
+    "char_end": 659,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Agentic Retrieval-Augmented Generation (Agentic RAG) transcends these limitations by embedding autonomous AI agents into the RAG pipeline.",
+    "char_start": 660,
+    "char_end": 798,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "These agents leverage agentic design patterns reflection, planning, tool use, and multi-agent collaboration to dynamically manage retrieval strategies, iteratively refine contextual understanding, and adapt workflows through clearly defined operational structures ranging from sequential steps to adaptive collaboration.",
+    "char_start": 799,
+    "char_end": 1119,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "This integration enables Agentic RAG systems to deliver unparalleled flexibility, scalability, and context-awareness across diverse applications.",
+    "char_start": 1120,
+    "char_end": 1265,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "This paper presents an analytical survey of Agentic RAG GitHub link : https://github.com/asinghcsu/AgenticRAG-Survey https://github.com/asinghcsu/AgenticRAG-Survey systems.",
+    "char_start": 1266,
+    "char_end": 1438,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "It traces the evolution of RAG paradigms, introduces a principled taxonomy of Agentic RAG architectures based on agent cardinality, control structure, autonomy, and knowledge representation, and provides a comparative analysis of design trade-offs across existing frameworks.",
+    "char_start": 1439,
+    "char_end": 1714,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "The survey further examines real-world applications in domains including healthcare, finance, education, and enterprise document processing, and distills practical lessons learned for system designers and practitioners.",
+    "char_start": 1715,
+    "char_end": 1934,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec001",
+    "text": "Finally, it identifies key open research challenges related to evaluation, coordination, memory management, efficiency, and governance, outlining directions for future research.",
+    "char_start": 1935,
+    "char_end": 2112,
+    "sentence_index": 10,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) , such as GPT-5, PaLM, and LLaMA, have transformed artificial intelligence by enabling human-like text generation and natural language understanding.",
+    "char_start": 2114,
+    "char_end": 2292,
+    "sentence_index": 11,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "These models drive innovation in conversational agents , content creation, real-time translation, and multimodal generation tasks including text-to-image and text-to-video synthesis .",
+    "char_start": 2293,
+    "char_end": 2476,
+    "sentence_index": 12,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "However, a central challenge remains: how LLMs can reliably reason over rapidly changing external knowledge rather than relying solely on static pre-training.",
+    "char_start": 2477,
+    "char_end": 2635,
+    "sentence_index": 13,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Despite these advances, LLMs remain constrained by static pre-training data, often producing outdated responses, hallucinated content , and failing to adapt to evolving real-world information.",
+    "char_start": 2637,
+    "char_end": 2829,
+    "sentence_index": 14,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Retrieval-Augmented Generation (RAG) addresses these limitations by integrating external knowledge into generation at inference time.",
+    "char_start": 2831,
+    "char_end": 2964,
+    "sentence_index": 15,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "By combining LLM capabilities with retrieval mechanisms over vector databases , APIs, or web sources, RAG improves factual grounding, relevance, and timeliness.",
+    "char_start": 2965,
+    "char_end": 3125,
+    "sentence_index": 16,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "However, traditional RAG pipelines are typically static and linear, limiting complex multi-step reasoning, deep contextual understanding, and iterative response refinement.",
+    "char_start": 3126,
+    "char_end": 3298,
+    "sentence_index": 17,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "These limitations motivate autonomous control mechanisms that dynamically decide when to retrieve, how to reformulate queries, and when sufficient evidence has been collected.",
+    "char_start": 3299,
+    "char_end": 3474,
+    "sentence_index": 18,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "In parallel, advances in agentic AI have introduced intelligent agents capable of perception, reasoning, and autonomous task execution .",
+    "char_start": 3476,
+    "char_end": 3612,
+    "sentence_index": 19,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "These agents leverage design patterns---reflection, planning, tool use, and multi-agent collaboration---to dynamically decompose tasks and adapt strategies.",
+    "char_start": 3613,
+    "char_end": 3769,
+    "sentence_index": 20,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Such capabilities are directly relevant to RAG, as retrieval and reasoning decisions can themselves be treated as agentic tasks.",
+    "char_start": 3770,
+    "char_end": 3898,
+    "sentence_index": 21,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "These patterns are further structured through workflow patterns , including prompt chaining, routing, parallelization, orchestrator--worker models, and evaluator--optimizer loops, governing how multiple prompts, models, or agents are coordinated at the system level.",
+    "char_start": 3899,
+    "char_end": 4165,
+    "sentence_index": 22,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "The convergence of RAG and agentic intelligence has given rise to Agentic Retrieval-Augmented Generation (Agentic RAG) , which integrates autonomous agents directly into the RAG pipeline to enable dynamic retrieval, iterative context refinement, and adaptive workflow orchestration .",
+    "char_start": 4167,
+    "char_end": 4450,
+    "sentence_index": 23,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "This introduces an explicit control layer that guides how the system reasons over external evidence---coordinating retrieval, validating information, invoking tools, and refining responses---making Agentic RAG effective for complex, multi-domain tasks requiring precision and adaptability, as illustrated in Fig.",
+    "char_start": 4451,
+    "char_end": 4763,
+    "sentence_index": 24,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": ".\n\nDespite rapidly growing interest, the Agentic RAG field remains fragmented, with diverse architectures, inconsistent terminology, and limited comparative understanding.",
+    "char_start": 4764,
+    "char_end": 4935,
+    "sentence_index": 25,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Existing work focuses on individual frameworks or application-specific implementations, and no unified taxonomy currently organizes Agentic RAG systems along principled design dimensions.",
+    "char_start": 4936,
+    "char_end": 5123,
+    "sentence_index": 26,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This paper presents an analytical survey aimed at structuring this emerging field.",
+    "char_start": 5125,
+    "char_end": 5207,
+    "sentence_index": 27,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "It reviews the evolution of RAG paradigms, including na\u00efve, modular, and graph-based RAG , and their transition toward agentic systems.",
+    "char_start": 5208,
+    "char_end": 5343,
+    "sentence_index": 28,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "A principled taxonomy of Agentic RAG architectures is introduced based on agent cardinality, control structure, autonomy, and knowledge representation, followed by a comparative analysis of design trade-offs.",
+    "char_start": 5344,
+    "char_end": 5552,
+    "sentence_index": 29,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "The survey examines applications across healthcare , finance, and education , distills practical lessons for system designers, and identifies open research challenges to guide future work.",
+    "char_start": 5553,
+    "char_end": 5741,
+    "sentence_index": 30,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "The structure of this paper is as follows: Section 2 introduces RAG and its evolution, highlighting the limitations of traditional approaches.",
+    "char_start": 5743,
+    "char_end": 5885,
+    "sentence_index": 31,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Section 3 elaborates on the principles of agentic intelligence and agentic patterns.",
+    "char_start": 5886,
+    "char_end": 5970,
+    "sentence_index": 32,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Section 4 elaborates on agentic workflow patterns.",
+    "char_start": 5971,
+    "char_end": 6021,
+    "sentence_index": 33,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Section 5 provides a taxonomy of Agentic RAG systems, including single-agent, multi-agent, and graph-based frameworks.",
+    "char_start": 6022,
+    "char_end": 6140,
+    "sentence_index": 34,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Section 6 provides a comparative analysis of Agentic RAG frameworks.",
+    "char_start": 6141,
+    "char_end": 6209,
+    "sentence_index": 35,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Section 7 examines applications of Agentic RAG, while Section 8 discusses implementation tools and frameworks.",
+    "char_start": 6210,
+    "char_end": 6320,
+    "sentence_index": 36,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Section 9 provides a comparative analysis of Agentic RAG frameworks.",
+    "char_start": 6321,
+    "char_end": 6389,
+    "sentence_index": 37,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "Section 10 discusses the lessons learned and practical guidance.",
+    "char_start": 6390,
+    "char_end": 6454,
+    "sentence_index": 38,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "Section 11 focuses on benchmarks and datasets, Section 12 discusses open research issues and future challenges, and Section 13 concludes with future directions for Agentic RAG systems.",
+    "char_start": 6455,
+    "char_end": 6639,
+    "sentence_index": 39,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "images/taxonomy.png\nAn Overview of Agentic RAG\n\nRetrieval-Augmented Generation (RAG) represents a significant advancement in the field of artificial intelligence, combining the generative capabilities of Large Language Models (LLMs) with real-time data retrieval.",
+    "char_start": 6641,
+    "char_end": 6904,
+    "sentence_index": 40,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "While LLMs have demonstrated remarkable capabilities in natural language processing, their reliance on static pre-trained data often results in outdated or incomplete responses.",
+    "char_start": 6905,
+    "char_end": 7082,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "RAG addresses this limitation by dynamically retrieving relevant information from external sources and incorporating it into the generative process, enabling contextually accurate and up-to-date outputs.",
+    "char_start": 7083,
+    "char_end": 7286,
+    "sentence_index": 42,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "The architecture of RAG systems integrates three primary components (Figure ):\n\nRetrieveal : Responsible for querying external data sources such as knowledge bases, APIs, or vector databases.",
+    "char_start": 7288,
+    "char_end": 7479,
+    "sentence_index": 43,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "Advanced retrievers leverage dense vector search and transformer-based models to improve retrieval precision and semantic relevance.",
+    "char_start": 7480,
+    "char_end": 7612,
+    "sentence_index": 44,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Augmentation : Processes retrieved data, extracting and summarizing the most relevant information to align with the query context.",
+    "char_start": 7613,
+    "char_end": 7743,
+    "sentence_index": 45,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "Generation : Combines retrieved information with the LLM\u2019s pre-trained knowledge to generate coherent, contextually appropriate responses.",
+    "char_start": 7744,
+    "char_end": 7882,
+    "sentence_index": 46,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "[htbp]\n\nimages/rag_component.png\nCore Components of RAG\n\nThe field of Retrieval-Augmented Generation (RAG) has evolved significantly to address the increasing complexity of real-world applications, where contextual accuracy, scalability, and multi-step reasoning are critical.",
+    "char_start": 7884,
+    "char_end": 8160,
+    "sentence_index": 47,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "What began as simple keyword-based retrieval has transitioned into sophisticated, modular, and adaptive systems capable of integrating diverse data sources and autonomous decision-making processes.",
+    "char_start": 8161,
+    "char_end": 8358,
+    "sentence_index": 48,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "This evolution underscores the growing need for RAG systems to handle complex queries efficiently and effectively.",
+    "char_start": 8359,
+    "char_end": 8473,
+    "sentence_index": 49,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "This section examines the progression of RAG paradigms, presenting key stages of development\u2014Na\u00efve RAG, Advanced RAG, Modular RAG, Graph RAG, and Agentic RAG alongside their defining characteristics, strengths, and limitations.",
+    "char_start": 8475,
+    "char_end": 8702,
+    "sentence_index": 50,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "By understanding the evolution of these paradigms, readers can appreciate the advancements made in retrieval and generative capabilities and their application in various domains\n\nNa\u00efve RAG represents the foundational implementation of retrieval-augmented generation.",
+    "char_start": 8703,
+    "char_end": 8969,
+    "sentence_index": 51,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec007",
+    "text": "Figure illustrates the simple retrieve-read workflow of Naive RAG, focusing on keyword-based retrieval and static datasets..",
+    "char_start": 8970,
+    "char_end": 9094,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec007",
+    "text": "These systems rely on simple keyword-based retrieval techniques, such as TF-IDF and BM25, to fetch documents from static datasets.",
+    "char_start": 9095,
+    "char_end": 9225,
+    "sentence_index": 53,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec007",
+    "text": "The retrieved documents are then used to augment the language model\u2019s generative capabilities.",
+    "char_start": 9226,
+    "char_end": 9320,
+    "sentence_index": 54,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec007",
+    "text": "[htbp]\n\nimages/naive_rag.png\nAn Overview of Naive RAG.",
+    "char_start": 9322,
+    "char_end": 9376,
+    "sentence_index": 55,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec007",
+    "text": "Na\u00efve RAG is characterized by its simplicity and ease of implementation, making it suitable for tasks involving fact-based queries with minimal contextual complexity.",
+    "char_start": 9378,
+    "char_end": 9544,
+    "sentence_index": 56,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec007",
+    "text": "However, it suffers from several limitations:\n\nLack of Contextual Awareness : Retrieved documents often fail to capture the semantic nuances of the query due to reliance on lexical matching rather than semantic understanding.",
+    "char_start": 9545,
+    "char_end": 9770,
+    "sentence_index": 57,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "Fragmented Outputs : The absence of advanced preprocessing or contextual integration often leads to disjointed or overly generic responses.",
+    "char_start": 9771,
+    "char_end": 9910,
+    "sentence_index": 58,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec007",
+    "text": "Scalability Issues : Keyword-based retrieval techniques struggle with large datasets, often failing to identify the most relevant information.",
+    "char_start": 9911,
+    "char_end": 10053,
+    "sentence_index": 59,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "Despite these limitations, Na\u00efve RAG systems provided a critical proof-of-concept for integrating retrieval with generation, laying the foundation for more sophisticated paradigms.",
+    "char_start": 10055,
+    "char_end": 10235,
+    "sentence_index": 60,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec008",
+    "text": "Advanced RAG systems build upon the limitations of Na\u00efve RAG by incorporating semantic understanding and enhanced retrieval techniques.",
+    "char_start": 10237,
+    "char_end": 10372,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec008",
+    "text": "Figure highlights the semantic enhancements in retrieval and the iterative, context-aware pipeline of Advanced RAG.",
+    "char_start": 10373,
+    "char_end": 10488,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec008",
+    "text": "These systems leverage dense retrieval models, such as Dense Passage Retrieval (DPR), and neural ranking algorithms to improve retrieval precision.",
+    "char_start": 10489,
+    "char_end": 10636,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec008",
+    "text": "[htbp]\n\nimages/advanced_rag.png\nOverview of Advanced RAG\n\nKey features of Advanced RAG include:\n\nDense Vector Search : Queries and documents are represented in high-dimensional vector spaces, enabling better semantic alignment between the user query and retrieved documents.",
+    "char_start": 10638,
+    "char_end": 10912,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "Contextual Re-Ranking : Neural models re-rank retrieved documents to prioritize the most contextually relevant information.",
+    "char_start": 10913,
+    "char_end": 11036,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "Iterative Retrieval : Advanced RAG introduces multi-hop retrieval mechanisms, enabling reasoning across multiple documents for complex queries.",
+    "char_start": 11037,
+    "char_end": 11180,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "These advancements make Advanced RAG suitable for applications requiring high precision and nuanced understanding, such as research synthesis and personalized recommendations.",
+    "char_start": 11182,
+    "char_end": 11357,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec008",
+    "text": "However, challenges such as computational overhead and limited scalability persist, particularly when dealing with large datasets or multi-step queries.",
+    "char_start": 11358,
+    "char_end": 11510,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec009",
+    "text": "Modular RAG represents the latest evolution in RAG paradigms, emphasizing flexibility and customization.",
+    "char_start": 11512,
+    "char_end": 11616,
+    "sentence_index": 69,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec009",
+    "text": "These systems decompose the retrieval and generation pipeline into independent, reusable components, enabling domain-specific optimization and task adaptability.",
+    "char_start": 11617,
+    "char_end": 11778,
+    "sentence_index": 70,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec009",
+    "text": "Figure demonstrates the modular architecture, showcasing hybrid retrieval strategies, composable pipelines, and external tool integration.",
+    "char_start": 11779,
+    "char_end": 11917,
+    "sentence_index": 71,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec009",
+    "text": "Key innovations in Modular RAG include:\n\nHybrid Retrieval Strategies : Combining sparse retrieval methods (e.g., a sparse encoder-BM25) with dense retrieval techniques (e.g., DPR - Dense Passage Retrieval ) to maximize accuracy across diverse query types.",
+    "char_start": 11919,
+    "char_end": 12174,
+    "sentence_index": 72,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec009",
+    "text": "Tool Integration : Incorporating external APIs, databases, or computational tools to handle specialized tasks, such as real-time data analysis or domain-specific computations.",
+    "char_start": 12175,
+    "char_end": 12350,
+    "sentence_index": 73,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec009",
+    "text": "Composable Pipelines : Modular RAG enables retrievers, generators, and other components to be replaced, enhanced, or reconfigured independently, allowing high adaptability to specific use cases.",
+    "char_start": 12351,
+    "char_end": 12545,
+    "sentence_index": 74,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec009",
+    "text": "For instance, a Modular RAG system designed for financial analytics might retrieve live stock prices via APIs, analyze historical trends using dense retrieval, and generate actionable investment insights through a tailored language model.",
+    "char_start": 12547,
+    "char_end": 12785,
+    "sentence_index": 75,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec009",
+    "text": "This modularity and customization make Modular RAG ideal for complex, multi-domain tasks, offering both scalability and precision.",
+    "char_start": 12786,
+    "char_end": 12916,
+    "sentence_index": 76,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "[H]\n\nimages/modular_rag.png\nOverview of Modular RAG\n\nGraph RAG extends traditional Retrieval-Augmented Generation systems by integrating graph-based data structures as illustrated in Figure .",
+    "char_start": 12918,
+    "char_end": 13109,
+    "sentence_index": 77,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec010",
+    "text": "These systems leverage the relationships and hierarchies within graph data to enhance multi-hop reasoning and contextual enrichment.",
+    "char_start": 13110,
+    "char_end": 13242,
+    "sentence_index": 78,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec010",
+    "text": "By incorporating graph-based retrieval, Graph RAG enables richer and more accurate generative outputs, particularly for tasks requiring relational understanding.",
+    "char_start": 13243,
+    "char_end": 13404,
+    "sentence_index": 79,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec010",
+    "text": "Graph RAG is characterized by its ability to: Node Connectivity : Captures and reasons over relationships between entities.",
+    "char_start": 13406,
+    "char_end": 13529,
+    "sentence_index": 80,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec010",
+    "text": "Hierarchical Knowledge Management : Handles structured and unstructured data through graph-based hierarchies.",
+    "char_start": 13530,
+    "char_end": 13639,
+    "sentence_index": 81,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec010",
+    "text": "Context Enrichment : Adds relational understanding by leveraging graph-based pathways.",
+    "char_start": 13640,
+    "char_end": 13726,
+    "sentence_index": 82,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec010",
+    "text": "However, Graph RAG has some limitations: Limited Scalability : The reliance on graph structures can restrict scalability, especially with extensive data sources.",
+    "char_start": 13728,
+    "char_end": 13889,
+    "sentence_index": 83,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec010",
+    "text": "Data Dependency : High-quality graph data is essential for meaningful outputs, limiting its applicability in unstructured or poorly annotated datasets.",
+    "char_start": 13890,
+    "char_end": 14041,
+    "sentence_index": 84,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec010",
+    "text": "Complexity of Integration : Integrating graph data with unstructured retrieval systems increases design and implementation complexity.",
+    "char_start": 14042,
+    "char_end": 14176,
+    "sentence_index": 85,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec010",
+    "text": "[htbp]\n\nimages/graph_rag.png\nOverview of Graph RAG\n\nGraph RAG is well-suited for applications such as healthcare diagnostics, legal research, and other domains where reasoning over structured relationships is crucial.",
+    "char_start": 14178,
+    "char_end": 14395,
+    "sentence_index": 86,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec011",
+    "text": "Agentic RAG represents a paradigm shift by introducing autonomous agents capable of dynamic decision-making and workflow optimization.",
+    "char_start": 14397,
+    "char_end": 14531,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec011",
+    "text": "Unlike static systems, Agentic RAG employs iterative refinement and adaptive retrieval strategies to address complex, real-time, and multi-domain queries.",
+    "char_start": 14532,
+    "char_end": 14686,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec011",
+    "text": "This paradigm leverages the modularity of retrieval and generation processes while introducing agent-based autonomy.",
+    "char_start": 14687,
+    "char_end": 14803,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec011",
+    "text": "Key characteristics of Agentic RAG include: Autonomous Decision-Making : Agents independently evaluate and manage retrieval strategies based on query complexity.",
+    "char_start": 14805,
+    "char_end": 14966,
+    "sentence_index": 90,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec011",
+    "text": "Iterative Refinement : Incorporates feedback loops to improve retrieval accuracy and response relevance.",
+    "char_start": 14967,
+    "char_end": 15071,
+    "sentence_index": 91,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec011",
+    "text": "Workflow Optimization : Dynamically orchestrates tasks, enabling efficiency in real-time applications.",
+    "char_start": 15072,
+    "char_end": 15174,
+    "sentence_index": 92,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec011",
+    "text": "Despite its advancements, Agentic RAG faces some challenges: Coordination Complexity : Managing interactions between agents requires sophisticated orchestration mechanisms.",
+    "char_start": 15176,
+    "char_end": 15348,
+    "sentence_index": 93,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec011",
+    "text": "Computational Overhead : The use of multiple agents increases resource requirements for complex workflows.",
+    "char_start": 15349,
+    "char_end": 15455,
+    "sentence_index": 94,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec011",
+    "text": "Scalability Limitations : While scalable, the dynamic nature of the system can strain computational resources for high query volumes.",
+    "char_start": 15456,
+    "char_end": 15589,
+    "sentence_index": 95,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec011",
+    "text": "Agentic RAG excels in domains like customer support, financial analytics, and adaptive learning platforms, where dynamic adaptability and contextual precision are paramount.",
+    "char_start": 15591,
+    "char_end": 15764,
+    "sentence_index": 96,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec011",
+    "text": "[h]\n\nComparative Analysis of RAG Paradigms\n1.4\n|> m 3.5cm |> m 5.5cm |> m 6cm |\n\nlightgray Paradigm & Key Features & Strengths\n\nNa\u00efve RAG &\n\nKeyword-based retrieval (e.g., TF-IDF, BM25)\n&\n\nSimple and easy to implement\nSuitable for fact-based queries\n\nAdvanced RAG &\n\nDense retrieval models (e.g., DPR)\nNeural ranking and re-ranking\nMulti-hop retrieval\n&\n\nHigh precision retrieval\nImproved contextual relevance\n\nModular RAG &\n\nHybrid retrieval (sparse and dense)\nTool and API integration\nComposable, domain-specific pipelines\n&\n\nHigh flexibility and customization\nSuitable for diverse applications\nScalable\n\nGraph RAG &\n\nIntegration of graph-based structures\nMulti-hop reasoning\nContextual enrichment via nodes\n&\n\nRelational reasoning capabilities\nMitigates hallucinations\nIdeal for structured data tasks\n\nAgentic RAG &\n\nAutonomous agents\nDynamic decision-making\nIterative refinement and workflow optimization\n&\n\nAdaptable to real-time changes\nScalable for multi-domain tasks\nHigh accuracy\n\nTraditional Retrieval-Augmented Generation (RAG) systems have significantly expanded the capabilities of Large Language Models (LLMs) by integrating real-time data retrieval.",
+    "char_start": 15766,
+    "char_end": 16930,
+    "sentence_index": 97,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec012",
+    "text": "However, these systems still face critical challenges that hinder their effectiveness in complex, real-world applications.",
+    "char_start": 16931,
+    "char_end": 17053,
+    "sentence_index": 98,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec012",
+    "text": "The most notable limitations revolve around contextual integration , multi-step reasoning , and scalability and latency issues .",
+    "char_start": 17054,
+    "char_end": 17182,
+    "sentence_index": 99,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec013",
+    "text": "Even when RAG systems successfully retrieve relevant information, they often struggle to seamlessly incorporate it into generated responses.",
+    "char_start": 17184,
+    "char_end": 17324,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec013",
+    "text": "The static nature of retrieval pipelines and limited contextual awareness lead to fragmented, inconsistent, or overly generic outputs.",
+    "char_start": 17325,
+    "char_end": 17459,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec013",
+    "text": "Example:\nA query such as, \"What are the latest advancements in Alzheimer's research and their implications for early-stage treatment?\" might yield relevant research papers and medical guidelines.",
+    "char_start": 17461,
+    "char_end": 17656,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec013",
+    "text": "However, traditional RAG systems often fail to synthesize these findings into a coherent explanation that connects the new treatments to specific patient scenarios.",
+    "char_start": 17657,
+    "char_end": 17821,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec013",
+    "text": "Similarly, for a query like, \"What are the best sustainable practices for small-scale agriculture in arid regions?\" , traditional systems might retrieve documents on general agricultural methods but overlook critical sustainability practices tailored to arid environments.",
+    "char_start": 17822,
+    "char_end": 18094,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec014",
+    "text": "Many real-world queries require iterative or multi-hop reasoning\u2014retrieving and synthesizing information across multiple steps.",
+    "char_start": 18096,
+    "char_end": 18223,
+    "sentence_index": 105,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec014",
+    "text": "Traditional RAG systems are often ill-equipped to refine retrieval based on intermediate insights or user feedback, resulting in incomplete or disjointed responses.",
+    "char_start": 18224,
+    "char_end": 18388,
+    "sentence_index": 106,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec014",
+    "text": "Example: A complex query like, \"What lessons from renewable energy policies in Europe can be applied to developing nations, and what are the potential economic impacts?\" demands the orchestration of multiple types of information, including policy data, contextualization for developing regions, and economic analysis.",
+    "char_start": 18390,
+    "char_end": 18707,
+    "sentence_index": 107,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec014",
+    "text": "Traditional RAG systems typically fail to connect these disparate elements into a cohesive response.",
+    "char_start": 18708,
+    "char_end": 18808,
+    "sentence_index": 108,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec015",
+    "text": "As the volume of external data sources grows, querying and ranking large datasets becomes increasingly computationally intensive.",
+    "char_start": 18810,
+    "char_end": 18939,
+    "sentence_index": 109,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec015",
+    "text": "This results in significant latency, which undermines the system's ability to provide timely responses in real-time applications.",
+    "char_start": 18940,
+    "char_end": 19069,
+    "sentence_index": 110,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec015",
+    "text": "Example:\nIn time-sensitive settings such as financial analytics or live customer support , delays caused by querying multiple databases or processing large document sets can hinder the system's overall utility.",
+    "char_start": 19071,
+    "char_end": 19281,
+    "sentence_index": 111,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec015",
+    "text": "For example, a delay in retrieving market trends during high-frequency trading could result in missed opportunities.",
+    "char_start": 19282,
+    "char_end": 19398,
+    "sentence_index": 112,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec016",
+    "text": "Traditional RAG systems, with their static workflows and limited adaptability, often struggle to handle dynamic,\nmulti-step reasoning and complex real-world tasks.",
+    "char_start": 19400,
+    "char_end": 19563,
+    "sentence_index": 113,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec016",
+    "text": "These limitations have spurred the integration of agentic\nintelligence, resulting in Agentic RAG.",
+    "char_start": 19564,
+    "char_end": 19661,
+    "sentence_index": 114,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec016",
+    "text": "By incorporating autonomous agents capable of\ndynamic decision-making, iterative reasoning, and adaptive retrieval strategies, Agentic RAG builds on the\nmodularity of earlier paradigms while overcoming their inherent constraints.",
+    "char_start": 19662,
+    "char_end": 19891,
+    "sentence_index": 115,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec016",
+    "text": "This evolution enables more complex,\nmulti-domain tasks to be addressed with enhanced precision and contextual understanding, positioning Agentic RAG\nas a cornerstone for next-generation AI applications.",
+    "char_start": 19892,
+    "char_end": 20095,
+    "sentence_index": 116,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec016",
+    "text": "In particular, Agentic RAG systems reduce latency through\noptimized workflows and refine outputs iteratively, tackling the very challenges that have historically hindered\ntraditional RAG\u2019s scalability and effectiveness.",
+    "char_start": 20096,
+    "char_end": 20315,
+    "sentence_index": 117,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec017",
+    "text": "Agentic Intelligence forms the foundation of Agentic Retrieval-Augmented Generation (RAG) systems, enabling them to transcend the static and reactive nature of traditional RAG.",
+    "char_start": 20317,
+    "char_end": 20493,
+    "sentence_index": 118,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec017",
+    "text": "By integrating autonomous agents capable of dynamic decision-making, iterative reasoning, and collaborative workflows, Agentic RAG systems exhibit enhanced adaptability and precision.",
+    "char_start": 20494,
+    "char_end": 20677,
+    "sentence_index": 119,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec017",
+    "text": "This section explores the core principles underpinning agentic intelligence.",
+    "char_start": 20678,
+    "char_end": 20754,
+    "sentence_index": 120,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec017",
+    "text": "Components of an AI Agent.",
+    "char_start": 20756,
+    "char_end": 20782,
+    "sentence_index": 121,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec017",
+    "text": "In essence, an AI agent comprises (Figure.",
+    "char_start": 20783,
+    "char_end": 20825,
+    "sentence_index": 122,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec017",
+    "text": "):\n\nLLM (with defined Role and Task):\nServes as the agent\u2019s primary reasoning engine and dialogue interface.",
+    "char_start": 20826,
+    "char_end": 20934,
+    "sentence_index": 123,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec017",
+    "text": "It interprets user queries, generates responses, and maintains coherence.",
+    "char_start": 20935,
+    "char_end": 21008,
+    "sentence_index": 124,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec017",
+    "text": "Memory (Short-Term and Long-Term):\nCaptures context and relevant data across interactions.",
+    "char_start": 21009,
+    "char_end": 21099,
+    "sentence_index": 125,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec017",
+    "text": "Short-term memory tracks immediate conversation state, while long-term memory stores accumulated knowledge and agent experiences.",
+    "char_start": 21100,
+    "char_end": 21229,
+    "sentence_index": 126,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec017",
+    "text": "Planning (Reflection \\& Self-Critique):\nGuides the agent\u2019s iterative reasoning process through reflection, query routing, or self-critique , ensuring that complex tasks are broken down effectively .",
+    "char_start": 21230,
+    "char_end": 21428,
+    "sentence_index": 127,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec017",
+    "text": "Tools Vector Search, Web Search, APIs, etc.):\nExpands the agent\u2019s capabilities beyond text generation, enabling access to external resources, real-time data, or specialized computations.",
+    "char_start": 21429,
+    "char_end": 21615,
+    "sentence_index": 128,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec017",
+    "text": "images/ai_agents.png\nfigure An Overview of AI Agents\n\nAgentic Patterns provide structured methodologies that guide the behavior of agents in Agentic Retrieval-Augmented Generation (RAG) systems.",
+    "char_start": 21617,
+    "char_end": 21811,
+    "sentence_index": 129,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec017",
+    "text": "These patterns enable agents to dynamically adapt, plan, and collaborate, ensuring that the system can handle complex, real-world tasks with precision and scalability.",
+    "char_start": 21812,
+    "char_end": 21979,
+    "sentence_index": 130,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec017",
+    "text": "Four key patterns underpin agentic workflows:\n\nReflection is a foundational design pattern in agentic workflows, enabling agents to iteratively evaluate and refine their outputs.",
+    "char_start": 21980,
+    "char_end": 22158,
+    "sentence_index": 131,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec018",
+    "text": "By incorporating self-feedback mechanisms, agents can identify and address errors, inconsistencies, and areas for improvement, enhancing performance across tasks like code generation, text production, and question answering ( as shown in Figure ).",
+    "char_start": 22159,
+    "char_end": 22406,
+    "sentence_index": 132,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec018",
+    "text": "In practical use, Reflection involves prompting an agent to critique its outputs for correctness, style, and efficiency, then incorporating this feedback into subsequent iterations.",
+    "char_start": 22407,
+    "char_end": 22588,
+    "sentence_index": 133,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec018",
+    "text": "External tools, such as unit tests or web searches, can further enhance this process by validating results and highlighting gaps.",
+    "char_start": 22589,
+    "char_end": 22718,
+    "sentence_index": 134,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec018",
+    "text": "In multi-agent systems, Reflection can involve distinct roles, such as one agent generating outputs while another critiques them, fostering collaborative improvement.",
+    "char_start": 22720,
+    "char_end": 22886,
+    "sentence_index": 135,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec018",
+    "text": "For instance, in legal research, agents can iteratively refine responses by re-evaluating retrieved case law, ensuring accuracy and comprehensiveness.",
+    "char_start": 22887,
+    "char_end": 23037,
+    "sentence_index": 136,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec018",
+    "text": "Reflection has demonstrated significant performance improvements in studies like Self-Refine , Reflexion , and CRITIC .",
+    "char_start": 23038,
+    "char_end": 23157,
+    "sentence_index": 137,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec018",
+    "text": "[H]\n\nimages/agentic_self_reflection.png\nAn Overview of Agentic Self- Reflection\n\nPlanning is a key design pattern in agentic workflows that enables agents to autonomously decompose complex tasks into smaller, manageable subtasks.",
+    "char_start": 23159,
+    "char_end": 23388,
+    "sentence_index": 138,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec019",
+    "text": "This capability is essential for multi-hop reasoning and iterative problem-solving in dynamic and uncertain scenarios as shown in Figure .",
+    "char_start": 23389,
+    "char_end": 23527,
+    "sentence_index": 139,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec019",
+    "text": "By leveraging planning, agents can dynamically determine the sequence of steps needed to accomplish a larger objective.",
+    "char_start": 23529,
+    "char_end": 23648,
+    "sentence_index": 140,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec019",
+    "text": "This adaptability allows agents to handle tasks that cannot be predefined, ensuring flexibility in decision-making.",
+    "char_start": 23649,
+    "char_end": 23764,
+    "sentence_index": 141,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec019",
+    "text": "While powerful, Planning can produce less predictable outcomes compared to deterministic workflows like Reflection.",
+    "char_start": 23765,
+    "char_end": 23880,
+    "sentence_index": 142,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec019",
+    "text": "Planning is particularly suited for tasks that require dynamic adaptation, where predefined workflows are insufficient.",
+    "char_start": 23881,
+    "char_end": 24000,
+    "sentence_index": 143,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec019",
+    "text": "As the technology matures, its potential to drive innovative applications across domains will continue to grow.",
+    "char_start": 24001,
+    "char_end": 24112,
+    "sentence_index": 144,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec019",
+    "text": "[htbp]\n\n[b] 0.47\nimages/agentic_planning.png\nAn Overview of Agentic Planning\n\n[b] 0.47\nimages/agentic_tool_use.png\nAn Overview of Tool Use\n\nOverview of Agentic Planning and Tool Use\n\nTool Use enables agents to extend their capabilities by interacting with external tools, APIs, or computational resources as illustrated in .",
+    "char_start": 24114,
+    "char_end": 24438,
+    "sentence_index": 145,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec020",
+    "text": "This pattern allows agents to gather information, perform computations, and manipulate data beyond their pre-trained knowledge.",
+    "char_start": 24439,
+    "char_end": 24566,
+    "sentence_index": 146,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec020",
+    "text": "By dynamically integrating tools into workflows, agents can adapt to complex tasks and provide more accurate and contextually relevant outputs.",
+    "char_start": 24567,
+    "char_end": 24710,
+    "sentence_index": 147,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec020",
+    "text": "Modern agentic workflows incorporate tool use for a variety of applications, including information retrieval, computational reasoning, and interfacing with external systems.",
+    "char_start": 24712,
+    "char_end": 24885,
+    "sentence_index": 148,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec020",
+    "text": "The implementation of this pattern has evolved significantly with advancements like GPT-4\u2019s function calling capabilities and systems capable of managing access to numerous tools.",
+    "char_start": 24886,
+    "char_end": 25065,
+    "sentence_index": 149,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec020",
+    "text": "These developments facilitate sophisticated workflows where agents autonomously select and execute the most relevant tools for a given task.",
+    "char_start": 25066,
+    "char_end": 25206,
+    "sentence_index": 150,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec020",
+    "text": "While tool use significantly enhances agentic workflows, challenges remain in optimizing the selection of tools, particularly in contexts with a large number of available options.",
+    "char_start": 25208,
+    "char_end": 25387,
+    "sentence_index": 151,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec020",
+    "text": "Techniques inspired by retrieval-augmented generation (RAG), such as heuristic-based selection, have been proposed to address this issue.",
+    "char_start": 25388,
+    "char_end": 25525,
+    "sentence_index": 152,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec021",
+    "text": "Multi-agent collaboration is a key design pattern in agentic workflows that enables task specialization and parallel processing.",
+    "char_start": 25527,
+    "char_end": 25655,
+    "sentence_index": 153,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec021",
+    "text": "Agents communicate and share intermediate results, ensuring the overall workflow remains efficient and coherent.",
+    "char_start": 25656,
+    "char_end": 25768,
+    "sentence_index": 154,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec021",
+    "text": "By distributing subtasks among specialized agents, this pattern improves the scalability and adaptability of complex workflows.",
+    "char_start": 25769,
+    "char_end": 25896,
+    "sentence_index": 155,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec021",
+    "text": "Multi-agent systems allow developers to decompose intricate tasks into smaller, manageable subtasks assigned to different agents.",
+    "char_start": 25897,
+    "char_end": 26026,
+    "sentence_index": 156,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec021",
+    "text": "This approach not only enhances task performance but also provides a robust framework for managing complex interactions.",
+    "char_start": 26027,
+    "char_end": 26147,
+    "sentence_index": 157,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec021",
+    "text": "Each agent operates with its own memory and workflow, which can include the use of tools, reflection, or planning, enabling dynamic and collaborative problem-solving (see Figure ).",
+    "char_start": 26148,
+    "char_end": 26328,
+    "sentence_index": 158,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec021",
+    "text": "While multi-agent collaboration offers significant potential, it is a less predictable design pattern compared to more mature workflows like Reflection and Tool Use.",
+    "char_start": 26330,
+    "char_end": 26495,
+    "sentence_index": 159,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec021",
+    "text": "Nevertheless, emerging frameworks such as AutoGen, Crew AI, and LangGraph are providing new avenues for implementing effective multi-agent solutions.",
+    "char_start": 26496,
+    "char_end": 26645,
+    "sentence_index": 160,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec021",
+    "text": "[h]\n\nimages/multi_agent_pattern.png\nAn Overview of MultiAgent\n\nThese design patterns form the foundation for the success of Agentic RAG systems.",
+    "char_start": 26647,
+    "char_end": 26791,
+    "sentence_index": 161,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec021",
+    "text": "By structuring workflows\u2014from simple, sequential steps to more adaptive, collaborative processes\u2014these patterns enable systems to dynamically adapt their retrieval and generative strategies to the diverse and ever-changing demands of real-world environments.",
+    "char_start": 26792,
+    "char_end": 27050,
+    "sentence_index": 162,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec021",
+    "text": "Leveraging these patterns, agents are capable of handling iterative, context-aware tasks that significantly exceed the capabilities of traditional RAG systems.",
+    "char_start": 27051,
+    "char_end": 27210,
+    "sentence_index": 163,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec022",
+    "text": "Agentic workflow patterns, structure LLM-based applications to optimize performance, accuracy, and efficiency.",
+    "char_start": 27212,
+    "char_end": 27322,
+    "sentence_index": 164,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec022",
+    "text": "Different approaches are suitable depending on task complexity and processing requirements.",
+    "char_start": 27323,
+    "char_end": 27414,
+    "sentence_index": 165,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec023",
+    "text": "Prompt chaining decomposes a complex task into multiple steps, where each step builds upon the previous one.",
+    "char_start": 27416,
+    "char_end": 27524,
+    "sentence_index": 166,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec023",
+    "text": "This structured approach improves accuracy by simplifying each subtask before moving forward.",
+    "char_start": 27525,
+    "char_end": 27618,
+    "sentence_index": 167,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec023",
+    "text": "However, it may increase latency due to sequential processing.",
+    "char_start": 27619,
+    "char_end": 27681,
+    "sentence_index": 168,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec023",
+    "text": "[h]\n\nimages/prompt_chaining.png\nIllustration of Prompt Chaining Workflow\n\nWhen to Use: This workflow is most effective when a task can be broken down into fixed subtasks, each contributing to the final output.",
+    "char_start": 27683,
+    "char_end": 27892,
+    "sentence_index": 169,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec023",
+    "text": "It is particularly useful in scenarios where step-by-step reasoning enhances accuracy.",
+    "char_start": 27893,
+    "char_end": 27979,
+    "sentence_index": 170,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec023",
+    "text": "Example Applications:\n\nGenerating marketing content in one language and then translating it into another while preserving nuances.",
+    "char_start": 27981,
+    "char_end": 28111,
+    "sentence_index": 171,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec023",
+    "text": "Structuring document creation by first generating an outline, verifying its completeness, and then developing the full text.",
+    "char_start": 28112,
+    "char_end": 28236,
+    "sentence_index": 172,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec024",
+    "text": "Routing involves classifying an input and directing it to an appropriate specialized prompt or process.",
+    "char_start": 28238,
+    "char_end": 28341,
+    "sentence_index": 173,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec024",
+    "text": "This method ensures distinct queries or tasks are handled separately, improving efficiency and response quality.",
+    "char_start": 28342,
+    "char_end": 28454,
+    "sentence_index": 174,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec024",
+    "text": "[H]\n\nimages/routing.png\nIllustration Routing Workflow\n\nWhen to Use: Ideal for scenarios where different types of input require distinct handling strategies, ensuring optimized performance for each category.",
+    "char_start": 28455,
+    "char_end": 28661,
+    "sentence_index": 175,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec024",
+    "text": "Example Applications:\n\nDirecting customer service queries into categories such as technical support, refund requests, or general inquiries.",
+    "char_start": 28663,
+    "char_end": 28802,
+    "sentence_index": 176,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec024",
+    "text": "Assigning simple queries to smaller models for cost efficiency, while complex requests go to advanced models.",
+    "char_start": 28803,
+    "char_end": 28912,
+    "sentence_index": 177,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec025",
+    "text": "Parallelization divides a task into independent processes that run simultaneously, reducing latency and improving throughput.",
+    "char_start": 28914,
+    "char_end": 29039,
+    "sentence_index": 178,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec025",
+    "text": "It can be categorized into sectioning (independent subtasks) and voting (multiple outputs for accuracy).",
+    "char_start": 29040,
+    "char_end": 29144,
+    "sentence_index": 179,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec025",
+    "text": "[h]\n\nimages/parallelization.png\nIllustration of Parallelization Workflow\n\nWhen to Use: Useful when tasks can be executed independently to enhance speed or when multiple outputs improve confidence.",
+    "char_start": 29146,
+    "char_end": 29342,
+    "sentence_index": 180,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec025",
+    "text": "Example Applications:\n\nSectioning: Splitting tasks like content moderation, where one model screens input while another generates a response.",
+    "char_start": 29344,
+    "char_end": 29485,
+    "sentence_index": 181,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec025",
+    "text": "Voting: Using multiple models to cross-check code for vulnerabilities or analyze content moderation decisions.",
+    "char_start": 29486,
+    "char_end": 29596,
+    "sentence_index": 182,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec026",
+    "text": "This workflow features a central orchestrator model that dynamically breaks tasks into subtasks, assigns them to specialized worker models, and compiles the results.",
+    "char_start": 29598,
+    "char_end": 29763,
+    "sentence_index": 183,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec026",
+    "text": "Unlike parallelization, it adapts to varying input complexity.",
+    "char_start": 29764,
+    "char_end": 29826,
+    "sentence_index": 184,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec026",
+    "text": "[h]\n\nimages/orchestrator_worker.png\nIllustration of Orchestrator-Workers Workflow\n\nWhen to Use: Best suited for tasks requiring dynamic decomposition and real-time adaptation, where subtasks are not predefined.",
+    "char_start": 29828,
+    "char_end": 30038,
+    "sentence_index": 185,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec026",
+    "text": "Example Applications:\n\nAutomatically modifying multiple files in a codebase based on the nature of requested changes.",
+    "char_start": 30040,
+    "char_end": 30157,
+    "sentence_index": 186,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec026",
+    "text": "Conducting real-time research by gathering and synthesizing relevant information from multiple sources.",
+    "char_start": 30158,
+    "char_end": 30261,
+    "sentence_index": 187,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec027",
+    "text": "The evaluator-optimizer workflow iteratively improves content by generating an initial output and refining it based on feedback from an evaluation model.",
+    "char_start": 30263,
+    "char_end": 30416,
+    "sentence_index": 188,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec027",
+    "text": "[h]\n\nimages/evaluator_optimizer.png\nIllustration of Evaluator-Optimizer Workflow\n\nWhen to Use: Effective when iterative refinement significantly enhances response quality, especially when clear evaluation criteria exist.",
+    "char_start": 30418,
+    "char_end": 30638,
+    "sentence_index": 189,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec027",
+    "text": "Example Applications:\n\nImproving literary translations through multiple evaluation and refinement cycles.",
+    "char_start": 30640,
+    "char_end": 30745,
+    "sentence_index": 190,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec027",
+    "text": "Conducting multi-round research queries where additional iterations refine search results.",
+    "char_start": 30746,
+    "char_end": 30836,
+    "sentence_index": 191,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec028",
+    "text": "Agentic Retrieval-Augmented Generation (RAG) systems can be categorized into distinct architectural frameworks based on their complexity and design principles.",
+    "char_start": 30838,
+    "char_end": 30997,
+    "sentence_index": 192,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec028",
+    "text": "These include single-agent architectures, multi-agent systems, and hierarchical agentic architectures.",
+    "char_start": 30998,
+    "char_end": 31100,
+    "sentence_index": 193,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec028",
+    "text": "Each framework is tailored to address specific challenges and optimize performance for diverse applications.",
+    "char_start": 31101,
+    "char_end": 31209,
+    "sentence_index": 194,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec028",
+    "text": "This section provides a detailed taxonomy of these architectures, highlighting their characteristics, strengths, and limitations.",
+    "char_start": 31210,
+    "char_end": 31339,
+    "sentence_index": 195,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec029",
+    "text": "A Single-Agent Agentic RAG: serves as a centralized decision-making system where a single agent manages the retrieval, routing, and integration of information (as shown in Figure.",
+    "char_start": 31341,
+    "char_end": 31520,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec029",
+    "text": ").",
+    "char_start": 31521,
+    "char_end": 31523,
+    "sentence_index": 197,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec029",
+    "text": "This architecture simplifies the system by consolidating these tasks into one unified agent, making it particularly effective for setups with a limited number of tools or data sources.",
+    "char_start": 31524,
+    "char_end": 31708,
+    "sentence_index": 198,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec029",
+    "text": "Workflow\n\nQuery Submission and Evaluation:\nThe process begins when a user submits a query.",
+    "char_start": 31709,
+    "char_end": 31799,
+    "sentence_index": 199,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec029",
+    "text": "A coordinating agent (or master retrieval agent) receives the query\nand analyzes it to determine the most suitable sources of information.",
+    "char_start": 31800,
+    "char_end": 31938,
+    "sentence_index": 200,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec029",
+    "text": "Knowledge Source Selection:\nBased on the query\u2019s type, the coordinating agent chooses from a variety of retrieval options:\n\nStructured Databases: For queries requiring tabular data access, the system may\nuse a Text-to-SQL engine that interacts with databases like PostgreSQL or MySQL.",
+    "char_start": 31940,
+    "char_end": 32224,
+    "sentence_index": 201,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec029",
+    "text": "Semantic Search: When dealing with unstructured information, it retrieves\nrelevant documents (e.g., PDFs, books, organizational records) using vector-based retrieval.",
+    "char_start": 32225,
+    "char_end": 32391,
+    "sentence_index": 202,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec029",
+    "text": "Web Search: For real-time or broad contextual information, the system\nleverages a web search tool to access the latest online data.",
+    "char_start": 32392,
+    "char_end": 32523,
+    "sentence_index": 203,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec029",
+    "text": "Recommendation Systems: For personalized or contextual queries, the system\ntaps into recommendation engines that provide tailored suggestions.",
+    "char_start": 32524,
+    "char_end": 32666,
+    "sentence_index": 204,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec029",
+    "text": "Data Integration and LLM Synthesis:\nOnce the relevant data is retrieved from the chosen sources, it is passed to a\nLarge Language Model (LLM) .",
+    "char_start": 32668,
+    "char_end": 32811,
+    "sentence_index": 205,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec029",
+    "text": "The LLM synthesizes the gathered information, integrating\ninsights from multiple sources into a coherent and contextually relevant response.",
+    "char_start": 32812,
+    "char_end": 32952,
+    "sentence_index": 206,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec029",
+    "text": "Output Generation:\nFinally, the system delivers a comprehensive, user-facing answer that addresses the original\nquery.",
+    "char_start": 32954,
+    "char_end": 33072,
+    "sentence_index": 207,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec029",
+    "text": "This response is presented in an actionable, concise format and may optionally include\nreferences or citations to the sources used.",
+    "char_start": 33073,
+    "char_end": 33204,
+    "sentence_index": 208,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec029",
+    "text": "[htbp]\n\nimages/single_agentic_RAG.png\nAn Overview of Single Agentic RAG\n\nKey Features and Advantages.",
+    "char_start": 33206,
+    "char_end": 33307,
+    "sentence_index": 209,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec029",
+    "text": "Centralized Simplicity: A single agent handles all retrieval and routing tasks,\nmaking the architecture straightforward to design, implement, and maintain.",
+    "char_start": 33309,
+    "char_end": 33464,
+    "sentence_index": 210,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec029",
+    "text": "Efficiency \\& Resource Optimization: With fewer agents and simpler coordination,\nthe system demands fewer computational resources and can handle queries more quickly.",
+    "char_start": 33465,
+    "char_end": 33631,
+    "sentence_index": 211,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec029",
+    "text": "Dynamic Routing: The agent evaluates each query in real-time, selecting\nthe most appropriate knowledge source (e.g., structured DB, semantic search, web search).",
+    "char_start": 33632,
+    "char_end": 33793,
+    "sentence_index": 212,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec029",
+    "text": "Versatility Across Tools: Supports a variety of data sources and external APIs,\nenabling both structured and unstructured workflows.",
+    "char_start": 33794,
+    "char_end": 33926,
+    "sentence_index": 213,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec029",
+    "text": "Ideal for Simpler Systems: Suited for applications with well-defined tasks\nor limited integration requirements (e.g., document retrieval, SQL-based workflows).",
+    "char_start": 33927,
+    "char_end": 34086,
+    "sentence_index": 214,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec029",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Customer Support]\nPrompt: Can you tell me the delivery status of my order?",
+    "char_start": 34088,
+    "char_end": 34242,
+    "sentence_index": 215,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec029",
+    "text": "System Process (Single-Agent Workflow):\n\nQuery Submission and Evaluation:\n\nThe user submits the query, which is received by the coordinating agent.",
+    "char_start": 34244,
+    "char_end": 34391,
+    "sentence_index": 216,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec029",
+    "text": "The coordinating agent analyzes the query and determines the most appropriate sources of information.",
+    "char_start": 34392,
+    "char_end": 34493,
+    "sentence_index": 217,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec029",
+    "text": "Knowledge Source Selection:\n\nRetrieves tracking details from the order management database.",
+    "char_start": 34495,
+    "char_end": 34586,
+    "sentence_index": 218,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec029",
+    "text": "Fetches real-time updates from the shipping provider\u2019s API.",
+    "char_start": 34587,
+    "char_end": 34646,
+    "sentence_index": 219,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec029",
+    "text": "Optionally conducts a web search to identify local conditions affecting delivery, such as weather or logistical delays.",
+    "char_start": 34647,
+    "char_end": 34766,
+    "sentence_index": 220,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec029",
+    "text": "Data Integration and LLM Synthesis:\n\nThe relevant data is passed to the LLM, which synthesizes the information into a coherent response.",
+    "char_start": 34768,
+    "char_end": 34904,
+    "sentence_index": 221,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec029",
+    "text": "Output Generation:\n\nThe system generates an actionable and concise response, providing live tracking updates and potential alternatives.",
+    "char_start": 34906,
+    "char_end": 35042,
+    "sentence_index": 222,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec029",
+    "text": "Response:\n\nIntegrated Response:\n``Your package is currently in transit and expected to arrive tomorrow evening.",
+    "char_start": 35044,
+    "char_end": 35155,
+    "sentence_index": 223,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec029",
+    "text": "The live tracking from UPS indicates it is at the regional distribution center.''\n\nMulti-Agent RAG represents a modular and scalable evolution of single-agent architectures, designed to handle complex workflows and diverse query types by leveraging multiple specialized agents (as shown in Figure ).",
+    "char_start": 35156,
+    "char_end": 35455,
+    "sentence_index": 224,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec030",
+    "text": "Instead of relying on a single agent to manage all tasks\u2014reasoning, retrieval, and response generation\u2014this system distributes responsibilities across multiple agents, each optimized for a specific role or data source.",
+    "char_start": 35456,
+    "char_end": 35674,
+    "sentence_index": 225,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec030",
+    "text": "[h]\n\nimages/multiagent_agentic_rag.png\nAn Overview of Multi-Agent Agentic RAG Systems\n\nWorkflow\n\nQuery Submission : The process begins with a user query, which is received by a coordinator agent or master retrieval agent.",
+    "char_start": 35676,
+    "char_end": 35897,
+    "sentence_index": 226,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec030",
+    "text": "This agent acts as the central orchestrator, delegating the query to specialized retrieval agents based on the query\u2019s requirements.",
+    "char_start": 35898,
+    "char_end": 36030,
+    "sentence_index": 227,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec030",
+    "text": "Specialized Retrieval Agents : The query is distributed among multiple retrieval agents, each focusing on a specific type of data source or task.",
+    "char_start": 36032,
+    "char_end": 36177,
+    "sentence_index": 228,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec030",
+    "text": "Examples include:\n\nAgent 1 : Handles structured queries, such as interacting with SQL-based databases like PostgreSQL or MySQL.",
+    "char_start": 36178,
+    "char_end": 36305,
+    "sentence_index": 229,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec030",
+    "text": "Agent 2 : Manages semantic searches for retrieving unstructured data from sources like PDFs, books, or internal records.",
+    "char_start": 36306,
+    "char_end": 36426,
+    "sentence_index": 230,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec030",
+    "text": "Agent 3 : Focuses on retrieving real-time public information from web searches or APIs.",
+    "char_start": 36427,
+    "char_end": 36514,
+    "sentence_index": 231,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec030",
+    "text": "Agent 4 : Specializes in recommendation systems, delivering context-aware suggestions based on user behavior or profiles.",
+    "char_start": 36515,
+    "char_end": 36636,
+    "sentence_index": 232,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec030",
+    "text": "Tool Access and Data Retrieval : Each agent routes the query to the appropriate tools or data sources within its domain, such as:\n\nVector Search : For semantic relevance.",
+    "char_start": 36638,
+    "char_end": 36808,
+    "sentence_index": 233,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec030",
+    "text": "Text-to-SQL : For structured data.",
+    "char_start": 36809,
+    "char_end": 36843,
+    "sentence_index": 234,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec030",
+    "text": "Web Search : For real-time public information.",
+    "char_start": 36844,
+    "char_end": 36890,
+    "sentence_index": 235,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec030",
+    "text": "APIs : For accessing external services or proprietary systems.",
+    "char_start": 36891,
+    "char_end": 36953,
+    "sentence_index": 236,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec030",
+    "text": "The retrieval process is executed in parallel, allowing for efficient processing of diverse query types.",
+    "char_start": 36955,
+    "char_end": 37059,
+    "sentence_index": 237,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec030",
+    "text": "Data Integration and LLM Synthesis : Once retrieval is complete, the data from all agents is passed to a Large Language Model (LLM) .",
+    "char_start": 37061,
+    "char_end": 37194,
+    "sentence_index": 238,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec030",
+    "text": "The LLM synthesizes the retrieved information into a coherent and contextually relevant response, integrating insights from multiple sources seamlessly.",
+    "char_start": 37195,
+    "char_end": 37347,
+    "sentence_index": 239,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec030",
+    "text": "Output Generation : The system generates a comprehensive response, which is delivered back to the user in an actionable and concise format.",
+    "char_start": 37349,
+    "char_end": 37488,
+    "sentence_index": 240,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec030",
+    "text": "Key Features and Advantages.",
+    "char_start": 37490,
+    "char_end": 37518,
+    "sentence_index": 241,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec030",
+    "text": "Modularity : Each agent operates independently, allowing for seamless addition or removal of agents based on system requirements.",
+    "char_start": 37520,
+    "char_end": 37649,
+    "sentence_index": 242,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec030",
+    "text": "Scalability : Parallel processing by multiple agents enables the system to handle high query volumes efficiently.",
+    "char_start": 37650,
+    "char_end": 37763,
+    "sentence_index": 243,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec030",
+    "text": "Task Specialization : Each agent is optimized for a specific type of query or data source, improving accuracy and retrieval relevance.",
+    "char_start": 37764,
+    "char_end": 37898,
+    "sentence_index": 244,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec030",
+    "text": "Efficiency : By distributing tasks across specialized agents, the system minimizes bottlenecks and enhances performance for complex workflows.",
+    "char_start": 37899,
+    "char_end": 38041,
+    "sentence_index": 245,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec030",
+    "text": "Versatility : Suitable for applications spanning multiple domains, including research, analytics, decision-making, and customer support.",
+    "char_start": 38042,
+    "char_end": 38178,
+    "sentence_index": 246,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec030",
+    "text": "Challenges\n\nCoordination Complexity : Managing inter-agent communication and task delegation requires sophisticated orchestration mechanisms.",
+    "char_start": 38180,
+    "char_end": 38321,
+    "sentence_index": 247,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec030",
+    "text": "Computational Overhead : Parallel processing of multiple agents can increase resource usage.",
+    "char_start": 38322,
+    "char_end": 38414,
+    "sentence_index": 248,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec030",
+    "text": "Data Integration : Synthesizing outputs from diverse sources into a cohesive response is non-trivial and requires advanced LLM capabilities.",
+    "char_start": 38415,
+    "char_end": 38555,
+    "sentence_index": 249,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec030",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Multi-Domain Research Assistant]\nPrompt: What are the economic and environmental impacts of renewable energy adoption in Europe?",
+    "char_start": 38557,
+    "char_end": 38765,
+    "sentence_index": 250,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec030",
+    "text": "[0.2cm]\n\nSystem Process (Multi-Agent Workflow):\n\nAgent 1: Retrieves statistical data from economic databases using SQL-based queries.",
+    "char_start": 38766,
+    "char_end": 38899,
+    "sentence_index": 251,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec030",
+    "text": "Agent 2: Searches for relevant academic papers using semantic search tools.",
+    "char_start": 38900,
+    "char_end": 38975,
+    "sentence_index": 252,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec030",
+    "text": "Agent 3: Performs a web search for recent news and policy updates on renewable energy.",
+    "char_start": 38976,
+    "char_end": 39062,
+    "sentence_index": 253,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec030",
+    "text": "Agent 4: Consults a recommendation system to suggest related content, such as reports or expert commentary.",
+    "char_start": 39063,
+    "char_end": 39170,
+    "sentence_index": 254,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec030",
+    "text": "Response:\n\nIntegrated Response:\n``Adopting renewable energy in Europe has led to a 20\\% reduction in greenhouse gas emissions over the past\ndecade, according to EU policy reports.",
+    "char_start": 39172,
+    "char_end": 39351,
+    "sentence_index": 255,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec030",
+    "text": "Economically, renewable energy investments have generated approximately\n1.2 million jobs, with significant growth in solar and wind sectors.",
+    "char_start": 39352,
+    "char_end": 39492,
+    "sentence_index": 256,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec030",
+    "text": "Recent academic studies also highlight potential\ntrade-offs in grid stability and energy storage costs.''\n\nHierarchical Agentic RAG: systems employ a structured, multi-tiered approach to information retrieval\nand processing, enhancing both efficiency and strategic decision-making as shown in Figure .",
+    "char_start": 39493,
+    "char_end": 39794,
+    "sentence_index": 257,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec031",
+    "text": "Agents are organized in a hierarchy,\nwith higher-level agents overseeing and directing lower-level agents.",
+    "char_start": 39795,
+    "char_end": 39901,
+    "sentence_index": 258,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec031",
+    "text": "This structure enables multi-level\ndecision-making, ensuring that queries are handled by the most appropriate resources.",
+    "char_start": 39902,
+    "char_end": 40022,
+    "sentence_index": 259,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec031",
+    "text": "[h]\n\nimages/hierarchical_agentic_rag.png\nAn illustration of Hierarchical Agentic RAG\n\nWorkflow\n\nQuery Reception : A user submits a query, received by a top-tier agent responsible\nfor initial assessment and delegation.",
+    "char_start": 40024,
+    "char_end": 40241,
+    "sentence_index": 260,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec031",
+    "text": "Strategic Decision-Making : The top-tier agent evaluates the query\u2019s complexity and decides\nwhich subordinate agents or data sources to prioritize.",
+    "char_start": 40243,
+    "char_end": 40390,
+    "sentence_index": 261,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec031",
+    "text": "Certain databases, APIs, or retrieval tools may be\ndeemed more reliable or relevant based on the query\u2019s domain.",
+    "char_start": 40391,
+    "char_end": 40503,
+    "sentence_index": 262,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec031",
+    "text": "Delegation to Subordinate Agents : The top-tier agent assigns tasks to lower-level agents\nspecialized in particular retrieval methods (e.g., SQL databases, web search, or proprietary systems).",
+    "char_start": 40505,
+    "char_end": 40697,
+    "sentence_index": 263,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec031",
+    "text": "These agents execute their assigned tasks independently.",
+    "char_start": 40698,
+    "char_end": 40754,
+    "sentence_index": 264,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec031",
+    "text": "Aggregation and Synthesis : The results from subordinate agents are collected and integrated\nby the higher-level agent, which synthesizes the information into a coherent response.",
+    "char_start": 40756,
+    "char_end": 40935,
+    "sentence_index": 265,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec031",
+    "text": "Response Delivery : The final, synthesized answer is returned to the user, ensuring that\nthe response is both comprehensive and contextually relevant.",
+    "char_start": 40937,
+    "char_end": 41087,
+    "sentence_index": 266,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec031",
+    "text": "Key Features and Advantages.",
+    "char_start": 41089,
+    "char_end": 41117,
+    "sentence_index": 267,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec031",
+    "text": "Strategic Prioritization : Top-tier agents can prioritize data sources or tasks based on\nquery complexity, reliability, or context.",
+    "char_start": 41119,
+    "char_end": 41250,
+    "sentence_index": 268,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec031",
+    "text": "Scalability : Distributing tasks across multiple agent tiers enables handling of highly\ncomplex or multi-faceted queries.",
+    "char_start": 41251,
+    "char_end": 41372,
+    "sentence_index": 269,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec031",
+    "text": "Enhanced Decision-Making : Higher-level agents apply strategic oversight to improve overall\naccuracy and coherence of responses.",
+    "char_start": 41373,
+    "char_end": 41501,
+    "sentence_index": 270,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec031",
+    "text": "Challenges\n\nCoordination Complexity : Maintaining robust inter-agent communication across multiple levels\ncan increase orchestration overhead.",
+    "char_start": 41503,
+    "char_end": 41645,
+    "sentence_index": 271,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec031",
+    "text": "Resource Allocation : Efficiently distributing tasks among tiers to avoid bottlenecks is\nnon-trivial.",
+    "char_start": 41646,
+    "char_end": 41747,
+    "sentence_index": 272,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec031",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Financial Analysis System]\nPrompt: What are the best investment options given the current market trends in renewable energy?",
+    "char_start": 41749,
+    "char_end": 41953,
+    "sentence_index": 273,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec031",
+    "text": "[0.2cm]\n\nSystem Process (Hierarchical Agentic Workflow):\n\nTop-Tier Agent : Assesses the query\u2019s complexity and prioritizes reliable financial databases\nand economic indicators over less validated data sources.",
+    "char_start": 41954,
+    "char_end": 42163,
+    "sentence_index": 274,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec031",
+    "text": "Mid-Level Agent : Retrieves real-time market data (e.g., stock prices, sector performance)\nfrom proprietary APIs and structured SQL databases.",
+    "char_start": 42164,
+    "char_end": 42306,
+    "sentence_index": 275,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec031",
+    "text": "Lower-Level Agent(s) : Conducts web searches for recent policy announcements and\nconsults recommendation systems that track expert opinions and news analytics.",
+    "char_start": 42307,
+    "char_end": 42466,
+    "sentence_index": 276,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec031",
+    "text": "Aggregation and Synthesis : The top-tier agent compiles the results, integrating\nquantitative data with policy insights.",
+    "char_start": 42467,
+    "char_end": 42587,
+    "sentence_index": 277,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec031",
+    "text": "Response:\n\nIntegrated Response:\n``Based on current market data, renewable energy stocks have shown a 15\\% growth over the past quarter,\ndriven by supportive government policies and heightened investor interest.",
+    "char_start": 42589,
+    "char_end": 42799,
+    "sentence_index": 278,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec031",
+    "text": "Analysts suggest that wind\nand solar sectors, in particular, may experience continued momentum, while emerging technologies\nlike green hydrogen present moderate risk but potentially high returns.''\n\nCorrective RAG : introduces mechanisms to self-correct retrieval results, enhancing document utilization and improving response generation quality as demonstrated in Figure .",
+    "char_start": 42800,
+    "char_end": 43173,
+    "sentence_index": 279,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec032",
+    "text": "By embedding intelligent agents into the workflow, Corrective RAG ensures iterative refinement of context documents and responses, minimizing errors and maximizing relevance.",
+    "char_start": 43174,
+    "char_end": 43348,
+    "sentence_index": 280,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec032",
+    "text": "[h]\n\nimages/agentic_corrective_rag.png\nOverview of Agentic Corrective RAG\n\nKey Idea of Corrective RAG:\nThe core principle of Corrective RAG lies in its ability to evaluate retrieved documents dynamically, perform corrective actions, and refine queries to enhance the quality of generated responses.",
+    "char_start": 43350,
+    "char_end": 43648,
+    "sentence_index": 281,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec032",
+    "text": "Corrective RAG adjusts its approach as follows:\n\nDocument Relevance Evaluation: Retrieved documents are assessed for relevance by the Relevance Evaluation Agent .",
+    "char_start": 43649,
+    "char_end": 43811,
+    "sentence_index": 282,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec032",
+    "text": "Documents below the relevance threshold trigger corrective steps.",
+    "char_start": 43812,
+    "char_end": 43877,
+    "sentence_index": 283,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec032",
+    "text": "Query Refinement and Augmentation: Queries are refined by the Query Refinement Agent , which leverages semantic understanding to optimize retrieval for better results.",
+    "char_start": 43878,
+    "char_end": 44045,
+    "sentence_index": 284,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec032",
+    "text": "Dynamic Retrieval from External Sources: When context is insufficient, the External Knowledge Retrieval Agent performs web searches or accesses alternative data sources to supplement the retrieved documents.",
+    "char_start": 44046,
+    "char_end": 44253,
+    "sentence_index": 285,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec032",
+    "text": "Response Synthesis: All validated and refined information is passed to the Response Synthesis Agent for final response generation.",
+    "char_start": 44254,
+    "char_end": 44384,
+    "sentence_index": 286,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec032",
+    "text": "Workflow: The Corrective RAG system is built on five key agents:\n\nContext Retrieval Agent: Responsible for retrieving initial context documents from a vector database.",
+    "char_start": 44386,
+    "char_end": 44553,
+    "sentence_index": 287,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec032",
+    "text": "Relevance Evaluation Agent: Assesses the retrieved documents for relevance and flags any irrelevant or ambiguous documents for corrective actions.",
+    "char_start": 44554,
+    "char_end": 44700,
+    "sentence_index": 288,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec032",
+    "text": "Query Refinement Agent: Rewrites queries to improve retrieval, leveraging semantic understanding to optimize results.",
+    "char_start": 44701,
+    "char_end": 44818,
+    "sentence_index": 289,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec032",
+    "text": "External Knowledge Retrieval Agent: Performs web searches or accesses alternative data sources when the context documents are insufficient.",
+    "char_start": 44819,
+    "char_end": 44958,
+    "sentence_index": 290,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec032",
+    "text": "Response Synthesis Agent: Synthesizes all validated information into a coherent and accurate response.",
+    "char_start": 44959,
+    "char_end": 45061,
+    "sentence_index": 291,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec032",
+    "text": "Key Features and Advantages:\n\nIterative Correction: Ensures high response accuracy by dynamically identifying and correcting irrelevant or ambiguous retrieval results.",
+    "char_start": 45063,
+    "char_end": 45230,
+    "sentence_index": 292,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec032",
+    "text": "Dynamic Adaptability: Incorporates real-time web searches and query refinement for enhanced retrieval precision.",
+    "char_start": 45231,
+    "char_end": 45343,
+    "sentence_index": 293,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec032",
+    "text": "Agentic Modularity: Each agent performs specialized tasks, ensuring efficient and scalable operation.",
+    "char_start": 45344,
+    "char_end": 45445,
+    "sentence_index": 294,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec032",
+    "text": "Factuality Assurance: By validating all retrieved and generated content, Corrective RAG minimizes the risk of hallucination or misinformation.",
+    "char_start": 45446,
+    "char_end": 45588,
+    "sentence_index": 295,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec032",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Academic Research Assistant]\nPrompt: What are the latest findings in generative AI research?",
+    "char_start": 45590,
+    "char_end": 45762,
+    "sentence_index": 296,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec032",
+    "text": "[0.2cm]\n\nSystem Process (Corrective RAG Workflow):\n\nQuery Submission: A user submits the query to the system.",
+    "char_start": 45763,
+    "char_end": 45872,
+    "sentence_index": 297,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec032",
+    "text": "Context Retrieval:\n\nThe Context Retrieval Agent retrieves initial documents from a database of published papers on generative AI.",
+    "char_start": 45873,
+    "char_end": 46002,
+    "sentence_index": 298,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec032",
+    "text": "The retrieved documents are passed to the next step for evaluation.",
+    "char_start": 46003,
+    "char_end": 46070,
+    "sentence_index": 299,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec032",
+    "text": "Relevance Evaluation:\n\nThe Relevance Evaluation Agent assesses the documents for alignment with the query.",
+    "char_start": 46072,
+    "char_end": 46178,
+    "sentence_index": 300,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec032",
+    "text": "Documents are classified into relevant, ambiguous, or irrelevant categories.",
+    "char_start": 46179,
+    "char_end": 46255,
+    "sentence_index": 301,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec032",
+    "text": "Irrelevant documents are flagged for corrective actions.",
+    "char_start": 46256,
+    "char_end": 46312,
+    "sentence_index": 302,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec032",
+    "text": "Corrective Actions (if needed):\n\nThe Query Refinement Agent rewrites the query to improve specificity and relevance.",
+    "char_start": 46314,
+    "char_end": 46430,
+    "sentence_index": 303,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec032",
+    "text": "The External Knowledge Retrieval Agent performs web searches to fetch additional papers and reports from external sources.",
+    "char_start": 46431,
+    "char_end": 46553,
+    "sentence_index": 304,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec032",
+    "text": "Response Synthesis:\n\nThe Response Synthesis Agent integrates validated documents into a coherent and comprehensive summary.",
+    "char_start": 46555,
+    "char_end": 46678,
+    "sentence_index": 305,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec032",
+    "text": "Response:\n\nIntegrated Response:\n``Recent findings in generative AI highlight advancements in diffusion models, reinforcement learning for text-to-video tasks, and optimization techniques for large-scale model training.",
+    "char_start": 46680,
+    "char_end": 46898,
+    "sentence_index": 306,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec032",
+    "text": "For more details, refer to studies published in NeurIPS 2024 and AAAI 2025.''\n\nAdaptive Retrieval-Augmented Generation (Adaptive RAG) enhances the flexibility and efficiency of large language models (LLMs) by dynamically adjusting query handling strategies based on the complexity of the incoming query.",
+    "char_start": 46899,
+    "char_end": 47202,
+    "sentence_index": 307,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec033",
+    "text": "Unlike static retrieval workflows, Adaptive RAG employs a classifier to assess query complexity and determine the most appropriate approach, ranging from single-step retrieval to multi-step reasoning, or even bypassing retrieval altogether for straightforward queries as illustrated in Figure .",
+    "char_start": 47203,
+    "char_end": 47497,
+    "sentence_index": 308,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec033",
+    "text": "[h]\n\nimages/adaptive_rag_agent.png\nAn Overview of Adaptive Agentic RAG\n\nKey Idea of Adaptive RAG\nThe core principle of Adaptive RAG lies in its ability to dynamically tailor retrieval strategies based on the complexity of the query.",
+    "char_start": 47499,
+    "char_end": 47731,
+    "sentence_index": 309,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec033",
+    "text": "Adaptive RAG adjusts its approach as follows:\n\nStraightforward Queries: For fact-based questions that require no additional retrieval (e.g., \"What is the boiling point of water?\" ), the system directly generates an answer using pre-existing knowledge.",
+    "char_start": 47732,
+    "char_end": 47983,
+    "sentence_index": 310,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec033",
+    "text": "Simple Queries: For moderately complex tasks requiring minimal context (e.g., \"What is the status of my latest electricity bill?\" ), the system performs a single-step retrieval to fetch the relevant details.",
+    "char_start": 47984,
+    "char_end": 48191,
+    "sentence_index": 311,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec033",
+    "text": "Complex Queries: For multi-layered queries requiring iterative reasoning (e.g., \"How has the population of City X changed over the past decade, and what are the contributing factors?\" ), the system employs multi-step retrieval, progressively refining intermediate results to provide a comprehensive answer.",
+    "char_start": 48192,
+    "char_end": 48498,
+    "sentence_index": 312,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec033",
+    "text": "Workflow: The Adaptive RAG system is built on three primary components:\n\nClassifier Role:\n\nA smaller language model analyzes the query to predict its complexity.",
+    "char_start": 48500,
+    "char_end": 48661,
+    "sentence_index": 313,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec033",
+    "text": "The classifier is trained using automatically labeled datasets, derived from past model outcomes and query patterns.",
+    "char_start": 48662,
+    "char_end": 48778,
+    "sentence_index": 314,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec033",
+    "text": "Dynamic Strategy Selection:\n\nFor straightforward queries, the system avoids unnecessary retrieval, directly leveraging the LLM for response generation.",
+    "char_start": 48780,
+    "char_end": 48931,
+    "sentence_index": 315,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec033",
+    "text": "For simple queries, it employs a single-step retrieval process to fetch relevant context.",
+    "char_start": 48932,
+    "char_end": 49021,
+    "sentence_index": 316,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec033",
+    "text": "For complex queries, it activates multi-step retrieval to ensure iterative refinement and enhanced reasoning.",
+    "char_start": 49022,
+    "char_end": 49131,
+    "sentence_index": 317,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec033",
+    "text": "LLM Integration:\n\nThe LLM synthesizes retrieved information into a coherent response.",
+    "char_start": 49133,
+    "char_end": 49218,
+    "sentence_index": 318,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec033",
+    "text": "Iterative interactions between the LLM and the classifier enable refinement for complex queries.",
+    "char_start": 49219,
+    "char_end": 49315,
+    "sentence_index": 319,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec033",
+    "text": "Key Features and Advantages\n\nDynamic Adaptability: Adjusts retrieval strategies based on query complexity, optimizing both computational efficiency and response accuracy.",
+    "char_start": 49317,
+    "char_end": 49487,
+    "sentence_index": 320,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec033",
+    "text": "Resource Efficiency: Minimizes unnecessary overhead for simple queries while ensuring thorough processing for complex ones.",
+    "char_start": 49488,
+    "char_end": 49611,
+    "sentence_index": 321,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec033",
+    "text": "Enhanced Accuracy: Iterative refinement ensures that complex queries are resolved with high precision.",
+    "char_start": 49612,
+    "char_end": 49714,
+    "sentence_index": 322,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec033",
+    "text": "Flexibility: Can be extended to incorporate additional pathways, such as domain-specific tools or external APIs.",
+    "char_start": 49715,
+    "char_end": 49827,
+    "sentence_index": 323,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec033",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Customer Support Assistant]\nPrompt: Why is my package delayed, and what alternatives do I have?",
+    "char_start": 49829,
+    "char_end": 50004,
+    "sentence_index": 324,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec033",
+    "text": "[0.2cm]\n\nSystem Process (Adaptive RAG Workflow):\n\nQuery Classification:\n\nThe classifier analyzes the query and determines it to be complex, requiring multi-step reasoning.",
+    "char_start": 50005,
+    "char_end": 50176,
+    "sentence_index": 325,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec033",
+    "text": "Dynamic Strategy Selection:\n\nThe system activates a multi-step retrieval process based on the complexity classification.",
+    "char_start": 50178,
+    "char_end": 50298,
+    "sentence_index": 326,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec033",
+    "text": "Multi-Step Retrieval:\n\nRetrieves tracking details from the order database.",
+    "char_start": 50300,
+    "char_end": 50374,
+    "sentence_index": 327,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec033",
+    "text": "Fetches real-time status updates from the shipping provider API.",
+    "char_start": 50375,
+    "char_end": 50439,
+    "sentence_index": 328,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec033",
+    "text": "Conducts a web search for external factors such as weather conditions or local disruptions.",
+    "char_start": 50440,
+    "char_end": 50531,
+    "sentence_index": 329,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec033",
+    "text": "Response Synthesis:\n\nThe LLM integrates all retrieved information, synthesizing a comprehensive and actionable response.",
+    "char_start": 50533,
+    "char_end": 50653,
+    "sentence_index": 330,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec033",
+    "text": "Response:\n\nIntegrated Response:\n``Your package is delayed due to severe weather conditions in your region.",
+    "char_start": 50655,
+    "char_end": 50761,
+    "sentence_index": 331,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec033",
+    "text": "It is currently at the local distribution center and will be delivered in 2 days.",
+    "char_start": 50762,
+    "char_end": 50843,
+    "sentence_index": 332,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec033",
+    "text": "Alternatively, you may opt for a local pickup from the facility.''\n\nAgent-G : introduces a novel agentic architecture that integrates graph knowledge bases with unstructured document retrieval.",
+    "char_start": 50844,
+    "char_end": 51037,
+    "sentence_index": 333,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec035",
+    "text": "By combining structured and unstructured data sources, this framework enhances retrieval-augmented generation (RAG) systems with improved reasoning and retrieval accuracy.",
+    "char_start": 51038,
+    "char_end": 51209,
+    "sentence_index": 334,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec035",
+    "text": "It employs modular retriever banks, dynamic agent interaction, and feedback loops to ensure high-quality outputs as shown in Figure .",
+    "char_start": 51210,
+    "char_end": 51343,
+    "sentence_index": 335,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec035",
+    "text": "[h]\n\nimages/agent_g.png\nAn Overview of Agent-G: Agentic Framework for Graph RAG\n\nKey Idea of Agent-G\nThe core principle of Agent-G lies in its ability to dynamically assign retrieval tasks to specialized agents, leveraging both graph knowledge bases and textual documents.",
+    "char_start": 51345,
+    "char_end": 51617,
+    "sentence_index": 336,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec035",
+    "text": "Agent-G adjusts its retrieval strategy as follows:\n\nGraph Knowledge Bases: Structured data is used to extract relationships, hierarchies, and connections (e.g., disease-to-symptom mappings in healthcare).",
+    "char_start": 51618,
+    "char_end": 51822,
+    "sentence_index": 337,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec035",
+    "text": "Unstructured Documents: Traditional text retrieval systems provide contextual information to complement graph data.",
+    "char_start": 51823,
+    "char_end": 51938,
+    "sentence_index": 338,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec035",
+    "text": "Critic Module: Evaluates the relevance and quality of retrieved information, ensuring alignment with the query.",
+    "char_start": 51939,
+    "char_end": 52050,
+    "sentence_index": 339,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec035",
+    "text": "Feedback Loops: Refines retrieval and synthesis through iterative validation and re-querying.",
+    "char_start": 52051,
+    "char_end": 52144,
+    "sentence_index": 340,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec035",
+    "text": "Workflow: The Agent-G system is built on four primary components:\n\nRetriever Bank:\n\nA modular set of agents specializes in retrieving graph-based or unstructured data.",
+    "char_start": 52146,
+    "char_end": 52313,
+    "sentence_index": 341,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec035",
+    "text": "Agents dynamically select relevant sources based on the query\u2019s requirements.",
+    "char_start": 52314,
+    "char_end": 52391,
+    "sentence_index": 342,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec035",
+    "text": "Critic Module:\n\nValidates retrieved data for relevance and quality.",
+    "char_start": 52393,
+    "char_end": 52460,
+    "sentence_index": 343,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec035",
+    "text": "Flags low-confidence results for re-retrieval or refinement.",
+    "char_start": 52461,
+    "char_end": 52521,
+    "sentence_index": 344,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec035",
+    "text": "Dynamic Agent Interaction:\n\nTask-specific agents collaborate to integrate diverse data types.",
+    "char_start": 52523,
+    "char_end": 52616,
+    "sentence_index": 345,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec035",
+    "text": "Ensures cohesive retrieval and synthesis across graph and text sources.",
+    "char_start": 52617,
+    "char_end": 52688,
+    "sentence_index": 346,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec035",
+    "text": "LLM Integration:\n\nSynthesizes validated data into a coherent response.",
+    "char_start": 52690,
+    "char_end": 52760,
+    "sentence_index": 347,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec035",
+    "text": "Iterative feedback from the critic ensures alignment with the query\u2019s intent.",
+    "char_start": 52761,
+    "char_end": 52838,
+    "sentence_index": 348,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec035",
+    "text": "Key Features and Advantages\n\nEnhanced Reasoning: Combines structured relationships from graphs with contextual information from unstructured documents.",
+    "char_start": 52840,
+    "char_end": 52991,
+    "sentence_index": 349,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec035",
+    "text": "Dynamic Adaptability: Adjusts retrieval strategies dynamically based on query requirements.",
+    "char_start": 52992,
+    "char_end": 53083,
+    "sentence_index": 350,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec035",
+    "text": "Improved Accuracy: Critic module reduces the risk of irrelevant or low-quality data in responses.",
+    "char_start": 53084,
+    "char_end": 53181,
+    "sentence_index": 351,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec035",
+    "text": "Scalable Modularity: Supports the addition of new agents for specialized tasks, enhancing scalability.",
+    "char_start": 53182,
+    "char_end": 53284,
+    "sentence_index": 352,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec035",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Healthcare Diagnostics]\nPrompt: What are the common symptoms of Type 2 Diabetes, and how are they related to heart disease?",
+    "char_start": 53286,
+    "char_end": 53489,
+    "sentence_index": 353,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec035",
+    "text": "[0.2cm]\n\nSystem Process (Agent-G Workflow):\n\nQuery Reception and Assignment: The system receives the query and identifies the need for both graph-structured and unstructured data to answer the question comprehensively.",
+    "char_start": 53490,
+    "char_end": 53708,
+    "sentence_index": 354,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec035",
+    "text": "Graph Retriever:\n\nExtracts relationships between Type 2 Diabetes and heart disease from a medical knowledge graph.",
+    "char_start": 53709,
+    "char_end": 53823,
+    "sentence_index": 355,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec035",
+    "text": "Identifies shared risk factors such as obesity and high blood pressure by exploring graph hierarchies and relationships.",
+    "char_start": 53824,
+    "char_end": 53944,
+    "sentence_index": 356,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec035",
+    "text": "Document Retriever:\n\nRetrieves descriptions of Type 2 Diabetes symptoms (e.g., increased thirst, frequent urination, fatigue) from medical literature.",
+    "char_start": 53946,
+    "char_end": 54096,
+    "sentence_index": 357,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec035",
+    "text": "Adds contextual information to complement the graph-based insights.",
+    "char_start": 54097,
+    "char_end": 54164,
+    "sentence_index": 358,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec035",
+    "text": "Critic Module:\n\nEvaluates the relevance and quality of the retrieved graph data and document data.",
+    "char_start": 54166,
+    "char_end": 54264,
+    "sentence_index": 359,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec035",
+    "text": "Flags low-confidence results for refinement or re-querying.",
+    "char_start": 54265,
+    "char_end": 54324,
+    "sentence_index": 360,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec035",
+    "text": "Response Synthesis: The LLM integrates validated data from the Graph Retriever and Document Retriever into a coherent response, ensuring alignment with the query\u2019s intent.",
+    "char_start": 54326,
+    "char_end": 54497,
+    "sentence_index": 361,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec035",
+    "text": "Response:\n\nIntegrated Response:\n``Type 2 Diabetes symptoms include increased thirst, frequent urination, and fatigue.",
+    "char_start": 54499,
+    "char_end": 54616,
+    "sentence_index": 362,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec035",
+    "text": "Studies show a 50\\% correlation between diabetes and heart disease, primarily through shared risk factors such as obesity and high blood pressure.''\n\nGeAR : introduces an agentic framework that enhances traditional Retrieval-Augmented Generation (RAG) systems by incorporating graph-based retrieval mechanisms.",
+    "char_start": 54617,
+    "char_end": 54927,
+    "sentence_index": 363,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec036",
+    "text": "By leveraging graph expansion techniques and an agent-based architecture, GeAR addresses challenges in multi-hop retrieval scenarios, improving the system's ability to handle complex queries as shown in Figure .",
+    "char_start": 54928,
+    "char_end": 55139,
+    "sentence_index": 364,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec036",
+    "text": "Key Idea of GeAR\nGeAR advances RAG performance through two primary innovations:\n\nGraph Expansion: Enhances conventional base retrievers (e.g., BM25) by expanding the retrieval process to include graph-structured data, enabling the system to capture complex relationships and dependencies between entities.",
+    "char_start": 55141,
+    "char_end": 55446,
+    "sentence_index": 365,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec036",
+    "text": "Agent Framework: Incorporates an agent-based architecture that utilizes graph expansion to manage retrieval tasks more effectively, allowing for dynamic and autonomous decision-making in the retrieval process.",
+    "char_start": 55447,
+    "char_end": 55656,
+    "sentence_index": 366,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec036",
+    "text": "Workflow: The GeAR system operates through the following components:\n\nGraph Expansion Module:\n\nIntegrates graph-based data into the retrieval process, allowing the system to consider relationships between entities during retrieval.",
+    "char_start": 55658,
+    "char_end": 55889,
+    "sentence_index": 367,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec036",
+    "text": "Enhances the base retriever's ability to handle multi-hop queries by expanding the search space to include connected entities.",
+    "char_start": 55890,
+    "char_end": 56016,
+    "sentence_index": 368,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec036",
+    "text": "Agent-Based Retrieval:\n\nEmploys an agent framework to manage the retrieval process, enabling dynamic selection and combination of retrieval strategies based on the query's complexity.",
+    "char_start": 56018,
+    "char_end": 56201,
+    "sentence_index": 369,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec036",
+    "text": "Agents can autonomously decide to utilize graph-expanded retrieval paths to improve the relevance and accuracy of retrieved information.",
+    "char_start": 56202,
+    "char_end": 56338,
+    "sentence_index": 370,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec036",
+    "text": "LLM Integration:\n\nCombines the retrieved information, enriched by graph expansion, with the capabilities of a Large Language Model (LLM) to generate coherent and contextually relevant responses.",
+    "char_start": 56340,
+    "char_end": 56534,
+    "sentence_index": 371,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec036",
+    "text": "The integration ensures that the generative process is informed by both unstructured documents and structured graph data.",
+    "char_start": 56535,
+    "char_end": 56656,
+    "sentence_index": 372,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec036",
+    "text": "[h]\n\nimages/gear_overview.png\nAn Overview of GeAR: Graph-Enhanced Agent for Retrieval-Augmented Generation\n\nKey Features and Advantages\n\nEnhanced Multi-Hop Retrieval: GeAR's graph expansion allows the system to handle complex queries that require reasoning over multiple interconnected pieces of information.",
+    "char_start": 56658,
+    "char_end": 56966,
+    "sentence_index": 373,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec036",
+    "text": "Agentic Decision-Making: The agent framework enables dynamic and autonomous selection of retrieval strategies, improving efficiency and relevance.",
+    "char_start": 56967,
+    "char_end": 57113,
+    "sentence_index": 374,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec036",
+    "text": "Improved Accuracy: By incorporating structured graph data, GeAR enhances the precision of retrieved information, leading to more accurate and contextually appropriate responses.",
+    "char_start": 57114,
+    "char_end": 57291,
+    "sentence_index": 375,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec036",
+    "text": "Scalability: The modular nature of the agent framework allows for the integration of additional retrieval strategies and data sources as needed.",
+    "char_start": 57292,
+    "char_end": 57436,
+    "sentence_index": 376,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec036",
+    "text": "[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Multi-Hop Question Answering]\nPrompt: Which author influenced the mentor of J.K.",
+    "char_start": 57438,
+    "char_end": 57598,
+    "sentence_index": 377,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec036",
+    "text": "Rowling?",
+    "char_start": 57599,
+    "char_end": 57607,
+    "sentence_index": 378,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec036",
+    "text": "[0.2cm]\n\nSystem Process (GeAR Workflow):\n\nTop-Tier Agent : Evaluates the query\u2019s multi-hop nature and determines that a combination of graph expansion and document retrieval is necessary to answer the question.",
+    "char_start": 57608,
+    "char_end": 57818,
+    "sentence_index": 379,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec036",
+    "text": "Graph Expansion Module :\n\nIdentifies that J.K.",
+    "char_start": 57819,
+    "char_end": 57865,
+    "sentence_index": 380,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec036",
+    "text": "Rowling\u2019s mentor is a key entity in the query.",
+    "char_start": 57866,
+    "char_end": 57912,
+    "sentence_index": 381,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec036",
+    "text": "Traces the literary influences on that mentor by exploring graph-structured data on literary relationships.",
+    "char_start": 57913,
+    "char_end": 58020,
+    "sentence_index": 382,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec036",
+    "text": "Agent-Based Retrieval :\n\nAn agent autonomously selects the graph-expanded retrieval path to gather relevant information about the mentor\u2019s influences.",
+    "char_start": 58022,
+    "char_end": 58172,
+    "sentence_index": 383,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec036",
+    "text": "Integrates additional context by querying textual data sources for unstructured details about the mentor and their influences.",
+    "char_start": 58173,
+    "char_end": 58299,
+    "sentence_index": 384,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec036",
+    "text": "Response Synthesis : Combines insights from the graph and document retrieval processes using the LLM to generate a response that accurately reflects the complex relationships in the query.",
+    "char_start": 58301,
+    "char_end": 58489,
+    "sentence_index": 385,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec036",
+    "text": "Response:\n\nIntegrated Response:\n``J.K.",
+    "char_start": 58491,
+    "char_end": 58529,
+    "sentence_index": 386,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec036",
+    "text": "Rowling\u2019s mentor, [Mentor Name], was heavily influenced by [Author Name], known for their [notable works or genre].",
+    "char_start": 58530,
+    "char_end": 58645,
+    "sentence_index": 387,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec036",
+    "text": "This connection highlights the layered relationships in literary history, where influential ideas often pass through multiple generations of authors.''\n\nAgentic Document Workflows (ADW) extend traditional Retrieval-Augmented Generation (RAG) paradigms by enabling end-to-end knowledge work automation.",
+    "char_start": 58646,
+    "char_end": 58947,
+    "sentence_index": 388,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec037",
+    "text": "These workflows orchestrate complex document-centric processes, integrating document parsing, retrieval, reasoning, and structured outputs with intelligent agents (see Figure ).",
+    "char_start": 58948,
+    "char_end": 59125,
+    "sentence_index": 389,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec037",
+    "text": "ADW systems address limitations of Intelligent Document Processing (IDP) and RAG by maintaining state, coordinating multi-step workflows, and applying domain-specific logic to documents.",
+    "char_start": 59126,
+    "char_end": 59312,
+    "sentence_index": 390,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec037",
+    "text": "Workflow\n\nDocument Parsing and Information Structuring:\n\nDocuments are parsed using enterprise-grade tools (e.g., LlamaParse) to extract relevant data fields such as invoice numbers, dates, vendor information, line items, and payment terms.",
+    "char_start": 59314,
+    "char_end": 59554,
+    "sentence_index": 391,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec037",
+    "text": "Structured data is organized for downstream processing.",
+    "char_start": 59555,
+    "char_end": 59610,
+    "sentence_index": 392,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec037",
+    "text": "State Maintenance Across Processes:\n\nThe system maintains state about document context, ensuring consistency and relevance across multi-step workflows.",
+    "char_start": 59612,
+    "char_end": 59763,
+    "sentence_index": 393,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec037",
+    "text": "Tracks the progression of the document through various processing stages.",
+    "char_start": 59764,
+    "char_end": 59837,
+    "sentence_index": 394,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec037",
+    "text": "Knowledge Retrieval:\n\nRelevant references are retrieved from external knowledge bases (e.g., LlamaCloud) or vector indexes.",
+    "char_start": 59839,
+    "char_end": 59962,
+    "sentence_index": 395,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec037",
+    "text": "Retrieves real-time, domain-specific guidelines for enhanced decision-making.",
+    "char_start": 59963,
+    "char_end": 60040,
+    "sentence_index": 396,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec037",
+    "text": "Agentic Orchestration:\n\nIntelligent agents apply business rules, perform multi-hop reasoning, and generate actionable recommendations.",
+    "char_start": 60042,
+    "char_end": 60176,
+    "sentence_index": 397,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec037",
+    "text": "Orchestrates components such as parsers, retrievers, and external APIs for seamless integration.",
+    "char_start": 60177,
+    "char_end": 60273,
+    "sentence_index": 398,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec037",
+    "text": "Actionable Output Generation:\n\nOutputs are presented in structured formats, tailored to specific use cases.",
+    "char_start": 60275,
+    "char_end": 60382,
+    "sentence_index": 399,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec037",
+    "text": "Recommendations and extracted insights are synthesized into concise and actionable reports.",
+    "char_start": 60383,
+    "char_end": 60474,
+    "sentence_index": 400,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec037",
+    "text": "[h]\n\nimages/agentic_doc_workflow.png\nAn Overview of Agentic Document Workflows (ADW)\n\n[colframe=black, colback=white, boxrule=1pt, sharp corners=all, title=Use Case: Invoice Payments Workflow]\nPrompt: Generate a payment recommendation report based on the submitted invoice and associated vendor contract terms.",
+    "char_start": 60476,
+    "char_end": 60786,
+    "sentence_index": 401,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec037",
+    "text": "[0.2cm]\n\nSystem Process (ADW Workflow):\n\nParse the invoice to extract key details such as invoice number, date, vendor information, line items, and payment terms.",
+    "char_start": 60787,
+    "char_end": 60949,
+    "sentence_index": 402,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec037",
+    "text": "Retrieve the corresponding vendor contract to verify payment terms and identify any applicable discounts or compliance requirements.",
+    "char_start": 60950,
+    "char_end": 61082,
+    "sentence_index": 403,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec037",
+    "text": "Generate a payment recommendation report that includes original amount due, potential early payment discounts, budget impact analysis, and strategic payment actions.",
+    "char_start": 61083,
+    "char_end": 61248,
+    "sentence_index": 404,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec037",
+    "text": "Response:\nIntegrated Response:\n\"Invoice INV-2025-045 for \\$15,000.00 has been processed.",
+    "char_start": 61250,
+    "char_end": 61338,
+    "sentence_index": 405,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec037",
+    "text": "An early payment discount of 2\\% is available if paid by 2025-04-10, reducing the amount due to \\$14,700.00.",
+    "char_start": 61339,
+    "char_end": 61447,
+    "sentence_index": 406,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec037",
+    "text": "A bulk order discount of 5\\% was applied as the subtotal exceeded \\$10,000.00.",
+    "char_start": 61448,
+    "char_end": 61526,
+    "sentence_index": 407,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec037",
+    "text": "It is recommended to approve early payment to save 2\\% and ensure timely fund allocation for upcoming project phases.\"\n\nKey Features and Advantages\n\nState Maintenance: Tracks document context and workflow stage, ensuring consistency across processes.",
+    "char_start": 61527,
+    "char_end": 61777,
+    "sentence_index": 408,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec037",
+    "text": "Multi-Step Orchestration: Handles complex workflows involving multiple components and external tools.",
+    "char_start": 61778,
+    "char_end": 61879,
+    "sentence_index": 409,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec037",
+    "text": "Domain-Specific Intelligence: Applies tailored business rules and guidelines for precise recommendations.",
+    "char_start": 61880,
+    "char_end": 61985,
+    "sentence_index": 410,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec037",
+    "text": "Scalability: Supports large-scale document processing with modular and dynamic agent integration.",
+    "char_start": 61986,
+    "char_end": 62083,
+    "sentence_index": 411,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec037",
+    "text": "Enhanced Productivity: Automates repetitive tasks while augmenting human expertise in decision-making.",
+    "char_start": 62084,
+    "char_end": 62186,
+    "sentence_index": 412,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec038",
+    "text": "Table provides a comprehensive comparative analysis of the three architectural frameworks: Traditional RAG, Agentic RAG, and Agentic Document Workflows (ADW).",
+    "char_start": 62188,
+    "char_end": 62346,
+    "sentence_index": 413,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec038",
+    "text": "This analysis highlights their respective strengths, weaknesses, and best-fit scenarios, offering valuable insights into their applicability across diverse use cases.",
+    "char_start": 62347,
+    "char_end": 62513,
+    "sentence_index": 414,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec038",
+    "text": "[h]\n1\n\njustification=centering, aboveskip=5pt, belowskip=10pt\nComparative Analysis: Traditional RAG vs Agentic RAG vs Agentic Document Workflows (ADW)\n\n|> p 3.4cm |> p 3.4cm |> p 3.4cm |> p 4cm |\n\nlightgray Feature & Traditional RAG & Agentic RAG & Agentic Document Workflows (ADW)\n\nFocus &\nIsolated retrieval and generation tasks &\nMulti-agent collaboration and reasoning &\nDocument-centric end-to-end workflows\n\nContext Maintenance &\nLimited &\nEnabled through memory modules &\nMaintains state across multi-step workflows\n\nDynamic Adaptability &\nMinimal &\nHigh &\nTailored to document workflows\n\nWorkflow Orchestration &\nAbsent &\nOrchestrates multi-agent tasks &\nIntegrates multi-step document processing\n\nUse of External Tools/APIs &\nBasic integration (e.g., retrieval tools) &\nExtends via tools like APIs and knowledge bases &\nDeeply integrates business rules and domain-specific tools\n\nScalability &\nLimited to small datasets or queries &\nScalable for multi-agent systems &\nScales for multi-domain enterprise workflows\n\nComplex Reasoning &\nBasic (e.g., simple Q\\&A) &\nMulti-step reasoning with agents &\nStructured reasoning across documents\n\nPrimary Applications &\nQA systems, knowledge retrieval &\nMulti-domain knowledge and reasoning &\nContract review, invoice processing, claims analysis\n\nStrengths &\nSimplicity, quick setup &\nHigh accuracy, collaborative reasoning &\nEnd-to-end automation, domain-specific intelligence\n\nChallenges &\nPoor contextual understanding &\nCoordination complexity &\nResource overhead, domain standardization\n\nThe comparative analysis underscores the evolutionary trajectory from Traditional RAG to Agentic RAG and further to Agentic Document Workflows (ADW).",
+    "char_start": 62515,
+    "char_end": 64205,
+    "sentence_index": 415,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec038",
+    "text": "While Traditional RAG offers simplicity and ease of deployment for basic tasks, Agentic RAG introduces enhanced reasoning and scalability through multi-agent collaboration.",
+    "char_start": 64206,
+    "char_end": 64378,
+    "sentence_index": 416,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec038",
+    "text": "ADW builds upon these advancements by providing robust, document-centric workflows that facilitate end-to-end automation and integration with domain-specific processes.",
+    "char_start": 64379,
+    "char_end": 64547,
+    "sentence_index": 417,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec038",
+    "text": "Understanding the strengths and limitations of each framework is crucial for selecting the most appropriate architecture to meet specific application requirements and operational demands.",
+    "char_start": 64548,
+    "char_end": 64735,
+    "sentence_index": 418,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec039",
+    "text": "Agentic Retrieval-Augmented Generation (RAG) systems have demonstrated transformative potential across a variety of domains.",
+    "char_start": 64737,
+    "char_end": 64861,
+    "sentence_index": 419,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec039",
+    "text": "By combining real-time data retrieval, generative capabilities, and autonomous decision-making, these systems address complex, dynamic, and multi-modal challenges.",
+    "char_start": 64862,
+    "char_end": 65025,
+    "sentence_index": 420,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec039",
+    "text": "This section explores the key applications of Agentic RAG, providing detailed insights into how these systems are shaping industries such as customer support, healthcare, finance, education, legal workflows, and creative industries.",
+    "char_start": 65026,
+    "char_end": 65258,
+    "sentence_index": 421,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec040",
+    "text": "Agentic RAG systems are revolutionizing customer support by enabling real-time, context-aware query resolution.",
+    "char_start": 65260,
+    "char_end": 65371,
+    "sentence_index": 422,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec040",
+    "text": "Traditional chatbots and virtual assistants often rely on static knowledge bases, leading to generic or outdated responses.",
+    "char_start": 65372,
+    "char_end": 65495,
+    "sentence_index": 423,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec040",
+    "text": "By contrast, Agentic RAG systems dynamically retrieve the most relevant information, adapt to the user's context, and generate personalized responses.",
+    "char_start": 65496,
+    "char_end": 65646,
+    "sentence_index": 424,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec040",
+    "text": "Use Case: Twitch Ad Sales Enhancement\n\nFor instance, Twitch leveraged an agentic workflow with RAG on Amazon Bedrock to streamline ad sales.",
+    "char_start": 65648,
+    "char_end": 65788,
+    "sentence_index": 425,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec040",
+    "text": "The system dynamically retrieved advertiser data, historical campaign performance, and audience demographics to generate detailed ad proposals, significantly boosting operational efficiency.",
+    "char_start": 65789,
+    "char_end": 65979,
+    "sentence_index": 426,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec040",
+    "text": "Key Benefits:\n\nImproved Response Quality : Personalized and context-aware replies enhance user engagement.",
+    "char_start": 65981,
+    "char_end": 66087,
+    "sentence_index": 427,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec040",
+    "text": "Operational Efficiency : Reduces the workload on human support agents by automating complex queries.",
+    "char_start": 66088,
+    "char_end": 66188,
+    "sentence_index": 428,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec040",
+    "text": "Real-Time Adaptability : Dynamically integrates evolving data, such as live service outages or pricing updates.",
+    "char_start": 66189,
+    "char_end": 66300,
+    "sentence_index": 429,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec041",
+    "text": "In healthcare, the integration of patient-specific data with the latest medical research is critical for informed decision-making.",
+    "char_start": 66302,
+    "char_end": 66432,
+    "sentence_index": 430,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec041",
+    "text": "Agentic RAG systems enable this by retrieving real-time clinical guidelines, medical literature, and patient history to assist clinicians in diagnostics and treatment planning.",
+    "char_start": 66433,
+    "char_end": 66609,
+    "sentence_index": 431,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec041",
+    "text": "Use Case: Patient Case Summary\n\nAgentic RAG systems have been applied in generating patient case summaries.",
+    "char_start": 66611,
+    "char_end": 66718,
+    "sentence_index": 432,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec041",
+    "text": "For example, by integrating electronic health records (EHR) and up-to-date medical literature, the system generates comprehensive summaries for clinicians to make faster and more informed decisions.",
+    "char_start": 66719,
+    "char_end": 66917,
+    "sentence_index": 433,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec041",
+    "text": "Key Benefits:\n\nPersonalized Care : Tailors recommendations to individual patient needs.",
+    "char_start": 66919,
+    "char_end": 67006,
+    "sentence_index": 434,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec041",
+    "text": "Time Efficiency : Streamlines the retrieval of relevant research, saving valuable time for healthcare providers.",
+    "char_start": 67007,
+    "char_end": 67119,
+    "sentence_index": 435,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec041",
+    "text": "Accuracy : Ensures recommendations are based on the latest evidence and patient-specific parameters.",
+    "char_start": 67120,
+    "char_end": 67220,
+    "sentence_index": 436,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec042",
+    "text": "Agentic RAG systems are redefining how legal workflows are conducted, offering tools for rapid document analysis and decision-making.",
+    "char_start": 67222,
+    "char_end": 67355,
+    "sentence_index": 437,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec042",
+    "text": "Use Case: Contract Review\n\nA legal agentic RAG system can analyze contracts, extract critical clauses, and identify potential risks.",
+    "char_start": 67357,
+    "char_end": 67489,
+    "sentence_index": 438,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec042",
+    "text": "By combining semantic search capabilities with legal knowledge graphs, it automates the tedious process of contract review, ensuring compliance and mitigating risks.",
+    "char_start": 67490,
+    "char_end": 67655,
+    "sentence_index": 439,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec042",
+    "text": "Key Benefits:\n\nRisk Identification : Automatically flags clauses that deviate from standard terms.",
+    "char_start": 67657,
+    "char_end": 67755,
+    "sentence_index": 440,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec042",
+    "text": "Efficiency : Reduces the time spent on contract review processes.",
+    "char_start": 67756,
+    "char_end": 67821,
+    "sentence_index": 441,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec042",
+    "text": "Scalability : Handles large volumes of contracts simultaneously.",
+    "char_start": 67822,
+    "char_end": 67886,
+    "sentence_index": 442,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec043",
+    "text": "Agentic RAG systems are transforming the finance industry by providing real-time insights for investment decisions, market analysis, and risk management.",
+    "char_start": 67888,
+    "char_end": 68041,
+    "sentence_index": 443,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec043",
+    "text": "These systems integrate live data streams, historical trends, and predictive modeling to generate actionable outputs.",
+    "char_start": 68042,
+    "char_end": 68159,
+    "sentence_index": 444,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec043",
+    "text": "Use Case: Auto Insurance Claims Processing\n\nIn auto insurance, Agentic RAG can automate claim processing.",
+    "char_start": 68161,
+    "char_end": 68266,
+    "sentence_index": 445,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec043",
+    "text": "For example, by retrieving policy details and combining them with accident data, it generates claim recommendations while ensuring compliance with regulatory requirements.",
+    "char_start": 68267,
+    "char_end": 68438,
+    "sentence_index": 446,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec043",
+    "text": "Key Benefits:\n\nReal-Time Analytics : Delivers insights based on live market data.",
+    "char_start": 68440,
+    "char_end": 68521,
+    "sentence_index": 447,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec043",
+    "text": "Risk Mitigation : Identifies potential risks using predictive analysis and multi-step reasoning.",
+    "char_start": 68522,
+    "char_end": 68618,
+    "sentence_index": 448,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec043",
+    "text": "Enhanced Decision-Making : Combines historical and live data for comprehensive strategies.",
+    "char_start": 68619,
+    "char_end": 68709,
+    "sentence_index": 449,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec044",
+    "text": "Education is another domain where Agentic RAG systems are making significant strides.",
+    "char_start": 68711,
+    "char_end": 68796,
+    "sentence_index": 450,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec044",
+    "text": "These systems enable adaptive learning by generating explanations, study materials, and feedback tailored to the learner\u2019s progress and preferences.",
+    "char_start": 68797,
+    "char_end": 68945,
+    "sentence_index": 451,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec044",
+    "text": "Use Case: Research Paper Generation\n\nIn higher education, Agentic RAG has been used to assist researchers by synthesizing key findings from multiple sources.",
+    "char_start": 68947,
+    "char_end": 69104,
+    "sentence_index": 452,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec044",
+    "text": "For instance, a researcher querying, \u201cWhat are the latest advancements in quantum computing?\u201d receives a concise summary enriched with references, enhancing the quality and efficiency of their work.",
+    "char_start": 69105,
+    "char_end": 69303,
+    "sentence_index": 453,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec044",
+    "text": "Key Benefits:\n\nTailored Learning Paths : Adapts content to individual student needs and performance levels.",
+    "char_start": 69305,
+    "char_end": 69412,
+    "sentence_index": 454,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec044",
+    "text": "Engaging Interactions : Provides interactive explanations and personalized feedback.",
+    "char_start": 69413,
+    "char_end": 69497,
+    "sentence_index": 455,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec044",
+    "text": "Scalability : Supports large-scale deployments for diverse educational environments.",
+    "char_start": 69498,
+    "char_end": 69582,
+    "sentence_index": 456,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec045",
+    "text": "Graph-Enhanced Agentic RAG (GEAR) combines graph structures with retrieval mechanisms, making it particularly effective in multimodal workflows where interconnected data sources are essential.",
+    "char_start": 69584,
+    "char_end": 69776,
+    "sentence_index": 457,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec045",
+    "text": "Use Case: Market Survey Generation\n\nGEAR enables the synthesis of text, images, and videos for marketing campaigns.",
+    "char_start": 69778,
+    "char_end": 69893,
+    "sentence_index": 458,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec045",
+    "text": "For example, querying, \u201cWhat are the emerging trends in eco-friendly products?\u201d generates a detailed report enriched with customer preferences, competitor analysis, and multimedia content.",
+    "char_start": 69894,
+    "char_end": 70082,
+    "sentence_index": 459,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec045",
+    "text": "Key Benefits:\n\nMulti-Modal Capabilities : Integrates text, image, and video data for comprehensive outputs.",
+    "char_start": 70084,
+    "char_end": 70191,
+    "sentence_index": 460,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec045",
+    "text": "Enhanced Creativity : Generates innovative ideas and solutions for marketing and entertainment.",
+    "char_start": 70192,
+    "char_end": 70287,
+    "sentence_index": 461,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec045",
+    "text": "Dynamic Adaptability : Adapts to evolving market trends and customer needs.",
+    "char_start": 70288,
+    "char_end": 70363,
+    "sentence_index": 462,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec045",
+    "text": "The applications of Agentic RAG systems span a wide range of industries, showcasing their versatility and transformative potential.",
+    "char_start": 70365,
+    "char_end": 70496,
+    "sentence_index": 463,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec045",
+    "text": "From personalized customer support to adaptive education and graph-enhanced multimodal workflows, these systems address complex, dynamic, and knowledge-intensive challenges.",
+    "char_start": 70497,
+    "char_end": 70670,
+    "sentence_index": 464,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec045",
+    "text": "By integrating retrieval, generation, and agentic intelligence, Agentic RAG systems are paving the way for next-generation AI applications.",
+    "char_start": 70671,
+    "char_end": 70810,
+    "sentence_index": 465,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec046",
+    "text": "Agentic Retrieval-Augmented Generation (RAG) systems represent a significant evolution in combining retrieval, generation, and agentic intelligence.",
+    "char_start": 70812,
+    "char_end": 70960,
+    "sentence_index": 466,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec046",
+    "text": "These systems extend the capabilities of traditional RAG by integrating decision-making, query reformulation, and adaptive workflows.",
+    "char_start": 70961,
+    "char_end": 71094,
+    "sentence_index": 467,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec046",
+    "text": "The following tools and frameworks provide robust support for developing Agentic RAG systems, addressing the complex requirements of real-world applications.",
+    "char_start": 71095,
+    "char_end": 71252,
+    "sentence_index": 468,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec046",
+    "text": "Key Tools and Frameworks:\n\nLangChain and LangGraph: LangChain provides modular components for building RAG pipelines, seamlessly integrating retrievers, generators, and external tools.",
+    "char_start": 71254,
+    "char_end": 71438,
+    "sentence_index": 469,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec046",
+    "text": "LangGraph complements this by introducing graph-based workflows that support loops, state persistence, and human-in-the-loop interactions, enabling sophisticated orchestration and self-correction mechanisms in agentic systems.",
+    "char_start": 71439,
+    "char_end": 71665,
+    "sentence_index": 470,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec046",
+    "text": "LlamaIndex: LlamaIndex's Agentic Document Workflows (ADW) enable end-to-end automation of document processing, retrieval, and structured reasoning.",
+    "char_start": 71666,
+    "char_end": 71813,
+    "sentence_index": 471,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec046",
+    "text": "It introduces a meta-agent architecture where sub-agents manage smaller document sets, coordinating through a top-level agent for tasks such as compliance analysis and contextual understanding.",
+    "char_start": 71814,
+    "char_end": 72007,
+    "sentence_index": 472,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec046",
+    "text": "Hugging Face Transformers and Qdrant: Hugging Face offers pre-trained models for embedding and generation tasks, while Qdrant enhances retrieval workflows with adaptive vector search capabilities, allowing agents to optimize performance by dynamically switching between sparse and dense vector methods.",
+    "char_start": 72008,
+    "char_end": 72310,
+    "sentence_index": 473,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec046",
+    "text": "CrewAI and AutoGen: These frameworks emphasize multi-agent architectures.",
+    "char_start": 72311,
+    "char_end": 72384,
+    "sentence_index": 474,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec046",
+    "text": "CrewAI supports hierarchical and sequential processes, robust memory systems, and tool integrations.",
+    "char_start": 72385,
+    "char_end": 72485,
+    "sentence_index": 475,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec046",
+    "text": "AG2 (formerly knows as AutoGen ) excels in multi-agent collaboration with advanced support for code generation, tool execution, and decision-making.",
+    "char_start": 72486,
+    "char_end": 72634,
+    "sentence_index": 476,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec046",
+    "text": "OpenAI Swarm Framework: An educational framework designed for ergonomic, lightweight multi-agent orchestration , emphasizing agent autonomy and structured collaboration.",
+    "char_start": 72635,
+    "char_end": 72804,
+    "sentence_index": 477,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec046",
+    "text": "Agentic RAG with Vertex AI: Developed by Google, Vertex AI integrates seamlessly with Agentic Retrieval-Augmented Generation (RAG), providing a platform to build, deploy, and scale machine learning models while leveraging advanced AI capabilities for robust, contextually aware retrieval and decision-making workflows.",
+    "char_start": 72805,
+    "char_end": 73123,
+    "sentence_index": 478,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec046",
+    "text": "Semantic Kernel:\nSemantic Kernel is an open-source SDK by Microsoft that integrates large language models (LLMs) into applications.",
+    "char_start": 73124,
+    "char_end": 73255,
+    "sentence_index": 479,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec046",
+    "text": "It supports agentic patterns, enabling the creation of autonomous AI agents for natural language understanding, task automation, and decision-making.",
+    "char_start": 73256,
+    "char_end": 73405,
+    "sentence_index": 480,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec046",
+    "text": "It has been used in scenarios like ServiceNow\u2019s P1 incident management to facilitate real-time collaboration, automate task execution, and retrieve contextual information seamlessly\nAmazon Bedrock for Agentic RAG: Amazon Bedrock provides a robust platform for implementing Agentic Retrieval-Augmented Generation (RAG) workflows.",
+    "char_start": 73406,
+    "char_end": 73734,
+    "sentence_index": 481,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec046",
+    "text": "IBM Watson and Agentic RAG: IBM's watsonx.ai supports building Agentic RAG systems, exemplified by using the Granite-3-8B-Instruct model to answer complex queries by integrating external information and enhancing response accuracy.",
+    "char_start": 73735,
+    "char_end": 73966,
+    "sentence_index": 482,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec046",
+    "text": "Neo4j and Vector Databases: Neo4j, a prominent open-source graph database, excels in handling complex relationships and semantic queries.",
+    "char_start": 73968,
+    "char_end": 74105,
+    "sentence_index": 483,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec046",
+    "text": "Alongside Neo4j, vector databases like Weaviate, Pinecone, Milvus, and Qdrant provide efficient similarity search and retrieval capabilities, forming the backbone of high-performance Agentic Retrieval-Augmented Generation (RAG) workflows.",
+    "char_start": 74106,
+    "char_end": 74344,
+    "sentence_index": 484,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec047",
+    "text": "Table compares Traditional RAG and Agentic RAG across key dimensions.",
+    "char_start": 74346,
+    "char_end": 74415,
+    "sentence_index": 485,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec047",
+    "text": "Traditional RAG offers simplicity for basic tasks, while Agentic RAG introduces enhanced reasoning and scalability through multi-agent collaboration.",
+    "char_start": 74416,
+    "char_end": 74565,
+    "sentence_index": 486,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec047",
+    "text": "Understanding their respective strengths and limitations is essential for selecting an architecture that meets specific application requirements.",
+    "char_start": 74566,
+    "char_end": 74711,
+    "sentence_index": 487,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec048",
+    "text": "A taxonomy-driven analysis reveals key trade-offs beyond feature-level distinctions.",
+    "char_start": 74713,
+    "char_end": 74797,
+    "sentence_index": 488,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec048",
+    "text": "Single-agent architectures favor simplicity and low latency but struggle with multi-domain reasoning.",
+    "char_start": 74798,
+    "char_end": 74899,
+    "sentence_index": 489,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec048",
+    "text": "Multi-agent systems improve scalability through parallelism at the cost of coordination overhead.",
+    "char_start": 74900,
+    "char_end": 74997,
+    "sentence_index": 490,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec048",
+    "text": "Hierarchical and corrective architectures enhance reliability through strategic oversight but incur higher latency.",
+    "char_start": 74998,
+    "char_end": 75113,
+    "sentence_index": 491,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec048",
+    "text": "Graph-based systems enable structured relational reasoning while introducing dependencies on knowledge quality.",
+    "char_start": 75114,
+    "char_end": 75225,
+    "sentence_index": 492,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec048",
+    "text": "Table maps these architectures to taxonomy dimensions and design trade-offs.",
+    "char_start": 75226,
+    "char_end": 75302,
+    "sentence_index": 493,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec048",
+    "text": "[h]\n1.3\n\njustification=centering, aboveskip=5pt, belowskip=10pt\nTaxonomy-Driven Comparison of Agentic RAG Architectures\n\n|\n> p 3cm |\n> p 3cm |\n> p 3cm |\n> p 3.2cm |\n> p 3.2cm |\n\nlightgray\nDimension &\nSingle-Agent RAG &\nMulti-Agent RAG &\nHierarchical / Corrective RAG &\nGraph-Based / Document-Centric RAG\n\nAgent Cardinality &\nSingle &\nMultiple &\nMultiple (tiered) &\nMultiple\n\nControl Structure &\nCentralized &\nFlat &\nHierarchical / evaluator-based &\nAdaptive / structured\n\nKnowledge Representation &\nUnstructured &\nUnstructured or hybrid &\nUnstructured or hybrid &\nGraph-based or document-centric\n\nKnowledge Dependency &\nLow &\nModerate &\nModerate &\nHigh, sensitive to graph quality\n\nReasoning Mode &\nImplicit, LLM-driven &\nDistributed across agents &\nStrategic with supervisory control &\nRelational or symbolic + LLM\n\nReasoning Depth &\nLow to moderate &\nModerate to high &\nHigh &\nHigh, multi-hop reasoning\n\nRetrieval Adaptivity &\nLimited &\nHigh &\nHigh &\nHigh\n\nScalability &\nModerate &\nHigh &\nModerate &\nModerate\n\nLatency &\nLow &\nModerate &\nHigh &\nModerate to high\n\nEngineering Complexity &\nLow &\nModerate &\nHigh &\nHigh\n\nBest-Fit Scenarios &\nSimple QA and routing &\nMulti-domain synthesis &\nHigh-stakes, reliability-critical tasks &\nKnowledge-intensive, relational domains\n\nBased on the analysis of paradigms, taxonomies, and real-world use cases, this section distills practical insights for designing, evaluating, and deploying Agentic RAG systems.",
+    "char_start": 75304,
+    "char_end": 76752,
+    "sentence_index": 494,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec050",
+    "text": "Agentic RAG should not be viewed as a universal replacement for traditional RAG.",
+    "char_start": 76754,
+    "char_end": 76834,
+    "sentence_index": 495,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec050",
+    "text": "While it offers superior adaptability and multi-step reasoning, it also introduces coordination complexity, latency, and computational cost.",
+    "char_start": 76835,
+    "char_end": 76975,
+    "sentence_index": 496,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0498",
+    "section_id": "sec050",
+    "text": "For simple fact retrieval or well-scoped queries, modular RAG pipelines provide sufficient performance with lower overhead.",
+    "char_start": 76976,
+    "char_end": 77099,
+    "sentence_index": 497,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0499",
+    "section_id": "sec050",
+    "text": "Practitioners should adopt agentic designs selectively, guided by task complexity.",
+    "char_start": 77100,
+    "char_end": 77182,
+    "sentence_index": 498,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0500",
+    "section_id": "sec051",
+    "text": "Different architectures lead to fundamentally different behaviors.",
+    "char_start": 77184,
+    "char_end": 77250,
+    "sentence_index": 499,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0501",
+    "section_id": "sec051",
+    "text": "Single-agent systems favor simplicity; multi-agent systems enable parallelism but require orchestration; hierarchical architectures introduce oversight at the expense of complexity.",
+    "char_start": 77251,
+    "char_end": 77432,
+    "sentence_index": 500,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0502",
+    "section_id": "sec051",
+    "text": "Architectural decisions implicitly encode assumptions about control, trust, and error tolerance---corrective workflows improve accuracy but add latency, while adaptive architectures trade correctness guarantees for responsiveness.",
+    "char_start": 77433,
+    "char_end": 77663,
+    "sentence_index": 501,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0503",
+    "section_id": "sec052",
+    "text": "Agentic reasoning cannot compensate for consistently poor retrieval.",
+    "char_start": 77665,
+    "char_end": 77733,
+    "sentence_index": 502,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0504",
+    "section_id": "sec052",
+    "text": "Failures often originate from inadequate retrieval coverage, poorly constructed indexes, or insufficient integration of structured and unstructured knowledge.",
+    "char_start": 77734,
+    "char_end": 77892,
+    "sentence_index": 503,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0505",
+    "section_id": "sec052",
+    "text": "Investing in robust retrieval pipelines and high-quality indexing before introducing agentic complexity remains essential.",
+    "char_start": 77893,
+    "char_end": 78015,
+    "sentence_index": 504,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0506",
+    "section_id": "sec053",
+    "text": "Unrestricted autonomy risks excessive tool invocation, redundant reasoning loops, or misaligned objectives.",
+    "char_start": 78017,
+    "char_end": 78124,
+    "sentence_index": 505,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0507",
+    "section_id": "sec053",
+    "text": "Effective systems balance autonomy with bounded planning horizons, predefined tool access policies, and explicit stopping criteria.",
+    "char_start": 78125,
+    "char_end": 78256,
+    "sentence_index": 506,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0508",
+    "section_id": "sec053",
+    "text": "Constrained autonomy yields more reliable outcomes, especially in production environments.",
+    "char_start": 78257,
+    "char_end": 78347,
+    "sentence_index": 507,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0509",
+    "section_id": "sec054",
+    "text": "Existing benchmarks focus on output quality with limited visibility into intermediate decisions.",
+    "char_start": 78349,
+    "char_end": 78445,
+    "sentence_index": 508,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0510",
+    "section_id": "sec054",
+    "text": "Meaningful evaluation requires process-level metrics capturing reasoning efficiency, tool usage patterns, and adaptation to changing contexts.",
+    "char_start": 78446,
+    "char_end": 78588,
+    "sentence_index": 509,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0511",
+    "section_id": "sec054",
+    "text": "Without such evaluation, improvements risk being anecdotal rather than systematic.",
+    "char_start": 78589,
+    "char_end": 78671,
+    "sentence_index": 510,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0512",
+    "section_id": "sec055",
+    "text": "Agentic RAG achieves its strongest gains in domains with structured knowledge and explicit constraints.",
+    "char_start": 78673,
+    "char_end": 78776,
+    "sentence_index": 511,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0513",
+    "section_id": "sec055",
+    "text": "Healthcare, finance, and legal analysis particularly benefit from combining retrieval with rule-based reasoning and graph-structured knowledge.",
+    "char_start": 78777,
+    "char_end": 78920,
+    "sentence_index": 512,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0514",
+    "section_id": "sec055",
+    "text": "Open-domain tasks show more modest gains, underscoring domain modeling as a complementary component of Agentic RAG design.",
+    "char_start": 78921,
+    "char_end": 79043,
+    "sentence_index": 513,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0515",
+    "section_id": "sec056",
+    "text": "Agentic RAG introduces challenges in transparency, accountability, and trust.",
+    "char_start": 79045,
+    "char_end": 79122,
+    "sentence_index": 514,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0516",
+    "section_id": "sec056",
+    "text": "Multi-agent collaboration complicates error attribution, while autonomous tool use raises safety concerns.",
+    "char_start": 79123,
+    "char_end": 79229,
+    "sentence_index": 515,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0517",
+    "section_id": "sec056",
+    "text": "Responsible deployment requires governance mechanisms, human oversight, and clear operational boundaries.",
+    "char_start": 79230,
+    "char_end": 79335,
+    "sentence_index": 516,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0518",
+    "section_id": "sec056",
+    "text": "Explainability, traceability, and auditability must be first-class design goals, particularly for high-stakes applications.",
+    "char_start": 79336,
+    "char_end": 79459,
+    "sentence_index": 517,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0519",
+    "section_id": "sec057",
+    "text": "Current benchmarks and datasets evaluate RAG systems across retrieval, reasoning, and generation.",
+    "char_start": 79461,
+    "char_end": 79558,
+    "sentence_index": 518,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0520",
+    "section_id": "sec057",
+    "text": "Table summarizes key datasets by downstream task.",
+    "char_start": 79559,
+    "char_end": 79608,
+    "sentence_index": 519,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0521",
+    "section_id": "sec057",
+    "text": "The following benchmarks are particularly relevant:\n\nBEIR (Benchmarking Information Retrieval): A benchmark for evaluating embedding models across 17 datasets in bioinformatics, finance, and question answering .",
+    "char_start": 79609,
+    "char_end": 79820,
+    "sentence_index": 520,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0522",
+    "section_id": "sec057",
+    "text": "MS MARCO (Microsoft Machine Reading Comprehension):\n\nPassage ranking and question answering, widely used for dense retrieval evaluation in RAG systems .",
+    "char_start": 79822,
+    "char_end": 79974,
+    "sentence_index": 521,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0523",
+    "section_id": "sec057",
+    "text": "TREC (Text REtrieval Conference, Deep Learning Track): Provides datasets for passage and document retrieval, emphasizing ranking quality in retrieval pipelines .",
+    "char_start": 79976,
+    "char_end": 80137,
+    "sentence_index": 522,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0524",
+    "section_id": "sec057",
+    "text": "MuSiQue (Multihop Sequential Questioning): A benchmark for multi-document reasoning, emphasizing retrieval and synthesis across contexts .",
+    "char_start": 80139,
+    "char_end": 80277,
+    "sentence_index": 523,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0525",
+    "section_id": "sec057",
+    "text": "2WikiMultihopQA: Designed for multihop QA over Wikipedia articles with cross-source integration .",
+    "char_start": 80279,
+    "char_end": 80376,
+    "sentence_index": 524,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0526",
+    "section_id": "sec057",
+    "text": "AgentG (Agentic RAG for Knowledge Fusion) : Tailored for agenticRAG tasks, this benchmark assesses dynamic information synthesis across knowledge bases.",
+    "char_start": 80378,
+    "char_end": 80530,
+    "sentence_index": 525,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0527",
+    "section_id": "sec057",
+    "text": "Tailored for Agentic RAG, assessing dynamic information synthesis across knowledge bases.",
+    "char_start": 80532,
+    "char_end": 80621,
+    "sentence_index": 526,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0528",
+    "section_id": "sec057",
+    "text": "HotpotQA: A multihop QA benchmark requiring retrieval and reasoning over interconnected contexts, suitable for evaluating complex RAG workflows .",
+    "char_start": 80623,
+    "char_end": 80768,
+    "sentence_index": 527,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0529",
+    "section_id": "sec057",
+    "text": "RAGBench: A large-scale, explainable benchmark with 100,000 examples across domains, using the TRACe framework for actionable RAG evaluation .",
+    "char_start": 80770,
+    "char_end": 80912,
+    "sentence_index": 528,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0530",
+    "section_id": "sec057",
+    "text": "BERGEN (Benchmarking Retrieval-Augmented Generation): A library for systematically benchmarking RAG systems through standardized experiments .",
+    "char_start": 80914,
+    "char_end": 81056,
+    "sentence_index": 529,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0531",
+    "section_id": "sec057",
+    "text": "FlashRAG Toolkit: Implements multiple RAG methods and benchmark datasets to support efficient and standardized evaluation .",
+    "char_start": 81058,
+    "char_end": 81181,
+    "sentence_index": 530,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0532",
+    "section_id": "sec057",
+    "text": "GNN-RAG: Evaluates graph-based RAG systems on node- and edge-level prediction tasks, focusing on retrieval quality and reasoning performance in knowledge graph question answering .",
+    "char_start": 81183,
+    "char_end": 81363,
+    "sentence_index": 531,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0533",
+    "section_id": "sec057",
+    "text": "[!t]\nDownstream Tasks and Datasets for RAG Evaluation (Adapted from )\n\n1\np 2.3cm p 3.3cm p 10.6cm\n\n1 c Category &\n1 c Task Type &\n1 c Datasets and References\n\n5 * QA\n& Single-hop QA\n& Natural Questions (NQ) , TriviaQA , SQuAD , Web Questions (WebQ) , PopQA , MS MARCO\n\n& Multi-hop QA\n& HotpotQA , 2WikiMultiHopQA , MuSiQue\n\n& Long-form QA\n& ELI5 , NarrativeQA (NQA) , ASQA , QMSum\n\n& Domain-specific QA\n& Qasper , COVID-QA , CMB/MMCU Medical\n\n& Multi-choice QA\n& QuALITY , ARC, CommonsenseQA\n\n2 * Graph-based QA\n& Graph QA\n& GraphQA\n\n& Event Argument Extraction\n& WikiEvent , RAMS\n\n3 * Dialog\n& Open-domain Dialog\n& Wizard of Wikipedia (WoW)\n\n& Personalized Dialog\n& KBP , DuleMon\n\n& Task-oriented Dialog\n& CamRest\n\nRecommendation\n& Personalized Content\n& Amazon Datasets (Toys, Sports, Beauty)\n\n3 * Reasoning\n& Commonsense Reasoning\n& HellaSwag , CommonsenseQA\n\n& Chain-of-Thought Reasoning\n& CoT Collection\n\n& Complex Reasoning\n& CSQA\n\n3 * Others\n& Language Understanding\n& MMLU, WikiText-103\n\n& Fact Checking and Verification\n& FEVER , PubHealth\n\n& Strategy QA\n& StrategyQA\n\n2 * Summarization\n& Text Summarization\n& WikiASP , XSum\n\n& Long-form Summarization\n& NarrativeQA (NQA) , QMSum\n\nText Generation\n& Biography\n& Biography Dataset\n\n2 * Text Classification\n& Sentiment Analysis\n& SST-2\n\n& General Classification\n& VioLens , TREC\n\nCode Search\n& Programming Search\n& CodeSearchNet\n\n2 * Robustness\n& Retrieval Robustness\n& NoMIRACL\n\n& Language Modeling Robustness\n& WikiText-103\n\nMath\n& Math Reasoning\n& GSM8K\n\nMachine Translation\n& Translation Tasks\n& JRC-Acquis\n\nDespite rapid progress in Agentic RAG, the field remains at an early stage of maturity.",
+    "char_start": 81365,
+    "char_end": 83020,
+    "sentence_index": 532,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0534",
+    "section_id": "sec058",
+    "text": "While existing systems demonstrate clear advantages over traditional RAG pipelines, they also expose a range of unresolved research challenges that must be addressed to enable robust, scalable, and trustworthy deployment in real-world settings.",
+    "char_start": 83021,
+    "char_end": 83265,
+    "sentence_index": 533,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0535",
+    "section_id": "sec058",
+    "text": "This section outlines key open research issues and articulates a long-term research vision for Agentic RAG systems.",
+    "char_start": 83266,
+    "char_end": 83381,
+    "sentence_index": 534,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0536",
+    "section_id": "sec059",
+    "text": "As systems scale to multi-agent and hierarchical frameworks, emergent behaviors become difficult to predict.",
+    "char_start": 83383,
+    "char_end": 83491,
+    "sentence_index": 535,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0537",
+    "section_id": "sec059",
+    "text": "Current orchestration relies on heuristic rules and prompt engineering with limited convergence guarantees.",
+    "char_start": 83492,
+    "char_end": 83599,
+    "sentence_index": 536,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0538",
+    "section_id": "sec059",
+    "text": "Future research must address coordination under partial observability and conflicting objectives, formally model inter-agent dependencies, prevent cascading failures, and ensure verifiable collaborative outcomes.",
+    "char_start": 83600,
+    "char_end": 83812,
+    "sentence_index": 537,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0539",
+    "section_id": "sec060",
+    "text": "Output-level metrics (answer correctness, retrieval accuracy) are insufficient for Agentic RAG, where intermediate decisions shape performance.",
+    "char_start": 83814,
+    "char_end": 83957,
+    "sentence_index": 538,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0540",
+    "section_id": "sec060",
+    "text": "Standardized benchmarks evaluating reasoning trajectories, planning depth, adaptability, robustness under noisy retrieval, and cost efficiency are needed.",
+    "char_start": 83958,
+    "char_end": 84112,
+    "sentence_index": 539,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0541",
+    "section_id": "sec060",
+    "text": "Process-aware evaluation assessing how answers are produced is essential for systematic progress.",
+    "char_start": 84113,
+    "char_end": 84210,
+    "sentence_index": 540,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0542",
+    "section_id": "sec061",
+    "text": "Long-term memory design remains open challenge.",
+    "char_start": 84212,
+    "char_end": 84259,
+    "sentence_index": 541,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0543",
+    "section_id": "sec061",
+    "text": "Persistent memory risks knowledge drift and bias reinforcement, while frequent updates can amplify hallucinations.",
+    "char_start": 84260,
+    "char_end": 84374,
+    "sentence_index": 542,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0544",
+    "section_id": "sec061",
+    "text": "Key questions include balancing persistence with adaptability, selective retention, and reconciling external knowledge with stored agent experiences.",
+    "char_start": 84375,
+    "char_end": 84524,
+    "sentence_index": 543,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0545",
+    "section_id": "sec062",
+    "text": "Multi-agent collaboration and iterative retrieval increase latency and resource consumption.",
+    "char_start": 84526,
+    "char_end": 84618,
+    "sentence_index": 544,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0546",
+    "section_id": "sec062",
+    "text": "Future research must explore cost-aware planning, adaptive inference, and lightweight coordination---dynamically adjusting active agents, selectively invoking tools, and optimizing retrieval depth based on task complexity.",
+    "char_start": 84619,
+    "char_end": 84841,
+    "sentence_index": 545,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0547",
+    "section_id": "sec063",
+    "text": "Autonomous agents may introduce failure modes including unauthorized actions and biased decisions.",
+    "char_start": 84843,
+    "char_end": 84941,
+    "sentence_index": 546,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0548",
+    "section_id": "sec063",
+    "text": "In multi-agent settings, tracing responsibility is particularly challenging.",
+    "char_start": 84942,
+    "char_end": 85018,
+    "sentence_index": 547,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0549",
+    "section_id": "sec063",
+    "text": "Open directions include transparent decision-tracing, human-in-the-loop oversight, and governance frameworks ensuring alignment between agent objectives and human intent in high-stakes applications.",
+    "char_start": 85019,
+    "char_end": 85217,
+    "sentence_index": 548,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0550",
+    "section_id": "sec064",
+    "text": "Most existing Agentic RAG systems are evaluated in domain-specific settings or carefully curated benchmarks.",
+    "char_start": 85219,
+    "char_end": 85327,
+    "sentence_index": 549,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0551",
+    "section_id": "sec064",
+    "text": "It remains unclear how well these systems generalize across domains with differing data characteristics, regulatory constraints, or reasoning requirements.",
+    "char_start": 85328,
+    "char_end": 85483,
+    "sentence_index": 550,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0552",
+    "section_id": "sec064",
+    "text": "Designing agents that can adapt their retrieval and reasoning strategies without extensive task-specific tuning is an open problem.",
+    "char_start": 85484,
+    "char_end": 85615,
+    "sentence_index": 551,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0553",
+    "section_id": "sec064",
+    "text": "Future work should focus on developing domain-agnostic agentic abstractions, transferable planning strategies, and adaptive retrieval policies that generalize beyond narrow application contexts.",
+    "char_start": 85616,
+    "char_end": 85810,
+    "sentence_index": 552,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0554",
+    "section_id": "sec064",
+    "text": "Achieving robust cross-domain generalization will be essential for realizing the full potential of Agentic RAG as a general-purpose reasoning framework.",
+    "char_start": 85811,
+    "char_end": 85963,
+    "sentence_index": 553,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0555",
+    "section_id": "sec065",
+    "text": "Agentic RAG represents a significant evolution beyond static RAG pipelines toward autonomous, adaptive reasoning frameworks.",
+    "char_start": 85965,
+    "char_end": 86089,
+    "sentence_index": 554,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0556",
+    "section_id": "sec065",
+    "text": "This survey examined RAG foundations, agentic intelligence integration, and the architectural patterns defining modern Agentic RAG systems.",
+    "char_start": 86090,
+    "char_end": 86229,
+    "sentence_index": 555,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0557",
+    "section_id": "sec065",
+    "text": "By organizing approaches through a principled taxonomy based on agent cardinality, control structure, autonomy, and knowledge representation, this work provides a structured view of a fragmented landscape.",
+    "char_start": 86230,
+    "char_end": 86435,
+    "sentence_index": 556,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0558",
+    "section_id": "sec065",
+    "text": "The analysis demonstrates that no single architecture is universally optimal; effectiveness depends on aligning complexity with task requirements.",
+    "char_start": 86436,
+    "char_end": 86582,
+    "sentence_index": 557,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0559",
+    "section_id": "sec065",
+    "text": "Agentic RAG offers clear advantages for complex, knowledge-intensive tasks in healthcare, finance, education, and enterprise processing, but these benefits require high-quality retrieval foundations, disciplined autonomy, and careful orchestration.",
+    "char_start": 86583,
+    "char_end": 86831,
+    "sentence_index": 558,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0560",
+    "section_id": "sec065",
+    "text": "Substantial open challenges remain in multi-agent coordination, process-aware evaluation, memory management, computational efficiency, and governance.",
+    "char_start": 86833,
+    "char_end": 86983,
+    "sentence_index": 559,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0561",
+    "section_id": "sec065",
+    "text": "This survey consolidates existing work, introduces a unifying framework, and articulates design trade-offs and research directions to advance the field of Agentic RAG.",
+    "char_start": 86984,
+    "char_end": 87151,
+    "sentence_index": 560,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0562",
+    "section_id": "sec065",
+    "text": "[ht]\n1.3\n\nDownstream Tasks and Datasets for RAG Evaluation (Adapted from\n\n|l|l|p 8cm |\n\nlightgray Category & Task Type & Datasets and References\n\n5 * QA & Single-hop QA & Natural Questions (NQ) , TriviaQA , SQuAD , Web Questions (WebQ) , PopQA , MS MARCO\n2-3\n& Multi-hop QA & HotpotQA , 2WikiMultiHopQA , MuSiQue\n2-3\n& Long-form QA & ELI5 , NarrativeQA (NQA) , ASQA , QMSum\n2-3\n& Domain-specific QA & Qasper , COVID-QA , CMB/MMCU Medical\n2-3\n& Multi-choice QA & QuALITY , ARC (No reference available), CommonsenseQA\n\n2 * Graph-based QA\n& Graph QA & GraphQA\n2-3\n& Event Argument Extraction & WikiEvent , RAMS\n\n3 * Dialog & Open-domain Dialog & Wizard of Wikipedia (WoW)\n2-3\n& Personalized Dialog & KBP , DuleMon\n2-3\n& Task-oriented Dialog & CamRest\n\nRecommendation & Personalized Content & Amazon Datasets (Toys, Sports, Beauty)\n\n3 * Reasoning & Commonsense Reasoning & HellaSwag , CommonsenseQA\n2-3\n& CoT Reasoning & CoT Reasoning\n2-3\n& Complex Reasoning & CSQA\n\n3 * Others & Language Understanding & MMLU (No reference available), WikiText-103\n2-3\n& Fact Checking/Verification & FEVER , PubHealth\n2-3\n& Strategy QA & StrategyQA\n\n2 * Summarization & Text Summarization & WikiASP , XSum\n2-3\n& Long-form Summarization & NarrativeQA (NQA) , QMSum\n\nText Generation & Biography & Biography Dataset (No reference available)\n\n2 * Text Classification\n& Sentiment Analysis & SST-2\n2-3\n& General Classification & VioLens , TREC\n\nCode Search & Programming Search & CodeSearchNet\n\n2 * Robustness & Retrieval Robustness & NoMIRACL\n2-3\n& Language Modeling Robustness & WikiText-103\n\nMath & Math Reasoning & GSM8K\n\nMachine Translation & Translation Tasks & JRC-Acquis\n\nunsrt\nreferences",
+    "char_start": 87153,
+    "char_end": 88823,
+    "sentence_index": 561,
+    "section_sentence_index": 7
+  }
+]

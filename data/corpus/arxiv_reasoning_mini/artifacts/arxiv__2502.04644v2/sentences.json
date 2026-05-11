@@ -1,0 +1,2459 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "We introduce Agentic Reasoning, a framework that enhances large language model (LLM) reasoning by integrating external tool-using agents.",
+    "char_start": 0,
+    "char_end": 137,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Agentic Reasoning dynamically leverages web search, code execution, and structured memory to address complex problems requiring deep research.",
+    "char_start": 138,
+    "char_end": 280,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "A key innovation in our framework is the Mind-Map agent, which constructs a structured knowledge graph to store reasoning context and track logical relationships, ensuring coherence in long reasoning chains with extensive tool usage.",
+    "char_start": 281,
+    "char_end": 514,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Additionally, we conduct a comprehensive exploration of the Web-Search agent, leading to a highly effective search mechanism that surpasses all prior approaches.",
+    "char_start": 515,
+    "char_end": 676,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "When deployed on DeepSeek-R1, our method achieves a new state-of-the-art (SOTA) among public models and delivers performance comparable to OpenAI Deep Research, the leading proprietary model in this domain.",
+    "char_start": 677,
+    "char_end": 883,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Extensive ablation studies validate the optimal selection of agentic tools and confirm the effectiveness of our Mind-Map and Web-Search agents in enhancing LLM reasoning.",
+    "char_start": 884,
+    "char_end": 1054,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "The code is at: .",
+    "char_start": 1055,
+    "char_end": 1072,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Recently, large reasoning models, such as OpenAI\u2019s o1 , Qwen-QwQ , and DeepSeek-R1 , have demonstrated impressive stepwise reasoning capabilities over long sequences through large-scale reinforcement learning.",
+    "char_start": 1074,
+    "char_end": 1283,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "These advancements provide promising solutions to complex reasoning tasks and have inspired foundational efforts to replicate o1-like reasoning patterns across a broader range of models .",
+    "char_start": 1284,
+    "char_end": 1471,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "It is recently revealed by DeepSeek-R1 that applying rule-based outcome rewards during training, such as evaluating whether a piece of code executes successfully, could yield remarkable reasoning capabilities equaling o1-level math and coding performance.",
+    "char_start": 1472,
+    "char_end": 1727,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Although current reasoning methods excel in structured domains like math and code\u2014where outcomes are easily verifiable\u2014applying these techniques to less structured or knowledge-intensive tasks remains a significant challenge.",
+    "char_start": 1729,
+    "char_end": 1954,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "As mentioned in DeepSeek-R1 , not all problems benefit from formal reasoning approaches.",
+    "char_start": 1955,
+    "char_end": 2043,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Many fields, such as social sciences, ethics, or experiential disciplines, rely on abstract concepts, conventional wisdom, factual verification, understanding complex logical relationships, or moral reasoning.",
+    "char_start": 2044,
+    "char_end": 2253,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "When models attempt to impose math- or coding-style reasoning onto such areas, they often produce flawed or overly rigid results.",
+    "char_start": 2254,
+    "char_end": 2383,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Developing approaches that account for these unique requirements is essential for advancing the applicability of reasoning model beyond their current domains.",
+    "char_start": 2384,
+    "char_end": 2542,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Deep, thoughtful answers to open-ended questions often require extensive research, repeated verification, information retrieval, computational analysis, and the organization of complex logical relationships\u2014steps fundamental to human reasoning.",
+    "char_start": 2544,
+    "char_end": 2788,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "In this process, humans rely heavily on external tools, such as internet searches for gathering information, computational tools for quantitative analysis, or whiteboards and mind maps for organizing thoughts.",
+    "char_start": 2789,
+    "char_end": 2998,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This raises an intriguing question: can reasoning LLMs similarly leverage external tools to enhance their reasoning and tackle intensive knowledge work across diverse domains?",
+    "char_start": 2999,
+    "char_end": 3174,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Previous efforts have attempted to integrate search or retrieval-augmented generation (RAG) into the reasoning process , with notable examples including Gemini's and OpenAI's Deep Research.",
+    "char_start": 3176,
+    "char_end": 3365,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "However, these models are proprietary, and their exact methodologies remain undisclosed.",
+    "char_start": 3366,
+    "char_end": 3454,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "In contrast, open-source models primarily focus on retrieval and web-search integration during reasoning but still exhibit a notable performance gap compared to their closed-source counterparts.",
+    "char_start": 3455,
+    "char_end": 3649,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "We introduce Agentic Reasoning, a framework that enhances reasoning by integrating external LLM-based agents as tools.",
+    "char_start": 3651,
+    "char_end": 3769,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "This approach allows LLMs to delegate specific tasks to auxiliary agents during the reasoning process, thereby improving their overall problem-solving capabilities.",
+    "char_start": 3770,
+    "char_end": 3934,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Through extensive experimentation with integrating various agents into the reasoning process, we identified three essential agents that prove highly effective for general reasoning across diverse problems.",
+    "char_start": 3935,
+    "char_end": 4140,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "The Web-Search agent, which retrieves relevant information from the internet to supplement the model's knowledge.",
+    "char_start": 4141,
+    "char_end": 4254,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "The Code agent, capable of performing computational analyses and coding tasks to support quantitative reasoning.",
+    "char_start": 4255,
+    "char_end": 4367,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "Finally, the memory agent, which we call Mind-Map, constructs knowledge graphs based on the reasoning context, enabling the organization of complex logical relationships in a manner similar to human mind mapping.",
+    "char_start": 4368,
+    "char_end": 4580,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Together, these agents enhance the model's ability to tackle complex problems and do deep research with greater efficiency and precision.",
+    "char_start": 4581,
+    "char_end": 4718,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "We evaluated our model on general knowledge-intensive benchmarks requiring complex reasoning capabilities, categorized into two key areas: (1) solving expert-level questions and (2) conducting deep research on real-world expert-level tasks.",
+    "char_start": 4720,
+    "char_end": 4960,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "For expert-level questions, we evaluate the model on Humanity\u2019s Last Exam , a recently released benchmark assessing AI performance across a broad range of subjects.",
+    "char_start": 4961,
+    "char_end": 5125,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "As shown in Table , we achieves a new high of 23.8\\% accuracy, marking a 14.4\\% improvement over the raw model and narrowing the open-source vs.",
+    "char_start": 5126,
+    "char_end": 5270,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "closed-source gap to just 2.8\\% compared to the proprietary OpenAI Deep Research, which benefits from a stronger internal reasoning model.",
+    "char_start": 5271,
+    "char_end": 5409,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "For real-world expert-level tasks, Agentic Reasoning was assessed by domain experts, who found that it effectively automated complex manual investigation.",
+    "char_start": 5410,
+    "char_end": 5564,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "This underscores its potential to streamline labor-intensive processes and boost productivity in knowledge-intensive domains.",
+    "char_start": 5565,
+    "char_end": 5690,
+    "sentence_index": 33,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "In brief, our contribution can be concluded as:\n\nWe propose Agentic Reasoning, a streamlined framework that enhances reasoning by integrating external LLM-based agentic tools.",
+    "char_start": 5692,
+    "char_end": 5867,
+    "sentence_index": 34,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "We experimentally identify web-search, coding, and Mind-Map agents as three universally effective tools.",
+    "char_start": 5868,
+    "char_end": 5972,
+    "sentence_index": 35,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "We explore the design of the Web-Search agent and identify a strategy that outperforms previous search or RAG approaches.",
+    "char_start": 5973,
+    "char_end": 6094,
+    "sentence_index": 36,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "We develop a knowledge-graph-based Mind-Map to assist reasoning, improving the model\u2019s ability to handle complex logic and maintain coherence in long reasoning chains.",
+    "char_start": 6095,
+    "char_end": 6262,
+    "sentence_index": 37,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "We evaluate our approach on expert-level problem-solving and deep research tasks, achieving new SOTA results across several benchmarks and surpassing prior methods in human evaluations.",
+    "char_start": 6263,
+    "char_end": 6448,
+    "sentence_index": 38,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "[t]\n\nmain_figure.png\n\nThe overall workflow of Agentic Reasoning.",
+    "char_start": 6450,
+    "char_end": 6514,
+    "sentence_index": 39,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Given a question, the reasoning LLM can invoke the Web-Search agent to retrieve external information, the Coding agent to perform quantitative computations, and the Mind-Map agent to structurally memorize the reasoning context, to provide a comprehensive solution.",
+    "char_start": 6515,
+    "char_end": 6779,
+    "sentence_index": 40,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "Our core idea is to enhance LLM reasoning by integrating external LLM-based agents into the process.",
+    "char_start": 6781,
+    "char_end": 6881,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "During reasoning, the model can call these agents as tools to assist in problem-solving while maintaining a structured memory to store its reasoning context.",
+    "char_start": 6882,
+    "char_end": 7039,
+    "sentence_index": 42,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "In the overall process, we deploy a Web-Search agent and a Code agent as problem-solving tools, along with a knowledge-graph agent, called Mind-Map, to serve as memory.",
+    "char_start": 7040,
+    "char_end": 7208,
+    "sentence_index": 43,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "Specifically, the reasoning LLM can dynamically determine when to call external agentic tools during its reasoning process.",
+    "char_start": 7210,
+    "char_end": 7333,
+    "sentence_index": 44,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "As shown in Figure , when needed, it embeds specialized tokens into its reasoning sequence, categorizing them as web-search tokens, coding tokens, or Mind-Map calling tokens.",
+    "char_start": 7334,
+    "char_end": 7508,
+    "sentence_index": 45,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "Alongside these tokens, the reasoning LLM generates a query as a message to the external agents.",
+    "char_start": 7509,
+    "char_end": 7605,
+    "sentence_index": 46,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "Upon detecting such a token, the reasoning process temporarily halts to extract the query and its reasoning context.",
+    "char_start": 7607,
+    "char_end": 7723,
+    "sentence_index": 47,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "These queries are then dispatched to the corresponding external agents.",
+    "char_start": 7724,
+    "char_end": 7795,
+    "sentence_index": 48,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "The agents would consider both the received query and the reasoning context to ensure the most pertinent results are returned to the main reasoning chain.",
+    "char_start": 7796,
+    "char_end": 7950,
+    "sentence_index": 49,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "These results are then reintegrated into the reasoning chain, allowing the model to continue its inference with an updated knowledge.",
+    "char_start": 7951,
+    "char_end": 8084,
+    "sentence_index": 50,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "This iterative retrieval-and-reasoning cycle continues as needed, enabling the model to dynamically refine its reasoning until it reaches a fully reasoned final answer.",
+    "char_start": 8085,
+    "char_end": 8253,
+    "sentence_index": 51,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "We construct a Mind-Map to store and structure the real-time reasoning context of the reasoning model.",
+    "char_start": 8255,
+    "char_end": 8357,
+    "sentence_index": 52,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "This Mind-Map is built by transforming raw reasoning chains into a structured knowledge graph.",
+    "char_start": 8358,
+    "char_end": 8452,
+    "sentence_index": 53,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Specifically, we use a graph-construction LLM to extract entities from the reasoning chain and identify semantic relationships between related entities, following a process similar to that used in GraphRAG .",
+    "char_start": 8453,
+    "char_end": 8660,
+    "sentence_index": 54,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "The Mind-Map serves two primary functions.",
+    "char_start": 8662,
+    "char_end": 8704,
+    "sentence_index": 55,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "First, it clusters reasoning context into distinct groups and summarizes each of them.",
+    "char_start": 8705,
+    "char_end": 8791,
+    "sentence_index": 56,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "This is achieved by applying community clustering on the knowledge graph and using an LLM to generate concise summaries for each group.",
+    "char_start": 8792,
+    "char_end": 8927,
+    "sentence_index": 57,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "Second, the knowledge graph can be queried with specific questions, such as \u201cWho was Jason's maternal great-grandfather?\u201d Using standard RAG on the knowledge graph , we retrieve and return the relevant information to response the query.",
+    "char_start": 8928,
+    "char_end": 9164,
+    "sentence_index": 58,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "These functions integrate the Mind-Map into two key aspects of the Agentic Reasoning process.",
+    "char_start": 9166,
+    "char_end": 9259,
+    "sentence_index": 59,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "First, it provides reasoning context to external tools, enabling them to generate more context-aware responses.",
+    "char_start": 9260,
+    "char_end": 9371,
+    "sentence_index": 60,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "The context is generated by synthesizing the summaries of each clustered group, performed by an LLM.",
+    "char_start": 9372,
+    "char_end": 9472,
+    "sentence_index": 61,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "Additionally, when the reasoning model encounters uncertainty or loses track in an extended reasoning process, it can query the Mind-Map as an external memory to retrieve relevant information and continue reasoning seamlessly.",
+    "char_start": 9473,
+    "char_end": 9699,
+    "sentence_index": 62,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "This ensures the model maintains a long reasoning chain across multiple breakdown tasks and tool calls without missing critical information.",
+    "char_start": 9700,
+    "char_end": 9840,
+    "sentence_index": 63,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec006",
+    "text": "A search agent is invoked to retrieve the most relevant documents from the web.",
+    "char_start": 9842,
+    "char_end": 9921,
+    "sentence_index": 64,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "It consists of four key components: query breakdown, a search service, a re-ranking service, and RAG.",
+    "char_start": 9922,
+    "char_end": 10023,
+    "sentence_index": 65,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "When the reasoning model generates a web-search query, it is sent to the Web-Search agent, which first reorganizes it into one or more search-optimized queries suitable for search engines like Google or Bing.",
+    "char_start": 10025,
+    "char_end": 10233,
+    "sentence_index": 66,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "The process involves sending the LLM the original query along with the reasoning context retrieved from the Mind-Map, prompting it to generate suitable refined search queries.",
+    "char_start": 10234,
+    "char_end": 10409,
+    "sentence_index": 67,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "For example, given the original query \"Search the external economic indicators\" and the context \"We are looking for the optimal investing strategy for a retailer in the U.S.",
+    "char_start": 10410,
+    "char_end": 10583,
+    "sentence_index": 68,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "in Q4 2024\", the Web-Search agent would break it down into more specific queries such as \"U.S.",
+    "char_start": 10584,
+    "char_end": 10678,
+    "sentence_index": 69,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "Q4 2024 inflation rate\" and \"U.S.",
+    "char_start": 10679,
+    "char_end": 10712,
+    "sentence_index": 70,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Q4 2024 CCI\".",
+    "char_start": 10713,
+    "char_end": 10726,
+    "sentence_index": 71,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "These queries are then sequentially sent to the search engine, which returns related web pages.",
+    "char_start": 10727,
+    "char_end": 10822,
+    "sentence_index": 72,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "After we retrieved the web pages for each refined query, we apply a re-ranking model to rank web pages based on their alignment with the original query and context.",
+    "char_start": 10824,
+    "char_end": 10988,
+    "sentence_index": 73,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "The average relevance score of the top 10 pages is computed, and if it falls below a predefined threshold, the Web-Search agent will iterate back to the last step and further refine the search query.",
+    "char_start": 10989,
+    "char_end": 11188,
+    "sentence_index": 74,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "Once reranking is complete, web pages with relevance scores above the threshold are stored, and RAG is applied on them to extract meaningful insights.",
+    "char_start": 11190,
+    "char_end": 11340,
+    "sentence_index": 75,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Each refined query undergoes RAG to generate a natural language response.",
+    "char_start": 11341,
+    "char_end": 11414,
+    "sentence_index": 76,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "Finally, an LLM synthesizes these responses into a cohesive final snippet, based on both the original query and reasoning context.",
+    "char_start": 11415,
+    "char_end": 11545,
+    "sentence_index": 77,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "This processed snippet is then integrated into the main reasoning process, ensuring that external insights enhance logical flow without causing disruption.",
+    "char_start": 11546,
+    "char_end": 11701,
+    "sentence_index": 78,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Instead of prompting the reasoning model to generate code directly, we find it more efficient to delegate coding tasks to a specialized coding LLM.",
+    "char_start": 11703,
+    "char_end": 11850,
+    "sentence_index": 79,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "The reasoning model sends the relevant context and query message to the coding LLM, which then writes the required code, executes it via a compiler, and returns the results.",
+    "char_start": 11851,
+    "char_end": 12024,
+    "sentence_index": 80,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "This approach ensures that the reasoning model remains focused on its core reasoning process without being disrupted by coding tasks, allowing for longer and more coherent reasoning chains.",
+    "char_start": 12025,
+    "char_end": 12214,
+    "sentence_index": 81,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "Specifically, we format the coding request as follows:\n\"Write code to perform <code message from reasoning model> given the context <reasoning context from Mind-Map> to answer the query <user query>.\" The coding LLM is instructed to always return its output in natural language, ensuring seamless integration with the reasoning model.",
+    "char_start": 12215,
+    "char_end": 12549,
+    "sentence_index": 82,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "[h]\n\n-20pt\n\nmed_ex.png\n\n-10pt\nCase study on a complex medical decision-making problem.",
+    "char_start": 12551,
+    "char_end": 12637,
+    "sentence_index": 83,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "[ht]\n\nPerformance comparison on GPQA dataset across Physics, Chemistry, and Biology.",
+    "char_start": 12639,
+    "char_end": 12723,
+    "sentence_index": 84,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "0.95 !",
+    "char_start": 12724,
+    "char_end": 12730,
+    "sentence_index": 85,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "lcccc\n\nMethod & Phy.",
+    "char_start": 12731,
+    "char_end": 12751,
+    "sentence_index": 86,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "& Chem.",
+    "char_start": 12752,
+    "char_end": 12759,
+    "sentence_index": 87,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "& Bio.",
+    "char_start": 12760,
+    "char_end": 12766,
+    "sentence_index": 88,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "& All\n\n4 l Direct Reasoning\n\nQwQ-32B & 75.6 & 39.8 & 68.4 &58.1\n\nLlama3.3-70B & 54.7 & 31.2 & 52.6 &43.4\n\nDeepSeek-R1 & 86.8 & 56.1 & 63.8 & 71.5\n\nGPT-4o$^ $ & 59.5 & 40.2 & 61.6 &50.0\n\no1$^ $ & 92.8 & 64.7 & 69.2 &78.0\n\no3-mini-low$^ $ & - & - & - &70.6\n\no3-mini-mid$^ $ & - & - & - &76.8\n\no3-mini-high$^ $ & - & - & - &79.7\n\n4 l Retrieve/Search in Reasoning\n\nRAgent w/QwQ-32B & 76.7 & 46.2 & 68.4 & 61.6\n\nRAgent w/DeepSeek-R1 & 87.7 & 58.2 & 65.7 & 72.9\n\nSearchO1 w/QwQ-32B & 77.9 & 47.3 & 78.9 & 63.6\n\nSearchO1 w/DeepSeek-R1 & 90.2 & 61.3 & 71.4 & 74.6\n\n4 l Agentic Reasoning\n\nOurs w/QwQ-32B & 88.1 & 58.3 & 79.6 & 69.7\n\nOurs w/DeepSeekR1 & 94.5 & 73.7 & 80.5 & 81.2\n\nIn our experiments, we use DeepSeek-R1 as the primary reasoning models by default.",
+    "char_start": 12767,
+    "char_end": 13520,
+    "sentence_index": 89,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "For the Web-Search agent, query breakdown and RAG are handled by DeepSeek-V3 .",
+    "char_start": 13521,
+    "char_end": 13599,
+    "sentence_index": 90,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "We use a maximum of 32,768 tokens, temperature of 0.7, top\\_p of 0.8, top\\_k of 20, and a repetition penalty of 1.05 across all models for generation.",
+    "char_start": 13600,
+    "char_end": 13750,
+    "sentence_index": 91,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "We use Bing as the search engine, retrieving the top 20 most relevant pages.",
+    "char_start": 13751,
+    "char_end": 13827,
+    "sentence_index": 92,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "The re-ranking model is Cohere Rerank 3.5, with a top-10 average relevance score threshold of 0.7 to determine if iterative query refinement is needed, allowing a maximum of three iterations.",
+    "char_start": 13828,
+    "char_end": 14019,
+    "sentence_index": 93,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec009",
+    "text": "Additionally, web pages with a relevance score above 0.7 are selected for RAG processing.",
+    "char_start": 14020,
+    "char_end": 14109,
+    "sentence_index": 94,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec009",
+    "text": "For the Mind-Map agent, both knowledge graph construction and Graph-RAG retrieval are also performed using DeepSeek-V3.",
+    "char_start": 14110,
+    "char_end": 14229,
+    "sentence_index": 95,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "For the coding agent, we use claude-3.5-sonnet to generate code and Python 3.11 for execution.",
+    "char_start": 14230,
+    "char_end": 14324,
+    "sentence_index": 96,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "We report pass 1 results by default.",
+    "char_start": 14325,
+    "char_end": 14361,
+    "sentence_index": 97,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "Agentic Reasoning model is able to call external tools in its reasoning to solve expert-level problems, except Humanity\u2019s Last Exam we previously mentioned, we further evaluate it on two datasets: GPQA dataset , a PhD-level multiple-choice science QA benchmark, and GAIA , a benchmark for AI agents that requires a set of abilities such as reasoning, web browsing, and tool-use proficiency.",
+    "char_start": 14363,
+    "char_end": 14753,
+    "sentence_index": 98,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "As shown in Table , applying Agentic Reasoning to a strong reasoning model like DeepSeek-R1 achieves a new SOTA, surpassing even the best proprietary model, o3-mini-high.",
+    "char_start": 14755,
+    "char_end": 14925,
+    "sentence_index": 99,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "Compared to the base model DeepSeek-R1, our method boosts overall performance by nearly 10\\%.",
+    "char_start": 14926,
+    "char_end": 15019,
+    "sentence_index": 100,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "Compared to previous search-in-reasoning approaches , Agentic Reasoning demonstrates superior reasoning enhancement, outperforming Search-O1 by approximately 5\\% overall.",
+    "char_start": 15020,
+    "char_end": 15190,
+    "sentence_index": 101,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "Furthermore, we show that this method is generally effective across different reasoning models, such as QwQ , where it improves base model accuracy by over 10\\%.",
+    "char_start": 15191,
+    "char_end": 15352,
+    "sentence_index": 102,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "On GAIA (as shown in Table ), Agentic Reasoning establishes a new SOTA among all publicly available methods.",
+    "char_start": 15354,
+    "char_end": 15462,
+    "sentence_index": 103,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "Compared to OpenAI's Deep Research, which leverages its proprietary high-performance reasoning models, our approach surpasses it on Level 1 and Level 2 tasks while narrowing the gap to 2.26\\% on Level 3.",
+    "char_start": 15463,
+    "char_end": 15666,
+    "sentence_index": 104,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "GAIA requires a combination of advanced reasoning, web browsing, and tool-use proficiency for successful completion.",
+    "char_start": 15667,
+    "char_end": 15783,
+    "sentence_index": 105,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "Our results demonstrate that Agentic Reasoning excels in handling complex tasks while maintaining strong generalization across diverse problem domains.",
+    "char_start": 15784,
+    "char_end": 15935,
+    "sentence_index": 106,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec010",
+    "text": "We also present a case study on a complex medical decision-making problem, as shown in Figure The model autonomously executes code to compute the optimal $FiO_ 2 $ (Fraction of Inspired Oxygen) for a patient, performs a web search to retrieve the most accurate PEEP (Positive End-Expiratory Pressure) value, and synthesizes both results to determine the best treatment plan.",
+    "char_start": 15937,
+    "char_end": 16311,
+    "sentence_index": 107,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec010",
+    "text": "[h]\n\n1.2\n!",
+    "char_start": 16313,
+    "char_end": 16323,
+    "sentence_index": 108,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec010",
+    "text": "lcccc\n\nGAIA & Level 1 & Level 2 & Level 3 & Avg.",
+    "char_start": 16324,
+    "char_end": 16372,
+    "sentence_index": 109,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Langfun & 58.06 & 51.57 & 24.49 & 49.17\n\nInspectReAct & 67.92 & 59.30 & 30.77 & 57.58\n\nh2oGPTe & 78.49 & 64.78 & 40.82 & 65.12\n\nAgenticReasoning & 74.36 & 69.21 & 45.46 & 66.13\n\nOpen AI Deep Research $^ $ & 74.29 & 69.06 & 47.60 & 67.36\n\nPerformance comparison on GAIA across different levels.",
+    "char_start": 16374,
+    "char_end": 16667,
+    "sentence_index": 110,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "[h]\n\n0.45\n\nComparison with Human-Written Articles\n\n!",
+    "char_start": 16669,
+    "char_end": 16721,
+    "sentence_index": 111,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "lccc\n\n& ROUGE-1 & ROUGE-L & Entity Recall\n\nDirect Gen & 27.32 & 13.13 & 6.11\n\nRAG & 29.14 & 14.23 & 8.84\n\nRAgent & 30.04 & 14.21 & 9.08\n\nSearch-O1 & 41.56 & 16.08 & 12.88\n\nSTORM & 47.93 & 17.42 & 15.43\n\nOurs & 54.10 & 19.62 & 18.77\n\n0.45\n\nHuman Evaluation on Deep Research articles (Rate Range: 1-5).",
+    "char_start": 16722,
+    "char_end": 17022,
+    "sentence_index": 112,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "!\nlcccc\n\n& Interest Level & Organization & Relevance & Coverage\n\nDirect Gen & 1.2 & 1.6 & 1.2 & 1.7\n\nRAG & 1.4 & 2.1 & 1.9 & 2.3\n\nRAgent & 1.6 & 2.3 & 1.6 & 2.6\n\nSearch-O1 & 2.5 & 2.8 & 2.1 & 3.2\n\nSTORM & 2.9 & 3.2 & 2.9 & 3.7\n\nGemini-DR$^ $ & 2.7 & 2.5 & 2.3 & 3.0\n\nOurs & 3.7 & 4.6 & 4.2 & 4.1\n\nWe evaluate the deep research capability of our approach using the FreshWiki dataset , which curates high-quality, recent Wikipedia articles.",
+    "char_start": 17024,
+    "char_end": 17462,
+    "sentence_index": 113,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "The model is prompted directly with the topic and asked to generate the article.",
+    "char_start": 17463,
+    "char_end": 17543,
+    "sentence_index": 114,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec011",
+    "text": "Evaluation covers article quality, assessed via ROUGE and entity recall.",
+    "char_start": 17544,
+    "char_end": 17616,
+    "sentence_index": 115,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec011",
+    "text": "This task needs a comprehensive analysis of long-form generation while highlighting key challenges like bias transfer and factual consistency.",
+    "char_start": 17617,
+    "char_end": 17759,
+    "sentence_index": 116,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec011",
+    "text": "We also conduct an evaluation of Agentic Reasoning for deep research in open deep research tasks.",
+    "char_start": 17761,
+    "char_end": 17858,
+    "sentence_index": 117,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec011",
+    "text": "A group of PhD-level experts in finance, medicine, and law were asked to formulate 15 to 30 professional research questions closely related to their respective fields.",
+    "char_start": 17859,
+    "char_end": 18026,
+    "sentence_index": 118,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec011",
+    "text": "These questions were designed to require at least 20 minutes of in-depth research to answer comprehensively.",
+    "char_start": 18027,
+    "char_end": 18135,
+    "sentence_index": 119,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec011",
+    "text": "There are in total 56 questions were collected.",
+    "char_start": 18136,
+    "char_end": 18183,
+    "sentence_index": 120,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec011",
+    "text": "The experts would review the generated articles on interest level, organization, relevance, and coverage.",
+    "char_start": 18184,
+    "char_end": 18289,
+    "sentence_index": 121,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec011",
+    "text": "More details are in the appendix.",
+    "char_start": 18290,
+    "char_end": 18323,
+    "sentence_index": 122,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec011",
+    "text": "We evaluate our method using the same underlying reasoning model, DeepSeek-R1, and compare it against various search-enhanced reasoning approaches, including RAG, RAgent , and Search-O1 , as well as STORM , which employs a more complex agent-based workflow.",
+    "char_start": 18325,
+    "char_end": 18582,
+    "sentence_index": 123,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec011",
+    "text": "Additionally, we benchmark our approach against the proprietary Gemini Deep Research OpenAI Deep Research experiments are currently restricted by a high paywall.",
+    "char_start": 18583,
+    "char_end": 18744,
+    "sentence_index": 124,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec011",
+    "text": "on deep research tasks.",
+    "char_start": 18745,
+    "char_end": 18768,
+    "sentence_index": 125,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec011",
+    "text": "As shown in Tables and , our results demonstrate that Agentic Reasoning consistently outperforms all RAG and search-based methods, as well as Gemini Deep Research, across all benchmarks.",
+    "char_start": 18769,
+    "char_end": 18955,
+    "sentence_index": 126,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec011",
+    "text": "These findings highlight the effectiveness of structured reasoning and tool-augmented frameworks in enabling more advanced and efficient deep research.",
+    "char_start": 18956,
+    "char_end": 19107,
+    "sentence_index": 127,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec012",
+    "text": "[h]\n\nablation2.png\n\n-10pt\nThe ablation study examines the impact of different tools in reasoning.",
+    "char_start": 19109,
+    "char_end": 19206,
+    "sentence_index": 128,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Green ones represent external toolboxes, red ones are combinations of our proposed tools.",
+    "char_start": 19207,
+    "char_end": 19296,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "The blue line is the overall performance of the base reasoning model.",
+    "char_start": 19297,
+    "char_end": 19366,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "We conduct experiments to explore the impact of integrating different tools in Agentic Reasoning and find that tool quality is far more important than quantity.",
+    "char_start": 19368,
+    "char_end": 19528,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "Specifically, the combination of web search, coding, and Mind-Map agents proves to be the most effective across various tasks, including those requiring expert-level proficiency.",
+    "char_start": 19529,
+    "char_end": 19707,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "As shown in Figure , we evaluated performance on GPQA using Hugging Face\u2019s default agent toolbox with seven tools and LangChain with 109 tools.",
+    "char_start": 19708,
+    "char_end": 19851,
+    "sentence_index": 133,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "Surprisingly, adding more tools often degraded performance by increasing the risk of inappropriate tool selection.",
+    "char_start": 19852,
+    "char_end": 19966,
+    "sentence_index": 134,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "Many capabilities, such as translation or code interpretation, are already embedded within the reasoning model, making their external integration redundant.",
+    "char_start": 19967,
+    "char_end": 20123,
+    "sentence_index": 135,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "Moreover, inaccuracies in external tool outputs can negatively affect overall response quality.",
+    "char_start": 20124,
+    "char_end": 20219,
+    "sentence_index": 136,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec013",
+    "text": "Figure also presents an ablation study on the three proposed tools in this paper.",
+    "char_start": 20221,
+    "char_end": 20302,
+    "sentence_index": 137,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec013",
+    "text": "We tested different tool combinations to assess their individual contributions to agentic reasoning.",
+    "char_start": 20303,
+    "char_end": 20403,
+    "sentence_index": 138,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec013",
+    "text": "Among single-tool deployments, web search performed the best, while coding and Mind-Map achieved comparable results.",
+    "char_start": 20404,
+    "char_end": 20520,
+    "sentence_index": 139,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec013",
+    "text": "Notably, combining tools yielded a synergistic effect\u2014web search + Mind-Map or web search + coding provided greater improvements than the sum of their individual gains.",
+    "char_start": 20521,
+    "char_end": 20689,
+    "sentence_index": 140,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec013",
+    "text": "The best performance was achieved when integrating all three: web search, Mind-Map, and coding.",
+    "char_start": 20690,
+    "char_end": 20785,
+    "sentence_index": 141,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "Integrating web search into LLMs has been widely explored in recent research .",
+    "char_start": 20787,
+    "char_end": 20865,
+    "sentence_index": 142,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "In Agentic Reasoning, we investigate various web-search strategies to determine the most effective approach.",
+    "char_start": 20866,
+    "char_end": 20974,
+    "sentence_index": 143,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "Our ablation study primarily considers standard RAG and Knowledge Refinement, where retrieved sources are summarized for the response.",
+    "char_start": 20975,
+    "char_end": 21109,
+    "sentence_index": 144,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "Additionally, we incorporate Query Breakdown, Rerank, and Mind-Map Reasoning Context, key components in our Web-Search agent.",
+    "char_start": 21110,
+    "char_end": 21235,
+    "sentence_index": 145,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "Our findings reveal that Query Breakdown, Rerank, and Mind-Map Reasoning Context incrementally improve performance.",
+    "char_start": 21236,
+    "char_end": 21351,
+    "sentence_index": 146,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "Surprisingly, Knowledge Refinement, which is effective when used solely with RAG, becomes ineffective when combined with our three adopted components.",
+    "char_start": 21352,
+    "char_end": 21502,
+    "sentence_index": 147,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "This decline is primarily due to its redundancy with Rerank, which serves a similar role but proves more effective in most cases.",
+    "char_start": 21503,
+    "char_end": 21632,
+    "sentence_index": 148,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "As a result, our final Web-Search agent includes RAG, Query Breakdown, Rerank, and Mind-Map Reasoning Context for optimal performance.",
+    "char_start": 21633,
+    "char_end": 21767,
+    "sentence_index": 149,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "[h]\n\n!",
+    "char_start": 21768,
+    "char_end": 21774,
+    "sentence_index": 150,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "l|cc|ccc|c\n\n& RAG & Knowledge & Query & Rerank & Mind-Map & GAPA\n\n& & Refinement & Breakdown & & Reasoning Context &\n\nSearch-O1 & & & & & & 74.6\n\nStorm & & & & & & 72.7\n\n& & & & & & 73.3\n\n& & & & & & 75.2\n\n& & & & & & 76.2\n\n& & & & & & 75.8\n\nAgentic\nReasoning & & & & & & 76.4\n\nComparison of different web-search approaches.",
+    "char_start": 21775,
+    "char_end": 22099,
+    "sentence_index": 151,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec015",
+    "text": "We have shown in Figure that our quantitative results demonstrate that Mind-Map significantly enhances performance.",
+    "char_start": 22101,
+    "char_end": 22216,
+    "sentence_index": 152,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec015",
+    "text": "In this section, we analyze its impact on reasoning in detail.",
+    "char_start": 22217,
+    "char_end": 22279,
+    "sentence_index": 153,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec015",
+    "text": "Mind-Map proves particularly effective in maintaining long reasoning with tools and clarifying complex logical relationships.",
+    "char_start": 22280,
+    "char_end": 22405,
+    "sentence_index": 154,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec015",
+    "text": "We find that questions needs longer reasoning chains and more tool calls tend to be inherently more difficult, leading to lower accuracy, as shown in Figure .",
+    "char_start": 22407,
+    "char_end": 22565,
+    "sentence_index": 155,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec015",
+    "text": "Examining the model\u2019s reasoning process, we find that LLMs often struggle to maintain coherence over long reasoning with massive tool calls.",
+    "char_start": 22566,
+    "char_end": 22706,
+    "sentence_index": 156,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec015",
+    "text": "They may deviate from user queries, repeatedly call tools in the same way, or revisit previous errors, all of which negatively impact performance.",
+    "char_start": 22707,
+    "char_end": 22853,
+    "sentence_index": 157,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "[h]\n\ntricky.png\n\n-10pt\nA tricky question that misleads most LLMs is correctly answered by us.",
+    "char_start": 22855,
+    "char_end": 22948,
+    "sentence_index": 158,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "We introduced the Mind-Map agent to help the model manage its reasoning memory, ensuring coherent long reasoning and reducing errors.",
+    "char_start": 22950,
+    "char_end": 23083,
+    "sentence_index": 159,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "As shown in Figure , this mechanism significantly improves performance, particularly on questions requiring long reasoning chains and more tool calls.",
+    "char_start": 23084,
+    "char_end": 23234,
+    "sentence_index": 160,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec015",
+    "text": "The structured memory provided by the Mind-Map agent preserves prior reasoning steps, mitigating common pitfalls in extended reasoning tasks.",
+    "char_start": 23235,
+    "char_end": 23376,
+    "sentence_index": 161,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec015",
+    "text": "Mind-Map is also especially helpful for the tasks heavily rely on logic relationships.",
+    "char_start": 23378,
+    "char_end": 23464,
+    "sentence_index": 162,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec015",
+    "text": "We find it helps to correctly answer tricky logic-based questions that frequently fool LLMs.",
+    "char_start": 23465,
+    "char_end": 23557,
+    "sentence_index": 163,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec015",
+    "text": "A well-known example is a modified riddle: \"The surgeon, who is the boy's father, says 'I can't operate on this child, he's my son!' Who is the surgeon to the boy?\" As shown in Figure , DeepSeek-R1 took 17 seconds to process this question but still produced the wrong answer, a failure also observed in models from the GPT and Gemini series models.",
+    "char_start": 23558,
+    "char_end": 23906,
+    "sentence_index": 164,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec015",
+    "text": "These models often fall for a political-correct corpus contaminated response, failing to recognize the obvious logical structure.",
+    "char_start": 23907,
+    "char_end": 24036,
+    "sentence_index": 165,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec015",
+    "text": "However, in our Agentic Reasoning framework, the use of a Mind-Map allows the model to explicitly analyze the logical relationships between the entities [surgeon], [boy], and [father], leading to the correct answer.",
+    "char_start": 24037,
+    "char_end": 24252,
+    "sentence_index": 166,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec015",
+    "text": "This property also enables Mind-Maps to enhance deductive reasoning in strategic games.",
+    "char_start": 24254,
+    "char_end": 24341,
+    "sentence_index": 167,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec015",
+    "text": "We tested our approach in Werewolf, a classic social deduction game where players assume hidden roles as either villagers or werewolves.",
+    "char_start": 24342,
+    "char_end": 24478,
+    "sentence_index": 168,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec015",
+    "text": "Villagers aim to identify the werewolves through discussion, while werewolves deceive the group and eliminate players without being caught.",
+    "char_start": 24479,
+    "char_end": 24618,
+    "sentence_index": 169,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec015",
+    "text": "To evaluate performance, we invited seven experienced Werewolf players, each with over five years of experience, to compete against our Agentic Reasoning model.",
+    "char_start": 24619,
+    "char_end": 24779,
+    "sentence_index": 170,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec015",
+    "text": "The results show that our model achieved an impressive 72\\% win rate, significantly surpassing both the expected statistical win rate and human performance in our experiment.",
+    "char_start": 24780,
+    "char_end": 24954,
+    "sentence_index": 171,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec015",
+    "text": "In contrast, without Mind-Map, the model\u2019s win rate dropped to 36\\%.",
+    "char_start": 24955,
+    "char_end": 25023,
+    "sentence_index": 172,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "As the Mind-Map of the model\u2019s reasoning process shown in Figure , Mind-Map proved crucial in helping the model track relationships between players based on their spoken arguments.",
+    "char_start": 25024,
+    "char_end": 25204,
+    "sentence_index": 173,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec015",
+    "text": "By maintaining a structured memory of interactions, it more effectively identified deception strategies, anticipated voting behaviors, and optimized its own disguise tactics.",
+    "char_start": 25205,
+    "char_end": 25379,
+    "sentence_index": 174,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec015",
+    "text": "This result highlights that Mind-Map is not only a tool for structured logic but also a powerful enabler of strategic reasoning in dynamic, high-stakes environments.",
+    "char_start": 25380,
+    "char_end": 25545,
+    "sentence_index": 175,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec015",
+    "text": "[h]\n\nmind_map_long_reason.png\n\n-10pt\nMind-Map improves performance on questions need long reasoning.",
+    "char_start": 25547,
+    "char_end": 25647,
+    "sentence_index": 176,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec015",
+    "text": "[h]\n\nwerewolf.png\n\n-10pt\nMind-Map in playing werewolf game.",
+    "char_start": 25649,
+    "char_end": 25708,
+    "sentence_index": 177,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec015",
+    "text": "The first round and the second round.",
+    "char_start": 25709,
+    "char_end": 25746,
+    "sentence_index": 178,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec015",
+    "text": "Player8 is the model.",
+    "char_start": 25747,
+    "char_end": 25768,
+    "sentence_index": 179,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "The concept of multi-agent collaboration in LLMs has gained attention with frameworks like AutoGPT and LangChain Agents , allowing models to interact with external APIs, search engines, and computational environments.",
+    "char_start": 25770,
+    "char_end": 25987,
+    "sentence_index": 180,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "While these frameworks introduce modular reasoning, they often lack optimized task delegation and structured integration, reducing their effectiveness in long-chain reasoning tasks.",
+    "char_start": 25988,
+    "char_end": 26169,
+    "sentence_index": 181,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "Recent research on Hierarchical Planning with LLMs and Task-Specific AI Agents explores structured agent cooperation for problem-solving.",
+    "char_start": 26170,
+    "char_end": 26307,
+    "sentence_index": 182,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "However, these approaches still do not deeply integrate agent tools within reasoning chains and fail to systematically explore optimal agent combinations that maximize reasoning performance.",
+    "char_start": 26308,
+    "char_end": 26498,
+    "sentence_index": 183,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "Previous studies focus a lot on integrating the search capability into LLMs.",
+    "char_start": 26500,
+    "char_end": 26576,
+    "sentence_index": 184,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "Recent agentic RAG systems have enabled models to autonomously determine when and what knowledge to retrieve, enhancing their planning and problem-solving capabilities.",
+    "char_start": 26577,
+    "char_end": 26745,
+    "sentence_index": 185,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "Additionally, research has explored integrating Web-Search agent into the reasoning model, like QwQ demonstrating the potential of search augmentation in structured reasoning.",
+    "char_start": 26746,
+    "char_end": 26921,
+    "sentence_index": 186,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "However, existing approaches have primarily focused on single-agent enhancements, neglecting the potential synergy of multiple agentic tools.",
+    "char_start": 26922,
+    "char_end": 27063,
+    "sentence_index": 187,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "Moreover, prior works have yet to integrate such tools with state-of-the-art reasoning models like DeepSeek-R1 or OpenAI-O1, limiting their effectiveness in solving highly complex tasks.",
+    "char_start": 27064,
+    "char_end": 27250,
+    "sentence_index": 188,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec017",
+    "text": "We introduced Agentic Reasoning, a framework that enhances LLM reasoning by integrating Mind-Map, web search, and coding.",
+    "char_start": 27252,
+    "char_end": 27373,
+    "sentence_index": 189,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec017",
+    "text": "Our approach improves problem-solving and deep research capabilities, outperforming existing models in expert-level QA and real-world research tasks.",
+    "char_start": 27374,
+    "char_end": 27523,
+    "sentence_index": 190,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec017",
+    "text": "Agentic Reasoning outperforms existing methods in both quantitative benchmarks and human evaluations.",
+    "char_start": 27524,
+    "char_end": 27625,
+    "sentence_index": 191,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec017",
+    "text": "Future work will explore task-specific tools integration and test-time computing to further enhance AI\u2019s reasoning capabilities.",
+    "char_start": 27626,
+    "char_end": 27754,
+    "sentence_index": 192,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec018",
+    "text": "Despite the strong performance of Agentic Reasoning, several limitations remain that warrant further research and refinement.",
+    "char_start": 27756,
+    "char_end": 27881,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec018",
+    "text": "Computational Overhead and Efficiency.",
+    "char_start": 27883,
+    "char_end": 27921,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec018",
+    "text": "Integrating multiple external agents, including web search, Mind-Map, and code execution, significantly increases computational costs and inference latency.",
+    "char_start": 27922,
+    "char_end": 28078,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec018",
+    "text": "While these components enhance reasoning depth, their sequential invocation introduces bottlenecks, limiting real-time applicability.",
+    "char_start": 28079,
+    "char_end": 28212,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec018",
+    "text": "Future work would explore techniques such as agent prioritization, caching strategies, or adaptive invocation mechanisms to optimize efficiency without sacrificing accuracy.",
+    "char_start": 28213,
+    "char_end": 28386,
+    "sentence_index": 197,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec018",
+    "text": "Reliance on External Knowledge Sources.",
+    "char_start": 28388,
+    "char_end": 28427,
+    "sentence_index": 198,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec018",
+    "text": "The effectiveness of Agentic Reasoning depends on the quality of retrieved knowledge, particularly in web search.",
+    "char_start": 28428,
+    "char_end": 28541,
+    "sentence_index": 199,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec018",
+    "text": "The system lacks built-in verification mechanisms to assess the credibility of sources, making it susceptible to misinformation or biased content.",
+    "char_start": 28542,
+    "char_end": 28688,
+    "sentence_index": 200,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec018",
+    "text": "Developing trust-aware retrieval mechanisms, such as fact-checking agents or weighted source reliability scores, could mitigate this risk and improve robustness in knowledge-intensive domains.",
+    "char_start": 28689,
+    "char_end": 28881,
+    "sentence_index": 201,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec018",
+    "text": "Interpretability and Trustworthiness.",
+    "char_start": 28883,
+    "char_end": 28920,
+    "sentence_index": 202,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec018",
+    "text": "While the Mind-Map agent provides structured reasoning memory, the overall decision-making process remains highly dependent on LLMs.",
+    "char_start": 28921,
+    "char_end": 29053,
+    "sentence_index": 203,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec018",
+    "text": "This reliance introduces the risk of hallucinations, which can derail the entire reasoning process, especially in complex, multi-step tasks.",
+    "char_start": 29054,
+    "char_end": 29194,
+    "sentence_index": 204,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec018",
+    "text": "In high-stakes domains such as medical AI or legal reasoning, even minor inaccuracies can lead to significant consequences.",
+    "char_start": 29195,
+    "char_end": 29318,
+    "sentence_index": 205,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec018",
+    "text": "Ensuring reliability requires additional safeguards, such as fact-verification mechanisms, confidence estimation, or human-in-the-loop oversight, to mitigate the risks associated with LLM-driven reasoning.",
+    "char_start": 29319,
+    "char_end": 29524,
+    "sentence_index": 206,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec019",
+    "text": "Junde Wu is supported by the Engineering and Physical Sciences Research Council (EPSRC) under grant EP/S024093/1 and GE HealthCare.",
+    "char_start": 29526,
+    "char_end": 29657,
+    "sentence_index": 207,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec019",
+    "text": "Jiayuan Zhu is supported by the Engineering and Physical Sciences Research Council (EPSRC) under grant EP/S024093/1 and Global Health R\\&D of Merck Healthcare, Ares Trading S.A.",
+    "char_start": 29658,
+    "char_end": 29835,
+    "sentence_index": 208,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec019",
+    "text": "(an affiliate of Merck KGaA, Darmstadt, Germany), Eysins, Switzerland (Crossref Funder ID: 10.13039/100009945).",
+    "char_start": 29836,
+    "char_end": 29947,
+    "sentence_index": 209,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec019",
+    "text": "Yueming Jin is supported by the Ministry of Education Tier 1 grant, NUS, Singapore (24-1250-P0001).",
+    "char_start": 29948,
+    "char_end": 30047,
+    "sentence_index": 210,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec019",
+    "text": "acl_latex\n\nPlease assess each response generated by the model based on the following criteria.",
+    "char_start": 30049,
+    "char_end": 30143,
+    "sentence_index": 211,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec021",
+    "text": "Provide your rating on a scale from 1 to 5, where 1 is the lowest and 5 is the highest.",
+    "char_start": 30144,
+    "char_end": 30231,
+    "sentence_index": 212,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec021",
+    "text": "You may also leave optional comments to clarify your reasoning.",
+    "char_start": 30232,
+    "char_end": 30295,
+    "sentence_index": 213,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec021",
+    "text": "Interest Level (Int.)\n\nHow engaging and intellectually stimulating is the generated response?",
+    "char_start": 30297,
+    "char_end": 30390,
+    "sentence_index": 214,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec021",
+    "text": "Rating Scale:\n1: Not engaging - fails to capture interest.",
+    "char_start": 30391,
+    "char_end": 30449,
+    "sentence_index": 215,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec021",
+    "text": "2: Somewhat uninteresting - lacks depth or novelty.",
+    "char_start": 30450,
+    "char_end": 30501,
+    "sentence_index": 216,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec021",
+    "text": "3: Neutral - informative but not particularly engaging.",
+    "char_start": 30502,
+    "char_end": 30557,
+    "sentence_index": 217,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec021",
+    "text": "4: Engaging - provides depth and insight.",
+    "char_start": 30558,
+    "char_end": 30599,
+    "sentence_index": 218,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec021",
+    "text": "5: Highly engaging - deep and thought-provoking.",
+    "char_start": 30600,
+    "char_end": 30648,
+    "sentence_index": 219,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec021",
+    "text": "Optional Comment : What aspects of the response contributed to or detracted from its interest level?",
+    "char_start": 30649,
+    "char_end": 30749,
+    "sentence_index": 220,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec021",
+    "text": "Organization (Org.)\n\nHow well-structured and logically organized is the response?",
+    "char_start": 30751,
+    "char_end": 30832,
+    "sentence_index": 221,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec021",
+    "text": "Rating Scale:\n1: Very disorganized - hard to follow.",
+    "char_start": 30833,
+    "char_end": 30885,
+    "sentence_index": 222,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec021",
+    "text": "2: Somewhat disorganized - requires effort to understand.",
+    "char_start": 30886,
+    "char_end": 30943,
+    "sentence_index": 223,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec021",
+    "text": "3: Neutral - moderately structured but could be clearer.",
+    "char_start": 30944,
+    "char_end": 31000,
+    "sentence_index": 224,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec021",
+    "text": "4: Well-organized - logical and easy to follow.",
+    "char_start": 31001,
+    "char_end": 31048,
+    "sentence_index": 225,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec021",
+    "text": "5: Exceptionally structured - very clear and logically ordered.",
+    "char_start": 31049,
+    "char_end": 31112,
+    "sentence_index": 226,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec021",
+    "text": "Optional Comment : Are there any areas where the response could be better structured?",
+    "char_start": 31113,
+    "char_end": 31198,
+    "sentence_index": 227,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec021",
+    "text": "Relevance (Rel.)\n\nHow relevant is the response to the research question posed?",
+    "char_start": 31200,
+    "char_end": 31278,
+    "sentence_index": 228,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec021",
+    "text": "Rating Scale:\n1: Not relevant - off-topic or misleading.",
+    "char_start": 31279,
+    "char_end": 31335,
+    "sentence_index": 229,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec021",
+    "text": "2: Somewhat relevant - partially addresses the question.",
+    "char_start": 31336,
+    "char_end": 31392,
+    "sentence_index": 230,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "3: Neutral - addresses the question but with some tangents.",
+    "char_start": 31393,
+    "char_end": 31452,
+    "sentence_index": 231,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "4: Mostly relevant - minor deviations but generally on point.",
+    "char_start": 31453,
+    "char_end": 31514,
+    "sentence_index": 232,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec021",
+    "text": "5: Highly relevant - fully addresses the question.",
+    "char_start": 31515,
+    "char_end": 31565,
+    "sentence_index": 233,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec021",
+    "text": "Optional Comment : Did the response stay on topic?",
+    "char_start": 31566,
+    "char_end": 31616,
+    "sentence_index": 234,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec021",
+    "text": "If not, how did it deviate?",
+    "char_start": 31617,
+    "char_end": 31644,
+    "sentence_index": 235,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec021",
+    "text": "Coverage (Cov.)\n\nHow comprehensively does the response cover the question?",
+    "char_start": 31646,
+    "char_end": 31720,
+    "sentence_index": 236,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec021",
+    "text": "Rating Scale:\n1: Superficial - lacks depth and critical information.",
+    "char_start": 31721,
+    "char_end": 31789,
+    "sentence_index": 237,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec021",
+    "text": "2: Somewhat incomplete - covers only basic aspects.",
+    "char_start": 31790,
+    "char_end": 31841,
+    "sentence_index": 238,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec021",
+    "text": "3: Neutral - adequate coverage but missing key details.",
+    "char_start": 31842,
+    "char_end": 31897,
+    "sentence_index": 239,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec021",
+    "text": "4: Mostly complete - only minor gaps.",
+    "char_start": 31898,
+    "char_end": 31935,
+    "sentence_index": 240,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec021",
+    "text": "5: Fully comprehensive - deeply covers all necessary aspects.",
+    "char_start": 31936,
+    "char_end": 31997,
+    "sentence_index": 241,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec021",
+    "text": "Optional Comment : Are there any areas where additional information would improve the response?",
+    "char_start": 31998,
+    "char_end": 32093,
+    "sentence_index": 242,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec021",
+    "text": "Thank you for your participation!",
+    "char_start": 32095,
+    "char_end": 32128,
+    "sentence_index": 243,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec022",
+    "text": "We have conducted a comparison of several alternative memory strategies within our agentic reasoning framework to replace the Mind-Map module (Table ).",
+    "char_start": 32130,
+    "char_end": 32281,
+    "sentence_index": 244,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "These include: no memory (None Mem), using raw reasoning content as memory (Raw Mem), as well as integrating existing methods such as Read-Agent , MemoryBank , and MemGPT .",
+    "char_start": 32282,
+    "char_end": 32454,
+    "sentence_index": 245,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "We evaluated all approaches on the GAIA benchmark and found that our Mind-Map strategy consistently achieved the highest performance across all settings.",
+    "char_start": 32455,
+    "char_end": 32608,
+    "sentence_index": 246,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "[ht]\n\nCompare to alternative memory strategies.",
+    "char_start": 32610,
+    "char_end": 32657,
+    "sentence_index": 247,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "-10pt\n0.48 !",
+    "char_start": 32658,
+    "char_end": 32670,
+    "sentence_index": 248,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec023",
+    "text": "c|ccc|c\n& Level 1 & Level 2 & Level 3 & Avg.",
+    "char_start": 32672,
+    "char_end": 32716,
+    "sentence_index": 249,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec023",
+    "text": "None Mem & 62.37 & 46.54 & 24.49 & 46.18\n\nRaw Mem & 62.37 & 47.80 & 26.53 & 47.84\n\nRead-agent & 64.28 & 51.57 & 27.70 & 49.83\n\nMemoryBank & 68.41 & 55.18 & 32.65 & 53.49\n\nMemGPT & 72.04 & 66.70 & 42.11 & 65.12\n\nMind-Map (ours) & 74.36 & 69.21 & 45.46 & 66.13\n\n-10pt\n\n[ht]\n\nCompare performance and time consumed on 56 deep research questions.",
+    "char_start": 32718,
+    "char_end": 33059,
+    "sentence_index": 250,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec023",
+    "text": "-10pt\n0.98 !",
+    "char_start": 33060,
+    "char_end": 33072,
+    "sentence_index": 251,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec023",
+    "text": "c|ccccc\n& Avg.",
+    "char_start": 33074,
+    "char_end": 33088,
+    "sentence_index": 252,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec023",
+    "text": "time consumed / per question & Interest Level & Organization & Relevance & Coverage\n\nPerplexity-deep research & 3.1 mins & 2.0 & 2.1 & 1.6 & 2.1\n\nGemini-deep research & 7.7 mins & 2.7 & 2.5 & 2.3 & 3.0\n\nOurs & 6.8 mins & 3.7 & 4.6 & 4.2 & 4.1\n\nGPT-deep research & 17.8 mins & 4.1 & 4.8 & 4.2 & 4.5\n\n[c] @ c@ Human w/ DeepSeek R1,\nCursor and Web-Search (6 questions) & 1h 48 mins & 4.5 & 4.8 & 4.8 & 4.5\n\n-10pt\n\nWe conducted a comparison on 56 deep research questions, measuring both performance and time consumed.",
+    "char_start": 33089,
+    "char_end": 33602,
+    "sentence_index": 253,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec024",
+    "text": "We compared our model against three related proprietary systems: Perplexity-Deep Research, Gemini-Deep Research, and GPT-Deep Research.",
+    "char_start": 33603,
+    "char_end": 33738,
+    "sentence_index": 254,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec024",
+    "text": "As shown in Table , we can see our model achieves substantially better performance than Perplexity-Deep Research while being faster, and it outperforms Gemini-Deep Research with comparable latency.",
+    "char_start": 33739,
+    "char_end": 33936,
+    "sentence_index": 255,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec024",
+    "text": "While slightly behind GPT-Deep Research in performance, our model runs significantly faster, and we believe the performance gap is likely attributable to GPT-Deep Research being built on a more advanced underlying reasoning model.",
+    "char_start": 33937,
+    "char_end": 34167,
+    "sentence_index": 256,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec025",
+    "text": "Using agentic tool calls rather than direct API calls offers several advantages:\n\nOvercoming single-model token limitations : By structuring the workflow agentically, the system can break free from the token generation limits of a single LLM.",
+    "char_start": 34169,
+    "char_end": 34411,
+    "sentence_index": 257,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec025",
+    "text": "This enables it to produce longer, higher-quality reasoning chains than would be possible within the token budget of a single model call.",
+    "char_start": 34412,
+    "char_end": 34549,
+    "sentence_index": 258,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec025",
+    "text": "Managing uncertainty and reducing error propagation : Agents can self-monitor and assign varying levels of confidence to their outputs.",
+    "char_start": 34551,
+    "char_end": 34686,
+    "sentence_index": 259,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec025",
+    "text": "As noted earlier, this mechanism helps the reasoning model treat low-confidence outputs as tentative, thereby mitigating cascading errors across components.",
+    "char_start": 34687,
+    "char_end": 34843,
+    "sentence_index": 260,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec025",
+    "text": "For example, in the web-search agent, if insufficient information is retrieved to confidently answer a query, the agent may respond with something like: ``Given the limited knowledge retrieved, a possible answer might be...",
+    "char_start": 34845,
+    "char_end": 35068,
+    "sentence_index": 261,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec025",
+    "text": "However, due to the lack of sufficient source information, additional data is needed to provide a more accurate response.''\n\nThis uncertainty is explicitly communicated back to the reasoning model, allowing it to treat the response as tentative, rather than relying on it as a final answer.",
+    "char_start": 35069,
+    "char_end": 35359,
+    "sentence_index": 262,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec025",
+    "text": "In our experiments, we found that this self-awareness and feedback mechanism helps reduce cascading errors and improves overall robustness.",
+    "char_start": 35360,
+    "char_end": 35499,
+    "sentence_index": 263,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec025",
+    "text": "We support this claim with an ablation study on the GAIA benchmark, comparing our agent-based system with a version that uses direct API calls for coding and web-search.",
+    "char_start": 35500,
+    "char_end": 35669,
+    "sentence_index": 264,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec025",
+    "text": "Table shows that the agent-based design significantly reduces errors and improves performance, especially on level-3 hard problems, validating our approach.",
+    "char_start": 35670,
+    "char_end": 35826,
+    "sentence_index": 265,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec025",
+    "text": "[]\n\nCompare with a version that uses direct API calls for coding and web-search.",
+    "char_start": 35828,
+    "char_end": 35908,
+    "sentence_index": 266,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec025",
+    "text": "-10pt\n0.48 !",
+    "char_start": 35909,
+    "char_end": 35921,
+    "sentence_index": 267,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec025",
+    "text": "c|ccc|c\n& Level 1 & Level 2 & Level 3 & Avg.",
+    "char_start": 35923,
+    "char_end": 35967,
+    "sentence_index": 268,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec025",
+    "text": "API Calling & 60.22 & 46.54 & 24.49 & 47.18\n\nAgentic Tools & 74.36 & 69.21 & 45.46 & 66.13\n\n-10pt\n\nTask-specific model modularity : The agentic design allows us to assign different LLMs to different tasks.",
+    "char_start": 35969,
+    "char_end": 36174,
+    "sentence_index": 269,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec025",
+    "text": "For example, Claude-Sonnet tends to perform better on coding tasks, so we route the coding agent to use it specifically.",
+    "char_start": 36175,
+    "char_end": 36295,
+    "sentence_index": 270,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec025",
+    "text": "Similarly, for tasks like summarizing web search results, we can use a lightweight, non-reasoning model to preserve efficiency.",
+    "char_start": 36296,
+    "char_end": 36423,
+    "sentence_index": 271,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec025",
+    "text": "This modular setup allows for both improved performance and optimized resource usage by matching the best model to each subtask.",
+    "char_start": 36424,
+    "char_end": 36552,
+    "sentence_index": 272,
+    "section_sentence_index": 15
+  }
+]

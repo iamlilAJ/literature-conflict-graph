@@ -1,0 +1,4214 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Retrieval-Augmented Generation (RAG) grounds large language model outputs in external evidence, but remains challenged on multi-hop question answering that requires long reasoning.",
+    "char_start": 0,
+    "char_end": 180,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Recent works scale RAG at inference time along two complementary dimensions: sequential depth for iterative refinement and parallel width for coverage expansion.",
+    "char_start": 181,
+    "char_end": 342,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, naive scaling causes context contamination and scaling inefficiency, leading to diminishing or negative returns despite increased computation.",
+    "char_start": 343,
+    "char_end": 494,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To address these limitations, we propose ,\na multi-agent framework that coordinates sequential and parallel inference-time scaling under a unified context management mechanism.",
+    "char_start": 495,
+    "char_end": 671,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "employs specialized agents that maintain a shared global context and provide explicit control over the scaling process.",
+    "char_start": 672,
+    "char_end": 791,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "It generates targeted, complementary sub-queries for each branch to enable diverse parallel exploration, and explicitly regulates exiting decisions based on answer correctness and evidence grounding.",
+    "char_start": 792,
+    "char_end": 991,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "To optimize scaling behavior, we further introduce a lightweight fine-tuning method with process-level verifiable preferences, which improves the efficiency of sequential scaling and effectiveness of parallel scaling.",
+    "char_start": 993,
+    "char_end": 1210,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Across single- and multi-hop QA benchmarks, consistently outperforms previous RAG baselines, yielding an average +6.2 F1 improvement under lower inference cost.",
+    "char_start": 1211,
+    "char_end": 1371,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) yang2025qwen3, achiam2023gpt augmented with retrieval have become a dominant approach for knowledge-intensive tasks.",
+    "char_start": 1373,
+    "char_end": 1518,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Retrieval-Augmented Generation (RAG) lewis2020rag grounds LLM outputs in external evidence, providing access to current and factual information.",
+    "char_start": 1519,
+    "char_end": 1663,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Despite these advantages, standard RAG systems with a single retrieval and question answering step often struggle on complex queries, particularly multi-hop queries gao2023retrieval,tang2024multihop which demand deep reasoning and hypothesis exploration.",
+    "char_start": 1664,
+    "char_end": 1918,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "To handle these intricate demands, recent works focus on scaling RAG at inference time along two dimensions: deepening the reasoning chain (sequential scaling or depth) and broadening hypothesis exploration (parallel scaling or width) .",
+    "char_start": 1919,
+    "char_end": 2155,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "However, scaling is not straightforward: mechanically increasing depth and width results in redundant computation and thus Scaling Inefficiency , while uncontrolled context growth introduces noise and leads to Context Contamination ; together, these effects cause performance to plateau and place the system on a suboptimal cost\u2013accuracy trade-off curve leng2024long, wang2025bee, lin2025refrag .",
+    "char_start": 2157,
+    "char_end": 2553,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "More concretely, sequential scaling iteratively refines reasoning but suffers from context contamination as evidence accumulates indiscriminately, overwhelming the model's attention capacity and deteriorating performance wu2025depth,misaki2025wider .",
+    "char_start": 2554,
+    "char_end": 2804,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Parallel scaling increases coverage by exploring multiple reasoning paths, but it often produces redundant branches and relies on simple aggregation schemes (e.g., majority voting) that fail to synthesize complementary evidence wang2025samplingefficient,xiao2025limopro .",
+    "char_start": 2805,
+    "char_end": 3076,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Although sequential depth and parallel width are intrinsically complementary \u2014 the former enables iterative refinement while the latter expands evidence coverage \u2014 this complementarity is difficult to realize.",
+    "char_start": 3078,
+    "char_end": 3287,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Without explicit regulation of scaling behavior and information consolidation, their interaction amplifies redundancy and noise, undermining both efficiency and answer quality.",
+    "char_start": 3288,
+    "char_end": 3464,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "This highlights the need for a framework that coordinates sequential refinement and parallel exploration under a unified context management mechanism.",
+    "char_start": 3465,
+    "char_end": 3615,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Building on these insights, we\npropose (Adaptive S equential\u2013 Par allel Scaling with C ontext Management for Retrieval-Augmented Generation), a multi-agent framework that explicitly controls reasoning width, depth, and context during inference-time scaling.",
+    "char_start": 3617,
+    "char_end": 3874,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Instead of indiscriminately increasing computation, organizes scaling around specialized collaborating agents.",
+    "char_start": 3875,
+    "char_end": 3985,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "In particular, the scaling process is orchestrated by three key agents: a Query Rewriter generates complementary sub-queries to maximize parallel diversity; an Answer Evaluator determines when to continue or stop reasoning, preventing premature termination; and a Context Manager consolidates evidence across sequential rounds and parallel branches, selectively integrating relevent information while filtering noise, thereby maintaining a compact and stable context.",
+    "char_start": 3986,
+    "char_end": 4453,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Together, these agents enable to achieve better accuracy-cost trade-offs than prior sequential-only or parallel-only approaches.",
+    "char_start": 4454,
+    "char_end": 4582,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Furthermore, we design a lightweight fine-tuning strategy that leverages process-level preference pairs derived from scaling behaviors.",
+    "char_start": 4584,
+    "char_end": 4719,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "These preference pairs guide the model toward more effective and efficient scaling by reducing redundant expansions and learning a more accurate stopping policy.",
+    "char_start": 4720,
+    "char_end": 4881,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "We summarize our contributions as follows:\n[\nleftmargin=0pt,\nlabelwidth=0pt,\nlabelsep=0pt,\nitemindent=0pt,\nalign=parleft,\nitemsep=1.2pt,\ntopsep=2pt,\nparsep=0pt\n]\n13pt\nAgent design principles for efficient scaling.",
+    "char_start": 4882,
+    "char_end": 5095,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "We identify Context Contamination and Scaling Inefficiency as the key challenges in inference-time RAG scaling and formulate agent-level design principles for mitigating them, including enhanced exploration diversity and context management across sequential depth and parallel width.",
+    "char_start": 5096,
+    "char_end": 5379,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "13pt\nA collaborative multi-agent framework for efficient scaling.",
+    "char_start": 5380,
+    "char_end": 5445,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "We introduce , a multi-agent sequential--parallel RAG scaling framework that controls the complementary width and depth scaling with a global information consolidation mechanism, generalizing prior sequential-only and parallel-only methods while achieving superior accuracy--cost trade-offs.",
+    "char_start": 5446,
+    "char_end": 5737,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "13pt\nScaling-oriented fine-tuning.",
+    "char_start": 5739,
+    "char_end": 5773,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "We design a scaling-oriented fine-tuning strategy that supervises the scaling process.",
+    "char_start": 5774,
+    "char_end": 5860,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Preference pairs are constructed from verifiable intermediate metrics (evidence coverage and stopping accuracy), allowing the model to internalize when scaling is beneficial.",
+    "char_start": 5861,
+    "char_end": 6035,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "This process-level calibration enhances both effectiveness and efficiency without heavy fine-tuning.",
+    "char_start": 6036,
+    "char_end": 6136,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec003",
+    "text": "We review sequential scaling and parallel scaling in RAG, along with recent work that introduces limited adaptive control over these processes.",
+    "char_start": 6138,
+    "char_end": 6281,
+    "sentence_index": 32,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec003",
+    "text": "Sequential Scaling in RAG.",
+    "char_start": 6283,
+    "char_end": 6309,
+    "sentence_index": 33,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "Sequential RAG methods iteratively refine reasoning through multi-round retrieval and generation.",
+    "char_start": 6310,
+    "char_end": 6407,
+    "sentence_index": 34,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "IRCoT trivedi2023ircot interleaves retrieval and chain-of-thought reasoning via iterative query reformulation.",
+    "char_start": 6408,
+    "char_end": 6518,
+    "sentence_index": 35,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "Iter-RetGen shao2023iterretgen alternates retrieval and generation to gradually surface evidence.",
+    "char_start": 6519,
+    "char_end": 6616,
+    "sentence_index": 36,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "Chain-of-RAG wang2025corag constructs stepwise retrieval chains with explicit supervision.",
+    "char_start": 6617,
+    "char_end": 6707,
+    "sentence_index": 37,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "These methods demonstrate the value of deeper reasoning but typically rely on fixed iteration counts and accumulate evidence across steps , which can lead to noisy context and deteriorated performance (context contamination) wu2025depth,misaki2025wider .",
+    "char_start": 6708,
+    "char_end": 6962,
+    "sentence_index": 38,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "Parallel Scaling in RAG.",
+    "char_start": 6964,
+    "char_end": 6988,
+    "sentence_index": 39,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Parallel approaches expand coverage by exploring multiple reasoning paths in parallel.",
+    "char_start": 6989,
+    "char_end": 7075,
+    "sentence_index": 40,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "DMQR-RAG li2024dmqrrag and MCTS-RAG hu2025mcts generate diverse query rewrites or reasoning branches to retrieve complementary evidence, while Speculative-RAG wang2024speculativerag drafts multiple candidate answers for verification.",
+    "char_start": 7076,
+    "char_end": 7309,
+    "sentence_index": 41,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "However, these methods typically use fixed branching factors and simple aggregation strategies (e.g., majority voting), which limits cross-branch evidence synthesis wang2025samplingefficient,xiao2025limopro .",
+    "char_start": 7310,
+    "char_end": 7518,
+    "sentence_index": 42,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Adaptive and Planning-Based RAG.",
+    "char_start": 7520,
+    "char_end": 7552,
+    "sentence_index": 43,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Recent work introduces adaptive behaviors and planning into RAG pipelines.",
+    "char_start": 7553,
+    "char_end": 7627,
+    "sentence_index": 44,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Self-RAG asai2024selfrag and following works yan2024crag, xu2025simrag evaluate retrieval quality to dynamically revise outputs.",
+    "char_start": 7628,
+    "char_end": 7756,
+    "sentence_index": 45,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Planning-based approaches lee2024planrag, verma2024plan, gu2025rapid generate structured plans before retrieval, while question-decomposition methods ammann2025questiondecomp split complex queries into sub-questions and plans the following execution.",
+    "char_start": 7757,
+    "char_end": 8007,
+    "sentence_index": 46,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "DeepNote wang2025deepnote maintains a persistent note state across steps and employs a heuristic stopping rule.",
+    "char_start": 8008,
+    "char_end": 8119,
+    "sentence_index": 47,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "However, these approaches do not treat sequential depth and parallel width as jointly controllable inference-time resources , making scaling implicit and inefficient.",
+    "char_start": 8120,
+    "char_end": 8286,
+    "sentence_index": 48,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "This gap motivates a mechanism that coordinates sequential refinement, parallel exploration, and context evolution in a unified manner.",
+    "char_start": 8287,
+    "char_end": 8422,
+    "sentence_index": 49,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "[t]\n-20pt\n\nfigs/fig1_framework_fix.pdf\n-5pt\n\nOverall framework.",
+    "char_start": 8423,
+    "char_end": 8486,
+    "sentence_index": 50,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "The figure illustrates the interactions, information flow, and decision signals across agents.",
+    "char_start": 8487,
+    "char_end": 8581,
+    "sentence_index": 51,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "-7pt\n\nTo address the Context Contamination and Scaling Inefficiency challenges identified in Section , we introduce , a multi-agent framework that provides explicit control over depth, width, and information consolidation during inference-time scaling.",
+    "char_start": 8583,
+    "char_end": 8835,
+    "sentence_index": 52,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "We begin by formally characterizing scaling in RAG.",
+    "char_start": 8836,
+    "char_end": 8887,
+    "sentence_index": 53,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Problem Formulation.",
+    "char_start": 8889,
+    "char_end": 8909,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "We formulate the multi-hop QA task as a joint optimization process over Sequential Depth ($D$) and Parallel Width ($W$).",
+    "char_start": 8910,
+    "char_end": 9030,
+    "sentence_index": 55,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "Given an initial query $ q _0$ and an external corpus $ C $, models the reasoning process as a hierarchical composition of three core operators, denoted as $ = S P I$ (formal formulation in Appendix ):\n\n[\nleftmargin=0pt,\nlabelwidth=0pt,\nlabelsep=0pt,\nitemindent=0pt,\nalign=parleft,\nitemsep=1.5pt,\ntopsep=4pt,\nparsep=0pt\n]\n15pt Single-path Inference Operator ($I$): Executes a standard ``retrieve-reason-generate'' operation, as in naive RAG.",
+    "char_start": 9031,
+    "char_end": 9472,
+    "sentence_index": 56,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "15pt Parallel Expansion Operator ($P$): Dynamically generates $W^ (t) $ parallel branches at the $t$-th inference step and aggregates information upon completion.",
+    "char_start": 9474,
+    "char_end": 9636,
+    "sentence_index": 57,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "15pt Sequential Refinement Operator ($S$): Connects multiple parallel rounds in sequence, determining based on the current state whether to deepen the reasoning or terminate with the current answer.",
+    "char_start": 9638,
+    "char_end": 9836,
+    "sentence_index": 58,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "[t]\n\n-7pt\nfigs/fig2_rollout.pdf\n\nSingle left-to-right rollout of the reasoning process.",
+    "char_start": 9838,
+    "char_end": 9925,
+    "sentence_index": 59,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "The Accept (Stop) and Reject (Continue) decisions are produced by the Context Manager after merging the branches.",
+    "char_start": 9926,
+    "char_end": 10039,
+    "sentence_index": 60,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "-10pt\n\nMoving from the abstract formulation to its system-level realization, we provide overview of system in Figure and rollout in .",
+    "char_start": 10041,
+    "char_end": 10174,
+    "sentence_index": 61,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "At round $t$, the Query Rewriter generates parallel rewritten queries that form independent branches, where the Retriever gathers evidence, the Context Manager updates the shared context, and the Answer Generator produces a candidate answer that is evaluated by the Answer Evaluator .",
+    "char_start": 10175,
+    "char_end": 10459,
+    "sentence_index": 62,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "The Context Manager then selects the best branch, merges evidence into a unified state, and decides whether to continue or stop reasoning based on the selected answer\u2019s evaluation.",
+    "char_start": 10460,
+    "char_end": 10640,
+    "sentence_index": 63,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "Together with standard RAG components, the Context Manager , Query Rewriter , and Answer Evaluator enable coordinated depth\u2013width scaling with improved accuracy\u2013cost trade-offs over prior sequential-only or parallel-only approaches.",
+    "char_start": 10641,
+    "char_end": 10873,
+    "sentence_index": 64,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec006",
+    "text": "Retriever.",
+    "char_start": 10875,
+    "char_end": 10885,
+    "sentence_index": 65,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec006",
+    "text": "Given the current query $ q ^ (t) $, the retriever selects a small subset of passages from the corpus $ C $ using a similarity-based retrieval function followed by top-$k$ ranking.",
+    "char_start": 10886,
+    "char_end": 11066,
+    "sentence_index": 66,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec006",
+    "text": "$ ^ (t) $ denotes the retrieval strategy used at this round.",
+    "char_start": 11067,
+    "char_end": 11127,
+    "sentence_index": 67,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[\nr^ (t) Retrieve _ ^ (t) \\!",
+    "char_start": 11128,
+    "char_end": 11162,
+    "sentence_index": 68,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec006",
+    "text": "( q ^ (t) ,\\, C ).",
+    "char_start": 11163,
+    "char_end": 11181,
+    "sentence_index": 69,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\n\nAnswer Generator.",
+    "char_start": 11182,
+    "char_end": 11208,
+    "sentence_index": 70,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec006",
+    "text": "Conditioned on the global query $ q _0$ and current memory $m^ (t) $, the generator produces a candidate answer for this round using a language model.",
+    "char_start": 11209,
+    "char_end": 11359,
+    "sentence_index": 71,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[\na^ (t) AnsGenerate _ LLM \\!",
+    "char_start": 11360,
+    "char_end": 11395,
+    "sentence_index": 72,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "( q _0,\\, m^ (t) ).",
+    "char_start": 11396,
+    "char_end": 11415,
+    "sentence_index": 73,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\n\nAnswer Evaluator.",
+    "char_start": 11416,
+    "char_end": 11442,
+    "sentence_index": 74,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "The evaluator evaluates the quality of the generated answer based on the query and current memory, generating a decision signal $e^ (t) $ (e.g., CONTINUE or STOP ).",
+    "char_start": 11443,
+    "char_end": 11607,
+    "sentence_index": 75,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[\n\n&e^ (t) \\\nEvaluateAns _ LLM \\!",
+    "char_start": 11608,
+    "char_end": 11647,
+    "sentence_index": 76,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec006",
+    "text": "( q _0,\\, q ^ (t) ,\\, a^ (t) ,\\, m^ (t) ).",
+    "char_start": 11648,
+    "char_end": 11690,
+    "sentence_index": 77,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\nCrucially, this prevents redundant iterations on simple queries, dynamically allocating the computational budget only to complex instances, reducing Scaling Inefficiency .",
+    "char_start": 11692,
+    "char_end": 11871,
+    "sentence_index": 78,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec006",
+    "text": "Context Manager.",
+    "char_start": 11873,
+    "char_end": 11889,
+    "sentence_index": 79,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec006",
+    "text": "This module lies in the center of the Context Management functionality.",
+    "char_start": 11890,
+    "char_end": 11961,
+    "sentence_index": 80,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec006",
+    "text": "It maintains the evolving reasoning state by consolidating newly retrieved documents and generated candidate answers with the existing memory during scaling, mitigating Context Contamination .",
+    "char_start": 11962,
+    "char_end": 12154,
+    "sentence_index": 81,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec006",
+    "text": "Within each branch, it performs a query-aware update that attends to the current question and retains only the relevant evidence.",
+    "char_start": 12155,
+    "char_end": 12284,
+    "sentence_index": 82,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[\n\nm^ (t) MemUpdate _ LLM \\!",
+    "char_start": 12285,
+    "char_end": 12319,
+    "sentence_index": 83,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec006",
+    "text": "( q _0,\\, q ^ (t) ,\\, m^ (t-1) ,\\, r^ (t) , a^ (t) ).",
+    "char_start": 12320,
+    "char_end": 12373,
+    "sentence_index": 84,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\n\nThis mechanism ensures the memory update is both incremental and minimal , thereby maintaining a consistent context window with low noise.",
+    "char_start": 12375,
+    "char_end": 12522,
+    "sentence_index": 85,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec006",
+    "text": "After parallel branches complete, the Context Manager orchestrates the aggregation of branches: it selects the most promising reasoning path based on answer quality and evidence support, then consolidates complementary information from all branches into a unified context.",
+    "char_start": 12523,
+    "char_end": 12795,
+    "sentence_index": 86,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[\n\nk^* & SelectBest _ LLM \\!",
+    "char_start": 12796,
+    "char_end": 12830,
+    "sentence_index": 87,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "(\\ (a_k, m'_k)\\ _ k=1 ^ W ),\n\nm^ (t) & ContextMerge _ LLM \\!",
+    "char_start": 12831,
+    "char_end": 12891,
+    "sentence_index": 88,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "(m'_ k^* , \\ m'_k\\ _ k k^* ).",
+    "char_start": 12892,
+    "char_end": 12921,
+    "sentence_index": 89,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\nThese operations alleviate Context Contamination by maintaining a unified, query-focused memory state rather than concatenating all evidence without focus.",
+    "char_start": 12923,
+    "char_end": 13086,
+    "sentence_index": 90,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "Query Rewriter.",
+    "char_start": 13088,
+    "char_end": 13103,
+    "sentence_index": 91,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "To operationalize the Parallel Expansion Operator ($P$) efficiently, this agent functions as a one-to-many generator .",
+    "char_start": 13105,
+    "char_end": 13223,
+    "sentence_index": 92,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "Distinct from standard rewriters that sequentially refine a single query, it synthesizes $W^ (t) $ intent-specific queries (and their corresponding retrieval strategies) in a single inference pass .",
+    "char_start": 13224,
+    "char_end": 13422,
+    "sentence_index": 93,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "Conditioned on the global question $ q _0$, current memory $m^ (t) $, and the target width $W^ (t) $, it explores orthogonal retrieval directions to maximize information coverage, alleviating the Scaling Inefficiency .",
+    "char_start": 13423,
+    "char_end": 13641,
+    "sentence_index": 94,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "-4pt\n\\[ & (\\ ^ (t+1,k) , q^ (t+1,k) \\ _ k=1 ^ W^ (t) )\n& 1cm RewriteQuery _ LLM \\!",
+    "char_start": 13642,
+    "char_end": 13724,
+    "sentence_index": 95,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "( q _0,\\, q ^ (t) ,\\, m^ (t) , W^ (t) ).",
+    "char_start": 13725,
+    "char_end": 13765,
+    "sentence_index": 96,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "\\]\n-4pt\n\nWe formally describe the execution flow as a dynamic execution loop (summarized in Algorithm ).",
+    "char_start": 13766,
+    "char_end": 13870,
+    "sentence_index": 97,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec007",
+    "text": "The process begins with the user query $ q _0$.",
+    "char_start": 13871,
+    "char_end": 13918,
+    "sentence_index": 98,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec007",
+    "text": "The memory state is initialized as empty, $m^ (0) $.",
+    "char_start": 13919,
+    "char_end": 13971,
+    "sentence_index": 99,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec007",
+    "text": "regulates the consumption of computational resources ($ B $) through two mechanisms:\n\nParallel Distribution \\& Branch Execution.",
+    "char_start": 13972,
+    "char_end": 14100,
+    "sentence_index": 100,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec007",
+    "text": "To explore the search space (Width $W$), the system first triggers the Query Rewriter to generate a set of intent-specific rewritten queries $\\ q_k\\ _ k=1 ^W$.",
+    "char_start": 14101,
+    "char_end": 14260,
+    "sentence_index": 101,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec007",
+    "text": "Crucially, each rewritten query spawns an independent parallel execution branch .",
+    "char_start": 14261,
+    "char_end": 14342,
+    "sentence_index": 102,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec007",
+    "text": "Within each branch $k$, the agents perform a full atomic update cycle:\n[\nleftmargin=0pt,\nlabelwidth=0pt,\nlabelsep=0pt,\nitemindent=0pt,\nalign=parleft,\nitemsep=1.5pt,\ntopsep=4pt,\nparsep=0pt\n]\n15pt Retrieve: The branch retrieves raw evidence $r_k$ relevant to the rewritten query.",
+    "char_start": 14343,
+    "char_end": 14620,
+    "sentence_index": 103,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec007",
+    "text": "15pt Context Update: The Context Manager compresses $r_k$ and integrates it with the previous history $m^ (t-1) $ to form a branch-local memory $m'_k$.",
+    "char_start": 14621,
+    "char_end": 14772,
+    "sentence_index": 104,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec007",
+    "text": "15pt Generate \\& Evaluate: Conditioned on updated state $m'_k$, answer $a_k$ is generated and evaluated.",
+    "char_start": 14773,
+    "char_end": 14877,
+    "sentence_index": 105,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec007",
+    "text": "This phase yields $W$ fully processed hypothesis tuples $\\ (m'_k, a_k, e_k)\\ _ k=1 ^W$.",
+    "char_start": 14879,
+    "char_end": 14966,
+    "sentence_index": 106,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec007",
+    "text": "Aggregation \\& Global Control.",
+    "char_start": 14968,
+    "char_end": 14998,
+    "sentence_index": 107,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec007",
+    "text": "Once the parallel branches complete, the system performs a select-and-decide operation:\n[\nleftmargin=0pt,\nlabelwidth=0pt,\nlabelsep=0pt,\nitemindent=0pt,\nalign=parleft,\nitemsep=1.2pt,\ntopsep=2pt,\nparsep=0pt\n]\n15pt Selection and Consolidation:\nThe Context Manager selects the most promising branch $k^*$ from the candidate paths $\\ (a_k, m'_k)\\ _ k=1 ^W$ and consolidates evidence into a unified memory, preserving complementary information while reducing redundancy and noise.",
+    "char_start": 14999,
+    "char_end": 15473,
+    "sentence_index": 108,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec007",
+    "text": "15pt Termination Decision: The system checks the decision signal of the selected winner ($e_ k^* $).",
+    "char_start": 15474,
+    "char_end": 15574,
+    "sentence_index": 109,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec007",
+    "text": "If $e_ k^* == STOP $ or the budget $D_ max $ is reached, the process terminates returning $a_ k^* $.",
+    "char_start": 15575,
+    "char_end": 15675,
+    "sentence_index": 110,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec007",
+    "text": "Otherwise, the loop continues to $t t+1$.",
+    "char_start": 15676,
+    "char_end": 15717,
+    "sentence_index": 111,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec007",
+    "text": "RewriteQuery\nRetrieve\nMemUpdate\nAnsGenerate\nEvaluateAns\nSelectBest\nContextMerge\n[t]\nInference Algorithm\n\n[1]\nQuery $q_0$, Corpus $ C $, Max Depth $D_ $\n$m^ (0) ,\\ t 1$\n$t D_ $\nblue // Phase 1: Parallel Distribution\n$\\ q_k\\ _ k=1 ^W (q_0, m^ (t-1) )$\n\nblue // Phase 2: Sequential Execution\n$k \\ 1, ,W\\ $ in parallel\n$r_k (q_k, C )$\n$m'_k (m^ (t-1) , r_k)$\n$a_k (q_0, m'_k)$\n$e_k (a_k, m'_k)$\n\nblue // Phase 3: Aggregation \\& Control\n$k^* _ LLM (\\ (a_k, e_k, m'_k)\\ _ k=1 ^W )$\n$m^ (t) (m'_ k^* , \\ m'_k\\ _ k k^* )$\n\n$e_ k^* = STOP $\n$a_ k^* $\n\n$t t + 1$\n\nTo improve system performance without incurring high cost, we adopt a scaling-oriented, preference-based fine-tuning strategy.",
+    "char_start": 15719,
+    "char_end": 16399,
+    "sentence_index": 112,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec008",
+    "text": "We construct preference pairs that reward higher combined paragraph recall for parallel scaling and more accurate stopping decisions for sequential scaling.",
+    "char_start": 16400,
+    "char_end": 16556,
+    "sentence_index": 113,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec008",
+    "text": "Through these process-level preferences, the model is explicitly encouraged to achieve broader evidence coverage and more reliable stopping behavior, improving scaling effectiveness and efficiency.",
+    "char_start": 16557,
+    "char_end": 16754,
+    "sentence_index": 114,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec008",
+    "text": "Preference Data Collection for the Query Rewriter.",
+    "char_start": 16756,
+    "char_end": 16806,
+    "sentence_index": 115,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec008",
+    "text": "The Query Rewriter is supervised using paragraph-level retrieval recall.",
+    "char_start": 16807,
+    "char_end": 16879,
+    "sentence_index": 116,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec008",
+    "text": "Rewrites that retrieve more gold-supporting evidence are preferred over those with lower recall.",
+    "char_start": 16880,
+    "char_end": 16976,
+    "sentence_index": 117,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec008",
+    "text": "Although this supervision signal is purely recall-based, it implicitly encourages diverse yet focused sub-queries: improving recall typically requires accessing complementary evidence rather than duplicating the same retrieval trajectory.",
+    "char_start": 16977,
+    "char_end": 17215,
+    "sentence_index": 118,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec008",
+    "text": "As a result, the trained rewriter reduces redundancy across parallel branches(Section ), making width expansion more effective.",
+    "char_start": 17216,
+    "char_end": 17343,
+    "sentence_index": 119,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec008",
+    "text": "Preference Data Collection for the Answer Evaluator.",
+    "char_start": 17345,
+    "char_end": 17397,
+    "sentence_index": 120,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec008",
+    "text": "We construct preference data by sampling multiple STOP / CONTINUE decisions of Answer Evaluator and assigning preferences based on the correctness of the corresponding answers.",
+    "char_start": 17398,
+    "char_end": 17574,
+    "sentence_index": 121,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec008",
+    "text": "A key challenge in supervising this decision is the asymmetry of error costs: a wrong stop (accepting an incorrect answer, exiting prematurely) is typically far more damaging than a wrong continue (rejecting a correct answer, continuing reasoning), as it eliminates the possibility of further corrections.",
+    "char_start": 17576,
+    "char_end": 17881,
+    "sentence_index": 122,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec008",
+    "text": "To reflect this asymmetry, we introduce a weighting function $w(y^ + ,y^ - )$ over preference pairs.",
+    "char_start": 17883,
+    "char_end": 17983,
+    "sentence_index": 123,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec008",
+    "text": "For early-stop\u2013critical cases in which the preferred action is continue but the rejected action is stop , we assign $w(y^ + ,y^ - )= >1$; all other preference pairs retain unit weight.",
+    "char_start": 17984,
+    "char_end": 18168,
+    "sentence_index": 124,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec008",
+    "text": "The weighted DPO loss for Answer Evaluator is therefore\n-4pt\n\\[\n\nL _ AE (x,y^ + ,y^ - )\n&=\nw(y^ + ,y^ - )\n\n)\n],\n\n\\]\n-4pt\nwhere $ >1$ emphasizes penalties on incorrect early stopping while still allowing early termination on easy instances.",
+    "char_start": 18169,
+    "char_end": 18408,
+    "sentence_index": 125,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec008",
+    "text": "As we show in Section , targeted fine-tuning calibrates stopping behaviour while encouraging diverse parallel exploration.",
+    "char_start": 18410,
+    "char_end": 18532,
+    "sentence_index": 126,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec009",
+    "text": "[ht]\n\n-12pt\nfigs/cost_vs_f1_extended.pdf\n-20pt\n\nF1\u2013cost tradeoff across $(W,D)$ configurations with Qwen2.5-7B-Instruct model.",
+    "char_start": 18534,
+    "char_end": 18660,
+    "sentence_index": 127,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "Each panel plots F1 versus tokens per question for one dataset.",
+    "char_start": 18661,
+    "char_end": 18724,
+    "sentence_index": 128,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec010",
+    "text": "Curves correspond to widths $W = 1,2,4$.",
+    "char_start": 18725,
+    "char_end": 18765,
+    "sentence_index": 129,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec010",
+    "text": "For $W = 1$, the sequential depths are $D = 2,4,6,8,10,12,14$.",
+    "char_start": 18766,
+    "char_end": 18828,
+    "sentence_index": 130,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec010",
+    "text": "For $W = 2$ and $W = 4$, the depths are $D = 2,4,6,8$.",
+    "char_start": 18829,
+    "char_end": 18883,
+    "sentence_index": 131,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec010",
+    "text": "Along each curve, points are ordered from left to right by increasing $D$.",
+    "char_start": 18884,
+    "char_end": 18958,
+    "sentence_index": 132,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec010",
+    "text": "The gold star marks the best untuned $(W,D)$ configuration, and the red diamond denotes our fine-tuned model, which achieves comparable or better F1 at substantially lower token cost.",
+    "char_start": 18959,
+    "char_end": 19142,
+    "sentence_index": 133,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec010",
+    "text": "-6pt\n\nWe evaluate on both single-hop and multi-hop QA benchmarks.",
+    "char_start": 19144,
+    "char_end": 19209,
+    "sentence_index": 134,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec010",
+    "text": "For single-hop QA, we use Natural Questions (NQ; kwiatkowski2019natural ).",
+    "char_start": 19210,
+    "char_end": 19284,
+    "sentence_index": 135,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec010",
+    "text": "For multi-hop QA, we include 2-hop datasets HotpotQA yang2018hotpotqa , 2WikiMultiHopQA (or 2WikiMQA ) ho2020constructing ,\nBamboogle press2023bamboogle , and 2-4 hop dataset MuSiQue trivedi2022musique .",
+    "char_start": 19285,
+    "char_end": 19488,
+    "sentence_index": 136,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec010",
+    "text": "All training of the Query Rewriter and Answer Evaluator uses the training splits of datasets, and we report evaluation results on their test splits of 500 subsamples (detailed in Appendix ).",
+    "char_start": 19489,
+    "char_end": 19679,
+    "sentence_index": 137,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec010",
+    "text": "We report Exact Match (EM), F1, and Accuracy following vu2021ava and asai2024selfrag , and additionally use paragraph recall to assess retrieval effectiveness.",
+    "char_start": 19681,
+    "char_end": 19840,
+    "sentence_index": 138,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec010",
+    "text": "Cost is measured by total token usage (input + output) and latency.",
+    "char_start": 19841,
+    "char_end": 19908,
+    "sentence_index": 139,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "All agent components are instantiated using\nQwen2.5-7B-Instruct qwen2025qwen25 and Qwen3-32B yang2025qwen3 .",
+    "char_start": 19910,
+    "char_end": 20018,
+    "sentence_index": 140,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec011",
+    "text": "These two backbones enable us to evaluate under different levels of reasoning capacity.",
+    "char_start": 20019,
+    "char_end": 20106,
+    "sentence_index": 141,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec012",
+    "text": "We employ a hybrid retrieval stack for across all experiments, as is the common practice in RAG systems thakur2021beir, seo2019real, zhao2024retrieval .",
+    "char_start": 20108,
+    "char_end": 20260,
+    "sentence_index": 142,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec012",
+    "text": "uses an agentic selection of sparse and dense retrieval (see Appendix ) by default.",
+    "char_start": 20261,
+    "char_end": 20344,
+    "sentence_index": 143,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "As most baselines only support using a single retrieval method, ablation results of using only one retrieval method are reported in Appendix , demonstrating that using one retrieval method does not deteriorate performance and keeping the fairness of comparison with other baseline methods.",
+    "char_start": 20345,
+    "char_end": 20634,
+    "sentence_index": 144,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec013",
+    "text": "We compare against strong inference-time scaling paradigms in RAG:\n(i) sequential refinement methods IRCoT trivedi2023ircot ,\nIter-RetGen shao2023iterretgen , and\nDeepNote wang2025deepnote ;\n(ii) sequential self-reflective correction method Self-RAG asai2024selfrag ;\nand (iii) parallel drafting--verification method Speculative-RAG wang2024speculativerag .",
+    "char_start": 20636,
+    "char_end": 20993,
+    "sentence_index": 145,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec013",
+    "text": "See Appendix for more details.",
+    "char_start": 20994,
+    "char_end": 21024,
+    "sentence_index": 146,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "All experiments are conducted on a multi-GPU machine equipped with four NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs (96GB each) and dual Intel Xeon 6730P processors (128 logical cores).",
+    "char_start": 21026,
+    "char_end": 21217,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "LLMs are served using vLLM (v0.10.2) with continuous batching and tensor parallelism.",
+    "char_start": 21218,
+    "char_end": 21303,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "For all results, the sequential controller is capped at a maximum depth of 8.",
+    "char_start": 21305,
+    "char_end": 21382,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "We use fixed $W=2$ for all reported results.",
+    "char_start": 21383,
+    "char_end": 21427,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "For without fine-tuning, we use $D=6$ for Qwen-2.5-7B-Instruct and $D=8$ for Qwen3-32B to avoid confounding performance with noisy termination signals.",
+    "char_start": 21428,
+    "char_end": 21579,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "We finetune the base LLM using the combined training data from single-step generation of Query Rewriter and Answer Evaluator , trained with LoRA hu2022lora ; additional hyperparameters are provided in Appendix .",
+    "char_start": 21581,
+    "char_end": 21792,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec015",
+    "text": "[t]\n-20pt\n\n2.4pt\n0.96\n\nEnd-to-end performance across QA benchmarks.",
+    "char_start": 21794,
+    "char_end": 21861,
+    "sentence_index": 153,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec015",
+    "text": "and results are highlighted.",
+    "char_start": 21862,
+    "char_end": 21890,
+    "sentence_index": 154,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec015",
+    "text": "For some datasets, we report DeepNote * results using the numbers provided in the original paper.",
+    "char_start": 21891,
+    "char_end": 21988,
+    "sentence_index": 155,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec015",
+    "text": "-5pt\n\nl * 20 N\n\n3 * Methods \\& LLMs\n& 4 c Single-hop\n& 16 c Multi-hop\n\n(lr) 2-5 (lr) 6-21\n& 4 c NQ\n& 4 c HotpotQA\n& 4 c 2WikiMQA\n& 4 c MusiQue\n& 4 c Bamboogle\n\n(lr) 2-5 (lr) 6-9 (lr) 10-13 (lr) 14-17 (lr) 18-21\n& acc.",
+    "char_start": 21989,
+    "char_end": 22206,
+    "sentence_index": 156,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec015",
+    "text": "& f1 & em & avg.",
+    "char_start": 22207,
+    "char_end": 22223,
+    "sentence_index": 157,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "& acc.",
+    "char_start": 22224,
+    "char_end": 22230,
+    "sentence_index": 158,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "& f1 & em & avg.",
+    "char_start": 22231,
+    "char_end": 22247,
+    "sentence_index": 159,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "& acc.",
+    "char_start": 22248,
+    "char_end": 22254,
+    "sentence_index": 160,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec015",
+    "text": "& f1 & em & avg.",
+    "char_start": 22255,
+    "char_end": 22271,
+    "sentence_index": 161,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec015",
+    "text": "& acc.",
+    "char_start": 22272,
+    "char_end": 22278,
+    "sentence_index": 162,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec015",
+    "text": "& f1 & em & avg.",
+    "char_start": 22279,
+    "char_end": 22295,
+    "sentence_index": 163,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec015",
+    "text": "& acc.",
+    "char_start": 22296,
+    "char_end": 22302,
+    "sentence_index": 164,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec015",
+    "text": "& f1 & em & avg.",
+    "char_start": 22303,
+    "char_end": 22319,
+    "sentence_index": 165,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec015",
+    "text": "gray!20\n21 l Vanilla RAG\n\nQwen2.5-7B-Instruct\n& 26.2 & 13.3 & 2.4 & 14.0\n& 42.4 & 42.5 & 32.0 & 39.0\n& 35.6 & 38.5 & 32.6 & 35.6\n& 11.4 & 13.8 & 6.6 & 10.6\n& 14.4 & 17.7 & 12.0 & 14.7\n\nQwen3-32B\n& 28.2 & 16.0 & 4.2 & 16.1\n& 51.2 & 37.3 & 21.8 & 36.8\n& 48.4 & 32.2 & 14.2 & 31.6\n& 15.8 & 10.6 & 2.4 & 9.6\n& 25.6 & 17.2 & 6.4 & 16.4\n\ngray!20\n21 l Baselines using Qwen2.5-7B-Instruct\n\nParallel (Naive)\n& 27.6 & 13.0 & 3.0 & 14.5\n& 41.0 & 42.4 & 32.6 & 38.7\n& 35.6 & 38.2 & 32.0 & 35.3\n& 11.0 & 13.8 & 6.4 & 10.4\n& 19.2 & 24.0 & 15.2 & 19.5\n\nSequential (Naive)\n&28.6&13.6&3.2&15.1\n&43.2&41.3&30.2&38.2\n&35.6&37.1&30.0&34.2\n&10.8&12.1&5.2&9.4\n&19.2&22.5&15.2&19.0\n\nIRCoT\n& 39.6 & 17.3 & 4.6 & 20.5\n& 40.4 & 33.8 & 23.2 & 32.5\n& 40.0 & 33.2 & 23.6 & 32.3\n& 11.8 & 12.4 & 4.8 & 9.7\n& 19.2 & 16.7 & 12.0 & 16.0\n\nIter-RetGen\n& 55.2 & 46.5 & 35.2 & 45.6\n& 48.0 & 50.2 & 38.6 & 45.6\n& 43.4 & 37.9 & 29.4 & 36.9\n& 19.8 & 21.4 & 13.0 & 18.1\n& 32.0 & 36.6 & 28.0 & 32.2\n\nSpeculative-RAG\n& 40.6 & 41.5 & 31.4 & 37.8\n& 29.2 & 34.6 & 28.2 & 30.7\n& 39.6 & 41.6 & 36.8 & 39.3\n& 9.8 & 15.7 & 8.0 & 11.2\n& 16.8 & 19.8 & 16.0 & 17.5\n\nSelf-RAG\n& 37.6 & 37.2 & 26.6 & 33.8\n& 42.6 & 46.0 & 35.4 & 41.3\n& 40.8 & 41.3 & 35.2 & 39.1\n& 11.6 & 15.8 & 8.0 & 11.8\n& 37.6 & 41.1 & 29.6 & 36.1\n\nDeepNote\n& 52.8 & 53.3 & 40.2 & 48.8\n& 50.6 * & 59.2 * & 48.0 * & 52.6 *\n& 50.0 * & 51.4 * & 41.8 * & 47.7 *\n& 14.6 * & 19.8 * & 11.6 * & 15.3 *\n& 26.4 & 36.3 & 24.8 & 29.2\n\n(Ours)\n& 45.4 & 46.9 & 35.6 & 42.6\n& 48.4 & 55.9 & 45.4 & 49.9\n& 56.2 & 56.2 & 45.2 & 52.5\n& 17.8 & 24.3 & 16.2 & 19.4\n& 36.8 & 42.7 & 36.0 & 38.5\n\n+ DPO (Ours)\n& 51.4 & 51.8 & 40.0 & 47.7\n& 53.8 & 61.3 & 49.4 & 54.8\n& 63.0 & 61.2 & 48.4 & 57.5\n& 25.2 & 32.4 & 20.8 & 26.1\n& 38.4 & 44.7 & 33.6 & 38.9\n\ngray!20\n21 l Baselines using Qwen3-32B\n\nParallel (Naive)\n&31.2&16.4&4.4&17.3\n&51.0&38.1&23.6&37.6\n&44.6&32.9&16.6&31.4\n&14.8&10.9&2.6&9.4\n&27.2&16.6&6.4&16.7\n\nSequential (Naive)\n&31.4&15.6&4.0&17.0\n&51.2&37.4&22.2&36.9\n&45.2&31.5&14.8&30.5\n&14.6&10.3&1.8&8.9\n&28.8&15.4&4.0&16.1\n\nIRCoT\n& 33.2 & 22.7 & 11.2 & 22.4\n& 34.4 & 36.1 & 27.2 & 32.6\n& 24.4 & 19.6 & 12.0 & 18.7\n& 6.6 & 10.1 & 5.4 & 7.4\n& 25.6 & 12.9 & 7.2 & 15.2\n\nIter-RetGen\n& 54.4 & 47.4 & 34.6 & 45.5\n& 52.4 & 61.4 & 48.6 & 54.1\n& 53.8 & 54.7 & 42.2 & 50.2\n& 23.2 & 29.4 & 18.6 & 23.7\n& 40.8 & 47.3 & 33.6 & 40.6\n\nSpeculative-RAG\n& 45.6 & 48.0 & 36.0 & 43.2\n& 33.6 & 39.0 & 31.2 & 34.6\n& 31.2 & 32.7 & 29.4 & 31.1\n& 13.8 & 19.1 & 10.8 & 14.6\n& 32.0 & 37.3 & 31.2 & 33.5\n\nSelf-RAG\n& 45.4 & 44.9 & 31.8 & 40.7\n& 53.0 & 57.9 & 45.0 & 52.0\n& 55.8 & 55.3 & 46.2 & 52.4\n& 12.0 & 20.7 & 10.4 & 14.4\n& 49.6 & 54.6 & 42.4 & 48.9\n\nDeepNote\n& 58.4 & 41.3 & 26.4 & 42.0\n& 60.2 & 65.2 & 51.2 & 58.9\n& 69.2 & 64.4 & 50.6 & 61.4\n& 30.8 & 30.9 & 18.6 & 26.8\n& 40.8 & 47.0 & 33.6 & 40.5\n\n(Ours)\n& 53.6 & 54.7 & 39.4 & 49.2\n& 62.6 & 68.7 & 55.0 & 62.1\n& 78.4 & 74.1 & 61.2 & 71.2\n& 31.8 & 36.6 & 23.8 & 30.7\n& 56.0 & 63.0 & 49.6 & 56.2\n\n+ DPO (Ours)\n& 56.6 & 51.1 & 38.0 & 48.6\n& 58.2 & 65.0 & 51.0 & 58.1\n& 75.2 & 69.8 & 57.6 & 67.5\n& 28.8 & 33.9 & 21.4 & 28.0\n& 53.6 & 59.5 & 44.8 & 52.6\n\n-5pt\n\n[t]\n\n-12pt\n\nfigs/radar_normalized_combined.pdf\n\nRelative performance of different RAG systems using two backbone LLMs across five datasets.",
+    "char_start": 22321,
+    "char_end": 25538,
+    "sentence_index": 166,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec015",
+    "text": "Each plot compares Vanilla RAG, the representative parallel (Speculative-RAG) and sequential (DeepNote) RAG scaling methods, and (ours).",
+    "char_start": 25539,
+    "char_end": 25675,
+    "sentence_index": 167,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec015",
+    "text": "-10pt\n\nFigure and\nTable summarize end-to-end performance across QA datasets.",
+    "char_start": 25677,
+    "char_end": 25753,
+    "sentence_index": 168,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec015",
+    "text": "Without fine-tuning , with joint depth-width scaling consistently matches or exceeds strong sequential- or parallel-only baselines.",
+    "char_start": 25755,
+    "char_end": 25886,
+    "sentence_index": 169,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec015",
+    "text": "yields substantial gains, especially on multi-hop QA datasets.",
+    "char_start": 25887,
+    "char_end": 25949,
+    "sentence_index": 170,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec015",
+    "text": "On MuSiQue (2-4 hops) with Qwen2.5-7B-Instruct model for example, achieves 24.3 F1 score compared to 19.8 of DeepNote (previous SOTA), demonstrating the benefit of unified depth-width control on complex queries even with base models.",
+    "char_start": 25950,
+    "char_end": 26183,
+    "sentence_index": 171,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec015",
+    "text": "After fine-tuning , achieves matched or higher accuracy with significantly lower cost.",
+    "char_start": 26185,
+    "char_end": 26271,
+    "sentence_index": 172,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "+DPO with Qwen2.5-7B-Instruct backbone improves average F1 score on multihop QA datasets by 5.1 and reduces the cost by 60\\%.",
+    "char_start": 26272,
+    "char_end": 26397,
+    "sentence_index": 173,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec015",
+    "text": "For Qwen3-32B, +DPO slightly decreases the performance but reduces the average token cost by 90\\% (Figure , details in Table ).",
+    "char_start": 26398,
+    "char_end": 26525,
+    "sentence_index": 174,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec015",
+    "text": "Compared with the previous best RAG scaling baseline, achieves +6.19 F1 score with 52.2\\% less token cost on average (see Appendix ).",
+    "char_start": 26526,
+    "char_end": 26659,
+    "sentence_index": 175,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec015",
+    "text": "These results validate our two main claims: (i) joint sequential-parallel scaling substantially strengthens multi-hop reasoning compared to existing single-direction scaling, and (ii) targeted lightweight fine-tuning improves both answer quality and computational efficiency.",
+    "char_start": 26661,
+    "char_end": 26936,
+    "sentence_index": 176,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec016",
+    "text": "To better understand the gains in joint scaling, we first analyze how sequential depth and parallel width individually and jointly contribute to the performance and cost of .",
+    "char_start": 26938,
+    "char_end": 27112,
+    "sentence_index": 177,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec016",
+    "text": "Depth and width provide complementary benefits under scaling.",
+    "char_start": 27114,
+    "char_end": 27175,
+    "sentence_index": 178,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec016",
+    "text": "Figure shows accuracy curves for 2WikiMQA and MuSiQue under $W = 1,2,4$.",
+    "char_start": 27176,
+    "char_end": 27248,
+    "sentence_index": 179,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec016",
+    "text": "Increasing depth yields gains from $D = 1$ to $D = 4$ overall.",
+    "char_start": 27249,
+    "char_end": 27311,
+    "sentence_index": 180,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec016",
+    "text": "Beyond this point, quality plateaus or even slightly decreases.",
+    "char_start": 27312,
+    "char_end": 27375,
+    "sentence_index": 181,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "On the other hand, increasing width improves answer quality when depth-only scaling saturates.",
+    "char_start": 27376,
+    "char_end": 27470,
+    "sentence_index": 182,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "Across both datasets, the paragraph recall grows consistently with width, indicating that parallel branching explores more diverse reformulations of the question and retrieval of more evidence, and directly translates into increased F1 score.",
+    "char_start": 27471,
+    "char_end": 27713,
+    "sentence_index": 183,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "Latency increases approximately linearly with depth and width, implying a rapidly rising cost at larger scaling levels.",
+    "char_start": 27714,
+    "char_end": 27833,
+    "sentence_index": 184,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "This motivates a closer examination of how different scaling choices affect the cost\u2013quality tradeoff.",
+    "char_start": 27834,
+    "char_end": 27936,
+    "sentence_index": 185,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "[t]\n\n-5pt\nfigs/f1_retrieval_latency_vs_depth_by_width.pdf\n-20pt\nAnswer quality (F1 scores, top row) and retrieval performance (paragraph recall, bottom row) on 2WikiMQA and\nMuSiQue for $W = 1,2,4$ using Qwen2.5-7B-Instruct model.",
+    "char_start": 27938,
+    "char_end": 28167,
+    "sentence_index": 186,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "-10pt\n\nCost\u2013quality tradeoffs.",
+    "char_start": 28169,
+    "char_end": 28199,
+    "sentence_index": 187,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "Figure provides a direct comparison of performance at matched compute budgets.",
+    "char_start": 28200,
+    "char_end": 28278,
+    "sentence_index": 188,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "Across all configurations, $W = 2$ strikes the best balance between answer quality and cost.",
+    "char_start": 28279,
+    "char_end": 28371,
+    "sentence_index": 189,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "It outperforms $W = 1$ configuration by introducing diversity in reasoning and in retrieval, while avoiding the sharp cost increases associated with $W = 4$.",
+    "char_start": 28372,
+    "char_end": 28529,
+    "sentence_index": 190,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "We observe that the best performance\u2013cost trade-off emerges at moderate depth and width rather than extreme scaling in either direction consistently on all datasets.",
+    "char_start": 28530,
+    "char_end": 28695,
+    "sentence_index": 191,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "For the results reported in Table , we uniformly employed $W = 2$ based on this observation.",
+    "char_start": 28696,
+    "char_end": 28788,
+    "sentence_index": 192,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec016",
+    "text": "Moreover, the fact that the optimal depth varies across datasets justifies the adaptive, query-dependent depth controller that adjusts the reasoning length according to the difficulty of each query.",
+    "char_start": 28789,
+    "char_end": 28987,
+    "sentence_index": 193,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec016",
+    "text": "Finally, fine-tuning (Section ) yields a more favorable F1\u2013cost operating point: it achieves matching or higher F1 scores to the $W D$ grid search at substantially lower token costs by diversifying parallel exploration ( Query Rewriter ) and avoiding wasteful continuation ( Answer Evaluator ).",
+    "char_start": 28989,
+    "char_end": 29283,
+    "sentence_index": 194,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec016",
+    "text": "For example, on 2WikiMultiHopQA, the fine-tuned model at $W = 2$ matches the base model's best performance across all $W D$ configurations while using only 30\\% tokens.",
+    "char_start": 29284,
+    "char_end": 29452,
+    "sentence_index": 195,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec017",
+    "text": "In this subsection, we provide an in-depth analysis of how targeted fine-tuning of the base LLM enhances the scaling behavior of .",
+    "char_start": 29454,
+    "char_end": 29584,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec017",
+    "text": "Larger document coverage in Query Rewriting.",
+    "char_start": 29586,
+    "char_end": 29630,
+    "sentence_index": 197,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec017",
+    "text": "Fine-tuning directly improves the recall of retrieval by improving the quality of rewritten queries.",
+    "char_start": 29632,
+    "char_end": 29732,
+    "sentence_index": 198,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec017",
+    "text": "We conduct a controlled comparison on samples where the tuned model proceeds to the second retrieval iteration (first iteration for rewriting) and show that fine-tuning consistently improves retrieval recall across all datasets.",
+    "char_start": 29733,
+    "char_end": 29961,
+    "sentence_index": 199,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec017",
+    "text": "For 7B model, recall improvements range from +2.3\\% (MuSiQue) to +36.1\\% (NQ), with an average gain of +13.1\\% (Appendix ).",
+    "char_start": 29962,
+    "char_end": 30085,
+    "sentence_index": 200,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec017",
+    "text": "The 32B model exhibits a smaller gain of +0.5\\% to +5.2\\% across datasets.",
+    "char_start": 30086,
+    "char_end": 30160,
+    "sentence_index": 201,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec017",
+    "text": "To further assess how finetuning affects the structure of query rewrites, we measure the average pairwise Jaccard overlap between the document sets retrieved with rewritten queries, following the definition in Appendix .",
+    "char_start": 30162,
+    "char_end": 30382,
+    "sentence_index": 202,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec017",
+    "text": "Fine-tuning reduces the overlap among retrieved documents by up to 27.4\\%(NQ), indicating that rewritten queries become less redundant and more focused.",
+    "char_start": 30384,
+    "char_end": 30536,
+    "sentence_index": 203,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec017",
+    "text": "This reduction emerges naturally from optimizing for higher recall, as improved recall requires retrieving complementary rather than overlapping evidence.",
+    "char_start": 30537,
+    "char_end": 30691,
+    "sentence_index": 204,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec017",
+    "text": "[t]\n\n-20pt\nfigs/lambda_vs_metrics.pdf\n-8pt\nEffect of the weighting parameter $ $ on Answer Evaluator behavior evaluated on a 100-sample test subset.",
+    "char_start": 30693,
+    "char_end": 30841,
+    "sentence_index": 205,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec017",
+    "text": "-14pt\n\nWeighted DPO leads to more conservative stopping and deeper reasoning.",
+    "char_start": 30843,
+    "char_end": 30920,
+    "sentence_index": 206,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec017",
+    "text": "Figure shows per-dataset trends as we vary the weighting parameter $ $, which up-weights wrong-stop errors during training.",
+    "char_start": 30921,
+    "char_end": 31044,
+    "sentence_index": 207,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec017",
+    "text": "Increasing $ $ strengthens the penalty on premature termination, leading the fine-tuned evaluator to adopt a more conservative stopping criterion and reducing early exits on difficult instances.",
+    "char_start": 31045,
+    "char_end": 31239,
+    "sentence_index": 208,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec017",
+    "text": "On more complex MuSiQue (2\u20134 hops), this results in deeper rollouts and higher F1, as additional reasoning enables multi-step evidence aggregation.",
+    "char_start": 31241,
+    "char_end": 31388,
+    "sentence_index": 209,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec017",
+    "text": "On 2-hop 2WikiMQA dataset, however, large $ $ can slightly degrade performance due to unnecessary continuation and occasional distractors.",
+    "char_start": 31389,
+    "char_end": 31527,
+    "sentence_index": 210,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec017",
+    "text": "We use $ = 2$ in our final model, as it provides a favorable trade-off across datasets\u2014improving robustness on harder benchmarks while avoiding over-conservative behavior on simpler ones.",
+    "char_start": 31528,
+    "char_end": 31715,
+    "sentence_index": 211,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec017",
+    "text": "Reduced incorrect acceptance rates during Answer Evaluation.",
+    "char_start": 31717,
+    "char_end": 31777,
+    "sentence_index": 212,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec017",
+    "text": "Fine-tuning substantially reduces the tendency to accept incorrect intermediate answers.",
+    "char_start": 31778,
+    "char_end": 31866,
+    "sentence_index": 213,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec017",
+    "text": "As shown in Figure , larger base models (32B) exhibit higher over-acceptance rates than the 7B model, reflecting stronger overconfidence, while DPO fine-tuning consistently mitigates this failure\u2014reducing incorrect acceptance by $11$--$15$ points on 32B and $3$--$8$ points on 7B across datasets.",
+    "char_start": 31867,
+    "char_end": 32163,
+    "sentence_index": 214,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec017",
+    "text": "These behaviors translate into higher end-to-end QA performance (Table ).",
+    "char_start": 32164,
+    "char_end": 32237,
+    "sentence_index": 215,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec017",
+    "text": "[t]\n\n-14pt\nfigs/incorrect_accept_comparison.pdf\nIncorrect acceptance rates across datasets for base and DPO-finetuned models.",
+    "char_start": 32239,
+    "char_end": 32364,
+    "sentence_index": 216,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec017",
+    "text": "-10pt\n\nWe introduced , a multi-agent framework that addresses Context Contamination and Scaling Inefficiency in RAG scaling.",
+    "char_start": 32365,
+    "char_end": 32489,
+    "sentence_index": 217,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec018",
+    "text": "Through specialized control agents that jointly regulate scaling along sequential depth and parallel width , coordinates how computation is expanded across branches and rounds while consolidating complementary evidence into a unified context state, yielding substantial gains across single-hop and multi-hop QA benchmarks.",
+    "char_start": 32490,
+    "char_end": 32812,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec018",
+    "text": "We further introduced a scaling-targeted, preference-based fine-tuning strategy that encourages complementary parallel queries and improves the stability of stopping decisions, thereby reducing unnecessary expansions and achieving better cost\u2013performance characteristics for .",
+    "char_start": 32813,
+    "char_end": 33089,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec019",
+    "text": "Our approach focuses on improving retrieval-augmented generation through agentic test-time scaling and structured control over depth and width of reasoning.",
+    "char_start": 33091,
+    "char_end": 33247,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec019",
+    "text": "As a result, the proposed method introduces additional inference-time overhead compared to standard single-pass RAG pipelines, which may limit its applicability in latency-critical settings.",
+    "char_start": 33248,
+    "char_end": 33438,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec019",
+    "text": "While our design aims to make this overhead cost-aware, the trade-off between performance and efficiency depends on the quality of the stopping and aggregation mechanisms.",
+    "char_start": 33439,
+    "char_end": 33610,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec019",
+    "text": "Moreover, our experiments are conducted on established open-domain question answering benchmarks with retrieval preferences.",
+    "char_start": 33611,
+    "char_end": 33735,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec019",
+    "text": "Performance may vary under different retrieval systems, corpus characteristics, or domain-specific knowledge bases.",
+    "char_start": 33736,
+    "char_end": 33851,
+    "sentence_index": 224,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec019",
+    "text": "Finally, while the proposed framework improves robustness to incomplete retrieval by exploring multiple reasoning paths, it does not guarantee correctness when retrieved evidence is systematically misleading or missing.",
+    "char_start": 33852,
+    "char_end": 34071,
+    "sentence_index": 225,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec020",
+    "text": "This work uses publicly available datasets and pretrained language models, and does not involve the collection of personal or sensitive data.",
+    "char_start": 34073,
+    "char_end": 34214,
+    "sentence_index": 226,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec020",
+    "text": "The proposed method does not introduce risks beyond those already associated with large language models and retrieval-augmented generation systems.",
+    "char_start": 34215,
+    "char_end": 34362,
+    "sentence_index": 227,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec020",
+    "text": "As with other RAG-based approaches, generated outputs may reflect biases or inaccuracies present in the underlying models or databases.",
+    "char_start": 34363,
+    "char_end": 34498,
+    "sentence_index": 228,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec020",
+    "text": "We emphasize that the method is intended for research purposes and should be applied with appropriate safeguards when used in real-world or high-stakes scenarios.",
+    "char_start": 34499,
+    "char_end": 34661,
+    "sentence_index": 229,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec020",
+    "text": "Parts of this paper were refined using AI-assisted writing tools to improve clarity and presentation, and minor code edits were conducted with AI coding assistance under human supervision.",
+    "char_start": 34663,
+    "char_end": 34851,
+    "sentence_index": 230,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec020",
+    "text": "All technical ideas, experimental design choices, and final implementations were created and verified by the authors, and the AI tools were used only as auxiliary aids rather than sources of substantive intellectual contributions.",
+    "char_start": 34852,
+    "char_end": 35082,
+    "sentence_index": 231,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec020",
+    "text": "ref\n\nl 1\n\nWe evaluate our method on five knowledge-intensive QA benchmarks,\ncovering both single-hop and multi-hop reasoning.",
+    "char_start": 35084,
+    "char_end": 35209,
+    "sentence_index": 232,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec023",
+    "text": "Natural Questions (NQ).",
+    "char_start": 35211,
+    "char_end": 35234,
+    "sentence_index": 233,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec023",
+    "text": "Natural Questions kwiatkowski2019natural is a single-hop open-domain QA benchmark consisting of real anonymized Google search queries.",
+    "char_start": 35235,
+    "char_end": 35369,
+    "sentence_index": 234,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec023",
+    "text": "In our experiments, we follow the AdaptiveRAG evaluation setup shen2024adaptiverag , which introduces a 500-query test subset.",
+    "char_start": 35370,
+    "char_end": 35496,
+    "sentence_index": 235,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec023",
+    "text": "The retrieval corpus is the standard DPR Wikipedia passage collection karpukhin2020dense , chunked into 100-word passages.",
+    "char_start": 35497,
+    "char_end": 35619,
+    "sentence_index": 236,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec023",
+    "text": "Indexing follows the dense retrieval pipeline described in the AdaptiveRAG documentation.",
+    "char_start": 35620,
+    "char_end": 35709,
+    "sentence_index": 237,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec023",
+    "text": "HotpotQA.",
+    "char_start": 35711,
+    "char_end": 35720,
+    "sentence_index": 238,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec023",
+    "text": "HotpotQA yang2018hotpotqa is a 2-hop QA benchmark\nwith supporting-fact supervision.",
+    "char_start": 35721,
+    "char_end": 35804,
+    "sentence_index": 239,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec023",
+    "text": "Following IRCoT trivedi2023ircot ,\nwe use the 500-query subsampled test set provided by the IRCoT repository.",
+    "char_start": 35805,
+    "char_end": 35914,
+    "sentence_index": 240,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec023",
+    "text": "The corpus is constructed using the IRCoT Wikipedia passage-building procedure.",
+    "char_start": 35915,
+    "char_end": 35994,
+    "sentence_index": 241,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec023",
+    "text": "2WikiMultiHopQA.",
+    "char_start": 35996,
+    "char_end": 36012,
+    "sentence_index": 242,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec023",
+    "text": "2WikiMultiHopQA ho2020constructing contains 2-hop questions requiring cross-entity bridging inference based on Wikipedia pages.",
+    "char_start": 36013,
+    "char_end": 36140,
+    "sentence_index": 243,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec023",
+    "text": "We again follow IRCoT trivedi2023ircot and use the 500-query subsampled test set distributed in the IRCoT processed-data package.",
+    "char_start": 36141,
+    "char_end": 36270,
+    "sentence_index": 244,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "The corpus is the same IRCoT Wikipedia passage corpus.",
+    "char_start": 36271,
+    "char_end": 36325,
+    "sentence_index": 245,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "MuSiQue.",
+    "char_start": 36327,
+    "char_end": 36335,
+    "sentence_index": 246,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "MuSiQue trivedi2022musique is a challenging 2--4 hop QA benchmark created by compositional reasoning over multiple Wikipedia paragraphs.",
+    "char_start": 36336,
+    "char_end": 36472,
+    "sentence_index": 247,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "As with the previous datasets, we use the 500-query subsampled test set following IRCoT trivedi2023ircot , and apply the same corpus construction procedure as IRCoT.",
+    "char_start": 36473,
+    "char_end": 36638,
+    "sentence_index": 248,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec023",
+    "text": "Bamboogle.",
+    "char_start": 36640,
+    "char_end": 36650,
+    "sentence_index": 249,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec023",
+    "text": "Bamboogle press2023bamboogle is a 2-hop QA dataset targeting adversarial or low-resource settings, with a small official test set.",
+    "char_start": 36651,
+    "char_end": 36781,
+    "sentence_index": 250,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec023",
+    "text": "We use the official test split from the HuggingFace distribution.",
+    "char_start": 36782,
+    "char_end": 36847,
+    "sentence_index": 251,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec023",
+    "text": "Following EvoRAG zhang2025evorag , we evaluate Bamboogle using a unified Wikipedia passage corpus.",
+    "char_start": 36848,
+    "char_end": 36946,
+    "sentence_index": 252,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec024",
+    "text": "We build separate retrieval indices for each dataset corpus.",
+    "char_start": 36948,
+    "char_end": 37008,
+    "sentence_index": 253,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec024",
+    "text": "The indexing\npipeline consists of the following components:\n\nDocument Chunking.",
+    "char_start": 37009,
+    "char_end": 37088,
+    "sentence_index": 254,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec024",
+    "text": "In the retrieval corpus, documents are\norganized at the paragraph level, where each paragraph is associated with a title and treated as an independent retrieval unit.",
+    "char_start": 37089,
+    "char_end": 37255,
+    "sentence_index": 255,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec024",
+    "text": "For datasets that use Wikipedia as the corpus (i.e., Natural Questions, Bamboogle), we use the DPR\nWikipedia passages , which splits Wikipedia articles into 100-word passages.",
+    "char_start": 37256,
+    "char_end": 37431,
+    "sentence_index": 256,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec024",
+    "text": "Sparse Indexing.",
+    "char_start": 37433,
+    "char_end": 37449,
+    "sentence_index": 257,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec024",
+    "text": "We use Elasticsearch 7.10.2 to build BM25 indices.",
+    "char_start": 37450,
+    "char_end": 37500,
+    "sentence_index": 258,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec024",
+    "text": "Each document is indexed with the following fields: title , paragraph\\_text ,\nparagraph\\_index , url , and is\\_abstract .",
+    "char_start": 37501,
+    "char_end": 37622,
+    "sentence_index": 259,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec024",
+    "text": "The title and paragraph\\_text fields are analyzed using the\nEnglish analyzer for stemming and stopword removal.",
+    "char_start": 37623,
+    "char_end": 37734,
+    "sentence_index": 260,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec024",
+    "text": "Dense Indexing.",
+    "char_start": 37736,
+    "char_end": 37751,
+    "sentence_index": 261,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec024",
+    "text": "We use BGE-large-en-v1.5 ( BAAI/bge-large-en-v1.5 hosted on Huggingface) as the embedding model to encode all documents into dense vectors.",
+    "char_start": 37752,
+    "char_end": 37891,
+    "sentence_index": 262,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec024",
+    "text": "The embeddings are indexed using FAISS faiss with a flat inner product (FlatIP) index for exact nearest\nneighbor search.",
+    "char_start": 37892,
+    "char_end": 38012,
+    "sentence_index": 263,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec024",
+    "text": "At query time, we compute the dot product similarity between the query embedding and all document embeddings.",
+    "char_start": 38013,
+    "char_end": 38122,
+    "sentence_index": 264,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec025",
+    "text": "Our system supports two retrieval methods, which can be dynamically selected\nby the language model during inference:\n\nSparse Retrieval (BM25).",
+    "char_start": 38124,
+    "char_end": 38266,
+    "sentence_index": 265,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec025",
+    "text": "Given a query, we perform BM25 retrieval against the Elasticsearch index.",
+    "char_start": 38267,
+    "char_end": 38340,
+    "sentence_index": 266,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec025",
+    "text": "The query is preprocessed by removing wh-words (e.g., ``what'', ``where'', ``when'') to improve lexical matching.",
+    "char_start": 38341,
+    "char_end": 38454,
+    "sentence_index": 267,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec025",
+    "text": "We retrieve the top-$k$ documents ranked by BM25 score, where $k=6$ for all baselines and our method.",
+    "char_start": 38455,
+    "char_end": 38556,
+    "sentence_index": 268,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec025",
+    "text": "Dense Retrieval.",
+    "char_start": 38558,
+    "char_end": 38574,
+    "sentence_index": 269,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec025",
+    "text": "Given a query, we encode it using the same BGE-large-en-v1.5 model used for indexing and retrieve the top-$k$ documents based on dot product similarity with the document embeddings.",
+    "char_start": 38575,
+    "char_end": 38756,
+    "sentence_index": 270,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec025",
+    "text": "We use the same $k=6$ as sparse retrieval.",
+    "char_start": 38757,
+    "char_end": 38799,
+    "sentence_index": 271,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec025",
+    "text": "Dynamic Retrieval Selection.",
+    "char_start": 38801,
+    "char_end": 38829,
+    "sentence_index": 272,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec025",
+    "text": "Unlike prior methods that rely on a single fixed retrieval approach, our agentic system treats different retrieval methods as tools that can be intelligently selected based on the query characteristics.",
+    "char_start": 38830,
+    "char_end": 39032,
+    "sentence_index": 273,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec025",
+    "text": "At each retrieval\nstep, the language model decides which retrieval method to invoke.",
+    "char_start": 39033,
+    "char_end": 39117,
+    "sentence_index": 274,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec025",
+    "text": "This design choice is motivated by the complementary strengths of sparse and dense retrieval: BM25 excels at lexical matching and handling rare entities, while\ndense retrieval better captures semantic similarity.",
+    "char_start": 39118,
+    "char_end": 39330,
+    "sentence_index": 275,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec025",
+    "text": "We acknowledge that this introduces a potential fairness consideration when comparing against baselines, as most prior methods use a single retrieval method.",
+    "char_start": 39332,
+    "char_end": 39489,
+    "sentence_index": 276,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec025",
+    "text": "However, we note that: (i) these baseline methods do not natively support dynamic retrieval selection in their architectures, (ii) there is limited motivation for them to use multiple retrieval methods since they lack the decision-making mechanism to choose between them, and (iii) ablation study for using only dense retrieval in Appendix indicates that the improvement does not originate from the dynamic retrieval selection.",
+    "char_start": 39490,
+    "char_end": 39917,
+    "sentence_index": 277,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec025",
+    "text": "Note on global\\_max\\_num\\_paras .",
+    "char_start": 39919,
+    "char_end": 39952,
+    "sentence_index": 278,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec025",
+    "text": "For all baseline methods that accumulate retrieved passages into an ever-growing context, we set a unified\nglobal\\_max\\_num\\_paras threshold.",
+    "char_start": 39953,
+    "char_end": 40094,
+    "sentence_index": 279,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec025",
+    "text": "Without such a cap, these methods may receive excessively long contexts across iterations, which is known to harm LLM\ngeneration quality and distort fair comparison.",
+    "char_start": 40095,
+    "char_end": 40260,
+    "sentence_index": 280,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec025",
+    "text": "This design follows the IRCoT trivedi2023ircot\nimplementation, where limiting the accumulated context is necessary to prevent the model from being overwhelmed by large, redundant evidence pools.",
+    "char_start": 40261,
+    "char_end": 40455,
+    "sentence_index": 281,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec025",
+    "text": "In contrast, note-based or context-compression methods, i.e., Deepnote wang2025deepnote and our , do not rely on raw accumulation of retrieved passages.",
+    "char_start": 40457,
+    "char_end": 40609,
+    "sentence_index": 282,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec025",
+    "text": "Their internal representations remain compact, so global\\_max\\_num\\_paras is not applicable to them.",
+    "char_start": 40610,
+    "char_end": 40710,
+    "sentence_index": 283,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec026",
+    "text": "Hardware.",
+    "char_start": 40712,
+    "char_end": 40721,
+    "sentence_index": 284,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec026",
+    "text": "All training and inference workloads run on a single server with\nfour NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs\n(97 , 887 MiB each; 384 GB total), dual Intel Xeon 6730P CPUs\n(2 sockets \u00d7 32 cores \u00d7 2 threads = 128 logical cores),\nand 1.0 TiB RAM.",
+    "char_start": 40722,
+    "char_end": 40976,
+    "sentence_index": 285,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec026",
+    "text": "Software Environment.",
+    "char_start": 40978,
+    "char_end": 40999,
+    "sentence_index": 286,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec026",
+    "text": "Experiments are executed under Python 3.11.13 with the following key\nlibraries: PyTorch 2.8.0 + cu128, vLLM 0.10.2, Transformers 4.56.1,\nPEFT 0.17.1, TRL 0.23.1, and DeepSpeed 0.18.0.",
+    "char_start": 41000,
+    "char_end": 41183,
+    "sentence_index": 287,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec026",
+    "text": "Sparse retrieval is\nimplemented using Elasticsearch 7.10.2.",
+    "char_start": 41184,
+    "char_end": 41243,
+    "sentence_index": 288,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec026",
+    "text": "Dense retrieval does not rely\non FAISS in our deployment and is served via model-backed embedding\nqueries.",
+    "char_start": 41244,
+    "char_end": 41350,
+    "sentence_index": 289,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec026",
+    "text": "Inference Configuration.",
+    "char_start": 41352,
+    "char_end": 41376,
+    "sentence_index": 290,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec026",
+    "text": "Generation modules use temperature 0.5, top-$p=1.0$, and a maximum generation length of 600 tokens.",
+    "char_start": 41377,
+    "char_end": 41476,
+    "sentence_index": 291,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec026",
+    "text": "Answer Evaluator modules operate deterministically with temperature 0.",
+    "char_start": 41477,
+    "char_end": 41547,
+    "sentence_index": 292,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec026",
+    "text": "Parallel branches use global random seed 42.",
+    "char_start": 41548,
+    "char_end": 41592,
+    "sentence_index": 293,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec026",
+    "text": "The sequential controller is allowed up to 8 reasoning rounds per query.",
+    "char_start": 41593,
+    "char_end": 41665,
+    "sentence_index": 294,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec026",
+    "text": "Training Hyperparameters.",
+    "char_start": 41667,
+    "char_end": 41692,
+    "sentence_index": 295,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec026",
+    "text": "The DPO training use LoRA adapters with rank 16,\n$ = 32$, dropout 0.05, and target modules\nq\\_proj , k\\_proj , v\\_proj , o\\_proj .",
+    "char_start": 41693,
+    "char_end": 41823,
+    "sentence_index": 296,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec026",
+    "text": "DPO training uses learning rate 5e--5 (LoRA),\n5e--7 (full fine-tuning), batch size 1 with gradient accumulation 4\n(effective batch size 16 across 4 GPUs), maximum sequence length 8192,\nBF16 precision, and DPO $ = 0.1$.",
+    "char_start": 41824,
+    "char_end": 42042,
+    "sentence_index": 297,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec026",
+    "text": "We use the AdamW optimizer and train for 3 epochs.",
+    "char_start": 42043,
+    "char_end": 42093,
+    "sentence_index": 298,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec026",
+    "text": "Retriever Configuration.",
+    "char_start": 42095,
+    "char_end": 42119,
+    "sentence_index": 299,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec026",
+    "text": "Sparse retrieval uses Elasticsearch 7.10.2 with BM25 scoring.",
+    "char_start": 42120,
+    "char_end": 42181,
+    "sentence_index": 300,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec026",
+    "text": "Dense\nretrieval uses model-encoded embeddings served via lightweight\nFastAPI endpoints.",
+    "char_start": 42182,
+    "char_end": 42269,
+    "sentence_index": 301,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec026",
+    "text": "The same retrieval stack is used for all baselines\nto ensure fair comparison.",
+    "char_start": 42270,
+    "char_end": 42347,
+    "sentence_index": 302,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec027",
+    "text": "We compare against the following representative RAG methods, categorized by their scaling strategy:\n\nVanilla RAG is a single-step retrieval baseline: given a query, the system retrieves the top-$k$ documents using dense retrieval and generates an answer conditioned on the concatenation of the query and retrieved passages.",
+    "char_start": 42349,
+    "char_end": 42672,
+    "sentence_index": 303,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec027",
+    "text": "No iterative refinement or parallel exploration is performed.",
+    "char_start": 42673,
+    "char_end": 42734,
+    "sentence_index": 304,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec027",
+    "text": "Parallel (Naive) is a naive parallel scaling baseline that generates $W$ independent answers at temperature 0.7, then aggregates via majority voting (self-consistency).",
+    "char_start": 42736,
+    "char_end": 42904,
+    "sentence_index": 305,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec027",
+    "text": "This baseline uses the same answer generation prompt as Vanilla RAG but samples multiple responses to leverage diversity.",
+    "char_start": 42905,
+    "char_end": 43026,
+    "sentence_index": 306,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec027",
+    "text": "The final answer is selected by counting exact-match votes among the postprocessed candidates.",
+    "char_start": 43027,
+    "char_end": 43121,
+    "sentence_index": 307,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec027",
+    "text": "We sweep $W \\ 2, 4, 6, 8, 10\\ $ and report the best result for each dataset.",
+    "char_start": 43122,
+    "char_end": 43198,
+    "sentence_index": 308,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec027",
+    "text": "Sequential (Naive) is a naive sequential scaling baseline that implements a verify-and-retry strategy.",
+    "char_start": 43200,
+    "char_end": 43302,
+    "sentence_index": 309,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec027",
+    "text": "The system generates an answer, then prompts the same LLM to self-evaluate and output a confidence score (0--1).",
+    "char_start": 43303,
+    "char_end": 43415,
+    "sentence_index": 310,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec027",
+    "text": "If confidence falls below a threshold (0.7), the system retries up to $D = 3$ attempts.",
+    "char_start": 43416,
+    "char_end": 43503,
+    "sentence_index": 311,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec027",
+    "text": "The final answer is selected from the attempt with highest self-evaluated confidence.",
+    "char_start": 43504,
+    "char_end": 43589,
+    "sentence_index": 312,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec027",
+    "text": "IRCoT trivedi2023ircot is an interleaved retrieval method with Chain-of-Thought prompting.",
+    "char_start": 43591,
+    "char_end": 43681,
+    "sentence_index": 313,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec027",
+    "text": "The model alternates between generating a reasoning step and retrieving relevant documents, iterating until the answer is produced.",
+    "char_start": 43682,
+    "char_end": 43813,
+    "sentence_index": 314,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec027",
+    "text": "We use the official implementation and follow its original design, which utilizes a BM25 sparse retriever, as the method relies heavily on keyword-level lexical overlap.",
+    "char_start": 43814,
+    "char_end": 43983,
+    "sentence_index": 315,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec027",
+    "text": "Iter-RetGen shao2023iterretgen is an iterative retrieval-generation method that alternates between retrieval and generation, using the previous generation as context for the next retrieval query.",
+    "char_start": 43985,
+    "char_end": 44180,
+    "sentence_index": 316,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec027",
+    "text": "Since no official implementation is publicly available, we re-implemented this method following the algorithm described in the original paper.",
+    "char_start": 44181,
+    "char_end": 44323,
+    "sentence_index": 317,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec027",
+    "text": "Speculative-RAG wang2024speculativerag is a parallel drafting approach that generates multiple draft answers using different retrieved document subsets and selects the best response via a verification step.",
+    "char_start": 44325,
+    "char_end": 44531,
+    "sentence_index": 318,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec027",
+    "text": "Since no official implementation is publicly available, we re-implemented this method based on the original paper.",
+    "char_start": 44532,
+    "char_end": 44646,
+    "sentence_index": 319,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec027",
+    "text": "We use $k = 6$ document subsets with $m = 10$ drafts for 2WikiMultiHopQA and MuSiQue, and $k = 3$ subsets with $m = 5$ drafts for the other datasets, with a maximum of 15 retrieved documents.",
+    "char_start": 44647,
+    "char_end": 44838,
+    "sentence_index": 320,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec027",
+    "text": "Self-RAG asai2024selfrag is a self-reflective retrieval-augmented generation method that learns to retrieve, generate, and critique its own output through special reflection tokens.",
+    "char_start": 44840,
+    "char_end": 45021,
+    "sentence_index": 321,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec027",
+    "text": "Rather than using the original fine-tuned model, we adopt the LangGraph-based re-implementation which reproduces the Self-RAG workflow using standard LLMs without specialized fine-tuning.",
+    "char_start": 45022,
+    "char_end": 45209,
+    "sentence_index": 322,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec027",
+    "text": "This enables fair comparison using the same backbone models (Qwen2.5-7B-Instruct and Qwen3-32B) across all methods.",
+    "char_start": 45210,
+    "char_end": 45325,
+    "sentence_index": 323,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec027",
+    "text": "DeepNote wang2025deepnote is a sequential RAG method that maintains a structured note representation across iterations, compressing retrieved evidence into a running summary.",
+    "char_start": 45327,
+    "char_end": 45501,
+    "sentence_index": 324,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec027",
+    "text": "We use the official implementation but replace the retrieval backend and generator LLM to match our unified evaluation setup.",
+    "char_start": 45502,
+    "char_end": 45627,
+    "sentence_index": 325,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec028",
+    "text": "We formalize the retrieval-augmented reasoning task that our system aims to solve.",
+    "char_start": 45629,
+    "char_end": 45711,
+    "sentence_index": 326,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec029",
+    "text": "The objective is to answer a complex query $q_0$ by iteratively interacting with an external corpus $C$ and refining intermediate hypotheses over multiple rounds of reasoning.",
+    "char_start": 45712,
+    "char_end": 45887,
+    "sentence_index": 327,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec029",
+    "text": "To facilitate a precise formulation, we introduce the notations used throughout this section in Table .",
+    "char_start": 45888,
+    "char_end": 45991,
+    "sentence_index": 328,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec029",
+    "text": "[h]\n\nNotation summary for the RAG task formulation.",
+    "char_start": 45993,
+    "char_end": 46044,
+    "sentence_index": 329,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec029",
+    "text": "p 0.11 p 0.32\n\nSymbol & Description\n\n$C$ & Corpus available for retrieval.",
+    "char_start": 46045,
+    "char_end": 46119,
+    "sentence_index": 330,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec029",
+    "text": "$q_0$ & Global (initial) query.",
+    "char_start": 46121,
+    "char_end": 46152,
+    "sentence_index": 331,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec029",
+    "text": "$q^ (t) $ & Query at round $t$.",
+    "char_start": 46154,
+    "char_end": 46185,
+    "sentence_index": 332,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec029",
+    "text": "$m^ (t) M $ & Memory state at round $t$.",
+    "char_start": 46187,
+    "char_end": 46227,
+    "sentence_index": 333,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec029",
+    "text": "$a^ (t) A $ & Candidate answer at round $t$.",
+    "char_start": 46229,
+    "char_end": 46273,
+    "sentence_index": 334,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec029",
+    "text": "$D$ & Total number of reasoning rounds (depth).",
+    "char_start": 46275,
+    "char_end": 46322,
+    "sentence_index": 335,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec029",
+    "text": "$W^ (t) $ & Number of parallel reasoning branches at round $t$ (width).",
+    "char_start": 46324,
+    "char_end": 46395,
+    "sentence_index": 336,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec029",
+    "text": "We describe the reasoning process as a hierarchical composition of three operators:\nan intra-path operator $ I $, a parallel operator $ P $, and a\nsequential operator $ S $.",
+    "char_start": 46397,
+    "char_end": 46570,
+    "sentence_index": 337,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec029",
+    "text": "The overall system can be expressed as\n\\[\n(q_ 0 , C) ( S P I )(q_ 0 , C).",
+    "char_start": 46571,
+    "char_end": 46644,
+    "sentence_index": 338,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec029",
+    "text": "\\]\n\nThe operator $ I $ performs one round of retrieval-augmented inference along a single reasoning path, updating its memory and optionally producing a candidate answer.",
+    "char_start": 46645,
+    "char_end": 46815,
+    "sentence_index": 339,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec029",
+    "text": "Note that an operator in our formulation is an abstract computational role, rather than a concrete agent.",
+    "char_start": 46816,
+    "char_end": 46921,
+    "sentence_index": 340,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec029",
+    "text": "The parallel operator $ P ^ (t) $ applies $ I $ across $W^ (t) $ branches at round $t$ and aggregates their outcomes:\n\\[\n\n& P ^ (t) (q^ (t) , m^ (t-1) , C)\n\n&=\nMerge \\!",
+    "char_start": 46923,
+    "char_end": 47091,
+    "sentence_index": 341,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec029",
+    "text": "(\n\\\nI (q^ (t,k) , m^ (t-1,k) , C)\n\\ _ k=1 ^ W^ (t)\n).",
+    "char_start": 47092,
+    "char_end": 47145,
+    "sentence_index": 342,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec029",
+    "text": "\\]\n\nFinally, the sequential operator composes the round-specific parallel processes:\n\\[\nS \\ \\!",
+    "char_start": 47147,
+    "char_end": 47241,
+    "sentence_index": 343,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec029",
+    "text": "(\\ P ^ (t) \\ _ t=1 ^ D )(q_ 0 , C)\n=\n( P ^ (D) P ^ (1) )(q_ 0 , C),\n\\]\nwhere $D$ denotes the number of reasoning rounds until termination.",
+    "char_start": 47242,
+    "char_end": 47380,
+    "sentence_index": 344,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec029",
+    "text": "This formulation captures the hierarchical structure of multi-step RAG: sequential composition models refinement over time, while parallel composition captures the breadth of exploration within each round.",
+    "char_start": 47382,
+    "char_end": 47587,
+    "sentence_index": 345,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec030",
+    "text": "Given a set of rewritten queries generated for the same question, we measure the degree of redundancy between them using the Jaccard overlap of their retrieved document sets.",
+    "char_start": 47589,
+    "char_end": 47763,
+    "sentence_index": 346,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec030",
+    "text": "For a rewritten query $q$, let $ R (q)$ denote the set of top-$k$ retrieved paragraphs obtained from the dense retriever.",
+    "char_start": 47764,
+    "char_end": 47885,
+    "sentence_index": 347,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec030",
+    "text": "For two rewritten queries $q_i$ and $q_j$, their Jaccard overlap is defined as\n\\[\nJac (q_i, q_j)\n=\n\\,| R (q_i) R (q_j)|\\,\n\\,| R (q_i) R (q_j)|\\, .",
+    "char_start": 47886,
+    "char_end": 48032,
+    "sentence_index": 348,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec030",
+    "text": "\\]\nThis quantity ranges from $0$ (no shared retrieved evidence) to $1$ (identical retrieval results).",
+    "char_start": 48033,
+    "char_end": 48134,
+    "sentence_index": 349,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec030",
+    "text": "For a group of rewrites $\\ q_1, ,q_m\\ $, we report the\naverage pairwise Jaccard overlap , defined as\n\\[\nJacAvg\n=\n2 m(m-1)\n_ i < j\nJac (q_i, q_j).",
+    "char_start": 48136,
+    "char_end": 48281,
+    "sentence_index": 350,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec030",
+    "text": "\\]\nLower overlap indicates that the rewrites retrieve more complementary evidence, whereas high overlap suggests that rewrites collapse to similar retrieval trajectories.",
+    "char_start": 48282,
+    "char_end": 48452,
+    "sentence_index": 351,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec030",
+    "text": "In our analysis, we compute this metric separately for DPO-chosen and DPO-rejected rewrites; the former consistently exhibit lower overlap, indicating that recall-based supervision implicitly encourages more diverse and evidence-complementary sub-queries.",
+    "char_start": 48453,
+    "char_end": 48708,
+    "sentence_index": 352,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec031",
+    "text": "[ht]\n\n=3pt\nDPO fine-tuning result: accuracy and efficiency comparison between fixed-depth baseline and DPO-tuned model with adaptive depth control.",
+    "char_start": 48710,
+    "char_end": 48857,
+    "sentence_index": 353,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec032",
+    "text": "7B uses $D = 6$, $W = 2$; 32B uses $D = 8$, $W = 2$.",
+    "char_start": 48858,
+    "char_end": 48910,
+    "sentence_index": 354,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec032",
+    "text": "!\n@ llcccccc@\n\n2 * Model & 2 * Dataset & 2 c F1 (\\%) &\n2 c Avg Depth & 2 c Tokens (K)\n\n(lr) 3-4 (lr) 5-6 (lr) 7-8\n& & Fixed & Tuned ($ $) & Fixed & Tuned & Fixed & Tuned\n\n5 * 7B\n& HotpotQA & 55.9 & 61.3 (+5.4) & 6 & 1.8 & 20.2 & 6.5\n\n& MuSiQue & 24.3 & 32.4 (+8.1) & 6 & 3.0 & 23.6 & 16.5\n\n& 2WikiMQA & 56.2 & 61.2 (+5.0) & 6 & 2.0 & 22.0 & 7.8\n\n& NQ & 34.7 & 51.8 (+17.1) & 6 & 1.7 & 16.2 & 7.1\n\n& Bamboogle & 42.7 & 44.7 (+2.0) & 6 & 1.6 & 24.3 & 5.3\n\n5 * 32B\n& HotpotQA & 68.7 & 65.0 (-3.7) & 8 & 1.4 & 39.0 & 4.6\n\n& MuSiQue & 36.6 & 33.9 (-2.7) & 8 & 1.7 & 53.2 & 7.2\n\n& 2WikiMQA & 74.1 & 69.8 (-4.3) & 8 & 1.8 & 88.1 & 7.0\n\n& NQ & 54.7 & 51.1 (-3.6) & 8 & 1.1 & 129.6 & 2.9\n\n& Bamboogle & 63.0 & 57.9 (-5.1) & 8 & 1.3 & 104.6 & 3.9\n\nTable presents the impact of DPO fine-tuning on answer evaluation accuracy and computational efficiency.",
+    "char_start": 48912,
+    "char_end": 49754,
+    "sentence_index": 355,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec032",
+    "text": "For the 7B model, DPO training yields consistent improvements across all five datasets, with F1 gains ranging from +2.0\\% (Bamboogle) to +17.1\\% (NQ).",
+    "char_start": 49755,
+    "char_end": 49905,
+    "sentence_index": 356,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec032",
+    "text": "Notably, these accuracy improvements are accompanied by substantial efficiency gains: the tuned model reduces average retrieval depth from 6 to 1.6--3.0 iterations, resulting in 56--78\\% reduction in token consumption.",
+    "char_start": 49906,
+    "char_end": 50124,
+    "sentence_index": 357,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec032",
+    "text": "For the 32B model, while DPO tuning did not improve the answer performance, it achieves dramatic efficiency improvements---reducing depth from 8 to 1.1--1.8 iterations and cutting token usage by 87--98\\%.",
+    "char_start": 50126,
+    "char_end": 50330,
+    "sentence_index": 358,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec032",
+    "text": "We attribute this to a distribution mismatch: the DPO training data was generated using the 7B model, causing the 32B model to adopt overly conservative early-stopping behavior.",
+    "char_start": 50331,
+    "char_end": 50508,
+    "sentence_index": 359,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec032",
+    "text": "Despite this, the 32B tuned model still achieves competitive absolute performance (e.g., 69.8\\% F1 on 2WikiMQA) while consuming only 7--8\\% of the baseline's computational budget.",
+    "char_start": 50509,
+    "char_end": 50688,
+    "sentence_index": 360,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec032",
+    "text": "These results suggest that DPO fine-tuning effectively teaches the model to recognize answer sufficiency, enabling adaptive depth control that balances accuracy and efficiency.",
+    "char_start": 50690,
+    "char_end": 50866,
+    "sentence_index": 361,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec032",
+    "text": "Future work could explore model-specific DPO training to better preserve the capabilities of larger models.",
+    "char_start": 50867,
+    "char_end": 50974,
+    "sentence_index": 362,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec033",
+    "text": "Table compares the computational cost of our DPO-tuned models against DeepNote, a state-of-the-art adaptive RAG baseline that employs iterative retrieval with early stopping.",
+    "char_start": 50976,
+    "char_end": 51150,
+    "sentence_index": 363,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec033",
+    "text": "We did not report the cost comparison with other methods as their performance are significantly worse than these two methods.",
+    "char_start": 51151,
+    "char_end": 51276,
+    "sentence_index": 364,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec033",
+    "text": "We conduct the comparison using both 7B and 32B model variants to ensure a fair comparison.",
+    "char_start": 51277,
+    "char_end": 51368,
+    "sentence_index": 365,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec033",
+    "text": "For the 32B model, our approach achieves substantial token savings across all five datasets, with an average reduction of 64.0\\% compared to DeepNote.",
+    "char_start": 51370,
+    "char_end": 51520,
+    "sentence_index": 366,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec033",
+    "text": "For the 7B model, on single-hop datasets (NQ and Bamboogle), our method reduces token consumption by 15.3\\% and 28.2\\% respectively and achieves a 14.1\\% average reduction while maintaining competitive accuracy.",
+    "char_start": 51521,
+    "char_end": 51732,
+    "sentence_index": 367,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec033",
+    "text": "A key advantage of our approach lies in learning when to stop retrieval through direct preference optimization.",
+    "char_start": 51734,
+    "char_end": 51845,
+    "sentence_index": 368,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec033",
+    "text": "While DeepNote uses heuristic stopping criteria, our method learns a fine-grained stopping policy from preference data, leading to more efficient scaling behaiviors.",
+    "char_start": 51846,
+    "char_end": 52011,
+    "sentence_index": 369,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec033",
+    "text": "[t]\n\n=4pt\nToken cost comparison between DeepNote and our DPO-tuned models.",
+    "char_start": 52013,
+    "char_end": 52087,
+    "sentence_index": 370,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec033",
+    "text": "Values represent average tokens per query.",
+    "char_start": 52088,
+    "char_end": 52130,
+    "sentence_index": 371,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec033",
+    "text": "As we directly report the results from the DeepNote paper for some datasets using the Qwen2.5-7B-Instruct model, token costs on some datasets are marked missing '-'.",
+    "char_start": 52131,
+    "char_end": 52296,
+    "sentence_index": 372,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec033",
+    "text": "!\n@ lrrrrrr@\n\n2 * Dataset & 3 c 7B Model & 3 c 32B Model\n\n(lr) 2-4 (lr) 5-7\n& DeepNote & Ours & $ $ & DeepNote & Ours & $ $\n\nHotpotQA & 6,235 & 6,511 & +4.4\\% & 10,561 & 4,640 & -56.1\\%\n\nMuSiQue & -- & 16,477 & -- & 13,206 & 7,166 & -45.7\\%\n\n2WikiMQA & -- & 7,785 & -- & 11,416 & 6,981 & -38.8\\%\n\nNQ & 8,359 & 7,081 & -15.3\\% & 18,816 & 2,935 & -84.4\\%\n\nBamboogle & 7,452 & 5,348 & -28.2\\% & 17,102 & 3,887 & -77.3\\%\n\nAvg & 7,349 & 6,313 & -14.1\\% & 14,220 & 5,122 & -64.0\\%\n\nTo isolate the effect of DPO fine-tuning on query rewriting quality, we conduct a controlled comparison on samples where the tuned model proceeds to the second retrieval iteration (Table ).",
+    "char_start": 52298,
+    "char_end": 52963,
+    "sentence_index": 373,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec034",
+    "text": "The results reveal that DPO fine-tuning consistently improves recall across all datasets.",
+    "char_start": 52965,
+    "char_end": 53054,
+    "sentence_index": 374,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec034",
+    "text": "For the 7B model, there is an average recall improvement of +13.1\\%.",
+    "char_start": 53055,
+    "char_end": 53123,
+    "sentence_index": 375,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec034",
+    "text": "The substantial improvement on NQ (+36.1\\%) is particularly notable: the base model achieves only 18.7\\% recall on these samples, indicating poor query rewriting for single-hop questions, while the tuned model reaches 54.8\\%.",
+    "char_start": 53124,
+    "char_end": 53349,
+    "sentence_index": 376,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec034",
+    "text": "For multi-hop datasets, improvements are more modest but consistent (+2.3\\% to +7.3\\%), suggesting that DPO training enhances the model's ability to generate effective follow-up queries.",
+    "char_start": 53350,
+    "char_end": 53536,
+    "sentence_index": 377,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec034",
+    "text": "The 32B model exhibits similar trends with gains of +0.5\\% to +5.2\\% across datasets.",
+    "char_start": 53538,
+    "char_end": 53623,
+    "sentence_index": 378,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec034",
+    "text": "The smaller improvement magnitude compared to 7B can be attributed to two factors: (1) fewer samples reach the second iteration (e.g., only 29 NQ samples for 32B vs.\\ 157 for 7B), limiting statistical power, and (2) the base 32B model already produces higher-quality rewrites, leaving less room for improvement.",
+    "char_start": 53624,
+    "char_end": 53935,
+    "sentence_index": 379,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec034",
+    "text": "These findings demonstrate that DPO fine-tuning improves how queries are rewritten when additional retrieval is necessary.",
+    "char_start": 53937,
+    "char_end": 54059,
+    "sentence_index": 380,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec034",
+    "text": "[t]\n\n=4pt\nRecall comparison on samples where the DPO-tuned model proceeds to the second retrieval iteration.",
+    "char_start": 54061,
+    "char_end": 54169,
+    "sentence_index": 381,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec034",
+    "text": "This controlled comparison isolates the effect of DPO on query rewriting quality, excluding samples that terminate early.",
+    "char_start": 54170,
+    "char_end": 54291,
+    "sentence_index": 382,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec034",
+    "text": "@ llcccc@\n\nModel & Dataset & Samples & Base & Tuned & $ $\n\n4 * 7B\n& HotpotQA & 209 & 70.6 & 77.3 & +6.7\n\n& MuSiQue & 348 & 58.8 & 61.1 & +2.3\n\n& 2WikiMQA & 271 & 77.6 & 84.9 & +7.3\n\n& NQ & 157 & 18.7 & 54.8 & +36.1\n\n4 * 32B\n& HotpotQA & 104 & 67.8 & 71.6 & +3.8\n\n& MuSiQue & 224 & 55.5 & 60.0 & +4.5\n\n& 2WikiMQA & 246 & 81.3 & 86.5 & +5.2\n\n& NQ & 29 & 39.1 & 39.7 & +0.5\n\n[ht]\n\nAblation study comparing adaptive retrieval with dense-only retrieval, using finetuned model Qwen-2.5-7B-Instruct-DPO.",
+    "char_start": 54293,
+    "char_end": 54789,
+    "sentence_index": 383,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec034",
+    "text": "The grey texts shows differences compared to hybrid retrieval.",
+    "char_start": 54790,
+    "char_end": 54852,
+    "sentence_index": 384,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec034",
+    "text": "!\nlccc|ccc\n\n2 * Dataset\n& 3 c| Hybrid Retrieval\n& 3 c Dense-Only\n\n& EM & F1 & Acc\n& EM & F1 & Acc\n\nHotpotQA\n& 49.4 & 61.3 & 53.8\n& 48.8 gray ($-$0.6)\n& 62.1 gray (+0.8)\n& 53.0 gray ($-$0.8)\n\nMuSiQue\n& 20.8 & 32.4 & 25.2\n& 20.4 gray ($-$0.4)\n& 31.7 gray ($-$0.7)\n& 25.4 gray (+0.2)\n\n2WikiMQA\n& 48.4 & 61.2 & 63.0\n& 49.2 gray (+0.8)\n& 61.6 gray (+0.4)\n& 62.8 gray ($-$0.2)\n\nNQ\n& 40.0 & 51.8 & 51.4\n& 39.2 gray ($-$0.8)\n& 52.5 gray (+0.7)\n& 52.6 gray (+1.2)\n\nBamboogle\n& 33.6 & 44.7 & 38.4\n& 33.6 gray (0.0)\n& 44.5 gray ($-$0.2)\n& 40.0 gray (+1.6)\n\nAverage\n& 38.4 & 50.3 & 46.4\n& 38.2 gray ($-$0.2)\n& 50.5 gray (+0.2)\n& 46.8 gray (+0.4)\n\nMost baselines in our comparison only use a single retrieval method.",
+    "char_start": 54854,
+    "char_end": 55557,
+    "sentence_index": 385,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec035",
+    "text": "To enable a fair comparison, we therefore evaluate our framework under a dense-only setting, matching the retrieval configuration used by the baselines.",
+    "char_start": 55558,
+    "char_end": 55710,
+    "sentence_index": 386,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec035",
+    "text": "Although mixed retrieval is a common and robust practice in RAG systems, prior work has also noted that strong dense retrievers often perform comparably to hybrid configurations when the corpus is well-structured and the embedding model is high quality.",
+    "char_start": 55711,
+    "char_end": 55964,
+    "sentence_index": 387,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec035",
+    "text": "In this ablation, the retriever is fixed to use dense retrieval for all queries.",
+    "char_start": 55965,
+    "char_end": 56045,
+    "sentence_index": 388,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec035",
+    "text": "Table reports results across five datasets.",
+    "char_start": 56047,
+    "char_end": 56090,
+    "sentence_index": 389,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec035",
+    "text": "Overall, the differences between the adaptive hybrid setting and dense-only retrieval are small and inconsistent across datasets.",
+    "char_start": 56091,
+    "char_end": 56220,
+    "sentence_index": 390,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec035",
+    "text": "These results suggest that dense retrieval alone is sufficiently effective for our task.",
+    "char_start": 56222,
+    "char_end": 56310,
+    "sentence_index": 391,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec035",
+    "text": "This finding indicates that the primary performance improvements of our system stem from other components, such as the iterative query rewriting and answer evaluation modules, rather than the retrieval strategy selection.",
+    "char_start": 56311,
+    "char_end": 56532,
+    "sentence_index": 392,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec036",
+    "text": "To illustrate why increasing parallel width improves multi-hop retrieval, we present a representative HotpotQA example (Figure ).",
+    "char_start": 56534,
+    "char_end": 56663,
+    "sentence_index": 393,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec036",
+    "text": "The system is asked: ``Where is Anticimex\u2019s parent company headquartered?''\nUnder a single path (W=1), the system fails to retrieve the document about EQT\u2014the parent company\u2014making the answer unreachable.",
+    "char_start": 56664,
+    "char_end": 56868,
+    "sentence_index": 394,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec036",
+    "text": "With two parallel branches (W=2), different sub-queries explore complementary directions: one identifies EQT as the parent company, while the other retrieves EQT\u2019s headquarters.",
+    "char_start": 56869,
+    "char_end": 57046,
+    "sentence_index": 395,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec036",
+    "text": "Together they recover all necessary evidence and produce the correct final answer.",
+    "char_start": 57047,
+    "char_end": 57129,
+    "sentence_index": 396,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec036",
+    "text": "[t]\n\nfigs/case_study.pdf\nCase study illustrating how W=2 retrieves complementary evidence that W=1 misses.",
+    "char_start": 57131,
+    "char_end": 57237,
+    "sentence_index": 397,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec036",
+    "text": "Analysis.",
+    "char_start": 57239,
+    "char_end": 57248,
+    "sentence_index": 398,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec036",
+    "text": "The example in Figure reveals a clear pattern:\n\nW=1 fails due to insufficient retrieval.",
+    "char_start": 57249,
+    "char_end": 57337,
+    "sentence_index": 399,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec036",
+    "text": "The single branch retrieves ``Anticimex'' but never surfaces ``EQT'', preventing the system from answering the headquarters question.",
+    "char_start": 57338,
+    "char_end": 57471,
+    "sentence_index": 400,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec036",
+    "text": "W=2 enables specialization.",
+    "char_start": 57473,
+    "char_end": 57500,
+    "sentence_index": 401,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec036",
+    "text": "One rewritten query targets the parent-company relationship; the other explicitly seeks EQT\u2019s headquarters.",
+    "char_start": 57501,
+    "char_end": 57608,
+    "sentence_index": 402,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec036",
+    "text": "This division of labor increases coverage.",
+    "char_start": 57609,
+    "char_end": 57651,
+    "sentence_index": 403,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec036",
+    "text": "Complementarity resolves ambiguity.",
+    "char_start": 57653,
+    "char_end": 57688,
+    "sentence_index": 404,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec036",
+    "text": "Only when the two branches are combined does the system access all gold evidence (both Anticimex and EQT documents).",
+    "char_start": 57689,
+    "char_end": 57805,
+    "sentence_index": 405,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec036",
+    "text": "Merging selects the supported answer.",
+    "char_start": 57807,
+    "char_end": 57844,
+    "sentence_index": 406,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec036",
+    "text": "Although branches propose different answers, the system resolves them by grounding final selection in retrieved evidence.",
+    "char_start": 57845,
+    "char_end": 57966,
+    "sentence_index": 407,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec036",
+    "text": "This case concretely demonstrates our central claim:\nparallel width expands the search space and recovers evidence that sequential refinement alone cannot reach .",
+    "char_start": 57968,
+    "char_end": 58130,
+    "sentence_index": 408,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec037",
+    "text": "[htbp]\n\n3.5pt\n1.1\n\nWidth $ $ Depth grid search results for\nQwen2.5-7B-Instruct on multi-hop QA datasets.",
+    "char_start": 58132,
+    "char_end": 58236,
+    "sentence_index": 409,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec037",
+    "text": "l * 20 N\n\n2 * W$ $D\n& 5 c HotpotQA\n& 5 c 2WikiMQA\n& 5 c MuSiQue\n& 5 c Bamboogle\n\n(lr) 2-6\n(lr) 7-11\n(lr) 12-16\n(lr) 17-21\n\n& acc.",
+    "char_start": 58238,
+    "char_end": 58367,
+    "sentence_index": 410,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec037",
+    "text": "& f1 & em & avg.",
+    "char_start": 58368,
+    "char_end": 58384,
+    "sentence_index": 411,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec037",
+    "text": "& tok.",
+    "char_start": 58385,
+    "char_end": 58391,
+    "sentence_index": 412,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec037",
+    "text": "& acc.",
+    "char_start": 58392,
+    "char_end": 58398,
+    "sentence_index": 413,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec037",
+    "text": "& f1 & em & avg.",
+    "char_start": 58399,
+    "char_end": 58415,
+    "sentence_index": 414,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec037",
+    "text": "& tok.",
+    "char_start": 58416,
+    "char_end": 58422,
+    "sentence_index": 415,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec037",
+    "text": "& acc.",
+    "char_start": 58423,
+    "char_end": 58429,
+    "sentence_index": 416,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec037",
+    "text": "& f1 & em & avg.",
+    "char_start": 58430,
+    "char_end": 58446,
+    "sentence_index": 417,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec037",
+    "text": "& tok.",
+    "char_start": 58447,
+    "char_end": 58453,
+    "sentence_index": 418,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec037",
+    "text": "& acc.",
+    "char_start": 58454,
+    "char_end": 58460,
+    "sentence_index": 419,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec037",
+    "text": "& f1 & em & avg.",
+    "char_start": 58461,
+    "char_end": 58477,
+    "sentence_index": 420,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec037",
+    "text": "& tok.",
+    "char_start": 58478,
+    "char_end": 58484,
+    "sentence_index": 421,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec037",
+    "text": "1$ $2 & 37.0 & 45.5 & 35.0 & 39.2 & 3.2k & 57.0 & 52.7 &\n44.0 & 51.2 & 3.1k & 11.0 & 20.7 & 10.0 & 13.9 & 4.2k & 30.4 &\n37.1 & 29.6 & 32.4 & 3.5k\n\n1$ $4 & 44.0 & 52.9 & 38.0 & 45.0 & 8.2k & 56.0 & 52.2 &\n42.0 & 50.1 & 7.1k & 15.0 & 21.5 & 13.0 & 16.5 & 10.6k & 36.0 &\n41.8 & 34.4 & 37.4 & 8.0k\n\n1$ $6 & 41.0 & 51.4 & 38.0 & 43.5 & 13.2k & 52.0 & 51.4 &\n44.0 & 49.1 & 11.3k & 18.0 & 23.3 & 16.0 & 19.1 & 17.3k & 31.2 &\n38.6 & 30.4 & 33.4 & 12.7k\n\n1$ $8 & 46.0 & 57.9 & 45.0 & 49.6 & 19.0k & 50.0 & 50.2 &\n42.0 & 47.4 & 15.8k & 15.0 & 20.2 & 13.0 & 16.1 & 24.8k & 39.2 &\n46.3 & 36.8 & 40.8 & 17.7k\n\n2$ $2 & 43.0 & 52.1 & 42.0 & 45.7 & 3.8k & 53.0 & 49.8 &\n42.0 & 48.3 & 5.5k & 15.0 & 20.7 & 12.0 & 15.9 & 4.1k & 33.6 &\n38.4 & 32.0 & 34.7 & 5.8k\n\n2$ $4 & 50.0 & 61.0 & 46.0 & 52.3 & 9.4k & 56.0 & 53.3 &\n43.0 & 50.8 & 13.6k & 12.0 & 21.6 & 11.0 & 14.8 & 11.1k & 35.2 &\n42.4 & 35.2 & 37.6 & 14.6k\n\n2$ $6 & 50.0 & 56.2 & 42.0 & 49.4 & 15.8k & 61.0 & 56.1 &\n44.0 & 53.7 & 22.2k & 26.0 & 30.0 & 21.0 & 25.7 & 18.8k & 36.8 &\n46.2 & 34.4 & 39.1 & 24.3k\n\n2$ $8 & 46.0 & 56.2 & 41.0 & 47.7 & 30.7k & 62.0 & 55.9 &\n42.0 & 53.3 & 31.6k & 21.0 & 27.5 & 18.0 & 22.2 & 37.7k & 36.8 &\n41.3 & 33.6 & 37.2 & 35.3k\n\n4$ $2 & 50.0 & 55.9 & 43.0 & 49.6 & 5.9k & 52.0 & 50.5 &\n44.0 & 48.8 & 8.6k & 22.0 & 27.9 & 18.0 & 22.6 & 6.7k & 36.0 &\n41.1 & 32.8 & 36.6 & 9.3k\n\n4$ $4 & 48.0 & 57.2 & 44.0 & 49.8 & 17.4k & 64.0 & 61.3 &\n49.0 & 58.1 & 24.0k & 17.0 & 24.6 & 17.0 & 19.5 & 20.4k & 37.6 &\n43.9 & 36.8 & 39.4 & 25.9k\n\n4$ $6 & 50.0 & 58.7 & 43.0 & 50.6 & 31.7k & 59.0 & 56.0 &\n47.0 & 54.0 & 40.7k & 21.0 & 30.9 & 18.0 & 23.3 & 37.2k & 35.5 &\n44.2 & 31.4 & 37.0 & 45.3k\n\n4$ $8 & 48.0 & 55.1 & 37.0 & 46.7 & 62.4k & 56.0 & 53.9 &\n44.0 & 51.3 & 53.4k & 20.0 & 26.6 & 18.0 & 21.5 & 72.9k & 34.4 &\n39.0 & 31.2 & 34.9 & 66.3k\n\nTable presents the full grid search results across different width ($W$) and depth ($D$) configurations using the Qwen2.5-7B-Instruct model on multi-hop QA datasets.",
+    "char_start": 58486,
+    "char_end": 60447,
+    "sentence_index": 422,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec037",
+    "text": "For the efficiency of the grid search, we report the result on a 100-sample subset of the dev set.",
+    "char_start": 60448,
+    "char_end": 60546,
+    "sentence_index": 423,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec037",
+    "text": "For each configuration, we report accuracy, F1 score, exact match (EM), average score, and token usage across four multi-hop QA datasets.",
+    "char_start": 60547,
+    "char_end": 60684,
+    "sentence_index": 424,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec037",
+    "text": "These results inform our selection of $W = 2$ as the default width setting, which provides the best trade-off between performance and computational cost.",
+    "char_start": 60685,
+    "char_end": 60838,
+    "sentence_index": 425,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec038",
+    "text": "20pt\n\nContext Manager Prompt\nAct as the context manager for a Retrieval-Augmented Generation (RAG) system.",
+    "char_start": 60840,
+    "char_end": 60946,
+    "sentence_index": 426,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec038",
+    "text": "Your job is to maintain a single, up-to-date note that contains all the information relevant to answering the original query.",
+    "char_start": 60947,
+    "char_end": 61072,
+    "sentence_index": 427,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec038",
+    "text": "Please ensure that the note includes all original text information useful for answering the question.",
+    "char_start": 61073,
+    "char_end": 61174,
+    "sentence_index": 428,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec038",
+    "text": "Steps:\n- Based on the retrieved documents, supplement the notes with content not yet included but useful for answering the question.",
+    "char_start": 61176,
+    "char_end": 61308,
+    "sentence_index": 429,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec038",
+    "text": "- Resolve conflicts: if statements disagree, keep the most reliable or recent version.",
+    "char_start": 61309,
+    "char_end": 61395,
+    "sentence_index": 430,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec038",
+    "text": "End your response with the literal tag [END] .",
+    "char_start": 61397,
+    "char_end": 61443,
+    "sentence_index": 431,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec038",
+    "text": "Original query: \\ query\\\n\nOld note: \\ note\\\n\nNew information: \\ new\\_context\\\n\nUpdated note:\n\n6pt\n\nAnswer Generator Prompt\nAnswer the question based on the given notes.",
+    "char_start": 61445,
+    "char_end": 61613,
+    "sentence_index": 432,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec038",
+    "text": "Output ONLY the exact answer in as few words as possible.",
+    "char_start": 61614,
+    "char_end": 61671,
+    "sentence_index": 433,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec038",
+    "text": "Do not include the question, reasoning, or any extra text.",
+    "char_start": 61672,
+    "char_end": 61730,
+    "sentence_index": 434,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec038",
+    "text": "End your response with the literal tag [END].",
+    "char_start": 61731,
+    "char_end": 61776,
+    "sentence_index": 435,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec038",
+    "text": "The following are given notes:\n\\ note\\\n\nQuestion: \\ query\\\nAnswer:\n\n6pt\n\nMulti-Path Dispatch Rewrite Prompt\nYou are an intelligent assistant in a Retrieval-Augmented Generation (RAG) system.",
+    "char_start": 61778,
+    "char_end": 61968,
+    "sentence_index": 436,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec038",
+    "text": "Your goal is to (a) diagnose retrieval needs for the current question and (b) produce exactly \\ N\\ rewritten queries, each paired with the most suitable retrieval strategy for that specific rewrite.",
+    "char_start": 61969,
+    "char_end": 62167,
+    "sentence_index": 437,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec038",
+    "text": "Information:\n- Original Query: \\ query\\\n- Current Query: \\ current\\_query\\\n- Context: \\ context\\\n\nAvailable Retrieval Strategies:\n- bm25 (sparse / lexical): Prioritizes exact token and phrase matches.",
+    "char_start": 62169,
+    "char_end": 62369,
+    "sentence_index": 438,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec038",
+    "text": "- dense (semantic / vector similarity): Matches by meaning despite paraphrases.",
+    "char_start": 62370,
+    "char_end": 62449,
+    "sentence_index": 439,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec038",
+    "text": "Instructions:\n1.",
+    "char_start": 62451,
+    "char_end": 62467,
+    "sentence_index": 440,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec038",
+    "text": "Use the context to reflect on what is missing to answer the query.",
+    "char_start": 62468,
+    "char_end": 62534,
+    "sentence_index": 441,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec038",
+    "text": "Think about both the big picture and the small atomic facts that might need verification.",
+    "char_start": 62535,
+    "char_end": 62624,
+    "sentence_index": 442,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec038",
+    "text": "2.",
+    "char_start": 62625,
+    "char_end": 62627,
+    "sentence_index": 443,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec038",
+    "text": "Generate exactly \\ N\\ rewritten queries.",
+    "char_start": 62628,
+    "char_end": 62668,
+    "sentence_index": 444,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec038",
+    "text": "- Do not just paraphrase \u2014 each query should explore a different angle, granularity, or fact.",
+    "char_start": 62669,
+    "char_end": 62762,
+    "sentence_index": 445,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec038",
+    "text": "- Avoid near-duplicates.",
+    "char_start": 62763,
+    "char_end": 62787,
+    "sentence_index": 446,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec038",
+    "text": "- Each query must serve a distinct retrieval purpose.",
+    "char_start": 62788,
+    "char_end": 62841,
+    "sentence_index": 447,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec038",
+    "text": "3.",
+    "char_start": 62842,
+    "char_end": 62844,
+    "sentence_index": 448,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec038",
+    "text": "For each query, select the most suitable retrieval strategy:\n- Use bm25 when exact names, phrases, or quoted terms matter; remove ``wh'' words.",
+    "char_start": 62845,
+    "char_end": 62988,
+    "sentence_index": 449,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec038",
+    "text": "- Use dense when searching for meanings, definitions, or related concepts.",
+    "char_start": 62989,
+    "char_end": 63063,
+    "sentence_index": 450,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec038",
+    "text": "Output Format (strict):\n1.",
+    "char_start": 63065,
+    "char_end": 63091,
+    "sentence_index": 451,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec038",
+    "text": "First provide your analysis and rationale in a <think> block, including per-item strategy justification.",
+    "char_start": 63092,
+    "char_end": 63196,
+    "sentence_index": 452,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec038",
+    "text": "2.",
+    "char_start": 63197,
+    "char_end": 63199,
+    "sentence_index": 453,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec038",
+    "text": "Then output exactly \\ N\\ query rewrites using the following structure:\n<queries>\n<item rank=\"1\"><strategy>bm25|dense</strategy>\n<query>...</query>\n</item>\n<item rank=\"2\"><strategy>bm25|dense</strategy>\n<query>...</query>\n</item>\n...",
+    "char_start": 63200,
+    "char_end": 63432,
+    "sentence_index": 454,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec038",
+    "text": "<item rank=\"\\ N\\ \"><strategy>bm25|dense</strategy>\n<query>...</query>\n</item>\n</queries>\n3.",
+    "char_start": 63433,
+    "char_end": 63524,
+    "sentence_index": 455,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec038",
+    "text": "End your response with the literal tag [END].",
+    "char_start": 63525,
+    "char_end": 63570,
+    "sentence_index": 456,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec038",
+    "text": "Output:\n\n6pt\n\nAnswer Selection Prompt ( Context Manager )\nQuestion: \\ question\\\n\nAll Generated Answers:\n\\ answer\\_blocks\\\n\nBased on all the answers and reasoning provided, select the best answer.",
+    "char_start": 63572,
+    "char_end": 63767,
+    "sentence_index": 457,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec038",
+    "text": "Consider accuracy and relevance to the question.",
+    "char_start": 63768,
+    "char_end": 63816,
+    "sentence_index": 458,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec038",
+    "text": "Give the final answer directly.",
+    "char_start": 63817,
+    "char_end": 63848,
+    "sentence_index": 459,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec038",
+    "text": "Then, provide a direct, concise, and accurate answer inside <answer> </answer> tags.",
+    "char_start": 63849,
+    "char_end": 63933,
+    "sentence_index": 460,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec038",
+    "text": "End your response with the literal tag [END].",
+    "char_start": 63934,
+    "char_end": 63979,
+    "sentence_index": 461,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec038",
+    "text": "Final answer:\n\n6pt\n\nContext Merging Prompt ( Context Manager )\nYou are an expert at combining contexts in a Retrieval Augmented Generation system for answering question \\ question\\ .",
+    "char_start": 63981,
+    "char_end": 64163,
+    "sentence_index": 462,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec038",
+    "text": "Here are several notes: \\ reasoning\\_list\\ .",
+    "char_start": 64164,
+    "char_end": 64208,
+    "sentence_index": 463,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec038",
+    "text": "Combine the above notes into a single note that includes all information and is useful for final answer generation.",
+    "char_start": 64209,
+    "char_end": 64324,
+    "sentence_index": 464,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec038",
+    "text": "Please ensure that the note includes all original text information useful for answering the question.",
+    "char_start": 64325,
+    "char_end": 64426,
+    "sentence_index": 465,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec038",
+    "text": "End your response with the literal tag [END].",
+    "char_start": 64427,
+    "char_end": 64472,
+    "sentence_index": 466,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec038",
+    "text": "Your response:",
+    "char_start": 64473,
+    "char_end": 64487,
+    "sentence_index": 467,
+    "section_sentence_index": 41
+  }
+]

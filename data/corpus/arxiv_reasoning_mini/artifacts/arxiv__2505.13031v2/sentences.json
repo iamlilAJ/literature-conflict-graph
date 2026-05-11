@@ -1,0 +1,1802 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Recent text-to-image systems face limitations in handling multimodal inputs and complex reasoning tasks.",
+    "char_start": 0,
+    "char_end": 104,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "We introduce MindOmni, a unified multimodal large language model that addresses these challenges by incorporating reasoning generation through reinforcement learning.",
+    "char_start": 105,
+    "char_end": 271,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "MindOmni leverages a three-phase training strategy: i) design of a unified vision language model with a decoder-only diffusion module, ii) supervised fine-tuning with Chain-of-Thought (CoT) instruction data, and iii) our proposed Reasoning Generation Policy Optimization (RGPO) algorithm, utilizing multimodal feedback to effectively guide policy updates.",
+    "char_start": 272,
+    "char_end": 627,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Experimental results demonstrate that MindOmni outperforms existing models, achieving impressive performance on both understanding and generation benchmarks, meanwhile showcasing advanced fine-grained reasoning generation capabilities, especially with mathematical reasoning instruction.",
+    "char_start": 628,
+    "char_end": 915,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "All codes will be made public at https://github.com/TencentARC/MindOmni https://github.com/TencentARC/MindOmni .",
+    "char_start": 916,
+    "char_end": 1028,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec002",
+    "text": "Advanced text-to-image systems such as SD-XL , FLUX , and Sana generate images by leveraging textual descriptions as conditioning signals.",
+    "char_start": 1030,
+    "char_end": 1168,
+    "sentence_index": 5,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec002",
+    "text": "However, they encounter two key challenges:\ni) The use of a fixed text encoder restricts the model to textual instructions, thereby limiting its capacity to incorporate multimodal inputs like images or audio.",
+    "char_start": 1169,
+    "char_end": 1377,
+    "sentence_index": 6,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "ii) These methods are incapable of producing explicit inferences in response to instructions that involve world knowledge, mathematical logic, or spatiotemporal perception (see fig:teaser_qualitative ), which is defined as reasoning generation capacity.",
+    "char_start": 1378,
+    "char_end": 1631,
+    "sentence_index": 7,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Previous studies build unified MLLMs capable of both understanding and generation to address the first challenge.",
+    "char_start": 1632,
+    "char_end": 1745,
+    "sentence_index": 8,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "These approaches employ learnable queries or direct projector to implicitly extract semantics from VLMs, or integrate text token autoregressive and image generative processes within a single transformer to enable early fusion.",
+    "char_start": 1746,
+    "char_end": 1972,
+    "sentence_index": 9,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Although these approaches support multimodal inputs, they still struggle to address scenarios that require reasoning.",
+    "char_start": 1973,
+    "char_end": 2090,
+    "sentence_index": 10,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Building on early explorations of Chain-of-Thought (CoT) reasoning in VLMs and LLMs , recent works propose generating textual layout plans by guiding large models with customized CoT prompts for image synthesis.",
+    "char_start": 2092,
+    "char_end": 2303,
+    "sentence_index": 11,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "While there has been progress on the second challenge, these approaches are constrained to spatial relations and hindered by intricate separation processes and inflexible CoT templates, limiting their applicability to more complex reasoning scenarios.",
+    "char_start": 2304,
+    "char_end": 2555,
+    "sentence_index": 12,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "Following the success of Deepseek-R1 , subsequent research has shown that incorporating the Group Relative Policy Optimization (GRPO) algorithm into textual reasoning pipelines significantly enhances VLM performance on mathematical and coding tasks by automatically producing accurate and diverse CoT trajectories.",
+    "char_start": 2556,
+    "char_end": 2870,
+    "sentence_index": 13,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "This observation prompts a fresh perspective: Can reinforcement learning be leveraged to unleash the reasoning generation capabilities of unified VLMs?",
+    "char_start": 2871,
+    "char_end": 3022,
+    "sentence_index": 14,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "[b]\n\n1.0\n5pt\n-12pt\nl|cccccc\n\n2 * Method & X2Image & Unified & End-to-End & Fine-grained & Explicit & RL\n\n&Generation & Und.",
+    "char_start": 3023,
+    "char_end": 3146,
+    "sentence_index": 15,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "\\& Gen.",
+    "char_start": 3147,
+    "char_end": 3154,
+    "sentence_index": 16,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "& Pipeline & Image Editing & CoT & Augmented\n\nJanus-Pro januspro & & & & & &\n\nMetaMorph metamorph & & & & & &\n\nGoT got & & & & & &\n\ngray!10 MindOmni & & & & & &\n\nCharacteristics comparison with other counterparts.",
+    "char_start": 3155,
+    "char_end": 3368,
+    "sentence_index": 17,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "To address the issue, we introduce a three-phase training strategy.",
+    "char_start": 3370,
+    "char_end": 3437,
+    "sentence_index": 18,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "In the initial stage, we propose a new multimodal large language model, named MindOmni, for unified vision understanding and generation, which includes a vision language model , a lightweight connector, a text head, and a decoder-only diffusion module .",
+    "char_start": 3438,
+    "char_end": 3691,
+    "sentence_index": 19,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Prior studies have shown that applying reinforcement learning following supervised fine-tuning can significantly enhance algorithmic performance.",
+    "char_start": 3692,
+    "char_end": 3837,
+    "sentence_index": 20,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Therefore, we construct a series of coarse-to-fine CoT instruction data and then train our model with supervised tuning in the second stage to effectively initiate the reinforcement learning algorithm later.",
+    "char_start": 3838,
+    "char_end": 4045,
+    "sentence_index": 21,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "In the third stage, we propose the Reasoning Generation Policy Optimization (RGPO) algorithm and collect a curated corpus of plain-text reasoning sequences to guide the model in generating precise CoT reasoning content.",
+    "char_start": 4046,
+    "char_end": 4265,
+    "sentence_index": 22,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "In contrast to the original GRPO algorithm, which relies solely on text representations, RGPO generates multimodal feedback signals from both image and text features to guide policy updates.",
+    "char_start": 4266,
+    "char_end": 4456,
+    "sentence_index": 23,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "In addition to the format reward function that enforces adherence to the correct CoT structure, we introduce a consistency reward function to evaluate visual-linguistic alignment.",
+    "char_start": 4457,
+    "char_end": 4636,
+    "sentence_index": 24,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Tailored for reasoning generation, we introduce two independent Kullback-Leibler divergence regularizers into RGPO.",
+    "char_start": 4637,
+    "char_end": 4752,
+    "sentence_index": 25,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "They are applied separately to text and visual rollouts during policy updates, to stabilize training and mitigate knowledge forgetting.",
+    "char_start": 4753,
+    "char_end": 4888,
+    "sentence_index": 26,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Ultimately, our MindOmni obtains obvious advantages over previous counterparts as shown in tab:introduction .",
+    "char_start": 4889,
+    "char_end": 4998,
+    "sentence_index": 27,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "fig:teaser_qualitative illustrates the effectiveness of MindOmni across various complex reasoning generation scenarios, notably its strong performance on mathematical reasoning instruction.",
+    "char_start": 5000,
+    "char_end": 5189,
+    "sentence_index": 28,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Furthermore, it showcases advanced fine-grained editing capabilities, covering general edits as well as computer vision tasks like instance segmentation.",
+    "char_start": 5190,
+    "char_end": 5343,
+    "sentence_index": 29,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Remarkably, after fine-tuning with some specific data, MindOmni can accurately play chess and tic-tac-toe according to user inputs, establishing a foundation for future research.",
+    "char_start": 5344,
+    "char_end": 5522,
+    "sentence_index": 30,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "We also conduct extensive experiments to validate the effectiveness of MindOmni on both understanding and generation benchmarks.",
+    "char_start": 5523,
+    "char_end": 5651,
+    "sentence_index": 31,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Our method surpasses LLaVA-One-Vision by 2.4\\% on MMBench and boosts Janus-Pro by 10.6\\% on MMMU .",
+    "char_start": 5652,
+    "char_end": 5750,
+    "sentence_index": 32,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Furthermore, we achieve a state-of-the-art performance with 71\\% overall score on the reasoning generation benchmark WISE , which outperforms previous methods with a remarkable margin, as well as 83\\% overall score on the basic text-to-image generation benchmark, GenEval .",
+    "char_start": 5751,
+    "char_end": 6024,
+    "sentence_index": 33,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "Unified multimodal LLMs have demonstrated the ability to perform both understanding and generation tasks within a single framework.",
+    "char_start": 6026,
+    "char_end": 6157,
+    "sentence_index": 34,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec004",
+    "text": "Early research DreamLLM and Emu-series predict the next multimodal element by regressing visual embeddings and integrate a separate diffusion U-Net to achieve image generation.",
+    "char_start": 6158,
+    "char_end": 6334,
+    "sentence_index": 35,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec004",
+    "text": "Chameleon and Emu3 discretize visual features and train token-based autoregressive models on mixed image-text data.",
+    "char_start": 6335,
+    "char_end": 6450,
+    "sentence_index": 36,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec004",
+    "text": "Furthermore, TransFusion and Show-o integrate the denoising mechanism and autoregressive approaches within a single transformer model.",
+    "char_start": 6451,
+    "char_end": 6585,
+    "sentence_index": 37,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "However, many of these unified models still fall short of the performance of task-specific architectures.",
+    "char_start": 6586,
+    "char_end": 6691,
+    "sentence_index": 38,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "In an effort to bridge this gap, Janus uses distinct tokenizers for understanding and generation tasks, whereas TokenFlow employs dual codebooks with shared mappings to facilitate the integration of low- and high-level features.",
+    "char_start": 6692,
+    "char_end": 6920,
+    "sentence_index": 39,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "ILLUME+ also incorporates a unified dual visual tokenizer and employs a more advanced VLM, along with a separate diffusion DiT, to achieve improved performance.",
+    "char_start": 6921,
+    "char_end": 7081,
+    "sentence_index": 40,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec005",
+    "text": "Recently, there has been a surge in research both in academia and industry regarding the reasoning capabilities of large language models.",
+    "char_start": 7083,
+    "char_end": 7220,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec005",
+    "text": "OpenAI-O1 makes a significant breakthrough by enhancing reasoning performance through an extended Chain-of-Thought (CoT) reasoning framework and introducing inference-time scaling.",
+    "char_start": 7221,
+    "char_end": 7401,
+    "sentence_index": 42,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec005",
+    "text": "Many studies have explored reinforcement learning , majority voting , and search algorithms as ways to scale test-time compute and improve reasoning performance.",
+    "char_start": 7402,
+    "char_end": 7563,
+    "sentence_index": 43,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "Notably, DeepSeek-R1 demonstrates exceptional reasoning performance after only a few thousand steps of RL training, leveraging the GRPO algorithm.",
+    "char_start": 7564,
+    "char_end": 7710,
+    "sentence_index": 44,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Furthermore, several studies have also applied GRPO to multimodal large models, improving visual reasoning capabilities across various tasks, including mathematical reasoning and reference segmentation .",
+    "char_start": 7711,
+    "char_end": 7914,
+    "sentence_index": 45,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec006",
+    "text": "Reasoning-driven image generation has made significant strides in recent years, garnering considerable attention from the academic community.",
+    "char_start": 7916,
+    "char_end": 8057,
+    "sentence_index": 46,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec006",
+    "text": "PARM utilizes an iterative reasoning process to enhance image quality by combining clarity and potential evaluation.",
+    "char_start": 8058,
+    "char_end": 8174,
+    "sentence_index": 47,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec006",
+    "text": "RPG-DiffusionMaster employs a multimodal learning model (MLLM) for text-to-image diffusion, ensuring coherence in the generated output by breaking prompts into multiple sub-regions.",
+    "char_start": 8175,
+    "char_end": 8356,
+    "sentence_index": 48,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "GoT introduces a structured language reasoning framework to build a generative thinking chain, first analyzing semantic relationships and spatial arrangements, and then generating and editing images.",
+    "char_start": 8357,
+    "char_end": 8556,
+    "sentence_index": 49,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "However, GoT\u2019s independent structure limits its flexibility and adaptability.",
+    "char_start": 8557,
+    "char_end": 8634,
+    "sentence_index": 50,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "Meanwhile, SimpleAR demonstrates the effectiveness of reinforcement learning algorithms in discrete autoregressive generative models.",
+    "char_start": 8635,
+    "char_end": 8768,
+    "sentence_index": 51,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "However, previous approaches remain focused on strengthening the consistency between images and instructions using MLLM, often overlooking the use of MLLM's powerful logical reasoning capabilities for genuine reasoning generation.",
+    "char_start": 8769,
+    "char_end": 8999,
+    "sentence_index": 52,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "In this work, we aim to address this gap by introducing the RGPO reinforcement learning algorithm into a unified multimodal large model (MLLM) for both generation and understanding, enabling deeper reasoning-driven generation.",
+    "char_start": 9000,
+    "char_end": 9226,
+    "sentence_index": 53,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec007",
+    "text": "In this section, we first present the pipeline formulation and describe our proposed model, MindOmni, for unified vision understanding and generation.",
+    "char_start": 9228,
+    "char_end": 9378,
+    "sentence_index": 54,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec007",
+    "text": "Subsequently, we introduce our proposed Reasoning Generation Policy Optimization (RGPO) algorithm in the RL process to achieve impressive reasoning-guided image generation, with the detailed training procedure provided at the end.",
+    "char_start": 9379,
+    "char_end": 9609,
+    "sentence_index": 55,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec007",
+    "text": "[t]\n\nfig/inferece.pdf\nOverview of our inference framework.",
+    "char_start": 9610,
+    "char_end": 9668,
+    "sentence_index": 56,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec007",
+    "text": "MindOmni accomplishes vision understanding, multimodal reasoning generation, and vision editing tasks in a unified large model.",
+    "char_start": 9669,
+    "char_end": 9796,
+    "sentence_index": 57,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "-10pt\n\nA unified multimodal large model is capable of processing both visual and textual inputs simultaneously.",
+    "char_start": 9798,
+    "char_end": 9909,
+    "sentence_index": 58,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec008",
+    "text": "Separate encoders map each type of input into a common text feature space.",
+    "char_start": 9910,
+    "char_end": 9984,
+    "sentence_index": 59,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec008",
+    "text": "Meanwhile, a diffusion decoder conditions on the MLLM\u2019s output feature sequence to denoise the latent noise into a real image, enabling multimodal generation and vision editing.",
+    "char_start": 9985,
+    "char_end": 10162,
+    "sentence_index": 60,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec008",
+    "text": "However, prior methods have primarily used multimodal models as semantic feature extractors, overlooking the inherent reasoning capabilities of LLMs.",
+    "char_start": 10163,
+    "char_end": 10312,
+    "sentence_index": 61,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec008",
+    "text": "As a result, they underperform on reasoning generation and editing tasks.",
+    "char_start": 10313,
+    "char_end": 10386,
+    "sentence_index": 62,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec008",
+    "text": "Recent research on the reasoning ability of large models has inspired us to introduce reinforcement learning algorithms into our framework to unleash the reasoning generation power.",
+    "char_start": 10387,
+    "char_end": 10568,
+    "sentence_index": 63,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec008",
+    "text": "To build a unified MLLM for reasoning generation, we introduce a three-stage training pipeline and propose the RGPO reinforcement learning algorithm, which enables the model to explicitly express reasoning via a chain-of-thought process.",
+    "char_start": 10570,
+    "char_end": 10807,
+    "sentence_index": 64,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "[t]\n\nfig/framework.pdf\nOverview of Training Pipeline.",
+    "char_start": 10808,
+    "char_end": 10861,
+    "sentence_index": 65,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "We propose a three-stage training framework comprising pretraining, instruction-based supervised fine-tuning, and reinforcement learning with RGPO.",
+    "char_start": 10862,
+    "char_end": 11009,
+    "sentence_index": 66,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "-10pt\n\nRecent vision language models show substantial world knowledge and cross-modal reasoning skills but lack effective generation capabilities.",
+    "char_start": 11011,
+    "char_end": 11157,
+    "sentence_index": 67,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec009",
+    "text": "In contrast, existing generative models produce high-quality renderings but struggle to interpret complex semantic controls, such as logical reasoning or multimodal inputs.",
+    "char_start": 11158,
+    "char_end": 11330,
+    "sentence_index": 68,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec009",
+    "text": "Furthermore, significant structural differences between VLMs and DiTs also hinder smooth mode integration.",
+    "char_start": 11331,
+    "char_end": 11437,
+    "sentence_index": 69,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec009",
+    "text": "To address it, we develop our MindOmni based on Qwen2.5-VL and OmniGen omnigen .",
+    "char_start": 11438,
+    "char_end": 11518,
+    "sentence_index": 70,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec009",
+    "text": "The former is an advanced vision language model, and the latter is a diffusion decoder that offers a promising X2Image generation performance with a streamlined, LLM-style network design.",
+    "char_start": 11519,
+    "char_end": 11706,
+    "sentence_index": 71,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec009",
+    "text": "We utilize a connector comprising two standard LLM decoder layers to bridge two models.",
+    "char_start": 11707,
+    "char_end": 11794,
+    "sentence_index": 72,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec009",
+    "text": "Additionally, by leveraging our RGPO reinforcement learning algorithm, MindOmni can generate more precise chains of thoughts through an autoregressive paradigm to guide reasoning generation as shown in fig:framework .",
+    "char_start": 11795,
+    "char_end": 12012,
+    "sentence_index": 73,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec009",
+    "text": "Vision Understanding.",
+    "char_start": 12013,
+    "char_end": 12034,
+    "sentence_index": 74,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec009",
+    "text": "Given an image $I$ and a corresponding user linguistic request for vision understanding, MindOmni first extracts continuous vision features by a pretrained ViT of Qwen2.5-VL and encodes the text into $n$ discrete tokens $T=(t_1, t_2, ..., t_n)$ with an LLM tokenizer as shown in Function A of fig:framework .",
+    "char_start": 12035,
+    "char_end": 12343,
+    "sentence_index": 75,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec009",
+    "text": "Subsequently, the model samples the output text embedding $t_ n+1 $ and detokenizes the final output according to the conditional probability:\n\nP(t_1, t_2,...,t_ n+1 |I)= _ i=1 ^ n+1 P (t_ i | t_ 1 , t_ 2 , , t_ i-1 , I ).",
+    "char_start": 12344,
+    "char_end": 12566,
+    "sentence_index": 76,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "Reasoning Generation and Editing.",
+    "char_start": 12568,
+    "char_end": 12601,
+    "sentence_index": 77,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec009",
+    "text": "As depicted in function B of fig:framework , when the user provides a tadpole image and asks for a prediction of its appearance as it matures, we first capture the current visual semantics and steer the model's reasoning by adding a system prompt.",
+    "char_start": 12602,
+    "char_end": 12849,
+    "sentence_index": 78,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec009",
+    "text": "The autoregressive generation process is also based on the conditional probability in equa: prob .",
+    "char_start": 12850,
+    "char_end": 12948,
+    "sentence_index": 79,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec009",
+    "text": "When the generation process encounters a special token, we use the connector to align the last hidden states of the previous tokens with the dimension of the diffusion decoder.",
+    "char_start": 12949,
+    "char_end": 13125,
+    "sentence_index": 80,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec009",
+    "text": "Then we concatenate a time token (representing the time step of denoising process) $F^ time $ along with $m$ noise latent tokens $\\ F^ noise _ i | F^ noise _ i N (0, 1)\\ _ i=1 ^ m $ to the prior tokens $ F^ cond $ which consists of vision and text features.",
+    "char_start": 13126,
+    "char_end": 13383,
+    "sentence_index": 81,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec009",
+    "text": "For the vision editing task, we recognize that relying solely on ViT to extract image semantic features may cause a loss of low-level information, such as texture and layout, which can result in the inability to preserve the fine details of the reference image during editing.",
+    "char_start": 13384,
+    "char_end": 13660,
+    "sentence_index": 82,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec009",
+    "text": "To address this, we incorporate the VAE features to retain these crucial details as shown in Function C of fig:framework .",
+    "char_start": 13661,
+    "char_end": 13783,
+    "sentence_index": 83,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec009",
+    "text": "At the end, the entire multimodal sequence is injected into the diffusion decoder for $N$ loops of denoising.",
+    "char_start": 13784,
+    "char_end": 13893,
+    "sentence_index": 84,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec010",
+    "text": "To implement our model, we develop a three-stage training pipeline as shown in fig:training_pipeline .",
+    "char_start": 13895,
+    "char_end": 13997,
+    "sentence_index": 85,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec010",
+    "text": "In the first two stages, we enable the model to initially achieve basic text-to-image generation and editing capabilities.",
+    "char_start": 13998,
+    "char_end": 14120,
+    "sentence_index": 86,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec010",
+    "text": "In the first stage, we only train the connector using image-text pairs and X2I data pairs , ensuring that the diffusion decoder can seamlessly process the semantic representation from the MLLM.",
+    "char_start": 14121,
+    "char_end": 14314,
+    "sentence_index": 87,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec010",
+    "text": "We deploy diffusion loss and KL distillation loss as objective functions to optimize our model.",
+    "char_start": 14315,
+    "char_end": 14410,
+    "sentence_index": 88,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec010",
+    "text": "Following , we use rectified flow to optimize the model.",
+    "char_start": 14411,
+    "char_end": 14467,
+    "sentence_index": 89,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec010",
+    "text": "Specifically, given a ground truth image $x_0$ and a random time step $t$, we sample the noise data $ N (0,1)$ and get $x_t$ which is defined as: $x_t = (1-t) + tx_0$.",
+    "char_start": 14468,
+    "char_end": 14635,
+    "sentence_index": 90,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec010",
+    "text": "Consequently, we denote diffusion loss as:\n\nL _ diffuison = E ,\n\nwhere $ $ indicates the parameters of our model and $ $ is our MindOmni.",
+    "char_start": 14636,
+    "char_end": 14773,
+    "sentence_index": 91,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec010",
+    "text": "To mitigate the adverse effects of potential distribution shift, we employ KL divergence to enforce consistency with the teacher model $ $ in modeling the vector field during the denoising process.",
+    "char_start": 14774,
+    "char_end": 14971,
+    "sentence_index": 92,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec010",
+    "text": "Distillation loss is formulated as:\n\nL _ distillation =- E - H ( ( ^ i (x_t,t, F^ cond )),\n\nwhere $ ^ i $ and $ ^ i $ indicate the noise latent feature of $i$-th layer in our model and teacher model, respectively.",
+    "char_start": 14972,
+    "char_end": 15185,
+    "sentence_index": 93,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec010",
+    "text": "$ H $ represents the entropy and $ $ indicates the feature mapping.",
+    "char_start": 15186,
+    "char_end": 15253,
+    "sentence_index": 94,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec010",
+    "text": "In the second stage, we collect captions of varying granularity to construct CoT instruction data, using coarse-grained descriptions as answer content and fine-grained descriptions as reasoning content.",
+    "char_start": 15254,
+    "char_end": 15456,
+    "sentence_index": 95,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec010",
+    "text": "We also utilize leading text-to-image models to retrieve corresponding high-quality images.",
+    "char_start": 15457,
+    "char_end": 15548,
+    "sentence_index": 96,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec010",
+    "text": "The connector and diffusion decoder are trained with diffusion loss only.",
+    "char_start": 15549,
+    "char_end": 15622,
+    "sentence_index": 97,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec010",
+    "text": "[t]\n\n0.68pt\n1.2\n\nllcccccccc|ccc\n\n2 * Type & 2 * Model & 2 * Size & 7 c GenEval & 3 c DPG-Bench\n\n(lr) 4-10 (lr) 11-13\n\n&&& Single Obj & Two Obj & Counting & Colors & Position & Color Attri & Overall & Global & Relation & Overall\n\n9 * Gen.",
+    "char_start": 15623,
+    "char_end": 15860,
+    "sentence_index": 98,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec010",
+    "text": "Only\n&LLaMAGen & 8.0B & 0.98 & 0.71 & 0.34 & 0.81 & 0.17 & 0.21 & 0.32 & - & - & 65.2\n\n&Emu3-Gen & 8.0B & - &\\; 0.81$^ $ & - & -& \\; 0.39$^ $ & \\; 0.45$^ $ & \\; 0.66$^ $ & - & - & 81.6\n\n&SDv1-5 & 0.9B & 0.97 & 0.38 & 0.35 & 0.76 & 0.04 & 0.06 & 0.43 & 74.6 & 73.5 & 63.2\n\n&PixArt & 0.6B & 0.98 & 0.50 & 0.44 & 0.80 & 0.08 & 0.07 & 0.48 & 75.0 & 82.6 &71.1\n\n&SDXL & 2.6B & 0.98 & 0.74 & 0.39 & 0.85 & 0.15 & 0.23 & 0.55 & 83.3 & 86.6 & 74.7\n\n&SimpleAR & 8.0B & - & 0.90 & - & - & 0.28 & 0.45 & 0.63 & 88.0 &88.3 & 82.0\n\n&Flux & 12B & - & - & - & - & - & - & 0.67 & - & - & 84.0\n\n&Sana-1.5 & 1.6B & - & - & - & - & - & - & 0.82 & - &- & 84.5\n\n& e6e6e6 OmniGen (Baseline) & e6e6e6 3.8B & e6e6e6 0.99 & e6e6e6 0.86 & e6e6e6 0.64 & e6e6e6 0.85 & e6e6e6 0.31 & e6e6e6 0.55 & e6e6e6 0.70 & e6e6e6 87.5 & e6e6e6 88.3 & e6e6e6 81.2\n\n12 * Und.",
+    "char_start": 15861,
+    "char_end": 16694,
+    "sentence_index": 99,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec010",
+    "text": "and Gen.",
+    "char_start": 16695,
+    "char_end": 16703,
+    "sentence_index": 100,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec010",
+    "text": "&Chameleon & 7.0B & - & - & - & - & - & - & 0.39 & - & - & -\n\n&Show-o & 1.5B & 0.95& 0.52& 0.49& 0.82& 0.11& 0.28 & 0.53 & 79.3 & 84.5 & 67.3\n\n&Janus & 1.5B & 0.97 &0.68 &0.30 &0.84 &0.46 &0.42 & 0.61 & 82.3 & 85.5 & 79.7\n\n&Janus-Pro &7.0B & 0.99 &0.89 &0.59 &0.90 &0.79 &0.66& 0.80& - & - &84.2\n\n&TokenFlow-XL & 10B&0.97 &0.66 &0.40 &0.84 &0.17 &0.26& 0.55 & 78.7 & 85.2 & 73.4\n\n&TokenFlow-XL & 14B&\\; 0.93$^ $& \\; 0.72$^ $& \\; 0.45$^ $& \\; 0.82$^ $& \\; 0.45$^ $& \\; 0.42$^ $& \\; 0.63$^ $ & 78.7 & 85.2 & 73.4\n\n&GOT & 7.9B & 0.99 &0.69& 0.67 &0.85 &0.34 &0.27 & 0.64& - & - & -\n\n&MetaQuery-XL & 7.0B & - & -& - & - & - & - & \\; 0.80$^ $ & - & -& 82.1\n\n&BLIP-3o$^ $ & 7.0B & - & -& - & - & - & - & 0.83& - & -& 80.7\n\n&BAGEL & 7.0B & - & -& - & - & - & - &0.82 & - & -& -\n\n& e6e6e6 MindOmni (ours) & e6e6e6 7.0B & e6e6e6 0.99 & e6e6e6 0.97 & e6e6e6 0.77 & e6e6e6 0.89 & e6e6e6 0.59 & e6e6e6 0.64 & e6e6e6 0.81 & e6e6e6 89.7 & e6e6e6 88.7 & e6e6e6 83.0\n\n& e6e6e6 MindOmni$^*$ (ours) & e6e6e6 7.0B & e6e6e6 0.99 & e6e6e6 0.94 & e6e6e6 0.71 & e6e6e6 0.90 & e6e6e6 0.71 & e6e6e6 0.71 & e6e6e6 0.83 & e6e6e6 89.1 & e6e6e6 89.2 & e6e6e6 82.5\n\nPerformance comparison on GenEval and DPG-Bench.",
+    "char_start": 16704,
+    "char_end": 17888,
+    "sentence_index": 101,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec010",
+    "text": "``Und.'' and ``Gen.'' denote ``understanding'' and ``generation'', respectively.",
+    "char_start": 17889,
+    "char_end": 17969,
+    "sentence_index": 102,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec010",
+    "text": "$^ $ indicates using the rewritten prompts, which may improve the accuracy significantly.",
+    "char_start": 17970,
+    "char_end": 18059,
+    "sentence_index": 103,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec010",
+    "text": "\"Size\" of unified models refers to the size of the LLM backbone.",
+    "char_start": 18060,
+    "char_end": 18124,
+    "sentence_index": 104,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec010",
+    "text": "MindOmni$^*$ denotes the variant trained with higher-quality data .",
+    "char_start": 18125,
+    "char_end": 18192,
+    "sentence_index": 105,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec010",
+    "text": "$^ $ is the released version.",
+    "char_start": 18193,
+    "char_end": 18222,
+    "sentence_index": 106,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec011",
+    "text": "At this stage, we propose the RGPO reinforcement learning algorithm to enhance the model\u2019s reasoning generation capabilities by explicitly generating a logical chain of thought inspired by DeepSeek-R1 .",
+    "char_start": 18224,
+    "char_end": 18426,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec011",
+    "text": "To achieve this, we first construct a plain-text training dataset comprising user instructions, ground-truth prompts, and corresponding explanations.",
+    "char_start": 18427,
+    "char_end": 18576,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec011",
+    "text": "Additionally, we design a reasoning generation-oriented system prompt following DeepSeek-R1 to guide our model in generating Chain-of-Thought content.",
+    "char_start": 18577,
+    "char_end": 18727,
+    "sentence_index": 109,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec011",
+    "text": "Reward Functions.",
+    "char_start": 18728,
+    "char_end": 18745,
+    "sentence_index": 110,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec011",
+    "text": "During rollout process, policy model $ _ $ first samples $G$ groups of results $ \\ o_ i \\ _ i=1 ^ G $ for each request $q$, each comprising a reasoning chain $o_i^ T $ and a corresponding image $o_i^ I $.",
+    "char_start": 18746,
+    "char_end": 18950,
+    "sentence_index": 111,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec011",
+    "text": "To enhance the quality of the generated reasoning process, we introduce two types of reward functions to guide the policy model toward producing coherent and effective outputs: i) Format reward evaluates whether the chain of thought adheres to the expected structure, returning $1$ if the content is enclosed within <think> and <answer> tags, and $0$ otherwise.",
+    "char_start": 18951,
+    "char_end": 19312,
+    "sentence_index": 112,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec011",
+    "text": "ii) Consistency reward measures the semantic alignment between the generated image and the reference ground-truth prompt using cosine similarity derived from CLIP image and text encoders.",
+    "char_start": 19313,
+    "char_end": 19500,
+    "sentence_index": 113,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec011",
+    "text": "Then the advantage $A_i$ of of the $i$-th output is computed by all reward values $\\ r_i\\ _ i=1 ^ G $, which is formulated as:\n\nA_i = r_i- r Var (r) , while r = 1 G _ j=1 ^ G r_j, Var (r)= 1 G _ j=1 ^ G (r_j- r )^2 .",
+    "char_start": 19501,
+    "char_end": 19717,
+    "sentence_index": 114,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec011",
+    "text": "KL Regularizer.",
+    "char_start": 19719,
+    "char_end": 19734,
+    "sentence_index": 115,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec011",
+    "text": "During reinforcement learning, we incorporate two KL divergence-based distillation strategies, $ D _ KL ^ T $ for text generation and $ D _ KL ^ I $ for image generation to penalize large deviations between the reference model $ _ ref $ and previous policy, thereby promoting smoother policy transitions and mitigating the risk of forgetting previously learned knowledge.",
+    "char_start": 19735,
+    "char_end": 20106,
+    "sentence_index": 116,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec011",
+    "text": "We calculate two distillation functions of $o_i$ as:\n\nD _ KL ^ T ( _ || _ ref )&= _ ref (o_ i ^T|q ) _ (o_ i ^T | q ) - _ ref (o_ i ^T | q ) _ (o_ i ^T | q ) -1,\n\nD _ KL ^ I ( _ || _ ref )&= E .",
+    "char_start": 20107,
+    "char_end": 20301,
+    "sentence_index": 117,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec011",
+    "text": "Finally, we optimize our policy model by minimizing the objective function $ L _ GRPO $ as follows:\n\nc\nL _ GRPO =- E\n\n1 G _ i=1 ^ G ( ( _ (o_ i | q ) _ _ old (o_ i | q ) A_ i , clip ( _ (o_ i | q ) _ _ old (o_ i | q ) , 1- , 1+ ) A_ i )- ^ T D ^ T _ KL - ^ I D ^ I _ KL ),\n\nwhere $ $, $ ^ T $ and $ ^ I $ are hyper-parameters.",
+    "char_start": 20303,
+    "char_end": 20629,
+    "sentence_index": 118,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "We conduct extensive experiments to evaluate the effectiveness of our MindOmni and compare it to the widely adopted large language models across diverse multimodal understanding and generation benchmarks under a fair evaluation setting.",
+    "char_start": 20631,
+    "char_end": 20867,
+    "sentence_index": 119,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "[t]\n\n5pt\n1.2\n\nllccccccccc\n\n2 * Type & 2 * Model & 2 * Size & 2 * Cultural & 2 c Spatio-Temporal & 3 c Natural Science & 2 * Overall\n\n(lr) 5-6 (lr) 7-9\n\n&& & & Time & Space & Biology & Physics & Chemistry &\n\n6 * Gen.",
+    "char_start": 20868,
+    "char_end": 21083,
+    "sentence_index": 120,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec012",
+    "text": "Only\n&Emu3-Gen & 8.0B & 0.34 & 0.45 & 0.48 & 0.41 & 0.45 & 0.27 & 0.39\n\n&SDv1-5 &0.9B &0.34 &0.35 &0.32 &0.28 &0.29 &0.21 &0.32\n\n&PixArt &0.6B &0.45 &0.50 &0.48 &0.49 &0.56& 0.34& 0.47\n\n&SDXL &2.6B &0.43 &0.48 &0.47 &0.44 &0.45 &0.27 &0.43\n\n&FLUX & 2.7B &0.48 &0.58 &0.62 &0.42 &0.51 &0.35 &0.50\n\n& e6e6e6 OmniGen (Baseline) & e6e6e6 3.8B & e6e6e6 0.40 & e6e6e6 0.38 & e6e6e6 0.51 & e6e6e6 0.27 & e6e6e6 0.51 & e6e6e6 0.59 & e6e6e6 0.44\n\n10 * Und.",
+    "char_start": 21084,
+    "char_end": 21531,
+    "sentence_index": 121,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec012",
+    "text": "and Gen.",
+    "char_start": 21532,
+    "char_end": 21540,
+    "sentence_index": 122,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec012",
+    "text": "&Chameleon & 7.0B & - & - & - & - & - & - & 0.39\n\n&Show-o & 1.5B & 0.28 &0.40 &0.48 &0.30 &0.46 &0.30 &0.35\n\n&Janus & 1.5B & 0.16 &0.26 &0.35&0.28&0.30 &0.14 &0.23\n\n&Janus-Pro &7.0B & 0.30 &0.37 &0.49 &0.36 &0.42 &0.26 &0.35\n\n&MetaQuery-XL & 7.0B & 0.56 &0.55 &0.62& 0.49 &0.63& 0.41& 0.55\n\n&BLIP-3o & 7.0B & - &- &-& - &-& -& 0.52\n\n&BAGEL & 7.0B & 0.76 &0.69 &0.75& 0.65 &0.75& 0.58& 0.70\n\n& e6e6e6 MindOmni (w/o thinking) & e6e6e6 7.0B & e6e6e6 0.40 & e6e6e6 0.38 & e6e6e6 0.62 & e6e6e6 0.36 & e6e6e6 0.52 & e6e6e6 0.32 & e6e6e6 0.43\n\n& e6e6e6 MindOmni (ours) & e6e6e6 7.0B & e6e6e6 0.60 & e6e6e6 0.62 & e6e6e6 0.64 & e6e6e6 0.56 & e6e6e6 0.68 & e6e6e6 0.48 & e6e6e6 0.60\n\n& e6e6e6 MindOmni$^*$ (ours) & e6e6e6 7.0B & e6e6e6 0.75 & e6e6e6 0.70 & e6e6e6 0.76 & e6e6e6 0.76 & e6e6e6 0.72 & e6e6e6 0.52 & e6e6e6 0.71\n\nComparison with state-of-the-arts on WISE benchmark .",
+    "char_start": 21541,
+    "char_end": 22411,
+    "sentence_index": 123,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec012",
+    "text": "``Und.'' and ``Gen.'' denote ``understanding'' and ``generation'', respectively.",
+    "char_start": 22412,
+    "char_end": 22492,
+    "sentence_index": 124,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec012",
+    "text": "MindOmni$^*$ denotes the variant trained with higher-quality data and evaluated with thinking mode.",
+    "char_start": 22493,
+    "char_end": 22592,
+    "sentence_index": 125,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec012",
+    "text": "[t]\n\nfig/grpo_curve.pdf\nCurves of different Metric in RGPO.",
+    "char_start": 22594,
+    "char_end": 22653,
+    "sentence_index": 126,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec012",
+    "text": "``Completion Length\u201d indicates the output length of the policy model during rollout process.",
+    "char_start": 22654,
+    "char_end": 22746,
+    "sentence_index": 127,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec012",
+    "text": "-10pt\n\nWe utilize the open-sourced image-caption pairs and in-house data as training data.",
+    "char_start": 22748,
+    "char_end": 22838,
+    "sentence_index": 128,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Group Number $G$, KL coefficient $ ^ I $ and $ ^ T $ in RGPO are set as $4$, $0.06$ and $0.01$ by default.",
+    "char_start": 22839,
+    "char_end": 22945,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "Due to the limited space, detailed contents are present in sec:appendix_imple .",
+    "char_start": 22946,
+    "char_end": 23025,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "[t]\n\n[c] 0.52\n\nfig/scatter.pdf\nScatter plot showing the performance on WISE Benchmark.",
+    "char_start": 23026,
+    "char_end": 23112,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "The Y and X axes represent the overall score and training step during RL, respectively.",
+    "char_start": 23113,
+    "char_end": 23200,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "The size of each circle reflects the completion length of our model in a certain step.",
+    "char_start": 23201,
+    "char_end": 23287,
+    "sentence_index": 133,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "[c] 0.44\n\n2pt\n1.2\n\nlcccc\n\nModel & Size & MMMU & MMB & RWQA\n\n5 c Und.",
+    "char_start": 23289,
+    "char_end": 23357,
+    "sentence_index": 134,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "only\n\nLLaVA-OV & 7.0B & 48.8 & 80.8 & 66.8\n\nEmu3-Chat & 8.0B & 31.6 & 58.5 & 57.4\n\nQwen2.5-VL & 7.0B & 51.1 & 83.4 & 68.9\n\n5 c Und.",
+    "char_start": 23358,
+    "char_end": 23489,
+    "sentence_index": 135,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "and Gen.",
+    "char_start": 23490,
+    "char_end": 23498,
+    "sentence_index": 136,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec013",
+    "text": "Janus-Pro & 7.0B & 41.0 & 79.2 & -\n\nTokenFlow-XL & 14B & 38.7 & 68.9 & 58.3\n\nMetaMorph & 8.0B & 41.8 & 75.2 & 68.8\n\ne6e6e6\nMindOmni (ours) & 7.0B & 51.6 & 83.2 & 68.1\n\ntable Performance Comparison on Vision Understanding Benchmarks.",
+    "char_start": 23500,
+    "char_end": 23732,
+    "sentence_index": 137,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec013",
+    "text": "``Und.'' and ``Gen.'' denote ``understanding'' and ``generation,'' respectively.",
+    "char_start": 23733,
+    "char_end": 23813,
+    "sentence_index": 138,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "Image Understanding and Generation.",
+    "char_start": 23815,
+    "char_end": 23850,
+    "sentence_index": 139,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "Our performance on image understanding is shown in tab:image_und .",
+    "char_start": 23851,
+    "char_end": 23917,
+    "sentence_index": 140,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "We first evaluate our MindOmni on understanding benchmarks (MMMU , MMBench and RealworldQA).",
+    "char_start": 23918,
+    "char_end": 24010,
+    "sentence_index": 141,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "Due to the inclusion of the text KL regularization term, the model\u2019s performance after reinforcement learning fine-tuning remains nearly identical to the original VLM backbone, with only a 0.1\\% average difference.",
+    "char_start": 24011,
+    "char_end": 24225,
+    "sentence_index": 142,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "MindOmni boots previous unified counterparts, Janus-Pro by 10.6\\% on MMMU and MetaMorph by 9.8\\% on MMBench.",
+    "char_start": 24226,
+    "char_end": 24334,
+    "sentence_index": 143,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "Furthermore, we validate our common text-to-image generation ability on GenEval and DPG-Bench .",
+    "char_start": 24335,
+    "char_end": 24430,
+    "sentence_index": 144,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "MindOmni achieves state-of-the-art performance on GenEval in unified MLLM with 83\\% overall score as shown in tab:gen_geneval .",
+    "char_start": 24431,
+    "char_end": 24558,
+    "sentence_index": 145,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "We build MindOmni based on OmniGen , which outperforms MetaQuery with Sana as the generator on DPG-Bench by 0.4\\% as shown in tab:gen_wise .",
+    "char_start": 24559,
+    "char_end": 24699,
+    "sentence_index": 146,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "[t]\n\nfig/reasoning_case_com.pdf\nQualitative comparison among leading models on reasoning-aware image generation.",
+    "char_start": 24700,
+    "char_end": 24812,
+    "sentence_index": 147,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "[t]\n[c]\n0.47\ntable\n\n1.9pt\n1.2\nccccc\n\nStage 1 & Stage 2 & Stage 3 & GenEval &WISE\n\n& & & 0.73 & 0.42\n\n& & & 0.81 & 0.54\n\n& & & 0.72 & 0.49\n\n& & & 0.81 & 0.60\n\nEffectiveness of the training stages.",
+    "char_start": 24814,
+    "char_end": 25009,
+    "sentence_index": 148,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "5pt\n[c] 0.47\ntable\n\n1.9pt\n1.2\ncccccc\n\n2 * Type & Layer & 2 * Param.",
+    "char_start": 25011,
+    "char_end": 25078,
+    "sentence_index": 149,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "& 2 * \\#FLOPs & 2 * GenEval\n\n&Number&&&\n\nMLP & 1 & 0.1\\% & 2G & 0.63\n\n2 * Decoder & 1 & 1.5\\% & 31G & 0.68\n\n& 2 & 3.0\\% & 60G &0.73\n\nImpact of different connectors.",
+    "char_start": 25079,
+    "char_end": 25243,
+    "sentence_index": 150,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "-15pt\n\nReasoning Generation.",
+    "char_start": 25245,
+    "char_end": 25273,
+    "sentence_index": 151,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "To evaluate the reasoning-aware generation ability of our proposed MindOmni, we benchmark it against a broad set of existing generative-only and unified models using a comprehensive evaluation suite that spans cultural knowledge, spatio-temporal reasoning (time and space), and natural science domains (biology, physics, and chemistry).",
+    "char_start": 25274,
+    "char_end": 25610,
+    "sentence_index": 152,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec014",
+    "text": "As shown in tab:gen_wise , MindOmni outperforms all methods across nearly all reasoning subcategories, achieving an overall score of 0.71 with the thinking mode.",
+    "char_start": 25611,
+    "char_end": 25772,
+    "sentence_index": 153,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec014",
+    "text": "Specifically, MindOmni surpasses prior unified models such as MetaQuery-XL (0.55 overall) by notable margins in both time reasoning and physics reasoning.",
+    "char_start": 25773,
+    "char_end": 25927,
+    "sentence_index": 154,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec014",
+    "text": "Compared to leading generative-only models such as FLUX (0.50 overall) and PixArt (0.47 overall), MindOmni demonstrates consistent advantages across every category, reflecting the benefit of joint understanding-generation training and CoT-guided reinforcement learning.",
+    "char_start": 25928,
+    "char_end": 26197,
+    "sentence_index": 155,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec014",
+    "text": "Additionally, fig:grpo_curve illustrates the progression of various metrics throughout the reinforcement learning process, with steady increases in both the consistency reward and completion length.",
+    "char_start": 26198,
+    "char_end": 26396,
+    "sentence_index": 156,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "However, as shown in fig:scatter , merely increasing the length of output thinking content does not lead to better end results.",
+    "char_start": 26397,
+    "char_end": 26524,
+    "sentence_index": 157,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "We visualize and compare advanced text-to-image methods and unified systems on the reasoning generation task, including GPT-4o and Gemini-2.5 as depicted in fig:case_com and fig:case_com_mm .",
+    "char_start": 26526,
+    "char_end": 26717,
+    "sentence_index": 158,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "In the absence of a reasoning mode, GPT-4o is unable to perform reasoning generation for scenarios involving mathematical logic and physical perception.",
+    "char_start": 26718,
+    "char_end": 26870,
+    "sentence_index": 159,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "More basic text-to-image results are shown in fig:appendix_case in Appendix.",
+    "char_start": 26871,
+    "char_end": 26947,
+    "sentence_index": 160,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec016",
+    "text": "Effectiveness of Training Stage.",
+    "char_start": 26949,
+    "char_end": 26981,
+    "sentence_index": 161,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec016",
+    "text": "We conduct an ablation study to assess the contribution of each training stage.",
+    "char_start": 26982,
+    "char_end": 27061,
+    "sentence_index": 162,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec016",
+    "text": "As shown in tab:abl_stage , stage 1 (pre-training) initially expands the generation capability of MindOmni.",
+    "char_start": 27062,
+    "char_end": 27169,
+    "sentence_index": 163,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec016",
+    "text": "Adding Stage 2 (thinking template SFT) brings a significant boost, especially on WISE (+0.12).",
+    "char_start": 27170,
+    "char_end": 27264,
+    "sentence_index": 164,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "In contrast, skipping Stage 2 and applying RGPO alone leads to a drop in GenEval (0.72) and a smaller WISE boost (0.49), suggesting the necessity of CoT instruction SFT.",
+    "char_start": 27265,
+    "char_end": 27434,
+    "sentence_index": 165,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec016",
+    "text": "[t]\n\nfig/reasoning_case_com_mm.pdf\nQualitative comparison among leading models on reasoning-aware image generation with multimodal user input.",
+    "char_start": 27435,
+    "char_end": 27577,
+    "sentence_index": 166,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec016",
+    "text": "[h]\n[c]\n0.32\ntable\n\n5pt\n1.2\ncccc\n\n$ ^T$ & $ ^I$& GenEval &WISE\n\n0 & 0.01 & 0.79 & 58.8\n\n0.01 & 0.06 & 0.81 & 59.8\n\n0.004 & 0.01 & 0.80 & 58.9\n\n0.01 & 0 & 0.78 & 58.2\n\nEffectiveness of different KL coefficient.",
+    "char_start": 27579,
+    "char_end": 27788,
+    "sentence_index": 167,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec016",
+    "text": "7pt\n0.3\ntable\n\n5pt\n1.2\nccc\n\nGroup & 2 * GenEval & 2 * WISE\n\nNumber & &\n\n2 & 0.79 & 59.2\n\n4 & 0.81 & 59.8\n\n6 & 0.79 & 59.3\n\nEffectiveness of different group numbers.",
+    "char_start": 27790,
+    "char_end": 27954,
+    "sentence_index": 168,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec016",
+    "text": "7pt\n0.3\ntable\n\n5pt\n1.2\nccc\n\nFormat & Consistency & 2 * WISE\n\nReward & Reward &\n\n& & 56.1\n\n& & 59.4\n\n& & 59.8\n\nEffectiveness of different reward strategies.",
+    "char_start": 27956,
+    "char_end": 28111,
+    "sentence_index": 169,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec016",
+    "text": "Impact of Different Connectors.",
+    "char_start": 28113,
+    "char_end": 28144,
+    "sentence_index": 170,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec016",
+    "text": "We briefly compare 2 types of projectors and find that using the decoder projector can better convey the semantic from VLM.",
+    "char_start": 28145,
+    "char_end": 28268,
+    "sentence_index": 171,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec016",
+    "text": "Ablation on RGPO.",
+    "char_start": 28269,
+    "char_end": 28286,
+    "sentence_index": 172,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec016",
+    "text": "We evaluate our algorithm's performance under various settings for the RGPO stage, including the KL coefficient, group numbers, and reward strategies as shown in tab:alb_grpo_kl , tab:abl_grpo_group and tab:abl_grpo_reward , respectively.",
+    "char_start": 28287,
+    "char_end": 28525,
+    "sentence_index": 173,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec016",
+    "text": "Consistency reward plays a key role in steering reasoning generation, and the inclusion of KL divergence for the visual modality helps the model maintain its fundamental text-to-image generation abilities.",
+    "char_start": 28526,
+    "char_end": 28731,
+    "sentence_index": 174,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec017",
+    "text": "In this paper, we introduce MindOmni, a unified MLLM that enhances reasoning generation through reinforcement learning.",
+    "char_start": 28733,
+    "char_end": 28852,
+    "sentence_index": 175,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec017",
+    "text": "Our three-phase training strategy significantly achieves impressive performance on both vision understanding and text-to-image generation tasks, outperforming existing counterparts.",
+    "char_start": 28853,
+    "char_end": 29034,
+    "sentence_index": 176,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec017",
+    "text": "Furthermore, MindOmni demonstrates strong reasoning-aware generation capabilities, including mathematical problem-solving and time-space perception, paving the way for future advancements in multimodal AI systems.",
+    "char_start": 29035,
+    "char_end": 29248,
+    "sentence_index": 177,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec017",
+    "text": "splncs04\nreference\n\n[ht]\n\nfig/t2i_case.pdf\nMore qualitative results across different resolutions.",
+    "char_start": 29250,
+    "char_end": 29347,
+    "sentence_index": 178,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec019",
+    "text": "In the first stage of training, we utilize the Laion COCO and JourneyDB image-caption pairs as foundational text2image data.",
+    "char_start": 29349,
+    "char_end": 29473,
+    "sentence_index": 179,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "Additionally, we incorporate the X2I dataset , which includes tasks for computer vision , in-context learning, multi-modal instructions, and subject-driven.",
+    "char_start": 29474,
+    "char_end": 29630,
+    "sentence_index": 180,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "To further enrich our dataset, we leverage Sana and Flux to generate high-quality images based on the existing prompt.",
+    "char_start": 29631,
+    "char_end": 29749,
+    "sentence_index": 181,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec019",
+    "text": "During training, we use a constant learning rate scheduler with an initial rate of $1 10^ -4 $ and a weight decay of 0.05.",
+    "char_start": 29750,
+    "char_end": 29872,
+    "sentence_index": 182,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec019",
+    "text": "The model is trained with a batch size of 1024 using images at a resolution of $256 256$.",
+    "char_start": 29873,
+    "char_end": 29962,
+    "sentence_index": 183,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec019",
+    "text": "In the second stage, we employ Qwen2.5-VL to generate CoT instruction data.",
+    "char_start": 29963,
+    "char_end": 30038,
+    "sentence_index": 184,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec019",
+    "text": "At this stage, we progressively increase the training resolution to $512 512$, while reducing the learning rate to $5 10^ -5 $.",
+    "char_start": 30039,
+    "char_end": 30166,
+    "sentence_index": 185,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec019",
+    "text": "In the final stage, we utilize Qwen3 to generate a dataset of logical reasoning texts, which serve as training data for reinforcement learning.",
+    "char_start": 30167,
+    "char_end": 30310,
+    "sentence_index": 186,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec019",
+    "text": "We adopt a cosine scheduler during the reinforcement learning phase.",
+    "char_start": 30311,
+    "char_end": 30379,
+    "sentence_index": 187,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec019",
+    "text": "We evaluate our method during multimodal understanding and various generation benchmarks.",
+    "char_start": 30381,
+    "char_end": 30470,
+    "sentence_index": 188,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec019",
+    "text": "Specifically, our model is evaluated on MMMU , MMBench and RealworldQA for image understanding.",
+    "char_start": 30471,
+    "char_end": 30566,
+    "sentence_index": 189,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec019",
+    "text": "As for basic image generation tasks, we evaluate our model on GenEval , which involves various metrics such as counting, colors, and position.",
+    "char_start": 30567,
+    "char_end": 30709,
+    "sentence_index": 190,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec019",
+    "text": "We also evaluate our text-to-image generation capability on DPG-Bench following previous methods .",
+    "char_start": 30710,
+    "char_end": 30808,
+    "sentence_index": 191,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec019",
+    "text": "For reasoning generation evaluation on WISE Benchmark, we perform our MindOmni into thinking mode and generate the corresponding image with $1024 1024$.",
+    "char_start": 30809,
+    "char_end": 30961,
+    "sentence_index": 192,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec020",
+    "text": "For the user input of different reasoning generations in fig:teaser_qualitative , the detailed response of our model MindOmni is shown in fig:teaser_sup_1 , fig:teaser_sup_2 , fig:teaser_sup_3 and fig:teaser_sup_4 .",
+    "char_start": 30963,
+    "char_end": 31178,
+    "sentence_index": 193,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec020",
+    "text": "[ht]\n\nfig/teaser_case_new_1.pdf\nDetailed response of our MindOmni.",
+    "char_start": 31179,
+    "char_end": 31245,
+    "sentence_index": 194,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec020",
+    "text": "[ht]\n\nfig/teaser_case_new_2.pdf\nDetailed responss of our MindOmni.",
+    "char_start": 31247,
+    "char_end": 31313,
+    "sentence_index": 195,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec020",
+    "text": "[ht]\n\nfig/teaser_case_new_3.pdf\nDetailed response of our MindOmni.",
+    "char_start": 31315,
+    "char_end": 31381,
+    "sentence_index": 196,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec021",
+    "text": "In this work, our Chain-of-Thought (CoT) content is presented in plain text, while multimodal CoT processes will be addressed in future research.",
+    "char_start": 31383,
+    "char_end": 31528,
+    "sentence_index": 197,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec022",
+    "text": "We provide more qualitative results about text2image generation of our MindOmni as shown in fig:appendix_case .",
+    "char_start": 31530,
+    "char_end": 31641,
+    "sentence_index": 198,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec022",
+    "text": "[t!]\n\nfig/teaser_case_new_4.pdf\nDetailed response of our MindOmni.",
+    "char_start": 31642,
+    "char_end": 31708,
+    "sentence_index": 199,
+    "section_sentence_index": 1
+  }
+]

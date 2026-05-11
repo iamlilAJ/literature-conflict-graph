@@ -1,0 +1,3620 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Recent advances in reasoning-enhanced large language models (LLMs) and multimodal LLMs (MLLMs) have significantly improved performance in complex tasks, yet medical AI models often overlook the structured reasoning processes inherent in clinical practice.",
+    "char_start": 0,
+    "char_end": 255,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "In this work, we present ChestX-Reasoner ,\na radiology diagnosis MLLM designed to leverage process supervision mined directly from clinical reports, reflecting the step-by-step reasoning followed by radiologists.",
+    "char_start": 256,
+    "char_end": 468,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We construct a large dataset by extracting and refining reasoning chains from routine radiology reports.",
+    "char_start": 469,
+    "char_end": 573,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Our two-stage training framework combines supervised fine-tuning and reinforcement learning guided by process rewards to better align model reasoning with clinical standards.",
+    "char_start": 574,
+    "char_end": 748,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We introduce RadRBench-CXR , a comprehensive benchmark featuring 59K visual question answering samples with 301K clinically validated reasoning steps, and propose RadRScore , a metric evaluating reasoning factuality, completeness, and effectiveness.",
+    "char_start": 749,
+    "char_end": 998,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "ChestX-Reasoner outperforms existing medical and general-domain MLLMs in both diagnostic accuracy and reasoning ability,\nachieving 16\\%, 8.5\\%, and 18\\% improvements in reasoning ability compared to the best medical MLLM, the best general MLLM, and its base model, respectively, as well as 3.3\\%, 24\\%, and 27\\% improvements in outcome accuracy.",
+    "char_start": 999,
+    "char_end": 1344,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "All resources are open-sourced to facilitate further research in medical reasoning MLLMs.",
+    "char_start": 1345,
+    "char_end": 1434,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "In the recent literature, the reasoning-enhanced large language models (LLMs),\nsuch as OpenAI-o3 and DeepSeek-R1 ,\nhave achieved tremendous success in tasks like mathematics and programming .",
+    "char_start": 1436,
+    "char_end": 1627,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Similarly, advancements in multimodal large language models (MLLMs) have been demonstrated in reasoning tasks .",
+    "char_start": 1628,
+    "char_end": 1739,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Inspired by the success of chain-of-thoughts (CoTs), these models aim to generate intermediate reasoning steps before presenting final outcomes, enhancing interpretability and performance .",
+    "char_start": 1740,
+    "char_end": 1929,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "In medical applications,\ndeveloping artificial intelligence (AI) models with reasoning abilities is particularly well-suited,\nas the complexity of medical data and the analytical rigor for accurate diagnosis demand reasoning.",
+    "char_start": 1931,
+    "char_end": 2156,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "In particular, radiologists often follow a systematic, step-by-step approach to image analysis, adhering to clinical guidelines .",
+    "char_start": 2157,
+    "char_end": 2286,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "As shown in Fig.",
+    "char_start": 2287,
+    "char_end": 2303,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "(a), this involves identifying low-level anomalies,\nintegrating patient-specific information ( e.g.",
+    "char_start": 2304,
+    "char_end": 2403,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": ", chief complaints), and inferring potential diagnosis.",
+    "char_start": 2404,
+    "char_end": 2459,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "These structured reasoning workflows are meticulously documented in clinical reports,\nprogressing logically from findings to impressions as dictated by clinical standards.",
+    "char_start": 2460,
+    "char_end": 2631,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Despite this, existing AI research in medical reasoning studies fails to leverage this structured prior knowledge, and often rely on outcome-based RL methods, neglecting the rich reasoning supervision embedded in clinical reports.",
+    "char_start": 2632,
+    "char_end": 2862,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "In this paper, we aim to develop a radiology diagnosis model with reasoning capabilities,\nby mining and utilizing process supervision from clinical reports.",
+    "char_start": 2864,
+    "char_end": 3020,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "For dataset construction , we highlight that daily radiology reports are an invaluable resource for constructing high-quality reasoning chains, as they typically include doctors\u2019 findings and impressions.",
+    "char_start": 3022,
+    "char_end": 3226,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "To this end, as illustrated in Fig.",
+    "char_start": 3227,
+    "char_end": 3262,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "(b) and Fig.",
+    "char_start": 3263,
+    "char_end": 3275,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "(a),\nwe propose to construct diverse question-answer pairs based on impressions, and extracts clinically relevant observations in findings as the reasoning processes.",
+    "char_start": 3276,
+    "char_end": 3442,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "We leverage tools like GPT-4o to automate the labor-intensive tasks, for example, generating question-answer pairs, extracting clinical observations, and refining them into complete, clinically coherent reasoning chains.",
+    "char_start": 3443,
+    "char_end": 3663,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Compared to collecting reasoning processes from large visual-language models or relying on manual annotation, extracting reasoning chains directly from textual reports is both scalable and highly reliable.",
+    "char_start": 3664,
+    "char_end": 3869,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "For model development , we present a generative radiology model with reasoning abilities,\ntermed as ChestX-Reasoner .",
+    "char_start": 3871,
+    "char_end": 3988,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "As illustrated in Fig.",
+    "char_start": 3989,
+    "char_end": 4011,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "(c),\nwe adopt a two-stage training framework that is designed to harness the medical reasoning process supervision .",
+    "char_start": 4012,
+    "char_end": 4128,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "It starts with supervised fine-tuning (SFT) as a cold start, leveraging both answer-only and reasoning-augmented data for auto-regressive training.",
+    "char_start": 4129,
+    "char_end": 4276,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "It then employs reinforcement learning (RL) with additionally designed process supervision via process reward, that evaluates the correctness of the generated clinical observations compared to the ground-truth report sentences, ensuring a more transparent and reliable training process.",
+    "char_start": 4277,
+    "char_end": 4563,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "For model evaluation , we curate a reliable reasoning benchmark on Chest X-rays, termed as RadRBench-CXR , that features detailed diagnostic reasoning processes.",
+    "char_start": 4565,
+    "char_end": 4726,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "It includes 59K visual question answering (VQA) samples from three public datasets, namely, MIMIC-CXR , CheXpert , and MS-CXR-T .",
+    "char_start": 4727,
+    "char_end": 4856,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "The questions span diverse task types that require complex reasoning chains.",
+    "char_start": 4857,
+    "char_end": 4933,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "Each sample is augmented with reasoning processes mined from its corresponding clinical report, comprising 301k clinically validated reasoning steps.",
+    "char_start": 4934,
+    "char_end": 5083,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "As shown in Fig.",
+    "char_start": 5084,
+    "char_end": 5100,
+    "sentence_index": 33,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "(c), the mined reasoning processes demonstrate high quality upon review by radiologists, and we filtered out unsatisfactory samples to ensure a reliable evaluation.",
+    "char_start": 5101,
+    "char_end": 5265,
+    "sentence_index": 34,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Additionally, we present an evaluation metric, RadRScore , that assesses a model's reasoning capabilities across three key dimensions:\nfactuality (the correctness of generated reasoning),\ncompleteness (the thoroughness in covering clinical findings),\nand effectiveness (the necessity and relevance of diagnostic processes).",
+    "char_start": 5266,
+    "char_end": 5589,
+    "sentence_index": 35,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "As a result, our proposed ChestX-Reasoner is a multimodal large language model with medical reasoning for Chest X-ray diagnosis.",
+    "char_start": 5591,
+    "char_end": 5719,
+    "sentence_index": 36,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "We compare it against three medical foundation models and five general-domain foundation models in terms of outcome accuracy and reasoning ability, using RadRScore on both RadRBench-CXR and the public CheXbench .",
+    "char_start": 5720,
+    "char_end": 5932,
+    "sentence_index": 37,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "As demonstrated in Fig.",
+    "char_start": 5933,
+    "char_end": 5956,
+    "sentence_index": 38,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "(d), ChestX-Reasoner achieves significant improvements compared to all baselines.",
+    "char_start": 5957,
+    "char_end": 6038,
+    "sentence_index": 39,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "Specifically, it achieves 16\\%, 8.5\\%, and 18\\% improvements in reasoning ability compared to the best medical baseline, the best general baseline, and its base model (Qwen2VL-7B ), respectively, as well as 3.3\\%, 24\\%, and 27\\% improvements in outcome accuracy.",
+    "char_start": 6039,
+    "char_end": 6301,
+    "sentence_index": 40,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "All code, datasets, and models are open-sourced at https://github.com/MAGIC-AI4Med/ChestX-Reasoner ChestX-Reasoner , and we hope this work inspires further research into developing medical reasoning MLLMs.",
+    "char_start": 6302,
+    "char_end": 6507,
+    "sentence_index": 41,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "We first present the details for constructing the benchmark, namely, RadRBench-CXR ,\nwith ground-truth reasoning steps mined from clinical reports.",
+    "char_start": 6509,
+    "char_end": 6656,
+    "sentence_index": 42,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "In addition to the final outcome accuracy that measures the correctness of generated answer compared to the ground truth answer, we also provide an evaluation metric to measure the reasoning ability, termed as RadRScore .",
+    "char_start": 6657,
+    "char_end": 6878,
+    "sentence_index": 43,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Collecting visual question answering (VQA) samples.",
+    "char_start": 6880,
+    "char_end": 6931,
+    "sentence_index": 44,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "As illustrated in Fig.",
+    "char_start": 6932,
+    "char_end": 6954,
+    "sentence_index": 45,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "(a),\nwe collect VQA samples based on the question design framework of CheXbench ,\nwhich defines comprehensive clinical tasks and generation methods.",
+    "char_start": 6955,
+    "char_end": 7103,
+    "sentence_index": 46,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "Specifically, we focus on five diagnostic task types:\n\n[itemsep=0.3em]\n-8pt\nBinary disease diagnosis: yes/no questions about disease presence.",
+    "char_start": 7104,
+    "char_end": 7246,
+    "sentence_index": 47,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "Single disease diagnosis: multi-choice questions with four options, each representing a disease.",
+    "char_start": 7247,
+    "char_end": 7343,
+    "sentence_index": 48,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "Multiple disease diagnosis: multi-choice questions with four options, each listing disease combinations, requiring the most clinically relevant answer.",
+    "char_start": 7344,
+    "char_end": 7495,
+    "sentence_index": 49,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "Anomaly detection: open-ended tasks where models must identify all abnormal findings without predefined options.",
+    "char_start": 7496,
+    "char_end": 7608,
+    "sentence_index": 50,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "Temporal comparison analysis: disease progression questions using current and prior images, requiring models to determine if a symptom is stable, worsening, or improving.",
+    "char_start": 7609,
+    "char_end": 7779,
+    "sentence_index": 51,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "-8pt\n\nThe samples are drawn from three datasets\u2014MIMIC-CXR , CheXpert , and MS-CXR-T \u2014all paired with clinical reports.",
+    "char_start": 7780,
+    "char_end": 7898,
+    "sentence_index": 52,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "To evaluate the performance of our reasoning-enhanced model across multiple clinical centers, we additionally utilize two datasets, RSNA and SIIM , that do not provide associated clinical reports.",
+    "char_start": 7899,
+    "char_end": 8095,
+    "sentence_index": 53,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "Mining reasoning chains from reports.",
+    "char_start": 8097,
+    "char_end": 8134,
+    "sentence_index": 54,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "As illustrated in Fig.",
+    "char_start": 8135,
+    "char_end": 8157,
+    "sentence_index": 55,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "(b), and Fig.",
+    "char_start": 8158,
+    "char_end": 8171,
+    "sentence_index": 56,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": "(a), for a subset of VQA samples, we propose to mine the reasoning chains for diagnosis from clinical reports with three key steps:\n\n[itemsep=0.3em]\n-8pt\nConstructing reasoning plans: Given a question-answer pair and the corresponding clinical report, we prompt GPT-4o to generate structured reasoning plans that systematically outline the diagnostic steps leading to the conclusion, for example, the specific symptom or clinical observation.",
+    "char_start": 8172,
+    "char_end": 8614,
+    "sentence_index": 57,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "Extracting diagnostic evidences: For each reasoning plan, we extract diagnostic evidence from the medical report to construct a single diagnostic reasoning chain.",
+    "char_start": 8615,
+    "char_end": 8777,
+    "sentence_index": 58,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "If the report lacks explicit mention of a finding, we infer the response as \u2018normal\u2019 or \u2018no disease\u2019, given the assumption that physicians do not miss abnormal findings in their reports.",
+    "char_start": 8778,
+    "char_end": 8964,
+    "sentence_index": 59,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "Optimizing logical chains:\nFinally, we integrate all reasoning plans and their extracted answers, refining the logical flow to form a coherent diagnostic reasoning chain.",
+    "char_start": 8965,
+    "char_end": 9135,
+    "sentence_index": 60,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "-8pt\n\nTo streamline the process, we utilize GPT-4o to automate the labor-intensive tasks,\nincluding constructing reasoning plans, extracting answers from medical reports,\nand refining diagnostic narratives.",
+    "char_start": 9136,
+    "char_end": 9342,
+    "sentence_index": 61,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "[ht!]\nfigures/miner.pdf\n2pt\nReasoning Mining Procedures and RadRScore Calculation a.",
+    "char_start": 9344,
+    "char_end": 9428,
+    "sentence_index": 62,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec003",
+    "text": "Procedures of mining reasoning.",
+    "char_start": 9429,
+    "char_end": 9460,
+    "sentence_index": 63,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec003",
+    "text": "We first construct reasoning plans by prompting GPT-4o based on given QA pairs and clinical reports, then extract relative clinical observations from the report as answers for each plan to derive the reasoning steps, and finally, refine the logic to form coherent and complete reasoning chains.",
+    "char_start": 9461,
+    "char_end": 9755,
+    "sentence_index": 64,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec003",
+    "text": "b.",
+    "char_start": 9756,
+    "char_end": 9758,
+    "sentence_index": 65,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec003",
+    "text": "RadRScore calculation targeting on factuality (the correctness of generated reasoning), completeness (the thoroughness in covering clinical findings), and effectiveness (the necessity and relevance of diagnostic processes).",
+    "char_start": 9759,
+    "char_end": 9982,
+    "sentence_index": 66,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec003",
+    "text": "c.",
+    "char_start": 9983,
+    "char_end": 9985,
+    "sentence_index": 67,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec003",
+    "text": "Human rating on the factuality, completeness, and effectiveness of our mined reasoning processes in the test set, where we use a five-point Likert scale ranging from -10 to 10, based on the provided question, ground truth answer,\nX-ray images, and clinical report.",
+    "char_start": 9986,
+    "char_end": 10250,
+    "sentence_index": 68,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec003",
+    "text": "Evaluating reasoning with RadRScore.",
+    "char_start": 10252,
+    "char_end": 10288,
+    "sentence_index": 69,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec003",
+    "text": "To quantitatively measure the quality of model's intermediate rationales, we deign an automatic evaluation pipeline and a metric, termed as RadRScore .",
+    "char_start": 10289,
+    "char_end": 10440,
+    "sentence_index": 70,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec003",
+    "text": "As illustrated in Fig.",
+    "char_start": 10442,
+    "char_end": 10464,
+    "sentence_index": 71,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec003",
+    "text": "(b),\nwe first employ large language models (GPT-4o) to extract entities,\nthat belong to clinical observations or findings.",
+    "char_start": 10465,
+    "char_end": 10587,
+    "sentence_index": 72,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec003",
+    "text": "For example, from reasoning sentences:\n`Based on the given images, there are no visible signs of lung tissue collapse or an enlarged heart.",
+    "char_start": 10588,
+    "char_end": 10727,
+    "sentence_index": 73,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec003",
+    "text": "Besides, there are no signs of pneumothorax...', we can extract entity set $\\ $no lung tissue collapse, no enlarged heart, no pneumothorax$\\ $.",
+    "char_start": 10728,
+    "char_end": 10871,
+    "sentence_index": 74,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec003",
+    "text": "We use $ obs _ model $, $ obs _ gt $, and $ obs _ report $ to respectively denote the extracted entity set from the model's output, ground-truth reasoning, and corresponding report.",
+    "char_start": 10873,
+    "char_end": 11054,
+    "sentence_index": 75,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec003",
+    "text": "Then, we calculate the values from three dimensions, namely factuality, completeness, and effectiveness based on $ obs _ model $, $ obs _ gt $, and $ obs _ report $:\n-3pt\n[itemsep = 0.3em]\nFactuality ($R_f$):\nIt is calculated as the proportion of elements in $ obs _ model $ that are semantically matching with report via GPT-4o.",
+    "char_start": 11056,
+    "char_end": 11385,
+    "sentence_index": 76,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec003",
+    "text": "This dimension assesses the factual accuracy of the model's reasoning, ensuring no hallucinated or medically invalid content is included.",
+    "char_start": 11386,
+    "char_end": 11523,
+    "sentence_index": 77,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec003",
+    "text": "It can be formulated as:\n\nR_f= obs _ model obs _ report | obs _ model | .",
+    "char_start": 11524,
+    "char_end": 11597,
+    "sentence_index": 78,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec003",
+    "text": "Completeness ($R_c$): It is calculated as the proportion of elements in $ obs _ gt $ that are semantically matching with $ obs _ model $, evaluating how comprehensive the model's reasoning is.",
+    "char_start": 11599,
+    "char_end": 11791,
+    "sentence_index": 79,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec003",
+    "text": "It can be formulated as:\n\nR_c= obs _ gt obs _ model | obs _ gt | .",
+    "char_start": 11792,
+    "char_end": 11858,
+    "sentence_index": 80,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec003",
+    "text": "Effectiveness ($R_e$): It is calculated as the proportion of reasoning steps that are semantically included in the ground truth reasoning.",
+    "char_start": 11860,
+    "char_end": 11998,
+    "sentence_index": 81,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec003",
+    "text": "Since ground truth reasoning is concise and comprehensive for reaching the final answer, a predicted step is considered effective if it matches one of these steps.",
+    "char_start": 11999,
+    "char_end": 12162,
+    "sentence_index": 82,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec003",
+    "text": "It evaluates whether each reasoning step advances the solution in a meaningful way.",
+    "char_start": 12163,
+    "char_end": 12246,
+    "sentence_index": 83,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec003",
+    "text": "It can be formulated as:\n\nR_e= obs _ model obs _ gt | obs _ model | .",
+    "char_start": 12247,
+    "char_end": 12316,
+    "sentence_index": 84,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec003",
+    "text": "Notably, when calculating $R_f$, if an element in $ obs _ model $ is not found in $ obs _ report $, and its meaning contains either `normal' or `no disease', we consider it to be correct, since we assume the physicians may overlook normal observations but typically do not miss abnormal findings in their reports.",
+    "char_start": 12318,
+    "char_end": 12631,
+    "sentence_index": 85,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec003",
+    "text": "Finally, RadRScore is then calculated as the mean value of the three dimensions:\n\nRadRScore =(R_f+R_c+R_e)/3\n\nRadRBench-CXR compilation.",
+    "char_start": 12633,
+    "char_end": 12769,
+    "sentence_index": 86,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec003",
+    "text": "Leveraging the generated VQA samples, mined reasoning chains, and evaluation metrics, we construct the first visual-language reasoning benchmark, RadRBench-CXR .",
+    "char_start": 12770,
+    "char_end": 12931,
+    "sentence_index": 87,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec003",
+    "text": "To create a balanced and unbiased dataset, we analyze the disease distribution in the original data and adjust the quantities, such that the most frequent disease does not exceed twice the least frequent ones, promoting fairness in the dataset.",
+    "char_start": 12933,
+    "char_end": 13177,
+    "sentence_index": 88,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec003",
+    "text": "Specifically, the benchmark comprises 1.2M answer-only VQA samples for training and 7.3K samples for testing.",
+    "char_start": 13179,
+    "char_end": 13288,
+    "sentence_index": 89,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec003",
+    "text": "For a subset of these, we generate 59K reasoning-augmented VQA samples for training and 1K reasoning-augmented samples for testing.",
+    "char_start": 13289,
+    "char_end": 13420,
+    "sentence_index": 90,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec003",
+    "text": "We apply strict quality control to the VQA samples with reasoning chains.",
+    "char_start": 13421,
+    "char_end": 13494,
+    "sentence_index": 91,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec003",
+    "text": "Samples with a factuality score $R_f$ lower than 1 are filtered out, ensuring that only high-quality, factual reasoning chains are retained in our benchmark.",
+    "char_start": 13495,
+    "char_end": 13652,
+    "sentence_index": 92,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec003",
+    "text": "Notably, prior to factuality filtering, the generated reasoning processes achieve a significantly higher factuality score ($R_f$) of 0.82, compared to GPT-4o (0.60) and Qwen2VL-72B (0.59), demonstrating the effectiveness of our method to produce high quality reasoning samples.",
+    "char_start": 13653,
+    "char_end": 13930,
+    "sentence_index": 93,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec003",
+    "text": "Additionally, to ensure the reliability of the reasoning evaluation, we conducted human verification, where the radiologists were provided with Chest X-ray images, corresponding reports, and the reasoning outputs generated by our method on the test samples.",
+    "char_start": 13932,
+    "char_end": 14189,
+    "sentence_index": 94,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec003",
+    "text": "As shown in Fig.",
+    "char_start": 14190,
+    "char_end": 14206,
+    "sentence_index": 95,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec003",
+    "text": "(c), they achieve average scores of factuality: 7.83, validity: 7.25, and completeness: 7.97 (on a scale from -10 to 10), showing sufficiently high quality.",
+    "char_start": 14207,
+    "char_end": 14363,
+    "sentence_index": 96,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec003",
+    "text": "For the released test samples, any reasoning process with a score below 5 in any of the three dimensions was filtered out.",
+    "char_start": 14364,
+    "char_end": 14486,
+    "sentence_index": 97,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec003",
+    "text": "The detailed cases of instruction design, and mined reasoning processes are shown in Supplementary .",
+    "char_start": 14487,
+    "char_end": 14587,
+    "sentence_index": 98,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec003",
+    "text": "[t!]\n\nfigures/reasoning_new.pdf\n2pt\nEvaluation Results of Reasoning Ability.",
+    "char_start": 14589,
+    "char_end": 14665,
+    "sentence_index": 99,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec003",
+    "text": "a.",
+    "char_start": 14666,
+    "char_end": 14668,
+    "sentence_index": 100,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec003",
+    "text": "Question-answering pairs visualization of all task types.",
+    "char_start": 14669,
+    "char_end": 14726,
+    "sentence_index": 101,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec003",
+    "text": "b.",
+    "char_start": 14727,
+    "char_end": 14729,
+    "sentence_index": 102,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec003",
+    "text": "Reasoning abilities on dimensions of factuality, completeness, and effectiveness, as well as the averaged value, RadRScore.",
+    "char_start": 14730,
+    "char_end": 14853,
+    "sentence_index": 103,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec004",
+    "text": "In this section, we compare to various models on the proposed RadRBench-CXR benchmark, emphasizing the superiority of our proposed model over existing multimodal large language models (MLLMs) in terms of enhanced reasoning ability and outcome accuracy.",
+    "char_start": 14855,
+    "char_end": 15107,
+    "sentence_index": 104,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec004",
+    "text": "The comparison includes three medical MLLMs\u2014RadFM-14B , CheXagent-3B , and MedDr-40B ,\nand five general MLLMs: DeepSeek-VL-7B , LLaVA-NeXT-8B , Qwen2VL-7B, Qwen2VL-72B ,\nand GPT-4o .",
+    "char_start": 15109,
+    "char_end": 15291,
+    "sentence_index": 105,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec004",
+    "text": "The evaluation encompasses the five tasks explained in Sec.",
+    "char_start": 15293,
+    "char_end": 15352,
+    "sentence_index": 106,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec004",
+    "text": ", namely, binary disease diagnosis,\nsingle disease diagnosis, multiple disease diagnosis, anomaly detection,\nand temporal comparison analysis.",
+    "char_start": 15353,
+    "char_end": 15495,
+    "sentence_index": 107,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec004",
+    "text": "Due to the lack of clinical reports in SIIM and RSNA , no mined reasoning processes or process supervision were applied to samples from these datasets during our training pipeline.",
+    "char_start": 15497,
+    "char_end": 15677,
+    "sentence_index": 108,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec004",
+    "text": "We use these two datasets for cross-center validation.",
+    "char_start": 15678,
+    "char_end": 15732,
+    "sentence_index": 109,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec004",
+    "text": "Additionally, we provide an ablation study on the impact of different training strategies, underscoring the critical role of process supervision in achieving superior outcomes.",
+    "char_start": 15733,
+    "char_end": 15909,
+    "sentence_index": 110,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec004",
+    "text": "We also provide visualizations of four cases in Supplementary Figs.",
+    "char_start": 15910,
+    "char_end": 15977,
+    "sentence_index": 111,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec004",
+    "text": ", , , and , including the VQA questions, extracted reasoning processes,\nand model outputs from our ChestX-Reasoner, GPT-4o, and Qwen2VL-72B.",
+    "char_start": 15978,
+    "char_end": 16118,
+    "sentence_index": 112,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec004",
+    "text": "Please refer to these visualizations to better understand the effectiveness of our model.",
+    "char_start": 16119,
+    "char_end": 16208,
+    "sentence_index": 113,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec005",
+    "text": "While evaluating the reasoning ability of ChestX-Reasoner on the five tasks (Fig.",
+    "char_start": 16210,
+    "char_end": 16291,
+    "sentence_index": 114,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec005",
+    "text": "(a)) sourced from MIMIC-CXR , CheXpert , and MS-CXR-T , we used chain-of-thoughts (CoT) prompt to elicit reasoning from MLLMs and evaluated each model with RadRScore, measuring factuality, completeness, and effectiveness of the reasoning.",
+    "char_start": 16292,
+    "char_end": 16530,
+    "sentence_index": 115,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec005",
+    "text": "ChestX-Reasoner (7B) consistently outperformed all other MLLMs across tasks, showing an average RadRScore improvement of 18\\% over its base model, Qwen2VL-7B (from 0.349 to 0.531; see last column of Fig.",
+    "char_start": 16532,
+    "char_end": 16735,
+    "sentence_index": 116,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec005",
+    "text": "(b)).",
+    "char_start": 16736,
+    "char_end": 16741,
+    "sentence_index": 117,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec005",
+    "text": "Among general domain models, GPT-4o and Qwen2VL-72B achieved RadRScores of 0.472 and 0.407, respectively.",
+    "char_start": 16742,
+    "char_end": 16847,
+    "sentence_index": 118,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec005",
+    "text": "The best medical domain baseline, MedDr-40B, reached 0.367.",
+    "char_start": 16848,
+    "char_end": 16907,
+    "sentence_index": 119,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec005",
+    "text": "Although CheXagent-3B produced competing outcome accuracy compared to ours, its reasoning scores were near zero across all tasks.",
+    "char_start": 16908,
+    "char_end": 17037,
+    "sentence_index": 120,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec005",
+    "text": "Factuality.",
+    "char_start": 17039,
+    "char_end": 17050,
+    "sentence_index": 121,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec005",
+    "text": "As shown in the first column of Fig.",
+    "char_start": 17051,
+    "char_end": 17087,
+    "sentence_index": 122,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec005",
+    "text": "(b),\nChestX-Reasoner achieved the following scores:\n0.682 \\;(95\\%CI\\;=\\;0.646\u20130.710) on binary disease diagnosis,\n0.751 \\;(95\\%CI\\;=\\;0.722\u20130.782) on single disease diagnosis,\n0.778 \\;(95\\%CI\\;=\\;0.753\u20130.800) on multiple disease diagnosis,\n0.588 \\;(95\\%CI\\;=\\;0.560\u20130.615) on anomaly detection, and\n0.706 \\;(95\\%CI\\;=\\;0.617\u20130.790) on temporal comparison analysis.",
+    "char_start": 17088,
+    "char_end": 17452,
+    "sentence_index": 123,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec005",
+    "text": "These results outperform the best general MLLM, GPT-4o with average scores of 0.534, 0.617, 0.554, 0.460, and 0.532 on the five tasks, respectively.",
+    "char_start": 17454,
+    "char_end": 17602,
+    "sentence_index": 124,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec005",
+    "text": "Additionally, ChestX-Reasoner also outperforms the best medical MLLM, MedDr-40B, which achieved average scores of 0.570, 0.633, 0.567, 0.471, and 0.532 on these tasks.",
+    "char_start": 17604,
+    "char_end": 17771,
+    "sentence_index": 125,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec005",
+    "text": "These findings demonstrate that ChestX-Reasoner exhibits superior clinical factual correctness compared to other baselines.",
+    "char_start": 17772,
+    "char_end": 17895,
+    "sentence_index": 126,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec005",
+    "text": "Completeness.",
+    "char_start": 17897,
+    "char_end": 17910,
+    "sentence_index": 127,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec005",
+    "text": "As shown in the second column of Fig.",
+    "char_start": 17911,
+    "char_end": 17948,
+    "sentence_index": 128,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec005",
+    "text": "(b),\nChestX-Reasoner achieved the following scores:\n0.240 \\;(95\\%CI\\;=\\;0.218\u20130.262) on binary disease diagnosis,\n0.430 \\;(95\\%CI\\;=\\;0.403\u20130.458) on single disease diagnosis,\n0.520 \\;(95\\%CI\\;=\\;0.497\u20130.541) on multiple disease diagnosis,\n0.282 \\;(95\\%CI\\;=\\;0.262\u20130.301) on anomaly detection, and\n0.259 \\;(95\\%CI\\;=\\;0.199\u20130.323) on temporal comparison analysis.",
+    "char_start": 17949,
+    "char_end": 18313,
+    "sentence_index": 129,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec005",
+    "text": "Among the baselines, general-domain MLLMs like GPT-4o and Qwen2VL-72B achieved comparable performance, except for the anomaly detection task.",
+    "char_start": 18314,
+    "char_end": 18455,
+    "sentence_index": 130,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec005",
+    "text": "Qwen2VL-72B failed in anomaly detection due to the lack of given options.",
+    "char_start": 18456,
+    "char_end": 18529,
+    "sentence_index": 131,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec005",
+    "text": "In contrast, medical-domain MLLMs performed significantly worse in this dimension.",
+    "char_start": 18531,
+    "char_end": 18613,
+    "sentence_index": 132,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec005",
+    "text": "The best-performing medical MLLM, MedDr-40B, achieved completeness scores of only 0.155 on binary disease diagnosis,\n0.171 on single disease diagnosis, 0.291 on multiple disease diagnosis, 0.156 on anomaly detection, and 0.082 on temporal comparison analysis.",
+    "char_start": 18614,
+    "char_end": 18873,
+    "sentence_index": 133,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec005",
+    "text": "These results underscore the superior thoroughness of ChestX-Reasoner in covering clinical findings while highlighting the limitations of current medical-domain MLLMs.",
+    "char_start": 18875,
+    "char_end": 19042,
+    "sentence_index": 134,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec005",
+    "text": "Effectiveness.",
+    "char_start": 19044,
+    "char_end": 19058,
+    "sentence_index": 135,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec005",
+    "text": "As shown in the third column of Fig.",
+    "char_start": 19059,
+    "char_end": 19095,
+    "sentence_index": 136,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec005",
+    "text": "(b),\nChestX-Reasoner achieved the following scores:\n0.661 \\;(95\\%CI\\;=\\;0.627\u20130.695) on binary disease diagnosis,\n0.688 \\;(95\\%CI\\;=\\;0.649\u20130.727) on single disease diagnosis,\n0.597 \\;(95\\%CI\\;=\\;0.565\u20130.627) on multiple disease diagnosis,\n0.415 \\;(95\\%CI\\;=\\;0.380-0.450) on anomaly detection, and\n0.698 \\;(95\\%CI\\;=\\;0.600\u20130.796) on temporal comparison analysis.",
+    "char_start": 19096,
+    "char_end": 19460,
+    "sentence_index": 137,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec005",
+    "text": "In this dimension, the medical-domain MLLM, MedDr-40B, achieves performance comparable to the best general-domain MLLM, GPT-4o, but still falls significantly short of ChestX-Reasoner.",
+    "char_start": 19461,
+    "char_end": 19644,
+    "sentence_index": 138,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec005",
+    "text": "Our ChestX-Reasoner outperforms both GPT-4o and MedDr-40B, with improvements of 5.8\\% and 34.0\\%, respectively.",
+    "char_start": 19646,
+    "char_end": 19757,
+    "sentence_index": 139,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec005",
+    "text": "These results underscore the superior necessity and relevance of the diagnostic processes generated by our model.",
+    "char_start": 19758,
+    "char_end": 19871,
+    "sentence_index": 140,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec005",
+    "text": "[t!]\n\nfigures/accuracy_new.pdf\nEvaluation Results of Outcome Accuracy and Data Statistics.",
+    "char_start": 19873,
+    "char_end": 19963,
+    "sentence_index": 141,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec005",
+    "text": "a.",
+    "char_start": 19964,
+    "char_end": 19966,
+    "sentence_index": 142,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec005",
+    "text": "Outcome accuracy evaluated on five tasks.",
+    "char_start": 19967,
+    "char_end": 20008,
+    "sentence_index": 143,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec005",
+    "text": "b.",
+    "char_start": 20009,
+    "char_end": 20011,
+    "sentence_index": 144,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec005",
+    "text": "Train and test data distribution from different data sources.",
+    "char_start": 20012,
+    "char_end": 20073,
+    "sentence_index": 145,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec005",
+    "text": "c.",
+    "char_start": 20074,
+    "char_end": 20076,
+    "sentence_index": 146,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec005",
+    "text": "Task distribution from different data sources.",
+    "char_start": 20077,
+    "char_end": 20123,
+    "sentence_index": 147,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec006",
+    "text": "Next, we evaluated the ability of ChestX-Reasoner to output correct outcome after generating reasoning processes on the same five tasks (Fig.",
+    "char_start": 20125,
+    "char_end": 20266,
+    "sentence_index": 148,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec006",
+    "text": "(b)) sourced from MIMIC-CXR , CheXpert , MS-CXR-T , SIIM , and RSNA as shown in Fig.",
+    "char_start": 20267,
+    "char_end": 20351,
+    "sentence_index": 149,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec006",
+    "text": "(c).",
+    "char_start": 20352,
+    "char_end": 20356,
+    "sentence_index": 150,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec006",
+    "text": "Since anomaly detection is an open-ended generation task,\nwe adopt RaTEscore for evaluation,\nwhile for other close-ended tasks with provided options, we directly verify whether the generated answer is the same with the ground truth label.",
+    "char_start": 20358,
+    "char_end": 20596,
+    "sentence_index": 151,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec006",
+    "text": "Results demonstrated that ChestX-Reasoner achieves superior performance compared to all baselines with 3\\% overall improvements compared to the existing state-of-the-art MLLM (CheXagent-3B), which was trained on significantly more data (8.5M training samples compared to 1.2M samples used in ChestX-Reasoner).",
+    "char_start": 20598,
+    "char_end": 20907,
+    "sentence_index": 152,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec006",
+    "text": "Additionally, ChestX-Reasoner outperforms its base model (Qwen2VL-7B) with 27\\% overall improvements, and achieves 24\\% averaged improvements comapred to best general domain MLLM GPT-4o.",
+    "char_start": 20909,
+    "char_end": 21095,
+    "sentence_index": 153,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec006",
+    "text": "Disease diagnosis.",
+    "char_start": 21097,
+    "char_end": 21115,
+    "sentence_index": 154,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec006",
+    "text": "For all the disease diagnosis tasks, our model achieves comparable performance to existing state-of-the-art model (CheXagent-3B), with accuracy of 0.800 \\;(95\\%CI\\;=\\;0.776\u20130.821) on binary disease diagnosis,\n0.688 \\;(95\\%CI\\;=\\;0.641\u20130.732) on single disease diagnosis,\nand 0.785 \\;(95\\%CI\\;=\\;0.735\u20130.831) on multiple disease diagnosis.",
+    "char_start": 21116,
+    "char_end": 21454,
+    "sentence_index": 155,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec006",
+    "text": "Among general domain MLLM, GPT-4o achieves the best performance with accuracy of 0.620 on binary disease diagnosis, 0.498 on single disease diagnosis, and 0.492 on multiple disease diagnosis, comparable to MedDr-40B, but much worse than our ChestX-Reasoner.",
+    "char_start": 21456,
+    "char_end": 21713,
+    "sentence_index": 156,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec006",
+    "text": "This demonstrate the superior performance of our model on solving the disease diagnosis tasks.",
+    "char_start": 21714,
+    "char_end": 21808,
+    "sentence_index": 157,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec006",
+    "text": "Anomaly detection.",
+    "char_start": 21810,
+    "char_end": 21828,
+    "sentence_index": 158,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec006",
+    "text": "Here, our model greatly improves CheXagent-3B,\nwith RaTEscore of 0.621 (95\\% CI = 0.608 \u2013 0.633) compared to 0.529, achieving 17\\% improvements.",
+    "char_start": 21829,
+    "char_end": 21973,
+    "sentence_index": 159,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec006",
+    "text": "General domain MLLMs like GPT-4o and Qwen2VL-72B achieves RaTEscore of 0.396 and 0.372, which is even worse than the LLaVA-NeXT-8B of 0.419.",
+    "char_start": 21975,
+    "char_end": 22115,
+    "sentence_index": 160,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec006",
+    "text": "This comparison shows that ChestX-Reasoner also performs superior on open-ended generation task compared to all other baselines.",
+    "char_start": 22117,
+    "char_end": 22245,
+    "sentence_index": 161,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec006",
+    "text": "Temporal comparison analysis.",
+    "char_start": 22247,
+    "char_end": 22276,
+    "sentence_index": 162,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec006",
+    "text": "Our model achieves comparable performance compared to CheXagent-3B, with an accuracy of 0.661 \\;(95\\%CI\\;=\\;0.537\u20130.778).",
+    "char_start": 22277,
+    "char_end": 22398,
+    "sentence_index": 163,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec006",
+    "text": "Among general MLLMs and other medical MLLMs, DeepSeek-VL-7B and MedDr-40B perform best, with an accuracy of 0.484 and 0.387, which remains inferior to our model.",
+    "char_start": 22400,
+    "char_end": 22561,
+    "sentence_index": 164,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec006",
+    "text": "[t!]\n\nfigures/ablation.pdf\n3pt\nAblation studies on both reasoning ability and outcome accuracy of our trained models including ChestX-Reasoner-SFT(RO), ChestX-Reasoner-SFT(Both), ChestX-Reasoner-RL(O), ChestX-Reasoner-SFT(RO)+RL(O), ChestX-Reasoner ( w.o.",
+    "char_start": 22563,
+    "char_end": 22818,
+    "sentence_index": 165,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec006",
+    "text": "Process Reward), and the final ChestX-Reasoner.",
+    "char_start": 22819,
+    "char_end": 22866,
+    "sentence_index": 166,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec007",
+    "text": "Recent reasoning-enhanced training strategies, prevalent in mathematics and programming, include supervised fine-tuning (SFT) on reasoning samples, outcome-based reinforcement learning (RL) on answer-only samples with chain-of-thoughts (CoT) prompt, and DeepSeek-R1\u2019s two-stage approach (SFT followed by RL).",
+    "char_start": 22868,
+    "char_end": 23176,
+    "sentence_index": 167,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec007",
+    "text": "However, these methods are largely unexplored for medical especially radiology MLLMs.",
+    "char_start": 23177,
+    "char_end": 23262,
+    "sentence_index": 168,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec007",
+    "text": "To bridge this gap, we conducted an ablation study (Fig.",
+    "char_start": 23264,
+    "char_end": 23320,
+    "sentence_index": 169,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec007",
+    "text": ") comparing various strategies, resulting in models:\n[itemsep=0.3em]\n-8pt\n\nChestX-Reasoner-SFT(RO) : Model trained on only reasoning-augmented samples with SFT.",
+    "char_start": 23321,
+    "char_end": 23481,
+    "sentence_index": 170,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner-SFT(Both) : Model trained on both reasoning-augmented samples and answer-only samples with SFT.",
+    "char_start": 23482,
+    "char_end": 23593,
+    "sentence_index": 171,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner-RL(O) : Model trained on answer-only samples with outcome-based RL.",
+    "char_start": 23594,
+    "char_end": 23677,
+    "sentence_index": 172,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner-SFT(RO)+RL(O) : Model trained on reasoning-augmented samples with SFT, followed by outcome-based RL on answer-only samples.",
+    "char_start": 23678,
+    "char_end": 23817,
+    "sentence_index": 173,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner ( w.o.",
+    "char_start": 23818,
+    "char_end": 23840,
+    "sentence_index": 174,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec007",
+    "text": "PR) : Model trained on both reasoning-augmented and answer-only samples with SFT, followed by outcome-based RL on answer-only samples.",
+    "char_start": 23841,
+    "char_end": 23975,
+    "sentence_index": 175,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner : Our final model, trained on both reasoning-augmented and answer-only samples with SFT followed by RL on both types of samples with additional process reward.",
+    "char_start": 23976,
+    "char_end": 24151,
+    "sentence_index": 176,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec007",
+    "text": "See details in Sec.",
+    "char_start": 24152,
+    "char_end": 24171,
+    "sentence_index": 177,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec007",
+    "text": ".\n\nNotably, reasoning-augmented samples are data with clinical report and mined reasoning sentences, while answer-only samples are data without mined reasoning and clinical reports.",
+    "char_start": 24172,
+    "char_end": 24353,
+    "sentence_index": 178,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec007",
+    "text": "SFT and RL are both necessary.",
+    "char_start": 24355,
+    "char_end": 24385,
+    "sentence_index": 179,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec007",
+    "text": "As shown in Fig.",
+    "char_start": 24386,
+    "char_end": 24402,
+    "sentence_index": 180,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec007",
+    "text": ", models trained solely with outcome-based RL (ChestX-Reasoner-RL(O), averaged RadRScore: 0.343, 95\\% CI: 0.347\u20130.362;\noutcome accuracy: 0.471, 95\\% CI: 0.452\u20130.491) or with SFT on reasoning-augmented samples alone (ChestX-Reasoner-SFT(RO), averaged RadRScore: 0.423, 95\\% CI: 0.412\u20130.434; outcome accuracy: 0.566, 95\\% CI: 0.545\u20130.586) both perform poorly.",
+    "char_start": 24403,
+    "char_end": 24760,
+    "sentence_index": 181,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec007",
+    "text": "SFT alone is limited by its reliance on exact ground-truth replication, requiring extensive reasoning processes, while RL alone lacks necessary reasoning knowledge in pre-trained base MLLMs.",
+    "char_start": 24761,
+    "char_end": 24951,
+    "sentence_index": 182,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec007",
+    "text": "These findings indicate that combining SFT and RL is crucial for developing effective medical reasoning MLLMs.",
+    "char_start": 24952,
+    "char_end": 25062,
+    "sentence_index": 183,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec007",
+    "text": "Answer supervision is helpful for domain alignment before enhancing reasoning.",
+    "char_start": 25064,
+    "char_end": 25142,
+    "sentence_index": 184,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec007",
+    "text": "As shown in Fig.",
+    "char_start": 25143,
+    "char_end": 25159,
+    "sentence_index": 185,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec007",
+    "text": ", ChestX-Reasoner-SFT(Both) achieves 5\\% improvements in reasoning and 19.9\\% improvements in outcome accuracy compared to ChestX-Reasoner-SFT(RO).",
+    "char_start": 25160,
+    "char_end": 25307,
+    "sentence_index": 186,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec007",
+    "text": "Additionally, starting from ChestX-Reasoner-SFT(Both), ChestX-Reasoner ( w.o.",
+    "char_start": 25308,
+    "char_end": 25385,
+    "sentence_index": 187,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec007",
+    "text": "process reward) achieves 14.5\\% improvements in reasoning and 9.5\\% improvements in outcome accuracy over ChestX-Reasoner-SFT(RO)+RL(O), which begins from ChestX-Reasoner-SFT(RO).",
+    "char_start": 25386,
+    "char_end": 25565,
+    "sentence_index": 188,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec007",
+    "text": "These results demonstrate that leveraging extensive answer supervision from answer-only samples during SFT is beneficial for medical domain alignment, thereby producing better reasoning MLLMs in subsequent steps.",
+    "char_start": 25566,
+    "char_end": 25778,
+    "sentence_index": 189,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec007",
+    "text": "Process supervision is essential for reasoning ability.",
+    "char_start": 25780,
+    "char_end": 25835,
+    "sentence_index": 190,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec007",
+    "text": "Adding process supervision further enhances reasoning ability.",
+    "char_start": 25836,
+    "char_end": 25898,
+    "sentence_index": 191,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec007",
+    "text": "ChestX-Reasoner achieves an averaged RadRScore of 0.525 (95\\% CI: 0.515\u20130.536), a 2.5\\% improvement over ChestX-Reasoner ( w.o.",
+    "char_start": 25899,
+    "char_end": 26026,
+    "sentence_index": 192,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec007",
+    "text": "process reward; 0.512, 95\\% CI: 0.501\u20130.513).",
+    "char_start": 26027,
+    "char_end": 26072,
+    "sentence_index": 193,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec007",
+    "text": "The enhanced reasoning ability also translates into improved outcome accuracy.",
+    "char_start": 26073,
+    "char_end": 26151,
+    "sentence_index": 194,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec007",
+    "text": "These results underscore the importance of process supervision in boosting the reasoning performance of medical MLLMs, ultimately leading to better diagnostic accuracy.",
+    "char_start": 26152,
+    "char_end": 26320,
+    "sentence_index": 195,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec008",
+    "text": "This study systematically investigates the development of medical reasoning-enhanced multimodal foundation models.",
+    "char_start": 26322,
+    "char_end": 26436,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec008",
+    "text": "Unlike general computer vision, where visual reasoning is often implicit , medical imaging analysis involves explicit, standardized reasoning workflows.",
+    "char_start": 26437,
+    "char_end": 26589,
+    "sentence_index": 197,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec008",
+    "text": "Radiologists routinely document detailed reasoning in clinical reports, logically progressing from findings to diagnostic conclusions\u2014offering valuable process supervision signals.",
+    "char_start": 26590,
+    "char_end": 26770,
+    "sentence_index": 198,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec008",
+    "text": "Based on this insight, our main contributions are threefold:\n\nA scalable reasoning mining pipeline using clinical reports.",
+    "char_start": 26771,
+    "char_end": 26893,
+    "sentence_index": 199,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec008",
+    "text": "Unlike prior approaches that rely solely on chain-of-thoughts distillation , our pipeline extracts reasoning cases directly from manually written clinical reports, ensuring higher factual accuracy and verifiability.",
+    "char_start": 26894,
+    "char_end": 27109,
+    "sentence_index": 200,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec008",
+    "text": "While demonstrated here with Chest X-ray reports, this method can be readily extended to other radiology modalities, providing a scalable and cost-effective source of validated reasoning samples for clinical AI development.",
+    "char_start": 27110,
+    "char_end": 27333,
+    "sentence_index": 201,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec008",
+    "text": "ChestX-Reasoner, a process-supervised radiology foundation model with reasoning.",
+    "char_start": 27335,
+    "char_end": 27415,
+    "sentence_index": 202,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec008",
+    "text": "We introduce ChestX-Reasoner, a multimodal large language model trained with stepwise process supervision via process reward to mirror the structured reasoning of clinical diagnostics.",
+    "char_start": 27416,
+    "char_end": 27600,
+    "sentence_index": 203,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec008",
+    "text": "ChestX-Reasoner achieves state-of-the-art performance in both reasoning and outcome accuracy on Chest X-ray diagnostic tasks, outperforming general models (DeepSeek-VL-7B , LLaVA-NeXT-8B , GPT-4o , Qwen2VL-7B , and Qwen2VL-72B ) and specialized medical models (RadFM-14B , MedDr-40B , CheXagent-3B ) across all five benchmark tasks.",
+    "char_start": 27601,
+    "char_end": 27933,
+    "sentence_index": 204,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec008",
+    "text": "RadRBench-CXR, a reliable reasoning-focused radiology benchmark.",
+    "char_start": 27935,
+    "char_end": 27999,
+    "sentence_index": 205,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec008",
+    "text": "For evaluation, we introduce RadRBench-CXR, derived from real clinical reports and designed to assess both outcomes and reasoning quality.",
+    "char_start": 28000,
+    "char_end": 28138,
+    "sentence_index": 206,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec008",
+    "text": "Beyond outcome accuracy, our RadRScore comprehensively evaluates generated reasoning in terms of factuality, completeness, and effectiveness, providing a robust metric for benchmarking medical MLLMs.",
+    "char_start": 28139,
+    "char_end": 28338,
+    "sentence_index": 207,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec008",
+    "text": "5pt\nBased on our experimental results, we derive the following key findings:\n\nLLMs can transform clinical reports into reasoning samples across various radiology tasks.",
+    "char_start": 28340,
+    "char_end": 28508,
+    "sentence_index": 208,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec008",
+    "text": "The development of medical reasoning MLLMs is often hindered by the scarcity and high cost of high-quality, reliable multimodal reasoning datasets.",
+    "char_start": 28509,
+    "char_end": 28656,
+    "sentence_index": 209,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec008",
+    "text": "In this work, we show that existing clinical reports, combined with effective prompt engineering, can enable LLMs to automatically generate diverse, well-structured reasoning-labeled training instances across a wide range of radiology tasks.",
+    "char_start": 28657,
+    "char_end": 28898,
+    "sentence_index": 210,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec008",
+    "text": "By mining reasoning processes from clinical reports, our generated reasoning achieves a significantly higher factuality score-defined by RadRScore, which measures the correctness of generated reasoning-reaching 0.82, compared to GPT-4o (0.60) and QwenVL-72B (0.59).",
+    "char_start": 28899,
+    "char_end": 29164,
+    "sentence_index": 211,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec008",
+    "text": "Additionally, human evaluations conducted by radiologists (Fig.",
+    "char_start": 29165,
+    "char_end": 29228,
+    "sentence_index": 212,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec008",
+    "text": "(c)) reveal strong satisfaction with the generated reasoning, with average scores of factuality: 7.83, validity: 7.25, and completeness: 7.97 (on a scale from -10 to 10).",
+    "char_start": 29229,
+    "char_end": 29399,
+    "sentence_index": 213,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec008",
+    "text": "These results highlight the potential of leveraging LLMs to convert clinical reports into high-quality reasoning samples, offering promising implications for broader applications in medical AI and beyond.",
+    "char_start": 29400,
+    "char_end": 29604,
+    "sentence_index": 214,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec008",
+    "text": "Enhancing the initial medical capabilities of base MLLMs via SFT as a cold-start is necessary.",
+    "char_start": 29606,
+    "char_end": 29700,
+    "sentence_index": 215,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec008",
+    "text": "General-domain base MLLMs often lack the specialized medical knowledge required for clinical reasoning tasks.",
+    "char_start": 29701,
+    "char_end": 29810,
+    "sentence_index": 216,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec008",
+    "text": "Our experiments reveal that directly applying reinforcement learning (RL) to such models, e.g.",
+    "char_start": 29811,
+    "char_end": 29905,
+    "sentence_index": 217,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec008",
+    "text": ", ChestX-Reasoner-RL(O) , results in poor performance and unstable optimization.",
+    "char_start": 29906,
+    "char_end": 29986,
+    "sentence_index": 218,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec008",
+    "text": "This underscores the necessity of initializing general-domain MLLMs with medical knowledge through domain-specific pretraining or task-adaptive supervised fine-tuning before applying RL.",
+    "char_start": 29987,
+    "char_end": 30173,
+    "sentence_index": 219,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec008",
+    "text": "Without this initialization, models are prone to convergence failures and cannot reliably develop clinical reasoning skills.",
+    "char_start": 30174,
+    "char_end": 30298,
+    "sentence_index": 220,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec008",
+    "text": "Process rewards are critical for RL in developing medical reasoning MLLMs.",
+    "char_start": 30300,
+    "char_end": 30374,
+    "sentence_index": 221,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec008",
+    "text": "While recent advances in general domain reasoning MLLMs have inspired medical MLLMs to adopt outcome-based RL strategies, these rely on self-exploration without explicit reasoning supervision.",
+    "char_start": 30375,
+    "char_end": 30567,
+    "sentence_index": 222,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec008",
+    "text": "However, due to the complexity and domain-specificity of medical reasoning, this approach proves unreliable.",
+    "char_start": 30568,
+    "char_end": 30676,
+    "sentence_index": 223,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec008",
+    "text": "In this paper, we demonstrate that process rewards are critical in the medical imaging domain, significantly enhancing the quality of the reasoning process.",
+    "char_start": 30677,
+    "char_end": 30833,
+    "sentence_index": 224,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec008",
+    "text": "Our model, ChestX-Reasoner, achieves notable improvements in both reasoning ability and outcome accuracy compared to its counterpart without process supervision, as shown in Fig.",
+    "char_start": 30834,
+    "char_end": 31012,
+    "sentence_index": 225,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec008",
+    "text": ".\n\nThese findings can inspire future research in key areas, including the development of robust and generalizable medical reasoning foundation models, scalable generation of clinically validated reasoning data, and the adaptation of process supervision techniques to enhance medical reasoning generation.",
+    "char_start": 31013,
+    "char_end": 31317,
+    "sentence_index": 226,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec008",
+    "text": "From a clinical perspective, our process-supervised medical reasoning model, ChestX-Reasoner, offers significant advantages over prior outcome-only models.",
+    "char_start": 31319,
+    "char_end": 31474,
+    "sentence_index": 227,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec008",
+    "text": "By explicitly demonstrating step-by-step imaging interpretation, it produces outputs that are more interpretable to clinicians and better aligned with clinical workflows.",
+    "char_start": 31475,
+    "char_end": 31645,
+    "sentence_index": 228,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec008",
+    "text": "This enables transparent decision-support evidence in radiology tasks such as reporting, differential diagnosis, and multidisciplinary case discussions.",
+    "char_start": 31646,
+    "char_end": 31798,
+    "sentence_index": 229,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec008",
+    "text": "Additionally, the improved factual consistency and reasoning traceability enhance auditability, reducing challenges in human-AI interaction within clinical practice.",
+    "char_start": 31799,
+    "char_end": 31964,
+    "sentence_index": 230,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec008",
+    "text": "As a proof of concept, ChestX-Reasoner highlights a more effective approach to developing reasoning-enhanced medical foundation models, paving the way for integration into real-world clinical systems where explainability, reliability, and safety are essential.",
+    "char_start": 31965,
+    "char_end": 32225,
+    "sentence_index": 231,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec008",
+    "text": "Lastly, we have to emphasize that our study presents several limitations , which highlight the opportunities for future work.",
+    "char_start": 32227,
+    "char_end": 32352,
+    "sentence_index": 232,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec008",
+    "text": "First, we focus on Chest X-rays to demonstrate our approach due to the availability of public datasets and computational constraints.",
+    "char_start": 32354,
+    "char_end": 32487,
+    "sentence_index": 233,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec008",
+    "text": "However, our methods are generalizable to other imaging modalities with detailed reports ( e.g.",
+    "char_start": 32488,
+    "char_end": 32583,
+    "sentence_index": 234,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec008",
+    "text": ", CT, MRI, ultrasound), making their extension a key direction for future work.",
+    "char_start": 32584,
+    "char_end": 32663,
+    "sentence_index": 235,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec008",
+    "text": "Additionally, our approach builds on the general-domain vision-language model Qwen2VL-7B , which serves as a strong baseline.",
+    "char_start": 32664,
+    "char_end": 32789,
+    "sentence_index": 236,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec008",
+    "text": "Future research could explore larger models or those with medical domain-specific pretraining.",
+    "char_start": 32790,
+    "char_end": 32884,
+    "sentence_index": 237,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec008",
+    "text": "Notably, our framework is model-agnostic and can be easily adapted to other base models.",
+    "char_start": 32885,
+    "char_end": 32973,
+    "sentence_index": 238,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec008",
+    "text": "Second, ChestX-Reasoner currently relies on reasoning-augmented samples and rule-based factuality scores for process supervision.",
+    "char_start": 32975,
+    "char_end": 33104,
+    "sentence_index": 239,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec008",
+    "text": "As our primary goal is to emphasize the value of process-level rewards, refining the supervision mechanism is left for future work.",
+    "char_start": 33105,
+    "char_end": 33236,
+    "sentence_index": 240,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec008",
+    "text": "We aim to explore more robust strategies, such as developing medical-specific agentic reward models , to better manage samples without annotated reasoning references.",
+    "char_start": 33237,
+    "char_end": 33403,
+    "sentence_index": 241,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec008",
+    "text": "[t!]\n\nfigures/method.pdf\n2pt\nIllustration of different supervision methods.",
+    "char_start": 33405,
+    "char_end": 33480,
+    "sentence_index": 242,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec008",
+    "text": "The top left illustrates the per-token supervision of supervised fine-tuning.",
+    "char_start": 33481,
+    "char_end": 33558,
+    "sentence_index": 243,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec008",
+    "text": "The top right shows the outcome supervision on only several tokens related to answer or format.",
+    "char_start": 33559,
+    "char_end": 33654,
+    "sentence_index": 244,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec008",
+    "text": "The bottom indicates our process supervision on every several tokens that contributes to a process.",
+    "char_start": 33655,
+    "char_end": 33754,
+    "sentence_index": 245,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec009",
+    "text": "In this section, we first introduce the necessary preliminaries and then outline the training procedure for ChestX-Reasoner, which starts with supervised fine-tuning on both answer-only and reasoning-augmented data, followed by reinforcement learning with additional process rewards.",
+    "char_start": 33756,
+    "char_end": 34039,
+    "sentence_index": 246,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec009",
+    "text": "We adopt Qwen2VL-7B as our base model for its strong reasoning performance in the general vision-language domains .",
+    "char_start": 34041,
+    "char_end": 34156,
+    "sentence_index": 247,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec009",
+    "text": "Details of the training hyper-parameters are provided in the Supplementary .",
+    "char_start": 34157,
+    "char_end": 34233,
+    "sentence_index": 248,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec010",
+    "text": "Problem statement.",
+    "char_start": 34235,
+    "char_end": 34253,
+    "sentence_index": 249,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec010",
+    "text": "Assuming dataset $ D =\\ ( X _ i , Q _ i , P _i, C _i, A _ i )\\ _ i=1 ^ N $, where $N$ denotes the number of samples, $ X _i$ represents the input images, $ Q _i$ denotes the associated text instruction, $ P _i$ refers to the mined reasoning processes, $ C _i$ is the corresponding clinical report, and $ A _i$ is the ground-truth answer.",
+    "char_start": 34254,
+    "char_end": 34591,
+    "sentence_index": 250,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec010",
+    "text": "Our objective is to develop a multimodal large language model (MLLM) that enhances Chest X-ray interpretation by improving both reasoning capability and outcome accuracy on $ D $.",
+    "char_start": 34593,
+    "char_end": 34772,
+    "sentence_index": 251,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec010",
+    "text": "Formally, the objective is to generate the desired output sentences given the input images $ X $ and the text instruction $ Q $:\n\nY = _ ( ; X , Q ),\n\nwhere $ _ $ is the policy model parameterized by $ $, and $ Y $ denotes the output sentences.",
+    "char_start": 34773,
+    "char_end": 35016,
+    "sentence_index": 252,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec010",
+    "text": "Notably, there are samples without clinical report and mined reasoning processes in $ D $, which means\ntheir $ P = $, and $ C = $.",
+    "char_start": 35017,
+    "char_end": 35147,
+    "sentence_index": 253,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec010",
+    "text": "We distinguish them by dividing $ D =\\ D _R, D _A\\ $ with reasoning-augmented data ($ D _R$),\nand answer-only data ($ D _A$):\n[itemsep=0.3em]\n-8pt\nReasoning-augmented data ($ D _R$):\nset of samples with clinical report and mined reasoning sentences.",
+    "char_start": 35148,
+    "char_end": 35397,
+    "sentence_index": 254,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec010",
+    "text": "Answer-only data ($ D _A$):\nset of samples without ground-truth reasoning and clinical reports,\nwhich means their $ P = $, and $ C = $.",
+    "char_start": 35398,
+    "char_end": 35533,
+    "sentence_index": 255,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec010",
+    "text": "To enable the model to function in both reasoning and direct response modes, we design two instruction formats for each sample: one with a chain-of-thoughts (CoT) prompt that elicits reasoning, and one without, which directly requests the answer.",
+    "char_start": 35535,
+    "char_end": 35781,
+    "sentence_index": 256,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec010",
+    "text": "Details of these instruction formats are provided in Supplementary .",
+    "char_start": 35782,
+    "char_end": 35850,
+    "sentence_index": 257,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec010",
+    "text": "By leveraging both CoT and non-CoT prompts, our approach allows for disabling intermediate reasoning, thereby substantially reducing inference time when reasoning is unnecessary.",
+    "char_start": 35851,
+    "char_end": 36029,
+    "sentence_index": 258,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec010",
+    "text": "5pt DeepSeek-R0 with outcome rewards and GRPO algorithm.",
+    "char_start": 36031,
+    "char_end": 36087,
+    "sentence_index": 259,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec010",
+    "text": "Recent medical studies on enhancing reasoning abilities have adopted the training procedures of DeepSeek-R0 , which aims to guide the model for reasoning with reinforcement learning on answer-only samples ($ D _A$).",
+    "char_start": 36088,
+    "char_end": 36303,
+    "sentence_index": 260,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec010",
+    "text": "The optimization algorithm employed is Group Relative Policy Optimization (GRPO) as RL-GRPO illustrated in Fig.",
+    "char_start": 36304,
+    "char_end": 36415,
+    "sentence_index": 261,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec010",
+    "text": ".\nCompared to Policy Gradient Optimization (PPO) algorithm, GRPO eliminates the need for a separate critic model and estimates baseline based on group scores, thereby significantly lowering computational overhead.",
+    "char_start": 36416,
+    "char_end": 36629,
+    "sentence_index": 262,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec010",
+    "text": "With regard to the reward functions used in the algorithm, they are based on the outcome of model output, namely outcome format reward and outcome accuracy reward.",
+    "char_start": 36631,
+    "char_end": 36794,
+    "sentence_index": 263,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec010",
+    "text": "Outcome format reward enables the output to be more structured, thus facilitating further visualization, and performance evaluation.",
+    "char_start": 36795,
+    "char_end": 36927,
+    "sentence_index": 264,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec010",
+    "text": "Outcome accuracy reward is the evaluation metric between output answer and the ground truth answer.",
+    "char_start": 36928,
+    "char_end": 37027,
+    "sentence_index": 265,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec010",
+    "text": "They evaluate the overall output while overlooking the specific characteristics of individual processes.",
+    "char_start": 37028,
+    "char_end": 37132,
+    "sentence_index": 266,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec010",
+    "text": "For comparison, we trained ChestX-Reasoner-RL(O) following this pipeline.",
+    "char_start": 37133,
+    "char_end": 37206,
+    "sentence_index": 267,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec010",
+    "text": "5pt DeepSeek-R1.",
+    "char_start": 37208,
+    "char_end": 37224,
+    "sentence_index": 268,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec010",
+    "text": "In the DeepSeek-R1 model , an additional supervised fine-tuning step as SFT shown in Fig is utilized as a cold-start initialization before reinforcement learning.",
+    "char_start": 37225,
+    "char_end": 37387,
+    "sentence_index": 269,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec010",
+    "text": "This involves auto-regressive training of the base model on samples with reasoning chains ($ D _R$).",
+    "char_start": 37388,
+    "char_end": 37488,
+    "sentence_index": 270,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec010",
+    "text": "The objective maximizes the likelihood of generating both reasoning processes and answers given input $ X $, and $ Q $:\n\nL _ SFT =- E _ ( X , Q , P , C , A ) D _R _ t=1 ^ T _ (y_ t X , Q ,y_ <t ),\n\nwhere $y$ is the concatenated sequence tokens of mined reasoning processes $ P $ and ground truth answer $ A $, $t$ is the index of decoded tokens $y$, and $T$ is the total number of supervised tokens.",
+    "char_start": 37489,
+    "char_end": 37888,
+    "sentence_index": 271,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec010",
+    "text": "For comparison, we trained ChestX-Reasoner-SFT(RO)+RL(O) following this pipeline.",
+    "char_start": 37890,
+    "char_end": 37971,
+    "sentence_index": 272,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec011",
+    "text": "After introducing the preliminaries, we now detail the training pipeline for ChestX-Reasoner in the following.",
+    "char_start": 37973,
+    "char_end": 38083,
+    "sentence_index": 273,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec011",
+    "text": "Stage-I: supervised fine-tuning.",
+    "char_start": 38085,
+    "char_end": 38117,
+    "sentence_index": 274,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec011",
+    "text": "Different to Deepseek-R1, we adopt auto-regressive training of base model on both $ D _A$, and $ D _R$.",
+    "char_start": 38118,
+    "char_end": 38221,
+    "sentence_index": 275,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec011",
+    "text": "The training maximizes the following objective:\n\nL _ SFT =- E _ ( X , Q , P , C , A ) \\ D _A, D _R\\ _ t=1 ^ T _ (y_ t X , Q ,y_ <t ).",
+    "char_start": 38223,
+    "char_end": 38356,
+    "sentence_index": 276,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec011",
+    "text": "We find that tuning the model exclusively on either $ D _A$ or $ D _R$ fails to achieve the desired objective.",
+    "char_start": 38358,
+    "char_end": 38468,
+    "sentence_index": 277,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec011",
+    "text": "Specifically, solely using the final answer as supervision, without incorporating intermediate reasoning steps, leads to overfitting to the answer patterns and an undesirable loss of reasoning ability.",
+    "char_start": 38469,
+    "char_end": 38670,
+    "sentence_index": 278,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec011",
+    "text": "Conversely, tuning the base model on the small-scale reasoning-augmented samples alone fails to leverage the valuable labels available in the full dataset, resulting in suboptimal model performance and the inability to directly output the answer.",
+    "char_start": 38671,
+    "char_end": 38917,
+    "sentence_index": 279,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec011",
+    "text": "Stage-II: reinforcement learning with process reward.",
+    "char_start": 38919,
+    "char_end": 38972,
+    "sentence_index": 280,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec011",
+    "text": "With SFT model as an initialization, we then employ GRPO algorithm to perform reinforcement learning with additional process reward as ChestX-Reasoner shown in Fig.",
+    "char_start": 38973,
+    "char_end": 39137,
+    "sentence_index": 281,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec011",
+    "text": ".\n\nSpecifically, for each input $ ( X , Q , P , C , A ) D $, GRPO samples a group of output sentences $ O \\ o_1, o_2, , o_G\\ $ from the old model \\( _ old \\), where $G$ is the pre-defined sentence number in a group.",
+    "char_start": 39138,
+    "char_end": 39353,
+    "sentence_index": 282,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec011",
+    "text": "It then optimizes the model \\( _ \\) by maximizing the following objective function:\n\nJ_ GRPO = E _ ( X , Q , P , C , A ) D , \\ o_i\\ _ old ( O | X , Q ) ,\n\nwhere \\( \\) and \\( \\) are hyperparameters controlling the clipping range and the strength of the KL divergence penalty, respectively.",
+    "char_start": 39355,
+    "char_end": 39643,
+    "sentence_index": 283,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec011",
+    "text": "KL penalty constrains the updating calculated as: $D_ KL ( _ _ old _ ) = ( _ old (o_i | X , Q ) _ (o_i | X , Q ) ).$\n\nThe advantage \\(A_i\\) is computed using a group of rewards \\(\\ r_1, r_2, , r_G\\ \\) corresponding to the group outputs calculated as\n$A_i = r_i - mean (\\ r_1, r_2, , r_G\\ ) std (\\ r_1, r_2, , r_G\\ ) .$\n\nSamples from $ D _A$ use the outcome format reward and the outcome accuracy reward, whereas for samples from $ D _R$, an additional process factuality reward is included, which are all defined as follows:\n[itemsep=0.3em]\n-8pt\nOutcome Format Reward $R_ format $: A reward of 1 is assigned if the model adheres to a specific output structure, specifically <think> </think>, <answer> </answer> of samples in $ D _R$ and <answer> </answer> of samples in $ D _A$; otherwise, the reward is 0.",
+    "char_start": 39645,
+    "char_end": 40451,
+    "sentence_index": 284,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec011",
+    "text": "Outcome Accuracy Reward $R_ oa $:\nAn evaluation metric is used to measure the correctness of the model's output in comparison to the ground truth answer.",
+    "char_start": 40452,
+    "char_end": 40605,
+    "sentence_index": 285,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec011",
+    "text": "Specifically, we extract the content enclosed within <answer> and </answer> tags as the model's predicted answer.",
+    "char_start": 40606,
+    "char_end": 40719,
+    "sentence_index": 286,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec011",
+    "text": "For close-ended questions with provided options, the reward is set to 1 if the predicted answer is the same with the ground truth option; otherwise, it is set to 0.",
+    "char_start": 40720,
+    "char_end": 40884,
+    "sentence_index": 287,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec011",
+    "text": "For open-ended generation tasks, we employ RaTEScore on the extracted answer as the reward.",
+    "char_start": 40885,
+    "char_end": 40976,
+    "sentence_index": 288,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec011",
+    "text": "Process Factuality Reward $R_f$:\nThe reward is calculated as the factuality score defined in RadRScore, which evaluates the proportion of correctness of the generated clinical observations compared to the ground-truth report sentences.",
+    "char_start": 40977,
+    "char_end": 41212,
+    "sentence_index": 289,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec011",
+    "text": "-8pt\n\nThe calculation of reward can be formulated as:\n\nr_i=r(o_i;( X , Q , P , C , A ))= \\\nll\nR_ format (o_i; format )+R_ oa (o_i; A ), & ( X , Q , P , C , A ) D _A,\n\nR_ format (o_i; format )+R_ oa (o_i; A )+R_f(o_i; C , A ), & ( X , Q , P , C , A ) D _R,\n\n.",
+    "char_start": 41213,
+    "char_end": 41471,
+    "sentence_index": 290,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec011",
+    "text": "where $ C $ is the clinical report, and $ A $ is ground truth answer.",
+    "char_start": 41473,
+    "char_end": 41542,
+    "sentence_index": 291,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec011",
+    "text": "The distinction among these rewards lies in their supervision signals.",
+    "char_start": 41544,
+    "char_end": 41614,
+    "sentence_index": 292,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec011",
+    "text": "From the equation, we can easily find that, outcome format reward and outcome accuracy reward are calculated based on only several tokens describing format or final answer compared to a specific format and ground truth answer $ A $.",
+    "char_start": 41616,
+    "char_end": 41848,
+    "sentence_index": 293,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec011",
+    "text": "These two rewards are typically used in many prior work , as well as in ChestX-Reasoner-RL(O) and ChestX-Reasoner-SFT(RO)+RL(O), lacking supervision of reasoning processes.",
+    "char_start": 41850,
+    "char_end": 42022,
+    "sentence_index": 294,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec011",
+    "text": "To incentivize high-quality reasoning, we preserves the robust reasoning supervision embedded in clinical reports via process reward, ensuring a more transparent and reliable reasoning process.",
+    "char_start": 42024,
+    "char_end": 42217,
+    "sentence_index": 295,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec012",
+    "text": "All datasets used in this study are publicly accessible.",
+    "char_start": 42219,
+    "char_end": 42275,
+    "sentence_index": 296,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec012",
+    "text": "This study utilized datasets that are all publicly accessible.",
+    "char_start": 42276,
+    "char_end": 42338,
+    "sentence_index": 297,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec012",
+    "text": "The RadRBench-CXR evaluation benchmark, and the model weights of all stages and variants are released in https://github.com/MAGIC-AI4Med/ChestX-Reasoner ChestX-Reasoner-Code .",
+    "char_start": 42339,
+    "char_end": 42514,
+    "sentence_index": 298,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec013",
+    "text": "The code used for experiments in this study is released in https://github.com/MAGIC-AI4Med/ChestX-Reasoner ChestX-Reasoner-Code .",
+    "char_start": 42516,
+    "char_end": 42645,
+    "sentence_index": 299,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec013",
+    "text": "It includes the code to create reasoning processes from reports and the code to train the model ChestX-Reasoner.",
+    "char_start": 42647,
+    "char_end": 42759,
+    "sentence_index": 300,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec013",
+    "text": "We release the model weights in https://huggingface.co/byrLLCC/ChestX-Reasoner ChestX-Reasoner-Model and other variants will be hosted on HuggingFace (https://huggingface.co/) before publication.",
+    "char_start": 42761,
+    "char_end": 42956,
+    "sentence_index": 301,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec014",
+    "text": "Ziqing Fan, Chaoyi Wu, and Weidi Xie designed the training pipeline, and Ziqing Fan carried out the model training.",
+    "char_start": 42958,
+    "char_end": 43073,
+    "sentence_index": 302,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec014",
+    "text": "Cheng Liang, Ziqing Fan, Chaoyi Wu designed the data collection, and Cheng Liang, and Ziqing Fan carried out creating reasoning processes.",
+    "char_start": 43075,
+    "char_end": 43213,
+    "sentence_index": 303,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec014",
+    "text": "Cheng Liang designed and carried out the model evaluation.",
+    "char_start": 43215,
+    "char_end": 43273,
+    "sentence_index": 304,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec014",
+    "text": "All authors contributed to the drafting and revision of the manuscript.",
+    "char_start": 43275,
+    "char_end": 43346,
+    "sentence_index": 305,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec014",
+    "text": "Weidi Xie, and Yanfeng Wang supervised and guided the research.",
+    "char_start": 43348,
+    "char_end": 43411,
+    "sentence_index": 306,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec014",
+    "text": "unsrt\nmain\n\nname=Supplementary Figure\nname=Supplementary Table\ntable 0\nfigure 0\n\n[ht!]\n\nTraining hyper-parameters in training stage 1.",
+    "char_start": 43413,
+    "char_end": 43547,
+    "sentence_index": 307,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec015",
+    "text": "ll\n\nParameter name & Value\n\nGlobal batchsize & 512\n\nLearning rate& 2e-6\n\nOptimizer& AdamW\n\n$ _1$ of optimizer& 0.9\n\n$ _2$ of optimizer& 0.95\n\nWarmup ratio& 0.1\n\nLearning rate scheduler& Cosine\n\nGradient clipping threshold& 1.0\n\nWeight decay& 0.0\n\nPlatform & 8 Tesla A100 GPUs\n\nTraining steps & 3500 steps\n\nTraining times& about 2 days\n\nDeepSpeed& zero2\n\n[ht!]\n\nTraining hyper-parameters in training stage 2.",
+    "char_start": 43549,
+    "char_end": 43956,
+    "sentence_index": 308,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec015",
+    "text": "ll\n\nParameter name & Value\n\nGlobal batchsize & 256\n\nUpdating batchsize & 256\n\nKL loss coefficient & 0.0001\n\nGradient clipping threshold& 1.0\n\nEntropy loss coefficient&0.0001\n\nGroup number ($G$)& 8\n\nLearning rate& 5e-7\n\nOptimizer& AdamW\n\n$ _1$ of optimizer& 0.9\n\n$ _2$ of optimizer& 0.95\n\nPlatform & 8 Tesla A100 GPUs\n\nTraining steps& 400 steps\n\nTraining times& about 3.5 days\n\nDistributed platform& FSDP without offloading\n\nReward function & outcome format and outcome accuracy, and process factuality rewards\n\n[ht!]\n\nMined reasoning and corresponding instruction from clinical reports.",
+    "char_start": 43958,
+    "char_end": 44544,
+    "sentence_index": 309,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec015",
+    "text": "3pt\n\n0.95 !",
+    "char_start": 44546,
+    "char_end": 44557,
+    "sentence_index": 310,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec015",
+    "text": "p 1.5cm |p 3cm |p 12cm\n\nTask Type & Instruction & Mined Reasoning\n\nBinary Disease Diagnosis &\n<Image> Does this chest X-ray show atelectasis?",
+    "char_start": 44558,
+    "char_end": 44699,
+    "sentence_index": 311,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec015",
+    "text": "& The analysis begins by examining the chest X-ray for signs of atelectasis.",
+    "char_start": 44700,
+    "char_end": 44776,
+    "sentence_index": 312,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec015",
+    "text": "Key features to evaluate include reduced lung volumes and any distinctive opacities in the lung.",
+    "char_start": 44777,
+    "char_end": 44873,
+    "sentence_index": 313,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec015",
+    "text": "Observations revealed low lung volumes and minimal opacities in the left basilar region, suggesting partial segmental collapse indicative of atelectasis.",
+    "char_start": 44874,
+    "char_end": 45027,
+    "sentence_index": 314,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec015",
+    "text": "Normally, atelectasis can cause structures like the trachea or diaphragm to shift towards the affected area, but in this case, no significant displacement was noted, supporting the conclusion that the atelectasis is mild.",
+    "char_start": 45028,
+    "char_end": 45249,
+    "sentence_index": 315,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec015",
+    "text": "Given these findings, the chest X-ray does indeed show minimal left basilar atelectasis, confirming the diagnosis of atelectasis.",
+    "char_start": 45250,
+    "char_end": 45379,
+    "sentence_index": 316,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec015",
+    "text": "Single Disease Diagnosis &\n<image><image> <image>Which finding is in this chest X-ray?",
+    "char_start": 45381,
+    "char_end": 45467,
+    "sentence_index": 317,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec015",
+    "text": "Options: A) lung opacity B) support devices C) enlarged cardiomediastinum D) atelectasis 1.9cm\n& To determine the finding in this chest X-ray, we begin by assessing for lung opacity, support devices, enlarged cardiomediastinum, and atelectasis.",
+    "char_start": 45468,
+    "char_end": 45712,
+    "sentence_index": 318,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec015",
+    "text": "First, examining lung opacity, we observe mild linear opacity in the bilateral lung bases.",
+    "char_start": 45713,
+    "char_end": 45803,
+    "sentence_index": 319,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec015",
+    "text": "This is consistent with bibasilar atelectasis, suggesting that the opacity is related to alveolar collapse rather than fluid accumulation.",
+    "char_start": 45804,
+    "char_end": 45942,
+    "sentence_index": 320,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec015",
+    "text": "Moving to support devices, the images reveal multiple overlying leads and linear dense objects in the right upper quadrant, indicative of artifacts from electrocardiographic monitoring and likely cholecystectomy clips.",
+    "char_start": 45943,
+    "char_end": 46161,
+    "sentence_index": 321,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec015",
+    "text": "These are not pathological findings but rather support devices.",
+    "char_start": 46162,
+    "char_end": 46225,
+    "sentence_index": 322,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec015",
+    "text": "Regarding the mediastinal contour, although there is pulmonary vascular crowding, there is no direct evidence of an enlarged cardiomediastinum.",
+    "char_start": 46226,
+    "char_end": 46369,
+    "sentence_index": 323,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec015",
+    "text": "The findings suggest possible mild pulmonary vascular congestion but do not conclusively indicate cardiomegaly or significant enlargement.",
+    "char_start": 46370,
+    "char_end": 46508,
+    "sentence_index": 324,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec015",
+    "text": "Finally, the low lung volumes and persistent linear opacities at the lung bases, observed across serial images without significant change, confirm the presence of atelectasis.",
+    "char_start": 46509,
+    "char_end": 46684,
+    "sentence_index": 325,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec015",
+    "text": "Given these observations, the primary finding in this chest X-ray is atelectasis.",
+    "char_start": 46685,
+    "char_end": 46766,
+    "sentence_index": 326,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec015",
+    "text": "Multiple Disease Diagnosis &\n<image>Which findings are in this chest X-ray?",
+    "char_start": 46768,
+    "char_end": 46843,
+    "sentence_index": 327,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec015",
+    "text": "Options: A) lung opacity, pneumonia, support devices B) atelectasis, cardiomegaly, support devices C) cardiomegaly, enlarged cardiomediastinum, pneumothorax D) fracture, enlarged cardiomediastinum, atelectasis & First, assess the presence of lung opacity, pneumonia, and support devices.",
+    "char_start": 46844,
+    "char_end": 47131,
+    "sentence_index": 328,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec015",
+    "text": "The images reveal a diffuse interstitial pattern and unchanged tracheostomy tube and other support devices.",
+    "char_start": 47132,
+    "char_end": 47239,
+    "sentence_index": 329,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec015",
+    "text": "This suggests lung opacities possibly linked to past pneumonia.",
+    "char_start": 47240,
+    "char_end": 47303,
+    "sentence_index": 330,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec015",
+    "text": "Next, evaluate the possibility of atelectasis and cardiomegaly along with support devices.",
+    "char_start": 47304,
+    "char_end": 47394,
+    "sentence_index": 331,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec015",
+    "text": "There are no visible signs of lung tissue collapse or an enlarged heart.",
+    "char_start": 47395,
+    "char_end": 47467,
+    "sentence_index": 332,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec015",
+    "text": "Support devices are noted to be unchanged.",
+    "char_start": 47468,
+    "char_end": 47510,
+    "sentence_index": 333,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec015",
+    "text": "Then, consider cardiomegaly, enlarged cardiomediastinum, and pneumothorax.",
+    "char_start": 47511,
+    "char_end": 47585,
+    "sentence_index": 334,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec015",
+    "text": "There are no indications of an enlarged heart or mediastinum, nor are there signs of pneumothorax.",
+    "char_start": 47586,
+    "char_end": 47684,
+    "sentence_index": 335,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec015",
+    "text": "The status of support devices remains unchanged with previous lung infection sequelae.",
+    "char_start": 47685,
+    "char_end": 47771,
+    "sentence_index": 336,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec015",
+    "text": "Finally, check for fracture, an enlarged cardiomediastinum, and atelectasis.",
+    "char_start": 47772,
+    "char_end": 47848,
+    "sentence_index": 337,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec015",
+    "text": "No bone fractures or signs of lung collapse are observed.",
+    "char_start": 47849,
+    "char_end": 47906,
+    "sentence_index": 338,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec015",
+    "text": "Additionally, there is no evidence of an enlarged mediastinum.",
+    "char_start": 47907,
+    "char_end": 47969,
+    "sentence_index": 339,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec015",
+    "text": "In conclusion, the findings that align best with the observations are lung opacity, pneumonia, and support devices.",
+    "char_start": 47970,
+    "char_end": 48085,
+    "sentence_index": 340,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec015",
+    "text": "Anomaly Detection &\n<image>Which findings are in this chest X-ray?",
+    "char_start": 48087,
+    "char_end": 48153,
+    "sentence_index": 341,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec015",
+    "text": "& Upon reviewing the chest X-ray images, increased opacification is observed in the left lower lobe.",
+    "char_start": 48154,
+    "char_end": 48254,
+    "sentence_index": 342,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec015",
+    "text": "This pattern is indicative of left basilar atelectasis, where areas of increased density suggest partial or complete lung collapse.",
+    "char_start": 48255,
+    "char_end": 48386,
+    "sentence_index": 343,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec015",
+    "text": "Comparing with prior images, the stability of this finding suggests a chronic condition rather than an acute collapse.",
+    "char_start": 48387,
+    "char_end": 48505,
+    "sentence_index": 344,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec015",
+    "text": "Additionally, the presence of overlying opacity raises the possibility of superimposed pneumonia, indicating potential infectious consolidation.",
+    "char_start": 48506,
+    "char_end": 48650,
+    "sentence_index": 345,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec015",
+    "text": "The images reveal multiple fractures in the left-sided ribs and a displaced fracture in the left clavicle.",
+    "char_start": 48651,
+    "char_end": 48757,
+    "sentence_index": 346,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec015",
+    "text": "Given their stability over previous imaging, these injuries are currently in a healing or chronic phase, rather than representing new acute fractures.",
+    "char_start": 48758,
+    "char_end": 48908,
+    "sentence_index": 347,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec015",
+    "text": "The consistent appearance across different assessments supports this conclusion.",
+    "char_start": 48909,
+    "char_end": 48989,
+    "sentence_index": 348,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec015",
+    "text": "Examining the left basilar region, an overlying opacity is evident at the site of atelectasis.",
+    "char_start": 48990,
+    "char_end": 49084,
+    "sentence_index": 349,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec015",
+    "text": "This opacity, in combination with stable atelectasis, aligns with the typical presentation of developing pneumonia, signifying possible infectious consolidation.",
+    "char_start": 49085,
+    "char_end": 49246,
+    "sentence_index": 350,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec015",
+    "text": "Inspection of the right apical lung area shows a line suggestive of a small pneumothorax.",
+    "char_start": 49247,
+    "char_end": 49336,
+    "sentence_index": 351,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec015",
+    "text": "However, in the context of adjacent fractures, this line is more likely due to displaced rib fragments rather than a genuine pneumothorax.",
+    "char_start": 49337,
+    "char_end": 49475,
+    "sentence_index": 352,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec015",
+    "text": "This interpretation requires careful consideration of all imaging details.",
+    "char_start": 49476,
+    "char_end": 49550,
+    "sentence_index": 353,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec015",
+    "text": "In conclusion, the findings from the chest X-ray indicate the presence of atelectasis, fracture, and pneumonia.",
+    "char_start": 49551,
+    "char_end": 49662,
+    "sentence_index": 354,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec015",
+    "text": "Temporal Comparison Analysis &\n<image><image>You are given two images: one reference image and one new image.",
+    "char_start": 49664,
+    "char_end": 49773,
+    "sentence_index": 355,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec015",
+    "text": "Please identify the progression of consolidation.",
+    "char_start": 49774,
+    "char_end": 49823,
+    "sentence_index": 356,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec015",
+    "text": "Options:A) worsening B) stable C) improving\n& To assess the progression of consolidation between the two x-ray images, I need to focus on changes in the lung fields, where consolidation manifests as denser areas.",
+    "char_start": 49824,
+    "char_end": 50036,
+    "sentence_index": 357,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec015",
+    "text": "Initially, I will observe both images for any variations in opacity across the entirety of the lung regions.",
+    "char_start": 50037,
+    "char_end": 50145,
+    "sentence_index": 358,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec015",
+    "text": "Following this, I will pay particular attention to any change in volume or distribution of these opacities, which could indicate progression.",
+    "char_start": 50146,
+    "char_end": 50287,
+    "sentence_index": 359,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec015",
+    "text": "Upon carefully comparing the images, I notice that there is an increase in the density and size of the opacities, especially on the left side of the lungs.",
+    "char_start": 50288,
+    "char_end": 50443,
+    "sentence_index": 360,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec015",
+    "text": "This indicates that the areas of consolidation have expanded.",
+    "char_start": 50444,
+    "char_end": 50505,
+    "sentence_index": 361,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec015",
+    "text": "Given these observations, the conclusion is that there is a worsening of the consolidation, as the increased opacities suggest progression of the condition.",
+    "char_start": 50506,
+    "char_end": 50662,
+    "sentence_index": 362,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec015",
+    "text": "[!pht]\n\nfigures/case1.pdf\n2pt\nCase 1.",
+    "char_start": 50664,
+    "char_end": 50701,
+    "sentence_index": 363,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec015",
+    "text": "A case of binary disease diagnosis.",
+    "char_start": 50702,
+    "char_end": 50737,
+    "sentence_index": 364,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec015",
+    "text": "n and **xxx** in GPT-4o and Qwen2VL-72B's output represent a line break and bold text for xxx, respectively.",
+    "char_start": 50738,
+    "char_end": 50846,
+    "sentence_index": 365,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec015",
+    "text": "-15pt\n\n[!pht]\n\nfigures/case3.pdf\n2pt\nCase 2.",
+    "char_start": 50848,
+    "char_end": 50892,
+    "sentence_index": 366,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec015",
+    "text": "A case of multiple disease diagnosis.",
+    "char_start": 50893,
+    "char_end": 50930,
+    "sentence_index": 367,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec015",
+    "text": "n and **xxx** in GPT-4o and Qwen2VL-72B's output represent a line break and bold text for xxx, respectively.",
+    "char_start": 50931,
+    "char_end": 51039,
+    "sentence_index": 368,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec015",
+    "text": "-15pt\n\n[!pht]\n\nfigures/case4.pdf\n2pt\nCase 3.",
+    "char_start": 51041,
+    "char_end": 51085,
+    "sentence_index": 369,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec015",
+    "text": "A case of anomaly detection.",
+    "char_start": 51086,
+    "char_end": 51114,
+    "sentence_index": 370,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec015",
+    "text": "n and **xxx** in GPT-4o and Qwen2VL-72B's output represent a line break and bold text for xxx, respectively.",
+    "char_start": 51115,
+    "char_end": 51223,
+    "sentence_index": 371,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec015",
+    "text": "-15pt\n\n[!pht]\n\nfigures/case5.pdf\n2pt\nCase 4.",
+    "char_start": 51225,
+    "char_end": 51269,
+    "sentence_index": 372,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec015",
+    "text": "A case of temporal comparison analysis.",
+    "char_start": 51270,
+    "char_end": 51309,
+    "sentence_index": 373,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec015",
+    "text": "n and **xxx** in GPT-4o and Qwen2VL-72B's output represent a line break and bold text for xxx, respectively.",
+    "char_start": 51310,
+    "char_end": 51418,
+    "sentence_index": 374,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec015",
+    "text": "-15pt\n\nWe utilize Qwen2VL-7B as our base model due to its strong reasoning performance in the domains of mathematics and programming.",
+    "char_start": 51420,
+    "char_end": 51553,
+    "sentence_index": 375,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec016",
+    "text": "As shown in Supplementary Table , the training parameters for the first supervised fine-tuning stage are configured as follows: the optimizer is AdamW , with $ _1$ set to 0.9 and $ _2$ to 0.95.",
+    "char_start": 51555,
+    "char_end": 51748,
+    "sentence_index": 376,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec016",
+    "text": "We adopt a cosine learning rate schedule with an initial learning rate of 2e-6, a batch size of 512 samples, a weight decay of 0.0, and a gradient clipping threshold of 1.",
+    "char_start": 51749,
+    "char_end": 51920,
+    "sentence_index": 377,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec016",
+    "text": "The experiments are conducted on 8\u00d7Tesla A100 GPUs using DeepSpeed-ZeRO2 .",
+    "char_start": 51922,
+    "char_end": 51996,
+    "sentence_index": 378,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec016",
+    "text": "In this stage, the model is trained for 3500 steps, taking approximately 2 days to complete.",
+    "char_start": 51997,
+    "char_end": 52089,
+    "sentence_index": 379,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec016",
+    "text": "For the second stage, reinforcement learning with process reward, the training parameters are provided in Supplementary Table .",
+    "char_start": 52091,
+    "char_end": 52218,
+    "sentence_index": 380,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec016",
+    "text": "The optimizer remains the same as in the first stage, with a learning rate of 5e-7.",
+    "char_start": 52220,
+    "char_end": 52303,
+    "sentence_index": 381,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec016",
+    "text": "Both the global batch size and mini updating batch size are set to 256.",
+    "char_start": 52304,
+    "char_end": 52375,
+    "sentence_index": 382,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec016",
+    "text": "The coefficient of KL loss is 0.0001, and the group number ($G$) is 8.",
+    "char_start": 52376,
+    "char_end": 52446,
+    "sentence_index": 383,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec016",
+    "text": "The reward function combines outcome format reward, outcome correctness reward, and process reward, while entropy loss is 0.0001.",
+    "char_start": 52447,
+    "char_end": 52576,
+    "sentence_index": 384,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec016",
+    "text": "The experiments are conducted on 8\u00d7Tesla A100 GPUs using PyTorch-FSDP and VeRL engine .",
+    "char_start": 52578,
+    "char_end": 52665,
+    "sentence_index": 385,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec016",
+    "text": "In this stage, the model is trained for 400 steps, taking approximately 3.5 days to complete.",
+    "char_start": 52666,
+    "char_end": 52759,
+    "sentence_index": 386,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec017",
+    "text": "For the model to operate in both reasoning mode and direct response mode, we adopt two instruction formats for each sample, each paired with its corresponding expected output.",
+    "char_start": 52761,
+    "char_end": 52936,
+    "sentence_index": 387,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec017",
+    "text": "-8pt\nInstruction without Chain of Thoughts Prompt:\n\n(Input Instruction) System: You are a helpful AI assistant.",
+    "char_start": 52938,
+    "char_end": 53049,
+    "sentence_index": 388,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec017",
+    "text": "(Input Instruction) User: <image> ...",
+    "char_start": 53051,
+    "char_end": 53088,
+    "sentence_index": 389,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec017",
+    "text": "<image>Question.",
+    "char_start": 53089,
+    "char_end": 53105,
+    "sentence_index": 390,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec017",
+    "text": "Please enclose the answer within <answer></answer>\n\n(Expected Output Answer) Assistant: <answer> option etc.",
+    "char_start": 53106,
+    "char_end": 53214,
+    "sentence_index": 391,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec017",
+    "text": "B or open-ended answer </answer>.",
+    "char_start": 53215,
+    "char_end": 53248,
+    "sentence_index": 392,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec017",
+    "text": "-10pt\n\nInstruction with Chain of Thoughts Prompt:\n\n(Input Instruction) System: You are a helpful AI assistant.",
+    "char_start": 53250,
+    "char_end": 53360,
+    "sentence_index": 393,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec017",
+    "text": "(Input Instruction) User: <image> ...",
+    "char_start": 53362,
+    "char_end": 53399,
+    "sentence_index": 394,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec017",
+    "text": "<image>Question.",
+    "char_start": 53400,
+    "char_end": 53416,
+    "sentence_index": 395,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec017",
+    "text": "Please think step by step, and enclose the answer within <answer></answer> and the reasoning processes within <think></think>.",
+    "char_start": 53417,
+    "char_end": 53543,
+    "sentence_index": 396,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec017",
+    "text": "(Expected Output Answer) <think> First, assess the presence of consolidation at bilateral lung, ..., Finally, check for Pleural nodule on left side, ..., In conclusion, the findings that align best with the observations are B) Sutures in\nupper lobe of left lung, Cicatrix on left ribs </think><answer> option etc.",
+    "char_start": 53545,
+    "char_end": 53858,
+    "sentence_index": 397,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec017",
+    "text": "B or open-ended answer </answer>.",
+    "char_start": 53859,
+    "char_end": 53892,
+    "sentence_index": 398,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec017",
+    "text": "-8pt\n\nAs shown in Supplementary Table , we show the task type, input instruction, and mined reasoning processes of cases in our benchmark RadRBench-CXR.",
+    "char_start": 53894,
+    "char_end": 54046,
+    "sentence_index": 399,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec019",
+    "text": "To better demonstrate the effectiveness of our method and the comparison of reasoning ability of the model, we present four cases of reasoning outputs from our ChestX-Reasoner, GPT-4o, and Qwen2VL-72B, alongside the corresponding questions, answers, and extracted reasoning processes, as shown in Supplementary Fig.",
+    "char_start": 54048,
+    "char_end": 54363,
+    "sentence_index": 400,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec019",
+    "text": ", , , and .",
+    "char_start": 54364,
+    "char_end": 54375,
+    "sentence_index": 401,
+    "section_sentence_index": 1
+  }
+]

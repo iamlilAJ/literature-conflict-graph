@@ -1,0 +1,1676 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "The releases of OpenAI's o-[n] series, such as o1, o3, and o4-mini, mark a significant paradigm shift in Large Language Models towards advanced reasoning capabilities.",
+    "char_start": 0,
+    "char_end": 167,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Notably, models like o3 have demonstrated strong performance on benchmarks like the Abstraction and Reasoning Corpus for Artificial General Intelligence (ARC-AGI).",
+    "char_start": 168,
+    "char_end": 331,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "However, this benchmark is limited to symbolic patterns, whereas humans often perceive and reason about multimodal scenarios involving both vision and language data.",
+    "char_start": 332,
+    "char_end": 497,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Thus, there is an urgent need to investigate advanced reasoning capabilities in multimodal tasks.",
+    "char_start": 498,
+    "char_end": 595,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "To this end, we track the evolution of the GPT-[n] and o-[n] series models (including o1, o3, and o4-mini) on challenging multimodal puzzles from PuzzleVQA and AlgoPuzzleVQA , which demand fine-grained visual perception.",
+    "char_start": 596,
+    "char_end": 816,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Our results reveal that o-[n] series, particularly later iterations like o3 and o4-mini, significantly outperform the GPT-[n] series and show strong scalability in multimodal reasoning.",
+    "char_start": 817,
+    "char_end": 1002,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Nonetheless, despite these substantial advancements and the superior capabilities demonstrated by the o-[n] series, our findings highlight that even these leading models face persistent challenges.",
+    "char_start": 1003,
+    "char_end": 1200,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Difficulties are particularly evident in tasks requiring precise visual perception, robust compositional reasoning across multiple visual attributes, and solving complex algorithmic or highly combinatorial puzzles, indicating critical areas for future AGI development.",
+    "char_start": 1201,
+    "char_end": 1469,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec001",
+    "text": "We plan to continuously track new models in the series and update our results in this paper accordingly.",
+    "char_start": 1470,
+    "char_end": 1574,
+    "sentence_index": 8,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec001",
+    "text": "All resources used in this evaluation are openly available at .",
+    "char_start": 1576,
+    "char_end": 1639,
+    "sentence_index": 9,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Recent advances in large language models (LLMs) have demonstrated impressive capabilities in language understanding and generation, as seen in OpenAI's GPT-[n] series of models gpt3 .",
+    "char_start": 1641,
+    "char_end": 1824,
+    "sentence_index": 10,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Yet, true artificial general intelligence (AGI) requires robust reasoning abilities across different modalities Fei2021TowardsAG .",
+    "char_start": 1825,
+    "char_end": 1955,
+    "sentence_index": 11,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Simply excelling in text-based tasks is insufficient for agents intended to understand and interact with the rich, multifaceted physical world humans navigate daily.",
+    "char_start": 1956,
+    "char_end": 2121,
+    "sentence_index": 12,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "For instance, while models such as OpenAI's new o-[n] series demonstrate significant performance improvements, sometimes characterized as a ``jumping reasoning curve'' on specific benchmarks like the Abstraction and Reasoning Corpus for Artificial General Intelligence (ARC-AGI) chollet2019measureintelligence , the landscape of multimodal reasoning is complex.",
+    "char_start": 2122,
+    "char_end": 2483,
+    "sentence_index": 13,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "The current evaluations in this area often focus on symbolic patterns, whereas humans frequently reason over complex data involving both vision and language.",
+    "char_start": 2484,
+    "char_end": 2641,
+    "sentence_index": 14,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Thus, the ability to perceive, understand, and reason about multimodal inputs remains a crucial component of human-like intelligence, deserving urgent investigation.",
+    "char_start": 2642,
+    "char_end": 2807,
+    "sentence_index": 15,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "To this end, puzzles often serve as effective measures of cognitive abilities such as pattern recognition and step-by-step reasoning.",
+    "char_start": 2809,
+    "char_end": 2942,
+    "sentence_index": 16,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Notably, such measures typically do not require specific domain knowledge, allowing individuals from diverse backgrounds to engage with them.",
+    "char_start": 2943,
+    "char_end": 3084,
+    "sentence_index": 17,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "One prominent example is Raven's Progressive Matrices raven-ebe0e932-0e0b-3cbd-9c98-9b94f8c2f1dc , a non-verbal assessment tool designed to evaluate abstract reasoning and fluid intelligence.",
+    "char_start": 3085,
+    "char_end": 3276,
+    "sentence_index": 18,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "In this test, participants are presented with abstract patterns containing a missing element and must identify the correct piece to complete the pattern.",
+    "char_start": 3277,
+    "char_end": 3430,
+    "sentence_index": 19,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Thus, inspired by abstract puzzles as measures of intelligence, recent multimodal benchmarks have enabled systematic evaluation across specific cognitive abilities, including visual perception, inductive reasoning, deductive reasoning, and algorithmic problem solving chia2024puzzlevqadiagnosingmultimodalreasoning, ghosal2024languagemodelspuzzleprodigies .",
+    "char_start": 3432,
+    "char_end": 3789,
+    "sentence_index": 20,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "These newer benchmarks go beyond simple object recognition or image captioning, probing deeper into how models integrate information across modalities to make inferences or devise multi-step solutions.",
+    "char_start": 3790,
+    "char_end": 3991,
+    "sentence_index": 21,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Compared to previous measures, they require general understanding of spatial relationships, pattern recognition, and reasoning across visual and language elements, thus providing a more holistic measure of artificial general intelligence.",
+    "char_start": 3992,
+    "char_end": 4230,
+    "sentence_index": 22,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Our research addresses several key questions:\n(1) How do current state-of-the-art models, specifically the GPT-[n] and o-[n] series, perform on diverse visual reasoning tasks?",
+    "char_start": 4231,
+    "char_end": 4406,
+    "sentence_index": 23,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "(2) What types of pattern recognition, compositional reasoning, and algorithmic problem-solving are particularly challenging for these models?",
+    "char_start": 4407,
+    "char_end": 4549,
+    "sentence_index": 24,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "(3) How can we systematically evaluate and compare different models' multimodal reasoning capabilities?",
+    "char_start": 4550,
+    "char_end": 4653,
+    "sentence_index": 25,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "In our evaluation, we assess the performance of GPT-[n] and o-[n] models on abstract multimodal puzzles from PuzzleVQA , which primarily test abstract reasoning, and on AlgoPuzzleVQA , which requires more complex algorithmic approaches.",
+    "char_start": 4655,
+    "char_end": 4891,
+    "sentence_index": 26,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "To ensure a comprehensive evaluation, we present the puzzles in both multiple-choice and open-ended question answering formats.",
+    "char_start": 4892,
+    "char_end": 5019,
+    "sentence_index": 27,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Our findings reveal that while the o-[n] series demonstrates superior performance and scalability, significantly outperforming GPT-[n] models across most tasks, even these advanced models encounter substantial difficulties, particularly with complex algorithmic reasoning and fine-grained visual perception.",
+    "char_start": 5021,
+    "char_end": 5328,
+    "sentence_index": 28,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "The performance gains, while notable within the o-[n] series, highlight specific bottlenecks rather than uniform leaps across all reasoning types, especially when compared to the broader challenges posed by our benchmarks.",
+    "char_start": 5329,
+    "char_end": 5551,
+    "sentence_index": 29,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "For example, GPT-[n] models show iterative improvements but consistently lag, struggling with visual perception and more complex compositional tasks.",
+    "char_start": 5552,
+    "char_end": 5701,
+    "sentence_index": 30,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "This suggests that merely scaling existing architectures may not be sufficient to overcome certain fundamental hurdles in perception and logic.",
+    "char_start": 5702,
+    "char_end": 5845,
+    "sentence_index": 31,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "This differentiation in capabilities and the persistent challenges, even for leading models, underscore the substantial gap between current artificial intelligence and human-like reasoning abilities.",
+    "char_start": 5846,
+    "char_end": 6045,
+    "sentence_index": 32,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "As models continue to rapidly advance and scale, as suggested by trends like those in fig:visual_trends , this benchmark and the detailed analysis of performance tiers and bottlenecks will serve as a critical indicator of progress toward more robust and generalized artificial intelligence.",
+    "char_start": 6046,
+    "char_end": 6336,
+    "sentence_index": 33,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "There isn't a single universally accepted definition of Artificial General Intelligence (AGI).",
+    "char_start": 6338,
+    "char_end": 6432,
+    "sentence_index": 34,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "However, following , AGI refers to a system capable of adapting to novel open environments using limited computational resources, guided by specific principles.",
+    "char_start": 6433,
+    "char_end": 6593,
+    "sentence_index": 35,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "In contrast to narrow AI, which excels in specific tasks, AGI aims to replicate the broad cognitive abilities of humans, enabling it to perform any intellectual task that a human can latif2024agiartificialgeneralintelligence .",
+    "char_start": 6594,
+    "char_end": 6820,
+    "sentence_index": 36,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "Achieving AGI involves creating systems that can learn and reason under conditions of insufficient knowledge and resources, continuously adapting to new tasks and environments .",
+    "char_start": 6821,
+    "char_end": 6998,
+    "sentence_index": 37,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Solving puzzles is a significant milestone in the path to AGI because it requires the application of core cognitive skills such as abstract reasoning, problem-solving, and pattern recognition.",
+    "char_start": 7000,
+    "char_end": 7192,
+    "sentence_index": 38,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "These skills are essential for a model to generalize knowledge and adapt to new, unseen tasks.",
+    "char_start": 7193,
+    "char_end": 7287,
+    "sentence_index": 39,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "The process of puzzle-solving involves several cognitive functions central to human intelligence, including the ability to understand and manipulate abstract concepts, recognize patterns, and apply logical reasoning to arrive at a solution.",
+    "char_start": 7288,
+    "char_end": 7528,
+    "sentence_index": 40,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "By evaluating these models on puzzles, we can assess and enhance these cognitive functions within the AI, bringing it closer to human-like intelligence .",
+    "char_start": 7529,
+    "char_end": 7682,
+    "sentence_index": 41,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "w\u00fcst2024bongardwonderlandvisualpuzzles discuss how current models occasionally succeed in identifying discriminative concepts but often fail to understand and reason about visual concepts, indicating a significant limitation in their reasoning abilities.",
+    "char_start": 7684,
+    "char_end": 7938,
+    "sentence_index": 42,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Similarly, park2023unravelingarcpuzzlemimicking explore how models approach the Abstraction and Reasoning Corpus (ARC), revealing both their strengths and limitations in abstract reasoning.",
+    "char_start": 7939,
+    "char_end": 8128,
+    "sentence_index": 43,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "The release of o-[n] models highlights the relationship between computational resources and performance.",
+    "char_start": 8130,
+    "char_end": 8234,
+    "sentence_index": 44,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "While increased computational power can enhance performance, true intelligence also requires efficient learning algorithms and the ability to generalize from limited data .",
+    "char_start": 8235,
+    "char_end": 8407,
+    "sentence_index": 45,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Simply scaling up resources does not guarantee the emergence of AGI; developing architectures that can learn abstract concepts and apply them across various domains is crucial .",
+    "char_start": 8408,
+    "char_end": 8585,
+    "sentence_index": 46,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "The performance of GPT-[n] and O-[n] models across various puzzle benchmarks reveals both their strengths and limitations in reasoning and multimodal tasks.",
+    "char_start": 8587,
+    "char_end": 8743,
+    "sentence_index": 47,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "giadikiaroglou2024puzzlesolvingusingreasoning highlights that, despite advancements, current models often struggle with complex textual rule-based and rule-less puzzles requiring advanced logical inference, revealing a significant gap between their capabilities and human-like reasoning.",
+    "char_start": 8745,
+    "char_end": 9032,
+    "sentence_index": 48,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "On the NPR Sunday Puzzle benchmark , o1 achieved a 59\\% accuracy rate, outperforming models like R1, which demonstrates its proficiency in general reasoning.",
+    "char_start": 9034,
+    "char_end": 9191,
+    "sentence_index": 49,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "However, GPT-4o struggled with deep abductive reasoning tasks, scoring only 38\\% on the True Detective benchmark .",
+    "char_start": 9192,
+    "char_end": 9306,
+    "sentence_index": 50,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "In the REBUS benchmark , GPT-4o performed well with a 42\\% accuracy rate, but faced difficulties with more complex puzzles, achieving just 7\\% on the hardest ones.",
+    "char_start": 9308,
+    "char_end": 9471,
+    "sentence_index": 51,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "The o1 model also showed limitations on the EnigmaEval benchmark , with only 7\\% accuracy on the normal split and 0\\% on the hard split, highlighting its struggle with unstructured and lateral reasoning tasks.",
+    "char_start": 9472,
+    "char_end": 9681,
+    "sentence_index": 52,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec004",
+    "text": "GPT-4V demonstrated moderate success on the benchmark with a 46\\% accuracy rate, showcasing its ability in abstract pattern recognition.",
+    "char_start": 9683,
+    "char_end": 9819,
+    "sentence_index": 53,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec004",
+    "text": "However, it scored only 30.3\\% on the , revealing challenges in solving complex algorithmic puzzles that require both visual and algorithmic reasoning.",
+    "char_start": 9820,
+    "char_end": 9971,
+    "sentence_index": 54,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec004",
+    "text": "Unlike other puzzle benchmarks, tests a model\u2019s understanding of basic concepts such as colors, shapes, sizes, and spatial relationships.",
+    "char_start": 9973,
+    "char_end": 10110,
+    "sentence_index": 55,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec004",
+    "text": "This sets it apart from datasets that focus purely on text or visual recognition.",
+    "char_start": 10111,
+    "char_end": 10192,
+    "sentence_index": 56,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec004",
+    "text": "increases the complexity by introducing algorithmic reasoning, requiring models to solve puzzles that combine visual comprehension with intricate algorithmic thinking.",
+    "char_start": 10193,
+    "char_end": 10360,
+    "sentence_index": 57,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec004",
+    "text": "Both datasets allow for deeper analysis, as they are created with predefined ontologies, making it easier to identify reasoning gaps.",
+    "char_start": 10361,
+    "char_end": 10494,
+    "sentence_index": 58,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec004",
+    "text": "These qualities make and the ideal benchmarks for our study, providing a comprehensive foundation for our analysis.",
+    "char_start": 10495,
+    "char_end": 10610,
+    "sentence_index": 59,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec004",
+    "text": "[ht]\n\nimages/puzzles.pdf\nExamples of puzzles from and .",
+    "char_start": 10612,
+    "char_end": 10667,
+    "sentence_index": 60,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "\\&\n\nUnderstanding the capabilities and limitations of large multimodal models in reasoning tasks requires datasets that challenge their cognitive capabilities in nuanced ways.",
+    "char_start": 10669,
+    "char_end": 10844,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "Multimodal puzzles are essential benchmarks for evaluating these models, as they require a unique combination of perception, reasoning, and abstraction.",
+    "char_start": 10845,
+    "char_end": 10997,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "In this study, we employ which emphasizes visual abstract reasoning and pattern recognition, alongside , which features more complex puzzles that require algorithmic solutions.",
+    "char_start": 10998,
+    "char_end": 11174,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "consists 10 puzzle categories, with a total of 2,000 test instances.",
+    "char_start": 11176,
+    "char_end": 11244,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "Four of these categories focus on single-concept patterns, such as numbers, colors, sizes, and shapes, while the remaining six categories emphasize dual-concept patterns, which combine two distinct concepts.",
+    "char_start": 11245,
+    "char_end": 11452,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "consists of 18 distinct puzzles, each with 100 test instances, resulting in a\ntotal of 1,800 test instances.",
+    "char_start": 11453,
+    "char_end": 11561,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "These puzzles cover a wide range of topics, incorporating both visual elements like colors and positions, as well as algorithmic concepts such as Boolean logic and optimization.",
+    "char_start": 11562,
+    "char_end": 11739,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "fig:merged_examples presents example puzzles from both datasets.",
+    "char_start": 11740,
+    "char_end": 11804,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "A key contribution of our study is expanding both datasets beyond their original multiple-choice format to include open-ended format.",
+    "char_start": 11806,
+    "char_end": 11939,
+    "sentence_index": 69,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "This enhancement enables a more comprehensive and in-depth evaluation of model reasoning capabilities.",
+    "char_start": 11940,
+    "char_end": 12042,
+    "sentence_index": 70,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Additionally, we assess GPT-[n] and o-[n] models, which have not been examined in previous research.",
+    "char_start": 12043,
+    "char_end": 12143,
+    "sentence_index": 71,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "By doing so, we extend prior evaluations with a significantly deeper analysis, richer discussions, and extensive case study examples.",
+    "char_start": 12144,
+    "char_end": 12277,
+    "sentence_index": 72,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec006",
+    "text": "For both multiple-choice and open-ended setups, we use GPT-4o for answer matching, as the varied output formats makes answer extraction a non-trivial task.",
+    "char_start": 12279,
+    "char_end": 12434,
+    "sentence_index": 73,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec007",
+    "text": "The prompt used in this matching process is provided in app:gpt4o_matching .",
+    "char_start": 12435,
+    "char_end": 12511,
+    "sentence_index": 74,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec007",
+    "text": "In both settings, we evaluate performance based on the accuracy of predicting the correct final answer.",
+    "char_start": 12512,
+    "char_end": 12615,
+    "sentence_index": 75,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec007",
+    "text": "To validate the reliability of GPT-4o for answer matching, we manually evaluated 200 random outputs with their matching scores.",
+    "char_start": 12616,
+    "char_end": 12743,
+    "sentence_index": 76,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "The results showed a classification accuracy of 99\\%, with the task proving straightforward due to the simplicity of the final answers.",
+    "char_start": 12744,
+    "char_end": 12879,
+    "sentence_index": 77,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec008",
+    "text": "We investigate the performance of GPT-[n] and o-[n] models: (1) GPT-4-Turbo, (2) GPT-4o, (3) GPT-4.5, (4) GPT-4.1, (5) o1, (6) o3, (7) o4-mini.",
+    "char_start": 12881,
+    "char_end": 13024,
+    "sentence_index": 78,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec008",
+    "text": "We selected these two model series from OpenAI due to their rapid advancements and significant contributions to the field of LLMs.",
+    "char_start": 13025,
+    "char_end": 13155,
+    "sentence_index": 79,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec008",
+    "text": "Each version has introduced innovative techniques that have shaped the LLM landscape.",
+    "char_start": 13156,
+    "char_end": 13241,
+    "sentence_index": 80,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec008",
+    "text": "For example, GPT-4-Turbo excels in understanding visual inputs, while GPT-4o is optimized for efficient multimodal inference.",
+    "char_start": 13242,
+    "char_end": 13367,
+    "sentence_index": 81,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec008",
+    "text": "The o-[n] models, a recent addition, is trained using reinforcement learning to perform complex reasoning before responding.",
+    "char_start": 13368,
+    "char_end": 13492,
+    "sentence_index": 82,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec008",
+    "text": "For the o-[n] models, we conducted evaluations across all three reasoning modes: ``Low'' , ``Medium'' , ``High'' .",
+    "char_start": 13493,
+    "char_end": 13607,
+    "sentence_index": 83,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec008",
+    "text": "Please note that our study can easily be expanded to other closed-sourced and open-sourced models.",
+    "char_start": 13608,
+    "char_end": 13706,
+    "sentence_index": 84,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "[ht!]\n\n9pt\n!",
+    "char_start": 13708,
+    "char_end": 13720,
+    "sentence_index": 85,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "l|l|ccccccccccccc\n\n& 2 * Tasks & 2 * GPT-4-Turbo & 2 * GPT-4o & 2 * GPT-4.5 & 2 * GPT-4.1 & 3 c o1 & 3 c o3 & 3 c o4-mini\n\n(lr) 7-9 (lr) 10-12 (lr) 13-15\n& & & & & & Low & Medium & High & Low & Medium & High & Low & Medium & High\n\n32 * 90 Multiple-Choice & 14 c gray!20 PuzzleVQA\n\n2 15\n& Colors & 43.0 & 75.0 & 88.5 & 86.0 & 88.5 & 91.5 & 91.5 & 98.5 & 98.5 & 99.0 & 99.5 & 100.0 & 99.5\n\n& Numbers & 83.0 & 85.0 & 97.5 & 98.5 & 96.5 & 98.0 & 99.0 & 99.5 & 99.0 & 99.5 & 99.0 & 98.5 & 99.0\n\n& Shapes & 58.5 & 67.5 & 74.5 & 75.0 & 59.5 & 66.5 & 66.5 & 78.5 & 78.0 & 74.0 & 61.0 & 74.5 & 70.5\n\n& Size & 37.0 & 44.0 & 70.5 & 61.0 & 63.5 & 70.5 & 77.5 & 81.0 & 85.5 & 87.5 & 79.0 & 78.5 & 86.0\n\n2 15\n& Colors \\& Numbers & 62.0 & 52.0 & 86.5 & 82.5 & 92.5 & 98.5 & 99.0 & 95.0 & 97.5 & 97.5 & 99.0 & 100.0 & 99.5\n\n& Colors \\& Shapes & 61.5 & 64.0 & 78.5 & 64.0 & 69.5 & 76.5 & 80.0 & 87.5 & 95.5 & 92.0 & 79.5 & 86.5 & 86.5\n\n& Colors \\& Size & 48.0 & 57.5 & 60.5 & 65.5 & 43.0 & 49.0 & 50.0 & 53.5 & 58.5 & 57.0 & 64.5 & 67.5 & 72.5\n\n& Numbers \\& Shapes & 51.5 & 42.5 & 43.0 & 67.0 & 82.0 & 86.5 & 92.0 & 88.0 & 88.0 & 92.0 & 87.5 & 93.0 & 96.0\n\n& Numbers \\& Size & 30.5 & 29.5 & 47.5 & 52.0 & 45.0 & 44.0 & 47.0 & 48.5 & 49.0 & 45.0 & 42.0 & 64.0 & 62.0\n\n& Size \\& Shapes & 55.0 & 60.5 & 95.0 & 70.0 & 72.0 & 82.5 & 86.5 & 91.0 & 91.5 & 97.0 & 78.5 & 86.5 & 85.5\n\n2 15\n\n& blue!15 Average & blue!15 53.0 & blue!15 57.8 & blue!15 74.2 & blue!15 72.2 & blue!15 71.2 & blue!15 76.3 & blue!15 78.9 & blue!15 82.1 & blue!15 84.1 & blue!15 84.0 & blue!15 79.0 & blue!15 84.9 & blue!15 85.7\n\n2 15\n& 14 c gray!20 AlgoPuzzleVQA\n\n2 15\n& Board Tiling & 49.0 & 52.0 & 51.0 & 55.0 & 52.0 & 53.0 & 48.0 & 55.0 & 60.0 & 60.0 & 48.0 & 44.0 & 52.0\n\n& Calendar & 55.0 & 61.0 & 67.0 & 68.0 & 84.0 & 90.0 & 90.0 & 93.0 & 96.0 & 96.0 & 94.0 & 98.0 & 99.0\n\n& Chain Link & 4.0 & 5.0 & 2.0 & 2.0 & 30.0 & 35.0 & 58.0 & 47.0 & 65.0 & 75.0 & 33.0 & 45.0 & 77.0\n\n& Checker Move & 15.0 & 18.0 & 36.0 & 34.0 & 41.0 & 46.0 & 52.0 & 61.0 & 59.0 & 56.0 & 82.0 & 94.0 & 97.0\n\n& Clock & 19.0 & 14.0 & 56.0 & 68.0 & 65.0 & 76.0 & 81.0 & 96.0 & 97.0 & 98.0 & 85.0 & 92.0 & 91.0\n\n& Colour Hue & 33.0 & 25.0 & 23.0 & 26.0 & 36.0 & 43.0 & 43.0 & 41.0 & 36.0 & 47.0 & 42.0 & 44.0 & 47.0\n\n& Map Colour & 20.0 & 28.0 & 0.0 & 0.0 & 3.0 & 1.0 & 50.0 & 2.0 & 4.0 & 5.0 & 3.0 & 4.0 & 3.0\n\n& Maze Solve & 32.0 & 39.0 & 30.0 & 27.0 & 41.0 & 44.0 & 50.0 & 36.0 & 39.0 & 39.0 & 39.0 & 32.0 & 42.0\n\n& Move Box & 34.0 & 35.0 & 41.0 & 37.0 & 26.0 & 24.0 & 30.0 & 49.0 & 46.0 & 52.0 & 46.0 & 47.0 & 50.0\n\n& N-Queens & 18.0 & 14.0 & 3.0 & 3.0 & 18.0 & 13.0 & 15.0 & 34.0 & 38.0 & 35.0 & 39.0 & 52.0 & 56.0\n\n& Number Slide & 27.0 & 32.0 & 21.0 & 18.0 & 26.0 & 27.0 & 88.0 & 28.0 & 27.0 & 30.0 & 29.0 & 29.0 & 29.0\n\n& Rotten Fruits & 25.0 & 53.0 & 81.0 & 72.0 & 43.0 & 48.0 & 52.0 & 86.0 & 84.0 & 84.0 & 96.0 & 99.0 & 97.0\n\n& Rubik's Cube & 40.0 & 31.0 & 61.0 & 47.0 & 64.0 & 68.0 & 74.0 & 78.0 & 75.0 & 85.0 & 77.0 & 80.0 & 92.0\n\n& Think A Dot & 37.0 & 42.0 & 40.0 & 49.0 & 53.0 & 57.0 & 61.0 & 66.0 & 74.0 & 69.0 & 67.0 & 82.0 & 74.0\n\n& Tower of Hanoi & 8.0 & 19.0 & 29.0 & 39.0 & 50.0 & 59.0 & 63.0 & 77.0 & 81.0 & 79.0 & 60.0 & 76.0 & 85.0\n\n& Water Jugs & 13.0 & 34.0 & 37.0 & 43.0 & 48.0 & 57.0 & 43.0 & 80.0 & 89.0 & 88.0 & 67.0 & 82.0 & 82.0\n\n& Wheel of Fortune & 15.0 & 33.0 & 47.0 & 51.0 & 48.0 & 55.0 & 56.0 & 66.0 & 65.0 & 75.0 & 50.0 & 58.0 & 69.0\n\n& Wood Slide & 13.0 & 21.0 & 22.0 & 28.0 & 26.0 & 23.0 & 25.0 & 46.0 & 52.0 & 48.0 & 33.0 & 24.0 & 36.0\n\n2 15\n\n& blue!15 Average & blue!15 25.4 & blue!15 30.9 & blue!15 35.9 & blue!15 37.1 & blue!15 41.9 & blue!15 45.5 & blue!15 54.4 & blue!15 57.8 & blue!15 60.4 & blue!15 62.3 & blue!15 55.0 & blue!15 60.1 & blue!15 65.4\n\n32 * 90 Open-Ended & 14 c gray!20 PuzzleVQA\n\n2 15\n& Colors & 51.0 & 72.5 & 81.0 & 87.0 & 89.5 & 90.0 & 80.5 & 98.5 & 98.5 & 98.0 & 99.5 & 100.0 & 99.5\n\n& Numbers & 82.5 & 84.5 & 91.0 & 95.5 & 93.0 & 98.0 & 96.5 & 95.0 & 94.5 & 93.0 & 93.0 & 91.5 & 93.0\n\n& Shapes & 32.5 & 51.5 & 66.5 & 54.0 & 45.0 & 48.0 & 54.5 & 63.0 & 62.0 & 62.5 & 57.0 & 55.0 & 57.0\n\n& Size & 19.0 & 39.0 & 53.0 & 59.5 & 48.5 & 55.0 & 54.5 & 72.0 & 75.0 & 72.0 & 57.5 & 69.0 & 79.5\n\n2 15\n& Colors \\& Numbers & 54.5 & 48.0 & 71.0 & 67.5 & 93.0 & 96.5 & 97.0 & 90.5 & 93.5 & 92.0 & 97.0 & 97.5 & 98.0\n\n& Colors \\& Shapes & 30.0 & 45.5 & 75.5 & 48.5 & 67.5 & 74.0 & 75.0 & 89.0 & 90.5 & 90.0 & 74.0 & 84.0 & 88.5\n\n& Colors \\& Size & 31.5 & 21.5 & 55.0 & 54.5 & 35.5 & 35.5 & 30.0 & 48.0 & 55.5 & 57.0 & 49.5 & 57.5 & 59.0\n\n& Numbers \\& Shapes & 31.5 & 20.0 & 26.0 & 40.0 & 67.0 & 78.5 & 78.0 & 73.5 & 78.5 & 83.5 & 66.5 & 71.5 & 86.0\n\n& Numbers \\& Size & 24.5 & 34.5 & 43.0 & 42.0 & 38.5 & 44.5 & 41.5 & 43.5 & 43.5 & 47.0 & 38.0 & 45.0 & 52.0\n\n& Size \\& Shapes & 28.5 & 50.5 & 74.0 & 56.0 & 47.0 & 53.0 & 55.0 & 77.5 & 78.0 & 81.0 & 76.5 & 78.0 & 91.0\n\n2 15\n\n& blue!15 Average & blue!15 38.5 & blue!15 46.8 & blue!15 63.6 & blue!15 60.5 & blue!15 62.5 & blue!15 67.3 & blue!15 66.2 & blue!15 75.0 & blue!15 77.0 & blue!15 77.6 & blue!15 70.8 & blue!15 74.9 & blue!15 80.3\n\n2 15\n& 14 c gray!20 AlgoPuzzleVQA\n\n2 15\n& Board Tiling & 46.0 & 46.0 & 56.0 & 51.0 & 52.0 & 49.0 & 51.0 & 58.0 & 58.0 & 61.0 & 48.0 & 51.0 & 53.0\n\n& Calendar & 43.0 & 52.0 & 64.0 & 63.0 & 71.0 & 80.0 & 83.0 & 85.0 & 95.0 & 94.0 & 90.0 & 93.0 & 97.0\n\n& Chain Link & 1.0 & 3.0 & 0.0 & 0.0 & 0.0 & 0.0 & 1.0 & 3.0 & 2.0 & 4.0 & 0.0 & 1.0 & 6.0\n\n& Checker Move & 3.0 & 7.0 & 14.0 & 18.0 & 28.0 & 28.0 & 34.0 & 46.0 & 49.0 & 46.0 & 32.0 & 52.0 & 74.0\n\n& Clock & 0.0 & 3.0 & 12.0 & 20.0 & 6.0 & 6.0 & 6.0 & 19.0 & 16.0 & 25.0 & 20.0 & 15.0 & 13.0\n\n& Colour Hue & 5.0 & 10.0 & 15.0 & 14.0 & 14.0 & 15.0 & 15.0 & 20.0 & 17.0 & 23.0 & 12.0 & 18.0 & 20.0\n\n& Map Colour & 10.0 & 22.0 & 0.0 & 1.0 & 1.0 & 0.0 & 21.0 & 1.0 & 0.0 & 1.0 & 2.0 & 2.0 & 1.0\n\n& Maze Solve & 16.0 & 8.0 & 9.0 & 14.0 & 14.0 & 22.0 & 17.0 & 14.0 & 11.0 & 10.0 & 15.0 & 15.0 & 16.0\n\n& Move Box & 20.0 & 23.0 & 32.0 & 43.0 & 24.0 & 25.0 & 23.0 & 40.0 & 47.0 & 47.0 & 34.0 & 39.0 & 41.0\n\n& N-Queens & 17.0 & 16.0 & 12.0 & 8.0 & 12.0 & 12.0 & 16.0 & 21.0 & 23.0 & 22.0 & 30.0 & 31.0 & 47.0\n\n& Number Slide & 14.0 & 32.0 & 19.0 & 17.0 & 26.0 & 23.0 & 71.0 & 27.0 & 27.0 & 28.0 & 23.0 & 27.0 & 28.0\n\n& Rotten Fruits & 32.0 & 53.0 & 69.0 & 71.0 & 41.0 & 41.0 & 43.0 & 75.0 & 76.0 & 77.0 & 95.0 & 95.0 & 96.0\n\n& Rubik's Cube & 32.0 & 44.0 & 58.0 & 48.0 & 52.0 & 53.0 & 54.0 & 68.0 & 63.0 & 69.0 & 66.0 & 72.0 & 78.0\n\n& Think A Dot & 36.0 & 41.0 & 41.0 & 44.0 & 40.0 & 45.0 & 32.0 & 38.0 & 48.0 & 38.0 & 55.0 & 56.0 & 55.0\n\n& Tower of Hanoi & 0.0 & 2.0 & 10.0 & 24.0 & 31.0 & 35.0 & 39.0 & 60.0 & 69.0 & 60.0 & 38.0 & 60.0 & 64.0\n\n& Water Jugs & 8.0 & 23.0 & 24.0 & 34.0 & 29.0 & 43.0 & 42.0 & 72.0 & 85.0 & 87.0 & 53.0 & 66.0 & 76.0\n\n& Wheel of Fortune & 14.0 & 29.0 & 33.0 & 36.0 & 37.0 & 34.0 & 31.0 & 43.0 & 43.0 & 49.0 & 33.0 & 34.0 & 38.0\n\n& Wood Slide & 0.0 & 1.0 & 1.0 & 9.0 & 0.0 & 0.0 & 0.0 & 16.0 & 25.0 & 29.0 & 0.0 & 4.0 & 9.0\n\n2 15\n\n& blue!15 Average & blue!15 16.5 & blue!15 23.1 & blue!15 26.1 & blue!15 28.6 & blue!15 26.6 & blue!15 28.4 & blue!15 32.2 & blue!15 39.2 & blue!15 41.9 & blue!15 42.8 & blue!15 35.9 & blue!15 40.6 & blue!15 45.1\n\nPerformance comparison of GPT-[n] and o-[n] models on the PuzzleVQA and AlgoPuzzleVQA datasets under both multiple-choice and open-ended settings.",
+    "char_start": 13721,
+    "char_end": 21046,
+    "sentence_index": 86,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec009",
+    "text": "The results presented in tab:results provides a comprehensive comparison of the current capabilities and limitations of GPT-[n] and o-[n] models across PuzzleVQA and AlgoPuzzleVQA .",
+    "char_start": 21048,
+    "char_end": 21229,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec009",
+    "text": "Evaluations conducted under both multiple-choice and open-ended settings reveal clear performance tiers, showcasing notable advancements while also highlighting persistent challenges.",
+    "char_start": 21230,
+    "char_end": 21413,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec009",
+    "text": "[ht]\n\nimages/case_shape_size_grid.pdf\nA case study on the Size \\& Shape puzzle in reveals that GPT-[n] models exhibit weaker visual perception capabilities compared to o-[n] models.",
+    "char_start": 21415,
+    "char_end": 21596,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec009",
+    "text": "Superior Performance and Scalability of o-[n] Models.",
+    "char_start": 21598,
+    "char_end": 21651,
+    "sentence_index": 90,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec009",
+    "text": "Across both settings, o-[n] models consistently outperform GPT-[n] models by a huge margin on both datasets.",
+    "char_start": 21652,
+    "char_end": 21760,
+    "sentence_index": 91,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec009",
+    "text": "Within the o-[n] series, performance scales reliably with increased reasoning modes: ``High'' variants outperform ``Medium'' , which in turn surpass ``Low'' .",
+    "char_start": 21761,
+    "char_end": 21919,
+    "sentence_index": 92,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec009",
+    "text": "This trend highlights the scalability of the o-[n] architecture and training strategy, effectively converting additional resources into better performance.",
+    "char_start": 21920,
+    "char_end": 22075,
+    "sentence_index": 93,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec009",
+    "text": "Furthermore, newer generations within the series, notably o3 and especially o4-mini, set new benchmarks, underscoring continued progress.",
+    "char_start": 22076,
+    "char_end": 22213,
+    "sentence_index": 94,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec009",
+    "text": "GPT-[n] Models Progression and Limitations.",
+    "char_start": 22215,
+    "char_end": 22258,
+    "sentence_index": 95,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec009",
+    "text": "Among the GPT-[n] series, GPT-4.5 and GPT-4.1 generally outperform earlier versions like GPT-4o, reflecting steady improvements across iterations.",
+    "char_start": 22259,
+    "char_end": 22405,
+    "sentence_index": 96,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec009",
+    "text": "However, even these newer models are consistently outperformed by o-[n] models across a broad range of tasks.",
+    "char_start": 22406,
+    "char_end": 22515,
+    "sentence_index": 97,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec009",
+    "text": "This persistent gap highlights the effectiveness of the o-[n] series' training strategies, particularly for tasks demanding complex visual understanding and abstract or algorithmic reasoning.",
+    "char_start": 22516,
+    "char_end": 22707,
+    "sentence_index": 98,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec009",
+    "text": "A case study in fig:case_shape_size illustrates this disparity, showing how current GPT-[n] models fall short in visual perception compared to o-[n] models.",
+    "char_start": 22708,
+    "char_end": 22864,
+    "sentence_index": 99,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec009",
+    "text": "images/case_clock.pdf\nA case study on the Clock puzzle in , evaluated in both multiple-choice and open-ended settings, shows that both GPT-[n] and o-[n] models still lack fine-grained visual perception capabilities.",
+    "char_start": 22866,
+    "char_end": 23081,
+    "sentence_index": 100,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec009",
+    "text": "Impact of Evaluation Settings and Dataset Complexity.",
+    "char_start": 23083,
+    "char_end": 23136,
+    "sentence_index": 101,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec009",
+    "text": "The format of evaluation\u2014multiple-choice versus open-ended\u2014has a significant impact on model performance.",
+    "char_start": 23137,
+    "char_end": 23242,
+    "sentence_index": 102,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec009",
+    "text": "Models consistently perform better on multiple-choice tasks, where the limited answer space enables success through recognition or elimination rather than generative recall.",
+    "char_start": 23243,
+    "char_end": 23416,
+    "sentence_index": 103,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "In contrast, open-ended questions, which require precise, unaided responses, result in a drop in accuracy.",
+    "char_start": 23417,
+    "char_end": 23523,
+    "sentence_index": 104,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "This gap underscores persistent challenges in achieving unconstrained, fine-grained reasoning.",
+    "char_start": 23524,
+    "char_end": 23618,
+    "sentence_index": 105,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "A case study in fig:case_clock illustrates this: models often fail to accurately infer the time from a clock image, reflecting difficulties with detailed visual perception.",
+    "char_start": 23619,
+    "char_end": 23791,
+    "sentence_index": 106,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "Dataset complexity further amplifies these differences.",
+    "char_start": 23792,
+    "char_end": 23847,
+    "sentence_index": 107,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "The dataset, which emphasizes algorithmic, spatial, and multi-step reasoning, consistently proves more difficult than the PuzzleVQA dataset, which focuses on visual attributes and simpler logic.",
+    "char_start": 23848,
+    "char_end": 24042,
+    "sentence_index": 108,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "All models perform worse on AlgoPuzzleVQA , with the performance gap between o-[n] and GPT-[n] models widening under increased complexity.",
+    "char_start": 24043,
+    "char_end": 24181,
+    "sentence_index": 109,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec010",
+    "text": "Strong Performance on Basic Concepts\nOn PuzzleVQA , particularly for tasks centered around singular concepts like Colors or Numbers , the more advanced o-[n] models, demonstrate exceptional proficiency, frequently achieving near-perfect or perfect scores (e.g., 98-100\\% for o4-mini (High) on Colors and Numbers in multiple-choice).",
+    "char_start": 24183,
+    "char_end": 24515,
+    "sentence_index": 110,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec010",
+    "text": "This indicates a very strong grasp of fundamental visual perception and attribute extraction.",
+    "char_start": 24516,
+    "char_end": 24609,
+    "sentence_index": 111,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec010",
+    "text": "GPT-[n] models, particularly GPT-4.5 and GPT-4.1, also perform reasonably well on these simpler tasks, though generally not reaching the same consistent near-perfection as o-[n] models.",
+    "char_start": 24610,
+    "char_end": 24795,
+    "sentence_index": 112,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec010",
+    "text": "Challenges with Concept Combinations and Size Perception\nThe challenge becomes more pronounced when tasks require reasoning over combinations of concepts such as Colors \\& Shapes or Numbers \\& Size or involve perceiving Size alone.",
+    "char_start": 24797,
+    "char_end": 25028,
+    "sentence_index": 113,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec010",
+    "text": "In these puzzles, all models exhibit a noticeable decline in performance, underscoring the inherent difficulty of compositional reasoning, where multiple visual elements must be integrated accurately.",
+    "char_start": 25029,
+    "char_end": 25229,
+    "sentence_index": 114,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec010",
+    "text": "Among these concepts, Size emerges as a consistent bottleneck, whether in isolation, or in conjunction with others ( Colors \\& Size , Numbers \\& Size ) tend to achieve lower scores than those focused solely on Colors or Numbers .",
+    "char_start": 25230,
+    "char_end": 25459,
+    "sentence_index": 115,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec010",
+    "text": "This suggests that current models struggle more with interpreting relative spatial extent and making proportional comparisons than with processing discrete, categorical features.",
+    "char_start": 25460,
+    "char_end": 25638,
+    "sentence_index": 116,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "Nevertheless, the o-[n] models continues to outperform others, demonstrating stronger capabilities in compositional and relational visual reasoning.",
+    "char_start": 25639,
+    "char_end": 25787,
+    "sentence_index": 117,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "Average Performance Summary for PuzzleVQA\nIn the multiple-choice setting, GPT-4.5 achieved an average accuracy of 74.2\\%.",
+    "char_start": 25789,
+    "char_end": 25910,
+    "sentence_index": 118,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "In comparison, the o4-mini (High) model performed significantly better, with an average of 85.7\\%.",
+    "char_start": 25911,
+    "char_end": 26009,
+    "sentence_index": 119,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "Other high-performing models in the o-[n] family, such as o3 (Medium/High), also scored in the mid-80s.",
+    "char_start": 26010,
+    "char_end": 26113,
+    "sentence_index": 120,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "A similar performance gap is evident in the open-ended setting, GPT-4.5 averaged 63.6\\%, whereas o4-mini (High) reached an impressive 80.3\\%.",
+    "char_start": 26114,
+    "char_end": 26255,
+    "sentence_index": 121,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "These results underscore the o-[n] models\u2019 superior ability to comprehend and reason through the visual puzzles in the dataset, demonstrating strength not only in basic visual perception but also in understanding more complex concept combinations.",
+    "char_start": 26256,
+    "char_end": 26503,
+    "sentence_index": 122,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec010",
+    "text": "Several case study examples are presented in app:abstract_case_study .",
+    "char_start": 26504,
+    "char_end": 26574,
+    "sentence_index": 123,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec010",
+    "text": "[!ht]\n\n9pt\n!",
+    "char_start": 26576,
+    "char_end": 26588,
+    "sentence_index": 124,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec010",
+    "text": "l|l|ccccccccccccc\n\n& 2 * Tasks & 2 * GPT-4-Turbo & 2 * GPT-4o & 2 * GPT-4.5 & 2 * GPT-4.1 & 3 c o1 & 3 c o3 & 3 c o4-mini\n\n(lr) 7-9 (lr) 10-12 (lr) 13-15\n& & & & & & Low & Medium & High & Low & Medium & High & Low & Medium & High\n\n36 * 90 Open-Ended PuzzleVQA & 14 c gray!20 Original\n\n2 15\n& Colors & 51.0 & 72.5 & 81.0 & 87.0 & 89.5 & 90.0 & 80.5 & 98.5 & 98.5 & 98.0 & 99.5 & 100.0 & 99.5\n\n& Numbers & 82.5 & 84.5 & 91.0 & 95.5 & 93.0 & 98.0 & 96.5 & 95.0 & 94.5 & 93.0 & 93.0 & 91.5 & 93.0\n\n& Shapes & 32.5 & 51.5 & 66.5 & 54.0 & 45.0 & 48.0 & 54.5 & 63.0 & 62.0 & 62.5 & 57.0 & 55.0 & 57.0\n\n& Size & 19.0 & 39.0 & 53.0 & 59.5 & 48.5 & 55.0 & 54.5 & 72.0 & 75.0 & 72.0 & 57.5 & 69.0 & 79.5\n\n2 15\n& Colors \\& Numbers & 54.5 & 48.0 & 71.0 & 67.5 & 93.0 & 96.5 & 97.0 & 90.5 & 93.5 & 92.0 & 97.0 & 97.5 & 98.0\n\n& Colors \\& Shapes & 30.0 & 45.5 & 75.5 & 48.5 & 67.5 & 74.0 & 75.0 & 89.0 & 90.5 & 90.0 & 74.0 & 84.0 & 88.5\n\n& Colors \\& Size & 31.5 & 21.5 & 55.0 & 54.5 & 35.5 & 35.5 & 30.0 & 48.0 & 55.5 & 57.0 & 49.5 & 57.5 & 59.0\n\n& Numbers \\& Shapes & 31.5 & 20.0 & 26.0 & 40.0 & 67.0 & 78.5 & 78.0 & 73.5 & 78.5 & 83.5 & 66.5 & 71.5 & 86.0\n\n& Numbers \\& Size & 24.5 & 34.5 & 43.0 & 42.0 & 38.5 & 44.5 & 41.5 & 43.5 & 43.5 & 47.0 & 38.0 & 45.0 & 52.0\n\n& Size \\& Shapes & 28.5 & 50.5 & 74.0 & 56.0 & 47.0 & 53.0 & 55.0 & 77.5 & 78.0 & 81.0 & 76.5 & 78.0 & 91.0\n\n2 15\n\n& blue!15 Average & blue!15 38.5 & blue!15 46.8 & blue!15 63.6 & blue!15 60.5 & blue!15 62.5 & blue!15 67.3 & blue!15 66.2 & blue!15 75.0 & blue!15 77.0 & blue!15 77.6 & blue!15 70.8 & blue!15 74.9 & blue!15 80.3\n\n2 15\n\n& 14 c gray!20 Original + Visual Perception\n\n2 15\n& Colors & 75.0 & 80.0 & 92.0 & 95.5 & 99.0 & 100.0 & 94.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0\n\n& Numbers & 77.0 & 88.5 & 98.0 & 94.5 & 98.5 & 99.5 & 98.0 & 95.5 & 92.5 & 91.5 & 97.5 & 92.5 & 92.0\n\n& Shapes & 71.5 & 63.5 & 66.0 & 63.5 & 45.5 & 50.5 & 55.5 & 68.0 & 63.5 & 65.5 & 54.5 & 54.5 & 54.0\n\n& Size & 64.5 & 62.5 & 93.5 & 97.0 & 93.5 & 98.0 & 98.0 & 98.5 & 99.5 & 99.0 & 99.0 & 99.5 & 100.0\n\n2 15\n& Colors \\& Numbers & 67.0 & 52.0 & 94.5 & 83.5 & 97.0 & 95.0 & 95.0 & 95.5 & 96.5 & 94.5 & 96.5 & 98.0 & 98.5\n\n& Colors \\& Shapes & 81.0 & 77.5 & 75.5 & 70.0 & 86.5 & 82.5 & 81.5 & 86.5 & 88.5 & 86.5 & 82.5 & 83.0 & 89.5\n\n& Colors \\& Size & 53.5 & 78.0 & 84.5 & 80.5 & 96.0 & 99.0 & 99.0 & 96.5 & 99.0 & 97.0 & 93.0 & 98.0 & 99.5\n\n& Numbers \\& Shapes & 29.5 & 33.5 & 26.5 & 35.0 & 88.5 & 89.0 & 86.0 & 78.0 & 82.0 & 83.0 & 79.5 & 86.5 & 90.5\n\n& Numbers \\& Size & 70.0 & 73.0 & 79.0 & 68.5 & 77.0 & 82.0 & 81.5 & 81.0 & 82.5 & 79.5 & 69.0 & 80.0 & 77.5\n\n& Size \\& Shapes & 97.5 & 92.5 & 92.5 & 88.0 & 92.0 & 98.0 & 98.0 & 93.5 & 94.5 & 96.5 & 90.0 & 98.5 & 98.5\n\n2 15\n\n& blue!15 Average & blue!15 68.7 & blue!15 70.1 & blue!15 80.2 & blue!15 77.6 & blue!15 87.3 & blue!15 89.3 & blue!15 88.7 & blue!15 89.3 & blue!15 89.8 & blue!15 89.3 & blue!15 86.2 & blue!15 89.0 & blue!15 90.0\n\n2 15\n\n& 14 c gray!20 Original + Visual Perception + Induction\n\n2 15\n& Colors & 97.0 & 92.0 & 100.0 & 100.0 & 100.0 & 100.0 & 99.0 & 99.5 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0\n\n& Numbers & 98.5 & 99.5 & 98.5 & 100.0 & 98.0 & 96.5 & 97.0 & 100.0 & 100.0 & 99.5 & 99.5 & 99.0 & 98.5\n\n& Shapes & 97.5 & 97.5 & 100.0 & 93.0 & 97.5 & 99.0 & 100.0 & 88.5 & 88.0 & 91.0 & 91.5 & 91.0 & 94.0\n\n& Size & 95.5 & 96.5 & 99.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 99.5 & 100.0\n\n2 15\n& Colors \\& Numbers & 89.5 & 89.5 & 98.5 & 99.5 & 100.0 & 100.0 & 100.0 & 99.5 & 100.0 & 100.0 & 99.5 & 99.0 & 99.5\n\n& Colors \\& Shapes & 64.5 & 77.0 & 88.5 & 87.5 & 88.0 & 87.0 & 89.5 & 95.5 & 93.5 & 97.5 & 90.5 & 94.5 & 98.0\n\n& Colors \\& Size & 75.5 & 94.5 & 93.5 & 86.5 & 92.5 & 92.5 & 94.0 & 98.0 & 98.0 & 99.0 & 99.0 & 98.0 & 99.0\n\n& Numbers \\& Shapes & 84.5 & 85.5 & 78.5 & 84.0 & 91.0 & 89.5 & 91.0 & 90.0 & 88.5 & 87.5 & 93.0 & 93.0 & 93.5\n\n& Numbers \\& Size & 63.0 & 73.5 & 78.5 & 87.0 & 74.0 & 72.5 & 77.5 & 80.0 & 82.0 & 81.5 & 63.5 & 57.0 & 60.5\n\n& Size \\& Shapes & 93.0 & 92.5 & 90.0 & 91.5 & 97.5 & 99.0 & 99.5 & 95.5 & 97.5 & 95.0 & 98.0 & 98.5 & 99.5\n\n2 15\n\n& blue!15 Average & blue!15 85.8 & blue!15 89.8 & blue!15 92.5 & blue!15 92.9 & blue!15 93.8 & blue!15 93.6 & blue!15 94.8 & blue!15 94.7 & blue!15 94.8 & blue!15 95.1 & blue!15 93.5 & blue!15 93.0 & blue!15 94.2\n\nBottleneck analysis of GPT-[n] and o-[n] models on in the open-ended setting.",
+    "char_start": 26589,
+    "char_end": 30990,
+    "sentence_index": 125,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec010",
+    "text": "Original refers to our default setting where only a question and an image are provided as input.",
+    "char_start": 30991,
+    "char_end": 31087,
+    "sentence_index": 126,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec010",
+    "text": "To reveal the specific multimodal reasoning bottlenecks, we progressively inject ground-truth explanations in the input for visual perception and inductive reasoning.",
+    "char_start": 31088,
+    "char_end": 31254,
+    "sentence_index": 127,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec010",
+    "text": "We provide an example of the different prompts used in the bottleneck analysis in fig:bottleneck .",
+    "char_start": 31255,
+    "char_end": 31353,
+    "sentence_index": 128,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec011",
+    "text": "Significant Challenges in Algorithmic and Spatial Reasoning\nThe results on AlgoPuzzleVQA underscore that complex algorithmic and spatial reasoning remains a challenge for current models.",
+    "char_start": 31355,
+    "char_end": 31541,
+    "sentence_index": 129,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec011",
+    "text": "Overall scores are considerably lower across all models compared to PuzzleVQA .",
+    "char_start": 31542,
+    "char_end": 31621,
+    "sentence_index": 130,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec011",
+    "text": "GPT-[n] models struggle significantly with certain tasks such as Chain Link and Map Colour in the open-ended setting, often scoring near zero, indicating a fundamental difficulty in undestanding the underlying principles or performing necessary reasoning steps for these puzzle types.",
+    "char_start": 31622,
+    "char_end": 31906,
+    "sentence_index": 131,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec011",
+    "text": "Gains by o-[n] Models on Complex Algorithmic Tasks\nDespite the overall difficulty, the o-[n] models demonstrate improvements on several complex algorithmic tasks within AlgoPuzzleVQA .",
+    "char_start": 31908,
+    "char_end": 32092,
+    "sentence_index": 132,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec011",
+    "text": "For instance, on Calendar related puzzles, o4-mini (High) achieves scores in the high 90s (MC: 99.0\\%, OE: 97.0\\%), a huge difference compared to GPT-4.5's 67.0\\% (MC) and 64.0\\% (OE).",
+    "char_start": 32093,
+    "char_end": 32277,
+    "sentence_index": 133,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec011",
+    "text": "Similarly, on Checker Move , GPT-4.5 scores 36.0\\% (MC), while o4-mini (High) reaches 97.0\\% (MC).",
+    "char_start": 32278,
+    "char_end": 32376,
+    "sentence_index": 134,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec011",
+    "text": "These improvements suggest that the o-[n] models have developed more advanced capabilities for sequential decision-making, state tracking, and applying learned algorithmic patterns, enabling them to tackle certain classes of complex problems with significantly greater effectiveness.",
+    "char_start": 32377,
+    "char_end": 32660,
+    "sentence_index": 135,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec011",
+    "text": "Challenges in Highly Abstract or Combinatorics Puzzles\nPuzzles such as Map Colour and Chain Link particularly in their open-ended formats consistently produce very low scores, with o4-mini High scoring only 1.0\\% and GPT-4.5 0.0\\% on Map Colour , and 6.0\\% and 0.0\\% respectively on Chain Link .",
+    "char_start": 32662,
+    "char_end": 32957,
+    "sentence_index": 136,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec011",
+    "text": "These problems typically require abstract graph reasoning, intricate constraint satisfaction, or planning over a vast combinatorial space where even the most advanced models still struggle.",
+    "char_start": 32958,
+    "char_end": 33147,
+    "sentence_index": 137,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec011",
+    "text": "Similarly, Wood Slide remains a challenge in its open-ended format for all models.",
+    "char_start": 33148,
+    "char_end": 33230,
+    "sentence_index": 138,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec011",
+    "text": "Average Performance Summary for AlgoPuzzleVQA\nThe average performance highlight both the dataset\u2019s difficulty and the varying capabilities of different models.",
+    "char_start": 33232,
+    "char_end": 33391,
+    "sentence_index": 139,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec011",
+    "text": "In the multiple-choice setting, the best-performing GPT model (GPT-4.1) achieved an average accuracy of 37.1\\%, whereas o4-mini (High) significantly outperformed it with 65.4\\%.",
+    "char_start": 33392,
+    "char_end": 33569,
+    "sentence_index": 140,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec011",
+    "text": "A similar pattern holds for open-ended setting where GPT-4.1 reached 28.6\\%, while o4-mini (High) attained 45.1\\%.",
+    "char_start": 33570,
+    "char_end": 33684,
+    "sentence_index": 141,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec011",
+    "text": "These results show that while the o-[n] models have made notable progress in tackling algorithmic puzzles, overall performance remains modest, indicating that this domain is far from being solved.",
+    "char_start": 33685,
+    "char_end": 33881,
+    "sentence_index": 142,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec011",
+    "text": "We present several case study examples in app:algo_case_study .",
+    "char_start": 33882,
+    "char_end": 33945,
+    "sentence_index": 143,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec012",
+    "text": "Our bottleneck analysis on ( tab:bottleneck ) reveals that providing ground-truth visual perception shows performance gains across all models (GPT-4.5: 63.6\\% to 80.2\\%; o4-mini (High): 80.3\\% to 90.0\\%).",
+    "char_start": 33947,
+    "char_end": 34151,
+    "sentence_index": 144,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec012",
+    "text": "This consistent improvement, observed across different models, clearly isolates visual perception as a primary bottleneck in the baseline.",
+    "char_start": 34152,
+    "char_end": 34290,
+    "sentence_index": 145,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec012",
+    "text": "Subsequently, even with perfect visual perception assumed, injecting ground-truth inductive reasoning provides further significant performance increases (GPT-4.5: 80.2\\% to 92.5\\%; o4-mini (High): 90.0\\% to 94.2\\%), underscoring inductive reasoning as a separate and significant limiting factor.",
+    "char_start": 34291,
+    "char_end": 34586,
+    "sentence_index": 146,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec012",
+    "text": "Overall, the progressive injection from the \"Original\" setting to \"Original + Visual Perception + Induction\" quantifies the substantial impact of these distinct components (GPT-4.5 total gain from 63.6\\% to 92.5\\%), indicating that while models possess strong underlying reasoning, their performance is notably constrained by difficulties in both visual perception and inductive reasoning.",
+    "char_start": 34587,
+    "char_end": 34976,
+    "sentence_index": 147,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec012",
+    "text": "We present several case studies in app:bottleneck_case_study .",
+    "char_start": 34977,
+    "char_end": 35039,
+    "sentence_index": 148,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec013",
+    "text": "This study assesses the multimodal reasoning capabilities of the GPT-[n] and o-[n] model series using the PuzzleVQA and AlgoPuzzleVQA benchmarks, revealing a significant advancement in performance, particularly with later o-[n] iterations, which consistently and scalably outperform their GPT-[n] models.",
+    "char_start": 35041,
+    "char_end": 35345,
+    "sentence_index": 149,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec013",
+    "text": "Across all models, performance was notably stronger in multiple-choice settings compared to open-ended ones.",
+    "char_start": 35346,
+    "char_end": 35454,
+    "sentence_index": 150,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec013",
+    "text": "The o-[n] models demonstrated distinct strengths in specific algorithmic tasks (e.g., Calendar ) and basic concept recognition (e.g., Colors ).",
+    "char_start": 35455,
+    "char_end": 35598,
+    "sentence_index": 151,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec013",
+    "text": "However, persistent challenges remain, particularly in compositional reasoning (e.g., Colors \\& Shapes ), fine-grained visual perception (especially Size ), and complex algorithmic or combinatorial puzzles.",
+    "char_start": 35599,
+    "char_end": 35805,
+    "sentence_index": 152,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec013",
+    "text": "Our bottleneck analysis highlights visual perception and subsequent inductive reasoning as the primary limiting factors\u2014emphasizing that, despite architectural progress, substantial improvements in these core areas are essential to closing the gap toward robust, human-like multimodal intelligence.",
+    "char_start": 35806,
+    "char_end": 36104,
+    "sentence_index": 153,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec014",
+    "text": "In this study, we conducted a thorough analysis of the performance of GPT-[n] and o-[n] models, offering detailed discussions and extensive case study examples to highlight their current challenges.",
+    "char_start": 36106,
+    "char_end": 36304,
+    "sentence_index": 154,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec014",
+    "text": "However, despite our best efforts, some limitations may still be present in this paper.",
+    "char_start": 36305,
+    "char_end": 36392,
+    "sentence_index": 155,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec014",
+    "text": "Due to space constraints, we were unable to analyze all existing multimodal puzzles comprehensively and instead focused primarily on and .",
+    "char_start": 36393,
+    "char_end": 36531,
+    "sentence_index": 156,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec014",
+    "text": "Additionally, our interpretations and conclusions are shaped by our own perspectives and understanding of the field.",
+    "char_start": 36532,
+    "char_end": 36648,
+    "sentence_index": 157,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec014",
+    "text": "Other researchers may interpret the same studies differently.",
+    "char_start": 36649,
+    "char_end": 36710,
+    "sentence_index": 158,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec014",
+    "text": "Nevertheless, we believe this study provides valuable insights into the reasoning performance of GPT-[n] and o-[n] models on multimodal puzzles.",
+    "char_start": 36711,
+    "char_end": 36855,
+    "sentence_index": 159,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "It\u2019s important to consider the cost of running inferences with GPT-[n] and o-[n] models, as these costs can quickly accumulate, especially with more expensive models like o1.",
+    "char_start": 36857,
+    "char_end": 37031,
+    "sentence_index": 160,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec015",
+    "text": "Additionally, comparisons between these models and human intelligence should be approached with caution.",
+    "char_start": 37032,
+    "char_end": 37136,
+    "sentence_index": 161,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec015",
+    "text": "While we evaluate these models using multimodal puzzles to test their cognitive abilities such as visual perception, inductive reasoning, deductive reasoning, and algorithmic problem-solving, it\u2019s important to recognize that other aspects of human cognition are not being accounted for.",
+    "char_start": 37137,
+    "char_end": 37423,
+    "sentence_index": 162,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec015",
+    "text": "custom\n\n[colback=gray!5, colframe=black, title=GPT-4o Evaluation Prompt]\n\nEvaluate the candidate answer against the correct answer.",
+    "char_start": 37425,
+    "char_end": 37556,
+    "sentence_index": 163,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec016",
+    "text": "If the candidate answer is correct, output [correct]; otherwise, output [incorrect].",
+    "char_start": 37557,
+    "char_end": 37641,
+    "sentence_index": 164,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "Question: question\nCandidate Answer: candidate_answer\nCorrect Answer: correct_answer\nEvaluation:\n\nBottleneck Analysis Setup\nfig:bottleneck shows an example of the bottleneck analysis setup.",
+    "char_start": 37643,
+    "char_end": 37832,
+    "sentence_index": 165,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec017",
+    "text": "[ht]\n\nimages/bottleneck.pdf\nAn example of prompts used in the bottleneck analysis: Perception includes the visual details of the puzzle, while induction includes an explanation of the underlying pattern within it.",
+    "char_start": 37834,
+    "char_end": 38047,
+    "sentence_index": 166,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec018",
+    "text": "Case Study Examples\nFigures through present illustrative case studies from the benchmark, highlighting different types of abstract visual reasoning tasks\u2014 Colors \\& Size , Size \\& Shapes , and Numbers \\& Size .",
+    "char_start": 38049,
+    "char_end": 38259,
+    "sentence_index": 167,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "These examples compare model performance across GPT-[n] and o-[n] variants in both multiple-choice and open-ended formats.",
+    "char_start": 38260,
+    "char_end": 38382,
+    "sentence_index": 168,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "The results underscore consistent limitations in the GPT series when faced with compositional and relational reasoning, while showing marked improvements in the o-series, particularly o4-mini, which demonstrates stronger abstraction capabilities across puzzle types.",
+    "char_start": 38383,
+    "char_end": 38649,
+    "sentence_index": 169,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec018",
+    "text": "[ht]\n\nimages/rectangle_height_color.pdf\nA case study on the Colors \\& Size puzzle in , evaluated in multiple-choice setting, shows the limitations of GPT-[n] models as compared to o-[n] models.",
+    "char_start": 38651,
+    "char_end": 38844,
+    "sentence_index": 170,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec018",
+    "text": "[ht]\n\nimages/polygon_side_color.pdf\nA case study on the Size \\& Shapes puzzle in , evaluated in multiple-choice setting, shows the limitations of GPT-[n] models as compared to o-[n] models.",
+    "char_start": 38846,
+    "char_end": 39035,
+    "sentence_index": 171,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec018",
+    "text": "[ht]\n\nimages/circle_size_number.pdf\nA case study on the Numbers \\& Size puzzle in , evaluated in both multiple-choice and open-ended settings on GPT-4.1.",
+    "char_start": 39037,
+    "char_end": 39190,
+    "sentence_index": 172,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec018",
+    "text": "[ht]\n\nimages/circle_size_number_o4.pdf\nA case study on the Numbers \\& Size puzzle in , evaluated in both multiple-choice and open-ended settings on o4-mini (High).",
+    "char_start": 39192,
+    "char_end": 39355,
+    "sentence_index": 173,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec019",
+    "text": "Case Study Examples\nThe case studies in Figures \u2013 highlight how model performance on puzzles varies by model and task format.",
+    "char_start": 39357,
+    "char_end": 39482,
+    "sentence_index": 174,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec019",
+    "text": "In the Rotten Fruits puzzle, GPT-4.1 and GPT-4o answered incorrectly (Figure ), while o1 (High) and o4-mini (High) answered correctly (Figure ), showing improved reasoning in newer models.",
+    "char_start": 39483,
+    "char_end": 39671,
+    "sentence_index": 175,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec019",
+    "text": "The same two models also succeeded on the Checker Move puzzle (Figure ).",
+    "char_start": 39672,
+    "char_end": 39744,
+    "sentence_index": 176,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec019",
+    "text": "In the Chain Link puzzle, o4-mini (High) was correct in the multiple-choice setting but failed in the open-ended format (Figure ).",
+    "char_start": 39745,
+    "char_end": 39875,
+    "sentence_index": 177,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec019",
+    "text": "[ht]\n\nimages/rotting_fruit_gpt4o.pdf\nA case study on the Rotten Fruits puzzle in , evaluated in multiple-choice setting on GPT-4.1 and GPT-4o where both models got it wrong.",
+    "char_start": 39877,
+    "char_end": 40050,
+    "sentence_index": 178,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec019",
+    "text": "[ht]\n\nimages/rotting_fruit_o4.pdf\nA case study on the Rotten Fruits puzzle in , evaluated in a multiple-choice setting using the o1 (High) and o4-mini (High) models, both of which answered correctly.",
+    "char_start": 40052,
+    "char_end": 40251,
+    "sentence_index": 179,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec019",
+    "text": "[ht]\n\nimages/checker_o1.pdf\nA case study on the Checker Move puzzle in , evaluated in a multiple-choice format using the o1 (High) and o4-mini (High) models, both of which produced correct answers.",
+    "char_start": 40253,
+    "char_end": 40450,
+    "sentence_index": 180,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec019",
+    "text": "[ht]\n\nimages/chain_o4.pdf\nA case study on the Chain Link puzzle in , evaluated in both multiple-choice setting on o4-mini (High) where in the multiple-choice setting the model got it correct and in the open-ended setting, the model got it incorrect\n\nBottleneck Analysis Case Study Examples\nFigures and present bottleneck analysis case studies on the Numbers \\& Size puzzle from .",
+    "char_start": 40452,
+    "char_end": 40831,
+    "sentence_index": 181,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec020",
+    "text": "In Figure , o1 (High) fails across all conditions, highlighting limitations even with ground-truth visual perception and inductive reasoning.",
+    "char_start": 40832,
+    "char_end": 40973,
+    "sentence_index": 182,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec020",
+    "text": "In contrast, Figure shows that o4-mini (High) succeeds when provided with accurate visual perception input, underscoring the importance of reliable perceptual grounding in solving this task.",
+    "char_start": 40974,
+    "char_end": 41164,
+    "sentence_index": 183,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec020",
+    "text": "[ht]\n\nimages/circle_size_number_bottleneck.pdf\nA bottleneck analysis case study on the Numbers \\& Size puzzle in using o1 (High) reveals that the model failed across all three settings.",
+    "char_start": 41166,
+    "char_end": 41351,
+    "sentence_index": 184,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec020",
+    "text": "[ht]\n\nimages/rectangle_height_number_bottleneck.pdf\nA bottleneck analysis case study on the Numbers \\& Size puzzle in using o4-mini (High) demonstrates that the model successfully solves the task when provided with visual perception ground truth.",
+    "char_start": 41353,
+    "char_end": 41599,
+    "sentence_index": 185,
+    "section_sentence_index": 3
+  }
+]

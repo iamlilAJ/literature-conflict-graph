@@ -1,0 +1,5141 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "The Model Context Protocol (MCP) is rapidly becoming the standard interface for Large Language Models (LLMs) to discover and invoke external tools.",
+    "char_start": 0,
+    "char_end": 147,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, existing evaluations often fail to capture the complexity of real-world scenarios, relying on restricted toolsets, simplistic workflows, or subjective LLM-as-a-judge metrics.",
+    "char_start": 148,
+    "char_end": 331,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce , a large-scale black benchmark for evaluating tool-use competency, comprising 36 real MCP servers and 220 tools.",
+    "char_start": 332,
+    "char_end": 458,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "It includes 1,000 tasks designed to assess tool-use competency in realistic, multi-step workflows.",
+    "char_start": 459,
+    "char_end": 557,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "Tasks use black natural language prompts that avoid naming specific tools or servers , requiring agents to identify and orchestrate 3-6 tool calls across multiple servers.",
+    "char_start": 558,
+    "char_end": 729,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "black We score tasks using a claims-based rubric that awards partial credit based on the factual claims satisfied in the model's final answer, complemented by internal diagnostics on tool discovery, parameterization, syntax, error recovery, and efficiency.",
+    "char_start": 730,
+    "char_end": 986,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Evaluation results on frontier models reveal that top models achieve pass rates exceeding 50\\%, with primary failures arising from inadequate tool usage and task understanding.",
+    "char_start": 987,
+    "char_end": 1163,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "We release the task schema, containerized harness, and a black 500-task public subset of the benchmark dataset to facilitate reproducible comparisons and advance the development of robust, tool-augmented agents.",
+    "char_start": 1164,
+    "char_end": 1375,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Large Language Models (LLMs) are increasingly deployed as agents capable of planning, invoking, and integrating external tools to achieve complex user objectives.",
+    "char_start": 1377,
+    "char_end": 1539,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "The Model Context Protocol (MCP) has emerged as a critical substrate for these agents, standardizing the mechanisms for server discovery, tool enumeration, typed parameter passing, and result consumption.",
+    "char_start": 1540,
+    "char_end": 1744,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "Despite its growing adoption, the credible evaluation of MCP-capable agents remains a significant challenge.",
+    "char_start": 1745,
+    "char_end": 1853,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Practical deployments demand evaluations that incorporate: (i) realistic, multi-step workflows involving branching logic and cross-server orchestration; (ii) breadth across authentic MCP servers and APIs, rather than mock servers; and (iii) objective, reproducible scoring mechanisms disentangled from agent verbosity or stylistic preferences.",
+    "char_start": 1855,
+    "char_end": 2198,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Existing MCP-based benchmarks have made strides but exhibit critical limitations in scale, evaluation methodology, or task complexity.",
+    "char_start": 2199,
+    "char_end": 2333,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "We introduce , a large-scale, real-server benchmark designed to measure tool-use competency under realistic single-turn prompts that necessitate complex, multi-tool workflows.",
+    "char_start": 2335,
+    "char_end": 2510,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "We evaluate using a claims-based rubric: each task defines a set of factual claims that the correct answer must contain, enabling objective partial-credit scoring.",
+    "char_start": 2511,
+    "char_end": 2674,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "This approach decouples success from adherence to a specific trajectory while capturing rich diagnostics on discovery, parameterization, and recovery behaviors.",
+    "char_start": 2675,
+    "char_end": 2835,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "black features an environment that exposes a limited tool set per task, mixing required tools with plausible distractors to test the agent's ability to identify and select the correct tools.",
+    "char_start": 2837,
+    "char_end": 3027,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "The full data set includes 1,000 tasks spanning 36 servers and 220 tools.",
+    "char_start": 3028,
+    "char_end": 3101,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "The prompts elicit black 3-6 tool calls; notably, black the vast majority of tasks require orchestration across multiple servers , and black a third of the tasks involve conditional branching.",
+    "char_start": 3102,
+    "char_end": 3294,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "[t]\n\nfig7_leaderboard_social.png\noverall model performance ranked by black pass rate on the 1,000 task set.",
+    "char_start": 3296,
+    "char_end": 3403,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "The best-performing model (Claude Opus 4.5) achieves 62.3\\% success, highlighting progress while showing room for improvement on multi-step, real-world tool use tasks.",
+    "char_start": 3404,
+    "char_end": 3571,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Unlike black purely execution-based suites, uses the final answer for primary pass/fail evaluation via a black claims-based rubric.",
+    "char_start": 3573,
+    "char_end": 3704,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Each task specifies a set of factual claims the correct answer must contain .",
+    "char_start": 3705,
+    "char_end": 3782,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Non-blocking diagnostics capture tool selection, typing, parameterization, errors, and efficiency to characterize failure modes (See for the rubric and for harness details).",
+    "char_start": 3783,
+    "char_end": 3956,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "Experiment results reveal black that top models achieve pass rates exceeding 50\\% while next-best models score in the 20-40\\% range, with high variance .",
+    "char_start": 3958,
+    "char_end": 4111,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Errors predominantly cluster in Tool Usage (incorrect server selection, parameter errors, sequencing mistakes) and Task Understanding (premature stopping, missed subgoals).",
+    "char_start": 4112,
+    "char_end": 4284,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "These patterns align with the \"unknown-tools\" difficulties reported in related work luo2025mcpuniverse, liu2025mcpeval .",
+    "char_start": 4285,
+    "char_end": 4405,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Contributions.",
+    "char_start": 4407,
+    "char_end": 4421,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Our main contributions are summarized as follows:\n\nA Large-Scale, Realistic Benchmark.",
+    "char_start": 4422,
+    "char_end": 4508,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "We introduce , a real-server MCP benchmark with 1,000 tasks covering 36 servers and 220 tools.",
+    "char_start": 4509,
+    "char_end": 4603,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Tasks use black natural language prompts that avoid naming tools and reliably elicit complex behaviors, including 3-6 tool calls black per task , black with the vast majority of tasks requiring cross-server composition, and approximately one-third involving conditional branching .",
+    "char_start": 4604,
+    "char_end": 4885,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "A Public Release of Data.",
+    "char_start": 4886,
+    "char_end": 4911,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "We open source a 500-task subset from the benchmark data.",
+    "char_start": 4912,
+    "char_end": 4969,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "black The remaining 500 tasks are retained as a held-out validation set to prevent overfitting and enable future leaderboard integrity.",
+    "char_start": 4970,
+    "char_end": 5105,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "The public set closely represents the entirety of the benchmark, making use of 36 servers, 220 tools, and maintaining 3-6 tool calls black per task .",
+    "char_start": 5106,
+    "char_end": 5255,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Claims-Based Scoring black with Internal Diagnostics .",
+    "char_start": 5256,
+    "char_end": 5310,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "We employ a black claims-based rubric with partial credit for primary pass/fail evaluation, reducing subjectivity compared to holistic LLM-as-judge approaches by decomposing evaluation into independent, verifiable claims.",
+    "char_start": 5311,
+    "char_end": 5532,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "This is supplemented by black internal diagnostics (not publicly released) capturing discovery, parameter/type correctness, error recovery, and efficiency (detailed in Appendix A).",
+    "char_start": 5533,
+    "char_end": 5713,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "Reproducible Evaluation Harness and Baselines.",
+    "char_start": 5714,
+    "char_end": 5760,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "We provide a containerized harness featuring servers, allow-listed egress, and controlled tool exposure with distractors.",
+    "char_start": 5761,
+    "char_end": 5882,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "We release the schemas to ensure reproducible comparisons.",
+    "char_start": 5883,
+    "char_end": 5941,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec002",
+    "text": "Baselines highlight substantial headroom for improvement in current LLM capabilities, reinforcing findings on the friction associated with \"unknown-tools\" luo2025mcpuniverse .",
+    "char_start": 5942,
+    "char_end": 6117,
+    "sentence_index": 41,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "The evaluation landscape for LLMs has shifted significantly from static, knowledge-centric assessments to dynamic, interactive paradigms that measure agentic capabilities.",
+    "char_start": 6119,
+    "char_end": 6290,
+    "sentence_index": 42,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "Early benchmarks, such as MMLU hendrycks2021mmlu and HELM liang2022helm , focused on fixed-question sets evaluating factual recall and reasoning in isolated settings.",
+    "char_start": 6291,
+    "char_end": 6457,
+    "sentence_index": 43,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec004",
+    "text": "While foundational, these benchmarks fail to capture the demands of real-world deployment, where models must interact with environments, manage uncertainty, and adapt plans dynamically.",
+    "char_start": 6458,
+    "char_end": 6643,
+    "sentence_index": 44,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec004",
+    "text": "Subsequent work introduced interactive evaluations emphasizing tool use and environmental interaction.",
+    "char_start": 6645,
+    "char_end": 6747,
+    "sentence_index": 45,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec004",
+    "text": "Web-based benchmarks like WebArena zhou2023webarena and MiniWoB++ liu2018reinforcement require agents to navigate and manipulate GUIs for tasks such as information retrieval or online shopping.",
+    "char_start": 6748,
+    "char_end": 6941,
+    "sentence_index": 46,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "OS-level suites, including OSWorld xie2024osworld and Android Arena chai2025a3 , extend this to operating systems, testing multimodal control and long-horizon planning.",
+    "char_start": 6942,
+    "char_end": 7110,
+    "sentence_index": 47,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "API- and function-calling benchmarks further advanced the field.",
+    "char_start": 7112,
+    "char_end": 7176,
+    "sentence_index": 48,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "ToolBench qin2023toolllm aggregates thousands of RESTful APIs for multi-step tasks.",
+    "char_start": 7177,
+    "char_end": 7260,
+    "sentence_index": 49,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec004",
+    "text": "BFCL patil2024bfcl provides leaderboards focusing on function-calling with synthetic and real APIs.",
+    "char_start": 7261,
+    "char_end": 7360,
+    "sentence_index": 50,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec004",
+    "text": "black $ $-Bench yao2024lambda emphasizes retail, airline, and telecommunications domains with interleaved user-agent interactions.",
+    "char_start": 7361,
+    "char_end": 7491,
+    "sentence_index": 51,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec004",
+    "text": "Benchmarks like SWE-Bench jimenez2023swebench (software engineering) and GAIA mialon2023gaia (general assistance) incorporate diverse tools (code execution, web search), highlighting challenges in planning, error recovery, and orchestration.",
+    "char_start": 7492,
+    "char_end": 7733,
+    "sentence_index": 52,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "The Model Context Protocol (MCP) anthropic2024mcp, mcp2025spec standardized tool declarations and server composition, spurring benchmarks that better reflect production environments.",
+    "char_start": 7735,
+    "char_end": 7917,
+    "sentence_index": 53,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "Table summarizes existing work.",
+    "char_start": 7918,
+    "char_end": 7949,
+    "sentence_index": 54,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "While these efforts have advanced the field, they reveal a persistent tension: benchmarks optimizing for evaluation rigor tend to remain small, while those achieving scale often compromise on objectivity or realism.",
+    "char_start": 7950,
+    "char_end": 8165,
+    "sentence_index": 55,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "is designed to resolve this tension.",
+    "char_start": 8166,
+    "char_end": 8202,
+    "sentence_index": 56,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "Early MCP benchmarks prioritized rigorous, programmatic evaluation.",
+    "char_start": 8204,
+    "char_end": 8271,
+    "sentence_index": 57,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "MCP-Universe luo2025mcpuniverse introduced format, static, and dynamic evaluators with real-time ground truth verification, identifying the critical unknown-tools challenge that motivates our distractor design.",
+    "char_start": 8272,
+    "char_end": 8482,
+    "sentence_index": 58,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "Toolathlon li2025toolathlon and MCPMark wu2025mcpmark similarly employ dedicated verification scripts against live software environments.",
+    "char_start": 8483,
+    "char_end": 8620,
+    "sentence_index": 59,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "However, the cost of manual task creation and custom verifiers limits these benchmarks to under 250 tasks---insufficient for statistically robust comparisons across the diversity of tool-use scenarios agents encounter in practice.",
+    "char_start": 8621,
+    "char_end": 8851,
+    "sentence_index": 60,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "Efforts to scale have introduced different trade-offs.",
+    "char_start": 8853,
+    "char_end": 8907,
+    "sentence_index": 61,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "MCPEval liu2025mcpeval reaches 676 tasks through automated generation, but this can compromise task quality and naturalism.",
+    "char_start": 8908,
+    "char_end": 9031,
+    "sentence_index": 62,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "MCP-Bench wang2025mcpbench and LiveMCPBench mo2025livemcpbench adopt holistic LLM-as-judge scoring, which enables scale but introduces style biases---verbose responses may score differently than terse correct answers, reducing reproducibility.",
+    "char_start": 9032,
+    "char_end": 9275,
+    "sentence_index": 63,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "MCPVerse zhao2025mcpverse and MCP-RADAR gao2025mcp expand server coverage but rely partly on synthetic or mock implementations, limiting how well results predict real-world performance.",
+    "char_start": 9276,
+    "char_end": 9461,
+    "sentence_index": 64,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "resolves these trade-offs through three design choices.",
+    "char_start": 9463,
+    "char_end": 9518,
+    "sentence_index": 65,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "First, we achieve scale (1,000 tasks across 36 servers and 220 tools) while maintaining quality through systematic manual verification rather than automated generation.",
+    "char_start": 9519,
+    "char_end": 9687,
+    "sentence_index": 66,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "Second, we replace holistic LLM-as-judge scoring with claims-based evaluation : each task defines independent, verifiable factual claims that the correct answer must contain, enabling objective partial-credit scoring without the authoring burden of full programmatic validation (achieving 78\\% agreement with human judges; see ).",
+    "char_start": 9688,
+    "char_end": 10017,
+    "sentence_index": 67,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "Third, we ensure evaluation fidelity by using exclusively real MCP servers and systematically including 5--10 plausible distractors per task, directly testing the tool discovery capabilities that prior work identifies as a primary failure mode.",
+    "char_start": 10018,
+    "char_end": 10262,
+    "sentence_index": 68,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "Together, these choices yield a benchmark that is simultaneously large-scale, objective, and realistic.",
+    "char_start": 10263,
+    "char_end": 10366,
+    "sentence_index": 69,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "[t]\n\nPositioning among contemporary MCP evaluations.",
+    "char_start": 10367,
+    "char_end": 10419,
+    "sentence_index": 70,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Scale metrics include number of servers (\\#S), tools (\\#T), and tasks (\\#Tasks).",
+    "char_start": 10420,
+    "char_end": 10500,
+    "sentence_index": 71,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "For Distractors column: $ $ = systematic distractors included, blank = no distractors.",
+    "char_start": 10501,
+    "char_end": 10587,
+    "sentence_index": 72,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "!\nlccccccc\n\nBenchmark &\n\\#S &\n\\#T &\n\\#Tasks &\nCross-Server &\nDistractors &\nNatural Lang.",
+    "char_start": 10589,
+    "char_end": 10677,
+    "sentence_index": 73,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "&\nReal Servers\n\nMCP-Universe luo2025mcpuniverse & 11 & 133 & 231 & $ $ & $ $ & $ $ & $ $\n\nMCPEval liu2025mcpeval & 5 & 19 & 676 & Partial & & Partial & $ $\n\nMCP-Bench wang2025mcpbench & 28 & 250 & 104 & $ $ & $ $ & $ $ & $ $\n\nToolathlon li2025toolathlon & 32 & 604 & 108 & $ $ & $ $ & $ $ & $ $\n\nMCPMark wu2025mcpmark & 5 & $ $50 & 127 & & & $ $ & $ $\n\nLiveMCPBench mo2025livemcpbench & 70 & 527 & 95 & $ $ & $ $ & $ $ & $ $\n\nMCPVerse zhao2025mcpverse & 65 & 552 & -- & $ $ & $ $ & $ $ & Mixed\n\nMCP-RADAR gao2025mcp & 42 & -- & 507 & Partial & & Mixed & Mixed\n\n(Ours) & 36 & 220 & 1,000 & $ $ & $ $ & $ $ & $ $\n\nis designed to evaluate LLM agents on realistic, single-turn tasks requiring multi-tool orchestration over live MCP servers.",
+    "char_start": 10678,
+    "char_end": 11414,
+    "sentence_index": 74,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec006",
+    "text": "By constraining the interaction to a single user prompt while eliciting a range of 3-6 tool calls, the benchmark emphasizes tool discovery, precise parameterization, cross-server coordination, and grounding in tool outputs.",
+    "char_start": 11415,
+    "char_end": 11638,
+    "sentence_index": 75,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec006",
+    "text": "Tasks are executed in a controlled environment with partial tool exposure, including systematic distractors, to probe the agent's ability to select and sequence appropriate tools without explicit guidance.",
+    "char_start": 11639,
+    "char_end": 11844,
+    "sentence_index": 76,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec007",
+    "text": "provides 1000 tasks to analyze the ability of models to handle multi tool processes.",
+    "char_start": 11846,
+    "char_end": 11930,
+    "sentence_index": 77,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec007",
+    "text": "Each task is designed to demand multi-step workflows, typically requiring 3-6 tool calls, with the vast majority of tasks requiring 2 or more distinct MCP servers, and approximately one-third of the tasks incorporating conditional logic.",
+    "char_start": 11931,
+    "char_end": 12168,
+    "sentence_index": 78,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec007",
+    "text": "Conditional logic refers to tasks where the choice of subsequent tool calls depends on the output of earlier calls (e.g., querying a fallback search engine if the primary yields insufficient results), as opposed to tasks with predetermined tool sequences where all required tools are known upfront.",
+    "char_start": 12169,
+    "char_end": 12467,
+    "sentence_index": 79,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec007",
+    "text": "The benchmark spans 36 real MCP servers and 220 tools across diverse domains, including search, data analytics, productivity, finance, and coding (see Table ).",
+    "char_start": 12469,
+    "char_end": 12628,
+    "sentence_index": 80,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec007",
+    "text": "Critically, all servers are real, production MCP implementations --not synthetic mocks or simulated environments--ensuring that evaluation results reflect actual deployment behavior including real API responses, rate limits, and error conditions.",
+    "char_start": 12629,
+    "char_end": 12875,
+    "sentence_index": 81,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec007",
+    "text": "This breadth ensures coverage of production-like scenarios.",
+    "char_start": 12876,
+    "char_end": 12935,
+    "sentence_index": 82,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec007",
+    "text": "Servers are hosted in an isolated container, mirroring real-world security constraints (e.g., sandboxed file systems and allow-listed network egress).",
+    "char_start": 12936,
+    "char_end": 13086,
+    "sentence_index": 83,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec007",
+    "text": "Unlike narrower benchmarks liu2025mcpeval, gao2025mcp , the scale of enables wider evaluation of tool usage and complex cross-domain orchestration, such as integrating financial APIs with news retrieval for market analysis.",
+    "char_start": 13087,
+    "char_end": 13310,
+    "sentence_index": 84,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec008",
+    "text": "Each task in is defined by four mandatory components, ensuring consistency, solvability, and objective scoring:\n\nTool Set Configuration: A controlled subset of 10-25 tools exposed to the agent per task.",
+    "char_start": 13312,
+    "char_end": 13514,
+    "sentence_index": 85,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec008",
+    "text": "This comprises 3-7 target tools essential for the reference solution and 5-10 distractors from similar categories.",
+    "char_start": 13515,
+    "char_end": 13629,
+    "sentence_index": 86,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec008",
+    "text": "This setup probes tool discovery precision and recall, discouraging brute-force enumeration.",
+    "char_start": 13630,
+    "char_end": 13722,
+    "sentence_index": 87,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec008",
+    "text": "Target tools are required to be sourced from 2 or more distinct servers.",
+    "char_start": 13723,
+    "char_end": 13795,
+    "sentence_index": 88,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec008",
+    "text": "Prompt: A single-turn, natural-language request requiring multiple tool calls.",
+    "char_start": 13796,
+    "char_end": 13874,
+    "sentence_index": 89,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec008",
+    "text": "Prompts are designed to be tool-dependent (unsolvable via LLM knowledge alone), time-invariant, unambiguous, and conversational.",
+    "char_start": 13875,
+    "char_end": 14003,
+    "sentence_index": 90,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec008",
+    "text": "Critically, they employ natural language instructions that avoid explicit mentions of server or tool names and obvious parameter hints (e.g., quoted keywords) to test the agent's reasoning and discovery capabilities.",
+    "char_start": 14004,
+    "char_end": 14220,
+    "sentence_index": 91,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec008",
+    "text": "Prompts prioritize multi-hop reasoning, requiring outputs from initial tools to guide later tool calls, and inference of implicit conditions.",
+    "char_start": 14221,
+    "char_end": 14362,
+    "sentence_index": 92,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec008",
+    "text": "Reference Trajectory: The minimal sequence of tool calls (names, methods, dependencies, arguments, and tool outputs) that resolves the task, including conditional branch points.",
+    "char_start": 14363,
+    "char_end": 14540,
+    "sentence_index": 93,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec008",
+    "text": "This is used strictly for diagnostic analysis, not pass/fail scoring, separating final-answer quality from execution efficiency.",
+    "char_start": 14541,
+    "char_end": 14669,
+    "sentence_index": 94,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec008",
+    "text": "Claims List: A set of atomic, independently verifiable claims that combine to form a comprehensive response to the prompt, grounded exclusively in tool outputs.",
+    "char_start": 14670,
+    "char_end": 14830,
+    "sentence_index": 95,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec008",
+    "text": "This claims based approach enables granular partial-credit scoring and error attribution.",
+    "char_start": 14831,
+    "char_end": 14920,
+    "sentence_index": 96,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec008",
+    "text": "This schema draws inspiration from programmatic verification frameworks luo2025mcpuniverse but adapts them for scalable, text-based final-answer evaluation while retaining rich diagnostics.",
+    "char_start": 14922,
+    "char_end": 15111,
+    "sentence_index": 97,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec008",
+    "text": "An illustrative example task is provided in Appendix .",
+    "char_start": 15112,
+    "char_end": 15166,
+    "sentence_index": 98,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec008",
+    "text": "Exposure and Distractor Policy.",
+    "char_start": 15168,
+    "char_end": 15199,
+    "sentence_index": 99,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec008",
+    "text": "To model realistic agent contexts while preventing brute-force enumeration, the harness exposes a limited set of tools per task, augmented with distractors.",
+    "char_start": 15200,
+    "char_end": 15356,
+    "sentence_index": 100,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec008",
+    "text": "Distractors are typically sampled from the same servers (e.g., google-maps\\_maps\\_distance\\_matrix vs.",
+    "char_start": 15357,
+    "char_end": 15459,
+    "sentence_index": 101,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec008",
+    "text": "google-maps\\_maps\\_geocode ; desktop-commander\\_get\\_config vs.",
+    "char_start": 15460,
+    "char_end": 15523,
+    "sentence_index": 102,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec008",
+    "text": "desktop-commander\\_read\\_file ) to ensure that success depends on accurate discovery and parameterization rather than simple server name recognition.",
+    "char_start": 15524,
+    "char_end": 15673,
+    "sentence_index": 103,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec009",
+    "text": "We group servers into five environment buckets used for exposure analysis and domain-specific metrics.",
+    "char_start": 15675,
+    "char_end": 15777,
+    "sentence_index": 104,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec009",
+    "text": "Table lists representative servers and recurring pitfalls captured by our diagnostics.",
+    "char_start": 15778,
+    "char_end": 15864,
+    "sentence_index": 105,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec009",
+    "text": "[t]\nEnvironment buckets with representative servers and recurrent pitfalls captured by diagnostics.",
+    "char_start": 15865,
+    "char_end": 15964,
+    "sentence_index": 106,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec009",
+    "text": "1.25\n\n> p 0.14\n> X\n> p 0.38\n\nBucket &\nRepresentative Servers (Examples) &\nTypical Pitfalls / Skills Probed\n\nBasic &\nbrave\\_search, ddg\\_search, exa, calculator, weather, google-maps &\nQuery formulation; date/geo formats; pagination; disambiguating near-synonyms (local vs.\\ web search).",
+    "char_start": 15966,
+    "char_end": 16252,
+    "sentence_index": 107,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec009",
+    "text": "Analytics &\nairtable, mongodb, f1-mcp-server &\nSchema alignment; filter/aggregation parameters; type correctness; joins.",
+    "char_start": 16254,
+    "char_end": 16374,
+    "sentence_index": 108,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec009",
+    "text": "Productivity &\nfilesystem, notion, slack, arxiv, google-workspace, pubmed &\nPath scoping and sandboxing; ID-vs-keyword retrieval; rate/size limits on document fetch.",
+    "char_start": 16376,
+    "char_end": 16541,
+    "sentence_index": 109,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec009",
+    "text": "Financial &\ntwelvedata, alchemy &\nWindow alignment (market hours, time zones); symbol scoping; split/adjusted series handling.",
+    "char_start": 16543,
+    "char_end": 16669,
+    "sentence_index": 110,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec009",
+    "text": "Coding &\ngit, github, mcp-code-executor, cli-mcp-server &\nStateful repo operations (branch/checkout); diff scope; command argument validation.",
+    "char_start": 16671,
+    "char_end": 16813,
+    "sentence_index": 111,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec009",
+    "text": "To ensure balanced coverage, employs complementary strategies for task assignment:\n\nServer-First Bucketing: Tasks are generally open ended in terms of server selection, with authors freely selecting subsets of their choice.",
+    "char_start": 16815,
+    "char_end": 17038,
+    "sentence_index": 112,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec009",
+    "text": "Throughout the data collection process, as server distributions form, tasks are assigned target servers from underrepresented categories.",
+    "char_start": 17039,
+    "char_end": 17176,
+    "sentence_index": 113,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec009",
+    "text": "Authors are required to create prompts that naturally invoke at least one server from the list, enforcing targeted tool usage implicitly and providing a flexible approach to maintain balanced server representation.",
+    "char_start": 17177,
+    "char_end": 17391,
+    "sentence_index": 114,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec009",
+    "text": "Post-hoc LLM Categorization: An LLM classifier assigns domain labels after creation for standardized reporting.",
+    "char_start": 17392,
+    "char_end": 17503,
+    "sentence_index": 115,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec009",
+    "text": "Server usage varies across the benchmark, with higher representation of general-purpose servers such as search and filesystem (see Appendix H for the full distribution).",
+    "char_start": 17505,
+    "char_end": 17674,
+    "sentence_index": 116,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec010",
+    "text": "We employ numerous quality checks throughout the data collection process to ensure results are robust and reputable.",
+    "char_start": 17676,
+    "char_end": 17792,
+    "sentence_index": 117,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec010",
+    "text": "The following processes are used:\n\nHuman Review Layers: Tasks undergo multiple rounds of human review.",
+    "char_start": 17793,
+    "char_end": 17895,
+    "sentence_index": 118,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec010",
+    "text": "Initial task drafts are reviewed by domain experts for correctness, solvability, and adherence to authoring guidelines.",
+    "char_start": 17896,
+    "char_end": 18015,
+    "sentence_index": 119,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec010",
+    "text": "A second review layer validates that prompts are appropriately natural (avoiding tool name leakage).",
+    "char_start": 18016,
+    "char_end": 18116,
+    "sentence_index": 120,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec010",
+    "text": "Auto Verification with LLMs: Post-creation, tasks are automatically evaluated using LLM pipelines to verify that the claims list is complete and that the reference trajectory produces outputs consistent with the expected claims.",
+    "char_start": 18117,
+    "char_end": 18345,
+    "sentence_index": 121,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec010",
+    "text": "Quality Control Samples: A random sample of tasks undergoes additional manual review to identify systematic issues and ensure consistent quality across the benchmark.",
+    "char_start": 18346,
+    "char_end": 18512,
+    "sentence_index": 122,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec011",
+    "text": "To ensure objective and reproducible assessment, we adopt a scoring system centered on the claims, supplemented by detailed diagnostics.",
+    "char_start": 18514,
+    "char_end": 18650,
+    "sentence_index": 123,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec012",
+    "text": "This protocol balances the simplicity of primary scoring with the granularity required for in-depth error analysis, drawing from established practices in MCP evaluations liu2025mcpeval, luo2025mcpuniverse, wang2025mcpbench .",
+    "char_start": 18651,
+    "char_end": 18875,
+    "sentence_index": 124,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec013",
+    "text": "The core evaluation metric is a pass/fail judgment based solely on the agent's final answer compared against the claim list.",
+    "char_start": 18877,
+    "char_end": 19001,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec013",
+    "text": "This decouples scoring from the specific execution path, rewarding the quality of the final outcome even if the agent's trajectory deviates from the reference one.",
+    "char_start": 19002,
+    "char_end": 19165,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec013",
+    "text": "The scoring procedure operates as follows:\n\nClaim Verification: Each claim in the claim list, defined as independently verifiable facts that the correct answer must contain, is checked against the agent's final answer.",
+    "char_start": 19167,
+    "char_end": 19385,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec013",
+    "text": "A claim is marked as fulfilled if the corresponding fact is present and correct in the response, partially\\_fulfilled if the corresponding fact is partially addressed in the response, or not\\_fulfilled if the corresponding fact is not present or incorrect in the response.",
+    "char_start": 19386,
+    "char_end": 19658,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec013",
+    "text": "Coverage Scoring: The task's coverage score is computed as the average of each claim's coverage scores based on the following values: fulfilled = 1, partially fulfilled = 0.5, and not fulfilled = 0.",
+    "char_start": 19659,
+    "char_end": 19857,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec013",
+    "text": "$ Coverage = | sum claim scores | | total claim count | $.",
+    "char_start": 19858,
+    "char_end": 19916,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec013",
+    "text": "Pass/Fail Determination: A task passes if the coverage score exceeds a predefined threshold; partial credit is recorded as the coverage fraction for analysis.",
+    "char_start": 19918,
+    "char_end": 20076,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec013",
+    "text": "We adopt a threshold of 0.75, which we selected as the point at which a response sufficiently addresses the prompt's core requirements.",
+    "char_start": 20077,
+    "char_end": 20212,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec013",
+    "text": "This allows tolerance for minor omissions while ensuring the majority of requested information is present and correct.",
+    "char_start": 20213,
+    "char_end": 20331,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec013",
+    "text": "To verify robustness, we conducted a sensitivity analysis by varying the threshold across 0.65, 0.75, and 0.85.",
+    "char_start": 20332,
+    "char_end": 20443,
+    "sentence_index": 134,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec013",
+    "text": "Model rankings remain stable across this range, confirming that our findings are robust to the choice of threshold.",
+    "char_start": 20444,
+    "char_end": 20559,
+    "sentence_index": 135,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec013",
+    "text": "(see Appendix for details).",
+    "char_start": 20560,
+    "char_end": 20587,
+    "sentence_index": 136,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec013",
+    "text": "This claims-based approach ensures objectivity: scoring depends only on whether the agent's answer contains the correct factual information derived from tool outputs, not on stylistic factors like verbosity, formatting, or phrasing.",
+    "char_start": 20589,
+    "char_end": 20821,
+    "sentence_index": 137,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec013",
+    "text": "Edge cases (e.g., responses involving tool retries or alternative phrasings that still convey the correct information) are clarified in Appendix .",
+    "char_start": 20822,
+    "char_end": 20968,
+    "sentence_index": 138,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec013",
+    "text": "Judge Model and Human Alignment.",
+    "char_start": 20970,
+    "char_end": 21002,
+    "sentence_index": 139,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec013",
+    "text": "Claims verification is performed using Gemini 2.5 Pro as the judge model.",
+    "char_start": 21003,
+    "char_end": 21076,
+    "sentence_index": 140,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec013",
+    "text": "For each claim in the claims list, the judge determines whether the agent's response contains the required factual information, marking it as fulfilled , partially\\_fulfilled , or not\\_fulfilled .",
+    "char_start": 21077,
+    "char_end": 21273,
+    "sentence_index": 141,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec013",
+    "text": "Unlike holistic LLM-as-judge approaches that rate overall response quality, our claims-based decomposition constrains the judge to factual verification grounded in tool outputs with known correct values.",
+    "char_start": 21274,
+    "char_end": 21477,
+    "sentence_index": 142,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec013",
+    "text": "To validate judge reliability, we conducted a human alignment study on a random sample of 100 tasks.",
+    "char_start": 21479,
+    "char_end": 21579,
+    "sentence_index": 143,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec013",
+    "text": "Three human annotators independently rated each claim using the same rubric.",
+    "char_start": 21580,
+    "char_end": 21656,
+    "sentence_index": 144,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec013",
+    "text": "The LLM judge achieved 78\\% agreement with the majority human vote, indicating substantial alignment.",
+    "char_start": 21657,
+    "char_end": 21758,
+    "sentence_index": 145,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec013",
+    "text": "Given that our claims are designed to be independently verifiable facts with unambiguous ground truth, this agreement level supports the reliability of our automated evaluation.",
+    "char_start": 21759,
+    "char_end": 21936,
+    "sentence_index": 146,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "Beyond the pass/fail metric, we classify each failed task into one of four failure categories based on its dominant failure mode:\n\nTool Usage: Failures related to incorrect tool selection, wrong parameters, schema violations, or improper sequencing of tool calls.",
+    "char_start": 21938,
+    "char_end": 22201,
+    "sentence_index": 147,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "Task Understanding: Failures due to premature stopping, missing subgoals, or incomplete interpretation of the task requirements.",
+    "char_start": 22202,
+    "char_end": 22330,
+    "sentence_index": 148,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "Response Quality: Failures where tool calls were correct but the final synthesis was inaccurate or contained hallucinated information.",
+    "char_start": 22331,
+    "char_end": 22465,
+    "sentence_index": 149,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "Logical Errors: Flawed reasoning about tool outputs or incorrect conditional logic in multi-step workflows.",
+    "char_start": 22466,
+    "char_end": 22573,
+    "sentence_index": 150,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "Each failed task is assigned to exactly one dominant category by Gemini 2.5 Pro, which has access to the ground truth and the agent's generated trajectory.",
+    "char_start": 22575,
+    "char_end": 22730,
+    "sentence_index": 151,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "To validate reliability, we conducted a human alignment study: three annotators independently classified a random sample of 100 failed tasks, and the LLM judge achieved 78\\% agreement with the majority human vote.",
+    "char_start": 22731,
+    "char_end": 22944,
+    "sentence_index": 152,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec014",
+    "text": "Disagreements primarily occurred in ambiguous cases where failures could plausibly span multiple categories (e.g., a missing tool call that also reflects incomplete task understanding).",
+    "char_start": 22945,
+    "char_end": 23130,
+    "sentence_index": 153,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec014",
+    "text": "In Section , we analyze failure distributions across models.",
+    "char_start": 23131,
+    "char_end": 23191,
+    "sentence_index": 154,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec015",
+    "text": "The execution environment and harness are designed to ensure reproducibility, fairness, and fidelity to real MCP deployments.",
+    "char_start": 23193,
+    "char_end": 23318,
+    "sentence_index": 155,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec015",
+    "text": "The design centers on (i) isolation of real MCP servers, (ii) controlled exposure of tools per task, and (iii) standardized logging for diagnostics.",
+    "char_start": 23319,
+    "char_end": 23467,
+    "sentence_index": 156,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec015",
+    "text": "Real Servers Tasks execute against containerized MCP servers with sandboxed filesystems and allow-listed egress, mirroring secure deployments.",
+    "char_start": 23469,
+    "char_end": 23611,
+    "sentence_index": 157,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "Containers are version-pinned and restarted per run to ensure a clean initial state.",
+    "char_start": 23612,
+    "char_end": 23696,
+    "sentence_index": 158,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "Per-Task, Controlled Tool Surface.",
+    "char_start": 23697,
+    "char_end": 23731,
+    "sentence_index": 159,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "The harness exposes 10-25 tools per task, including 3-7 required tools and 5-10 distractors, to probe discovery and parameterization under noise.",
+    "char_start": 23732,
+    "char_end": 23877,
+    "sentence_index": 160,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec015",
+    "text": "The harness mounts only the servers specified in the task creation, preventing off-policy tool access.",
+    "char_start": 23878,
+    "char_end": 23980,
+    "sentence_index": 161,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec015",
+    "text": "Schema Enforcement.",
+    "char_start": 23981,
+    "char_end": 24000,
+    "sentence_index": 162,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec015",
+    "text": "All tool invocations must conform to server-declared schemas.",
+    "char_start": 24001,
+    "char_end": 24062,
+    "sentence_index": 163,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec015",
+    "text": "The harness enforces JSON typing, required/optional parameter checks, and basic value validation.",
+    "char_start": 24063,
+    "char_end": 24160,
+    "sentence_index": 164,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec016",
+    "text": "Experiments are conducted on the dataset (1,000 tasks).",
+    "char_start": 24162,
+    "char_end": 24217,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec017",
+    "text": "The dataset composition reflects the characteristics described in (3-6 tool calls, the vast majority multi-server, one-third conditional branching).",
+    "char_start": 24218,
+    "char_end": 24366,
+    "sentence_index": 166,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec017",
+    "text": "The distribution across environment buckets is approximately: Basic (30-35\\%), Analytics (10-15\\%), Productivity (20-25\\%), Financial (10-15\\%), and Coding (15-20\\%).",
+    "char_start": 24367,
+    "char_end": 24533,
+    "sentence_index": 167,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec018",
+    "text": "We evaluate a representative set of frontier and open models, including Claude Opus 4.5, Claude Sonnet 4.5, o3, GPT-5, Grok-4, GPT-4o, Gemini 2.5 Pro, and Gemini 3 Pro (specific versions pinned in Appendix ).",
+    "char_start": 24535,
+    "char_end": 24743,
+    "sentence_index": 168,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec018",
+    "text": "To isolate model capabilities, all models are driven by the same lightweight MCP client wrapper.",
+    "char_start": 24744,
+    "char_end": 24840,
+    "sentence_index": 169,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec018",
+    "text": "This wrapper facilitates single-turn planning with multi-call execution, maintains tool schemas verbatim for schema-grounded function calling, and enforces execution budgets.",
+    "char_start": 24841,
+    "char_end": 25015,
+    "sentence_index": 170,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec019",
+    "text": "All runs are executed in the containerized environment described in .",
+    "char_start": 25017,
+    "char_end": 25086,
+    "sentence_index": 171,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec019",
+    "text": "For each model and split, we run the benchmark.",
+    "char_start": 25087,
+    "char_end": 25134,
+    "sentence_index": 172,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec019",
+    "text": "Primary scoring utilizes the black claims-based rubric detailed in .",
+    "char_start": 25135,
+    "char_end": 25203,
+    "sentence_index": 173,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec019",
+    "text": "Diagnostics are not included in the public harness.",
+    "char_start": 25204,
+    "char_end": 25255,
+    "sentence_index": 174,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec019",
+    "text": "We release container specifications, tool manifests, and harness configurations to ensure reproducibility (Appendix ).",
+    "char_start": 25256,
+    "char_end": 25374,
+    "sentence_index": 175,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec020",
+    "text": "We examine overall performance, diagnostic metrics that reveal specific failure patterns, and cross-domain variation.",
+    "char_start": 25376,
+    "char_end": 25493,
+    "sentence_index": 176,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec020",
+    "text": "Throughout, we use pass rate as our primary metric, complemented by claims-based coverage scores that capture partial progress on complex tasks.",
+    "char_start": 25494,
+    "char_end": 25638,
+    "sentence_index": 177,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec021",
+    "text": "Table presents the pass rates and coverage scores across all evaluated models.",
+    "char_start": 25640,
+    "char_end": 25718,
+    "sentence_index": 178,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec021",
+    "text": "While frontier models demonstrate meaningful competency on tool use, significant room for improvement remains.",
+    "char_start": 25719,
+    "char_end": 25829,
+    "sentence_index": 179,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec021",
+    "text": "The best-performing model, Claude Opus 4.5, achieves a 62.30\\% pass rate, followed by Gemini 3 Pro at 54.10\\% and GPT-5 at 44.50\\%.",
+    "char_start": 25830,
+    "char_end": 25961,
+    "sentence_index": 180,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec021",
+    "text": "These results demonstrate that end-to-end correctness on complex multi-step workflows remains a critical challenge.",
+    "char_start": 25962,
+    "char_end": 26077,
+    "sentence_index": 181,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec021",
+    "text": "[ht]\n8pt 8pt\n\npass rates and coverage scores across evaluated models.",
+    "char_start": 26079,
+    "char_end": 26148,
+    "sentence_index": 182,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec021",
+    "text": "0.6 !",
+    "char_start": 26150,
+    "char_end": 26155,
+    "sentence_index": 183,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec021",
+    "text": "lcc\n\nModel & Pass Rate (\\%) $^ $ & Mean Coverage (\\%)\n\nClaude Opus 4.5 & 62.3 & 78.5\n\nGemini 3 Pro & 54.1 & 73.2\n\nGPT-5 & 44.5 & 61.7\n\nClaude Sonnet 4.5 & 43.8 & 62.1\n\no3 Pro (high) & 43.6 & 66.9\n\nClaude Opus 4.1 & 40.9 & 64.9\n\nClaude Sonnet 4 & 35.6 & 57.3\n\nGLM-4.5 Air & 34.0 & 60.5\n\nKimi K2 Instruct & 23.9 & 50.4\n\nQwen3-235B-A22B & 12.0 & 29.0\n\nGemini 2.5 Pro & 8.8 & 30.7\n\nGPT-4o & 7.2 & 28.5\n\nGemini 2.5 Flash & 3.4 & 17.8\n\n3 l $^ $Pass rate = percentage of tasks with coverage $ $75\\%.",
+    "char_start": 26156,
+    "char_end": 26648,
+    "sentence_index": 184,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec021",
+    "text": "[ht]\n\nfig7_comprehensive_leaderboard (1).png\nComprehensive leaderboard showing pass rates (left) and mean coverage scores (right) across all evaluated models.",
+    "char_start": 26650,
+    "char_end": 26808,
+    "sentence_index": 185,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec021",
+    "text": "Claude Opus 4.5 leads with a 62.3\\% pass rate and 78.5\\% coverage.",
+    "char_start": 26809,
+    "char_end": 26875,
+    "sentence_index": 186,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec021",
+    "text": "Error bars indicate 95\\% confidence intervals.",
+    "char_start": 26876,
+    "char_end": 26922,
+    "sentence_index": 187,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec021",
+    "text": "Rank is determined by upper-bound CI overlap.",
+    "char_start": 26923,
+    "char_end": 26968,
+    "sentence_index": 188,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec021",
+    "text": "Models marked with * were evaluated using Fireworks AI for inference.",
+    "char_start": 26969,
+    "char_end": 27038,
+    "sentence_index": 189,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec021",
+    "text": "Coverage measures how close a model's answers get to the ground truth across all tasks, including failures.",
+    "char_start": 27040,
+    "char_end": 27147,
+    "sentence_index": 190,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec021",
+    "text": "We compute per-task coverage via claims-level scoring (0 / 0.5 / 1) and then average across tasks.",
+    "char_start": 27148,
+    "char_end": 27246,
+    "sentence_index": 191,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec021",
+    "text": "As shown in Table , coverage and pass rate are tightly correlated--models with higher coverage generally achieve higher pass rates.",
+    "char_start": 27247,
+    "char_end": 27378,
+    "sentence_index": 192,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec021",
+    "text": "The interquartile range (IQR) for coverage spans 28.8\\%--61.2\\%, indicating substantial variation in model capabilities.",
+    "char_start": 27379,
+    "char_end": 27499,
+    "sentence_index": 193,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec021",
+    "text": "Claude Opus 4.5 achieves the highest average coverage at 78.5\\%, while lower-performing models achieve coverage below 20\\%.",
+    "char_start": 27500,
+    "char_end": 27623,
+    "sentence_index": 194,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec021",
+    "text": "This gap underscores the wide disparity between frontier models and other alternatives on complex tool-use tasks.",
+    "char_start": 27624,
+    "char_end": 27737,
+    "sentence_index": 195,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec022",
+    "text": "To understand why models fail, we categorize failures into four diagnostic categories: Tool Usage , Task Understanding , Response Quality and Logical Errors as described in Section .",
+    "char_start": 27739,
+    "char_end": 27921,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec022",
+    "text": "We present their distribution across models in Table and Figure .",
+    "char_start": 27922,
+    "char_end": 27987,
+    "sentence_index": 197,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec022",
+    "text": "[t!]\n\nDiagnostic categories for the top 3 models on failed tasks.",
+    "char_start": 27989,
+    "char_end": 28054,
+    "sentence_index": 198,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec022",
+    "text": "The y-axis shows average coverage score across all models (i.e.",
+    "char_start": 28055,
+    "char_end": 28118,
+    "sentence_index": 199,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec022",
+    "text": "task difficulty, higher average coverage score indicates lower task difficulty), while the x-axis shows model score.",
+    "char_start": 28119,
+    "char_end": 28235,
+    "sentence_index": 200,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec022",
+    "text": "Colors indicate failure reasons, classified by an LLM judge with access to the ground truth and generated trajectory.",
+    "char_start": 28236,
+    "char_end": 28353,
+    "sentence_index": 201,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec022",
+    "text": "fig_failure_graph.png\n\n[ht]\n\nFailure mode breakdown on .",
+    "char_start": 28354,
+    "char_end": 28410,
+    "sentence_index": 202,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec022",
+    "text": "For each model, values indicate the distribution of primary failure types across its failed tasks.",
+    "char_start": 28411,
+    "char_end": 28509,
+    "sentence_index": 203,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec022",
+    "text": "Each failed task is assigned to its dominant failure category, so percentages sum to 100\\%.",
+    "char_start": 28510,
+    "char_end": 28601,
+    "sentence_index": 204,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec022",
+    "text": "0.85 !",
+    "char_start": 28603,
+    "char_end": 28609,
+    "sentence_index": 205,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec022",
+    "text": "lcccc\n\n& 4 c Failure Distribution (\\% of Failed Tasks)\n\n(r) 2-5\nModel & Tool Usage & Task Understanding & Response Quality & Logical Errors\n\nClaude Opus 4.5 & 47.5 & 36.0 & 11.0 & 5.5\n\nGemini 3 Pro & 49.0 & 35.0 & 10.5 & 5.5\n\nGPT-5 & 51.0 & 34.0 & 10.0 & 5.0\n\nClaude Sonnet 4.5 & 52.0 & 33.5 & 9.5 & 5.0\n\no3 Pro (high) & 53.0 & 33.0 & 9.5 & 4.5\n\nClaude Opus 4.1 & 54.5 & 32.0 & 9.0 & 4.5\n\nClaude Sonnet 4 & 56.0 & 31.0 & 8.5 & 4.5\n\nGLM-4.5 Air & 57.5 & 30.0 & 8.5 & 4.0\n\nKimi K2 Instruct & 59.0 & 29.0 & 8.0 & 4.0\n\nQwen3-235B-A22B & 61.0 & 27.5 & 7.5 & 4.0\n\nGemini 2.5 Pro & 63.0 & 26.0 & 7.0 & 4.0\n\nGPT-4o & 65.5 & 24.5 & 6.5 & 3.5\n\nGemini 2.5 Flash & 68.5 & 22.5 & 5.5 & 3.5\n\nAverage & 56.7 & 30.3 & 8.5 & 4.5\n\nFrom these results, we observe the following:\n\nTool Use Errors Dominate.",
+    "char_start": 28610,
+    "char_end": 29395,
+    "sentence_index": 206,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec022",
+    "text": "Errors related to Tool Usage are the most prevalent failure category across all models, ranging from 47.5\\% to 68.5\\% of failures (average: 56.7\\%).",
+    "char_start": 29396,
+    "char_end": 29544,
+    "sentence_index": 207,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec022",
+    "text": "This highlights that correct tool selection and parameterization remain the primary challenges, with weaker models exhibiting significantly higher tool usage failure rates.",
+    "char_start": 29545,
+    "char_end": 29717,
+    "sentence_index": 208,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec022",
+    "text": "Task Understanding.",
+    "char_start": 29719,
+    "char_end": 29738,
+    "sentence_index": 209,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec022",
+    "text": "The second major category is Task Understanding , accounting for 22.5--36.0\\% of failures (average: 30.3\\%).",
+    "char_start": 29739,
+    "char_end": 29847,
+    "sentence_index": 210,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec022",
+    "text": "Models frequently stop prematurely or miss subgoals required for complete task resolution.",
+    "char_start": 29848,
+    "char_end": 29938,
+    "sentence_index": 211,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec022",
+    "text": "Notably, stronger models maintain higher task understanding scores, suggesting that improved reasoning capabilities translate to better multi-step planning.",
+    "char_start": 29939,
+    "char_end": 30095,
+    "sentence_index": 212,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec022",
+    "text": "Response Quality.",
+    "char_start": 30097,
+    "char_end": 30114,
+    "sentence_index": 213,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec022",
+    "text": "Issues related to final response synthesis account for 5.5--11.0\\% of failures (average: 8.5\\%).",
+    "char_start": 30115,
+    "char_end": 30211,
+    "sentence_index": 214,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec022",
+    "text": "These failures occur when tool calls were correct but the final answer was inaccurate or contained hallucinated information.",
+    "char_start": 30212,
+    "char_end": 30336,
+    "sentence_index": 215,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec022",
+    "text": "Notably, as tool usage competency improves (as seen in frontier models), response quality becomes a proportionally larger contributor to failures.",
+    "char_start": 30337,
+    "char_end": 30483,
+    "sentence_index": 216,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec022",
+    "text": "Logical Errors.",
+    "char_start": 30485,
+    "char_end": 30500,
+    "sentence_index": 217,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec022",
+    "text": "Flawed reasoning about tool outputs or incorrect conditional logic accounts for 3.5--5.5\\% of failures (average: 4.5\\%).",
+    "char_start": 30501,
+    "char_end": 30621,
+    "sentence_index": 218,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec022",
+    "text": "This is the least common failure category, suggesting that when models correctly execute the necessary tools, they generally reason about the results effectively.",
+    "char_start": 30622,
+    "char_end": 30784,
+    "sentence_index": 219,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec022",
+    "text": "Table details the most frequent specific failure modes and their mapping to the four diagnostic categories.",
+    "char_start": 30786,
+    "char_end": 30893,
+    "sentence_index": 220,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec022",
+    "text": "Notably, ``No tools called'' (36.0\\% average) under Tool Usage and ``Partial task completion'' (25.8\\% average) under Task Understanding are the dominant failure patterns across all models.",
+    "char_start": 30894,
+    "char_end": 31083,
+    "sentence_index": 221,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec022",
+    "text": "This mirrors the ``unknown-tools'' issues observed in related work luo2025mcpuniverse , where agents fail to recognize that tools are available or stop prematurely before completing multi-step tasks.",
+    "char_start": 31084,
+    "char_end": 31283,
+    "sentence_index": 222,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec022",
+    "text": "[ht]\n\nGranular breakdown of Failure modes\n\nllc\n\nDiagnostic Category & Failure Mode & Avg.",
+    "char_start": 31285,
+    "char_end": 31374,
+    "sentence_index": 223,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec022",
+    "text": "Share (\\%)\n\n3 * Tool Usage & No tools called & 36.0\n\n& Incorrect tool parameters & 14.2\n\n& Missing tool calls & 6.5\n\n3 * Task Understanding & Partial task completion & 25.8\n\n& Skipped steps & 3.0\n\n& Misunderstood task & 1.5\n\nResponse Quality & -- & 8.5\n\n2 * Logical Errors & Flawed reasoning & 3.5\n\n& Other & 1.0\n\nExample Failure.",
+    "char_start": 31375,
+    "char_end": 31705,
+    "sentence_index": 224,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec022",
+    "text": "The following is an example failure task.",
+    "char_start": 31707,
+    "char_end": 31748,
+    "sentence_index": 225,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec022",
+    "text": "The enabled tool set, reference trajectory, and claims list for the relevant task can be found in Appendix .",
+    "char_start": 31749,
+    "char_end": 31857,
+    "sentence_index": 226,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec022",
+    "text": "Prompt: \u201cI\u2019m researching papers on advertisement effectiveness and comparing it to our own online database advertising data.",
+    "char_start": 31859,
+    "char_end": 31983,
+    "sentence_index": 227,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec022",
+    "text": "There\u2019s a 2024 paper by jane castleman that deals with ad control effectiveness, can you get me the abstract?",
+    "char_start": 31984,
+    "char_end": 32093,
+    "sentence_index": 228,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec022",
+    "text": "I believe it mentions ad locality, for which I will also need to ask you for the date of our campaign with the biggest engagement rate, started during the 2015-2023 period, and its locality.\u201d\nTrajectory: arxiv\\_search\\_papers (\"Jane Castleman ad control effectiveness ad locality 2024\") -> find paper abstract, memory\\_search\\_nodes (\"campaign engagement rate biggest highest 2015 2016 2017 2018 2019 2020 2021 2022 2023 locality\") -> find relevant data, memory\\_read\\_graph (N/A) -> continue searching for relevant data\nResponse: \"I found the 2024 paper by Jane Castleman that you mentioned.",
+    "char_start": 32094,
+    "char_end": 32686,
+    "sentence_index": 229,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec022",
+    "text": "Here\u2019s the abstract: [abridged for paper].",
+    "char_start": 32687,
+    "char_end": 32729,
+    "sentence_index": 230,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec022",
+    "text": "However, regarding your internal campaign data from 2015-2023, I searched the available knowledge graph but couldn\u2019t find any information about advertising campaigns, engagement rates, or locality data.",
+    "char_start": 32730,
+    "char_end": 32932,
+    "sentence_index": 231,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec022",
+    "text": "The knowledge graph appears to contain only construction company information and related personnel data.",
+    "char_start": 32933,
+    "char_end": 33037,
+    "sentence_index": 232,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec022",
+    "text": "You may need to access your advertising database directly or provide additional context about where this campaign data might be stored.\"\n\nThe agent successfully completed the first subtask (retrieving the paper abstract via arxiv\\_search\\_papers ).",
+    "char_start": 33038,
+    "char_end": 33286,
+    "sentence_index": 233,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec022",
+    "text": "However, for the second subtask, the agent searched the memory server, which returned no relevant results.",
+    "char_start": 33287,
+    "char_end": 33393,
+    "sentence_index": 234,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec022",
+    "text": "Rather than exploring other tools in the enabled set, the agent concluded the data was unavailable.",
+    "char_start": 33394,
+    "char_end": 33493,
+    "sentence_index": 235,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec022",
+    "text": "In fact, the campaign data was stored in the notion server, which was also exposed to the agent.",
+    "char_start": 33494,
+    "char_end": 33590,
+    "sentence_index": 236,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec022",
+    "text": "This failure to try alternative tools after an unsuccessful search\u2014despite having relevant options available\u2014exemplifies incorrect tool selection, the most common Tool Usage failure mode.",
+    "char_start": 33591,
+    "char_end": 33778,
+    "sentence_index": 237,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec023",
+    "text": "Building on the failure category framework established above, we now analyze how performance and failure patterns vary across different domains reflecting the underlying MCP servers (Table ).",
+    "char_start": 33780,
+    "char_end": 33971,
+    "sentence_index": 238,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec023",
+    "text": "Performance varies significantly by domain, with pass rates differing by up to 17 percentage points within the same model across domains.",
+    "char_start": 33972,
+    "char_end": 34109,
+    "sentence_index": 239,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec023",
+    "text": "[ht]\n\nPass rates (\\%) by environment bucket.",
+    "char_start": 34111,
+    "char_end": 34155,
+    "sentence_index": 240,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec023",
+    "text": "Performance varies across domains, with Analytics tasks generally showing the highest success rates while Financial and Coding tasks prove most challenging.",
+    "char_start": 34156,
+    "char_end": 34312,
+    "sentence_index": 241,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec023",
+    "text": "!\nlcccccc\n\nModel & ENV-BASIC & ENV-ANALYTICS & ENV-PRODUCTIVITY & ENV-FINANCIAL & ENV-CODING & Overall\n\nClaude Opus 4.5 & 68.4 & 71.5 & 64.2 & 58.2 & 55.8 & 62.30\n\nGemini 3 Pro & 59.8 & 62.1 & 55.4 & 50.6 & 47.2 & 54.10\n\nGPT-5 & 49.2 & 51.8 & 45.6 & 41.2 & 38.5 & 44.50\n\nClaude Sonnet 4.5 & 48.5 & 50.9 & 44.8 & 40.5 & 37.8 & 43.80\n\no3 Pro (high) & 48.2 & 50.6 & 44.5 & 40.2 & 37.5 & 43.60\n\nClaude Opus 4.1 & 45.2 & 47.5 & 41.8 & 37.8 & 35.2 & 40.90\n\nClaude Sonnet 4 & 39.4 & 41.2 & 36.2 & 32.8 & 30.5 & 35.60\n\nGLM-4.5 Air & 37.6 & 39.4 & 34.6 & 31.2 & 29.1 & 34.00\n\nGPT-4o & 8.2 & 8.8 & 7.4 & 5.8 & 4.2 & 7.20\n\nDomain Characteristics.",
+    "char_start": 34314,
+    "char_end": 34949,
+    "sentence_index": 242,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec023",
+    "text": "Tasks involving structured data operations ( Analytics ) generally show the highest success rates across models (e.g., 71.5\\% for Claude Opus 4.5), potentially due to more uniform API schemas and less ambiguity in queries.",
+    "char_start": 34950,
+    "char_end": 35172,
+    "sentence_index": 243,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec023",
+    "text": "In contrast, Financial and Coding domains remain highly challenging--Claude Opus 4.5 achieves 58.2\\% in Finance and 55.8\\% in Coding, while GPT-4o achieves only 5.8\\% and 4.2\\%, respectively.",
+    "char_start": 35173,
+    "char_end": 35364,
+    "sentence_index": 244,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "These domains often require precise parameterization (e.g., date formats, ticker symbols, specific query syntax) and effective disambiguation among semantically similar tools.",
+    "char_start": 35365,
+    "char_end": 35540,
+    "sentence_index": 245,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "Connecting Domain Performance to Failure Categories.",
+    "char_start": 35542,
+    "char_end": 35594,
+    "sentence_index": 246,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "To understand why certain domains are more challenging, we analyze how the failure categories from Section distribute across each domain.",
+    "char_start": 35596,
+    "char_end": 35733,
+    "sentence_index": 247,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "Table presents this breakdown, revealing distinct failure signatures.",
+    "char_start": 35734,
+    "char_end": 35803,
+    "sentence_index": 248,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec023",
+    "text": "[ht]\n\nFailure category distribution (\\%) by domain, averaged across all models.",
+    "char_start": 35805,
+    "char_end": 35884,
+    "sentence_index": 249,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec023",
+    "text": "Each row sums to 100\\%, showing the relative contribution of each failure type within that domain.",
+    "char_start": 35885,
+    "char_end": 35983,
+    "sentence_index": 250,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec023",
+    "text": "The overall average aligns with Table .",
+    "char_start": 35984,
+    "char_end": 36023,
+    "sentence_index": 251,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec023",
+    "text": "!\nlcccc\n\nDomain & Tool Usage & Task Understanding & Response Quality & Logical Errors\n\nENV-BASIC & 48.0 & 35.5 & 11.0 & 5.5\n\nENV-ANALYTICS & 45.5 & 33.5 & 14.0 & 7.0\n\nENV-PRODUCTIVITY & 55.0 & 31.5 & 9.0 & 4.5\n\nENV-FINANCIAL & 64.0 & 26.0 & 6.5 & 3.5\n\nENV-CODING & 71.0 & 21.0 & 5.0 & 3.0\n\nOverall Average & 56.7 & 30.3 & 8.5 & 4.5\n\nKey Insights from Domain-Failure Analysis.",
+    "char_start": 36025,
+    "char_end": 36400,
+    "sentence_index": 252,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec023",
+    "text": "Tool Usage Failures Scale with Domain Difficulty.",
+    "char_start": 36402,
+    "char_end": 36451,
+    "sentence_index": 253,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec023",
+    "text": "The most challenging domains ( Financial : 64.0\\%, Coding : 71.0\\%) exhibit substantially higher Tool Usage failure rates compared to easier domains ( Basic : 48.0\\%, Analytics : 45.5\\%).",
+    "char_start": 36452,
+    "char_end": 36639,
+    "sentence_index": 254,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec023",
+    "text": "This 23+ percentage point gap indicates that specialized domains introduce greater tool selection and parameterization complexity.",
+    "char_start": 36640,
+    "char_end": 36770,
+    "sentence_index": 255,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec023",
+    "text": "Financial APIs often expose multiple endpoints for similar functions (e.g., real-time vs.",
+    "char_start": 36771,
+    "char_end": 36860,
+    "sentence_index": 256,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec023",
+    "text": "historical quotes, different data providers), while coding tools require precise syntax specification.",
+    "char_start": 36861,
+    "char_end": 36963,
+    "sentence_index": 257,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec023",
+    "text": "Task Understanding Inversely Correlates with Tool Complexity.",
+    "char_start": 36965,
+    "char_end": 37026,
+    "sentence_index": 258,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec023",
+    "text": "Interestingly, Task Understanding failures are higher in easier domains (35.5\\% for Basic ) than in harder ones (21.0\\% for Coding ).",
+    "char_start": 37027,
+    "char_end": 37160,
+    "sentence_index": 259,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec023",
+    "text": "This suggests that in simpler domains, models more often fail due to premature stopping or incomplete goal decomposition, whereas in complex domains, failures occur earlier in the pipeline--at tool selection--before task understanding becomes the bottleneck.",
+    "char_start": 37161,
+    "char_end": 37419,
+    "sentence_index": 260,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec023",
+    "text": "Analytics Domain Shows Unique Response Quality Challenges.",
+    "char_start": 37421,
+    "char_end": 37479,
+    "sentence_index": 261,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec023",
+    "text": "The Analytics domain exhibits the highest Response Quality failure rate (14.0\\%) and Logical Errors rate (7.0\\%).",
+    "char_start": 37480,
+    "char_end": 37593,
+    "sentence_index": 262,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec023",
+    "text": "This reflects the domain's requirement for accurate numerical synthesis and multi-step calculations.",
+    "char_start": 37594,
+    "char_end": 37694,
+    "sentence_index": 263,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec023",
+    "text": "Even when models correctly invoke analytics tools, they may misinterpret aggregated results, apply incorrect units, or make computational errors when combining outputs.",
+    "char_start": 37695,
+    "char_end": 37863,
+    "sentence_index": 264,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec023",
+    "text": "Productivity Tools Require Better Orchestration.",
+    "char_start": 37865,
+    "char_end": 37913,
+    "sentence_index": 265,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec023",
+    "text": "The Productivity domain shows elevated Tool Usage failures (55.0\\%) despite moderate overall difficulty.",
+    "char_start": 37914,
+    "char_end": 38018,
+    "sentence_index": 266,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec023",
+    "text": "Manual inspection reveals this stems from orchestration challenges: productivity tasks often require coordinating across multiple services (e.g., calendar, email, document tools) with interdependent parameters, leading to cascading errors when early tool calls return unexpected formats.",
+    "char_start": 38019,
+    "char_end": 38306,
+    "sentence_index": 267,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec024",
+    "text": "Table presents the top failure modes for each domain, providing actionable insight into domain-specific challenges.",
+    "char_start": 38308,
+    "char_end": 38423,
+    "sentence_index": 268,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec024",
+    "text": "[ht]\n\nFailure analysis by domain, showing the dominant challenges in each area.",
+    "char_start": 38424,
+    "char_end": 38503,
+    "sentence_index": 269,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec024",
+    "text": "Percentages indicate share of failures within each domain.",
+    "char_start": 38504,
+    "char_end": 38562,
+    "sentence_index": 270,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec024",
+    "text": "lll\n\nDomain & Top Failure Sub-category & Other Failure Sub-categories\n\nENV-BASIC & Partial task completion (31.0\\%) & No tools called (29.0\\%)\n\nENV-ANALYTICS & No tools called (30.0\\%) & Incorrect conclusion (13.5\\%)\n\nENV-PRODUCTIVITY & Partial task completion (27.5\\%) & No tools called (24.0\\%)\n\nENV-FINANCIAL & No tools called (38.0\\%) & Incorrect tool parameters (24.5\\%)\n\nENV-CODING & No tools called (42.0\\%) & Incorrect tool parameters (27.5\\%)\n\nThe domain-failure analysis reveals that improving overall benchmark performance requires targeted interventions:\n\nFor Financial/Coding domains: Focus on tool call correctness and parameter validation.",
+    "char_start": 38564,
+    "char_end": 39218,
+    "sentence_index": 271,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec024",
+    "text": "The high rates of ``Incorrect tool parameters'' (24--28\\%) combined with ``No tools called'' (38--42\\%) suggest that models struggle both with tool awareness and precise specification in these technical domains.",
+    "char_start": 39219,
+    "char_end": 39430,
+    "sentence_index": 272,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec024",
+    "text": "Better few-shot examples or retrieval-augmented schema lookup could yield significant gains.",
+    "char_start": 39431,
+    "char_end": 39523,
+    "sentence_index": 273,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec024",
+    "text": "For Basic/Productivity domains: Address premature stopping through improved planning.",
+    "char_start": 39525,
+    "char_end": 39610,
+    "sentence_index": 274,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec024",
+    "text": "The prevalence of ``Partial task completion'' (27--31\\%) indicates models need better mechanisms for tracking subgoal progress and recognizing when tasks remain incomplete.",
+    "char_start": 39611,
+    "char_end": 39783,
+    "sentence_index": 275,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec024",
+    "text": "For Analytics domains: Improve numerical reasoning and output synthesis.",
+    "char_start": 39785,
+    "char_end": 39857,
+    "sentence_index": 276,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec024",
+    "text": "The elevated Response Quality (14.0\\%) and Logical Errors (7.0\\%) rates suggest that even successful tool orchestration does not guarantee correct final answers when quantitative reasoning is required.",
+    "char_start": 39858,
+    "char_end": 40059,
+    "sentence_index": 277,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec024",
+    "text": "Across all domains: The persistent ``No tools called'' failure mode (ranging from 24\\% to 42\\%) represents a fundamental tool awareness gap that affects all domains and warrants investigation into prompt engineering or fine-tuning approaches that increase tool invocation rates.",
+    "char_start": 40061,
+    "char_end": 40339,
+    "sentence_index": 278,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec025",
+    "text": "The results from reveal both the capabilities and limitations of current LLMs for realistic tool use.",
+    "char_start": 40341,
+    "char_end": 40442,
+    "sentence_index": 279,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec025",
+    "text": "While the top model achieves a 62.30\\% pass rate, most models struggle significantly with complex multi-step workflows.",
+    "char_start": 40443,
+    "char_end": 40562,
+    "sentence_index": 280,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec025",
+    "text": "The preceding sections provide granular diagnostics; here we synthesize these findings into broader implications.",
+    "char_start": 40563,
+    "char_end": 40676,
+    "sentence_index": 281,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec025",
+    "text": "The Tool Awareness-Capability Gap.",
+    "char_start": 40678,
+    "char_end": 40712,
+    "sentence_index": 282,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec025",
+    "text": "The failure analysis reveals a perhaps counterintuitive finding: the primary bottleneck is not models' ability to use tools correctly, but rather their awareness that tools should be used and their persistence in completing multi-step workflows.",
+    "char_start": 40714,
+    "char_end": 40959,
+    "sentence_index": 283,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec025",
+    "text": "When models do engage with tools and reach the synthesis stage, they generally succeed.",
+    "char_start": 40960,
+    "char_end": 41047,
+    "sentence_index": 284,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec025",
+    "text": "This suggests that current fine-tuning and prompting strategies may over-emphasize tool execution mechanics while under-emphasizing tool invocation triggers.",
+    "char_start": 41048,
+    "char_end": 41205,
+    "sentence_index": 285,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec025",
+    "text": "Even frontier models exhibit substantial tool awareness deficits.",
+    "char_start": 41206,
+    "char_end": 41271,
+    "sentence_index": 286,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec025",
+    "text": "Developmental Trajectory Across Model Tiers.",
+    "char_start": 41273,
+    "char_end": 41317,
+    "sentence_index": 287,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec025",
+    "text": "The failure distribution data reveals a clear stratification pattern: as models improve, failures shift from early-stage (tool selection) to mid-stage (orchestration) to late-stage (synthesis).",
+    "char_start": 41319,
+    "char_end": 41512,
+    "sentence_index": 288,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec025",
+    "text": "Benchmark designers should anticipate this shift, ensuring that evaluation rubrics adequately capture downstream failure modes as tool selection competency improves.",
+    "char_start": 41513,
+    "char_end": 41678,
+    "sentence_index": 289,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec025",
+    "text": "Claims-Based Evaluation: Strengths and Trade-offs.",
+    "char_start": 41680,
+    "char_end": 41730,
+    "sentence_index": 290,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec025",
+    "text": "Our pass-rate-centric scorer, based on claims coverage with a 75\\% threshold, targets end utility while remaining style-agnostic and scalable.",
+    "char_start": 41732,
+    "char_end": 41874,
+    "sentence_index": 291,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec025",
+    "text": "It has advantages in:\n\n[nosep]\nTrajectory Independence: Early missteps do not cause failure if the final answer is correct, decoupling success from adherence to a specific execution path.",
+    "char_start": 41875,
+    "char_end": 42062,
+    "sentence_index": 292,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec025",
+    "text": "Partial Credit: The claims-based rubric rewards models that satisfy most requirements even if they miss edge cases.",
+    "char_start": 42063,
+    "char_end": 42178,
+    "sentence_index": 293,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec025",
+    "text": "Scalability: Automated claims verification avoids the cost and variance of holistic LLM-as-a-judge scoring.",
+    "char_start": 42179,
+    "char_end": 42286,
+    "sentence_index": 294,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec025",
+    "text": "However, this approach does not penalize inefficiency or reward elegant solutions.",
+    "char_start": 42288,
+    "char_end": 42370,
+    "sentence_index": 295,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec025",
+    "text": "Future iterations may incorporate efficiency constraints (call budgets, latency limits) to better reflect production deployment requirements.",
+    "char_start": 42371,
+    "char_end": 42512,
+    "sentence_index": 296,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec026",
+    "text": "Limitations.",
+    "char_start": 42514,
+    "char_end": 42526,
+    "sentence_index": 297,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec026",
+    "text": "While advances the evaluation of MCP-enabled agents by utilizing real servers, complex workflows, and objective claims-based scoring, several limitations exist.",
+    "char_start": 42527,
+    "char_end": 42687,
+    "sentence_index": 298,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec026",
+    "text": "Single-Turn Interaction.",
+    "char_start": 42689,
+    "char_end": 42713,
+    "sentence_index": 299,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec026",
+    "text": "Real-world deployments are inherently interactive, involving clarification, error recovery, and dynamic replanning.",
+    "char_start": 42714,
+    "char_end": 42829,
+    "sentence_index": 300,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec026",
+    "text": "Our design focuses on single-turn interactions to isolate core tool-use competency.",
+    "char_start": 42830,
+    "char_end": 42913,
+    "sentence_index": 301,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec026",
+    "text": "Consequently, behaviors such as strategic backtracking or complex recovery strategies are observable in traces but not explicitly scored for task success.",
+    "char_start": 42914,
+    "char_end": 43068,
+    "sentence_index": 302,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec026",
+    "text": "Potential for Text-Form Bias in Claims Scoring.",
+    "char_start": 43069,
+    "char_end": 43116,
+    "sentence_index": 303,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec026",
+    "text": "Although we use a claims-based rubric rather than holistic LLM-as-a-judge scoring, decisions regarding text normalization and paraphrasing can still introduce edge cases (e.g., terse vs.",
+    "char_start": 43117,
+    "char_end": 43303,
+    "sentence_index": 304,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec026",
+    "text": "verbose summaries).",
+    "char_start": 43304,
+    "char_end": 43323,
+    "sentence_index": 305,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec026",
+    "text": "While this risk is mitigated compared to known LLM-judge style biases, it is not entirely eliminated.",
+    "char_start": 43324,
+    "char_end": 43425,
+    "sentence_index": 306,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec026",
+    "text": "Future integration of programmatic checks (format/static/dynamic evaluators) is planned for select domains.",
+    "char_start": 43426,
+    "char_end": 43533,
+    "sentence_index": 307,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec026",
+    "text": "Efficiency Not Enforced.",
+    "char_start": 43534,
+    "char_end": 43558,
+    "sentence_index": 308,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec026",
+    "text": "We log efficiency diagnostics (duplicate calls, retries) but do not enforce strict latency or call caps.",
+    "char_start": 43559,
+    "char_end": 43663,
+    "sentence_index": 309,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec026",
+    "text": "Without these budgets, agents might \"brute-force\" discovery.",
+    "char_start": 43664,
+    "char_end": 43724,
+    "sentence_index": 310,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec026",
+    "text": "Future tracks will incorporate latency/call constraints to reflect production environments.",
+    "char_start": 43725,
+    "char_end": 43816,
+    "sentence_index": 311,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec026",
+    "text": "Real API Stability.",
+    "char_start": 43817,
+    "char_end": 43836,
+    "sentence_index": 312,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec026",
+    "text": "relies on real, production MCP servers which may experience API changes, rate limits, or availability issues over time.",
+    "char_start": 43837,
+    "char_end": 43956,
+    "sentence_index": 313,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec026",
+    "text": "We version-pin server package versions, but benchmark results may vary if underlying services change.",
+    "char_start": 43957,
+    "char_end": 44058,
+    "sentence_index": 314,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec026",
+    "text": "We acknowledge this trade-off between realism and reproducibility.",
+    "char_start": 44059,
+    "char_end": 44125,
+    "sentence_index": 315,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec026",
+    "text": "Read-Only Task Scope.",
+    "char_start": 44126,
+    "char_end": 44147,
+    "sentence_index": 316,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec026",
+    "text": "To preserve server state integrity when using live production APIs, focuses exclusively on read-only operations (queries, searches, data retrieval).",
+    "char_start": 44148,
+    "char_end": 44296,
+    "sentence_index": 317,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec026",
+    "text": "Tasks involving write operations, state mutations, or persistent side effects (e.g., creating records, sending messages, modifying files) are not included.",
+    "char_start": 44297,
+    "char_end": 44452,
+    "sentence_index": 318,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec026",
+    "text": "While this design choice ensures reproducibility and avoids unintended consequences, it limits coverage of agentic workflows that require state-changing actions--an important capability for real-world deployments that we plan to address in future work through controlled synthetic environments.",
+    "char_start": 44453,
+    "char_end": 44747,
+    "sentence_index": 319,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec026",
+    "text": "Broader Impact.",
+    "char_start": 44749,
+    "char_end": 44764,
+    "sentence_index": 320,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec026",
+    "text": "aims to serve as a practical and safety-conscious probe of tool-augmented LLM competency.",
+    "char_start": 44765,
+    "char_end": 44854,
+    "sentence_index": 321,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec026",
+    "text": "Research Community: A standardized, real-server benchmark with a reproducible harness can accelerate apples-to-apples comparisons and detailed ablations across discovery, schema grounding, and error recovery.",
+    "char_start": 44856,
+    "char_end": 45064,
+    "sentence_index": 322,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec026",
+    "text": "This complements existing programmatic and judge-based evaluation suites.",
+    "char_start": 45065,
+    "char_end": 45138,
+    "sentence_index": 323,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec026",
+    "text": "Industry Applications: Detailed diagnostics on selection, typing, and errors help practitioners prioritize the development of necessary guardrails (e.g., parameter validation, retry mechanisms) before deployment.",
+    "char_start": 45139,
+    "char_end": 45351,
+    "sentence_index": 324,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec026",
+    "text": "Safety and Misuse.",
+    "char_start": 45352,
+    "char_end": 45370,
+    "sentence_index": 325,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec026",
+    "text": "Execution against real servers entails potential risks (e.g., quota consumption, data exfiltration).",
+    "char_start": 45371,
+    "char_end": 45471,
+    "sentence_index": 326,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec026",
+    "text": "We mitigate these risks through containerization, sandboxed filesystems, and allow-listed egress, and we exclude tasks requiring sensitive or personal data.",
+    "char_start": 45472,
+    "char_end": 45628,
+    "sentence_index": 327,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec026",
+    "text": "Future Directions.",
+    "char_start": 45629,
+    "char_end": 45647,
+    "sentence_index": 328,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec026",
+    "text": "Expansion to multi-turn interactions and integration of programmatic evaluators for time-varying domains will further enhance the benchmark's rigor and applicability.",
+    "char_start": 45648,
+    "char_end": 45814,
+    "sentence_index": 329,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec027",
+    "text": "We introduced , a large-scale benchmark designed to evaluate the tool-use competency of LLMs using real MCP servers.",
+    "char_start": 45816,
+    "char_end": 45932,
+    "sentence_index": 330,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec027",
+    "text": "Spanning 36 servers and 220 tools, with 1,000 tasks, assesses agents on complex, multi-step workflows elicited by single-turn, natural language prompts that avoid naming tools.",
+    "char_start": 45933,
+    "char_end": 46109,
+    "sentence_index": 331,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec027",
+    "text": "We employ a claims-based rubric with partial credit for scoring, supplemented by internal diagnostics covering discovery, parameterization, error recovery, and efficiency.",
+    "char_start": 46110,
+    "char_end": 46281,
+    "sentence_index": 332,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec027",
+    "text": "Evaluation results of frontier models reveal that top models achieve pass rates exceeding 50\\%, while next-best models score in the 20-40\\% range, with predominant failures in tool usage and task understanding, indicating substantial headroom for improvement.",
+    "char_start": 46283,
+    "char_end": 46542,
+    "sentence_index": 333,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec027",
+    "text": "Within the rapidly evolving MCP evaluation ecosystem, complements judge-based systems and programmatic frameworks by establishing an end-quality-with-diagnostics baseline on real servers at scale.",
+    "char_start": 46543,
+    "char_end": 46739,
+    "sentence_index": 334,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec027",
+    "text": "By releasing the schema, containerized harness, and benchmark dataset, we aim to facilitate reproducible and actionable evaluation.",
+    "char_start": 46741,
+    "char_end": 46872,
+    "sentence_index": 335,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec027",
+    "text": "The persistent gap between planning, precise parameterization, and reliable task completion highlights critical research targets: enhancing tool discovery under distractors, improving schema-grounded argument validation, and developing robust recovery strategies.",
+    "char_start": 46873,
+    "char_end": 47136,
+    "sentence_index": 336,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec027",
+    "text": "We view as a foundation for these directions, bridging the gap between rubric-based and programmatic evaluation paradigms toward the development of dependable MCP agents.",
+    "char_start": 47137,
+    "char_end": 47307,
+    "sentence_index": 337,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec027",
+    "text": "26\n[1] #1\n[1] #1\nurlstyle\n[1] doi: #1\ndoi: rm\n\nhendrycks2021mmlu\nD.",
+    "char_start": 47309,
+    "char_end": 47376,
+    "sentence_index": 338,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec027",
+    "text": "Hendrycks, C.",
+    "char_start": 47377,
+    "char_end": 47390,
+    "sentence_index": 339,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec027",
+    "text": "Burns, S.",
+    "char_start": 47391,
+    "char_end": 47400,
+    "sentence_index": 340,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec027",
+    "text": "Basart, A.",
+    "char_start": 47401,
+    "char_end": 47411,
+    "sentence_index": 341,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec027",
+    "text": "Zou, M.",
+    "char_start": 47412,
+    "char_end": 47419,
+    "sentence_index": 342,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec027",
+    "text": "Mazeika, D.",
+    "char_start": 47420,
+    "char_end": 47431,
+    "sentence_index": 343,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec027",
+    "text": "Song, and\nJ.",
+    "char_start": 47432,
+    "char_end": 47444,
+    "sentence_index": 344,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec027",
+    "text": "Steinhardt.",
+    "char_start": 47445,
+    "char_end": 47456,
+    "sentence_index": 345,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec027",
+    "text": "Measuring Massive Multitask Language Understanding.",
+    "char_start": 47457,
+    "char_end": 47508,
+    "sentence_index": 346,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec027",
+    "text": "In ICLR , 2021.",
+    "char_start": 47509,
+    "char_end": 47524,
+    "sentence_index": 347,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec027",
+    "text": "arXiv:2009.03300.",
+    "char_start": 47525,
+    "char_end": 47542,
+    "sentence_index": 348,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec027",
+    "text": "liang2022helm\nP.",
+    "char_start": 47544,
+    "char_end": 47560,
+    "sentence_index": 349,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec027",
+    "text": "Liang et al.",
+    "char_start": 47561,
+    "char_end": 47573,
+    "sentence_index": 350,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec027",
+    "text": "Holistic Evaluation of Language Models (HELM).",
+    "char_start": 47574,
+    "char_end": 47620,
+    "sentence_index": 351,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec027",
+    "text": "arXiv:2211.09110 , 2022.",
+    "char_start": 47621,
+    "char_end": 47645,
+    "sentence_index": 352,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec027",
+    "text": "zhou2023webarena\nS.",
+    "char_start": 47647,
+    "char_end": 47666,
+    "sentence_index": 353,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec027",
+    "text": "Zhou et al.",
+    "char_start": 47667,
+    "char_end": 47678,
+    "sentence_index": 354,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec027",
+    "text": "WebArena: A Realistic Web Environment for Building Autonomous Agents.",
+    "char_start": 47679,
+    "char_end": 47748,
+    "sentence_index": 355,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec027",
+    "text": "arXiv:2307.13854 , 2023.",
+    "char_start": 47749,
+    "char_end": 47773,
+    "sentence_index": 356,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec027",
+    "text": "liu2018reinforcement\nE.",
+    "char_start": 47775,
+    "char_end": 47798,
+    "sentence_index": 357,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec027",
+    "text": "Z.",
+    "char_start": 47799,
+    "char_end": 47801,
+    "sentence_index": 358,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec027",
+    "text": "Liu, K.",
+    "char_start": 47802,
+    "char_end": 47809,
+    "sentence_index": 359,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec027",
+    "text": "Guu, P.",
+    "char_start": 47810,
+    "char_end": 47817,
+    "sentence_index": 360,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec027",
+    "text": "Pasupat, T.",
+    "char_start": 47818,
+    "char_end": 47829,
+    "sentence_index": 361,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec027",
+    "text": "Shi, and P.",
+    "char_start": 47830,
+    "char_end": 47841,
+    "sentence_index": 362,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec027",
+    "text": "Liang.",
+    "char_start": 47842,
+    "char_end": 47848,
+    "sentence_index": 363,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec027",
+    "text": "Reinforcement Learning on Web Interfaces using Workflow-Guided\nExploration.",
+    "char_start": 47849,
+    "char_end": 47924,
+    "sentence_index": 364,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec027",
+    "text": "In ICLR , 2018.",
+    "char_start": 47925,
+    "char_end": 47940,
+    "sentence_index": 365,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec027",
+    "text": "arXiv:1802.08802.",
+    "char_start": 47941,
+    "char_end": 47958,
+    "sentence_index": 366,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec027",
+    "text": "(Introduces MiniWoB++).",
+    "char_start": 47959,
+    "char_end": 47982,
+    "sentence_index": 367,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec027",
+    "text": "xie2024osworld\nT.",
+    "char_start": 47983,
+    "char_end": 48000,
+    "sentence_index": 368,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec027",
+    "text": "Xie et al.",
+    "char_start": 48001,
+    "char_end": 48011,
+    "sentence_index": 369,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec027",
+    "text": "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real\nComputer Environments.",
+    "char_start": 48012,
+    "char_end": 48103,
+    "sentence_index": 370,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec027",
+    "text": "arXiv:2404.07972 , 2024.",
+    "char_start": 48104,
+    "char_end": 48128,
+    "sentence_index": 371,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec027",
+    "text": "chai2025a3\nY.",
+    "char_start": 48130,
+    "char_end": 48143,
+    "sentence_index": 372,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec027",
+    "text": "Chai et al.",
+    "char_start": 48144,
+    "char_end": 48155,
+    "sentence_index": 373,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec027",
+    "text": "A3: Android Agent Arena for Mobile GUI Agents.",
+    "char_start": 48156,
+    "char_end": 48202,
+    "sentence_index": 374,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec027",
+    "text": "arXiv:2501.01149 , 2025.",
+    "char_start": 48203,
+    "char_end": 48227,
+    "sentence_index": 375,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec027",
+    "text": "qin2023toolllm\nY.",
+    "char_start": 48229,
+    "char_end": 48246,
+    "sentence_index": 376,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec027",
+    "text": "Qin et al.",
+    "char_start": 48247,
+    "char_end": 48257,
+    "sentence_index": 377,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec027",
+    "text": "ToolLLM: Facilitating Large Language Models to Master 16,464\nReal-World APIs.",
+    "char_start": 48258,
+    "char_end": 48335,
+    "sentence_index": 378,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec027",
+    "text": "arXiv:2307.16789 , 2023.",
+    "char_start": 48336,
+    "char_end": 48360,
+    "sentence_index": 379,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec027",
+    "text": "(Introduces ToolBench dataset).",
+    "char_start": 48361,
+    "char_end": 48392,
+    "sentence_index": 380,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec027",
+    "text": "guo2024stabletoolbench\nZ.",
+    "char_start": 48394,
+    "char_end": 48419,
+    "sentence_index": 381,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec027",
+    "text": "Guo et al.",
+    "char_start": 48420,
+    "char_end": 48430,
+    "sentence_index": 382,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec027",
+    "text": "StableToolBench: Towards Stable Large-Scale Benchmarking on Tool\nLearning of LLMs.",
+    "char_start": 48431,
+    "char_end": 48513,
+    "sentence_index": 383,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec027",
+    "text": "In Findings of ACL , 2024.",
+    "char_start": 48514,
+    "char_end": 48540,
+    "sentence_index": 384,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec027",
+    "text": "arXiv:2403.07714.",
+    "char_start": 48541,
+    "char_end": 48558,
+    "sentence_index": 385,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec027",
+    "text": "patil2024bfcl\nS.",
+    "char_start": 48559,
+    "char_end": 48575,
+    "sentence_index": 386,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec027",
+    "text": "G.",
+    "char_start": 48576,
+    "char_end": 48578,
+    "sentence_index": 387,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec027",
+    "text": "Patil et al.",
+    "char_start": 48579,
+    "char_end": 48591,
+    "sentence_index": 388,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec027",
+    "text": "The Berkeley Function-Calling Leaderboard (BFCL): From Benchmarks to\nReal-World Evaluation.",
+    "char_start": 48592,
+    "char_end": 48683,
+    "sentence_index": 389,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec027",
+    "text": "OpenReview , 2024/2025.",
+    "char_start": 48684,
+    "char_end": 48707,
+    "sentence_index": 390,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec027",
+    "text": "(Leaderboard and methodology).",
+    "char_start": 48708,
+    "char_end": 48738,
+    "sentence_index": 391,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec027",
+    "text": "yao2024lambda\nS.",
+    "char_start": 48740,
+    "char_end": 48756,
+    "sentence_index": 392,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec027",
+    "text": "Yao, N.",
+    "char_start": 48757,
+    "char_end": 48764,
+    "sentence_index": 393,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec027",
+    "text": "Shinn, P.",
+    "char_start": 48765,
+    "char_end": 48774,
+    "sentence_index": 394,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec027",
+    "text": "Razavi, and K.",
+    "char_start": 48775,
+    "char_end": 48789,
+    "sentence_index": 395,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec027",
+    "text": "Narasimhan.",
+    "char_start": 48790,
+    "char_end": 48801,
+    "sentence_index": 396,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec027",
+    "text": "$ $ -bench: A Benchmark for Tool-Agent-User Interaction in\nReal-World Domains.",
+    "char_start": 48802,
+    "char_end": 48880,
+    "sentence_index": 397,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec027",
+    "text": "arXiv:2406.12045 , 2024.",
+    "char_start": 48881,
+    "char_end": 48905,
+    "sentence_index": 398,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec027",
+    "text": "jimenez2023swebench\nC.",
+    "char_start": 48907,
+    "char_end": 48929,
+    "sentence_index": 399,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec027",
+    "text": "E.",
+    "char_start": 48930,
+    "char_end": 48932,
+    "sentence_index": 400,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec027",
+    "text": "Jimenez et al.",
+    "char_start": 48933,
+    "char_end": 48947,
+    "sentence_index": 401,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec027",
+    "text": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+    "char_start": 48948,
+    "char_end": 49012,
+    "sentence_index": 402,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec027",
+    "text": "arXiv:2310.06770 , 2023.",
+    "char_start": 49013,
+    "char_end": 49037,
+    "sentence_index": 403,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec027",
+    "text": "mialon2023gaia\nG.",
+    "char_start": 49039,
+    "char_end": 49056,
+    "sentence_index": 404,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec027",
+    "text": "Mialon et al.",
+    "char_start": 49057,
+    "char_end": 49070,
+    "sentence_index": 405,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec027",
+    "text": "GAIA: A Benchmark for General AI Assistants.",
+    "char_start": 49071,
+    "char_end": 49115,
+    "sentence_index": 406,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec027",
+    "text": "arXiv: 2311.12983 , 2023.",
+    "char_start": 49116,
+    "char_end": 49141,
+    "sentence_index": 407,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec027",
+    "text": "(ICLR 2024 version available).",
+    "char_start": 49142,
+    "char_end": 49172,
+    "sentence_index": 408,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec027",
+    "text": "mcp2025spec\nModel Context Protocol (MCP) Specification.",
+    "char_start": 49173,
+    "char_end": 49228,
+    "sentence_index": 409,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec027",
+    "text": "modelcontextprotocol.io/specification/2025-03-26, 2025.",
+    "char_start": 49229,
+    "char_end": 49284,
+    "sentence_index": 410,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec027",
+    "text": "anthropic2024mcp\nAnthropic.",
+    "char_start": 49286,
+    "char_end": 49313,
+    "sentence_index": 411,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec027",
+    "text": "Introducing the Model Context Protocol.",
+    "char_start": 49314,
+    "char_end": 49353,
+    "sentence_index": 412,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec027",
+    "text": "anthropic.com/news/model-context-protocol, Nov 2024.",
+    "char_start": 49354,
+    "char_end": 49406,
+    "sentence_index": 413,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec027",
+    "text": "luo2025mcpuniverse\nZ.",
+    "char_start": 49408,
+    "char_end": 49429,
+    "sentence_index": 414,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec027",
+    "text": "Luo et al.",
+    "char_start": 49430,
+    "char_end": 49440,
+    "sentence_index": 415,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec027",
+    "text": "MCP-Universe: Benchmarking Large Language Models with Real-World Model\nContext Protocol Servers.",
+    "char_start": 49441,
+    "char_end": 49537,
+    "sentence_index": 416,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec027",
+    "text": "arXiv:2508.14704 , 2025.",
+    "char_start": 49538,
+    "char_end": 49562,
+    "sentence_index": 417,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec027",
+    "text": "wang2025mcpbench\nZ.",
+    "char_start": 49564,
+    "char_end": 49583,
+    "sentence_index": 418,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec027",
+    "text": "Wang et al.",
+    "char_start": 49584,
+    "char_end": 49595,
+    "sentence_index": 419,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec027",
+    "text": "MCP-Bench: Benchmarking Tool-Using LLM Agents with Real MCP Servers\nand Fuzzy Prompts.",
+    "char_start": 49596,
+    "char_end": 49682,
+    "sentence_index": 420,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec027",
+    "text": "arXiv:2508.20453 , 2025.",
+    "char_start": 49683,
+    "char_end": 49707,
+    "sentence_index": 421,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec027",
+    "text": "liu2025mcpeval\nZ.",
+    "char_start": 49709,
+    "char_end": 49726,
+    "sentence_index": 422,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec027",
+    "text": "Liu et al.",
+    "char_start": 49727,
+    "char_end": 49737,
+    "sentence_index": 423,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec027",
+    "text": "Automatic MCP-based Deep Evaluation for AI Agent Models (MCPEval).",
+    "char_start": 49738,
+    "char_end": 49804,
+    "sentence_index": 424,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec027",
+    "text": "arXiv:2507.12806 , 2025.",
+    "char_start": 49805,
+    "char_end": 49829,
+    "sentence_index": 425,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec027",
+    "text": "mo2025livemcpbench\nG.",
+    "char_start": 49831,
+    "char_end": 49852,
+    "sentence_index": 426,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec027",
+    "text": "Mo et al.",
+    "char_start": 49853,
+    "char_end": 49862,
+    "sentence_index": 427,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec027",
+    "text": "LiveMCPBench: Can Agents Navigate an Ocean of MCP Tools?",
+    "char_start": 49863,
+    "char_end": 49919,
+    "sentence_index": 428,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec027",
+    "text": "arXiv:2508.01780 , 2025.",
+    "char_start": 49920,
+    "char_end": 49944,
+    "sentence_index": 429,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec027",
+    "text": "gao2025mcp\nX.",
+    "char_start": 49946,
+    "char_end": 49959,
+    "sentence_index": 430,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec027",
+    "text": "Gao et al.",
+    "char_start": 49960,
+    "char_end": 49970,
+    "sentence_index": 431,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec027",
+    "text": "MCP-RADAR: A Multi-Dimensional Benchmark for Evaluating Tool Use\nCapabilities in LLMs.",
+    "char_start": 49971,
+    "char_end": 50057,
+    "sentence_index": 432,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec027",
+    "text": "arXiv:2505.16700 , 2025.",
+    "char_start": 50058,
+    "char_end": 50082,
+    "sentence_index": 433,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec027",
+    "text": "chen2021evaluating\nM.",
+    "char_start": 50084,
+    "char_end": 50105,
+    "sentence_index": 434,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec027",
+    "text": "Chen et al.",
+    "char_start": 50106,
+    "char_end": 50117,
+    "sentence_index": 435,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec027",
+    "text": "Evaluating Large Language Models Trained on Code.",
+    "char_start": 50118,
+    "char_end": 50167,
+    "sentence_index": 436,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec027",
+    "text": "arXiv:2107.03374 , 2021.",
+    "char_start": 50168,
+    "char_end": 50192,
+    "sentence_index": 437,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec027",
+    "text": "(Introduces HumanEval).",
+    "char_start": 50193,
+    "char_end": 50216,
+    "sentence_index": 438,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec027",
+    "text": "li2025toolathlon\nY.",
+    "char_start": 50218,
+    "char_end": 50237,
+    "sentence_index": 439,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec027",
+    "text": "Li et al.",
+    "char_start": 50238,
+    "char_end": 50247,
+    "sentence_index": 440,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec027",
+    "text": "Toolathlon: A Multi-Agent Benchmark for Tool-Assisted Long-Horizon\nPlanning.",
+    "char_start": 50248,
+    "char_end": 50324,
+    "sentence_index": 441,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec027",
+    "text": "arXiv:2505.xxxxx , 2025.",
+    "char_start": 50325,
+    "char_end": 50349,
+    "sentence_index": 442,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec027",
+    "text": "wu2025mcpmark\nX.",
+    "char_start": 50351,
+    "char_end": 50367,
+    "sentence_index": 443,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec027",
+    "text": "Wu et al.",
+    "char_start": 50368,
+    "char_end": 50377,
+    "sentence_index": 444,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec027",
+    "text": "MCPMark: Benchmarking LLM Agents on CRUD Operations with MCP Servers.",
+    "char_start": 50378,
+    "char_end": 50447,
+    "sentence_index": 445,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec027",
+    "text": "arXiv:2506.xxxxx , 2025.",
+    "char_start": 50448,
+    "char_end": 50472,
+    "sentence_index": 446,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec027",
+    "text": "zhao2025mcpverse\nY.",
+    "char_start": 50474,
+    "char_end": 50493,
+    "sentence_index": 447,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec027",
+    "text": "Zhao et al.",
+    "char_start": 50494,
+    "char_end": 50505,
+    "sentence_index": 448,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec027",
+    "text": "MCPVerse: Expanding the Action Space for Agentic LLMs.",
+    "char_start": 50506,
+    "char_end": 50560,
+    "sentence_index": 449,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec027",
+    "text": "arXiv:2507.xxxxx , 2025.",
+    "char_start": 50561,
+    "char_end": 50585,
+    "sentence_index": 450,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec027",
+    "text": "chen2025mscbench\nL.",
+    "char_start": 50587,
+    "char_end": 50606,
+    "sentence_index": 451,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec027",
+    "text": "Chen et al.",
+    "char_start": 50607,
+    "char_end": 50618,
+    "sentence_index": 452,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec027",
+    "text": "MSC-Bench: A Curriculum for Multi-Server Coordination in MCP Agents.",
+    "char_start": 50619,
+    "char_end": 50687,
+    "sentence_index": 453,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec027",
+    "text": "arXiv:2508.xxxxx , 2025.",
+    "char_start": 50688,
+    "char_end": 50712,
+    "sentence_index": 454,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec027",
+    "text": "zhang2025mcptoolbench\nH.",
+    "char_start": 50714,
+    "char_end": 50738,
+    "sentence_index": 455,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec027",
+    "text": "Zhang et al.",
+    "char_start": 50739,
+    "char_end": 50751,
+    "sentence_index": 456,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec027",
+    "text": "MCPToolBench++: Large-Scale Multilingual MCP Server Evaluation.",
+    "char_start": 50752,
+    "char_end": 50815,
+    "sentence_index": 457,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec027",
+    "text": "arXiv:2509.xxxxx , 2025.",
+    "char_start": 50816,
+    "char_end": 50840,
+    "sentence_index": 458,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec027",
+    "text": "huang2024metatool\nY.",
+    "char_start": 50842,
+    "char_end": 50862,
+    "sentence_index": 459,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec027",
+    "text": "Huang et al.",
+    "char_start": 50863,
+    "char_end": 50875,
+    "sentence_index": 460,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec027",
+    "text": "MetaTool Benchmark for Large Language Models: Deciding Whether to Use Tools and Which to Use.",
+    "char_start": 50876,
+    "char_end": 50969,
+    "sentence_index": 461,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec027",
+    "text": "Proceedings of ICLR , 2024.",
+    "char_start": 50970,
+    "char_end": 50997,
+    "sentence_index": 462,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec027",
+    "text": "ye2024tooleyes\nJ.",
+    "char_start": 50999,
+    "char_end": 51016,
+    "sentence_index": 463,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec027",
+    "text": "Ye et al.",
+    "char_start": 51017,
+    "char_end": 51026,
+    "sentence_index": 464,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec027",
+    "text": "ToolEyes: Fine-Grained Evaluation for Tool Learning Capabilities of Large Language Models in Real-world Scenarios.",
+    "char_start": 51027,
+    "char_end": 51141,
+    "sentence_index": 465,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec027",
+    "text": "arXiv preprint arXiv:2401.00741 , 2024.",
+    "char_start": 51142,
+    "char_end": 51181,
+    "sentence_index": 466,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec027",
+    "text": "yehudai2025survey\nA.",
+    "char_start": 51183,
+    "char_end": 51203,
+    "sentence_index": 467,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec027",
+    "text": "Yehudai et al.",
+    "char_start": 51204,
+    "char_end": 51218,
+    "sentence_index": 468,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec027",
+    "text": "Survey on Evaluation of LLM-based Agents.",
+    "char_start": 51219,
+    "char_end": 51260,
+    "sentence_index": 469,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec027",
+    "text": "arXiv preprint arXiv:2503.16416 , 2025.",
+    "char_start": 51261,
+    "char_end": 51300,
+    "sentence_index": 470,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec028",
+    "text": "Bucket Shares and Target Mix.",
+    "char_start": 51302,
+    "char_end": 51331,
+    "sentence_index": 471,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0473",
+    "section_id": "sec028",
+    "text": "The distribution of tasks across the environment buckets is as follows: Basic (32\\%), Analytics (12\\%), Productivity (22\\%), Financial (12\\%), and Coding (22\\%).",
+    "char_start": 51332,
+    "char_end": 51493,
+    "sentence_index": 472,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0474",
+    "section_id": "sec028",
+    "text": "Representative servers and tools are detailed in Table .",
+    "char_start": 51494,
+    "char_end": 51550,
+    "sentence_index": 473,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0475",
+    "section_id": "sec028",
+    "text": "Server usage varies across the benchmark, with higher representation of general-purpose servers such as search and filesystem (see Appendix H for the full distribution).",
+    "char_start": 51551,
+    "char_end": 51720,
+    "sentence_index": 474,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0476",
+    "section_id": "sec028",
+    "text": "Server Selection Rationale.",
+    "char_start": 51722,
+    "char_end": 51749,
+    "sentence_index": 475,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0477",
+    "section_id": "sec028",
+    "text": "The 36 MCP servers included in were selected to provide broad coverage across commonly used domains and use cases.",
+    "char_start": 51750,
+    "char_end": 51864,
+    "sentence_index": 476,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0478",
+    "section_id": "sec028",
+    "text": "Selection criteria included: (1) availability of stable, well-documented MCP implementations; (2) diversity across functional categories (search, analytics, productivity, finance, coding); (3) presence of multiple related tools per server to enable meaningful distractor selection; and (4) applicability to realistic multi-step workflows.",
+    "char_start": 51865,
+    "char_end": 52203,
+    "sentence_index": 477,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0479",
+    "section_id": "sec028",
+    "text": "The goal was to create a representative sample of the MCP ecosystem that tests agents across a variety of practical scenarios.",
+    "char_start": 52204,
+    "char_end": 52330,
+    "sentence_index": 478,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0480",
+    "section_id": "sec028",
+    "text": "Detailed Diagnostics Descriptions.",
+    "char_start": 52332,
+    "char_end": 52366,
+    "sentence_index": 479,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0481",
+    "section_id": "sec028",
+    "text": "Table provides formal descriptions of the diagnostic metrics collected during evaluation.",
+    "char_start": 52367,
+    "char_end": 52456,
+    "sentence_index": 480,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0482",
+    "section_id": "sec028",
+    "text": "[ht]\n\nDetailed descriptions of diagnostic metrics.",
+    "char_start": 52458,
+    "char_end": 52508,
+    "sentence_index": 481,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0483",
+    "section_id": "sec028",
+    "text": "lX\n\nDiagnostic & Description\n\nDiscovery Precision & Fraction of tool calls made to the set of required tools ($T_ req $).",
+    "char_start": 52510,
+    "char_end": 52631,
+    "sentence_index": 482,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0484",
+    "section_id": "sec028",
+    "text": "Discovery Recall & Fraction of required tools used at least once during the task execution.",
+    "char_start": 52633,
+    "char_end": 52724,
+    "sentence_index": 483,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0485",
+    "section_id": "sec028",
+    "text": "Schema/Type Correctness & Fraction of calls resulting in valid, well-typed outputs (i.e., not errors).",
+    "char_start": 52726,
+    "char_end": 52828,
+    "sentence_index": 484,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0486",
+    "section_id": "sec028",
+    "text": "Parameter Correctness & Schema-aware similarity measure between the arguments provided by the agent and valid arguments.",
+    "char_start": 52830,
+    "char_end": 52950,
+    "sentence_index": 485,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0487",
+    "section_id": "sec028",
+    "text": "Error Rate & Fraction of total calls that return an error token ($Err_ t $).",
+    "char_start": 52952,
+    "char_end": 53028,
+    "sentence_index": 486,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0488",
+    "section_id": "sec028",
+    "text": "Recovery Rate & Fraction of errors that are immediately followed by a successful retry or alternative call.",
+    "char_start": 53030,
+    "char_end": 53137,
+    "sentence_index": 487,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0489",
+    "section_id": "sec028",
+    "text": "Efficiency (Calls) & Total number of tool calls and the count of duplicate calls per task.",
+    "char_start": 53139,
+    "char_end": 53229,
+    "sentence_index": 488,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0490",
+    "section_id": "sec029",
+    "text": "We clarify the claims-based scoring policy for specific edge cases encountered during evaluation:\n\nDuplicate Calls: Responses involving duplicate or redundant tool calls will pass if the final answer satisfies the claims.",
+    "char_start": 53231,
+    "char_end": 53452,
+    "sentence_index": 489,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0491",
+    "section_id": "sec029",
+    "text": "However, the efficiency diagnostic will be logged as low.",
+    "char_start": 53453,
+    "char_end": 53510,
+    "sentence_index": 490,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0492",
+    "section_id": "sec029",
+    "text": "Hallucinated Calls: If the agent attempts to call a tool not present in $T_ expose $ (a hallucinated call), the task can still pass if the claims are satisfied (achieved using available tools).",
+    "char_start": 53511,
+    "char_end": 53704,
+    "sentence_index": 491,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0493",
+    "section_id": "sec029",
+    "text": "Hallucinated calls are logged as discovery errors.",
+    "char_start": 53705,
+    "char_end": 53755,
+    "sentence_index": 492,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0494",
+    "section_id": "sec029",
+    "text": "Order Violations: Deviations from the sequence specified in the reference trajectory ($ ^ * $) do not automatically result in failure.",
+    "char_start": 53756,
+    "char_end": 53890,
+    "sentence_index": 493,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0495",
+    "section_id": "sec029",
+    "text": "Order violations lead to failure only if they result in incomplete claims coverage.",
+    "char_start": 53891,
+    "char_end": 53974,
+    "sentence_index": 494,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0496",
+    "section_id": "sec029",
+    "text": "Retries: Successful retries following an initial error do not penalize the claims score, but they are tracked in the Error Recovery diagnostic.",
+    "char_start": 53975,
+    "char_end": 54118,
+    "sentence_index": 495,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0497",
+    "section_id": "sec029",
+    "text": "Judge Model and Configuration.",
+    "char_start": 54120,
+    "char_end": 54150,
+    "sentence_index": 496,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0498",
+    "section_id": "sec029",
+    "text": "Claims verification is performed using Gemini 2.5 Pro as the judge model.",
+    "char_start": 54151,
+    "char_end": 54224,
+    "sentence_index": 497,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0499",
+    "section_id": "sec029",
+    "text": "For each claim in the claims list, the judge determines whether the agent's response contains the required factual information.",
+    "char_start": 54225,
+    "char_end": 54352,
+    "sentence_index": 498,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0500",
+    "section_id": "sec029",
+    "text": "The judge prompt instructs the model to assess each claim independently, marking it as fulfilled, partially fulfilled, or not fulfilled based on the presence and correctness of the corresponding information in the response.",
+    "char_start": 54353,
+    "char_end": 54576,
+    "sentence_index": 499,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0501",
+    "section_id": "sec030",
+    "text": "Prompt Template.",
+    "char_start": 54578,
+    "char_end": 54594,
+    "sentence_index": 500,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0502",
+    "section_id": "sec030",
+    "text": "Authors utilize templates emphasizing implicit tool requirements, e.g., \"Achieve [complex goal] by synthesizing information from available resources.\" Prompts must avoid telegraphing tool names or specific parameters.",
+    "char_start": 54595,
+    "char_end": 54812,
+    "sentence_index": 501,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0503",
+    "section_id": "sec030",
+    "text": "Claims Template.",
+    "char_start": 54814,
+    "char_end": 54830,
+    "sentence_index": 502,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0504",
+    "section_id": "sec030",
+    "text": "The claims list must enumerate distinct, independently verifiable facts grounded solely in the expected tool outputs.",
+    "char_start": 54831,
+    "char_end": 54948,
+    "sentence_index": 503,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0505",
+    "section_id": "sec030",
+    "text": "Construction Checklists.",
+    "char_start": 54950,
+    "char_end": 54974,
+    "sentence_index": 504,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0506",
+    "section_id": "sec030",
+    "text": "To ensure benchmark quality, all tasks undergo a rigorous checklist:\n\nTime-invariance: The correct answer must not change over time.",
+    "char_start": 54975,
+    "char_end": 55107,
+    "sentence_index": 505,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0507",
+    "section_id": "sec030",
+    "text": "No Name Leakage: Prompts must not contain explicit server or tool names.",
+    "char_start": 55108,
+    "char_end": 55180,
+    "sentence_index": 506,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0508",
+    "section_id": "sec030",
+    "text": "Tool Dependency: The task must be unsolvable using the LLM's parametric knowledge alone.",
+    "char_start": 55181,
+    "char_end": 55269,
+    "sentence_index": 507,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0509",
+    "section_id": "sec030",
+    "text": "Unambiguity: There must be only one correct final answer.",
+    "char_start": 55270,
+    "char_end": 55327,
+    "sentence_index": 508,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0510",
+    "section_id": "sec030",
+    "text": "Complexity: The task must require multiple tool calls (target 3-6) and ideally involve cross-server orchestration or conditional logic.",
+    "char_start": 55328,
+    "char_end": 55463,
+    "sentence_index": 509,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0511",
+    "section_id": "sec031",
+    "text": "To illustrate the task schema, consider the following example:\n\nPrompt: ``I'm researching papers on advertisement effectiveness and comparing it to our own online database advertising data.",
+    "char_start": 55465,
+    "char_end": 55654,
+    "sentence_index": 510,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0512",
+    "section_id": "sec031",
+    "text": "There's a 2024 paper by jane castleman that deals with ad control effectiveness, can you get me the abstract?",
+    "char_start": 55655,
+    "char_end": 55764,
+    "sentence_index": 511,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0513",
+    "section_id": "sec031",
+    "text": "I believe it mentions ad locality, for which I will also need to ask you for the date of our campaign with the biggest engagement rate, started during the 2015-2023 period, and its locality.''\n\nEnabled Tools:\n[noitemsep]\nnotion\\_API-post-search\nnotion\\_API-post-database-query\nnotion\\_API-retrieve-a-database$^*$\nnotion\\_API-retrieve-a-block$^*$\nnotion\\_API-retrieve-a-page$^*$\narxiv\\_search\\_papers\nfetch\\_fetch$^*$\nmemory\\_read\\_graph$^*$\nmemory\\_search\\_nodes$^*$\nslack\\_channels\\_list$^*$\nslack\\_conversations\\_history$^*$\nslack\\_conversations\\_replies$^*$\nslack\\_conversations\\_search\\_messages$^*$\nwhois\\_whois\\_domain$^*$\nwhois\\_whois\\_tld$^*$\n\n(Tools marked with $^*$ are distractors)\n\nReference Trajectory:\n[noitemsep]\narxiv\\_search\\_papers (``jane castleman ad locality 2024'') $ $ paper abstract\nnotion\\_API-post-search (``advertising'') $ $ find relevant database\nnotion\\_API-post-database-query (database\\_id: ``21b97551-844e-8068-b387-fe7a56b04348'') $ $ campaign date\n\nClaims List:\n[noitemsep]\n``There's a 2024 paper by Jane Castleman with the title `Why am I Still Seeing This: Measuring the Effectiveness Of Ad Controls and Explanations in AI-Mediated Ad Targeting Systems'.''\n``The abstract of the paper with title `Why am I Still Seeing This: Measuring the Effectiveness Of Ad Controls and Explanations in AI-Mediated Ad Targeting Systems' is: `Recently, Meta has shifted towards AI-mediated ad targeting mechanisms [...",
+    "char_start": 55765,
+    "char_end": 57204,
+    "sentence_index": 512,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0514",
+    "section_id": "sec031",
+    "text": "abridged for paper]'.''\n``There's a tie between three advertising campaigns with an engagement rate of 15\\%.''\n``The starting dates of the three winning advertising campaigns are: 2022-06-24, 2019-09-20 and 2017-09-09.''\n``The localities of the three winning advertisement campaigns are: `National', `International' and `International'.''\n\nPer-Server Error Rates.",
+    "char_start": 57205,
+    "char_end": 57568,
+    "sentence_index": 513,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0515",
+    "section_id": "sec032",
+    "text": "We observe significant variation in syntax and type error rates across servers.",
+    "char_start": 57569,
+    "char_end": 57648,
+    "sentence_index": 514,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0516",
+    "section_id": "sec032",
+    "text": "Financial servers exhibit the highest error rates (up to 45\\%), often due to strict requirements for date formats and symbol scoping.",
+    "char_start": 57649,
+    "char_end": 57782,
+    "sentence_index": 515,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0517",
+    "section_id": "sec032",
+    "text": "Error Recovery Statistics.",
+    "char_start": 57784,
+    "char_end": 57810,
+    "sentence_index": 516,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0518",
+    "section_id": "sec032",
+    "text": "The average recovery rate across all models and tasks is approximately 60\\%, indicating that agents are often able to correct initial mistakes within the allowed execution budget.",
+    "char_start": 57811,
+    "char_end": 57990,
+    "sentence_index": 517,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0519",
+    "section_id": "sec033",
+    "text": "To validate the robustness of our pass/fail scoring methodology, we conducted a sensitivity analysis examining how model rankings change under different coverage thresholds.",
+    "char_start": 57992,
+    "char_end": 58165,
+    "sentence_index": 518,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0520",
+    "section_id": "sec033",
+    "text": "We evaluated three threshold values: 0.65 (lenient), 0.75 (default), and 0.85 (strict).",
+    "char_start": 58166,
+    "char_end": 58253,
+    "sentence_index": 519,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0521",
+    "section_id": "sec033",
+    "text": "Table presents the pass rates for all evaluated models across the three threshold settings.",
+    "char_start": 58255,
+    "char_end": 58346,
+    "sentence_index": 520,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0522",
+    "section_id": "sec033",
+    "text": "While absolute pass rates naturally vary with threshold choice--higher thresholds yield lower pass rates--the relative ordering of models remains remarkably stable.",
+    "char_start": 58347,
+    "char_end": 58511,
+    "sentence_index": 521,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0523",
+    "section_id": "sec033",
+    "text": "[ht]\n\nPass rates (\\%) across different coverage thresholds.",
+    "char_start": 58513,
+    "char_end": 58572,
+    "sentence_index": 522,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0524",
+    "section_id": "sec033",
+    "text": "Model rankings remain consistent across threshold choices, with Spearman rank correlations $ 0.98$ between all threshold pairs.",
+    "char_start": 58573,
+    "char_end": 58700,
+    "sentence_index": 523,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0525",
+    "section_id": "sec033",
+    "text": "lccc\n\nModel & $ = 0.65$ & $ = 0.75$ & $ = 0.85$\n\nClaude Opus 4.5 & 71.40 & 62.30 & 53.80\n\nGemini 3 Pro & 63.50 & 54.10 & 45.20\n\nGPT-5 & 54.20 & 44.50 & 35.80\n\nClaude Sonnet 4.5 & 53.70 & 43.80 & 34.90\n\no3 Pro (high) & 54.80 & 43.60 & 35.10\n\nClaude Opus 4.1 & 51.30 & 40.90 & 32.40\n\nClaude Sonnet 4 & 45.80 & 35.60 & 27.20\n\nGLM-4.5 Air & 46.20 & 34.00 & 24.80\n\nKimi K2 Instruct & 34.60 & 23.90 & 15.70\n\nQwen3-235B-A22B & 20.80 & 12.00 & 6.40\n\nGemini 2.5 Pro & 17.50 & 8.80 & 4.20\n\nGPT-4o & 15.30 & 7.20 & 3.50\n\nGemini 2.5 Flash & 9.80 & 3.40 & 1.20\n\nRank Stability Analysis.",
+    "char_start": 58702,
+    "char_end": 59275,
+    "sentence_index": 524,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0526",
+    "section_id": "sec033",
+    "text": "We computed Spearman rank correlation coefficients between model rankings at each threshold pair:\n\n$ = 0.65$ vs.",
+    "char_start": 59276,
+    "char_end": 59388,
+    "sentence_index": 525,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0527",
+    "section_id": "sec033",
+    "text": "$ = 0.75$: $ = 0.989$\n$ = 0.75$ vs.",
+    "char_start": 59389,
+    "char_end": 59424,
+    "sentence_index": 526,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0528",
+    "section_id": "sec033",
+    "text": "$ = 0.85$: $ = 0.993$\n$ = 0.65$ vs.",
+    "char_start": 59425,
+    "char_end": 59460,
+    "sentence_index": 527,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0529",
+    "section_id": "sec033",
+    "text": "$ = 0.85$: $ = 0.982$\n\nAll correlations exceed 0.98, indicating near-perfect rank preservation across the tested threshold range.",
+    "char_start": 59461,
+    "char_end": 59590,
+    "sentence_index": 528,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0530",
+    "section_id": "sec033",
+    "text": "The only rank changes observed involve models with overlapping confidence intervals at the default threshold (e.g., GPT-5 and Claude Sonnet 4.5), where small differences in pass rate do not constitute statistically significant performance gaps.",
+    "char_start": 59591,
+    "char_end": 59835,
+    "sentence_index": 529,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0531",
+    "section_id": "sec033",
+    "text": "Implications.",
+    "char_start": 59837,
+    "char_end": 59850,
+    "sentence_index": 530,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0532",
+    "section_id": "sec033",
+    "text": "This analysis confirms that the choice of a 0.75 threshold does not artificially advantage or disadvantage particular models.",
+    "char_start": 59851,
+    "char_end": 59976,
+    "sentence_index": 531,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0533",
+    "section_id": "sec033",
+    "text": "The strong rank correlation across thresholds demonstrates that our benchmark reliably distinguishes model capabilities regardless of the specific pass/fail cutoff employed.",
+    "char_start": 59977,
+    "char_end": 60150,
+    "sentence_index": 532,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0534",
+    "section_id": "sec033",
+    "text": "Researchers may adopt alternative thresholds based on their evaluation needs with confidence that relative model comparisons will remain valid.",
+    "char_start": 60151,
+    "char_end": 60294,
+    "sentence_index": 533,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0535",
+    "section_id": "sec034",
+    "text": "To ensure the reproducibility of the results presented in this paper, we provide the following artifacts and information:\n\nHarness Configuration: Detailed configuration files for the evaluation harness, including Dockerfiles and specifications for all MCP servers used in the benchmark.",
+    "char_start": 60296,
+    "char_end": 60582,
+    "sentence_index": 534,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0536",
+    "section_id": "sec034",
+    "text": "Server Allow-Lists: Egress control lists specifying the allowed network access for each containerized server.",
+    "char_start": 60583,
+    "char_end": 60692,
+    "sentence_index": 535,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0537",
+    "section_id": "sec034",
+    "text": "Model Specifications: Pinned model endpoints, versions, and inference parameters used for every reported run.",
+    "char_start": 60693,
+    "char_end": 60802,
+    "sentence_index": 536,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0538",
+    "section_id": "sec034",
+    "text": "Dataset: The full dataset of 1,000 tasks, including prompts, tool set configurations, reference trajectories, and claims lists.",
+    "char_start": 60803,
+    "char_end": 60930,
+    "sentence_index": 537,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0539",
+    "section_id": "sec034",
+    "text": "Release Process: The benchmark data and harness code are released via a public GitHub repository.",
+    "char_start": 60931,
+    "char_end": 61028,
+    "sentence_index": 538,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0540",
+    "section_id": "sec035",
+    "text": "We formalize as a single-turn, multi-call agentic evaluation over real MCP servers with controlled tool exposure, utilizing a reference trajectory for analysis and claims-based scoring.",
+    "char_start": 61030,
+    "char_end": 61215,
+    "sentence_index": 539,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0541",
+    "section_id": "sec035",
+    "text": "Our notation follows the standard agent-server view adopted in recent MCP evaluations.",
+    "char_start": 61216,
+    "char_end": 61302,
+    "sentence_index": 540,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0542",
+    "section_id": "sec036",
+    "text": "Servers and Tools.",
+    "char_start": 61304,
+    "char_end": 61322,
+    "sentence_index": 541,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0543",
+    "section_id": "sec036",
+    "text": "Let $ S =\\ s_ 1 ,...,s_ K \\ $ be the set of MCP servers.",
+    "char_start": 61323,
+    "char_end": 61379,
+    "sentence_index": 542,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0544",
+    "section_id": "sec036",
+    "text": "Server $s_ i $ exposes a finite set of typed tools $T_ i =\\ t_ i,1 ,...,t_ i,|T_ i | \\ $ following the MCP interface.",
+    "char_start": 61380,
+    "char_end": 61497,
+    "sentence_index": 543,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0545",
+    "section_id": "sec036",
+    "text": "The universe of tools is $T= _ i=1 ^ K T_ i $.",
+    "char_start": 61498,
+    "char_end": 61544,
+    "sentence_index": 544,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0546",
+    "section_id": "sec036",
+    "text": "Tools are assumed to be disjoint across servers.",
+    "char_start": 61545,
+    "char_end": 61593,
+    "sentence_index": 545,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0547",
+    "section_id": "sec036",
+    "text": "Task.",
+    "char_start": 61595,
+    "char_end": 61600,
+    "sentence_index": 546,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0548",
+    "section_id": "sec036",
+    "text": "A task is defined as a tuple\n$$ =(G, C, T_ expose , ^ * , C ^ * ),$$\nwhere: (a) $G$ is the goal specification; (b) $C$ is the natural-language context/constraints; (c) $T_ expose T$ is the allow-listed tool set presented to the agent; (d) $ ^ * $ is the reference trajectory, a minimal dependency-covering sequence of tool calls used for diagnostics; and (e) $ C ^ * =\\ c_ 1 ,...,c_ m \\ $ is the claims list, comprising disjoint, independently verifiable propositions that the correct answer must contain.",
+    "char_start": 61601,
+    "char_end": 62106,
+    "sentence_index": 547,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0549",
+    "section_id": "sec036",
+    "text": "Targets vs.",
+    "char_start": 62108,
+    "char_end": 62119,
+    "sentence_index": 548,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0550",
+    "section_id": "sec036",
+    "text": "Distractors.",
+    "char_start": 62120,
+    "char_end": 62132,
+    "sentence_index": 549,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0551",
+    "section_id": "sec036",
+    "text": "We define $T_ req T_ expose $ as the target tools required by $ ^ * $, and $T_ dist =T_ expose T_ req $ as the distractors.",
+    "char_start": 62133,
+    "char_end": 62256,
+    "sentence_index": 550,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0552",
+    "section_id": "sec037",
+    "text": "Tool Signatures.",
+    "char_start": 62258,
+    "char_end": 62274,
+    "sentence_index": 551,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0553",
+    "section_id": "sec037",
+    "text": "Each tool $t T$ defines a typed relation\n$$t: Args _ t Out _ t Err _ t $$\nwhere $ Args _ t $ is a JSON-schema-typed domain.",
+    "char_start": 62275,
+    "char_end": 62398,
+    "sentence_index": 552,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0554",
+    "section_id": "sec037",
+    "text": "Outputs are either a well-typed value in $ Out _ t $ or an error token $e Err _ t $ (e.g., schema violation, rate limit).",
+    "char_start": 62399,
+    "char_end": 62520,
+    "sentence_index": 553,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0555",
+    "section_id": "sec037",
+    "text": "Interaction Model.",
+    "char_start": 62522,
+    "char_end": 62540,
+    "sentence_index": 554,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0556",
+    "section_id": "sec037",
+    "text": "Given a single-turn prompt $(G, C)$, the agent issues tool calls from $T_ expose $.",
+    "char_start": 62541,
+    "char_end": 62624,
+    "sentence_index": 555,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0557",
+    "section_id": "sec037",
+    "text": "A call at step $k$ is $u_ k = t_ k ,a_ k $, and the environment returns $o_ k Out _ t_ k Err _ t_ k $.",
+    "char_start": 62625,
+    "char_end": 62727,
+    "sentence_index": 556,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0558",
+    "section_id": "sec037",
+    "text": "The execution trace is $x_ 1:K =((u_ 1 ,o_ 1 ),...,(u_ K ,o_ K ))$.",
+    "char_start": 62728,
+    "char_end": 62795,
+    "sentence_index": 557,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0559",
+    "section_id": "sec037",
+    "text": "The agent must finally emit a textual answer $ A $.",
+    "char_start": 62796,
+    "char_end": 62847,
+    "sentence_index": 558,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0560",
+    "section_id": "sec037",
+    "text": "Planning View.",
+    "char_start": 62849,
+    "char_end": 62863,
+    "sentence_index": 559,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0561",
+    "section_id": "sec037",
+    "text": "This interaction induces a finite-horizon POMDP.",
+    "char_start": 62864,
+    "char_end": 62912,
+    "sentence_index": 560,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0562",
+    "section_id": "sec037",
+    "text": "Rewards are attached post-hoc via the claims-based scoring function.",
+    "char_start": 62913,
+    "char_end": 62981,
+    "sentence_index": 561,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0563",
+    "section_id": "sec038",
+    "text": "Answer-Centric Ground Truth.",
+    "char_start": 62983,
+    "char_end": 63011,
+    "sentence_index": 562,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0564",
+    "section_id": "sec038",
+    "text": "Let $ Y $ be the space of model answers.",
+    "char_start": 63012,
+    "char_end": 63052,
+    "sentence_index": 563,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0565",
+    "section_id": "sec038",
+    "text": "The benchmark defines a scoring functional\n$$S: Y 2^ C ^ * ,$$\nwhich computes a rubricized correctness score by checking $ A Y $ against the claims list $ C ^ * $.",
+    "char_start": 63053,
+    "char_end": 63216,
+    "sentence_index": 564,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0566",
+    "section_id": "sec038",
+    "text": "Pass/fail is determined solely by $S( A , C ^ * )$, independent of the trajectory $ ^ * $.",
+    "char_start": 63217,
+    "char_end": 63307,
+    "sentence_index": 565,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0567",
+    "section_id": "sec039",
+    "text": "Table presents the distribution of MCP servers used in the public 500-task leaderboard subset.",
+    "char_start": 63309,
+    "char_end": 63403,
+    "sentence_index": 566,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0568",
+    "section_id": "sec039",
+    "text": "The ``Count'' column indicates the number of tasks in which each server appears as a required tool (note that tasks typically require multiple servers, so counts sum to more than 500).",
+    "char_start": 63404,
+    "char_end": 63588,
+    "sentence_index": 567,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0569",
+    "section_id": "sec039",
+    "text": "[ht]\n\nMCP server usage in the 1000-task leaderboard subset.",
+    "char_start": 63590,
+    "char_end": 63649,
+    "sentence_index": 568,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0570",
+    "section_id": "sec039",
+    "text": "Servers are sorted by usage count.",
+    "char_start": 63650,
+    "char_end": 63684,
+    "sentence_index": 569,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0571",
+    "section_id": "sec039",
+    "text": "lc\n\nServer & Task Count\n\noxylabs & 155\n\nfilesystem & 133\n\nexa & 108\n\nwikipedia & 99\n\nmongodb & 98\n\nairtable & 96\n\nmcp-code-executor & 93\n\nddg-search & 92\n\nnational-parks & 85\n\nbrave-search & 83\n\ncli-mcp-server & 78\n\nalchemy & 76\n\nweather-data & 76\n\nnotion & 75\n\nlara-translate & 72\n\ne2b-server & 72\n\ngit & 71\n\nmcp-server-code-runner & 70\n\nosm-mcp-server & 68\n\nopen-library & 68\n\narxiv & 68\n\ntwelvedata & 67\n\ngithub & 67\n\nmet-museum & 66\n\ncalculator & 65\n\ndesktop-commander & 58\n\ngoogle-maps & 56\n\nclinicaltrialsgov-mcp-server & 51\n\nwhois & 49\n\nfetch & 49\n\nslack & 48\n\ngoogle-workspace & 40\n\nmemory & 36\n\npubmed & 30\n\nweather & 26\n\ncontext7 & 4\n\nnext-best",
+    "char_start": 63686,
+    "char_end": 64340,
+    "sentence_index": 570,
+    "section_sentence_index": 4
+  }
+]

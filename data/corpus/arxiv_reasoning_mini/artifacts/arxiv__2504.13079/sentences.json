@@ -1,0 +1,3557 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Large language model (LLM) agents are increasingly employing retrieval-augmented generation (RAG) to improve the factuality of their responses.",
+    "char_start": 0,
+    "char_end": 143,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, in practice, these systems often need to handle ambiguous user queries and potentially conflicting information from multiple sources while also suppressing inaccurate information from noisy or irrelevant documents.",
+    "char_start": 144,
+    "char_end": 367,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Prior work has generally studied and addressed these challenges in isolation, considering only one aspect at a time, such as handling ambiguity or robustness to noise and misinformation.",
+    "char_start": 368,
+    "char_end": 554,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "We instead consider multiple factors simultaneously, proposing (i) ( ), a new dataset that simulates complex and realistic scenarios for conflicting evidence for a user query, including ambiguity, misinformation, and noise; and\n(ii) , a multi-agent approach in which LLM agents debate over the merits of an answer over multiple rounds, allowing an aggregator to collate responses corresponding to disambiguated entities while discarding misinformation and noise, thereby handling diverse sources of conflict jointly.",
+    "char_start": 555,
+    "char_end": 1071,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We demonstrate the effectiveness of using both closed and open-source models on AmbigDocs -- which requires presenting all valid answers for ambiguous queries -- improving over strong RAG baselines by up to 11.40\\%, and on FaithEval -- which requires suppressing misinformation -- where we improve by up to 15.80\\% (absolute) with Llama3.3-70B-Instruct.",
+    "char_start": 1072,
+    "char_end": 1425,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "Furthermore, we find that our proposed dataset poses a challenge for existing RAG baselines (the most performant Llama3.3-70B-Instruct only yields up to a 32.60 exact match score),\nas it requires handling conflicting information due to ambiguity, noise, and misinformation simultaneously .",
+    "char_start": 1426,
+    "char_end": 1715,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "While begins to address these conflicting factors, our analysis indicates that a substantial gap remains, especially when increasing the level of imbalance in supporting evidence and misinformation.",
+    "char_start": 1716,
+    "char_end": 1914,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec001",
+    "text": "Our data and code is publicly available at: .",
+    "char_start": 1915,
+    "char_end": 1960,
+    "sentence_index": 7,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "Retrieval-augmented generation (RAG) enables large language models (LLMs) to generate more accurate and reliable responses by incorporating retrieved external information NEURIPS2020_6b493230, pmlr-v119-guu20a, wang-etal-2021-retrieval-enhanced , mitigating issues such as hallucination zhang2023sirenssongaiocean and outdated parametric knowledge kasai2023realtime .",
+    "char_start": 1962,
+    "char_end": 2329,
+    "sentence_index": 8,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "Indeed, recent LLM interfaces and AI-powered search engines, such as ChatGPT ChatGPTSearch , Claude ClaudeSearch , Google Search with AI Overviews GoogleSearchAIOverview , and Microsoft Bing Chat MicrosoftBingChat , have integrated retrieval capabilities that enable them to access vast amounts of information from the internet, allowing them to summarize search results and provide more accurate and up-to-date answers.",
+    "char_start": 2330,
+    "char_end": 2750,
+    "sentence_index": 9,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "This kind of RAG also features prominently in ``deep research'' techniques that frame search as an agent-driven process in which a research agent collects and summarizes online sources GoogleDeepResearch, OpenAIDeepResearch .",
+    "char_start": 2751,
+    "char_end": 2976,
+    "sentence_index": 10,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "However, a core challenge faced by all of these approaches is that information retrieved from the internet can be conflicting, noisy, and unreliable --\nretrieved documents might contain misinformation, unverified claims, and AI-generated content that may be inaccurate or misleading pan-etal-2023-risk, augenstein2023factualitychallengeseralarge .",
+    "char_start": 2977,
+    "char_end": 3324,
+    "sentence_index": 11,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Moreover, queries themselves may be ambiguous and underspecified , leading to the retrieval of conflicting yet factually accurate information from different sources wan-etal-2024-evidence, lee2024ambigdocs .",
+    "char_start": 3325,
+    "char_end": 3532,
+    "sentence_index": 12,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "figures/fig1.pdf\n-1em\nAn example from our dataset (left) illustrating multiple sources of conflict in retrieved documents.",
+    "char_start": 3534,
+    "char_end": 3656,
+    "sentence_index": 13,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Conflict may occur because of ambiguity in the query (in this case, different referents for Michael Jordan), but also because of misinformation from incorrect documents and noise from irrelevant ones.",
+    "char_start": 3657,
+    "char_end": 3857,
+    "sentence_index": 14,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "(right) addresses this through multi-agent debate, where each agent summarizes and represents the information in one document.",
+    "char_start": 3858,
+    "char_end": 3984,
+    "sentence_index": 15,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Agents discuss their responses across multiple rounds, with the final answers being combined via an aggregator module that summarizes the discussion.",
+    "char_start": 3985,
+    "char_end": 4134,
+    "sentence_index": 16,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "-1em\n\nIn practice, different kinds of conflict will occur within the same system, each with a different expected behavior.",
+    "char_start": 4136,
+    "char_end": 4258,
+    "sentence_index": 17,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "For instance, conflict due to an ambiguous query ought to be treated differently from conflict due to noisy or incorrect documents.",
+    "char_start": 4259,
+    "char_end": 4390,
+    "sentence_index": 18,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "As illustrated in fig:fig1 , a model should present multiple valid answers for an ambiguous query (i.e., conflict in documents 1 and 2), but should filter out misinformation and noise (i.e., the conflict introduced by documents 3 and 4).",
+    "char_start": 4391,
+    "char_end": 4628,
+    "sentence_index": 19,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "Existing datasets generally capture only one aspect of conflict in retrieved documents:\ne.g., AmbigDocs lee2024ambigdocs focuses on ambiguous queries, while FaithEval ming2024faitheval assesses an LLM's ability to handle conflict due to misinformation or noise.",
+    "char_start": 4629,
+    "char_end": 4890,
+    "sentence_index": 20,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Similarly, approaches to improve robustness of RAG systems focus primarily on improving the retrieved content by filtering out incorrect, irrelevant or even malicious information, e.g., due to conflicts with parametric knowledge wang2024astuteragovercomingimperfect, jin-etal-2024-tug or poisoning attacks weller-etal-2024-defending, zhou2025trustragenhancingrobustnesstrustworthiness .",
+    "char_start": 4891,
+    "char_end": 5277,
+    "sentence_index": 21,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "However, approaches designed to choose only one correct answer may\nfail to generalize to settings like ambiguity, where conflict is expected and multiple valid answers exist, e.g., when there is legitimate uncertainty in the retrieved documents or ambiguity in the query lee2024ambigdocs, wan-etal-2024-evidence .",
+    "char_start": 5278,
+    "char_end": 5591,
+    "sentence_index": 22,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Therefore, as illustrated in fig:fig1 , RAG systems need to balance the tradeoff between presenting conflicting information (to disambiguate a user query with multiple valid answers) while also selectively filtering out misinformation and noise.",
+    "char_start": 5592,
+    "char_end": 5837,
+    "sentence_index": 23,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "To address this tradeoff, we introduce ( ), a unified multi-agent approach designed to handle multiple diverse cases of information conflict, with different expected behaviors depending on the source of conflict.",
+    "char_start": 5839,
+    "char_end": 6051,
+    "sentence_index": 24,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "In case of ambiguous queries, can opt to show multiple responses while also removing misinformation or noise.",
+    "char_start": 6052,
+    "char_end": 6161,
+    "sentence_index": 25,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "While prior work processes and filters retrieved documents collectively wang2024astuteragovercomingimperfect, weller-etal-2024-defending , our approach assigns each document to an independent agent (instantiated from the same LLM), which generates an intermediate response based solely on its input document.",
+    "char_start": 6162,
+    "char_end": 6470,
+    "sentence_index": 26,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Next, these multiple agents debate over the merits and evidence backing their intermediate responses, iteratively updating their answers across a dialogue.",
+    "char_start": 6471,
+    "char_end": 6626,
+    "sentence_index": 27,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "For instance, in fig:fig1 (right), the multi-agent interaction reveals that documents 1 and 2 refer to two different people, i.e., a basketball player and a professor, thus rightfully corresponding to two different answers, one for each disambiguated entity.",
+    "char_start": 6627,
+    "char_end": 6885,
+    "sentence_index": 28,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "At the same time, the debate can uncover that documents 3 and 4 also refer to the same basketball player and are unreliable when compared to document 1.",
+    "char_start": 6886,
+    "char_end": 7038,
+    "sentence_index": 29,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "Finally, the discussion is summarized by an aggregator module that synthesizes a coherent final response from the agent discussions (cf.",
+    "char_start": 7039,
+    "char_end": 7175,
+    "sentence_index": 30,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "fig:fig1 ).",
+    "char_start": 7176,
+    "char_end": 7187,
+    "sentence_index": 31,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "In addition to evaluating against strong RAG baselines on existing datasets like FaithEval ming2024faitheval and AmbigDocs lee2024ambigdocs that measure one source of conflict (i.e., due to misinformation or due to ambiguity, etc.), we introduce , a unified dataset that combines multiple sources of conflict corresponding to a single query, covering ambiguity, noise from unrelated documents, and misinformation.",
+    "char_start": 7189,
+    "char_end": 7602,
+    "sentence_index": 32,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Built on top of AmbigDocs, retains disambiguated queries and answers, and augments them with misinformation documents (created by replacing correct entities with plausible but incorrect ones) and noisy documents (retrieved passages that are topically irrelevant to the query) which is likely to occur in real-world retrieval settings.",
+    "char_start": 7603,
+    "char_end": 7937,
+    "sentence_index": 33,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "Unlike prior datasets lee2024ambigdocs, wan-etal-2024-evidence that assume a uniform distribution of supporting documents, we also introduce cases where different answers have uneven document support, testing how model outputs change across varying ratios of representation for each perspective.",
+    "char_start": 7938,
+    "char_end": 8233,
+    "sentence_index": 34,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "Empirically, across three LLMs: Llama3.3-70B-Inst llama3_3 , Qwen2.5-72B-Inst qwen2025qwen25technicalreport and GPT-4o-mini hurst2024gpt , we show that outperforms Astute-RAG wang2024astuteragovercomingimperfect , which iteratively clusters and combines retrieved documents while filtering misinformation, by 11.40\\% (absolute accuracy) on AmbigDocs (measuring the model's ability to handle ambiguous queries) with Llama3.3-70B-Inst and by 13.10\\% on FaithEval (measuring robustness to misinformation) when using Qwen2.5-72B-Inst.",
+    "char_start": 8235,
+    "char_end": 8765,
+    "sentence_index": 35,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "Furthermore, when compared to relying solely on the LLM's parametric knowledge and the standard RAG pipeline which concatenates all retrieved documents into the model's context,\nwe demonstrate that beats the parametric knowledge baseline by 7.50\\% on FaithEval, and the concatenated prompt baseline by 11.50\\% on AmbigDocs with GPT-4o-mini.",
+    "char_start": 8766,
+    "char_end": 9106,
+    "sentence_index": 36,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec002",
+    "text": "Additionally, our ablations with Llama3.3-70B-Inst verify the salience of 's aggregator and multi-round discussion, with accuracy improvements of 19\\% and 5.30\\% on FaithEval.",
+    "char_start": 9107,
+    "char_end": 9282,
+    "sentence_index": 37,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec002",
+    "text": "Lastly, we demonstrate the utility of , which tests on ambiguity, noise, and misinformation together, finding that all baselines degrade in performance as we increase the imbalance in supporting documents per answer.",
+    "char_start": 9283,
+    "char_end": 9499,
+    "sentence_index": 38,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec002",
+    "text": "While helps mitigate these drops in performance, there remains large room for improvement on which we introduce as a challenge for future work.",
+    "char_start": 9500,
+    "char_end": 9643,
+    "sentence_index": 39,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec002",
+    "text": "-0.5em\n\n-0.5em\nRetrieval-Augmented Generation.",
+    "char_start": 9645,
+    "char_end": 9691,
+    "sentence_index": 40,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "Retrieval-augmented generation (RAG) has emerged as a crucial technique for enhancing language models via integrating external knowledge retrieval instead of solely relying on parametric knowledge NEURIPS2020_6b493230,karpukhin-etal-2020-dense, cheng-etal-2021-unitedqa .",
+    "char_start": 9692,
+    "char_end": 9963,
+    "sentence_index": 41,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "Variants such as REALM pmlr-v119-guu20a , Fusion-in-Decoder (FiD) izacard-grave-2021-leveraging , and RETRO pmlr-v162-borgeaud22a have further optimized retrieval methods and document encoding strategies to enhance efficiency and scalability.",
+    "char_start": 9964,
+    "char_end": 10206,
+    "sentence_index": 42,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "However, these do not fully address the critical challenge of handling conflicting information across multiple retrieved documents.",
+    "char_start": 10207,
+    "char_end": 10338,
+    "sentence_index": 43,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "Prior work, such as chen-etal-2022-rich, zou2024poisonedrag , has shown that RAG systems often propagate misinformation if retrieved documents contain errors, or arbitrarily choose an answer or use parametric knowledge to break ties when documents provide conflicting claims.",
+    "char_start": 10339,
+    "char_end": 10614,
+    "sentence_index": 44,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "Unlike existing solutions like Self-RAG asai2024selfrag that use LLM-generated critiques, Astute RAG wang2024astuteragovercomingimperfect that uses the LLM's parametric knowledge and clustering to combine retrieved documents and filter outliers or misinformation, and Speculative RAG wang2025speculative , which uses a small specialist LM to draft multiple answers in parallel from distinct subset documents, and a larger generalist LM to verify and select the best one, employs multi-agent debate over several rounds, wherein each agent gets the opportunity to revise its response as well as influence other agents in each round.",
+    "char_start": 10615,
+    "char_end": 11245,
+    "sentence_index": 45,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Moreover, in contrast to chang2024mainrag , who use a multi-agent framework solely for scoring and filtering out noisy documents, our multi-agent approach also handles other scenarios with conflicting evidence by suppressing misinformation and presenting multiple valid answers for ambiguous queries.",
+    "char_start": 11246,
+    "char_end": 11546,
+    "sentence_index": 46,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec003",
+    "text": "-1em\nRAG Evaluation Benchmarks.",
+    "char_start": 11547,
+    "char_end": 11578,
+    "sentence_index": 47,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec003",
+    "text": "Several benchmarks have been proposed to evaluate RAG systems under various conditions.",
+    "char_start": 11579,
+    "char_end": 11666,
+    "sentence_index": 48,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec003",
+    "text": "AmbigNQ min-etal-2020-ambigqa and AmbigDocs lee2024ambigdocs assess the ability to handle questions with multiple valid answers, with the latter extending information about ambiguous entities across multiple documents, leading us to test on AmbigDocs.",
+    "char_start": 11667,
+    "char_end": 11918,
+    "sentence_index": 49,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec003",
+    "text": "However, these datasets do not consider noise or misinformation.",
+    "char_start": 11919,
+    "char_end": 11983,
+    "sentence_index": 50,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec003",
+    "text": "On the other hand, the RGB dataset Chen_Lin_Han_Sun_2024 introduces retrieval noise, testing how well models respond to partially relevant content in the retrieved documents.",
+    "char_start": 11984,
+    "char_end": 12158,
+    "sentence_index": 51,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec003",
+    "text": "HAGRID kamalloo2023hagrid focuses on attribution in generative QA, while CRAG NEURIPS2024_1435d2d0 presents a comprehensive benchmark covering diverse question types across five domains, varying in entity popularity and temporal sensitivity.",
+    "char_start": 12159,
+    "char_end": 12400,
+    "sentence_index": 52,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec003",
+    "text": "The DRUID dataset hagstrom-etal-2025-reality contains internet-retrieved evidence annotated for stance and relevance, including both misinformation and insufficient or irrelevant evidence.",
+    "char_start": 12401,
+    "char_end": 12589,
+    "sentence_index": 53,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec003",
+    "text": "Note that each of these datasets assumes that a given question has a single correct answer and thus they do not address scenarios with multiple conflicting yet valid answers, which our work explicitly targets.",
+    "char_start": 12590,
+    "char_end": 12799,
+    "sentence_index": 54,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec003",
+    "text": "We unify these separate lines of work by introducing that includes multiple valid answers for each query (due to ambiguity) as well as uneven numbers of supporting documents and conflicting evidence from misinformed and noisy documents.",
+    "char_start": 12800,
+    "char_end": 13036,
+    "sentence_index": 55,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec003",
+    "text": "-1em\nKnowledge Conflict in LLMs.",
+    "char_start": 13038,
+    "char_end": 13070,
+    "sentence_index": 56,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec003",
+    "text": "Recent studies have highlighted the challenge of knowledge conflict in LLMs, where inconsistent or conflicting information may arise from either internal parametric memory or retrieved external context.",
+    "char_start": 13071,
+    "char_end": 13273,
+    "sentence_index": 57,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec003",
+    "text": "A comprehensive survey by xu-etal-2024-knowledge-conflicts categorizes knowledge conflicts into intra-context, inter-context, and parametric conflicts, and outlines the limitations of current methods in resolving them.",
+    "char_start": 13274,
+    "char_end": 13492,
+    "sentence_index": 58,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec003",
+    "text": "While prior work has made strides in addressing parametric and single-document conflicts gao-etal-2023-rarr, wang2024adacad, huang2025to , recent studies highlight the difficulty of resolving disagreements across multiple contexts or retrieved documents chen-etal-2022-rich, su2024textttconflictbank .",
+    "char_start": 13493,
+    "char_end": 13794,
+    "sentence_index": 59,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec003",
+    "text": "Such inter-context conflict can stem from misinformation pan-etal-2023-attacking, zhou2023synthetic or outdated knowledge kasai2023realtime , and has been shown to impair factual accuracy jin-etal-2024-tug .",
+    "char_start": 13795,
+    "char_end": 14002,
+    "sentence_index": 60,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec003",
+    "text": "Our approach addresses this gap by modeling each document by a separate LLM agent, using multi-agent debate to identify potential ambiguity and aggregating multiple valid answers while also suppressing and resolving conflicting evidence stemming from misinformation and noisy retrieval.",
+    "char_start": 14003,
+    "char_end": 14289,
+    "sentence_index": 61,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec003",
+    "text": "-0.5em\n\n: R etrieval with A mbiguity \\& M isinformation in Doc ument s\n-0.5em\n\nMeasuring the performance of RAG systems in real-world settings requires assessing each system's ability to cope with inter-context conflict\u2014disagreements among retrieved documents\u2014which may arise due to ambiguity, misinformation, or noise.",
+    "char_start": 14291,
+    "char_end": 14610,
+    "sentence_index": 62,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec004",
+    "text": "These conflict sources differ in nature: ambiguity involves different but valid answers from underspecified queries lee2024ambigdocs , misinformation refers to factually incorrect content ming2024faitheval , and noise includes irrelevant or weakly related documents.",
+    "char_start": 14612,
+    "char_end": 14878,
+    "sentence_index": 63,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec004",
+    "text": "Moreover, different kinds of conflict demand different solutions: ambiguity should not be treated the same way as misinformation or noise; these solutions may at times conflict with each other.",
+    "char_start": 14879,
+    "char_end": 15072,
+    "sentence_index": 64,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec004",
+    "text": "While existing datasets address these factors separately, in practice they will appear together and may interact in unexpected ways.",
+    "char_start": 15073,
+    "char_end": 15205,
+    "sentence_index": 65,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec004",
+    "text": "This makes measuring multiple kinds of conflict in a single dataset crucial, and motivates the need for such a representative set of retrieved documents.",
+    "char_start": 15206,
+    "char_end": 15359,
+    "sentence_index": 66,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec004",
+    "text": "-1em\nAmbiguous Queries.",
+    "char_start": 15361,
+    "char_end": 15384,
+    "sentence_index": 67,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec004",
+    "text": "To rigorously evaluate the robustness of current RAG systems, we present , a dataset designed to simulate real-world retrieval challenges, including conflicting information, noise, and misinformation.",
+    "char_start": 15385,
+    "char_end": 15585,
+    "sentence_index": 68,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec004",
+    "text": "Building upon AmbigDocs lee2024ambigdocs that focuses on evaluating ambiguity by presenting multiple valid answers per query, we extend it by introducing additional real-world retrieval complexities.",
+    "char_start": 15586,
+    "char_end": 15785,
+    "sentence_index": 69,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec004",
+    "text": "Specifically, we randomly sample between 1 to 3 correct answers for each ambiguous query from the dataset, resulting in 500 queries.",
+    "char_start": 15786,
+    "char_end": 15918,
+    "sentence_index": 70,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec004",
+    "text": "This setup ensures that models must not only recognize ambiguity but also operate under realistic constraints where only partial information may be retrieved.",
+    "char_start": 15919,
+    "char_end": 16077,
+    "sentence_index": 71,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec004",
+    "text": "-1em\nDistribution of Supporting Documents.",
+    "char_start": 16079,
+    "char_end": 16121,
+    "sentence_index": 72,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec004",
+    "text": "Second, we vary the number of documents supporting each valid answer for a query, recognizing that real-world scenario where multiple answers are often backed by different numbers of sources.",
+    "char_start": 16122,
+    "char_end": 16313,
+    "sentence_index": 73,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec004",
+    "text": "Using the Brave Search API , we retrieve multiple supporting documents per disambiguated query and split them into text chunks (up to 100 words each), selecting only those containing the correct answer as the supporting evidence.",
+    "char_start": 16314,
+    "char_end": 16543,
+    "sentence_index": 74,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec004",
+    "text": "However, unlike traditional datasets where the number of supporting documents per answer is fixed lee2024ambigdocs, wan-etal-2024-evidence , we also randomly vary the number of documents supporting each valid answer.",
+    "char_start": 16544,
+    "char_end": 16760,
+    "sentence_index": 75,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec004",
+    "text": "Therefore, each query in is associated with 1-3 disambiguated answers, and each answer is supported by 1-3 documents, resulting in an average of 2.20 valid answers and 3.84 supporting documents containing a valid answer per query.",
+    "char_start": 16761,
+    "char_end": 16991,
+    "sentence_index": 76,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec004",
+    "text": "This design introduces realistic retrieval imbalances, where some valid answers are well-documented while others (despite being valid) may appear in only a few sources, forcing the model to identify ambiguity without being spuriously biased towards the most frequent answer.",
+    "char_start": 16992,
+    "char_end": 17266,
+    "sentence_index": 77,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec004",
+    "text": "-1em\nMisinformation and Noisy Documents.",
+    "char_start": 17268,
+    "char_end": 17308,
+    "sentence_index": 78,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec004",
+    "text": "Finally, for each query, we include documents containing misinformation and noise to evaluate an RAG system's resilience against unreliable content.",
+    "char_start": 17309,
+    "char_end": 17457,
+    "sentence_index": 79,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec004",
+    "text": "To incorporate misinformation, we include an additional retrieved document and replace the correct answer with a misleading or incorrect entity, ensuring the misinformation blends naturally into the document context.",
+    "char_start": 17458,
+    "char_end": 17674,
+    "sentence_index": 80,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec004",
+    "text": "This is similar to the approach in longpre-etal-2021-entity , who replace the original answer in the context with a similar type of answer, but here, we adapt the procedure to modify the retrieved documents.",
+    "char_start": 17675,
+    "char_end": 17882,
+    "sentence_index": 81,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec004",
+    "text": "We randomly determine the number of misinformation documents added to each query from 0-2, reflecting the unpredictable nature of misinformation in real-world retrieval.",
+    "char_start": 17883,
+    "char_end": 18052,
+    "sentence_index": 82,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec004",
+    "text": "Additionally, we introduce noisy documents for each query (sampled from [0, 2]), which are either irrelevant to the query or contain low-quality content, to assess the system\u2019s ability to filter out noise.",
+    "char_start": 18053,
+    "char_end": 18258,
+    "sentence_index": 83,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec004",
+    "text": "Overall, by introducing randomness in the number of correct answers, the number of supporting documents per answer, and adding misinformation and noisy documents for each query in , we design a challenging setting simulating the variability and unpredictability of real-world retrieval scenarios.",
+    "char_start": 18260,
+    "char_end": 18556,
+    "sentence_index": 84,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec004",
+    "text": "The resulting dataset comprises 500 queries, with an average of 2.20 valid answers per query.",
+    "char_start": 18557,
+    "char_end": 18650,
+    "sentence_index": 85,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec004",
+    "text": "For each query, comprises an average of 5.53 documents in the retrieved pool, out of which an average of 3.84 documents support a valid answer and the remaining 1.70 documents correspond to misinformation and noise.",
+    "char_start": 18651,
+    "char_end": 18866,
+    "sentence_index": 86,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec004",
+    "text": "Empirically, we demonstrate that LLMs struggle in this challenging setting in sec:results and expand on how performance degrades with each of these factors in sec:analysis .",
+    "char_start": 18867,
+    "char_end": 19040,
+    "sentence_index": 87,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec004",
+    "text": "We refer readers to app:stats for detailed dataset statistics and distribution plots.",
+    "char_start": 19041,
+    "char_end": 19126,
+    "sentence_index": 88,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec004",
+    "text": "figures/fig2.pdf\n-1em\noperates by assigning each document to a separate agent.",
+    "char_start": 19128,
+    "char_end": 19206,
+    "sentence_index": 89,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec004",
+    "text": "Agents are responsible for summarizing and representing their documents, and engage in a multi-agent, multi-round debate with each other to filter out misinformation and noise and address ambiguity.",
+    "char_start": 19207,
+    "char_end": 19405,
+    "sentence_index": 90,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec004",
+    "text": "An aggregator then summarizes the discussion into a single response.",
+    "char_start": 19406,
+    "char_end": 19474,
+    "sentence_index": 91,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec004",
+    "text": "-1em\n\n-0.5em\n\n:\n-0.5em\n\nWe propose , a structured, multi-agent framework designed to handle inter-document conflicts, misinformation, and noise in retrieved content (illustrated in fig:fig2 ).",
+    "char_start": 19476,
+    "char_end": 19668,
+    "sentence_index": 92,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec005",
+    "text": "Our overall framework consists of three key components: (i) independent LLM dialogue agents that generate intermediate responses conditioned on a single document, (ii) a centralized aggregator, and (iii) an iterative multi-round debate process.",
+    "char_start": 19669,
+    "char_end": 19913,
+    "sentence_index": 93,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec005",
+    "text": "Let $q$ denote the user query, and let $D = \\ d_1, d_2, , d_n\\ $ be the set of retrieved documents.",
+    "char_start": 19914,
+    "char_end": 20013,
+    "sentence_index": 94,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec005",
+    "text": "-1em\nRole of a Single LLM Agent.",
+    "char_start": 20015,
+    "char_end": 20047,
+    "sentence_index": 95,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec005",
+    "text": "Each document $d_i D$ is assigned to an agent $ L _i$, which processes the query $q$ and it corresponding document $d_i$.",
+    "char_start": 20048,
+    "char_end": 20169,
+    "sentence_index": 96,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec005",
+    "text": "The agent generates an intermediate response $r_i = L _i(q, d_i)$ based on the query and the assigned document independently , i.e., without the influence of other documents.",
+    "char_start": 20170,
+    "char_end": 20344,
+    "sentence_index": 97,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec005",
+    "text": "This design has two key features: (i) each agent has the chance to thoroughly review all the information in a given document, reducing chances of overlooking details in case of very long contexts liu-etal-2024-lost ; and (ii) prevents the agent's response to be unduly impacted by document frequency.",
+    "char_start": 20345,
+    "char_end": 20645,
+    "sentence_index": 98,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec005",
+    "text": "For instance, in fig:fig2 only one document references the professor ``Michael I.",
+    "char_start": 20646,
+    "char_end": 20727,
+    "sentence_index": 99,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec005",
+    "text": "Jordan'' which can be missed if all documents are considered collectively due to long context, frequency and position bias pmlr-v139-zhao21c, liu-etal-2024-lost .",
+    "char_start": 20728,
+    "char_end": 20890,
+    "sentence_index": 100,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec005",
+    "text": "Furthermore, this design ensures that each retrieved document contributes its perspective with minimal interference from other documents -- this separation is critical in settings where sources may present conflicting yet individually valid information.",
+    "char_start": 20891,
+    "char_end": 21144,
+    "sentence_index": 101,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec005",
+    "text": "In a single round, each agent $ L _i$ produces it intermediate response $r_i$, forming a set of intermediate outputs $ R ^ (t) = \\ r_i^ (t) \\ _ i=1 ^n$, where $t$ denotes current debate round.",
+    "char_start": 21145,
+    "char_end": 21337,
+    "sentence_index": 102,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec005",
+    "text": "While the initial round relies solely on the document and query, in later rounds each agent also receives a summary of the prior round's responses (an aggregator-generated summary described below), allowing for informed revisions during multi-round debate.",
+    "char_start": 21338,
+    "char_end": 21594,
+    "sentence_index": 103,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec005",
+    "text": "-1em\nAggregator Module.",
+    "char_start": 21596,
+    "char_end": 21619,
+    "sentence_index": 104,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec005",
+    "text": "The aggregator $ A $ receives the outputs from all agents in round $t$, and generates a summarized answer with explanation $(y^ (t) , e^ (t) ) = A ( R ^ (t) )$.",
+    "char_start": 21620,
+    "char_end": 21780,
+    "sentence_index": 105,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec005",
+    "text": "To mitigate position bias, we shuffle agent responses before passing them to the aggregator.",
+    "char_start": 21781,
+    "char_end": 21873,
+    "sentence_index": 106,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec005",
+    "text": "The aggregator considers different agents' responses, resolves inconsistencies, and synthesizes reliable answers based on available evidence, taking a global view over the entire conversation which allows it to take into account the source of a conflict and whether it is valid.",
+    "char_start": 21874,
+    "char_end": 22152,
+    "sentence_index": 107,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec005",
+    "text": "In cases of ambiguous queries such as the example in Figure , where two answers refer to different individuals named ``Michael Jordan''\u2014the aggregator recognizes that both 1963 and 1956 are plausible birth years corresponding to distinct entities (the basketball player and the professor).",
+    "char_start": 22153,
+    "char_end": 22442,
+    "sentence_index": 108,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec005",
+    "text": "In contrast, it flags 1998 (from the misinformation document) as factually inconsistent and irrelevant.",
+    "char_start": 22443,
+    "char_end": 22546,
+    "sentence_index": 109,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec005",
+    "text": "-1em\nMulti-round Debate.",
+    "char_start": 22548,
+    "char_end": 22572,
+    "sentence_index": 110,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec005",
+    "text": "To effectively handle conflicting retrieved evidence, we conduct multi-round debate among the agents; in each round $t$, agents are given the aggregated answer and explanation generated by the aggregator from the previous round, and they are prompted to reflect and optionally revise their own answers: $r_i^ (t) = L _i(q, d_i, y^ (t-1) , e^ (t-1) )$.",
+    "char_start": 22573,
+    "char_end": 22924,
+    "sentence_index": 111,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec005",
+    "text": "This iterative process allows agents to defend, challenge, or revise their claims, promoting convergence toward a consistent, evidence-supported output.",
+    "char_start": 22925,
+    "char_end": 23077,
+    "sentence_index": 112,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec005",
+    "text": "As illustrated in fig:fig2 , some agents initially propose different birth years for \u201cMichael Jordan\u201d based on distinct individuals (1963 for the basketball player, 1956 for the professor).",
+    "char_start": 23078,
+    "char_end": 23267,
+    "sentence_index": 113,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec005",
+    "text": "In subsequent rounds, agents 1 and 2 recognize that both answers are valid due to ambiguity, and thus retain their positions without being forced to collapse toward a single answer.",
+    "char_start": 23268,
+    "char_end": 23449,
+    "sentence_index": 114,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec005",
+    "text": "In contrast, agent 3, supporting the fabricated year 1998 -- stemming from misinformation in document 3 -- fails to justify its position when challenged, and the incorrect answer is disregarded.",
+    "char_start": 23450,
+    "char_end": 23644,
+    "sentence_index": 115,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec005",
+    "text": "This back-and-forth encourages selectivity in the presence of factual inconsistency, while preserving diversity in the case of legitimate ambiguity.",
+    "char_start": 23645,
+    "char_end": 23793,
+    "sentence_index": 116,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec005",
+    "text": "The debate converges as unsupported claims are filtered out and well-justified answers remain.",
+    "char_start": 23794,
+    "char_end": 23888,
+    "sentence_index": 117,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec005",
+    "text": "-1em\nEnd of Debate and Final Answer.",
+    "char_start": 23890,
+    "char_end": 23926,
+    "sentence_index": 118,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec005",
+    "text": "The debate proceeds for a fixed maximum number of rounds $T$.",
+    "char_start": 23927,
+    "char_end": 23988,
+    "sentence_index": 119,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec005",
+    "text": "To improve efficiency and avoid unnecessary computation, we incorporate an early stopping criterion.",
+    "char_start": 23989,
+    "char_end": 24089,
+    "sentence_index": 120,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec005",
+    "text": "Specifically, if all agents retain their answers from the previous round, that is, $ i,\\ r_i^ (t) = r_i^ (t-1) $, we consider the debate to have converged at round $t_ end [1, T]$ and the final answer is determined $y = A ( R ^ (t_ end ) )$.",
+    "char_start": 24090,
+    "char_end": 24331,
+    "sentence_index": 121,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec005",
+    "text": "This iterative process ensures that misleading or unsupported claims are scrutinized, enhancing the overall robustness of the final response.",
+    "char_start": 24332,
+    "char_end": 24473,
+    "sentence_index": 122,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec005",
+    "text": "By structuring information synthesis in this manner, improves reliability, mitigates the influence of misinformation, and enhances decision-making in conflicting retrieval scenarios, making it a more effective solution for real-world applications of RAG systems.",
+    "char_start": 24474,
+    "char_end": 24736,
+    "sentence_index": 123,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec005",
+    "text": "-0.5em\n\n-0.5em\n\n-0.25em\n\nDatasets.",
+    "char_start": 24738,
+    "char_end": 24772,
+    "sentence_index": 124,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec007",
+    "text": "We evaluate on three datasets: FaithEval's inconsistent subset ming2024faitheval , AmbigDocs lee2024ambigdocs , and our proposed .",
+    "char_start": 24773,
+    "char_end": 24903,
+    "sentence_index": 125,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec007",
+    "text": "FaithEval tests whether LLM-generated responses remain faithful to retrieved evidence, particularly in the presence of subtle factual perturbations (i.e., misinformation) over 1000 instances.",
+    "char_start": 24904,
+    "char_end": 25095,
+    "sentence_index": 126,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec007",
+    "text": "AmbigDocs focuses on evaluating ambiguity in multi-document settings by pairing each question with multiple documents that may support different valid answers.",
+    "char_start": 25096,
+    "char_end": 25255,
+    "sentence_index": 127,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec007",
+    "text": "For AmbigDocs, we sample 1000 instances from its test set.",
+    "char_start": 25256,
+    "char_end": 25314,
+    "sentence_index": 128,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec007",
+    "text": "Our is constructed to simulate real-world retrieval conditions, including multiple valid answers with varied document support, inter-document conflicts, misinformation, and noise over 500 unique queries, obtained from AmbigDocs.",
+    "char_start": 25315,
+    "char_end": 25543,
+    "sentence_index": 129,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec007",
+    "text": "These datasets together enable a comprehensive assessment of model robustness under ambiguous, conflicting, and potentially misleading retrieval conditions.",
+    "char_start": 25544,
+    "char_end": 25700,
+    "sentence_index": 130,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec007",
+    "text": "-1em\nMetrics.",
+    "char_start": 25702,
+    "char_end": 25715,
+    "sentence_index": 131,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec007",
+    "text": "We evaluate the outputs using exact match under a strict criterion: an output is considered correct if and only if it includes all gold answers and no incorrect or misleading answers supported only by misinformation documents.",
+    "char_start": 25716,
+    "char_end": 25942,
+    "sentence_index": 132,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec007",
+    "text": "This ensures that the model is both comprehensive and factually precise in its generation.",
+    "char_start": 25943,
+    "char_end": 26033,
+    "sentence_index": 133,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec007",
+    "text": "-1em\nModels.",
+    "char_start": 26035,
+    "char_end": 26047,
+    "sentence_index": 134,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec007",
+    "text": "We test on two open-source post-trained language models: Llama3.3-70B-Instruct llama3_3 and Qwen2.5-72B-Instruct qwen2025qwen25technicalreport , as well as GPT-4o-mini hurst2024gpt , representing a closed-source frontier model.",
+    "char_start": 26048,
+    "char_end": 26275,
+    "sentence_index": 135,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec007",
+    "text": "-1em\nBaselines.",
+    "char_start": 26277,
+    "char_end": 26292,
+    "sentence_index": 136,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec007",
+    "text": "For each LLM, we compare with the aforementioned LLMs (for $T=3$ maximum rounds) against the following baselines (refer to prompts in app:prompts ):\n[topsep=0pt,noitemsep,leftmargin=*]\nNo RAG : Prompt the LLM with the question only, without any retrieved documents, to elicit its answer purely on internal parametric knowledge.",
+    "char_start": 26293,
+    "char_end": 26620,
+    "sentence_index": 137,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec007",
+    "text": "Concatenated-prompt : A standard RAG pipeline where all retrieved documents are concatenated and passed as input to the model along with the query.",
+    "char_start": 26621,
+    "char_end": 26768,
+    "sentence_index": 138,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec007",
+    "text": "This is used to test the LLM's ability to jointly reason over the full set of retrieved documents -- identifying ambiguity, detecting misinformation, and resolving conflicts in a single inference -- taking advantage of its long context window.",
+    "char_start": 26769,
+    "char_end": 27012,
+    "sentence_index": 139,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec007",
+    "text": "Single Agent with Self-reflection : A three-step prompting strategy adapted from self-refine, huang2024large : 1) prompt LLM to generate an initial answer; 2) prompt LLM to review its previous answer and produce feedback; 3) prompt LLM to answer the question again with the feedback.",
+    "char_start": 27013,
+    "char_end": 27296,
+    "sentence_index": 140,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec007",
+    "text": "We conduct two rounds of self-reflection.",
+    "char_start": 27297,
+    "char_end": 27338,
+    "sentence_index": 141,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec007",
+    "text": "Self-RAG asai2024selfrag : Self-RAG instruction-tunes an LLM to generate self-reflection tags that guide dynamic retrieval and critique the relevance of retrieved documents before answering.",
+    "char_start": 27339,
+    "char_end": 27529,
+    "sentence_index": 142,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec007",
+    "text": "It processes multiple documents in parallel, producing separate responses for each.",
+    "char_start": 27530,
+    "char_end": 27613,
+    "sentence_index": 143,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec007",
+    "text": "Since our setting allows multiple correct answers, we forward all responses with critique scores to the aggregator to generate the final answer, rather than selecting the highest-scoring one as in the original method.",
+    "char_start": 27614,
+    "char_end": 27831,
+    "sentence_index": 144,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec007",
+    "text": "Speculative RAG wang2025speculative : A framework that uses a smaller, distilled specialist LM to generate drafts in parallel that are then fed to a larger generalist LM to verify and select the best draft.",
+    "char_start": 27832,
+    "char_end": 28038,
+    "sentence_index": 145,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec007",
+    "text": "Each draft is generated from a distinct subset of retrieved documents, offering diverse perspectives on the evidence.",
+    "char_start": 28039,
+    "char_end": 28156,
+    "sentence_index": 146,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec007",
+    "text": "See details in app:specrag .",
+    "char_start": 28157,
+    "char_end": 28185,
+    "sentence_index": 147,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec007",
+    "text": "Astute RAG wang2024astuteragovercomingimperfect : A recent method that aligns retrieved content with the model\u2019s parametric knowledge to resolve inconsistencies.",
+    "char_start": 28186,
+    "char_end": 28347,
+    "sentence_index": 148,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec007",
+    "text": "The framework generates internal parametric knowledge document, clusters retrieved and parametric knowledge documents into consistent or conflicting groups, and then selects the most reliable cluster to generate the final answer.",
+    "char_start": 28348,
+    "char_end": 28577,
+    "sentence_index": 149,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec007",
+    "text": "See details in app:astuterag .",
+    "char_start": 28578,
+    "char_end": 28608,
+    "sentence_index": 150,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec007",
+    "text": "-0.5em\n\n-0.25em\n\noutperforms baselines across tasks.",
+    "char_start": 28610,
+    "char_end": 28662,
+    "sentence_index": 151,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec008",
+    "text": "As shown in Table , consistently outperforms concatenated-prompt and Astute RAG baselines across all three datasets and model backbones.",
+    "char_start": 28663,
+    "char_end": 28799,
+    "sentence_index": 152,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec008",
+    "text": "The gains are particularly notable on AmbigDocs and , where ambiguity and conflicting evidence require structured resolution; for instance, outperforms Astute RAG by 11.40\\% with Llama3.3-70B-Inst and by 12.90\\% with Qwen2.5-72B-Inst.",
+    "char_start": 28800,
+    "char_end": 29034,
+    "sentence_index": 153,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec008",
+    "text": "On FaithEval, a dataset with conflicting evidence but only a single correct answer, yields the highest performance, surpassing concatenated-prompt baseline by 15.80\\%, and 19.20\\% with Llama3.3-70B, and Qwen2.5-72B models, respectively, demonstrating its robustness to subtle misinformation.",
+    "char_start": 29035,
+    "char_end": 29326,
+    "sentence_index": 154,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec008",
+    "text": "Compared to single-agent baseline with self-reflection baseline, achieves gains of 17.40\\% on FaithEval, 3.70\\% on AmbigDocs, and 4.00\\% on RAMDocs with Llama3.3-70B-Inst.",
+    "char_start": 29327,
+    "char_end": 29498,
+    "sentence_index": 155,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec008",
+    "text": "These improvements show some of the shortcomings of single-agent systems: while single-agent approaches like self-reflection self-refine, huang2024large can identify internal inconsistencies, they still process concatenated input and are therefore vulnerable to context length limits, frequency bias, and order effects liu-etal-2024-lost, pmlr-v139-zhao21c .",
+    "char_start": 29499,
+    "char_end": 29857,
+    "sentence_index": 156,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec008",
+    "text": "Notably, in tab:main_results , we find that solely using the parametric knowledge of the LLM (i.e., the No RAG baseline which does not see any of the retrieved documents) is somewhat effective on FaithEval owing to the fact that it does not have access to the misinformation in documents.",
+    "char_start": 29858,
+    "char_end": 30146,
+    "sentence_index": 157,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec008",
+    "text": "However, relying on parametric knowledge alone is not sufficient as we find that LLMs when presented with ambiguous queries have the propensity to only present one valid answer, thereby, leading to poor performance on AmbigDocs and .",
+    "char_start": 30147,
+    "char_end": 30380,
+    "sentence_index": 158,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec008",
+    "text": "On the other hand, we demonstrate that has the ability to ignore misinformation in retrieved documents while effectively utilizing evidence supporting multiple valid answers.",
+    "char_start": 30381,
+    "char_end": 30555,
+    "sentence_index": 159,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec008",
+    "text": "-1em\nis a challenging RAG setting.",
+    "char_start": 30557,
+    "char_end": 30591,
+    "sentence_index": 160,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec008",
+    "text": "Across all models and baselines (including ), tab:main_results shows that our dataset, , is significantly more challenging.",
+    "char_start": 30592,
+    "char_end": 30715,
+    "sentence_index": 161,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec008",
+    "text": "Across the board, systems generally perform worse on than on FaithEval or AmbigDocs; this holds even when systems obtain non-trivial accuracy on both settings, e.g., obtains 57.70 and 52.70 accuracy on FaithEval and AmbigDocs for Qwen2.5-72B-Inst but only 26.40 for .",
+    "char_start": 30716,
+    "char_end": 30983,
+    "sentence_index": 162,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec008",
+    "text": "Baseline methods see similarly low scores on : using Astute RAG with Llama3.3-70B-Inst yields a score of 31.80.",
+    "char_start": 30984,
+    "char_end": 31095,
+    "sentence_index": 163,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec008",
+    "text": "does increase performance on : when using , the performance increases to 34.40.",
+    "char_start": 31096,
+    "char_end": 31175,
+    "sentence_index": 164,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec008",
+    "text": "The same trend is persistent on a frontier LLM (GPT-4o-mini), where the performance peaks at 28.00 with .",
+    "char_start": 31176,
+    "char_end": 31281,
+    "sentence_index": 165,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec008",
+    "text": "Overall, these results indicate that jointly handling ambiguity, misinformation, and noise in retrieved documents remains an ongoing challenge for LLMs -- a situation that is likely to be encountered by information-seeking agents on the Internet.",
+    "char_start": 31282,
+    "char_end": 31528,
+    "sentence_index": 166,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec008",
+    "text": "While the gains from at this challenging setting are encouraging, leaves room for improvement for future work to build upon.",
+    "char_start": 31529,
+    "char_end": 31653,
+    "sentence_index": 167,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec008",
+    "text": "[t]\n\nllccc\n\n1 l Model & Method & FaithEval & AmbigDocs &\n\nSelfRAG-Llama2-13B & Self-RAG & 12.40 & 55.00 & 26.80\n\n6 * Llama3.3-70B-Inst & No RAG & 26.70 & 4.30 & 5.80\n\n& Prompt-based & 27.30 & 54.20 & 32.60\n\n& Single Agent with Self-reflection & 25.70 & 54.50 & 30.40\n\n& Speculative RAG & 41.80 & 44.30 & 30.60\n\n& Astute RAG & 37.10 & 46.80 & 31.80\n\n& & 43.10 & 58.20 & 34.40\n\n4 * Qwen2.5-72B-Inst & No RAG & 26.40 & 1.80 & 4.20\n\n& Prompt-based & 38.50 & 41.20 & 20.60\n\n& Single Agent with Self-reflection & 39.40 & 29.40 & 21.80\n\n& Speculative RAG & 56.20 & 13.40 & 22.20\n\n& Astute RAG & 44.60 & 39.80 & 20.80\n\n& & 57.70 & 52.70 & 26.40\n\n4 * GPT-4o-mini & No RAG & 31.00 & 1.00 & 2.50\n\n& Prompt-based & 21.00 & 51.50 & 25.00\n\n& Single Agent with Self-reflection & 36.00 & 44.50 & 22.50\n\n& Speculative RAG & 36.50 & 22.50 & 23.00\n\n& Astute RAG & 34.00 & 15.00 & 13.00\n\n& & 38.50 & 63.00 & 28.00\n\n-0.5em\noutperforms baselines across datasets on different language models.",
+    "char_start": 31655,
+    "char_end": 32624,
+    "sentence_index": 168,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec008",
+    "text": "-1.5em\n\n-0.5em\n\n-0.5em\n\n-0.25em\n\nSetup.",
+    "char_start": 32626,
+    "char_end": 32665,
+    "sentence_index": 169,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec010",
+    "text": "To isolate the contributions of the aggregator and the multi-round debate mechanism in , we conduct controlled ablations along two axes: (i) enabling or disabling the aggregator, and (ii) varying the number of debate rounds (1, 2, or 3) on FaithEval and RAMDocs datasets.",
+    "char_start": 32666,
+    "char_end": 32937,
+    "sentence_index": 170,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec010",
+    "text": "We evaluate performance using four metrics: (i) accuracy (Acc.) requiring exact match with all correct and no incorrect answers (described in ssec:expt ); (ii) Precision (Prec.), which measures the proportion of predicted answers that are correct; (iii) Recall (Rec.), which measures the proportion of correct answers that are successfully included in the model's response; and (iv) the F1 score that captures the overall coverage of correct and incorrect answers.",
+    "char_start": 32938,
+    "char_end": 33402,
+    "sentence_index": 171,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec010",
+    "text": "For each setting, we use Llama3.3-70B-Instruct as the backbone model.",
+    "char_start": 33403,
+    "char_end": 33472,
+    "sentence_index": 172,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec010",
+    "text": "In the setting without an aggregator, all agent responses are concatenated to produce a naive joint answer, whereas with an aggregator, generates a single response by explicitly comparing and reconciling rationales from each agent.",
+    "char_start": 33473,
+    "char_end": 33704,
+    "sentence_index": 173,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec010",
+    "text": "The number of debate rounds controls the maximum number of times individual agents can potentially revise their answers based on previous history of discussion (cf.",
+    "char_start": 33705,
+    "char_end": 33869,
+    "sentence_index": 174,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec010",
+    "text": "fig:fig2 ).",
+    "char_start": 33870,
+    "char_end": 33881,
+    "sentence_index": 175,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec010",
+    "text": "-1em\nTakeaway.",
+    "char_start": 33883,
+    "char_end": 33897,
+    "sentence_index": 176,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec010",
+    "text": "figures/ablation_figure.pdf\n-0.5em\nAblation study on the importance of aggregator and multiple rounds of discussion.",
+    "char_start": 33899,
+    "char_end": 34015,
+    "sentence_index": 177,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec010",
+    "text": "-1em\n\nAs shown in fig:ablation1 , both increasing the number of debate rounds and enabling the aggregator contribute to substantial gains.",
+    "char_start": 34017,
+    "char_end": 34155,
+    "sentence_index": 178,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec010",
+    "text": "Without the aggregator, performance improves substantially with more rounds (e.g., +21.10 gain in accuracy from round 1 to 3 on FaithEval and +3.62 increase in F1 on ), indicating that iterating allows agents to refine their answers and reduce error.",
+    "char_start": 34156,
+    "char_end": 34406,
+    "sentence_index": 179,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec010",
+    "text": "Adding the aggregator provides a stronger boost, especially in earlier rounds: in round 1, accuracy improves from 30.00 to 37.80 and F1 from 59.79 to 68.63 on , reflecting the aggregator's ability to synthesize evidence and suppress misinformation effectively.",
+    "char_start": 34407,
+    "char_end": 34667,
+    "sentence_index": 180,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec010",
+    "text": "Across rounds, the aggregator yields higher precision (e.g., 67.41 $ $ 68.52 $ $ 68.57 for ), while recall tends to decrease slightly, suggesting a more selective and cautious answering strategy.",
+    "char_start": 34668,
+    "char_end": 34863,
+    "sentence_index": 181,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec010",
+    "text": "Importantly, we argue that precision is more critical in conflict-heavy settings like as false positives (i.e., including misinformation) could be more harmful than false negatives (e.g., missing a correct answer).",
+    "char_start": 34864,
+    "char_end": 35078,
+    "sentence_index": 182,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec010",
+    "text": "In such cases, it may be preferable for a model to be cautious and omit uncertain answers rather than risking introducing incorrect ones.",
+    "char_start": 35079,
+    "char_end": 35216,
+    "sentence_index": 183,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec010",
+    "text": "The aggregator helps enforce this precision-reliability trade-off by aligning agent views early and mitigating the influence of conflicting or noisy sources.",
+    "char_start": 35217,
+    "char_end": 35374,
+    "sentence_index": 184,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec010",
+    "text": "Overall, these results support the aggregator\u2019s role in improving answer faithfulness and trustworthiness, especially under realistic, imperfect retrieval conditions.",
+    "char_start": 35375,
+    "char_end": 35541,
+    "sentence_index": 185,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec010",
+    "text": "-0.5em\n\n-0.5em\n\nSetup.",
+    "char_start": 35543,
+    "char_end": 35565,
+    "sentence_index": 186,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec011",
+    "text": "To analyze how handles imbalance in evidence (i.e., number of supporting documents) across correct answers, we construct a controlled subset of 200 examples from , where two correct answers are supported by differing numbers of supporting documents.",
+    "char_start": 35566,
+    "char_end": 35815,
+    "sentence_index": 187,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec011",
+    "text": "This simulates realistic retrieval imbalance where some valid answers may be underrepresented.",
+    "char_start": 35816,
+    "char_end": 35910,
+    "sentence_index": 188,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec011",
+    "text": "For each query, we fix the number of documents supporting one correct answer to 1, and then vary the number of supporting documents for the other answer from 1 to 3.",
+    "char_start": 35911,
+    "char_end": 36076,
+    "sentence_index": 189,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec011",
+    "text": "To avoid other confounding factors, we ensure all documents are factual and relevant, i.e., no misinformation or noise, and use Llama3.3-70B-Instruct.",
+    "char_start": 36077,
+    "char_end": 36227,
+    "sentence_index": 190,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec011",
+    "text": "-1em\nTakeaway.",
+    "char_start": 36229,
+    "char_end": 36243,
+    "sentence_index": 191,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec011",
+    "text": "From fig:analysis (a), we observe that as the number of supporting documents increases, the performance of the two baselines decreases, falling by up to 8\\% when using concatenated-prompt.",
+    "char_start": 36244,
+    "char_end": 36432,
+    "sentence_index": 192,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec011",
+    "text": "We explain this by noting that as the imbalance in the underlying evidence increases, the baselines have a greater propensity of the baselines to favor the answer with more supporting documents, and suppressing the underrepresented valid answer altogether increases.",
+    "char_start": 36433,
+    "char_end": 36699,
+    "sentence_index": 193,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec011",
+    "text": "This is consistent with stengel-eskin.2023ambiguous 's findings on parsing ambiguous sentences with mixed evidence, which also found that LLMs tend to follow the more attested interpretation.",
+    "char_start": 36700,
+    "char_end": 36891,
+    "sentence_index": 194,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec011",
+    "text": "Furthermore, in fig:analysis , we find that curtails this drop in performance as the level of imbalance increases, with an average variance of 3.33 across rounds.",
+    "char_start": 36892,
+    "char_end": 37054,
+    "sentence_index": 195,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec011",
+    "text": "This in turn demonstrates the ability of a single agent to champion a valid answer in the multi-agent discussion with minimal interference from other agents and the imbalance in the number of documents.",
+    "char_start": 37055,
+    "char_end": 37257,
+    "sentence_index": 196,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec011",
+    "text": "[t]\n\nfigures/analysis.pdf\n-0.5em\nPerformance of different methods with Llama3.3-70B-Instruct under setting (a) imbalance in supporting documents and (b) increasing the level of misinformation.",
+    "char_start": 37259,
+    "char_end": 37451,
+    "sentence_index": 197,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec011",
+    "text": "-1em\n\n-0.5em\n\n-0.5em\n\nSetup.",
+    "char_start": 37453,
+    "char_end": 37481,
+    "sentence_index": 198,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec012",
+    "text": "Next, we evaluate how increasing the level of misinformation impacts performance of various RAG systems.",
+    "char_start": 37482,
+    "char_end": 37586,
+    "sentence_index": 199,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec012",
+    "text": "Using , we curate a set of 200 queries where two correct answers each have one supporting document.",
+    "char_start": 37587,
+    "char_end": 37686,
+    "sentence_index": 200,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec012",
+    "text": "We then incrementally introduce 1 to 3 documents that promote a factually incorrect alternative.",
+    "char_start": 37687,
+    "char_end": 37783,
+    "sentence_index": 201,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec012",
+    "text": "The misinformation documents are created using the entity-swap strategy from FaithEval -- replacing correct entities with plausible but incorrect alternatives while preserving fluency and context.",
+    "char_start": 37784,
+    "char_end": 37980,
+    "sentence_index": 202,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec012",
+    "text": "We test how each method degrades under this pressure, using EM to measure whether the system selects only the correct answers and rejects the misinformation.",
+    "char_start": 37981,
+    "char_end": 38138,
+    "sentence_index": 203,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec012",
+    "text": "This setting is particularly challenging as it simulates real-world retrieval pipelines that include inaccurate or adversarial content.",
+    "char_start": 38139,
+    "char_end": 38274,
+    "sentence_index": 204,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec012",
+    "text": "-1em\nTakeaway.",
+    "char_start": 38276,
+    "char_end": 38290,
+    "sentence_index": 205,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec012",
+    "text": "Results in fig:analysis (b) show that increasing the level of misinformation in retrieved evidence negatively impacts overall performance.",
+    "char_start": 38291,
+    "char_end": 38429,
+    "sentence_index": 206,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec012",
+    "text": "For instance, both concatenated-prompt and Astute RAG baselines suffer a decrease of 46\\%, each.",
+    "char_start": 38430,
+    "char_end": 38526,
+    "sentence_index": 207,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec012",
+    "text": "While also drops in performance, given a fixed degree of misinformation, yields the highest performance.",
+    "char_start": 38527,
+    "char_end": 38631,
+    "sentence_index": 208,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec012",
+    "text": "This robustness stems in part from how evidence is processed: processing all documents jointly may obscure low-frequency but valid evidence, especially when misinformation or noise dominates.",
+    "char_start": 38632,
+    "char_end": 38823,
+    "sentence_index": 209,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec012",
+    "text": "Our multi-agent setup encourages each document to be independently summarized and defended, allowing underrepresented but correct views to be preserved and strengthened through debate.",
+    "char_start": 38824,
+    "char_end": 39008,
+    "sentence_index": 210,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec012",
+    "text": "We note that the performance degradation with more misinformation is to be expected, as higher degree of conflicting evidence can build mistrust around the query, making it harder for the LLM to distinguish factual documents from inaccurate ones.",
+    "char_start": 39009,
+    "char_end": 39255,
+    "sentence_index": 211,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec012",
+    "text": "These findings align with those of xu.rongwu.2024farm , who find that even strong LLMs are susceptible to being persuaded of misinformation.",
+    "char_start": 39256,
+    "char_end": 39396,
+    "sentence_index": 212,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec012",
+    "text": "-0.5em\n\n-0.5em\nBuilding on the observation that real-world RAG agents will have to cope with conflict from a variety of sources, we construct the dataset, which includes conflict between documents stemming from a number of sources and with different expected behaviors.",
+    "char_start": 39398,
+    "char_end": 39667,
+    "sentence_index": 213,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec013",
+    "text": "covers conflict due to query ambiguity, where it expects agents to return multiple correct answers, as well as conflict due to misinformation or noise, where it expects agents to return only correct answers.",
+    "char_start": 39668,
+    "char_end": 39875,
+    "sentence_index": 214,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec013",
+    "text": "Moreover, varies the number of documents supporting each view, reflecting imbalances that may occur in retrieved data.",
+    "char_start": 39876,
+    "char_end": 39994,
+    "sentence_index": 215,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec013",
+    "text": "To tackle this unique challenge, we also introduce , a multi-agent approach for handling conflicting evidence wherein each agent is assigned a separate document and agents debate with each other.",
+    "char_start": 39995,
+    "char_end": 40190,
+    "sentence_index": 216,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec013",
+    "text": "The debate is then synthesized into an answer by an aggregator model, leading to improved performance across both standard RAG datasets as well as .",
+    "char_start": 40191,
+    "char_end": 40339,
+    "sentence_index": 217,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec013",
+    "text": "Our analysis indicates the importance of the aggregator in and finds best handles scenarios of high conflict as we vary the amount of evidence for a given answer and varying amounts of misinformation.",
+    "char_start": 40340,
+    "char_end": 40540,
+    "sentence_index": 218,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec013",
+    "text": "Taken together, these results point to future directions for improving on the challenging task posed by .",
+    "char_start": 40541,
+    "char_end": 40646,
+    "sentence_index": 219,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec014",
+    "text": "We would like to thank the anonymous reviewers for their feedback.",
+    "char_start": 40648,
+    "char_end": 40714,
+    "sentence_index": 220,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec014",
+    "text": "This work was supported by NSF-CAREER Award 1846185, DARPA ECOLE Program No.",
+    "char_start": 40715,
+    "char_end": 40791,
+    "sentence_index": 221,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec014",
+    "text": "HR00112390060, the Microsoft Accelerate Foundation Models Research (AFMR) grant program, and NSF-AI Engage Institute DRL-2112635.",
+    "char_start": 40792,
+    "char_end": 40921,
+    "sentence_index": 222,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec014",
+    "text": "Any opinions, findings, and conclusions or recommendations in this work are those of the author(s) and do not necessarily reflect the views of the sponsors.",
+    "char_start": 40922,
+    "char_end": 41078,
+    "sentence_index": 223,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec014",
+    "text": "colm2025_conference\ncolm2025_conference\n\n: Dataset Statistics\n\nTo better understand the composition of our constructed dataset, we present summary statistics across key dimensions, including the number of correct and incorrect answers per example, the total number of documents retrieved, and the distribution of documents that support correct answers, incorrect answers, or contain irrelevant noise.",
+    "char_start": 41080,
+    "char_end": 41480,
+    "sentence_index": 224,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec015",
+    "text": "These statistics reflect the degree of ambiguity, evidence imbalance, and misinformation within the dataset, providing insight into the challenges it poses for retrieval-augmented generation systems.",
+    "char_start": 41481,
+    "char_end": 41680,
+    "sentence_index": 225,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec015",
+    "text": "[!h]\n\nfigures/dataset_stats_histogram.pdf\nDataset statistics across eight dimensions.",
+    "char_start": 41681,
+    "char_end": 41766,
+    "sentence_index": 226,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec015",
+    "text": "The first row shows document-level properties per example: total number of documents (avg: 5.53), number of documents supporting correct answers (avg: 3.84), incorrect answers (avg: 0.61), and noisy or irrelevant content (avg: 1.08).",
+    "char_start": 41767,
+    "char_end": 42000,
+    "sentence_index": 227,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec015",
+    "text": "The second row presents answer-level properties: number of correct answers per example (avg: 2.20), wrong answers (avg: 0.86), and number of documents supporting each correct answer (avg: 1.77) and each wrong answer (avg: 0.73).",
+    "char_start": 42001,
+    "char_end": 42229,
+    "sentence_index": 228,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec016",
+    "text": "Speculative RAG wang2025speculative first clusters the retrieved documents into $k$ clusters based on their perspectives using an embedding model, InBedder-RoBERTa-large peng-etal-2024-answer .",
+    "char_start": 42231,
+    "char_end": 42424,
+    "sentence_index": 229,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec016",
+    "text": "From each cluster, it samples one document to form a subset $ _j$, repeating this process until unique subsets are created.",
+    "char_start": 42425,
+    "char_end": 42548,
+    "sentence_index": 230,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec016",
+    "text": "Each subset $ _j$ is fed into a specialist RAG drafter As (at time of publication) wang2025speculative 's drafter model is not publicly available, we use different models listed in tab:main_results instead.",
+    "char_start": 42549,
+    "char_end": 42755,
+    "sentence_index": 231,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec016",
+    "text": "to generate a draft answer $ _j$ and its rationale $ _j$.",
+    "char_start": 42756,
+    "char_end": 42813,
+    "sentence_index": 232,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec016",
+    "text": "Since our setting may have multiple correct answers, we pass all answers and their rationales to the aggregator to generate the final answer.",
+    "char_start": 42814,
+    "char_end": 42955,
+    "sentence_index": 233,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec017",
+    "text": "Astute RAG wang2024astuteragovercomingimperfect aims to address the limitations of imperfect or incomplete retrieval, particularly conflicts between the retrieved context and the LLM's parametric knowledge.",
+    "char_start": 42957,
+    "char_end": 43163,
+    "sentence_index": 234,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec017",
+    "text": "The method proceeds in three stages:\n\nAdaptive Internal Knowledge Generation.",
+    "char_start": 43164,
+    "char_end": 43241,
+    "sentence_index": 235,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec017",
+    "text": "Give a query, the model first generates internal passages (the quantity is determined by the model itself) by prompting itself to recall relevant knowledge without access to any external documents.",
+    "char_start": 43242,
+    "char_end": 43439,
+    "sentence_index": 236,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec017",
+    "text": "This step is especially useful when retrieved documents are sparse, noisy, or misleading.",
+    "char_start": 43440,
+    "char_end": 43529,
+    "sentence_index": 237,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec017",
+    "text": "Iterative Source-aware Knowledge Consolidation.",
+    "char_start": 43531,
+    "char_end": 43578,
+    "sentence_index": 238,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec017",
+    "text": "Astute RAG combines passages from both internal (LLM-generated) and external (retrieved) sources.",
+    "char_start": 43579,
+    "char_end": 43676,
+    "sentence_index": 239,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec017",
+    "text": "Each passage is tagged with its source type (internal or external), which helps the model assess its reliability.",
+    "char_start": 43677,
+    "char_end": 43790,
+    "sentence_index": 240,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec017",
+    "text": "The LLM is prompted to identify consistency across passages, detect conflicts, and filter out irrelevant or unreliable information.",
+    "char_start": 43791,
+    "char_end": 43922,
+    "sentence_index": 241,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec017",
+    "text": "It reorganizes the input into a smaller set of refined, source-attributed passages.",
+    "char_start": 43923,
+    "char_end": 44006,
+    "sentence_index": 242,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec017",
+    "text": "This consolidation step is repeated iteratively to strengthen the context and improve the reliability of the resulting knowledge, especially when dealing with long or conflicting inputs.",
+    "char_start": 44007,
+    "char_end": 44193,
+    "sentence_index": 243,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec017",
+    "text": "Answer Finalization.",
+    "char_start": 44195,
+    "char_end": 44215,
+    "sentence_index": 244,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec017",
+    "text": "Astute RAG prompts the LLM to generate one answer based on each group of passages.",
+    "char_start": 44216,
+    "char_end": 44298,
+    "sentence_index": 245,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec017",
+    "text": "These candidates are then compared, and the LLM selects the most reliable one based on knowledge source, cross-source confirmation, frequency, information thoroughness, and self-assessed confidence.",
+    "char_start": 44299,
+    "char_end": 44497,
+    "sentence_index": 246,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec018",
+    "text": "To improve efficiency, we have incorporated an early stopping criterion in : if all agents retain their answers across consecutive rounds, the debate terminates early.",
+    "char_start": 44499,
+    "char_end": 44666,
+    "sentence_index": 247,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec018",
+    "text": "In practice, we observe convergence within 1-2 rounds for most examples.",
+    "char_start": 44667,
+    "char_end": 44739,
+    "sentence_index": 248,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec018",
+    "text": "To provide a concrete comparison, we calculated the average number of input and output tokens for three representative methods: prompt-based, single agent with self-reflection, and MADAM-RAG.",
+    "char_start": 44740,
+    "char_end": 44931,
+    "sentence_index": 249,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec018",
+    "text": "[h]\n\nlcc\n\nMethod & Avg Input Tokens & Avg Output Tokens\n\nPrompt-based & 822.69 & 126.25\n\nSingle Agent with Self-reflection & 5033.92 & 809.10\n\nMADAM-RAG (Ours) & 3186.45 & 1547.18\n\nAverage input and output token usage of different methods.",
+    "char_start": 44933,
+    "char_end": 45172,
+    "sentence_index": 250,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec018",
+    "text": "As shown in tab:effiency , MADAM-RAG requires 3186 input tokens and 1547 output tokens on average\u2014higher than prompt-based RAG (822/126) but comparable to the Single Agent with Self-reflection baseline when taking both input and output tokens into account.",
+    "char_start": 45174,
+    "char_end": 45430,
+    "sentence_index": 251,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec018",
+    "text": "This demonstrates that while MADAM-RAG introduces some overhead due to its multi-agent setup, it remains computationally tractable and roughly as efficient as strong single-agent iterative alternatives, while outperforming both zero-shot and single-agent approaches.",
+    "char_start": 45431,
+    "char_end": 45697,
+    "sentence_index": 252,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec019",
+    "text": "[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= No RAG ,\nfonttitle= ,\narc=4mm,\n]\nYou are an expert in question answering.",
+    "char_start": 45699,
+    "char_end": 45842,
+    "sentence_index": 253,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec019",
+    "text": "Please respond with the exact answer only.",
+    "char_start": 45844,
+    "char_end": 45886,
+    "sentence_index": 254,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec019",
+    "text": "Do not be verbose or provide extra information.",
+    "char_start": 45887,
+    "char_end": 45934,
+    "sentence_index": 255,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec019",
+    "text": "If there are multiple correct answers, please list them all.",
+    "char_start": 45936,
+    "char_end": 45996,
+    "sentence_index": 256,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\nAnswer:\n\n[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= Concatenated Prompt ,\nfonttitle= ,\narc=4mm,\n]\nYou are an expert in retrieval question answering.",
+    "char_start": 45998,
+    "char_end": 46196,
+    "sentence_index": 257,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec019",
+    "text": "You will be provided a question with multiple documents.",
+    "char_start": 46198,
+    "char_end": 46254,
+    "sentence_index": 258,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec019",
+    "text": "Please answer the question based on the documents.",
+    "char_start": 46255,
+    "char_end": 46305,
+    "sentence_index": 259,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 46307,
+    "char_end": 46436,
+    "sentence_index": 260,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 46437,
+    "char_end": 46491,
+    "sentence_index": 261,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec019",
+    "text": "Please follow the format: ``All Correct Answers: [].",
+    "char_start": 46493,
+    "char_end": 46545,
+    "sentence_index": 262,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec019",
+    "text": "Explanation: \\ \\ ''\n\nThe following are examples:\n\nQuestion: In which year was Michael Jordan born?",
+    "char_start": 46546,
+    "char_end": 46644,
+    "sentence_index": 263,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec019",
+    "text": "Document 1: Michael Jeffrey Jordan (born February 17, 1963), also known by his initials MJ, is an American businessman and former professional basketball player.",
+    "char_start": 46646,
+    "char_end": 46807,
+    "sentence_index": 264,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec019",
+    "text": "He played 15 seasons in the National Basketball Association (NBA) between 1984 and 2003, winning six NBA championships with the Chicago Bulls.",
+    "char_start": 46808,
+    "char_end": 46950,
+    "sentence_index": 265,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec019",
+    "text": "He was integral in popularizing basketball and the NBA around the world in the 1980s and 1990s, becoming a global cultural icon.",
+    "char_start": 46951,
+    "char_end": 47079,
+    "sentence_index": 266,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec019",
+    "text": "Document 2: Michael Irwin Jordan (born February 25, 1956) is an American scientist, professor at the University of California, Berkeley, research scientist at the Inria Paris, and researcher in machine learning, statistics, and artificial intelligence.",
+    "char_start": 47081,
+    "char_end": 47333,
+    "sentence_index": 267,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec019",
+    "text": "Document 3: Michael Jeffrey Jordan was born at Cumberland Hospital in Brooklyn, New York City, on February 17, 1998, to bank employee Deloris (n\u00e9e Peoples) and equipment supervisor James R.",
+    "char_start": 47335,
+    "char_end": 47524,
+    "sentence_index": 268,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec019",
+    "text": "Jordan Sr.",
+    "char_start": 47525,
+    "char_end": 47535,
+    "sentence_index": 269,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec019",
+    "text": "He has two older brothers, James Jr.",
+    "char_start": 47536,
+    "char_end": 47572,
+    "sentence_index": 270,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec019",
+    "text": "and Larry, as well as an older sister named Deloris and a younger sister named Roslyn.",
+    "char_start": 47573,
+    "char_end": 47659,
+    "sentence_index": 271,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec019",
+    "text": "Jordan and his siblings were raised Methodist.",
+    "char_start": 47660,
+    "char_end": 47706,
+    "sentence_index": 272,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec019",
+    "text": "Document 4: Jordan played college basketball with the North Carolina Tar Heels.",
+    "char_start": 47708,
+    "char_end": 47787,
+    "sentence_index": 273,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec019",
+    "text": "As a freshman, he was a member of the Tar Heels' national championship team in 1982.",
+    "char_start": 47788,
+    "char_end": 47872,
+    "sentence_index": 274,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec019",
+    "text": "Jordan joined the Chicago Bulls in 1984 as the third overall draft pick and quickly emerged as a league star, entertaining crowds with his prolific scoring while gaining a reputation as one of the best defensive players.",
+    "char_start": 47873,
+    "char_end": 48093,
+    "sentence_index": 275,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec019",
+    "text": "All Correct Answers: [\"1963\", \"1956\"].",
+    "char_start": 48095,
+    "char_end": 48133,
+    "sentence_index": 276,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec019",
+    "text": "Explanation: Document 1 is talking about the basketball player Michael Jeffrey Jordan, who was born on February 17, 1963, so 1963 is correct.",
+    "char_start": 48134,
+    "char_end": 48275,
+    "sentence_index": 277,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec019",
+    "text": "Document 2 is talking about another person named Michael Jordan, who is an American scientist, and he was born in 1956.",
+    "char_start": 48276,
+    "char_end": 48395,
+    "sentence_index": 278,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec019",
+    "text": "Therefore, the answer 1956 from Document 2 is also correct.",
+    "char_start": 48396,
+    "char_end": 48455,
+    "sentence_index": 279,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec019",
+    "text": "Document 3 provides an error stating Michael Jordan's birth year as 1998, which is incorrect.",
+    "char_start": 48456,
+    "char_end": 48549,
+    "sentence_index": 280,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec019",
+    "text": "Based on the correct information from Document 1, Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 48550,
+    "char_end": 48653,
+    "sentence_index": 281,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec019",
+    "text": "Document 4 does not provide any useful information.",
+    "char_start": 48654,
+    "char_end": 48705,
+    "sentence_index": 282,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\n\\ documents list\\\n\n[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= Single Agent with Self-reflection ,\nfonttitle= ,\narc=4mm,\n]\nInitial Generation:\n\nYou are an expert in retrieval question answering.",
+    "char_start": 48707,
+    "char_end": 48950,
+    "sentence_index": 283,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec019",
+    "text": "You will be provided a question with multiple documents.",
+    "char_start": 48952,
+    "char_end": 49008,
+    "sentence_index": 284,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec019",
+    "text": "Please answer the question based on the documents.",
+    "char_start": 49009,
+    "char_end": 49059,
+    "sentence_index": 285,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 49061,
+    "char_end": 49190,
+    "sentence_index": 286,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 49191,
+    "char_end": 49245,
+    "sentence_index": 287,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec019",
+    "text": "Please follow the format: 'All Correct Answers: [].",
+    "char_start": 49247,
+    "char_end": 49298,
+    "sentence_index": 288,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec019",
+    "text": "Explanation: \\ \\ .'\n\nThe following are examples:\n\nQuestion: In which year was Michael Jordan born?",
+    "char_start": 49299,
+    "char_end": 49397,
+    "sentence_index": 289,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec019",
+    "text": "Document 1: Michael Jeffrey Jordan (born February 17, 1963), also known by his initials MJ, is an American businessman and former professional basketball player.",
+    "char_start": 49399,
+    "char_end": 49560,
+    "sentence_index": 290,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec019",
+    "text": "He played 15 seasons in the National Basketball Association (NBA) between 1984 and 2003, winning six NBA championships with the Chicago Bulls.",
+    "char_start": 49561,
+    "char_end": 49703,
+    "sentence_index": 291,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec019",
+    "text": "He was integral in popularizing basketball and the NBA around the world in the 1980s and 1990s, becoming a global cultural icon.",
+    "char_start": 49704,
+    "char_end": 49832,
+    "sentence_index": 292,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec019",
+    "text": "Document 2: Michael Irwin Jordan (born February 25, 1956) is an American scientist, professor at the University of California, Berkeley, research scientist at the Inria Paris, and researcher in machine learning, statistics, and artificial intelligence.",
+    "char_start": 49834,
+    "char_end": 50086,
+    "sentence_index": 293,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec019",
+    "text": "Document 3: Michael Jeffrey Jordan was born at Cumberland Hospital in Brooklyn, New York City, on February 17, 1998, to bank employee Deloris (n\u00e9e Peoples) and equipment supervisor James R.",
+    "char_start": 50088,
+    "char_end": 50277,
+    "sentence_index": 294,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec019",
+    "text": "Jordan Sr.",
+    "char_start": 50278,
+    "char_end": 50288,
+    "sentence_index": 295,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec019",
+    "text": "He has two older brothers, James Jr.",
+    "char_start": 50289,
+    "char_end": 50325,
+    "sentence_index": 296,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec019",
+    "text": "and Larry, as well as an older sister named Deloris and a younger sister named Roslyn.",
+    "char_start": 50326,
+    "char_end": 50412,
+    "sentence_index": 297,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec019",
+    "text": "Jordan and his siblings were raised Methodist.",
+    "char_start": 50413,
+    "char_end": 50459,
+    "sentence_index": 298,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec019",
+    "text": "Document 4: Jordan played college basketball with the North Carolina Tar Heels.",
+    "char_start": 50461,
+    "char_end": 50540,
+    "sentence_index": 299,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec019",
+    "text": "As a freshman, he was a member of the Tar Heels' national championship team in 1982.",
+    "char_start": 50541,
+    "char_end": 50625,
+    "sentence_index": 300,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec019",
+    "text": "Jordan joined the Chicago Bulls in 1984 as the third overall draft pick and quickly emerged as a league star, entertaining crowds with his prolific scoring while gaining a reputation as one of the best defensive players.",
+    "char_start": 50626,
+    "char_end": 50846,
+    "sentence_index": 301,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec019",
+    "text": "All Correct Answers: [\"1963\", \"1956\"].",
+    "char_start": 50848,
+    "char_end": 50886,
+    "sentence_index": 302,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec019",
+    "text": "Explanation: Document 1 is talking about the basketball player Michael Jeffrey Jordan, who was born on Februray 17, 1963, so 1963 is correct.",
+    "char_start": 50887,
+    "char_end": 51028,
+    "sentence_index": 303,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec019",
+    "text": "Document 2 is talking about another person named Michael Jordan, who is an American scientist, and he was born in 1956.",
+    "char_start": 51029,
+    "char_end": 51148,
+    "sentence_index": 304,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec019",
+    "text": "Therefore, the answer 1956 from Document 2 is also correct.",
+    "char_start": 51149,
+    "char_end": 51208,
+    "sentence_index": 305,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec019",
+    "text": "Document 3 provides an error stating Michael Jordan's birth year as 1998, which is incorrect.",
+    "char_start": 51209,
+    "char_end": 51302,
+    "sentence_index": 306,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec019",
+    "text": "Based on the correct information from Document 1, Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 51303,
+    "char_end": 51406,
+    "sentence_index": 307,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec019",
+    "text": "Document 4 does not provide any useful information.",
+    "char_start": 51407,
+    "char_end": 51458,
+    "sentence_index": 308,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\n\\ context\\\n\nReview Generation:\n\nYou are an expert in retrieval question answering.",
+    "char_start": 51460,
+    "char_end": 51565,
+    "sentence_index": 309,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec019",
+    "text": "You will be provided a question with multiple documents.",
+    "char_start": 51567,
+    "char_end": 51623,
+    "sentence_index": 310,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec019",
+    "text": "Please answer the question based on the documents.",
+    "char_start": 51624,
+    "char_end": 51674,
+    "sentence_index": 311,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 51676,
+    "char_end": 51805,
+    "sentence_index": 312,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 51806,
+    "char_end": 51860,
+    "sentence_index": 313,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\n\\ context\\\n\n\\ answer\\\n\nReview your previous answer and find problems with your answer.",
+    "char_start": 51862,
+    "char_end": 51971,
+    "sentence_index": 314,
+    "section_sentence_index": 61
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec019",
+    "text": "Refine Generation:\n\nYou are an expert in retrieval question answering.",
+    "char_start": 51973,
+    "char_end": 52043,
+    "sentence_index": 315,
+    "section_sentence_index": 62
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec019",
+    "text": "You will be provided a question with multiple documents.",
+    "char_start": 52045,
+    "char_end": 52101,
+    "sentence_index": 316,
+    "section_sentence_index": 63
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec019",
+    "text": "Please answer the question based on the documents.",
+    "char_start": 52102,
+    "char_end": 52152,
+    "sentence_index": 317,
+    "section_sentence_index": 64
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 52154,
+    "char_end": 52283,
+    "sentence_index": 318,
+    "section_sentence_index": 65
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 52284,
+    "char_end": 52338,
+    "sentence_index": 319,
+    "section_sentence_index": 66
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\n\\ context\\\n\n\\ answer\\\n\nReview your previous answer and find problems with your answer.",
+    "char_start": 52340,
+    "char_end": 52449,
+    "sentence_index": 320,
+    "section_sentence_index": 67
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec019",
+    "text": "\\ review\\\n\nBased on the problems you found, improve your answer.",
+    "char_start": 52451,
+    "char_end": 52515,
+    "sentence_index": 321,
+    "section_sentence_index": 68
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec019",
+    "text": "Please reiterate your answer with the format: 'All Correct Answers: [].",
+    "char_start": 52516,
+    "char_end": 52587,
+    "sentence_index": 322,
+    "section_sentence_index": 69
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec019",
+    "text": "Explanation: \\ \\ .'\n\n[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= Speculative RAG ,\nfonttitle= ,\narc=4mm,\n]\nDrafter:\n\nAnswer the question based on the documents.",
+    "char_start": 52588,
+    "char_end": 52774,
+    "sentence_index": 323,
+    "section_sentence_index": 70
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec019",
+    "text": "Also provide rationale for your response.",
+    "char_start": 52775,
+    "char_end": 52816,
+    "sentence_index": 324,
+    "section_sentence_index": 71
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\n\\ documents\\\n\nPlease follow the format: Response: \\ \\ .",
+    "char_start": 52818,
+    "char_end": 52896,
+    "sentence_index": 325,
+    "section_sentence_index": 72
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec019",
+    "text": "Rationale: \\ \\ .",
+    "char_start": 52897,
+    "char_end": 52913,
+    "sentence_index": 326,
+    "section_sentence_index": 73
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec019",
+    "text": "You are an expert in question answering.",
+    "char_start": 52914,
+    "char_end": 52954,
+    "sentence_index": 327,
+    "section_sentence_index": 74
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec019",
+    "text": "Aggregator:\n\nYou are an aggregator reading answers from multiple responses.",
+    "char_start": 52956,
+    "char_end": 53031,
+    "sentence_index": 328,
+    "section_sentence_index": 75
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 53033,
+    "char_end": 53162,
+    "sentence_index": 329,
+    "section_sentence_index": 76
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 53163,
+    "char_end": 53217,
+    "sentence_index": 330,
+    "section_sentence_index": 77
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec019",
+    "text": "Please follow the format: 'All Correct Answers: [].",
+    "char_start": 53219,
+    "char_end": 53270,
+    "sentence_index": 331,
+    "section_sentence_index": 78
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec019",
+    "text": "Explanation: \\ \\ .'\n\nThe following are examples:\n\nQuestion: In which year was Michael Jordan born?",
+    "char_start": 53271,
+    "char_end": 53369,
+    "sentence_index": 332,
+    "section_sentence_index": 79
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec019",
+    "text": "Responses:\n\nResponse 1: Response: 1963.",
+    "char_start": 53371,
+    "char_end": 53410,
+    "sentence_index": 333,
+    "section_sentence_index": 80
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec019",
+    "text": "Rationale: The document clearly states that Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 53411,
+    "char_end": 53508,
+    "sentence_index": 334,
+    "section_sentence_index": 81
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec019",
+    "text": "Response 2: Response: 1956.",
+    "char_start": 53510,
+    "char_end": 53537,
+    "sentence_index": 335,
+    "section_sentence_index": 82
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec019",
+    "text": "Rationale: The document states that Michael Irwin Jordan was born on February 25, 1956.",
+    "char_start": 53538,
+    "char_end": 53625,
+    "sentence_index": 336,
+    "section_sentence_index": 83
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec019",
+    "text": "However, it's important to note that this document seems to be about a different Michael Jordan, who is an American scientist, not the basketball player.",
+    "char_start": 53626,
+    "char_end": 53779,
+    "sentence_index": 337,
+    "section_sentence_index": 84
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec019",
+    "text": "The other agents' responses do not align with the information provided in the document.",
+    "char_start": 53780,
+    "char_end": 53867,
+    "sentence_index": 338,
+    "section_sentence_index": 85
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec019",
+    "text": "Response 3: Response: 1998.",
+    "char_start": 53869,
+    "char_end": 53896,
+    "sentence_index": 339,
+    "section_sentence_index": 86
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec019",
+    "text": "Rationale: The According to the document provided, Michael Jeffrey Jordan was born on February 17, 1998.",
+    "char_start": 53897,
+    "char_end": 54001,
+    "sentence_index": 340,
+    "section_sentence_index": 87
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec019",
+    "text": "Response 4: Response: Unknown.",
+    "char_start": 54003,
+    "char_end": 54033,
+    "sentence_index": 341,
+    "section_sentence_index": 88
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec019",
+    "text": "Rationale: The provided document focuses on Jordan's college and early professional career, mentioning his college championship in 1982 and his entry into the NBA in 1984, but it does not include information about his birth year.",
+    "char_start": 54034,
+    "char_end": 54263,
+    "sentence_index": 342,
+    "section_sentence_index": 89
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec019",
+    "text": "All Correct Answers: [\"1963\", \"1956\"].",
+    "char_start": 54265,
+    "char_end": 54303,
+    "sentence_index": 343,
+    "section_sentence_index": 90
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec019",
+    "text": "Explanation: Response 1 is talking about the basketball player Michael Jeffrey Jordan, who was born on Februray 17, 1963, so 1963 is correct.",
+    "char_start": 54304,
+    "char_end": 54445,
+    "sentence_index": 344,
+    "section_sentence_index": 91
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec019",
+    "text": "Response 2 is talking about another person named Michael Jordan, who is an American scientist, and he was born in 1956.",
+    "char_start": 54446,
+    "char_end": 54565,
+    "sentence_index": 345,
+    "section_sentence_index": 92
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec019",
+    "text": "Therefore, the answer 1956 from Response 2 is also correct.",
+    "char_start": 54566,
+    "char_end": 54625,
+    "sentence_index": 346,
+    "section_sentence_index": 93
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec019",
+    "text": "Response 3 provides an error stating Michael Jordan's birth year as 1998, which is incorrect.",
+    "char_start": 54626,
+    "char_end": 54719,
+    "sentence_index": 347,
+    "section_sentence_index": 94
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec019",
+    "text": "Based on the correct information from Response 1, Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 54720,
+    "char_end": 54823,
+    "sentence_index": 348,
+    "section_sentence_index": 95
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec019",
+    "text": "Response 4 does not provide any useful information.",
+    "char_start": 54824,
+    "char_end": 54875,
+    "sentence_index": 349,
+    "section_sentence_index": 96
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec019",
+    "text": "Question: \\ query\\\n\nResponses:\n\n\\ all drafted responses\\\n\n[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= Astute RAG ,\nfonttitle= ,\narc=4mm,\n]\nAdaptive Passage Generation:\n\nGenerate a document that provides accurate and relevant information to answer the given question.",
+    "char_start": 54877,
+    "char_end": 55169,
+    "sentence_index": 350,
+    "section_sentence_index": 97
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec019",
+    "text": "If the information is unclear or uncertain, explicitly state \u2019I don\u2019t know\u2019 to avoid any hallucinations.",
+    "char_start": 55170,
+    "char_end": 55274,
+    "sentence_index": 351,
+    "section_sentence_index": 98
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\ Document:\n\nIterative Knowledge Consolidation:\n\nTask: Consolidate information from both your own memorized documents and externally retrieved documents in response to the given question.",
+    "char_start": 55276,
+    "char_end": 55483,
+    "sentence_index": 352,
+    "section_sentence_index": 99
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec019",
+    "text": "* For documents that provide consistent information, cluster them together and summarize the key details into a single, concise document.",
+    "char_start": 55485,
+    "char_end": 55622,
+    "sentence_index": 353,
+    "section_sentence_index": 100
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec019",
+    "text": "* For documents with conflicting information, separate them into distinct documents, ensuring each captures the unique perspective or data.",
+    "char_start": 55624,
+    "char_end": 55763,
+    "sentence_index": 354,
+    "section_sentence_index": 101
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec019",
+    "text": "* Exclude any information irrelevant to the query.",
+    "char_start": 55765,
+    "char_end": 55815,
+    "sentence_index": 355,
+    "section_sentence_index": 102
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec019",
+    "text": "For each new document created, clearly indicate:\n\n* Whether the source was from memory or an external retrieval.",
+    "char_start": 55817,
+    "char_end": 55929,
+    "sentence_index": 356,
+    "section_sentence_index": 103
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec019",
+    "text": "* The original document numbers for transparency.",
+    "char_start": 55931,
+    "char_end": 55980,
+    "sentence_index": 357,
+    "section_sentence_index": 104
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec019",
+    "text": "Initial Context: \\ context\\_init\\\n\nLast Context: \\ context\\\n\nQuestion: \\ question\\\n\nNew Context:\n\nKnowledge Consolidation and Answer Finalization:\n\nTask: Answer a given question using the consolidated information from both your own memorized documents and externally retrieved documents.",
+    "char_start": 55982,
+    "char_end": 56269,
+    "sentence_index": 358,
+    "section_sentence_index": 105
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec019",
+    "text": "Step 1: Consolidate information\n\n* For documents that provide consistent information, cluster them together and summarize the key details into a single, concise document.",
+    "char_start": 56271,
+    "char_end": 56441,
+    "sentence_index": 359,
+    "section_sentence_index": 106
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec019",
+    "text": "* For documents with conflicting information, separate them into distinct documents, ensuring each captures the unique perspective or data.",
+    "char_start": 56443,
+    "char_end": 56582,
+    "sentence_index": 360,
+    "section_sentence_index": 107
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec019",
+    "text": "* Exclude any information irrelevant to the query.",
+    "char_start": 56584,
+    "char_end": 56634,
+    "sentence_index": 361,
+    "section_sentence_index": 108
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec019",
+    "text": "For each new document created, clearly indicate:\n\n* Whether the source was from memory or an external retrieval.",
+    "char_start": 56636,
+    "char_end": 56748,
+    "sentence_index": 362,
+    "section_sentence_index": 109
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec019",
+    "text": "* The original document numbers for transparency.",
+    "char_start": 56750,
+    "char_end": 56799,
+    "sentence_index": 363,
+    "section_sentence_index": 110
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec019",
+    "text": "Step 2: Propose Answers and Assign Confidence\n\nFor each group of documents, propose a possible answer and assign a confidence score based on the credibility and agreement of the information.",
+    "char_start": 56801,
+    "char_end": 56991,
+    "sentence_index": 364,
+    "section_sentence_index": 111
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec019",
+    "text": "Step 3: Select all Correct Answers\n\nAfter evaluating all groups, select all accurate and well-supported answers.",
+    "char_start": 56993,
+    "char_end": 57105,
+    "sentence_index": 365,
+    "section_sentence_index": 112
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec019",
+    "text": "Initial Context: \\ context\\_init\\\n\nConsolidated Context: \\ context\\ \\# optional\n\nQuestion: \\ question\\\n\nAnswer:\n\n[!h]\n[\nfontupper= ,\nfontlower= ,\ncolback=white,\ncolframe=gray,\ntitle= MADAM-RAG ,\nfonttitle= ,\narc=4mm,\n]\nIndividual Agent:\n\nYou are an agent reading a document to answer a question.",
+    "char_start": 57107,
+    "char_end": 57402,
+    "sentence_index": 366,
+    "section_sentence_index": 113
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\nDocument: \\ document\\\n\nThe following responses are from other agents as additional information.",
+    "char_start": 57404,
+    "char_end": 57522,
+    "sentence_index": 367,
+    "section_sentence_index": 114
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec019",
+    "text": "\\# Optional\n\n\\ history\\ \\# Optional\n\nAnswer the question based on the document and other agents' responses.",
+    "char_start": 57523,
+    "char_end": 57630,
+    "sentence_index": 368,
+    "section_sentence_index": 115
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec019",
+    "text": "Provide your answer and a step-by-step reasoning explanation.",
+    "char_start": 57631,
+    "char_end": 57692,
+    "sentence_index": 369,
+    "section_sentence_index": 116
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec019",
+    "text": "Please follow the format: 'Answer: \\ \\ .",
+    "char_start": 57694,
+    "char_end": 57734,
+    "sentence_index": 370,
+    "section_sentence_index": 117
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec019",
+    "text": "Explanation: \\ \\ .",
+    "char_start": 57735,
+    "char_end": 57753,
+    "sentence_index": 371,
+    "section_sentence_index": 118
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec019",
+    "text": "Aggregator:\n\nYou are an aggregator reading answers from multiple agents.",
+    "char_start": 57755,
+    "char_end": 57827,
+    "sentence_index": 372,
+    "section_sentence_index": 119
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec019",
+    "text": "If there are multiple answers, please provide all possible correct answers and also provide a step-by-step reasoning explanation.",
+    "char_start": 57829,
+    "char_end": 57958,
+    "sentence_index": 373,
+    "section_sentence_index": 120
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec019",
+    "text": "If there is no correct answer, please reply 'unknown'.",
+    "char_start": 57959,
+    "char_end": 58013,
+    "sentence_index": 374,
+    "section_sentence_index": 121
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec019",
+    "text": "Please follow the format: ``All Correct Answers: [].",
+    "char_start": 58015,
+    "char_end": 58067,
+    "sentence_index": 375,
+    "section_sentence_index": 122
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec019",
+    "text": "Explanation: .''\n\nThe following are examples:\n\nQuestion: In which year was Michael Jordan born?",
+    "char_start": 58068,
+    "char_end": 58163,
+    "sentence_index": 376,
+    "section_sentence_index": 123
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec019",
+    "text": "Agent responses:\n\nAgent 1: Answer: 1963.",
+    "char_start": 58165,
+    "char_end": 58205,
+    "sentence_index": 377,
+    "section_sentence_index": 124
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec019",
+    "text": "Explanation: The document clearly states that Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 58206,
+    "char_end": 58305,
+    "sentence_index": 378,
+    "section_sentence_index": 125
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec019",
+    "text": "Agent 2: Answer: 1956.",
+    "char_start": 58307,
+    "char_end": 58329,
+    "sentence_index": 379,
+    "section_sentence_index": 126
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec019",
+    "text": "Explanation: The document states that Michael Irwin Jordan was born on February 25, 1956.",
+    "char_start": 58330,
+    "char_end": 58419,
+    "sentence_index": 380,
+    "section_sentence_index": 127
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec019",
+    "text": "However, it's important to note that this document seems to be about a different Michael Jordan, who is an American scientist, not a basketball player.",
+    "char_start": 58420,
+    "char_end": 58571,
+    "sentence_index": 381,
+    "section_sentence_index": 128
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec019",
+    "text": "The other agents' responses do not align with the information provided in the document.",
+    "char_start": 58572,
+    "char_end": 58659,
+    "sentence_index": 382,
+    "section_sentence_index": 129
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec019",
+    "text": "Agent 3: Answer: 1998.",
+    "char_start": 58661,
+    "char_end": 58683,
+    "sentence_index": 383,
+    "section_sentence_index": 130
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec019",
+    "text": "Explanation: According to the document provided, Michael Jeffrey Jordan was born on February 17, 1998.",
+    "char_start": 58684,
+    "char_end": 58786,
+    "sentence_index": 384,
+    "section_sentence_index": 131
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec019",
+    "text": "Agent 4: Answer: Unknown.",
+    "char_start": 58788,
+    "char_end": 58813,
+    "sentence_index": 385,
+    "section_sentence_index": 132
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec019",
+    "text": "Explanation: The provided document focuses on Jordan's college and early professional career, mentioning his college championship in 1982 and his entry into the NBA in 1984, but it does not include information about his birth year.",
+    "char_start": 58814,
+    "char_end": 59045,
+    "sentence_index": 386,
+    "section_sentence_index": 133
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec019",
+    "text": "All Correct Answers: [\"1963\", \"1956\"].",
+    "char_start": 59047,
+    "char_end": 59085,
+    "sentence_index": 387,
+    "section_sentence_index": 134
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec019",
+    "text": "Explanation: Agent 1 is talking about the basketball player Michael Jeffrey Jordan, who was born on February 17, 1963, so 1963 is correct.",
+    "char_start": 59086,
+    "char_end": 59224,
+    "sentence_index": 388,
+    "section_sentence_index": 135
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec019",
+    "text": "Agent 2 is talking about another person named Michael Jordan, who is an American scientist, and he was born in 1956.",
+    "char_start": 59225,
+    "char_end": 59341,
+    "sentence_index": 389,
+    "section_sentence_index": 136
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec019",
+    "text": "Therefore, the answer 1956 from Agent 2 is also correct.",
+    "char_start": 59342,
+    "char_end": 59398,
+    "sentence_index": 390,
+    "section_sentence_index": 137
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec019",
+    "text": "Agent 3 provides an error stating Michael Jordan's birth year as 1998, which is incorrect.",
+    "char_start": 59399,
+    "char_end": 59489,
+    "sentence_index": 391,
+    "section_sentence_index": 138
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec019",
+    "text": "Based on the correct information from Agent 1, Michael Jeffrey Jordan was born on February 17, 1963.",
+    "char_start": 59490,
+    "char_end": 59590,
+    "sentence_index": 392,
+    "section_sentence_index": 139
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec019",
+    "text": "Agent 4 does not provide any useful information.",
+    "char_start": 59591,
+    "char_end": 59639,
+    "sentence_index": 393,
+    "section_sentence_index": 140
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec019",
+    "text": "Question: \\ question\\\n\nAgent responses:\n\n\\ agent responses list\\",
+    "char_start": 59641,
+    "char_end": 59705,
+    "sentence_index": 394,
+    "section_sentence_index": 141
+  }
+]

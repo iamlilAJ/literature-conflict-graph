@@ -1,0 +1,4250 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Spatial intelligence is essential for multimodal large language models (MLLMs) operating in the complex physical world.",
+    "char_start": 0,
+    "char_end": 119,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "Existing benchmarks, however, probe only single-image relations and thus fail to assess the multi-image spatial reasoning that real-world deployments demand.",
+    "char_start": 120,
+    "char_end": 277,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "We introduce MMSI-Bench, a VQA benchmark dedicated to multi-image spatial intelligence.",
+    "char_start": 278,
+    "char_end": 365,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "Six 3D-vision researchers spent more than 300 hours meticulously crafting 1,000 challenging, unambiguous multiple-choice questions from over 120,000 images, each paired with carefully designed distractors and a stepwise reasoning process.",
+    "char_start": 366,
+    "char_end": 604,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We conduct extensive experiments and evaluate 37 open-source and proprietary MLLMs, observing a wide gap: the strongest open-source model attains roughly 30\\% accuracy and OpenAI's GPT-5 reasoning model reaches 40\\%, while humans score 97\\%.",
+    "char_start": 605,
+    "char_end": 846,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "These results underscore the challenging nature of MMSI-Bench and the substantial headroom for future research.",
+    "char_start": 847,
+    "char_end": 958,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Leveraging the annotated reasoning processes, we also provide an automated error analysis pipeline that diagnoses four dominant failure modes, including (1) grounding errors, (2) overlap-matching and scene-reconstruction errors, (3) situation-transformation reasoning errors, and (4) spatial-logic errors, offering insights for advancing spatial intelligence.",
+    "char_start": 959,
+    "char_end": 1318,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Multimodal large language models (MLLMs) have rapidly advanced their ability to ground language and vision in the physical world LLaVA1_5, Pi0, Kosmos-2 , making them a promising stepping-stone toward embodied artificial general intelligence (AGI).",
+    "char_start": 1320,
+    "char_end": 1568,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "A core capability of MLLMs deployed in the physical world is spatial intelligence, the skill to understand where things are, how they move, etc.",
+    "char_start": 1569,
+    "char_end": 1713,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "To steer progress toward this goal, the community needs rigorous, diverse, and challenging evaluation benchmarks that can serve as north stars for progress.",
+    "char_start": 1714,
+    "char_end": 1870,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "However, most existing benchmarks probe only single-image spatial understanding and restrict themselves to straightforward spatial relations VSR, CVBench, CLEVR, SpatialRGPT, SpatialVLM .",
+    "char_start": 1872,
+    "char_end": 2059,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Real-world spatial understanding is more complex: models must reason across multiple images to track object and ego motion, and relate entities that never co-occur in a single frame VLM-Grounder, EmbodiedScan, MMScan .",
+    "char_start": 2060,
+    "char_end": 2278,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Without benchmarks that demand such multi-image reasoning, we cannot reliably measure or improve an MLLM\u2019s spatial competence.",
+    "char_start": 2279,
+    "char_end": 2405,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "In this work, we introduce MMSI-Bench, a multiple-choice VQA benchmark dedicated to M ulti-i M age-based S patial I ntelligence (Figure ).",
+    "char_start": 2407,
+    "char_end": 2545,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "MMSI-Bench is built on a comprehensive taxonomy of ten fundamental spatial reasoning tasks that span the positions, attributes, and motions of three key spatial elements\u2014camera (observer), object, and region in real-world scenes.",
+    "char_start": 2546,
+    "char_end": 2775,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Beyond these atomic tasks, we construct a multi-step reasoning split that chains them into long-horizon questions.",
+    "char_start": 2776,
+    "char_end": 2890,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "Crafting a benchmark that is simultaneously diverse, accurate, and challenging is far from trivial.",
+    "char_start": 2892,
+    "char_end": 2991,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "Prior benchmarks SpatialVLM,SpatialRGPT,VSI-Bench,BLINK populate templated questions from annotated or estimated spatial metadata.",
+    "char_start": 2992,
+    "char_end": 3122,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "These automatic pipelines suffer from limited diversity and difficulty.",
+    "char_start": 3123,
+    "char_end": 3194,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "We therefore adopt a fully human-centric design.",
+    "char_start": 3195,
+    "char_end": 3243,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "For each question, one of six 3D-vision researchers scours large image collections, selects a set of images that exhibit non-trivial spatial relations, and creates a novel, difficult, and unambiguous multiple-choice question whose answer can be derived only by reasoning across all selected images.",
+    "char_start": 3244,
+    "char_end": 3542,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "Every item comes with carefully designed distractors and a step-by-step reasoning process that explicitly leads to the correct answer, a second annotator then audits each example to ensure clarity and correctness.",
+    "char_start": 3543,
+    "char_end": 3756,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Over the course of 300+ researcher-hours, we inspected more than 120,000 candidate images and distilled them into 1,000 high-quality Q\\&A pairs covering a broad spectrum of real-world scenes, from indoor scans ScanNet, Matterport3D and outdoor driving footage Waymo, nuScenes to robot manipulation AgiBot-World and everyday activities Ego4d .",
+    "char_start": 3758,
+    "char_end": 4100,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "We evaluate 37 widely used MLLMs on MMSI-Bench.",
+    "char_start": 4101,
+    "char_end": 4148,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "The strongest open-source model attains about 30\\% accuracy, while the best proprietary system, the OpenAI GPT-5 reasoning model gpt5 , reaches only 40\\%, compared with human performance at 97\\% accuracy.",
+    "char_start": 4149,
+    "char_end": 4353,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "To the best of our knowledge, MMSI-Bench shows the largest performance margin between SOTA models and humans among existing spatial intelligence benchmarks.",
+    "char_start": 4354,
+    "char_end": 4510,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "This pronounced gap underscores both the difficulty of MMSI-Bench and the headroom for progress in spatial intelligence.",
+    "char_start": 4512,
+    "char_end": 4632,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "Our error analysis groups failures into four categories: (1) grounding errors, (2) overlap-matching and scene-reconstruction errors, (3) situation-transformation reasoning errors, and (4) spatial-logic errors.",
+    "char_start": 4633,
+    "char_end": 4842,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Because every question is paired with a reference reasoning process, we also release a novel automated analysis pipeline that contrasts a model\u2019s response with the reference to pinpoint error types efficiently across the entire benchmark, providing actionable insights for future work on multi-image spatial intelligence.",
+    "char_start": 4843,
+    "char_end": 5164,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec003",
+    "text": "Multi-image VQA benchmarks.",
+    "char_start": 5166,
+    "char_end": 5193,
+    "sentence_index": 29,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec003",
+    "text": "Driven by the rapid progress of MLLMs, VQA benchmarks have shifted from single-image reasoning GQA to multi-image settings focusing on various skills.",
+    "char_start": 5194,
+    "char_end": 5344,
+    "sentence_index": 30,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec003",
+    "text": "Visual Haystacks VisualHaystacks probes long-context retrieval, asking models to locate relevant content within large image collections.",
+    "char_start": 5345,
+    "char_end": 5481,
+    "sentence_index": 31,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec003",
+    "text": "MIBench MIBench stresses cross-image reasoning that combines instruction following with knowledge retrieval.",
+    "char_start": 5482,
+    "char_end": 5590,
+    "sentence_index": 32,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec003",
+    "text": "ReMI ReMI broadens the scope to math, physics, and code across two to six images, blending GPT-generated items with human audits.",
+    "char_start": 5591,
+    "char_end": 5720,
+    "sentence_index": 33,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec003",
+    "text": "BLINK BLINK zeroes in on inter-image relationships, while MuirBench MuirBench adds robustness and diversity to multi-image reasoning.",
+    "char_start": 5721,
+    "char_end": 5854,
+    "sentence_index": 34,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec003",
+    "text": "Existing benchmarks show that contemporary MLLMs still trail behind humans as either the number of images or the reasoning complexity grows SEEDBench2 .",
+    "char_start": 5855,
+    "char_end": 6007,
+    "sentence_index": 35,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec003",
+    "text": "In this work, instead of building a general benchmark, we focus on comprehensively evaluating MLLMs' multi-image spatial intelligence.",
+    "char_start": 6008,
+    "char_end": 6142,
+    "sentence_index": 36,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "Benchmarks for spatial intelligence of MLLMs.",
+    "char_start": 6144,
+    "char_end": 6189,
+    "sentence_index": 37,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec003",
+    "text": "Recent progress in MLLMs has enabled them to potentially serve as the ``brains'' of embodied agents, e.g., the decision-making modules of autonomous vehicles DriveLM or robots OpenVLA, robobrain2,Pi0 , where reliable spatial intelligence is indispensable.",
+    "char_start": 6190,
+    "char_end": 6445,
+    "sentence_index": 38,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec003",
+    "text": "To measure this capability, a variety of benchmarks have been proposed, but the majority are designed to assess only single-image spatial understanding Q-Spatial,VSR,SpaitalMM,refSpatialBench,3DSRBench,RoboSpatial,Embspatial,CVBench,SPHERE .",
+    "char_start": 6446,
+    "char_end": 6687,
+    "sentence_index": 39,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec003",
+    "text": "Beyond a single view, associating information across multiple images is even more critical in practice, yet existing multi-image benchmarks remain fragmentary.",
+    "char_start": 6688,
+    "char_end": 6847,
+    "sentence_index": 40,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec003",
+    "text": "BLINK BLINK and MuriBench MuirBench contain just a few spatial sub-splits within otherwise general VQA suites, and thus lack comprehensive coverage.",
+    "char_start": 6848,
+    "char_end": 6996,
+    "sentence_index": 41,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec003",
+    "text": "LEGO-Puzzles LEGO-Puzzles probes multi-step reasoning in a synthetic LEGO-assembly setting, overlooking real-world scenes.",
+    "char_start": 6997,
+    "char_end": 7119,
+    "sentence_index": 42,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec003",
+    "text": "Efforts such as UniQA-3D towards3Dvision , MMIU MMIU , SAT SAT , MultiSPA Multi-SpatialMLLM , and VSI-Bench VSI-Bench generate template-based or rule-based questions from existing annotations/metadata or simulators, which constrains question diversity and difficulty.",
+    "char_start": 7120,
+    "char_end": 7387,
+    "sentence_index": 43,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec003",
+    "text": "By contrast, MMSI-Bench is fully human-curated, unconstrained by templates, and features challenging, diverse questions with accompanying reasoning annotations.",
+    "char_start": 7388,
+    "char_end": 7548,
+    "sentence_index": 44,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec003",
+    "text": "ERQA erqa is likewise human-curated but comprises only 400 samples, of which just 113 are multi-image.",
+    "char_start": 7549,
+    "char_end": 7651,
+    "sentence_index": 45,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec003",
+    "text": "Detailed quantitative comparisons (e.g., diversity) are provided in Appendix .",
+    "char_start": 7652,
+    "char_end": 7730,
+    "sentence_index": 46,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec004",
+    "text": "In this section, we present MMSI-Bench, a comprehensive and challenging benchmark designed to evaluate the multi-image spatial reasoning capability of MLLMs.",
+    "char_start": 7732,
+    "char_end": 7889,
+    "sentence_index": 47,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec004",
+    "text": "Specifically, we introduce the concept of multi-image spatial reasoning and outline its associated sub-tasks in sec:overview_mmsibench .",
+    "char_start": 7890,
+    "char_end": 8026,
+    "sentence_index": 48,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec004",
+    "text": "In Section , we provide a detailed description of the benchmark construction process.",
+    "char_start": 8027,
+    "char_end": 8112,
+    "sentence_index": 49,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec005",
+    "text": "[h!]\n-0.2em\n\nTaxonomy of Multi-Image Spatial Reasoning.",
+    "char_start": 8114,
+    "char_end": 8169,
+    "sentence_index": 50,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec005",
+    "text": "-0.5em\n\nwidth=0.9 ,center\n\n4pt\n0.9\n@ lll@\n\nMain Category & Sub-Category & Description\n\n6 * Positional Relationship & Camera-Camera & Relationship between two camera viewpoints.",
+    "char_start": 8170,
+    "char_end": 8346,
+    "sentence_index": 51,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec005",
+    "text": "& Camera-Object & Relationship between the camera and an object.",
+    "char_start": 8348,
+    "char_end": 8412,
+    "sentence_index": 52,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec005",
+    "text": "& Camera-Region & Relationship between the camera and a semantic region (e.g., kitchen).",
+    "char_start": 8414,
+    "char_end": 8502,
+    "sentence_index": 53,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec005",
+    "text": "& Object-Object & Relationship between two objects.",
+    "char_start": 8504,
+    "char_end": 8555,
+    "sentence_index": 54,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec005",
+    "text": "& Object-Region & Relationship between an object and a semantic region.",
+    "char_start": 8557,
+    "char_end": 8628,
+    "sentence_index": 55,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec005",
+    "text": "& Region-Region & Relationship between two different regions.",
+    "char_start": 8630,
+    "char_end": 8691,
+    "sentence_index": 56,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec005",
+    "text": "2 * Attribute & Measurement & Geometric properties (e.g., length, size) of elements.",
+    "char_start": 8693,
+    "char_end": 8777,
+    "sentence_index": 57,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec005",
+    "text": "& Appearance & Visual characteristics (e.g., shape) of elements.",
+    "char_start": 8779,
+    "char_end": 8843,
+    "sentence_index": 58,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec005",
+    "text": "2 * Motion & Camera & The camera's movement (e.g., direction).",
+    "char_start": 8845,
+    "char_end": 8907,
+    "sentence_index": 59,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec005",
+    "text": "& Object & The movement of objects within the scene.",
+    "char_start": 8909,
+    "char_end": 8961,
+    "sentence_index": 60,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec005",
+    "text": "Multi-Step Reasoning & 1 c --- & Complex tasks requiring a sequence of reasoning steps (e.g.",
+    "char_start": 8963,
+    "char_end": 9055,
+    "sentence_index": 61,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec005",
+    "text": "navigation).",
+    "char_start": 9056,
+    "char_end": 9068,
+    "sentence_index": 62,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec005",
+    "text": "1\n6pt\n\n-0.5em\n\nHumans possess the remarkable ability to infer spatial information about their environment by integrating visual inputs from different viewpoints or moments in time.",
+    "char_start": 9070,
+    "char_end": 9250,
+    "sentence_index": 63,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec005",
+    "text": "We refer to this process as multi-image spatial reasoning, in which information from multiple images is combined to reconstruct the underlying scene and enable reasoning to answer complex spatial questions.",
+    "char_start": 9251,
+    "char_end": 9457,
+    "sentence_index": 64,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec005",
+    "text": "To evaluate the multi-image spatial reasoning capability of multimodal large language models, we introduce MMSI-Bench.",
+    "char_start": 9458,
+    "char_end": 9576,
+    "sentence_index": 65,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec005",
+    "text": "We further discuss additional motivations for multi-image input in Appendix .",
+    "char_start": 9577,
+    "char_end": 9654,
+    "sentence_index": 66,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec005",
+    "text": "We categorize tasks based on three fundamental spatial elements: camera (the agent that captures the scenes), object (entities other than the agent within the scenes), and region (semantic areas within the scenes, such as a kitchen).",
+    "char_start": 9656,
+    "char_end": 9889,
+    "sentence_index": 67,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec005",
+    "text": "Fundamental spatial understanding requires not only recognizing the positional relationships among these elements but also their attributes and potential motion .",
+    "char_start": 9890,
+    "char_end": 10052,
+    "sentence_index": 68,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec005",
+    "text": "Guided by this taxonomy, we define ten spatial reasoning task types and one multi-step spatial reasoning category, which flexibly combines these basic types.",
+    "char_start": 10053,
+    "char_end": 10210,
+    "sentence_index": 69,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec005",
+    "text": "The specific categories are presented in Table .",
+    "char_start": 10211,
+    "char_end": 10259,
+    "sentence_index": 70,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec005",
+    "text": "Examples for all task categories are provided in Figure .",
+    "char_start": 10260,
+    "char_end": 10317,
+    "sentence_index": 71,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec005",
+    "text": "Notably, our questions are designed to be human-answerable; thus, we do not include questions about camera attributes (parameters).",
+    "char_start": 10318,
+    "char_end": 10449,
+    "sentence_index": 72,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec005",
+    "text": "Additionally, since regions are generally static, we do not include motion-related tasks for regions.",
+    "char_start": 10450,
+    "char_end": 10551,
+    "sentence_index": 73,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec005",
+    "text": "[ht!]\n\nimages/example_11_compressed.pdf\n-0.3em\nRepresentative MMSI-Bench samples from each category.",
+    "char_start": 10553,
+    "char_end": 10653,
+    "sentence_index": 74,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec005",
+    "text": "Please zoom in to inspect image details.",
+    "char_start": 10654,
+    "char_end": 10694,
+    "sentence_index": 75,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec005",
+    "text": "Questions and rationales are simplified for brevity; the complete versions appear in Appendix .",
+    "char_start": 10695,
+    "char_end": 10790,
+    "sentence_index": 76,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec005",
+    "text": "Correct answers are highlighted in green.",
+    "char_start": 10791,
+    "char_end": 10832,
+    "sentence_index": 77,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec005",
+    "text": "-0.9em\n\n[ht!]\n-0.2em\n\n[t] 0.3\n0pt\n\nimages/category_pie.pdf\n-1.3em\nfigure Distribution of categories in MMSI-Bench.",
+    "char_start": 10834,
+    "char_end": 10948,
+    "sentence_index": 78,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec005",
+    "text": "0.04\n[t] 0.55\n0pt\n\ntable Dataset statistics.",
+    "char_start": 10950,
+    "char_end": 10994,
+    "sentence_index": 79,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec005",
+    "text": "-0.5em\np 4.8cm > p 1.8cm\n\nStatistic & Value\n\nTotal questions & 1,000\n\nNumber of unique images & 1,990\n\nAverage question length & 130.28\n\nAverage reasoning process length & 252.83\n\nAverage image count per question & 2.55\n\nMaximum question length & 449\n\nMaximum reasoning process length & 1,118\n\nMaximum image count per question & 10\n\n2 p 0.9 Data sources: ScanNet, nuScenes, Matterport3D, Ego4D, AgiBot-World, DTU, DAVIS 2017, Waymo.",
+    "char_start": 10995,
+    "char_end": 11427,
+    "sentence_index": 80,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec005",
+    "text": "-1.4em\n\nIn conclusion, MMSI-Bench consists of 1,000 multiple-choice question\u2013answer pairs based on multiple images, each also accompanied by annotated reasoning processes explaining the answer.",
+    "char_start": 11429,
+    "char_end": 11622,
+    "sentence_index": 81,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec005",
+    "text": "Every question is specifically designed such that it cannot be answered using a single image alone.",
+    "char_start": 11623,
+    "char_end": 11722,
+    "sentence_index": 82,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec005",
+    "text": "Except for the Multi-Step Reasoning category, all other categories contain only two images per question.",
+    "char_start": 11723,
+    "char_end": 11827,
+    "sentence_index": 83,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec005",
+    "text": "Detailed statistics on the proportion of questions in each category and other relevant information about MMSI-Bench are presented in Figure and Table , respectively.",
+    "char_start": 11828,
+    "char_end": 11993,
+    "sentence_index": 84,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec005",
+    "text": "images/pipeline_compressed.pdf\n-0.9em\nIllustration of the MMSI-Bench construction pipeline: images are collected from diverse real-world datasets, relevant image sets are carefully selected, complex QA tasks and detailed reasoning processes are manually annotated, and all data undergo rigorous quality control.",
+    "char_start": 11995,
+    "char_end": 12306,
+    "sentence_index": 85,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec005",
+    "text": "-2em\n\nOur detailed benchmark construction process is illustrated in Figure .",
+    "char_start": 12307,
+    "char_end": 12383,
+    "sentence_index": 86,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec006",
+    "text": "Data collection.",
+    "char_start": 12385,
+    "char_end": 12401,
+    "sentence_index": 87,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec006",
+    "text": "To comprehensively evaluate the capability of MLLMs across a variety of real-world scenarios, it is essential to curate data from diverse and representative sources.",
+    "char_start": 12402,
+    "char_end": 12567,
+    "sentence_index": 88,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec006",
+    "text": "To ensure the complexity and authenticity of the evaluation, we exclusively utilize images captured from real-world scenes.",
+    "char_start": 12568,
+    "char_end": 12691,
+    "sentence_index": 89,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec006",
+    "text": "Accordingly, we leverage images from a diverse collection of real-world datasets: indoor 3D scene datasets (Matterport3D Matterport3D and ScanNet ScanNet ), a local scene reconstruction dataset (DTU DTU ), autonomous driving datasets (nuScenes nuScenes , Waymo Waymo ), a robotics dataset (AgiBot-World AgiBot-World ), a video object segmentation dataset (DAVIS 2017 DAVIS_2017 ), and an egocentric video dataset (Ego4D Ego4d ).",
+    "char_start": 12692,
+    "char_end": 13120,
+    "sentence_index": 90,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec006",
+    "text": "These diverse data sources enable the construction of various question-answer pairs, ensuring that our benchmark captures the complexity and diversity inherent in real-world environments.",
+    "char_start": 13121,
+    "char_end": 13308,
+    "sentence_index": 91,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec006",
+    "text": "Question-answer design and reasoning process annotation.",
+    "char_start": 13310,
+    "char_end": 13366,
+    "sentence_index": 92,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec006",
+    "text": "Using the collected datasets, six 3D vision researchers annotate QA pairs spanning the above eleven distinct task categories.",
+    "char_start": 13368,
+    "char_end": 13493,
+    "sentence_index": 93,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec006",
+    "text": "Annotators are explicitly instructed to create a diverse set of questions that are as novel and as challenging as possible for MLLMs, aiming to push the boundaries of current model capabilities.",
+    "char_start": 13494,
+    "char_end": 13688,
+    "sentence_index": 94,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec006",
+    "text": "At the same time, annotators are instructed to ensure that all questions are accurate, unambiguous, and answerable by humans.",
+    "char_start": 13689,
+    "char_end": 13814,
+    "sentence_index": 95,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec006",
+    "text": "For each question, annotators begin by visually inspecting the image database to choose a set of relevant images.",
+    "char_start": 13815,
+    "char_end": 13928,
+    "sentence_index": 96,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec006",
+    "text": "They then construct a question that cannot be answered based on any single image in isolation; rather, the question requires integrating information from multiple images in order to infer the actual scenario.",
+    "char_start": 13929,
+    "char_end": 14137,
+    "sentence_index": 97,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec006",
+    "text": "To ensure diversity in question formats, no templates are used, and all questions are created in free form.",
+    "char_start": 14138,
+    "char_end": 14245,
+    "sentence_index": 98,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec006",
+    "text": "Each question is designed as a four-option multiple-choice problem, with only one correct answer.",
+    "char_start": 14246,
+    "char_end": 14343,
+    "sentence_index": 99,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec006",
+    "text": "The incorrect options are also carefully crafted to serve as plausible distractors.",
+    "char_start": 14344,
+    "char_end": 14427,
+    "sentence_index": 100,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec006",
+    "text": "In addition, annotators provide detailed reasoning processes alongside each answer, which are used to facilitate filtering incorrect samples during quality control and to enable automated analysis of MLLMs\u2019 reasoning processes, as described in Section .",
+    "char_start": 14428,
+    "char_end": 14681,
+    "sentence_index": 101,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec006",
+    "text": "Quality control.",
+    "char_start": 14683,
+    "char_end": 14699,
+    "sentence_index": 102,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec006",
+    "text": "To ensure the quality of the data, three additional reviewers, independent of the original annotators, systematically examine all data and remove any instances containing ambiguous questions (due to linguistic ambiguities or insufficient visual information), incorrect answers, or questions that can be answered using a single image or common sense alone.",
+    "char_start": 14701,
+    "char_end": 15056,
+    "sentence_index": 103,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec006",
+    "text": "This rigorous quality control ensures our benchmark provides a reliable, high-quality evaluation.",
+    "char_start": 15057,
+    "char_end": 15154,
+    "sentence_index": 104,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec006",
+    "text": "We annotate the difficulty level of the data based on human answering time; detailed information is provided in Appendix .",
+    "char_start": 15155,
+    "char_end": 15277,
+    "sentence_index": 105,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec007",
+    "text": "We evaluate 37 open-source and proprietary MLLMs on MMSI-Bench.",
+    "char_start": 15279,
+    "char_end": 15342,
+    "sentence_index": 106,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec008",
+    "text": "For consistency, all models are evaluated with a temperature of zero and a maximum output length of 2,048 tokens.",
+    "char_start": 15343,
+    "char_end": 15456,
+    "sentence_index": 107,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec008",
+    "text": "For comparison, we include three baselines: Random Guessing , Human Performance , and Blind GPT-4o .",
+    "char_start": 15458,
+    "char_end": 15558,
+    "sentence_index": 108,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec008",
+    "text": "Random Guessing reflects the expected accuracy under equal-probability selection from all options.",
+    "char_start": 15559,
+    "char_end": 15657,
+    "sentence_index": 109,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec008",
+    "text": "Human performance is measured as the average accuracy of five independent evaluators not involved in data annotation, representing human-level spatial intelligence on this benchmark.",
+    "char_start": 15658,
+    "char_end": 15840,
+    "sentence_index": 110,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec008",
+    "text": "Blind GPT-4o denotes the performance of GPT-4o without access to image inputs.",
+    "char_start": 15841,
+    "char_end": 15919,
+    "sentence_index": 111,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec008",
+    "text": "We report accuracy (\\%) using exact match between answers extracted from model outputs and ground-truth answers for our multiple-choice questions.",
+    "char_start": 15921,
+    "char_end": 16067,
+    "sentence_index": 112,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec008",
+    "text": "If a model fails to generate an answer in the required format, we adopt the LLM-based fallback strategy from VLMEvalKit VLMEvalKit to extract the intended response.",
+    "char_start": 16068,
+    "char_end": 16232,
+    "sentence_index": 113,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec008",
+    "text": "More experimental details are provided in Appendix .",
+    "char_start": 16233,
+    "char_end": 16285,
+    "sentence_index": 114,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec009",
+    "text": "Table presents the primary results of our evaluation.",
+    "char_start": 16287,
+    "char_end": 16340,
+    "sentence_index": 115,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec009",
+    "text": "We summarize our main findings as follows:\n\nCurrent MLLMs struggle with multi-image spatial reasoning.",
+    "char_start": 16341,
+    "char_end": 16443,
+    "sentence_index": 116,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec009",
+    "text": "Despite recent progress, even the most advanced MLLMs exhibit significant limitations in multi-image spatial reasoning.",
+    "char_start": 16444,
+    "char_end": 16563,
+    "sentence_index": 117,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec009",
+    "text": "Most models achieve relatively low average scores, often only marginally outperforming random guessing, and are far from human-level performance.",
+    "char_start": 16564,
+    "char_end": 16709,
+    "sentence_index": 118,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec009",
+    "text": "For example, the best-performing proprietary reasoning model, GPT-5, achieves an average accuracy of only 41.9\\%, while human performance exceeds 97\\%, highlighting a substantial gap in spatial intelligence between current MLLMs and humans.",
+    "char_start": 16710,
+    "char_end": 16950,
+    "sentence_index": 119,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec009",
+    "text": "Additionally, the accuracy of Blind GPT-4o is close to that of random guessing, indicating that our tasks indeed require genuine visual-spatial reasoning and cannot be solved by language priors or commonsense knowledge alone.",
+    "char_start": 16952,
+    "char_end": 17177,
+    "sentence_index": 120,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec009",
+    "text": "Advanced open-source models still trail proprietary counterparts.",
+    "char_start": 17179,
+    "char_end": 17244,
+    "sentence_index": 121,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec009",
+    "text": "We observe that leading open-source models generally underperform compared to proprietary models.",
+    "char_start": 17245,
+    "char_end": 17342,
+    "sentence_index": 122,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec009",
+    "text": "For instance, the best open-source model, Qwen2.5-VL-72B, achieves an average score of 30.7\\%, which is notably lower than that of the top proprietary model.",
+    "char_start": 17343,
+    "char_end": 17500,
+    "sentence_index": 123,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec009",
+    "text": "This underscores a notable performance gap between cutting-edge open-source and proprietary MLLMs on this challenging benchmark.",
+    "char_start": 17501,
+    "char_end": 17629,
+    "sentence_index": 124,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec009",
+    "text": "Multi-step reasoning and camera motion comprehension are challenging.",
+    "char_start": 17631,
+    "char_end": 17700,
+    "sentence_index": 125,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec009",
+    "text": "For most models, performance on multi-step reasoning (MSR) tasks is lower than on single-step tasks (i.e., the average performance on Positional Relationship, Attribute, and Motion categories), indicating that integrating information across multiple reasoning steps remains a challenge for current MLLMs.",
+    "char_start": 17701,
+    "char_end": 18005,
+    "sentence_index": 126,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec009",
+    "text": "In addition, most models, particularly open-source ones, perform poorly on camera motion tasks, suggesting that MLLMs, as embodied agents, struggle to understand their own movement.",
+    "char_start": 18006,
+    "char_end": 18187,
+    "sentence_index": 127,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec009",
+    "text": "One potential reason is that open-source models generally lack access to annotated first-person motion data during training, while proprietary models may leverage more diverse datasets containing such information.",
+    "char_start": 18188,
+    "char_end": 18401,
+    "sentence_index": 128,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec009",
+    "text": "Scaling up model size brings limited gains on MMSI-Bench.",
+    "char_start": 18403,
+    "char_end": 18460,
+    "sentence_index": 129,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec009",
+    "text": "We observe that, for models within the same series, increasing the number of parameters leads to only limited performance gains on MMSI-Bench.",
+    "char_start": 18461,
+    "char_end": 18603,
+    "sentence_index": 130,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec009",
+    "text": "For example, Qwen2.5-VL-72B achieves only a 3\\% higher accuracy than Qwen2.5-VL-32B, and InternVL3-78B outperforms InternVL3-1B by just 1.5\\%.",
+    "char_start": 18604,
+    "char_end": 18746,
+    "sentence_index": 131,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec009",
+    "text": "Moreover, NVILA-15B surpasses most models with over 70 billion parameters, ranking second only to the best-performing open-source model, Qwen2.5-VL-72B.",
+    "char_start": 18747,
+    "char_end": 18899,
+    "sentence_index": 132,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec009",
+    "text": "These results suggest that, at present, the bottleneck for advancing MLLM performance on complex spatial reasoning tasks may lie primarily in data quality and diversity, rather than model size.",
+    "char_start": 18900,
+    "char_end": 19093,
+    "sentence_index": 133,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec009",
+    "text": "How to best leverage data, model size, and architecture in synergy remains an open and important question for future research.",
+    "char_start": 19094,
+    "char_end": 19220,
+    "sentence_index": 134,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec009",
+    "text": "[t!]\n\n1.3pt\nEvaluation results for 37 MLLMs on MMSI-Bench.",
+    "char_start": 19221,
+    "char_end": 19279,
+    "sentence_index": 135,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec009",
+    "text": "For each category, the best-performing proprietary model and the best-performing open-source model are both indicated in bold .",
+    "char_start": 19280,
+    "char_end": 19407,
+    "sentence_index": 136,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec009",
+    "text": "-0.6em\nwidth=0.95 ,center\n\nl\n* 6 > p 0.063\n* 2 > p 0.062\n* 2 > p 0.062\n> p 0.062\n> p 0.060\n\n2 * Models\n& 6 c cyan!8 Positional Relationship\n& 2 c orange!10 Attribute\n& 2 c brown!15 Motion\n& gray!12 MSR\n& 2 * Avg.",
+    "char_start": 19408,
+    "char_end": 19620,
+    "sentence_index": 137,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec009",
+    "text": "& Cam.\u2013Cam.",
+    "char_start": 19622,
+    "char_end": 19633,
+    "sentence_index": 138,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec009",
+    "text": "& Obj.\u2013Obj.",
+    "char_start": 19634,
+    "char_end": 19645,
+    "sentence_index": 139,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec009",
+    "text": "& Reg.\u2013Reg.",
+    "char_start": 19646,
+    "char_end": 19657,
+    "sentence_index": 140,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec009",
+    "text": "& Cam.\u2013Obj.",
+    "char_start": 19658,
+    "char_end": 19669,
+    "sentence_index": 141,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec009",
+    "text": "& Obj.\u2013Reg.",
+    "char_start": 19670,
+    "char_end": 19681,
+    "sentence_index": 142,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec009",
+    "text": "& Cam.\u2013Reg.",
+    "char_start": 19682,
+    "char_end": 19693,
+    "sentence_index": 143,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec009",
+    "text": "& Meas.",
+    "char_start": 19694,
+    "char_end": 19701,
+    "sentence_index": 144,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec009",
+    "text": "& Appr.",
+    "char_start": 19702,
+    "char_end": 19709,
+    "sentence_index": 145,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec009",
+    "text": "& Cam.",
+    "char_start": 19710,
+    "char_end": 19716,
+    "sentence_index": 146,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec009",
+    "text": "& Obj.",
+    "char_start": 19717,
+    "char_end": 19723,
+    "sentence_index": 147,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec009",
+    "text": "& \u2013 &\n\nyellow!15 13 l Proprietary\n\nGPT-5 & 43.0 & 35.1 & 32.1 & 48.8 & 42.4 & 51.8 & 60.9 & 36.4 & 32.4 & 36.8 & 42.0 & 41.9\n\no3 & 45.2 & 39.4 & 37.0 & 44.2 & 47.1 & 62.6 & 54.7 & 28.8 & 31.1 & 32.9 & 34.9 & 41.0\n\nGPT-4.5 & 34.4 & 29.8 & 39.5 & 51.2 & 47.1 & 55.4 & 39.1 & 33.3 & 41.9 & 40.8 & 36.4 & 40.3\n\nGPT-4.1 & 36.6 & 26.6 & 27.2 & 29.1 & 36.5 & 27.7 & 37.5 & 24.2 & 36.5 & 32.9 & 28.8 & 30.9\n\nGPT-4o & 34.4 & 24.5 & 23.5 & 19.8 & 37.6 & 27.7 & 32.8 & 31.8 & 35.1 & 36.8 & 30.8 & 30.3\n\nGemini-2.5-Pro & 39.7 & 31.9 & 39.5 & 45.3 & 35.2 & 43.3 & 51.5 & 21.2 & 36.4 & 30.2 & 34.3 & 36.9\n\nClaude-3.7-Sonnet & 35.5 & 29.8 & 29.6 & 31.4 & 32.9 & 34.9 & 37.5 & 25.8 & 23.0 & 31.6 & 25.8 & 30.2\n\ndots.vlm 1 & 33.3 & 31.9 & 38.3 & 27.9 & 34.1 & 42.2 & 62.5 & 36.4 & 23.0 & 25.0 & 30.8 & 34.1\n\nGLM-4.5V-thinking & 38.7 & 35.1 & 29.6 & 30.2 & 40.0 & 39.8 & 45.3 & 28.8 & 25.7 & 32.9 & 30.3 & 33.8\n\nDoubao-1.5-pro & 25.8 & 33.0 & 33.3 & 33.7 & 49.4 & 39.8 & 37.5 & 31.8 & 27.0 & 26.3 & 29.8 & 33.0\n\nSeed1.5-VL & 32.2 & 30.8 & 25.9 & 23.2 & 38.8 & 32.5 & 39.0 & 21.2 & 36.4 & 25.0 & 26.2 & 29.7\n\nyellow!15 13 l Open-source\n\nInternVL3-78B & 34.4 & 23.4 & 32.1 & 12.8 & 37.6 & 26.5 & 37.5 & 19.7 & 28.4 & 31.6 & 29.3 & 28.5\n\nInternVL2.5-78B & 23.7 & 22.3 & 39.5 & 29.1 & 31.8 & 42.2 & 35.9 & 19.7 & 17.6 & 26.3 & 27.3 & 28.5\n\nQwen2.5-VL-72B & 25.8 & 34.0 & 34.6 & 23.3 & 34.1 & 36.1 & 45.3 & 27.3 & 27.0 & 30.3 & 27.3 & 30.7\n\nLLaVA-OneVision-72B & 43.0 & 31.9 & 33.3 & 30.2 & 37.6 & 38.6 & 28.1 & 19.7 & 13.5 & 32.9 & 15.7 & 28.4\n\nInternVL3-38B & 21.5 & 20.2 & 33.3 & 23.3 & 35.3 & 25.3 & 39.1 & 21.2 & 16.2 & 31.6 & 25.8 & 26.3\n\nInternVL2.5-38B & 18.3 & 22.3 & 35.8 & 22.1 & 38.8 & 34.9 & 37.5 & 25.8 & 14.9 & 38.2 & 25.3 & 27.9\n\nQwen2.5-VL-32B & 24.7 & 26.6 & 29.6 & 22.1 & 32.9 & 31.3 & 31.2 & 24.2 & 18.9 & 35.5 & 27.8 & 27.7\n\nInternVL2.5-26B & 24.7 & 19.1 & 29.6 & 33.7 & 31.8 & 37.3 & 35.9 & 30.3 & 10.8 & 31.6 & 26.8 & 28.0\n\nNVILA-15B & 30.1 & 39.4 & 28.4 & 36.0 & 38.8 & 20.5 & 29.7 & 31.8 & 18.9 & 35.5 & 27.8 & 30.5\n\nInternVL3-14B & 19.4 & 24.5 & 24.7 & 23.3 & 37.6 & 24.1 & 31.2 & 22.7 & 24.3 & 31.6 & 29.3 & 26.8\n\nLlama-3.2-11B-Vision & 25.8 & 30.8 & 32.0 & 25.6 & 21.2 & 25.9 & 20.3 & 19.7 & 25.6 & 28.9 & 19.2 & 25.4\n\nInternVL3-9B & 18.3 & 25.5 & 32.1 & 29.1 & 31.8 & 22.9 & 29.7 & 24.2 & 16.2 & 38.2 & 26.8 & 26.7\n\nInternVL3-8B & 25.8 & 31.9 & 37.0 & 25.6 & 35.3 & 28.9 & 23.4 & 24.2 & 16.2 & 32.9 & 14.6 & 25.7\n\nInternVL2.5-8B & 32.3 & 27.7 & 29.6 & 32.6 & 24.7 & 32.5 & 26.6 & 27.3 & 16.2 & 31.6 & 30.3 & 28.7\n\nNVILA-8B & 17.2 & 29.8 & 24.7 & 30.2 & 22.4 & 34.9 & 34.4 & 25.8 & 25.7 & 34.2 & 29.8 & 28.1\n\nQwen2.5-VL-7B & 24.7 & 24.5 & 24.7 & 25.6 & 29.4 & 26.5 & 25.0 & 18.2 & 20.3 & 39.5 & 25.8 & 25.9\n\nLLaVA-OneVision-7B & 20.4 & 33.0 & 29.6 & 29.1 & 25.9 & 30.1 & 29.7 & 25.8 & 18.9 & 34.2 & 11.6 & 24.5\n\nInternVL2.5-4B & 31.2 & 23.4 & 21.0 & 31.4 & 34.1 & 25.3 & 23.4 & 24.2 & 13.5 & 31.6 & 26.8 & 26.3\n\nQwen2.5-VL-3B & 26.9 & 27.7 & 30.9 & 29.1 & 28.2 & 34.9 & 31.2 & 16.7 & 17.6 & 27.6 & 23.2 & 26.5\n\nInternVL3-2B & 26.9 & 25.5 & 29.6 & 31.4 & 28.2 & 27.7 & 26.6 & 22.7 & 12.2 & 23.7 & 23.7 & 25.3\n\nInternVL2.5-2B & 28.0 & 27.7 & 24.7 & 37.2 & 29.4 & 36.1 & 43.8 & 15.2 & 21.6 & 31.6 & 26.8 & 29.0\n\nInternVL3-1B & 24.7 & 35.1 & 22.2 & 30.2 & 29.4 & 30.1 & 32.8 & 28.8 & 17.6 & 19.7 & 26.3 & 27.0\n\nInternVL2.5-1B & 23.7 & 26.6 & 24.7 & 25.6 & 31.8 & 25.3 & 31.2 & 30.3 & 17.6 & 25.0 & 26.3 & 26.1\n\nDeepSeek-VL2 & 23.7 & 31.9 & 22.2 & 36.0 & 30.6 & 22.9 & 28.1 & 15.2 & 28.4 & 26.3 & 28.3 & 27.1\n\nDeepSeek-VL2-Small & 24.7 & 28.7 & 18.5 & 33.7 & 38.8 & 27.7 & 28.1 & 33.3 & 24.3 & 25.0 & 29.8 & 28.6\n\nDeepSeek-VL2-Tiny & 29.0 & 27.7 & 21.0 & 23.3 & 17.6 & 31.3 & 14.1 & 24.2 & 14.9 & 25.0 & 27.3 & 24.0\n\nyellow!15 13 l Baseline\n\nBlind GPT-4o & 20.2 & 17.0 & 29.6 & 13.9 & 29.4 & 19.2 & 21.8 & 12.1 & 20.2 & 29.0 & 20.2 & 22.7\n\nRandom Guessing & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0 & 25.0\n\nHuman Level & 95.7 & 98.9 & 97.5 & 94.2 & 98.8 & 96.4 & 95.3 & 98.5 & 98.6 & 98.7 & 97.0 & 97.2\n\n-2.2em\n\nCurrent spatial fine-tuning yields limited benefits on MMSI-Bench.",
+    "char_start": 19724,
+    "char_end": 23836,
+    "sentence_index": 148,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec009",
+    "text": "We evaluated models fine-tuned on spatial-reasoning data on MMSI-Bench (detailed results are provided in Appendix ) and found only marginal gains over their base counterparts, underscoring the benchmark\u2019s high difficulty and stringent demands for spatial reasoning generalization.",
+    "char_start": 23837,
+    "char_end": 24117,
+    "sentence_index": 149,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec010",
+    "text": "Prompting techniques are widely adopted to improve the reasoning and problem-solving capabilities of large models.",
+    "char_start": 24119,
+    "char_end": 24233,
+    "sentence_index": 150,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec010",
+    "text": "Building on these advances, we investigate whether such methods can similarly enhance the spatial reasoning abilities of MLLMs on MMSI-Bench.",
+    "char_start": 24234,
+    "char_end": 24375,
+    "sentence_index": 151,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec010",
+    "text": "Specifically, we investigate both linguistic and visual prompting approaches (see Appendix for further details):\n\nLinguistic prompting: We adopt the widely used Zero-Shot Chain-of-Thought (CoT) method.",
+    "char_start": 24376,
+    "char_end": 24577,
+    "sentence_index": 152,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec010",
+    "text": "Following prior work CoT , we prepend ``Let\u2019s think step by step'' to the prompts to encourage reasoning.",
+    "char_start": 24578,
+    "char_end": 24683,
+    "sentence_index": 153,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec010",
+    "text": "Visual prompting: For multi-image spatial understanding, a fundamental requirement is the ability to identify overlaps between images in order to establish relationships across them.",
+    "char_start": 24685,
+    "char_end": 24867,
+    "sentence_index": 154,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec010",
+    "text": "However, MLLMs may struggle to identify overlaps between images.",
+    "char_start": 24868,
+    "char_end": 24932,
+    "sentence_index": 155,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec010",
+    "text": "To explicitly provide this cue to the model, we employ the popular image matching method PATS PATS to establish sparse correspondences between pairs of images, which involves concatenating multiple images and drawing lines between corresponding points to explicitly indicate cross-image relationships.",
+    "char_start": 24933,
+    "char_end": 25234,
+    "sentence_index": 156,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec010",
+    "text": "As a baseline, we use concatenated images without correspondence lines as visual inputs, and compare their results with those obtained using visual prompt.",
+    "char_start": 25235,
+    "char_end": 25390,
+    "sentence_index": 157,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec010",
+    "text": "r 0.4\n\n-1.2em\nimages/prompt_effect.png\n-7pt\nImpact of linguistic and visual prompting on MMSI-Bench.",
+    "char_start": 25392,
+    "char_end": 25492,
+    "sentence_index": 158,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec010",
+    "text": "-0.17in\n\nWe conduct experiments using 4 representative models.",
+    "char_start": 25494,
+    "char_end": 25556,
+    "sentence_index": 159,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec010",
+    "text": "As shown in Figure , the linguistic prompting approach (CoT) leads to a modest performance improvement only for GPT-4o, while resulting in performance degradation on the other models.",
+    "char_start": 25557,
+    "char_end": 25740,
+    "sentence_index": 160,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec010",
+    "text": "This limited effectiveness of linguistic prompting may be attributed to the models' inherent lack of spatial reasoning capabilities; simply encouraging \"thinking\" does not address their fundamental limitations in spatial understanding.",
+    "char_start": 25741,
+    "char_end": 25976,
+    "sentence_index": 161,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec010",
+    "text": "Similarly, the visual prompting approach yields only slight performance improvements for two models, while resulting in performance degradation for the other two.",
+    "char_start": 25978,
+    "char_end": 26140,
+    "sentence_index": 162,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec010",
+    "text": "One possible explanation is that most models still lack the basic spatial intelligence required to benefit from such cues: they may not recognize the need to identify overlaps between images to establish spatial relationships, or, even when overlaps are identified, they struggle to reconstruct the actual scene.",
+    "char_start": 26141,
+    "char_end": 26453,
+    "sentence_index": 163,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec010",
+    "text": "These findings indicate that further progress in the spatial reasoning ability of MLLMs may depend on advances in model architectures or training paradigms, such as the incorporation of domain-specific data, rather than relying solely on improved prompting strategies.",
+    "char_start": 26454,
+    "char_end": 26722,
+    "sentence_index": 164,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec011",
+    "text": "This section analyzes the errors made by MLLMs on MMSI-Bench.",
+    "char_start": 26724,
+    "char_end": 26785,
+    "sentence_index": 165,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec011",
+    "text": "First, Section presents a manual categorization of error types observed in the reasoning processes of the representative model.",
+    "char_start": 26786,
+    "char_end": 26913,
+    "sentence_index": 166,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec011",
+    "text": "Then, in Section , we introduce an enhanced automated error analysis method for systematically examining the reasoning errors of various MLLMs with the help of our annotated reasoning processes.",
+    "char_start": 26914,
+    "char_end": 27108,
+    "sentence_index": 167,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec011",
+    "text": "[t!]\n\n-2em\nimages/4error.pdf\n-0.4em\nIllustration of four error types identified in MLLM spatial reasoning on MMSI-Bench.",
+    "char_start": 27110,
+    "char_end": 27230,
+    "sentence_index": 168,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec011",
+    "text": "-1em\n\nTo identify the main bottlenecks of MLLMs on our benchmark, we manually analyze the reasoning processes exhibited by a representative model, GPT-4o, when prompted with chain-of-thought (CoT) instructions.",
+    "char_start": 27232,
+    "char_end": 27442,
+    "sentence_index": 169,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec012",
+    "text": "Specifically, we randomly sample 100 instances from MMSI-Bench and categorize the observed errors into four distinct types (as illustrated in Figure ):\n\nGrounding errors.",
+    "char_start": 27443,
+    "char_end": 27613,
+    "sentence_index": 170,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec012",
+    "text": "The model fails to correctly identify or localize relevant objects or details within the image.",
+    "char_start": 27614,
+    "char_end": 27709,
+    "sentence_index": 171,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec012",
+    "text": "For instance, it might misclassify an object or incorrectly determine the position of an object, errors that undermine its ability to anchor visual reasoning in the actual image content.",
+    "char_start": 27710,
+    "char_end": 27896,
+    "sentence_index": 172,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec012",
+    "text": "Overlap-matching and scene-reconstruction errors.",
+    "char_start": 27898,
+    "char_end": 27947,
+    "sentence_index": 173,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec012",
+    "text": "The model fails to identify and match corresponding points that represent the same locations or objects in the real scene across different images, and struggles to implicitly reconstruct the underlying scene based on these cross-image relationships.",
+    "char_start": 27948,
+    "char_end": 28197,
+    "sentence_index": 174,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec012",
+    "text": "For example, it cannot recognize that a tree appearing in both images is actually the same tree, leading to an incorrect reconstruction of the scene layout.",
+    "char_start": 28198,
+    "char_end": 28354,
+    "sentence_index": 175,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec012",
+    "text": "Situation-transformation reasoning errors.",
+    "char_start": 28356,
+    "char_end": 28398,
+    "sentence_index": 176,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec012",
+    "text": "The model makes mistakes when reasoning about spatial directions relative to different reference objects, or when converting between relative directions (such as left and right) and absolute directions (such as north, south, east, and west).",
+    "char_start": 28399,
+    "char_end": 28640,
+    "sentence_index": 177,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec012",
+    "text": "Spatial-logic errors.",
+    "char_start": 28642,
+    "char_end": 28663,
+    "sentence_index": 178,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec012",
+    "text": "The model exhibits errors in spatial logical reasoning, such as (1) hallucinating spatial relationships that do not exist in the given context; (2) failing to correctly apply the transitivity of spatial relations, for example, given that A is east of B and B is east of C, the model incorrectly infers that A is west of C; and (3) making mistakes in identifying the correct reference object during motion reasoning, such as using another moving object as the reference point when determining an object\u2019s absolute motion status (whereas the correct approach would be to use a stationary object like the ground as the reference).",
+    "char_start": 28664,
+    "char_end": 29291,
+    "sentence_index": 179,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec013",
+    "text": "-1em\nimages/error_three_pie.png\n-0.7em\nDistribution of correct and error types across three representative MLLMs.",
+    "char_start": 29293,
+    "char_end": 29406,
+    "sentence_index": 180,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec013",
+    "text": "-1em\n\nError analysis of model outputs can provide valuable insights for improving MLLMs\u2019 spatial capabilities.",
+    "char_start": 29408,
+    "char_end": 29518,
+    "sentence_index": 181,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec013",
+    "text": "However, manually reviewing each output is time-consuming and impractical at scale.",
+    "char_start": 29519,
+    "char_end": 29602,
+    "sentence_index": 182,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec013",
+    "text": "We try to give the model the correct answer and ask it to reflect on its output and identify the primary error type following Section .",
+    "char_start": 29604,
+    "char_end": 29739,
+    "sentence_index": 183,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec013",
+    "text": "In experiments with GPT-4o, it correctly labels the error type for only 53\\% of the selected samples, indicating that the correct answer alone is insufficient for evaluating the reasoning process.",
+    "char_start": 29740,
+    "char_end": 29936,
+    "sentence_index": 184,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec013",
+    "text": "When we also supply the human-annotated reasoning process, the accuracy rises to 78\\%, highlighting the effectiveness and essential role of our reasoning annotation in achieving reliable automated error analysis.",
+    "char_start": 29937,
+    "char_end": 30149,
+    "sentence_index": 185,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec013",
+    "text": "We then apply this approach to analyze the reasoning processes of representative models across all MMSI-Bench questions, with results presented in Figure , which reveals the distribution of error types across different models and highlights specific directions for improving their spatial reasoning abilities.",
+    "char_start": 30151,
+    "char_end": 30460,
+    "sentence_index": 186,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec013",
+    "text": "Notably, we observe that even when the final answer is correct, the reasoning process can still contain significant errors.",
+    "char_start": 30461,
+    "char_end": 30584,
+    "sentence_index": 187,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec013",
+    "text": "Among the various error types, overlap-matching and scene-reconstruction errors account for the largest proportion of mistakes across all models.",
+    "char_start": 30585,
+    "char_end": 30730,
+    "sentence_index": 188,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec013",
+    "text": "This suggests a clear direction for future progress as MLLMs strive for human-level spatial intelligence.",
+    "char_start": 30731,
+    "char_end": 30836,
+    "sentence_index": 189,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec014",
+    "text": "To summarize, we introduce MMSI-Bench, a challenging and comprehensive benchmark specifically designed to assess the multi-image spatial reasoning capability of MLLMs.",
+    "char_start": 30838,
+    "char_end": 31005,
+    "sentence_index": 190,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec014",
+    "text": "Our evaluation across 37 state-of-the-art models reveals a substantial gap between current MLLMs and human-level spatial intelligence.",
+    "char_start": 31006,
+    "char_end": 31140,
+    "sentence_index": 191,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec014",
+    "text": "Leveraging expert-annotated reasoning processes, we further propose an automated error analysis pipeline that enables scalable and systematic diagnosis of model failures, highlighting concrete directions for improving spatial reasoning in future models.",
+    "char_start": 31141,
+    "char_end": 31394,
+    "sentence_index": 192,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec014",
+    "text": "We hope MMSI-Bench will serve as a valuable resource for the community and accelerate progress toward more spatially capable and robust multimodal AI systems.",
+    "char_start": 31395,
+    "char_end": 31553,
+    "sentence_index": 193,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec014",
+    "text": "We further discuss the LLM usage and limitations in Appendix .",
+    "char_start": 31554,
+    "char_end": 31616,
+    "sentence_index": 194,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec014",
+    "text": "iclr2026_conference\niclr2026_conference\n\nThis appendix provides supplementary details to support and extend the main paper.",
+    "char_start": 31618,
+    "char_end": 31741,
+    "sentence_index": 195,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec015",
+    "text": "The organization of the appendix is as follows:\n\nLLM Usage, Limitations, Social Impact, and License \\& Access (Section ): This section outlines not only our LLM Usage, the limitations of our work, but also discusses its potential social implications, associated risks, and ethical considerations.",
+    "char_start": 31742,
+    "char_end": 32038,
+    "sentence_index": 196,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec015",
+    "text": "In addition, it clarifies the licensing terms and access conditions for MMSI-Bench, ensuring responsible and transparent use of the dataset.",
+    "char_start": 32039,
+    "char_end": 32179,
+    "sentence_index": 197,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec015",
+    "text": "Motivation for Multi-Image Input (Section ): We discuss the unique advantages of multi-image input for evaluating spatial intelligence.",
+    "char_start": 32181,
+    "char_end": 32316,
+    "sentence_index": 198,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec015",
+    "text": "Comparison with Other Spatial Question-Answering Benchmarks (Section ): In this section, we compare MMSI-Bench with existing spatial question-answering benchmarks, highlighting the unique value of our benchmark.",
+    "char_start": 32318,
+    "char_end": 32529,
+    "sentence_index": 199,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec015",
+    "text": "Additional Implementation Details and Experimental Results (Section ): This section provides supplementary technical details regarding the implementation as well as more experimental results.",
+    "char_start": 32531,
+    "char_end": 32722,
+    "sentence_index": 200,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec015",
+    "text": "Details of the Data Curation Process (Section ): This section elaborates on the procedures and criteria used in curating the MMSI-Bench dataset, including data sourcing, annotation protocols, and quality control measures, as well as the methodology and results of the difficulty-level annotation.",
+    "char_start": 32724,
+    "char_end": 33020,
+    "sentence_index": 201,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec015",
+    "text": "Representative MMSI-Bench Samples from Each Category (Full Version) (Section ): In this section, we present a full set of representative samples from each category in MMSI-Bench, without any truncation or simplification.",
+    "char_start": 33022,
+    "char_end": 33242,
+    "sentence_index": 202,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec015",
+    "text": "This is intended to give the reader a complete view of the dataset's diversity and coverage.",
+    "char_start": 33243,
+    "char_end": 33335,
+    "sentence_index": 203,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec015",
+    "text": "Additional Case Studies (Section ): We provide further case studies to illustrate the model's reasoning process on MMSI-Bench, supplementing those already discussed in the main text.",
+    "char_start": 33337,
+    "char_end": 33519,
+    "sentence_index": 204,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0206",
+    "section_id": "sec015",
+    "text": "Each section is intended to provide additional transparency and insight, ensuring the reproducibility and broader contextualization of our research.",
+    "char_start": 33521,
+    "char_end": 33669,
+    "sentence_index": 205,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0207",
+    "section_id": "sec016",
+    "text": "In the preparation of this manuscript, Large Language Models (LLMs) were used as a writing-assistance tool.",
+    "char_start": 33671,
+    "char_end": 33778,
+    "sentence_index": 206,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0208",
+    "section_id": "sec017",
+    "text": "The primary purpose of their use was to aid in polishing the language, which included improving grammar, refining sentence structure, and enhancing the overall clarity and readability of the text.",
+    "char_start": 33779,
+    "char_end": 33975,
+    "sentence_index": 207,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0209",
+    "section_id": "sec017",
+    "text": "All core research concepts, methodologies, analyses, and conclusions were conceived and formulated exclusively by the authors.",
+    "char_start": 33976,
+    "char_end": 34102,
+    "sentence_index": 208,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0210",
+    "section_id": "sec017",
+    "text": "The authors have reviewed the final text and take full responsibility for the entire content of this paper, ensuring its scientific accuracy and originality.",
+    "char_start": 34103,
+    "char_end": 34260,
+    "sentence_index": 209,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0211",
+    "section_id": "sec018",
+    "text": "To ensure higher data quality and richer content, we chose to manually annotate question\u2013answer pairs.",
+    "char_start": 34262,
+    "char_end": 34364,
+    "sentence_index": 210,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0212",
+    "section_id": "sec018",
+    "text": "This approach may limit scalability because it requires substantial human effort, which we acknowledge as a potential limitation of MMSI-Bench.",
+    "char_start": 34365,
+    "char_end": 34508,
+    "sentence_index": 211,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0213",
+    "section_id": "sec018",
+    "text": "Nevertheless, MMSI-Bench\u2019s current scale (1,000 samples) is sufficient for meaningful assessment, given that today\u2019s MLLMs still have substantial headroom for improvement on this benchmark.",
+    "char_start": 34509,
+    "char_end": 34698,
+    "sentence_index": 212,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0214",
+    "section_id": "sec018",
+    "text": "Its size is also comparable to widely used VQA benchmarks, such as MMStar (1,500 samples), MM-Vet (218 samples), and LLaVA-in-the-Wild (60 samples).",
+    "char_start": 34699,
+    "char_end": 34847,
+    "sentence_index": 213,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0215",
+    "section_id": "sec018",
+    "text": "When performance begins to saturate, a larger benchmark may indeed be necessary, but reaching that point will likely require new research breakthroughs or more human annotation effort.",
+    "char_start": 34848,
+    "char_end": 35032,
+    "sentence_index": 214,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0216",
+    "section_id": "sec018",
+    "text": "Notably, MMSI-Bench\u2019s scale is competitive among spatial benchmarks.",
+    "char_start": 35034,
+    "char_end": 35102,
+    "sentence_index": 215,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0217",
+    "section_id": "sec018",
+    "text": "For reference: ERQA has 400 samples, MuriBench 478, UniQA-3D 500, SpatialVLM 546, BLINK 572, LEGO-Puzzle 1,100, SpatialRGPT 1,406, and VSI-Bench 5,000.",
+    "char_start": 35103,
+    "char_end": 35254,
+    "sentence_index": 216,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0218",
+    "section_id": "sec018",
+    "text": "MMSI-Bench contains 1,000 samples, of which only the template-based VSI-Bench is substantially larger.",
+    "char_start": 35255,
+    "char_end": 35357,
+    "sentence_index": 217,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0219",
+    "section_id": "sec019",
+    "text": "The introduction of MMSI-Bench brings both potential benefits and risks to the research community and broader society.",
+    "char_start": 35359,
+    "char_end": 35477,
+    "sentence_index": 218,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0220",
+    "section_id": "sec019",
+    "text": "On the positive side, MMSI-Bench provides a challenging and comprehensive benchmark specifically designed for evaluating the spatial reasoning capabilities of vision-language models.",
+    "char_start": 35478,
+    "char_end": 35660,
+    "sentence_index": 219,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0221",
+    "section_id": "sec019",
+    "text": "By facilitating more nuanced and rigorous assessment, MMSI-Bench may help drive advances in embodied AI, assistive technologies, spatial robotics, and other domains where spatial understanding is critical.",
+    "char_start": 35661,
+    "char_end": 35866,
+    "sentence_index": 220,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0222",
+    "section_id": "sec019",
+    "text": "However, we also recognize several risks and challenges associated with the development and release of such datasets.",
+    "char_start": 35868,
+    "char_end": 35985,
+    "sentence_index": 221,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0223",
+    "section_id": "sec019",
+    "text": "First, improvements in spatial reasoning enabled by MMSI-Bench may have unintended applications, such as enhanced surveillance or automated decision-making systems that could impact privacy or disproportionately affect certain groups.",
+    "char_start": 35986,
+    "char_end": 36220,
+    "sentence_index": 222,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0224",
+    "section_id": "sec019",
+    "text": "We encourage users of MMSI-Bench to adhere strictly to ethical guidelines and to consider the societal implications of deploying models benchmarked using our dataset.",
+    "char_start": 36221,
+    "char_end": 36387,
+    "sentence_index": 223,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0225",
+    "section_id": "sec019",
+    "text": "From an environmental perspective, we acknowledge the significant computational resources required to evaluate modern vision-language models.",
+    "char_start": 36389,
+    "char_end": 36530,
+    "sentence_index": 224,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0226",
+    "section_id": "sec019",
+    "text": "By releasing MMSI-Bench and its associated scripts publicly, we aim to promote reproducibility and reduce redundant efforts, thereby minimizing unnecessary environmental impact.",
+    "char_start": 36531,
+    "char_end": 36708,
+    "sentence_index": 225,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0227",
+    "section_id": "sec019",
+    "text": "In summary, while MMSI-Bench is intended to advance responsible and transparent research in spatial reasoning for vision-language models, we urge the community to remain vigilant regarding both its positive and negative societal impacts.",
+    "char_start": 36710,
+    "char_end": 36947,
+    "sentence_index": 226,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0228",
+    "section_id": "sec020",
+    "text": "As this research uses only publicly accessible pre-trained models, it does not present any ethical concerns.",
+    "char_start": 36949,
+    "char_end": 37057,
+    "sentence_index": 227,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0229",
+    "section_id": "sec020",
+    "text": "All procedures strictly conform to the guidelines established by the ICLR Code of Ethics.",
+    "char_start": 37058,
+    "char_end": 37147,
+    "sentence_index": 228,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0230",
+    "section_id": "sec021",
+    "text": "Our experiments follow the baseline configurations established by prior evaluation benchmarks or the original testing protocols of each respective model.",
+    "char_start": 37149,
+    "char_end": 37302,
+    "sentence_index": 229,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0231",
+    "section_id": "sec021",
+    "text": "Detailed implementation information is provided in the Evaluation Setup and Appendix sections.",
+    "char_start": 37303,
+    "char_end": 37397,
+    "sentence_index": 230,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0232",
+    "section_id": "sec021",
+    "text": "We will release all data and code, along with thorough documentation, to facilitate faithful reproduction of our main experimental findings.",
+    "char_start": 37398,
+    "char_end": 37538,
+    "sentence_index": 231,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0233",
+    "section_id": "sec021",
+    "text": "All aspects of this research are fully compliant with the ICLR Reproducibility Requirements.",
+    "char_start": 37539,
+    "char_end": 37631,
+    "sentence_index": 232,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0234",
+    "section_id": "sec022",
+    "text": "The MMSI-Bench dataset is distributed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).",
+    "char_start": 37633,
+    "char_end": 37748,
+    "sentence_index": 233,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0235",
+    "section_id": "sec022",
+    "text": "For all images included in the dataset, their original licensing terms dtu-data-terms,scannet-license,nuscenes-terms,habitat-matterport3d-license,ego4d-license,agibot-world-license,davis2017-evaluation-license,waymo-open-dataset-license remain fully in effect.",
+    "char_start": 37749,
+    "char_end": 38009,
+    "sentence_index": 234,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0236",
+    "section_id": "sec022",
+    "text": "We release MMSI-Bench under the CC-BY license and Terms of Use, and require that any use of the dataset for model evaluation be properly disclosed.",
+    "char_start": 38011,
+    "char_end": 38158,
+    "sentence_index": 235,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0237",
+    "section_id": "sec022",
+    "text": "This license supplements but does not override the original licenses of source materials; users must also comply with all relevant legal requirements concerning data subjects.",
+    "char_start": 38159,
+    "char_end": 38334,
+    "sentence_index": 236,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0238",
+    "section_id": "sec022",
+    "text": "This statement clarifies the obligations and liabilities associated with using this benchmark.",
+    "char_start": 38335,
+    "char_end": 38429,
+    "sentence_index": 237,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0239",
+    "section_id": "sec022",
+    "text": "While we strive to ensure the accuracy and legality of all samples, we do not guarantee their absolute completeness or correctness.",
+    "char_start": 38430,
+    "char_end": 38561,
+    "sentence_index": 238,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0240",
+    "section_id": "sec022",
+    "text": "We assume no responsibility for any legal or other issues that may arise from the use of MMSI-Bench, including but not limited to copyright infringement, privacy violations, or the misuse of sensitive information.",
+    "char_start": 38562,
+    "char_end": 38775,
+    "sentence_index": 239,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0241",
+    "section_id": "sec022",
+    "text": "By accessing, downloading, or using MMSI-Bench, you acknowledge that you accept this statement and agree to comply with the full terms of the CC-BY license.",
+    "char_start": 38777,
+    "char_end": 38933,
+    "sentence_index": 240,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0242",
+    "section_id": "sec022",
+    "text": "If you do not agree with these terms or the CC-BY license, you are not permitted to use this benchmark.",
+    "char_start": 38934,
+    "char_end": 39037,
+    "sentence_index": 241,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0243",
+    "section_id": "sec022",
+    "text": "MMSI-Bench will be hosted and maintained on GitHub and the Hugging Face Hub platforms.",
+    "char_start": 39038,
+    "char_end": 39124,
+    "sentence_index": 242,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0244",
+    "section_id": "sec023",
+    "text": "We expect that general spatial intelligence will, like humans, operate on video inputs.",
+    "char_start": 39126,
+    "char_end": 39213,
+    "sentence_index": 243,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0245",
+    "section_id": "sec023",
+    "text": "However, we start with a multi-image setting for three reasons:\n\nFoundational to video.",
+    "char_start": 39214,
+    "char_end": 39301,
+    "sentence_index": 244,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0246",
+    "section_id": "sec023",
+    "text": "Multi-image understanding is the basis of video understanding.",
+    "char_start": 39302,
+    "char_end": 39364,
+    "sentence_index": 245,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0247",
+    "section_id": "sec023",
+    "text": "Analogous to SLAM, a system reconstructs a scene and estimates camera pose over a stream, but the front-end module (VO) still estimates the delta pose between consecutive frames before constructing a holistic perception of the scene.",
+    "char_start": 39365,
+    "char_end": 39598,
+    "sentence_index": 246,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0248",
+    "section_id": "sec023",
+    "text": "Given current limitations of MLLMs in spatial understanding, models must first handle multiple images before they can reliably understand full videos.",
+    "char_start": 39599,
+    "char_end": 39749,
+    "sentence_index": 247,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0249",
+    "section_id": "sec023",
+    "text": "Clearer diagnosis.",
+    "char_start": 39751,
+    "char_end": 39769,
+    "sentence_index": 248,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0250",
+    "section_id": "sec023",
+    "text": "Multiple images allow more systematic analysis of current MLLMs' failure modes.",
+    "char_start": 39770,
+    "char_end": 39849,
+    "sentence_index": 249,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0251",
+    "section_id": "sec023",
+    "text": "With videos, if a model answers incorrectly, it is hard to localize the cause, e.g., long-video limits, image retrieval over long sequences, or spatial reasoning itself.",
+    "char_start": 39850,
+    "char_end": 40019,
+    "sentence_index": 250,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0252",
+    "section_id": "sec023",
+    "text": "The multi-image setup is more spatially focused and easier for error analysis, which we believe accelerates community progress.",
+    "char_start": 40020,
+    "char_end": 40147,
+    "sentence_index": 251,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0253",
+    "section_id": "sec023",
+    "text": "Relevant proxy for video.",
+    "char_start": 40149,
+    "char_end": 40174,
+    "sentence_index": 252,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0254",
+    "section_id": "sec023",
+    "text": "Multi-image benchmarks also reflect capabilities needed for video-based systems.",
+    "char_start": 40175,
+    "char_end": 40255,
+    "sentence_index": 253,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0255",
+    "section_id": "sec023",
+    "text": "Our hypotheses are: (i) although humans learn spatial intelligence from videos, they can solve MMSI-Bench, suggesting our tasks capture a necessary condition for general (video-based) spatial intelligence; and (ii) a multi-image setting can be viewed as a multi-frame, low-FPS special case of video.",
+    "char_start": 40256,
+    "char_end": 40555,
+    "sentence_index": 254,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0256",
+    "section_id": "sec023",
+    "text": "We hope MMSI-Bench will inspire future video-based benchmarks.",
+    "char_start": 40557,
+    "char_end": 40619,
+    "sentence_index": 255,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0257",
+    "section_id": "sec024",
+    "text": "[ht]\n\nComparison of spatial question-answering benchmarks.",
+    "char_start": 40621,
+    "char_end": 40679,
+    "sentence_index": 256,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0258",
+    "section_id": "sec024",
+    "text": "Some benchmarks contain QA pairs outside spatial understanding; the number of spatial QA is shown in parentheses.",
+    "char_start": 40680,
+    "char_end": 40793,
+    "sentence_index": 257,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0259",
+    "section_id": "sec024",
+    "text": "Human-AI performance gap is defined as the accuracy difference between the best-performing model reported in the corresponding paper and human performance; for benchmarks without reported human results, the gap is calculated with respect to 100\\% accuracy and is marked as ``$<$value\\%''.",
+    "char_start": 40794,
+    "char_end": 41082,
+    "sentence_index": 258,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0260",
+    "section_id": "sec024",
+    "text": "Note: Scenario entries labeled as ``Indoor \\& Outdoor'' or ``Indoor'' refer to real-world images.",
+    "char_start": 41083,
+    "char_end": 41180,
+    "sentence_index": 259,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0261",
+    "section_id": "sec024",
+    "text": "0.62\n10pt\n1.1\nl l l l l c@\n\nBenchmark & Annotation Method & Visual Input Modality & Number of QAs & Scenario & Human-AI Gap\n\nVSR VSR & Auto \\& Human & Single-Image & 10K & Indoor \\& Outdoor & 25.0\\%\n\nBLINK BLINK & Auto \\& Human & Single/Multi-Image & 3,807 (572) & Real-world \\& Synthetic & 44.4\\%\n\nUniQA-3D towards3Dvision & Auto \\& Human & Single/Multi-Image & 500 & Real-world \\& Synthetic & 14.2\\%\n\nMuriBench MuirBench & Auto \\& Human & Multi-Image & 2,600 (478) & Real-world \\& Synthetic & 25.2\\%\n\nSpatialVLM SpatialVLM & Auto \\& Human & Single-Image & 546 & Indoor \\& Outdoor & <30\\%\n\nSpatialRGPT SpatialRGPT & Auto & Single-Image & 1,406 & Real-world \\& Synthetic & <42\\%\n\nMMIU MMIU & Auto & Multi-Image & 11K (2904) & Real-world \\& Synthetic & <45\\%\n\nERQA erqa & Human & Single/Multi-Image & 400 & Indoor \\& Outdoor & <35\\%\n\nLEGO-Puzzle LEGO-Puzzles & Human & Single/Multi-Image & 1K & Synthetic & 39.5\\%\n\nVSI-Bench VSI-Bench & Auto \\& Human & Video & 5K & Indoor & 33\\%\n\nMMSI-Bench & Human & Multi-Image & 1,000 & Indoor \\& Outdoor & 55.3\\%\n\nDespite significant advances in MLLMs, robust evaluation of their spatial intelligence\u2014especially in multi-image, real-world scenarios\u2014remains limited.",
+    "char_start": 41182,
+    "char_end": 42384,
+    "sentence_index": 260,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0262",
+    "section_id": "sec024",
+    "text": "As summarized in Table , most existing benchmarks focus narrowly on single-image spatial understanding or offer only limited multi-image coverage as minor components within more general VQA suites (e.g., BLINK BLINK , MuriBench MuirBench ), rather than serving as dedicated spatial reasoning benchmarks.",
+    "char_start": 42385,
+    "char_end": 42688,
+    "sentence_index": 261,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0263",
+    "section_id": "sec024",
+    "text": "Furthermore, several datasets rely heavily on template- or rule-based question generation SAT, towards3Dvision, MMIU, VSI-Bench , which restricts both the diversity and depth of spatial reasoning challenges.",
+    "char_start": 42689,
+    "char_end": 42896,
+    "sentence_index": 262,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0264",
+    "section_id": "sec024",
+    "text": "Synthetic settings such as LEGO-Puzzle LEGO-Puzzles further lack the complexity and contextual richness of real-world environments.",
+    "char_start": 42897,
+    "char_end": 43028,
+    "sentence_index": 263,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0265",
+    "section_id": "sec024",
+    "text": "In contrast, MMSI-Bench is a fully human-curated benchmark, meticulously annotated by six 3D vision researchers without the use of templates.",
+    "char_start": 43030,
+    "char_end": 43171,
+    "sentence_index": 264,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0266",
+    "section_id": "sec024",
+    "text": "It offers comprehensive coverage of spatial relationships and elements\u2014including camera (agent), objects, and regions\u2014across ten well-defined task types plus one multi-step reasoning category.",
+    "char_start": 43172,
+    "char_end": 43364,
+    "sentence_index": 265,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0267",
+    "section_id": "sec024",
+    "text": "All scenarios derive from diverse, real-world sources, spanning indoor 3D scene datasets, local scene reconstructions, autonomous driving datasets, and robotics data, encompassing both indoor and outdoor environments.",
+    "char_start": 43365,
+    "char_end": 43582,
+    "sentence_index": 266,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0268",
+    "section_id": "sec024",
+    "text": "Notably, MMSI-Bench provides detailed, human-authored reasoning chains for each question, enabling rigorous assessment of both answer accuracy and reasoning quality.",
+    "char_start": 43583,
+    "char_end": 43748,
+    "sentence_index": 267,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0269",
+    "section_id": "sec024",
+    "text": "This benchmark reveals a substantial gap between current MLLMs and human-level spatial intelligence, and sets a higher standard for multi-image spatial reasoning evaluation in realistic settings.",
+    "char_start": 43749,
+    "char_end": 43944,
+    "sentence_index": 268,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0270",
+    "section_id": "sec024",
+    "text": "To further quantify the linguistic diversity of MMSI-Bench, we conduct a comparative analysis against representative non-single-image spatial reasoning benchmarks, including VSI-Bench, the multi-image subset of ERQA, and LEGO-Puzzle.",
+    "char_start": 43946,
+    "char_end": 44179,
+    "sentence_index": 269,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0271",
+    "section_id": "sec024",
+    "text": "We analyze the complexity of the questions across these datasets at the vocabulary, phrase, and syntactic levels.",
+    "char_start": 44180,
+    "char_end": 44293,
+    "sentence_index": 270,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0272",
+    "section_id": "sec024",
+    "text": "The results are summarized in Table .",
+    "char_start": 44294,
+    "char_end": 44331,
+    "sentence_index": 271,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0273",
+    "section_id": "sec024",
+    "text": "The analysis demonstrates that MMSI-Bench exhibits superior diversity across all metrics.",
+    "char_start": 44333,
+    "char_end": 44422,
+    "sentence_index": 272,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0274",
+    "section_id": "sec024",
+    "text": "At the vocabulary level, MMSI-Bench features 1,108 distinct words, significantly more than the other benchmarks.",
+    "char_start": 44423,
+    "char_end": 44535,
+    "sentence_index": 273,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0275",
+    "section_id": "sec024",
+    "text": "At the phrase level, it leads in the number of unique 3-grams and 5-grams, suggesting a wider variety of phrasal combinations and expressions.",
+    "char_start": 44536,
+    "char_end": 44678,
+    "sentence_index": 274,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0276",
+    "section_id": "sec024",
+    "text": "Most notably, at the syntactic level, MMSI-Bench contains 993 unique syntactic structures\u2014nearly double that of VSI-Bench and more than triple that of ERQA.",
+    "char_start": 44679,
+    "char_end": 44835,
+    "sentence_index": 275,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0277",
+    "section_id": "sec024",
+    "text": "This linguistic and structural complexity stems from our fully human-curated annotation process, which is driven by experts and avoids any reliance on templates.",
+    "char_start": 44836,
+    "char_end": 44997,
+    "sentence_index": 276,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0278",
+    "section_id": "sec024",
+    "text": "This ensures that models are challenged not only with spatial reasoning tasks but also with understanding and processing diverse, naturally-phrased questions that reflect real-world linguistic distribution.",
+    "char_start": 44998,
+    "char_end": 45204,
+    "sentence_index": 277,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0279",
+    "section_id": "sec024",
+    "text": "Consequently, it sets a higher bar for evaluating a model's generalization capabilities.",
+    "char_start": 45205,
+    "char_end": 45293,
+    "sentence_index": 278,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0280",
+    "section_id": "sec024",
+    "text": "[t]\n\nQuantitative comparison of question diversity against major non-single-image spatial reasoning benchmarks.",
+    "char_start": 45295,
+    "char_end": 45406,
+    "sentence_index": 279,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0281",
+    "section_id": "sec024",
+    "text": "Distinct words: Counts the total number of unique words after lowercasing and tokenization across all questions, measuring vocabulary richness.",
+    "char_start": 45407,
+    "char_end": 45550,
+    "sentence_index": 280,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0282",
+    "section_id": "sec024",
+    "text": "Unique n-grams: Counts the number of unique consecutive n-word sequences (here, n=3 and 5) after tokenization, measuring phrasal diversity.",
+    "char_start": 45551,
+    "char_end": 45690,
+    "sentence_index": 281,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0283",
+    "section_id": "sec024",
+    "text": "Syntactic structures: Calculated by parsing the syntax of each sentence, abstracting it into a tree structure by removing specific words, and then counting the number of unique structures.",
+    "char_start": 45691,
+    "char_end": 45879,
+    "sentence_index": 282,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0284",
+    "section_id": "sec024",
+    "text": "This measures the diversity of sentence constructions.",
+    "char_start": 45880,
+    "char_end": 45934,
+    "sentence_index": 283,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0285",
+    "section_id": "sec024",
+    "text": "8pt\n1.1\nl rrrr@\n\nStatistic & VSI-Bench & MMSI-Bench & ERQA (Multi-Img) & LEGO-Puzzle\n\nDistinct words & 398 & 1,108 & 559 & 275\n\nUnique 3-grams & 4,482 & 8,499 & 2,483 & 1,023\n\nUnique 5-grams & 12,972 & 13,010 & 3,318 & 1,373\n\nSyntactic structures & 473 & 993 & 310 & 51\n\nWe conduct a comprehensive evaluation of a wide range of MLLMs, encompassing both proprietary and open-source families, diverse model scales, and recent architectural advances.",
+    "char_start": 45936,
+    "char_end": 46383,
+    "sentence_index": 284,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0286",
+    "section_id": "sec026",
+    "text": "For proprietary models, we includes GPT-5 gpt5 , o3 o3 , GPT-4.5 GPT-4.5 , GPT-4.1 GPT-4.1 , GPT-4o GPT-4o , Gemini-2.5-Pro Gemini-2.5-and-2.5-Pro , Claude-3.7-Sonnet Claude-3.7-Sonnet , dots.vlm 1 dot.vlm1 , GLM-4.5V-thinking glm45v , Doubao-1.5-pro Doubao-1.5-pro , and Seed1.5-VL Seed1.5-VL .",
+    "char_start": 46384,
+    "char_end": 46679,
+    "sentence_index": 285,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0287",
+    "section_id": "sec026",
+    "text": "On the open-source side, we systematically assess state-of-the-art models such as Qwen2.5-VL Qwen2.5-VL , LLaVA-OneVision LLaVA-OneVision , InternVL3 InternVL3 , InternVL2.5 InternVL2.5 , DeepSeek-VL2 DeepSeek-VL2 , Llama-3.2-11B-Vision Llama-3.2-11B-Vision , and NVILA NVILA .",
+    "char_start": 46680,
+    "char_end": 46957,
+    "sentence_index": 286,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0288",
+    "section_id": "sec027",
+    "text": "We report accuracy (\\%) using exact match between answers extracted from model outputs and ground-truth answers for our multiple-choice questions.",
+    "char_start": 46959,
+    "char_end": 47105,
+    "sentence_index": 287,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0289",
+    "section_id": "sec027",
+    "text": "If a model fails to generate an answer in the required format, we adopt the LLM-based fallback strategy from VLMEvalKit VLMEvalKit to extract the intended response.",
+    "char_start": 47106,
+    "char_end": 47270,
+    "sentence_index": 288,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0290",
+    "section_id": "sec027",
+    "text": "We evaluate models using three prompting strategies: Direct, Linguistic (Zero-Shot Chain-of-Thought), and Visual.",
+    "char_start": 47272,
+    "char_end": 47385,
+    "sentence_index": 289,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0291",
+    "section_id": "sec027",
+    "text": "The exact prompts used for each method are shown in Table .",
+    "char_start": 47386,
+    "char_end": 47445,
+    "sentence_index": 290,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0292",
+    "section_id": "sec027",
+    "text": "[h]\n\nPrompts used for different evaluation settings.",
+    "char_start": 47447,
+    "char_end": 47499,
+    "sentence_index": 291,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0293",
+    "section_id": "sec027",
+    "text": "0.9\nlp 10cm\n\nStrategy & Prompt Template\n\nDirect & \\ images\\ \\ question\\\n\n& Answer with the option's letter from the given choices directly.",
+    "char_start": 47501,
+    "char_end": 47640,
+    "sentence_index": 292,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0294",
+    "section_id": "sec027",
+    "text": "Enclose the option's letter within \\` \\` .",
+    "char_start": 47641,
+    "char_end": 47683,
+    "sentence_index": 293,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0295",
+    "section_id": "sec027",
+    "text": "Linguistic (Zero-Shot CoT) & \\ images\\ \\ question\\\n\n& Let's think step by step and then answer with the option's letter from the given choices.",
+    "char_start": 47685,
+    "char_end": 47828,
+    "sentence_index": 294,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0296",
+    "section_id": "sec027",
+    "text": "Enclose the option's letter within \\` \\` .",
+    "char_start": 47829,
+    "char_end": 47871,
+    "sentence_index": 295,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0297",
+    "section_id": "sec027",
+    "text": "Visual & \\ image with visual prompt\\ \\ question\\\n\n& Answer with the option's letter from the given choices directly.",
+    "char_start": 47873,
+    "char_end": 47989,
+    "sentence_index": 296,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0298",
+    "section_id": "sec027",
+    "text": "Enclose the option's letter within \\` \\` .",
+    "char_start": 47990,
+    "char_end": 48032,
+    "sentence_index": 297,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0299",
+    "section_id": "sec027",
+    "text": "5pt\n\nFor the visual prompting strategy, ``\\ image with visual prompt\\ '' refers to the image input combined with a visual prompt drawn using PATS PATS , as illustrated in Figs.",
+    "char_start": 48034,
+    "char_end": 48210,
+    "sentence_index": 298,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0300",
+    "section_id": "sec027",
+    "text": ", , , .",
+    "char_start": 48211,
+    "char_end": 48218,
+    "sentence_index": 299,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0301",
+    "section_id": "sec027",
+    "text": "[h!]\n\n-0.1in\nimages/0.jpg\n-0.02in\nIllustration of the visual prompt utilized in our experiments.",
+    "char_start": 48219,
+    "char_end": 48315,
+    "sentence_index": 300,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0302",
+    "section_id": "sec027",
+    "text": "[h!]\n\n-0.1in\nimages/1.jpg\n-0.02in\nIllustration of the visual prompt utilized in our experiments.",
+    "char_start": 48317,
+    "char_end": 48413,
+    "sentence_index": 301,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0303",
+    "section_id": "sec027",
+    "text": "[h!]\n\n-0.1in\nimages/10.jpg\n-0.02in\nIllustration of the visual prompt utilized in our experiments.",
+    "char_start": 48415,
+    "char_end": 48512,
+    "sentence_index": 302,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0304",
+    "section_id": "sec027",
+    "text": "[h!]\n\n-0.1in\nimages/100.jpg\n-0.02in\nIllustration of the visual prompt utilized in our experiments.",
+    "char_start": 48514,
+    "char_end": 48612,
+    "sentence_index": 303,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0305",
+    "section_id": "sec027",
+    "text": "The specific prompt used for evaluating the reasoning process is shown in Table .",
+    "char_start": 48614,
+    "char_end": 48695,
+    "sentence_index": 304,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0306",
+    "section_id": "sec027",
+    "text": "[h!]\n\nPrompt used for evaluating the reasoning process in our study.",
+    "char_start": 48696,
+    "char_end": 48764,
+    "sentence_index": 305,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0307",
+    "section_id": "sec027",
+    "text": "0.95\np 14cm\n\nPrompt\n\n\\ images\\ \\ question\\\n\\ reasoning process to be evaluated\\\n\\ the correct answer\\\n\nYou are given images, a question about the images, the correct answer, and a reasoning process to be evaluated.",
+    "char_start": 48766,
+    "char_end": 48980,
+    "sentence_index": 306,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0308",
+    "section_id": "sec027",
+    "text": "Your task is to evaluate the reasoning process and determine whether it is entirely correct.",
+    "char_start": 48982,
+    "char_end": 49074,
+    "sentence_index": 307,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0309",
+    "section_id": "sec027",
+    "text": "If there are any errors, identify the type of error that most critically led to the incorrect answer by selecting the corresponding category number.",
+    "char_start": 49075,
+    "char_end": 49223,
+    "sentence_index": 308,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0310",
+    "section_id": "sec027",
+    "text": "If the reasoning process is completely correct, select only category 5.",
+    "char_start": 49224,
+    "char_end": 49295,
+    "sentence_index": 309,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0311",
+    "section_id": "sec027",
+    "text": "Categories:\n\n1.",
+    "char_start": 49297,
+    "char_end": 49312,
+    "sentence_index": 310,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0312",
+    "section_id": "sec027",
+    "text": "Grounding error: Failure to accurately detect, locate, or reference objects or elements in the image.",
+    "char_start": 49313,
+    "char_end": 49414,
+    "sentence_index": 311,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0313",
+    "section_id": "sec027",
+    "text": "2.",
+    "char_start": 49416,
+    "char_end": 49418,
+    "sentence_index": 312,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0314",
+    "section_id": "sec027",
+    "text": "Overlap identification and scene reconstruction error: Mistakes in identifying overlaps between elements or errors in reconstructing spatial relationships within the scene.",
+    "char_start": 49419,
+    "char_end": 49591,
+    "sentence_index": 313,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0315",
+    "section_id": "sec027",
+    "text": "3.",
+    "char_start": 49593,
+    "char_end": 49595,
+    "sentence_index": 314,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0316",
+    "section_id": "sec027",
+    "text": "Situation transformation reasoning error: Errors in reasoning about directions or spatial relations from the perspective of an entity other than the observer (i.e., allocentric transformation errors).",
+    "char_start": 49596,
+    "char_end": 49796,
+    "sentence_index": 315,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0317",
+    "section_id": "sec027",
+    "text": "4.",
+    "char_start": 49798,
+    "char_end": 49800,
+    "sentence_index": 316,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0318",
+    "section_id": "sec027",
+    "text": "Spatial logic error: Flaws in spatial reasoning logic, such as fabrication, linguistic intelligence error, misusing reference objects in motion reasoning, or other errors not covered by categories 1, 2, or 3.",
+    "char_start": 49801,
+    "char_end": 50009,
+    "sentence_index": 317,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0319",
+    "section_id": "sec027",
+    "text": "5.",
+    "char_start": 50011,
+    "char_end": 50013,
+    "sentence_index": 318,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0320",
+    "section_id": "sec027",
+    "text": "Completely correct reasoning.",
+    "char_start": 50014,
+    "char_end": 50043,
+    "sentence_index": 319,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0321",
+    "section_id": "sec027",
+    "text": "Please output only the relevant category number.",
+    "char_start": 50045,
+    "char_end": 50093,
+    "sentence_index": 320,
+    "section_sentence_index": 33
+  },
+  {
+    "sentence_id": "s0322",
+    "section_id": "sec027",
+    "text": "5pt\n\nThe prompt for evaluating reasoning processes with a human-annotated reference is shown in Table .",
+    "char_start": 50095,
+    "char_end": 50198,
+    "sentence_index": 321,
+    "section_sentence_index": 34
+  },
+  {
+    "sentence_id": "s0323",
+    "section_id": "sec027",
+    "text": "[h!]\n\nPrompt used for evaluating reasoning processes with human-annotated reference in our study.",
+    "char_start": 50199,
+    "char_end": 50296,
+    "sentence_index": 322,
+    "section_sentence_index": 35
+  },
+  {
+    "sentence_id": "s0324",
+    "section_id": "sec027",
+    "text": "Here, the structured format of the reasoning process means that, based on the original human-annotated reasoning steps, each step is further labeled with its reasoning type.",
+    "char_start": 50297,
+    "char_end": 50470,
+    "sentence_index": 323,
+    "section_sentence_index": 36
+  },
+  {
+    "sentence_id": "s0325",
+    "section_id": "sec027",
+    "text": "There are four reasoning types, Grounding, Overlap-Matching and Scene-Reconstruction, Situation-Transformation Reasoning, and Spatial-Logic Reasoning, which correspond to four types of possible errors, respectively.",
+    "char_start": 50471,
+    "char_end": 50686,
+    "sentence_index": 324,
+    "section_sentence_index": 37
+  },
+  {
+    "sentence_id": "s0326",
+    "section_id": "sec027",
+    "text": "For example, a reasoning process can be transformed into the structured format as follows: ``The pink bench is to the east of the bed.",
+    "char_start": 50687,
+    "char_end": 50821,
+    "sentence_index": 325,
+    "section_sentence_index": 38
+  },
+  {
+    "sentence_id": "s0327",
+    "section_id": "sec027",
+    "text": "The white wall lies to the south.",
+    "char_start": 50822,
+    "char_end": 50855,
+    "sentence_index": 326,
+    "section_sentence_index": 39
+  },
+  {
+    "sentence_id": "s0328",
+    "section_id": "sec027",
+    "text": "Thus, the bathroom lies in the southeast corner of the sleeping region.'' will become ``The pink bench is to the east of the bed (Grounding).",
+    "char_start": 50856,
+    "char_end": 50997,
+    "sentence_index": 327,
+    "section_sentence_index": 40
+  },
+  {
+    "sentence_id": "s0329",
+    "section_id": "sec027",
+    "text": "The white wall lies to the south (Grounding).",
+    "char_start": 50998,
+    "char_end": 51043,
+    "sentence_index": 328,
+    "section_sentence_index": 41
+  },
+  {
+    "sentence_id": "s0330",
+    "section_id": "sec027",
+    "text": "Thus, the bathroom lies in the southeast corner of the sleeping region (Overlap-Matching and Scene-Reconstruction).''\n\n0.95\np 14cm\n\nPrompt\n\n\\ images\\ \\ question\\\n\\ reasoning process to be evaluated\\\n\\ the correct answer\\\n\\ human-annotated reference reasoning process with structured format\\\n\nYou are given images, a question about the images, the correct answer, a human-annotated reference reasoning process, and a reasoning process to be evaluated.",
+    "char_start": 51044,
+    "char_end": 51494,
+    "sentence_index": 329,
+    "section_sentence_index": 42
+  },
+  {
+    "sentence_id": "s0331",
+    "section_id": "sec027",
+    "text": "Your task is to evaluate the reasoning process and determine whether it is entirely correct.",
+    "char_start": 51496,
+    "char_end": 51588,
+    "sentence_index": 330,
+    "section_sentence_index": 43
+  },
+  {
+    "sentence_id": "s0332",
+    "section_id": "sec027",
+    "text": "If there are any errors, identify the type of error that most critically led to the incorrect answer by selecting the corresponding category number.",
+    "char_start": 51589,
+    "char_end": 51737,
+    "sentence_index": 331,
+    "section_sentence_index": 44
+  },
+  {
+    "sentence_id": "s0333",
+    "section_id": "sec027",
+    "text": "If the reasoning process is completely correct, select only category 5.",
+    "char_start": 51738,
+    "char_end": 51809,
+    "sentence_index": 332,
+    "section_sentence_index": 45
+  },
+  {
+    "sentence_id": "s0334",
+    "section_id": "sec027",
+    "text": "Categories:\n\n1.",
+    "char_start": 51811,
+    "char_end": 51826,
+    "sentence_index": 333,
+    "section_sentence_index": 46
+  },
+  {
+    "sentence_id": "s0335",
+    "section_id": "sec027",
+    "text": "Grounding error: Failure to accurately detect, locate, or reference objects or elements in the image.",
+    "char_start": 51827,
+    "char_end": 51928,
+    "sentence_index": 334,
+    "section_sentence_index": 47
+  },
+  {
+    "sentence_id": "s0336",
+    "section_id": "sec027",
+    "text": "2.",
+    "char_start": 51930,
+    "char_end": 51932,
+    "sentence_index": 335,
+    "section_sentence_index": 48
+  },
+  {
+    "sentence_id": "s0337",
+    "section_id": "sec027",
+    "text": "Overlap identification and scene reconstruction error: Mistakes in identifying overlaps between elements or errors in reconstructing spatial relationships within the scene.",
+    "char_start": 51933,
+    "char_end": 52105,
+    "sentence_index": 336,
+    "section_sentence_index": 49
+  },
+  {
+    "sentence_id": "s0338",
+    "section_id": "sec027",
+    "text": "3.",
+    "char_start": 52107,
+    "char_end": 52109,
+    "sentence_index": 337,
+    "section_sentence_index": 50
+  },
+  {
+    "sentence_id": "s0339",
+    "section_id": "sec027",
+    "text": "Situation transformation reasoning error: Errors in reasoning about directions or spatial relations from the perspective of an entity other than the observer (i.e., allocentric transformation errors).",
+    "char_start": 52110,
+    "char_end": 52310,
+    "sentence_index": 338,
+    "section_sentence_index": 51
+  },
+  {
+    "sentence_id": "s0340",
+    "section_id": "sec027",
+    "text": "4.",
+    "char_start": 52312,
+    "char_end": 52314,
+    "sentence_index": 339,
+    "section_sentence_index": 52
+  },
+  {
+    "sentence_id": "s0341",
+    "section_id": "sec027",
+    "text": "Spatial logic error: Flaws in spatial reasoning logic, such as fabrication, linguistic intelligence error, misusing reference objects in motion reasoning, or other errors not covered by categories 1, 2, or 3.",
+    "char_start": 52315,
+    "char_end": 52523,
+    "sentence_index": 340,
+    "section_sentence_index": 53
+  },
+  {
+    "sentence_id": "s0342",
+    "section_id": "sec027",
+    "text": "5.",
+    "char_start": 52525,
+    "char_end": 52527,
+    "sentence_index": 341,
+    "section_sentence_index": 54
+  },
+  {
+    "sentence_id": "s0343",
+    "section_id": "sec027",
+    "text": "Completely correct reasoning.",
+    "char_start": 52528,
+    "char_end": 52557,
+    "sentence_index": 342,
+    "section_sentence_index": 55
+  },
+  {
+    "sentence_id": "s0344",
+    "section_id": "sec027",
+    "text": "Note: The human-annotated reference reasoning process is not the only correct answer and is for reference only.",
+    "char_start": 52559,
+    "char_end": 52670,
+    "sentence_index": 343,
+    "section_sentence_index": 56
+  },
+  {
+    "sentence_id": "s0345",
+    "section_id": "sec027",
+    "text": "Other reasoning paths may also be correct.",
+    "char_start": 52671,
+    "char_end": 52713,
+    "sentence_index": 344,
+    "section_sentence_index": 57
+  },
+  {
+    "sentence_id": "s0346",
+    "section_id": "sec027",
+    "text": "You should judge the correctness of the reasoning process and the error category based on the specific images.",
+    "char_start": 52714,
+    "char_end": 52824,
+    "sentence_index": 345,
+    "section_sentence_index": 58
+  },
+  {
+    "sentence_id": "s0347",
+    "section_id": "sec027",
+    "text": "Please output only the relevant category number.",
+    "char_start": 52826,
+    "char_end": 52874,
+    "sentence_index": 346,
+    "section_sentence_index": 59
+  },
+  {
+    "sentence_id": "s0348",
+    "section_id": "sec027",
+    "text": "5pt\n\nHuman performance is measured as the average accuracy of five adult participants who were not involved in the data annotation process.",
+    "char_start": 52876,
+    "char_end": 53015,
+    "sentence_index": 347,
+    "section_sentence_index": 60
+  },
+  {
+    "sentence_id": "s0349",
+    "section_id": "sec028",
+    "text": "During evaluation, human annotators are provided with both the questions and the corresponding images simultaneously and are allowed unlimited time to answer each question to the best of their ability.",
+    "char_start": 53016,
+    "char_end": 53217,
+    "sentence_index": 348,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0350",
+    "section_id": "sec028",
+    "text": "They may review the images as many times as needed to gather comprehensive information.",
+    "char_start": 53218,
+    "char_end": 53305,
+    "sentence_index": 349,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0351",
+    "section_id": "sec028",
+    "text": "The evaluation interface supports two modes of image viewing: all images can be displayed side by side for direct comparison, or the participant can switch between individual images as needed.",
+    "char_start": 53306,
+    "char_end": 53498,
+    "sentence_index": 350,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0352",
+    "section_id": "sec028",
+    "text": "This flexible setup ensures that evaluators can fully utilize the available visual information for accurate reasoning and decision-making.",
+    "char_start": 53499,
+    "char_end": 53637,
+    "sentence_index": 351,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0353",
+    "section_id": "sec029",
+    "text": "We compare recent spatially fine-tuned models with their base versions on MMSI-Bench (Table ).",
+    "char_start": 53639,
+    "char_end": 53733,
+    "sentence_index": 352,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0354",
+    "section_id": "sec029",
+    "text": "Overall, gains are small and inconsistent across tasks; in several cases, fine-tuned models match or underperform the base models.",
+    "char_start": 53734,
+    "char_end": 53864,
+    "sentence_index": 353,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0355",
+    "section_id": "sec029",
+    "text": "A likely reason is that their training data, built from limited templates, fails to generalize to the diverse and challenging scenarios in MMSI-Bench, pointing to the need for richer data or improved training/architectures.",
+    "char_start": 53865,
+    "char_end": 54088,
+    "sentence_index": 354,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0356",
+    "section_id": "sec029",
+    "text": "[tbp!]\n\n1.0pt\nPerformance of models fine-tuned on spatial-reasoning data and their base models on MMSI-Bench.",
+    "char_start": 54089,
+    "char_end": 54198,
+    "sentence_index": 355,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0357",
+    "section_id": "sec029",
+    "text": "l\n* 6 > p 0.057\n* 2 > p 0.053\n* 2 > p 0.053\n> p 0.053\n> p 0.051\n\n2 * Models\n& 6 c cyan!10 Positional Relationship\n& 2 c orange!10 Attribute\n& 2 c brown!15 Motion\n& brown!10 MSR\n& 2 * Avg.",
+    "char_start": 54200,
+    "char_end": 54387,
+    "sentence_index": 356,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0358",
+    "section_id": "sec029",
+    "text": "& Cam.--Cam.",
+    "char_start": 54389,
+    "char_end": 54401,
+    "sentence_index": 357,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0359",
+    "section_id": "sec029",
+    "text": "& Obj.--Obj.",
+    "char_start": 54402,
+    "char_end": 54414,
+    "sentence_index": 358,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0360",
+    "section_id": "sec029",
+    "text": "& Reg.--Reg.",
+    "char_start": 54415,
+    "char_end": 54427,
+    "sentence_index": 359,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0361",
+    "section_id": "sec029",
+    "text": "& Cam.--Obj.",
+    "char_start": 54428,
+    "char_end": 54440,
+    "sentence_index": 360,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0362",
+    "section_id": "sec029",
+    "text": "& Obj.--Reg.",
+    "char_start": 54441,
+    "char_end": 54453,
+    "sentence_index": 361,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0363",
+    "section_id": "sec029",
+    "text": "& Cam.--Reg.",
+    "char_start": 54454,
+    "char_end": 54466,
+    "sentence_index": 362,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0364",
+    "section_id": "sec029",
+    "text": "& Meas.",
+    "char_start": 54467,
+    "char_end": 54474,
+    "sentence_index": 363,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0365",
+    "section_id": "sec029",
+    "text": "& Appr.",
+    "char_start": 54475,
+    "char_end": 54482,
+    "sentence_index": 364,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0366",
+    "section_id": "sec029",
+    "text": "& Cam.",
+    "char_start": 54483,
+    "char_end": 54489,
+    "sentence_index": 365,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0367",
+    "section_id": "sec029",
+    "text": "& Obj.",
+    "char_start": 54490,
+    "char_end": 54496,
+    "sentence_index": 366,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0368",
+    "section_id": "sec029",
+    "text": "& -- &\n\nQwen2.5-VL 3B & 26.9 & 27.7 & 30.9 & 29.1 & 28.2 & 34.9 & 31.2 & 16.7 & 17.6 & 27.6 & 23.2 & 26.5\n\nSpatial-MLLM 3B Spatial-mllm & 23.6 & 26.6 & 37.0 & 34.9 & 32.9 & 24.1 & 18.8 & 34.9 & 34.9 & 25.0 & 28.8 & 27.7\n\nInternVL2\\_5-8B & 32.3 & 27.7 & 29.6 & 32.6 & 24.7 & 32.5 & 26.6 & 27.3 & 16.2 & 31.6 & 30.3 & 28.7\n\nInternSpatial internSpatial & 20.4 & 27.6 & 28.4 & 29.0 & 30.5 & 26.5 & 29.6 & 27.2 & 14.8 & 23.6 & 31.3 & 26.9\n\nQwen2.5-VL-32B & 24.7 & 26.6 & 29.6 & 22.1 & 32.9 & 31.3 & 31.2 & 24.2 & 18.9 & 35.5 & 27.8 & 27.7\n\nRoboBrain2.0 32B robobrain2 & 21.5 & 28.7 & 27.1 & 22.0 & 27.0 & 32.5 & 31.2 & 36.3 & 36.4 & 23.6 & 29.2 & 28.5\n\nWe provide the complete evaluation results of prompting techniques on MMSI-Bench in Table , which correspond to the results presented in Figure 5 of the main text.",
+    "char_start": 54497,
+    "char_end": 55308,
+    "sentence_index": 367,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0369",
+    "section_id": "sec030",
+    "text": "[tbp!]\n\n1.3pt\n\nComplete evaluation results of prompting techniques on MMSI-Bench.",
+    "char_start": 55309,
+    "char_end": 55390,
+    "sentence_index": 368,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0370",
+    "section_id": "sec030",
+    "text": "width= ,center\n\nl\n* 6 > p 0.060\n* 2 > p 0.055\n* 2 > p 0.055\n> p 0.055\n> p 0.053\n\n2 * Models\n& 6 c cyan!10 Positional Relationship\n& 2 c orange!10 Attribute\n& 2 c brown!15 Motion\n& brown!10 MSR\n& 2 * Avg.",
+    "char_start": 55392,
+    "char_end": 55595,
+    "sentence_index": 369,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0371",
+    "section_id": "sec030",
+    "text": "& Cam.\u2013Cam.",
+    "char_start": 55597,
+    "char_end": 55608,
+    "sentence_index": 370,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0372",
+    "section_id": "sec030",
+    "text": "& Obj.\u2013Obj.",
+    "char_start": 55609,
+    "char_end": 55620,
+    "sentence_index": 371,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0373",
+    "section_id": "sec030",
+    "text": "& Reg.\u2013Reg.",
+    "char_start": 55621,
+    "char_end": 55632,
+    "sentence_index": 372,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0374",
+    "section_id": "sec030",
+    "text": "& Cam.\u2013Obj.",
+    "char_start": 55633,
+    "char_end": 55644,
+    "sentence_index": 373,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0375",
+    "section_id": "sec030",
+    "text": "& Obj.\u2013Reg.",
+    "char_start": 55645,
+    "char_end": 55656,
+    "sentence_index": 374,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0376",
+    "section_id": "sec030",
+    "text": "& Cam.\u2013Reg.",
+    "char_start": 55657,
+    "char_end": 55668,
+    "sentence_index": 375,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0377",
+    "section_id": "sec030",
+    "text": "& Meas.",
+    "char_start": 55669,
+    "char_end": 55676,
+    "sentence_index": 376,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0378",
+    "section_id": "sec030",
+    "text": "& Appr.",
+    "char_start": 55677,
+    "char_end": 55684,
+    "sentence_index": 377,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0379",
+    "section_id": "sec030",
+    "text": "& Cam.",
+    "char_start": 55685,
+    "char_end": 55691,
+    "sentence_index": 378,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0380",
+    "section_id": "sec030",
+    "text": "& Obj.",
+    "char_start": 55692,
+    "char_end": 55698,
+    "sentence_index": 379,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0381",
+    "section_id": "sec030",
+    "text": "& \u2013 &\n\nyellow!15 13 l The original MMSI-Bench setting without the use of any prompting techniques.",
+    "char_start": 55699,
+    "char_end": 55797,
+    "sentence_index": 380,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0382",
+    "section_id": "sec030",
+    "text": "GPT-4.5 & 34.4 & 29.8 & 39.5 & 51.2 & 47.1 & 55.4 & 39.1 & 33.3 & 41.9 & 40.8 & 36.4 & 40.3\n\nGPT-4o & 34.4 & 24.5 & 23.5 & 19.8 & 37.6 & 27.7 & 32.8 & 31.8 & 35.1 & 36.8 & 30.8 & 30.3\n\nQwen2.5-VL-72B & 25.8 & 34.0 & 34.6 & 23.3 & 34.1 & 36.1 & 45.3 & 27.3 & 27.0 & 30.3 & 27.3 & 30.7\n\nLLaVA-OneVision-72B & 43.0 & 31.9 & 33.3 & 30.2 & 37.6 & 38.6 & 28.1 & 19.7 & 13.5 & 32.9 & 15.7 & 28.4\n\nyellow!15 13 l Linguistic prompting\n\nGPT-4.5 & 44.1 & 28.7 & 35.8 & 32.6 & 40.0 & 43.4 & 57.8 & 31.8 & 41.9 & 36.8 & 42.4 & 39.6\n\nGPT-4o & 42.1 & 24.6 & 22.7 & 25.9 & 34.5 & 37.8 & 48.0 & 35.9 & 30.4 & 29.6 & 28.8 & 32.0\n\nQwen2.5-VL-72B & 28.9 & 30.8 & 34.5 & 32.5 & 24.6 & 30.0 & 40.5 & 28.7 & 22.9 & 31.5 & 23.6 & 29.0\n\nLLaVA-OneVision-72B & 31.7 & 24.0 & 26.5 & 31.3 & 22.1 & 27.3 & 25.2 & 20.1 & 13.4 & 8.0 & 23.2 & 24.7\n\nyellow!15 13 l Concatenating multiple images into a single composite image without using any prompting techniques.",
+    "char_start": 55799,
+    "char_end": 56729,
+    "sentence_index": 381,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0383",
+    "section_id": "sec030",
+    "text": "GPT-4.5 & 35.5 & 30.8 & 34.6 & 33.7 & 43.5 & 28.9 & 43.8 & 27.3 & 32.4 & 26.3 & 28.3 & 32.6\n\nGPT-4o & 28.0 & 22.3 & 38.3 & 24.4 & 41.2 & 31.3 & 32.8 & 19.7 & 21.6 & 30.3 & 26.3 & 28.5\n\nQwen2.5-VL-72B & 36.6 & 22.3 & 34.6 & 18.6 & 35.3 & 28.9 & 37.5 & 16.7 & 23.0 & 31.6 & 31.3 & 29.1\n\nLLaVA-OneVision-72B & 32.3 & 24.5 & 30.9 & 26.7 & 37.6 & 27.7 & 32.8 & 19.7 & 9.5 & 26.3 & 29.8 & 27.6\n\nyellow!15 13 l Visual prompting\n\nGPT-4.5 & 36.6 & 31.9 & 30.9 & 31.4 & 42.4 & 27.7 & 37.5 & 31.8 & 24.3 & 28.9 & 30.8 & 32.1\n\nGPT-4o & 28.7 & 29.5 & 28.8 & 25.0 & 37.0 & 30.6 & 40.4 & 27.1 & 16.4 & 30.5 & 29.2 & 29.3\n\nQwen2.5-VL-72B & 30.9 & 27.4 & 30.4 & 28.7 & 36.1 & 32.1 & 30.5 & 25.0 & 19.7 & 29.7 & 27.1 & 28.8\n\nLLaVA-OneVision-Qwen2-72B & 29.0 & 33.0 & 29.6 & 31.4 & 38.8 & 33.7 & 29.7 & 21.2 & 14.9 & 26.3 & 28.3 & 29.0\n\nScanNet ScanNet :\nScanNet is a large-scale RGB-D video dataset designed for 3D scene understanding in real-world indoor environments.",
+    "char_start": 56731,
+    "char_end": 57682,
+    "sentence_index": 382,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0384",
+    "section_id": "sec032",
+    "text": "It consists of 2.5 million RGB-D images across 1,513 scans from 707 unique spaces, each annotated with 3D camera poses, surface reconstructions, and dense object-level semantic segmentations.",
+    "char_start": 57683,
+    "char_end": 57874,
+    "sentence_index": 383,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0385",
+    "section_id": "sec032",
+    "text": "The dataset was collected using a scalable pipeline that combines easy data capture with crowdsourced annotations, making it one of the most richly-labeled and comprehensive resources for training and evaluating deep learning models on tasks such as 3D object classification and semantic voxel labeling.",
+    "char_start": 57875,
+    "char_end": 58178,
+    "sentence_index": 384,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0386",
+    "section_id": "sec032",
+    "text": "nuScenes nuScenes :\nnuScenes is a multimodal autonomous driving dataset that features a complete sensor suite, including 6 cameras, 5 radars, and 1 lidar, all with 360-degree coverage.",
+    "char_start": 58180,
+    "char_end": 58364,
+    "sentence_index": 385,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0387",
+    "section_id": "sec032",
+    "text": "It contains 1,000 driving scenes, each 20 seconds long, fully annotated with 3D bounding boxes for 23 object classes and 8 attributes.",
+    "char_start": 58365,
+    "char_end": 58499,
+    "sentence_index": 386,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0388",
+    "section_id": "sec032",
+    "text": "nuScenes stands out for its diversity of sensor data, large scale of annotations, and support for advanced tasks such as 3D detection and tracking, making it a benchmark for research in perception for autonomous vehicles.",
+    "char_start": 58500,
+    "char_end": 58721,
+    "sentence_index": 387,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0389",
+    "section_id": "sec032",
+    "text": "Matterport3D Matterport3D :\nMatterport3D is a large-scale RGB-D dataset capturing 10,800 panoramic viewpoints from 194,400 images of 90 building-scale indoor scenes.",
+    "char_start": 58723,
+    "char_end": 58888,
+    "sentence_index": 388,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0390",
+    "section_id": "sec032",
+    "text": "It provides surface reconstructions, globally aligned camera poses, and detailed 2D and 3D semantic segmentations at both region and object levels.",
+    "char_start": 58889,
+    "char_end": 59036,
+    "sentence_index": 389,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0391",
+    "section_id": "sec032",
+    "text": "The comprehensive panoramic coverage and precise global alignment enable a wide range of computer vision tasks, including keypoint matching, semantic segmentation, and view overlap prediction, particularly in the context of indoor scene understanding.",
+    "char_start": 59037,
+    "char_end": 59288,
+    "sentence_index": 390,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0392",
+    "section_id": "sec032",
+    "text": "Ego4D Ego4d :\nEgo4D is an unprecedented egocentric video dataset, comprising 3,670 hours of first-person footage collected by 931 participants across 74 locations in 9 countries.",
+    "char_start": 59290,
+    "char_end": 59468,
+    "sentence_index": 391,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0393",
+    "section_id": "sec032",
+    "text": "The dataset covers a wide array of daily-life scenarios and includes supplementary data such as audio, 3D meshes, gaze, and multi-camera views.",
+    "char_start": 59469,
+    "char_end": 59612,
+    "sentence_index": 392,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0394",
+    "section_id": "sec032",
+    "text": "With millions of annotations supporting various benchmark tasks, Ego4D enables research into first-person perception, episodic memory, and social interactions, significantly advancing the field of egocentric visual understanding.",
+    "char_start": 59613,
+    "char_end": 59842,
+    "sentence_index": 393,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0395",
+    "section_id": "sec032",
+    "text": "AgiBot-World AgiBot-World :\nAgiBot-World is a large-scale robotic manipulation dataset featuring over 1 million trajectories across 217 tasks in five real-world domains\u2014including domestic, retail, industrial, restaurant, and office environments\u2014collected by more than 100 real robots.",
+    "char_start": 59844,
+    "char_end": 60128,
+    "sentence_index": 394,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0396",
+    "section_id": "sec032",
+    "text": "Data collection is standardized and includes human-in-the-loop verification to ensure high quality and diversity.",
+    "char_start": 60129,
+    "char_end": 60242,
+    "sentence_index": 395,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0397",
+    "section_id": "sec032",
+    "text": "The dataset supports a wide range of hardware, from simple grippers to dexterous hands with visuo-tactile sensors, and provides rich multimodal annotations.",
+    "char_start": 60243,
+    "char_end": 60399,
+    "sentence_index": 396,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0398",
+    "section_id": "sec032",
+    "text": "AgiBot-World enables the development and evaluation of generalist robot policies in complex, long-horizon, and diverse scenarios, moving towards scalable, general-purpose robotic intelligence.",
+    "char_start": 60400,
+    "char_end": 60592,
+    "sentence_index": 397,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0399",
+    "section_id": "sec032",
+    "text": "DTU DTU :\nThe DTU dataset is a large-scale multi-view stereo (MVS) benchmark designed for 3D reconstruction research.",
+    "char_start": 60594,
+    "char_end": 60711,
+    "sentence_index": 398,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0400",
+    "section_id": "sec032",
+    "text": "It contains 80 scenes with significant variability in surface properties and geometric complexity.",
+    "char_start": 60712,
+    "char_end": 60810,
+    "sentence_index": 399,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0401",
+    "section_id": "sec032",
+    "text": "Each scene is captured from 49 or 64 accurate camera positions and includes high-quality reference scans obtained via structured light.",
+    "char_start": 60811,
+    "char_end": 60946,
+    "sentence_index": 400,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0402",
+    "section_id": "sec032",
+    "text": "This dataset advances the scale and diversity compared to previous MVS datasets and serves as a challenging benchmark for evaluating the accuracy and completeness of stereo reconstruction algorithms.",
+    "char_start": 60947,
+    "char_end": 61146,
+    "sentence_index": 401,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0403",
+    "section_id": "sec032",
+    "text": "DAVIS 2017 DAVIS_2017 :\nDAVIS 2017 is a benchmark dataset for video object segmentation, consisting of 150 video sequences and a total of 10,459 annotated frames with pixel-level masks for multiple objects per scene.",
+    "char_start": 61148,
+    "char_end": 61364,
+    "sentence_index": 402,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0404",
+    "section_id": "sec032",
+    "text": "Compared to earlier versions, DAVIS 2017 introduces greater complexity, including multiple objects, occlusions, small and fine structures, and fast motion.",
+    "char_start": 61365,
+    "char_end": 61520,
+    "sentence_index": 403,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0405",
+    "section_id": "sec032",
+    "text": "The dataset has driven significant progress in video object segmentation and is widely used for benchmarking and competition in the field.",
+    "char_start": 61521,
+    "char_end": 61659,
+    "sentence_index": 404,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0406",
+    "section_id": "sec032",
+    "text": "[t!]\n\nimages/anno_ui.jpg\nScreenshot of the data annotation interface, where annotators select images, design questions, and provide answers and reasoning.",
+    "char_start": 61661,
+    "char_end": 61815,
+    "sentence_index": 405,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0407",
+    "section_id": "sec032",
+    "text": "[ht!]\n\nimages/check_ui.jpg\nScreenshot of the quality control interface, where reviewers decide whether to retain or discard data and specify the reasons for data issues.",
+    "char_start": 61817,
+    "char_end": 61986,
+    "sentence_index": 406,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0408",
+    "section_id": "sec032",
+    "text": "Waymo Open Dataset Waymo :\nThe Waymo Open Dataset is one of the largest and most diverse multimodal datasets for autonomous driving.",
+    "char_start": 61988,
+    "char_end": 62120,
+    "sentence_index": 407,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0409",
+    "section_id": "sec032",
+    "text": "It comprises 1,150 scenes, each lasting 20 seconds, captured across multiple cities with extensive geographic coverage.",
+    "char_start": 62121,
+    "char_end": 62240,
+    "sentence_index": 408,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0410",
+    "section_id": "sec032",
+    "text": "Each scene includes synchronized and calibrated high-resolution camera images and LiDAR data, along with exhaustive 2D and 3D bounding box annotations and consistent object tracking IDs.",
+    "char_start": 62241,
+    "char_end": 62427,
+    "sentence_index": 409,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0411",
+    "section_id": "sec032",
+    "text": "The dataset supports research in detection, tracking, and sensor fusion, providing a valuable foundation for developing robust and generalizable self-driving technologies.",
+    "char_start": 62428,
+    "char_end": 62599,
+    "sentence_index": 410,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0412",
+    "section_id": "sec032",
+    "text": "MMSI-Bench is composed of questions from 8 data sources: 463 from Matterport3D, 280 from ScanNet, 67 from Ego4D, 45 from AgiBot-World, 72 from DTU, 39 from nuScenes, 29 from DAVIS 2017, and 5 from Waymo.",
+    "char_start": 62601,
+    "char_end": 62804,
+    "sentence_index": 411,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0413",
+    "section_id": "sec032",
+    "text": "We analyzed widely used VLM pre-training datasets, CC3M cc3m and LAION-COCO Laion-coco , which are commonly utilized by open-source VLMs such as LLaVA, NVILA, and Qwen-VL.",
+    "char_start": 62805,
+    "char_end": 62976,
+    "sentence_index": 412,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0414",
+    "section_id": "sec032",
+    "text": "Our analysis indicates that outdoor scenes constitute only an estimated 10\\% of the data in these foundational VLM datasets.",
+    "char_start": 62977,
+    "char_end": 63101,
+    "sentence_index": 413,
+    "section_sentence_index": 30
+  },
+  {
+    "sentence_id": "s0415",
+    "section_id": "sec032",
+    "text": "To align our benchmark with the typical training distribution of these models, we have curated MMSI-Bench to maintain a comparable proportion, with approximately 12\\% of our samples sourced from outdoor datasets.",
+    "char_start": 63102,
+    "char_end": 63314,
+    "sentence_index": 414,
+    "section_sentence_index": 31
+  },
+  {
+    "sentence_id": "s0416",
+    "section_id": "sec032",
+    "text": "Recognizing that spatial understanding is one of the most critical capabilities for autonomous driving, we selected Waymo and nuScenes as the primary sources for these outdoor samples.",
+    "char_start": 63315,
+    "char_end": 63499,
+    "sentence_index": 415,
+    "section_sentence_index": 32
+  },
+  {
+    "sentence_id": "s0417",
+    "section_id": "sec033",
+    "text": "The interfaces for data annotation and quality control are illustrated in Figure and Figure , respectively.",
+    "char_start": 63501,
+    "char_end": 63608,
+    "sentence_index": 416,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0418",
+    "section_id": "sec033",
+    "text": "During annotation, annotators select an image, design a question, provide the correct answer, and write the corresponding reasoning process.",
+    "char_start": 63609,
+    "char_end": 63749,
+    "sentence_index": 417,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0419",
+    "section_id": "sec033",
+    "text": "For quality control, reviewers can choose to discard a data entry if any issues are identified, providing the reason for rejection; otherwise, they can approve and retain the data.",
+    "char_start": 63750,
+    "char_end": 63930,
+    "sentence_index": 418,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0420",
+    "section_id": "sec034",
+    "text": "MMSI-Bench is designed to systematically evaluate the multi-image spatial reasoning capabilities of multimodal large language models (MLLMs) using human-readable questions.",
+    "char_start": 63932,
+    "char_end": 64104,
+    "sentence_index": 419,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0421",
+    "section_id": "sec034",
+    "text": "The following guidelines govern the data annotation process:\n\nHuman-Centric Design: All questions and answer choices are formulated in natural, human-readable English, avoiding technical prompts such as direct requests for camera parameters.",
+    "char_start": 64105,
+    "char_end": 64346,
+    "sentence_index": 420,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0422",
+    "section_id": "sec034",
+    "text": "Image Requirement: Every question is constructed so that it cannot be answered using a single image alone; the information required to answer must be synthesized from multiple images.",
+    "char_start": 64347,
+    "char_end": 64530,
+    "sentence_index": 421,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0423",
+    "section_id": "sec034",
+    "text": "Question Type and Format: All questions are multiple-choice with four options, only one of which is correct.",
+    "char_start": 64531,
+    "char_end": 64639,
+    "sentence_index": 422,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0424",
+    "section_id": "sec034",
+    "text": "Questions are created in free form (no templates) to ensure diversity and challenge for MLLMs.",
+    "char_start": 64640,
+    "char_end": 64734,
+    "sentence_index": 423,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0425",
+    "section_id": "sec034",
+    "text": "Category Coverage: Each question is assigned to one of eleven categories, covering positional relationships, attributes, motion, and multi-step reasoning among cameras, objects, and regions.",
+    "char_start": 64735,
+    "char_end": 64925,
+    "sentence_index": 424,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0426",
+    "section_id": "sec034",
+    "text": "This taxonomy is designed to comprehensively span the space of fundamental spatial reasoning types.",
+    "char_start": 64926,
+    "char_end": 65025,
+    "sentence_index": 425,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0427",
+    "section_id": "sec034",
+    "text": "Difficulty, Diversity, and Clarity: Questions must be of high difficulty, unambiguous, and answerable by humans.",
+    "char_start": 65026,
+    "char_end": 65138,
+    "sentence_index": 426,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0428",
+    "section_id": "sec034",
+    "text": "Annotators are encouraged to maximize diversity in question design and avoid repetitive patterns.",
+    "char_start": 65139,
+    "char_end": 65236,
+    "sentence_index": 427,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0429",
+    "section_id": "sec034",
+    "text": "Annotations must be accurate, consistent, and adhere to a high standard of academic rigor.",
+    "char_start": 65237,
+    "char_end": 65327,
+    "sentence_index": 428,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0430",
+    "section_id": "sec034",
+    "text": "Ethics and Licensing: All images and question sources must comply with copyright and licensing restrictions.",
+    "char_start": 65329,
+    "char_end": 65437,
+    "sentence_index": 429,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0431",
+    "section_id": "sec034",
+    "text": "Annotators must not use material from sources that prohibit redistribution.",
+    "char_start": 65438,
+    "char_end": 65513,
+    "sentence_index": 430,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0432",
+    "section_id": "sec034",
+    "text": "Reasoning Process Annotation: For each question, annotators provide a detailed step-by-step reasoning process, documenting the logical path from the images to the answer.",
+    "char_start": 65514,
+    "char_end": 65684,
+    "sentence_index": 431,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0433",
+    "section_id": "sec035",
+    "text": "To ensure consistency and facilitate reliable evaluation and analysis, all benchmark entries conform to a standardized data structure:\n\nJSON Format: Each question-answer pair is stored as a JSON object, with fields for question text, four answer options, the correct answer index, category, difficulty, image paths, and annotated reasoning process.",
+    "char_start": 65686,
+    "char_end": 66034,
+    "sentence_index": 432,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0434",
+    "section_id": "sec035",
+    "text": "Image Files: All referenced images are stored separately and linked via file paths in the JSON entries.",
+    "char_start": 66035,
+    "char_end": 66138,
+    "sentence_index": 433,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0435",
+    "section_id": "sec035",
+    "text": "Field Completeness: Each entry must have all fields completed: question, answer, category, image list, and reasoning process.",
+    "char_start": 66139,
+    "char_end": 66264,
+    "sentence_index": 434,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0436",
+    "section_id": "sec035",
+    "text": "Multi-Image Structure: Except for the Multi-Step Reasoning category, every question is associated with exactly two images.",
+    "char_start": 66265,
+    "char_end": 66387,
+    "sentence_index": 435,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0437",
+    "section_id": "sec035",
+    "text": "Multi-Step Reasoning samples may include more images according to task complexity.",
+    "char_start": 66388,
+    "char_end": 66470,
+    "sentence_index": 436,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0438",
+    "section_id": "sec035",
+    "text": "Final Storage Format: For efficient downloading and usage, the entire dataset\u2014including binary-encoded images and metadata\u2014is stored in the Parquet format.",
+    "char_start": 66471,
+    "char_end": 66626,
+    "sentence_index": 437,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0439",
+    "section_id": "sec036",
+    "text": "A rigorous multi-stage quality control procedure is implemented to ensure the reliability and validity of the benchmark:\n\nIndependent Review: All annotated samples are independently reviewed by three expert reviewers who were not involved in the original annotation process.",
+    "char_start": 66628,
+    "char_end": 66902,
+    "sentence_index": 438,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0440",
+    "section_id": "sec036",
+    "text": "Error and Ambiguity Filtering: Reviewers systematically remove or revise questions exhibiting insufficient visual information, ambiguity (linguistic or visual), incorrect answers, or vague/incomplete reasoning processes.",
+    "char_start": 66903,
+    "char_end": 67123,
+    "sentence_index": 439,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0441",
+    "section_id": "sec036",
+    "text": "Non-Triviality Check: Samples that can be answered using a single image or general common sense (rather than spatial reasoning across images) are excluded.",
+    "char_start": 67124,
+    "char_end": 67279,
+    "sentence_index": 440,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0442",
+    "section_id": "sec036",
+    "text": "Iterative Feedback: Annotators receive feedback on problematic items and are required to revise or replace such entries.",
+    "char_start": 67280,
+    "char_end": 67400,
+    "sentence_index": 441,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0443",
+    "section_id": "sec036",
+    "text": "Final Audit: Only questions passing all review stages are included in the benchmark, ensuring high data quality and robust evaluation.",
+    "char_start": 67401,
+    "char_end": 67535,
+    "sentence_index": 442,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0444",
+    "section_id": "sec037",
+    "text": "We recruited new human evaluators to answer MMSI-Bench and recorded their per-question completion times.",
+    "char_start": 67537,
+    "char_end": 67641,
+    "sentence_index": 443,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0445",
+    "section_id": "sec037",
+    "text": "Each question was independently assigned to two evaluators.",
+    "char_start": 67642,
+    "char_end": 67701,
+    "sentence_index": 444,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0446",
+    "section_id": "sec037",
+    "text": "We normalized completion times across evaluators and used the mean normalized time as the difficulty indicator, with longer times indicating higher difficulty.",
+    "char_start": 67702,
+    "char_end": 67861,
+    "sentence_index": 445,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0447",
+    "section_id": "sec037",
+    "text": "The resulting distribution exhibited a clear three-tier structure.",
+    "char_start": 67862,
+    "char_end": 67928,
+    "sentence_index": 446,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0448",
+    "section_id": "sec037",
+    "text": "We therefore labeled each question as Easy, Medium, or Hard.",
+    "char_start": 67929,
+    "char_end": 67989,
+    "sentence_index": 447,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0449",
+    "section_id": "sec037",
+    "text": "Any question answered incorrectly by the evaluators was directly assigned to the Hard tier.",
+    "char_start": 67990,
+    "char_end": 68081,
+    "sentence_index": 448,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0450",
+    "section_id": "sec037",
+    "text": "The Easy tier contains 605 questions with an average human completion time of approximately 40 seconds.",
+    "char_start": 68082,
+    "char_end": 68185,
+    "sentence_index": 449,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0451",
+    "section_id": "sec037",
+    "text": "The Medium tier contains 262 questions with an average time of approximately 110 seconds.",
+    "char_start": 68186,
+    "char_end": 68275,
+    "sentence_index": 450,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0452",
+    "section_id": "sec037",
+    "text": "The Hard tier contains 133 questions, defined as those taking longer than approximately 110 seconds on average or those answered incorrectly.",
+    "char_start": 68276,
+    "char_end": 68417,
+    "sentence_index": 451,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0453",
+    "section_id": "sec038",
+    "text": "For clarity and readability, questions and rationales in the main text are simplified; the complete versions for each category are provided in this section.",
+    "char_start": 68419,
+    "char_end": 68575,
+    "sentence_index": 452,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0454",
+    "section_id": "sec038",
+    "text": "We present one full example for each of the 11 categories: Position (Camera-Camera), Position (Camera-Object), Position (Camera-Region), Position (Object-Object), Position (Object-Region), Position (Region-Region), Motion (Camera), Motion (Object), Attribute (Measurement), Attribute (Appearance), and Multi-Step Reasoning.",
+    "char_start": 68576,
+    "char_end": 68899,
+    "sentence_index": 453,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0455",
+    "section_id": "sec038",
+    "text": "These representative samples are illustrated in Figures -- .",
+    "char_start": 68900,
+    "char_end": 68960,
+    "sentence_index": 454,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0456",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_1.pdf\nFull example for Position (Camera-Camera) category.",
+    "char_start": 68962,
+    "char_end": 69039,
+    "sentence_index": 455,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0457",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_2.pdf\nFull example for Position (Camera-Object) category.",
+    "char_start": 69041,
+    "char_end": 69118,
+    "sentence_index": 456,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0458",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_3.pdf\nFull example for Position (Camera-Region) category.",
+    "char_start": 69120,
+    "char_end": 69197,
+    "sentence_index": 457,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0459",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_4.pdf\nFull example for Position (Object-Object) category.",
+    "char_start": 69199,
+    "char_end": 69276,
+    "sentence_index": 458,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0460",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_5.pdf\nFull example for Position (Object-Region) category.",
+    "char_start": 69278,
+    "char_end": 69355,
+    "sentence_index": 459,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0461",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_6.pdf\nFull example for Position (Region-Region) category.",
+    "char_start": 69357,
+    "char_end": 69434,
+    "sentence_index": 460,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0462",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_7.pdf\nFull example for Motion (Camera) category.",
+    "char_start": 69436,
+    "char_end": 69504,
+    "sentence_index": 461,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0463",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_8.pdf\nFull example for Motion (Object) category.",
+    "char_start": 69506,
+    "char_end": 69574,
+    "sentence_index": 462,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0464",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_9.pdf\nFull example for Attribute (Measurement) category.",
+    "char_start": 69576,
+    "char_end": 69652,
+    "sentence_index": 463,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0465",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_10.pdf\nFull example for Attribute (Appearance) category.",
+    "char_start": 69654,
+    "char_end": 69730,
+    "sentence_index": 464,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0466",
+    "section_id": "sec038",
+    "text": "[h]\n\nimages/example_msr.pdf\nFull example for Multi-Step Reasoning category.",
+    "char_start": 69732,
+    "char_end": 69807,
+    "sentence_index": 465,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0467",
+    "section_id": "sec039",
+    "text": "In this section, we present additional complete reasoning processes of current multimodal large language models (MLLMs) to illustrate their spatial reasoning deficiencies more intuitively.",
+    "char_start": 69809,
+    "char_end": 69997,
+    "sentence_index": 466,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0468",
+    "section_id": "sec039",
+    "text": "As shown in Figure , Figure , Figure , and Figure , we highlight four types of errors in different colors: grounding errors (blue), overlap-matching and scene-reconstruction errors (red), situation-transformation reasoning errors (orange), and spatial-logic errors (green).",
+    "char_start": 69998,
+    "char_end": 70271,
+    "sentence_index": 467,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0469",
+    "section_id": "sec039",
+    "text": "[htbp]\n\nimages/3model_reasoning_1.pdf\nIllustration of situation-transformation reasoning errors (highlighted in orange).",
+    "char_start": 70273,
+    "char_end": 70393,
+    "sentence_index": 468,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0470",
+    "section_id": "sec039",
+    "text": "[htbp]\n\nimages/3model_reasoning_2.pdf\nIllustration of overlap-matching and scene-reconstruction errors (highlighted in red), spatial-logic errors (highlighted in green).",
+    "char_start": 70395,
+    "char_end": 70564,
+    "sentence_index": 469,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0471",
+    "section_id": "sec039",
+    "text": "[htbp]\n\nimages/3model_reasoning_3.pdf\nIllustration of grounding errors (highlighted in blue), spatial-logic errors (highlighted in green).",
+    "char_start": 70566,
+    "char_end": 70704,
+    "sentence_index": 470,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0472",
+    "section_id": "sec039",
+    "text": "[htbp]\n\nimages/3model_reasoning_4.pdf\nIllustration of spatial-logic errors (highlighted in green).",
+    "char_start": 70706,
+    "char_end": 70804,
+    "sentence_index": 471,
+    "section_sentence_index": 5
+  }
+]

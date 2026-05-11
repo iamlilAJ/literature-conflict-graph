@@ -1,0 +1,1847 @@
+[
+  {
+    "sentence_id": "s0001",
+    "section_id": "sec001",
+    "text": "Test-time compute has empowered multimodal large language models to generate extended reasoning chains, yielding strong performance on tasks such as multimodal math reasoning.",
+    "char_start": 0,
+    "char_end": 175,
+    "sentence_index": 0,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0002",
+    "section_id": "sec001",
+    "text": "However, we observe that this improved reasoning ability often comes with increased hallucination: as generations become longer, models tend to drift away from image-grounded content and rely more on language priors.",
+    "char_start": 176,
+    "char_end": 392,
+    "sentence_index": 1,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0003",
+    "section_id": "sec001",
+    "text": "Attention analysis reveals that longer reasoning chains reduce focus on visual inputs, contributing to hallucination.",
+    "char_start": 393,
+    "char_end": 510,
+    "sentence_index": 2,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0004",
+    "section_id": "sec001",
+    "text": "To systematically study this phenomenon, we introduce RH-AUC , a metric that quantifies how a model's perception accuracy changes with reasoning length, enabling evaluation of whether the model preserves visual grounding while reasoning.",
+    "char_start": 511,
+    "char_end": 748,
+    "sentence_index": 3,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0005",
+    "section_id": "sec001",
+    "text": "We also release RH-Bench , a diagnostic benchmark covering diverse multimodal tasks, designed to jointly assess the balance of reasoning ability and hallucination.",
+    "char_start": 749,
+    "char_end": 912,
+    "sentence_index": 4,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0006",
+    "section_id": "sec001",
+    "text": "We find that (i) larger models generally exhibit a better balance between reasoning and perception; (ii) reasoning and perception balance depends more on the types and domains of the training data than its volume.",
+    "char_start": 913,
+    "char_end": 1126,
+    "sentence_index": 5,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0007",
+    "section_id": "sec001",
+    "text": "Our findings highlight the need for evaluation frameworks that account for both reasoning quality and perceptual reliability.",
+    "char_start": 1127,
+    "char_end": 1252,
+    "sentence_index": 6,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0008",
+    "section_id": "sec002",
+    "text": "Large reasoning models scale test-time computation to improve complex reasoning.",
+    "char_start": 1254,
+    "char_end": 1334,
+    "sentence_index": 7,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0009",
+    "section_id": "sec002",
+    "text": "These models lrm-deepseek-r1,lrm-deepseek-v3,lrm-openaio1,lrm_demystifying generate longer outputs and engage in deeper reasoning before producing final answers, resulting in more comprehensive solutions for complex mathematical and scientific problems.",
+    "char_start": 1335,
+    "char_end": 1588,
+    "sentence_index": 8,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0010",
+    "section_id": "sec002",
+    "text": "This paradigm has been extended to multimodal large language models: non-reasoning base models are supervised finetuned (SFT), or finetuned with reinforcement learning (RL) to obtain strong reasoning ability mlrm-vlm-r1,mllm-seg-zero,mlrm-insight-v,llavacot,yu2024rlhf , demonstrating exceptional capabilities in multimodal reasoning tasks, particularly in domains like mathematical problem solving.",
+    "char_start": 1589,
+    "char_end": 1988,
+    "sentence_index": 9,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0011",
+    "section_id": "sec002",
+    "text": "[h]\n\ncc\nimages/intro_final.pdf\n\n(a) Example of outputs from a reasoning model and a non-reasoning model on a perception task.",
+    "char_start": 1990,
+    "char_end": 2115,
+    "sentence_index": 10,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0012",
+    "section_id": "sec002",
+    "text": "Red highlights indicate visual hallucination.",
+    "char_start": 2116,
+    "char_end": 2161,
+    "sentence_index": 11,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0013",
+    "section_id": "sec002",
+    "text": "Multimodal reasoning models are generally more prone to amplifying hallucinations during the reasoning process compared to their non-reasoning counterparts.",
+    "char_start": 2162,
+    "char_end": 2318,
+    "sentence_index": 12,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0014",
+    "section_id": "sec002",
+    "text": "(b) Performance of different models on reasoning and perception tasks in the RH-Bench dataset.",
+    "char_start": 2319,
+    "char_end": 2413,
+    "sentence_index": 13,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0015",
+    "section_id": "sec002",
+    "text": "Better performing models are positioned in the upper right corner.",
+    "char_start": 2414,
+    "char_end": 2480,
+    "sentence_index": 14,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0016",
+    "section_id": "sec002",
+    "text": "Baseline non-reasoning models of varying scales typically exhibit weaker reasoning capabilities and fewer hallucination, whereas reasoning models display the opposite trend.",
+    "char_start": 2481,
+    "char_end": 2654,
+    "sentence_index": 15,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0017",
+    "section_id": "sec002",
+    "text": "-0.3cm\n\nMost existing studies on multimodal reasoning models focus on enhancing reasoning performance, with limited attention paid to perception-focused tasks.",
+    "char_start": 2656,
+    "char_end": 2815,
+    "sentence_index": 16,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0018",
+    "section_id": "sec002",
+    "text": "As illustrated in Figure a, although the reasoning model generates an extended reasoning chain in visual question answering, its answer is largely driven by language priors rather than visual evidence, leading to hallucination.",
+    "char_start": 2816,
+    "char_end": 3043,
+    "sentence_index": 17,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0019",
+    "section_id": "sec002",
+    "text": "Our empirical study reveals a consistent and significant finding: although reasoning models can generate more detailed reasoning chains, they introduce more hallucinations in perception-focused tasks than the non-reasoning counterparts, as shown in Figure b.",
+    "char_start": 3044,
+    "char_end": 3302,
+    "sentence_index": 18,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0020",
+    "section_id": "sec002",
+    "text": "Through attention analysis, we investigate the decrease of attention on visual tokens in multimodal reasoning models, which exacerbates visual hallucinations.",
+    "char_start": 3304,
+    "char_end": 3462,
+    "sentence_index": 19,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0021",
+    "section_id": "sec002",
+    "text": "The reasoning model allocates significantly less attention to visual tokens compared to its non-reasoning counterpart, while directing more attention to the instruction tokens.",
+    "char_start": 3463,
+    "char_end": 3639,
+    "sentence_index": 20,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0022",
+    "section_id": "sec002",
+    "text": "This bias increases reliance on language priors and amplifies hallucination risk.",
+    "char_start": 3640,
+    "char_end": 3721,
+    "sentence_index": 21,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0023",
+    "section_id": "sec002",
+    "text": "Moreover, the extension of the reasoning chain further weakens the visual attention allocation, leading to an increase in hallucinations, as the model becomes more dependent on language-based reasoning rather than visual evidence.",
+    "char_start": 3722,
+    "char_end": 3952,
+    "sentence_index": 22,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0024",
+    "section_id": "sec002",
+    "text": "Based on these findings, we further investigate the impact of reasoning chain length on model reasoning and hallucination.",
+    "char_start": 3954,
+    "char_end": 4076,
+    "sentence_index": 23,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0025",
+    "section_id": "sec002",
+    "text": "The results indicate that the influence of reasoning chain length on reasoning-hallucination exhibits a non-monotonic relationship.",
+    "char_start": 4077,
+    "char_end": 4208,
+    "sentence_index": 24,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0026",
+    "section_id": "sec002",
+    "text": "Additionally, the optimal reasoning range differs across tasks, while traditional evaluation metrics, such as accuracy and hallucination rate, are inadequate for capturing the dynamic balance between reasoning and visual grounding.",
+    "char_start": 4209,
+    "char_end": 4440,
+    "sentence_index": 25,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0027",
+    "section_id": "sec002",
+    "text": "To address this, we introduce RH-AUC , a new metric designed to assess the balance between reasoning and hallucination in multimodal reasoning models.",
+    "char_start": 4442,
+    "char_end": 4592,
+    "sentence_index": 26,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0028",
+    "section_id": "sec002",
+    "text": "This metric is computed by calculating the area under the curve formed by reasoning performance and hallucination performance at different reasoning lengths, with higher values indicating better balance.",
+    "char_start": 4593,
+    "char_end": 4796,
+    "sentence_index": 27,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0029",
+    "section_id": "sec002",
+    "text": "Alongside this metric, we release RH-Bench , a diagnostic benchmark containing 1,000 samples across various reasoning and perception tasks, with each task featuring both multiple-choice questions and open-ended questions.",
+    "char_start": 4797,
+    "char_end": 5018,
+    "sentence_index": 28,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0030",
+    "section_id": "sec002",
+    "text": "Through the evaluation of RH-Bench , we observe three key findings: (i) Larger models typically demonstrate better reasoning and hallucination balance.",
+    "char_start": 5019,
+    "char_end": 5170,
+    "sentence_index": 29,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0031",
+    "section_id": "sec002",
+    "text": "(ii) RL-only training models promote more adaptive reasoning, resulting in a better balance between reasoning and hallucination compared to SFT+RL.",
+    "char_start": 5171,
+    "char_end": 5318,
+    "sentence_index": 30,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0032",
+    "section_id": "sec002",
+    "text": "(iii) Reasoning-Hallucination balance is more influenced by the types and domains of the training data than by its volume.",
+    "char_start": 5319,
+    "char_end": 5441,
+    "sentence_index": 31,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0033",
+    "section_id": "sec002",
+    "text": "To sum up, our contributions are listed as follows:\n\n[left=0pt, labelsep=1em, itemsep=0em, topsep=0em]\nWe observe that multimodal reasoning models are more prone to hallucinations than their non-reasoning counterparts in perception tasks, which can be attributed to a decline in visual attention allocation.",
+    "char_start": 5442,
+    "char_end": 5749,
+    "sentence_index": 32,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0034",
+    "section_id": "sec002",
+    "text": "Longer reasoning chains further diminish visual attention.",
+    "char_start": 5750,
+    "char_end": 5808,
+    "sentence_index": 33,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0035",
+    "section_id": "sec002",
+    "text": "We reveal that the relationship between reasoning chain length and the model's reasoning and perception performance is non-monotonic, with the optimal length varying across tasks.",
+    "char_start": 5809,
+    "char_end": 5988,
+    "sentence_index": 34,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0036",
+    "section_id": "sec002",
+    "text": "We introduce the new RH-AUC metric and the RH-Bench diagnostic dataset to systematically evaluate the balance between reasoning and hallucination across varying reasoning lengths in multimodal reasoning models.",
+    "char_start": 5989,
+    "char_end": 6199,
+    "sentence_index": 35,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0037",
+    "section_id": "sec002",
+    "text": "-0.2cm\n\n-0.2cm\nIn this section, we begin by investigating whether multimodal reasoning models introduce more hallucination in perception-focused tasks.",
+    "char_start": 6201,
+    "char_end": 6352,
+    "sentence_index": 36,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0038",
+    "section_id": "sec003",
+    "text": "Specifically, we compare 8 recent multimodal reasoning models against their backbone non-reasoning-based counterparts across multiple hallucination benchmarks, including MMVP tong2024eyes , MMEval-Pro huang2024mmevalpro ,VMCBench zhang2025automated ,Bingo cui2023holistic ,MMHAL sun2023aligning .",
+    "char_start": 6353,
+    "char_end": 6649,
+    "sentence_index": 37,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0039",
+    "section_id": "sec004",
+    "text": "To systematically assess the impact of multimodal reasoning on visual grounding, we evaluated eight reasoning-augmented models against their non-reasoning Qwen2.5-VL backbones on five hallucination datasets.",
+    "char_start": 6651,
+    "char_end": 6858,
+    "sentence_index": 38,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0040",
+    "section_id": "sec004",
+    "text": "As shown in Figure , all reasoning models trace markedly smaller radar areas than their baselines, indicating uniformly higher hallucination rates on perception-focused tasks.",
+    "char_start": 6859,
+    "char_end": 7034,
+    "sentence_index": 39,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0041",
+    "section_id": "sec004",
+    "text": "This deficit remains consistent at both the 3 B and 7 B scales, demonstrating that the elevated hallucination rate stems from the reasoning paradigm itself rather than model size.",
+    "char_start": 7035,
+    "char_end": 7214,
+    "sentence_index": 40,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0042",
+    "section_id": "sec004",
+    "text": "[h]\nimages/radia.pdf\nComparison of reasoning and non-reasoning models on five perception benchmarks.",
+    "char_start": 7216,
+    "char_end": 7316,
+    "sentence_index": 41,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0043",
+    "section_id": "sec004",
+    "text": "Results are shown for 3B models (left) and 7B models (right).",
+    "char_start": 7317,
+    "char_end": 7378,
+    "sentence_index": 42,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0044",
+    "section_id": "sec004",
+    "text": "Higher scores indicate lower hallucination.",
+    "char_start": 7379,
+    "char_end": 7422,
+    "sentence_index": 43,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0045",
+    "section_id": "sec005",
+    "text": "Current multimodal reasoning models typically adopt one of two training regimes: (1) pure reinforcement learning (RL-only) or (2) supervised fine-tuning followed by reinforcement learning (SFT+RL).",
+    "char_start": 7424,
+    "char_end": 7621,
+    "sentence_index": 44,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0046",
+    "section_id": "sec005",
+    "text": "Figure shows a consistent performance hierarchy across four perception benchmarks: The Qwen2.5-VL baseline achieves the highest scores, followed by RL-only fine-tuning, with the SFT+RL pipeline performing the worst.",
+    "char_start": 7622,
+    "char_end": 7837,
+    "sentence_index": 45,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0047",
+    "section_id": "sec005",
+    "text": "This pattern highlights the robustness of baseline model in visual grounding and indicates that subsequent RL or hybrid fine-tuning weakens this robustness, with the supervised-preceded RL strategy leading to the most significant performance degradation.",
+    "char_start": 7838,
+    "char_end": 8092,
+    "sentence_index": 46,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0048",
+    "section_id": "sec005",
+    "text": "[h]\nimages/rl.pdf\nPerformance across four perception benchmarks comparing Base, RL, and SFT+RL.",
+    "char_start": 8093,
+    "char_end": 8188,
+    "sentence_index": 47,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0049",
+    "section_id": "sec005",
+    "text": "-0.2cm\n\n[t]\nimages/ex4.pdf\n\n-0.6cm\nTwo common types of hallucination patterns observed in multimodal reasoning models.",
+    "char_start": 8190,
+    "char_end": 8308,
+    "sentence_index": 48,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0050",
+    "section_id": "sec006",
+    "text": "(a) corresponds to hallucinations caused by visual misrecognition, while (b) reflects hallucinations arising from reasoning biases.",
+    "char_start": 8309,
+    "char_end": 8440,
+    "sentence_index": 49,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0051",
+    "section_id": "sec006",
+    "text": "Hallucinated spans are highlighted in red.",
+    "char_start": 8441,
+    "char_end": 8483,
+    "sentence_index": 50,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0052",
+    "section_id": "sec006",
+    "text": "-0.3cm\n\nFigure presents two representative hallucination patterns observed in multimodal reasoning models, arising from visual misrecognition and reasoning bias, respectively.",
+    "char_start": 8485,
+    "char_end": 8660,
+    "sentence_index": 51,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0053",
+    "section_id": "sec006",
+    "text": "In Figure a, the reasoning model fails to identify fine-grained visual cues and miscounts four individuals as three, reflecting a localized deficiency in visual perception.",
+    "char_start": 8661,
+    "char_end": 8833,
+    "sentence_index": 52,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0054",
+    "section_id": "sec006",
+    "text": "In Figure b, the reasoning model increasingly relies on linguistic priors during the reasoning process while overlooking early visual evidence, ultimately generating an incorrect response.",
+    "char_start": 8834,
+    "char_end": 9022,
+    "sentence_index": 53,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0055",
+    "section_id": "sec006",
+    "text": "In contrast, the baseline model exhibits a lower hallucination rate under identical inputs.",
+    "char_start": 9023,
+    "char_end": 9114,
+    "sentence_index": 54,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0056",
+    "section_id": "sec006",
+    "text": "These observations raise a crucial question: why do multimodal reasoning models, despite their strong reasoning performance, exhibit weakened visual grounding?",
+    "char_start": 9115,
+    "char_end": 9274,
+    "sentence_index": 55,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0057",
+    "section_id": "sec006",
+    "text": "In the next section, we provides an in-depth analysis based on the internal attention mechanisms of the reasoning models.",
+    "char_start": 9275,
+    "char_end": 9396,
+    "sentence_index": 56,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0058",
+    "section_id": "sec006",
+    "text": "[colframe=myLightBlueFrame, colback=myExtremelyLightBlue, title= Takeaway 1: Reasoning Models Amplify Visual Hallucinations]\nAcross training paradigms and model scales, multi-modal reasoning models exhibit a consistent drop in accuracy and rise in hallucination rates on general visual benchmarks.",
+    "char_start": 9398,
+    "char_end": 9695,
+    "sentence_index": 57,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0059",
+    "section_id": "sec007",
+    "text": "Many previous\nstudies have investigated the role of attention mechanisms in hallucination, identifying insufficient attention allocation as a potential key factor contributing to hallucinations huang2024opera, huo2025selfintrospective, yin2025clearsight .",
+    "char_start": 9697,
+    "char_end": 9952,
+    "sentence_index": 58,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0060",
+    "section_id": "sec007",
+    "text": "In this section, we conduct an attention based analysis to explore the underlying causes of hallucination amplification in multimodal reasoning models.",
+    "char_start": 9953,
+    "char_end": 10104,
+    "sentence_index": 59,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0061",
+    "section_id": "sec007",
+    "text": "Section indicates that hallucinations may result from limited attention allocated to visual inputs, while Section shows that longer reasoning chains further weaken the model's visual focus.",
+    "char_start": 10105,
+    "char_end": 10294,
+    "sentence_index": 60,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0062",
+    "section_id": "sec008",
+    "text": "We conduct a comparative analysis of the attention distributions over visual, instruction, and system tokens across all layers in the reasoning and non-reasoning models.",
+    "char_start": 10296,
+    "char_end": 10465,
+    "sentence_index": 61,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0063",
+    "section_id": "sec008",
+    "text": "As shown in Figure a, the reasoning model consistently assigns low attention to visual tokens, with a further decrease observed in deeper layers, indicating a limited ability to integrate visual evidence.",
+    "char_start": 10466,
+    "char_end": 10670,
+    "sentence_index": 62,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0064",
+    "section_id": "sec008",
+    "text": "Meanwhile, more attention is shifted to instruction tokens, reflecting a heightened reliance on linguistic priors.",
+    "char_start": 10671,
+    "char_end": 10785,
+    "sentence_index": 63,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0065",
+    "section_id": "sec008",
+    "text": "In contrast, the non-reasoning maintains a relatively high and stable level of visual attention from shallow to intermediate layers.",
+    "char_start": 10786,
+    "char_end": 10918,
+    "sentence_index": 64,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0066",
+    "section_id": "sec008",
+    "text": "The visual attention heatmap in Figure b further supports this observation: while the non-reasoning model progressively focuses on semantically salient regions, the reasoning model exhibits sparse and dispersed attention, failing to consistently engage with key visual areas.",
+    "char_start": 10919,
+    "char_end": 11194,
+    "sentence_index": 65,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0067",
+    "section_id": "sec008",
+    "text": "This phenomenon indicates that the weakening of visual attention undermines the reasoning model\u2019s ability to achieve effective visual grounding, exacerbating the occurrence of hallucinations.",
+    "char_start": 11195,
+    "char_end": 11386,
+    "sentence_index": 66,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0068",
+    "section_id": "sec008",
+    "text": "[h]\nimages/attn.pdf\n-0.3cm\nAttention allocation and visual grounding between reasoning and non reasoning models.",
+    "char_start": 11388,
+    "char_end": 11500,
+    "sentence_index": 67,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0069",
+    "section_id": "sec008",
+    "text": "The reduction of visual attention in reasoning models amplifies visual hallucinations.",
+    "char_start": 11501,
+    "char_end": 11587,
+    "sentence_index": 68,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0070",
+    "section_id": "sec009",
+    "text": "As shown in Figure , we visualize the attention distributions of the reasoning model under two reasoning modes: normal thinking and overthinking.",
+    "char_start": 11589,
+    "char_end": 11734,
+    "sentence_index": 69,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0071",
+    "section_id": "sec009",
+    "text": "As the reasoning chain length increases, the heatmaps clearly reveal a systematic shift in the model\u2019s attention focus: under the overthinking mode, attention to visual tokens significantly decreases, while attention to instruction tokens intensifies.",
+    "char_start": 11735,
+    "char_end": 11986,
+    "sentence_index": 70,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0072",
+    "section_id": "sec009",
+    "text": "This pattern indicates that longer reasoning chains cause the model to increasingly rely on linguistic cues rather than grounded visual evidence.",
+    "char_start": 11987,
+    "char_end": 12132,
+    "sentence_index": 71,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0073",
+    "section_id": "sec009",
+    "text": "For instance, when asked whether a gray wall is present, the model under normal thinking correctly identifies the gray well and provides a correct response.",
+    "char_start": 12133,
+    "char_end": 12289,
+    "sentence_index": 72,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0074",
+    "section_id": "sec009",
+    "text": "In contrast, under over-reasoning conditions, the model exhibits further diminished attention to visual tokens, with increased focus directed toward the end of the user instruction.",
+    "char_start": 12290,
+    "char_end": 12471,
+    "sentence_index": 73,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0075",
+    "section_id": "sec009",
+    "text": "This suggests that longer reasoning chains tend to further exacerbate the degradation of the model\u2019s visual grounding, potentially leading to an increase in hallucinations.",
+    "char_start": 12472,
+    "char_end": 12644,
+    "sentence_index": 74,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0076",
+    "section_id": "sec009",
+    "text": "[h]\nimages/heatmap_new.pdf\nAttention shift in the reasoning model under different reasoning length.",
+    "char_start": 12646,
+    "char_end": 12745,
+    "sentence_index": 75,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0077",
+    "section_id": "sec009",
+    "text": "In normal thinking, the model generates outputs as typically expected, while in overthinking, the reasoning length is adjusted using Latent State Steering (Section ).",
+    "char_start": 12746,
+    "char_end": 12912,
+    "sentence_index": 76,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0078",
+    "section_id": "sec009",
+    "text": "Longer reasoning chains further exacerbate the degradation of attention to visual information and focus toward linguistic priors.",
+    "char_start": 12913,
+    "char_end": 13042,
+    "sentence_index": 77,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0079",
+    "section_id": "sec010",
+    "text": "In this section, we explore the impact of reasoning length on the balance between hallucination and reasoning.",
+    "char_start": 13044,
+    "char_end": 13154,
+    "sentence_index": 78,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0080",
+    "section_id": "sec010",
+    "text": "Section provides an overview of the proposed control strategy: latent state steering as well as techniques that are previously used in the literature : budget forcing, and test time scaling.",
+    "char_start": 13155,
+    "char_end": 13345,
+    "sentence_index": 79,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0081",
+    "section_id": "sec010",
+    "text": "In Section , we explore the optimal generation length for various benchmarks and analyze the trade-off between hallucination and reasoning performance as reasoning length varies.",
+    "char_start": 13346,
+    "char_end": 13524,
+    "sentence_index": 80,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0082",
+    "section_id": "sec011",
+    "text": "To systematically control the reasoning length in reasoning models, we adopt three strategies:\n\n(1) Token Budget Forcing : A hard constraint on reasoning length is enforced by predefining a generation budget at decoding time, directly limiting the number of tokens allocated for the reasoning.",
+    "char_start": 13526,
+    "char_end": 13819,
+    "sentence_index": 81,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0083",
+    "section_id": "sec011",
+    "text": "(2) Test Time Scaling : Reasoning is incrementally extended during inference through staged generation.",
+    "char_start": 13821,
+    "char_end": 13924,
+    "sentence_index": 82,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0084",
+    "section_id": "sec011",
+    "text": "The model first produces partial reasoning under a 4096-token constraint and halts midway.",
+    "char_start": 13925,
+    "char_end": 14015,
+    "sentence_index": 83,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0085",
+    "section_id": "sec011",
+    "text": "It is then prompted to continue by appending a simple token (\"Wait\"), enabling soft extension of reasoning while preserving contextual coherence.",
+    "char_start": 14016,
+    "char_end": 14161,
+    "sentence_index": 84,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0086",
+    "section_id": "sec011",
+    "text": "(3) Latent State Steering :\nInspired by recent works on latent space steering for behavior control in large language models , we propose a method to steer the model toward generating reasoning traces of varying lengths.",
+    "char_start": 14163,
+    "char_end": 14382,
+    "sentence_index": 85,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0087",
+    "section_id": "sec011",
+    "text": "Specifically, we extract steering directions from the post-attention hidden states by computing the difference of latent states between long and short reasoning trajectories.",
+    "char_start": 14383,
+    "char_end": 14557,
+    "sentence_index": 86,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0088",
+    "section_id": "sec011",
+    "text": "These direction vectors are obtained and applied across all layers of the text decoder, with a scaling factor controlling both the magnitude of guidance on the reasoning length.",
+    "char_start": 14558,
+    "char_end": 14735,
+    "sentence_index": 87,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0089",
+    "section_id": "sec011",
+    "text": "Specifically, we collect responses from the test benchmark and categorize them into long reasoning traces $ R _ long $ and short reasoning traces $ R _ short $ based on token length.",
+    "char_start": 14736,
+    "char_end": 14918,
+    "sentence_index": 88,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0090",
+    "section_id": "sec011",
+    "text": "The query and reasoning steps for each sample are input into the model, from which hidden representations $S^ $ are extracted at each layer.",
+    "char_start": 14919,
+    "char_end": 15059,
+    "sentence_index": 89,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0091",
+    "section_id": "sec011",
+    "text": "$S^ (q, t)$ denotes the hidden representation at layer $ $ for token position $t$ in the response to query $q$.",
+    "char_start": 15060,
+    "char_end": 15171,
+    "sentence_index": 90,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0092",
+    "section_id": "sec011",
+    "text": "We compute the average hidden representation over reasoning tokens, where $ H _i$ represents the set of token positions within the reasoning span.",
+    "char_start": 15172,
+    "char_end": 15318,
+    "sentence_index": 91,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0093",
+    "section_id": "sec011",
+    "text": "The average representation is then calculated across the long and short reasoning traces to obtain layerwise embeddings:\n\nS ^ _ long = 1 | R _ long | _ q R _ long 1 | H _i| _ t H _i S^ (q, t),\nS ^ _ short = 1 | R _ short | _ q R _ short 1 | H _i| _ t H _i S^ (q, t)\n1\n\nThe reasoning length direction at layer $ $ is defined as the difference between the long and short embeddings, denoted as $d^ $, which captures the variation in the model's representation resulting from different reasoning chain lengths.",
+    "char_start": 15319,
+    "char_end": 15826,
+    "sentence_index": 92,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0094",
+    "section_id": "sec011",
+    "text": "To adjust the hidden representation based on this direction, We introduce a parameter $ [-0.15, 0.15]$ to dynamically control the reasoning length and its magnitude.",
+    "char_start": 15827,
+    "char_end": 15992,
+    "sentence_index": 93,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0095",
+    "section_id": "sec011",
+    "text": "As $ $ increases, the length of the reasoning chain extends, as shown below:\n\nd^ &= S _ long ^ - S _ short ^ ,\nS ^ _ steering &= S ^ + d^ .",
+    "char_start": 15993,
+    "char_end": 16132,
+    "sentence_index": 94,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0096",
+    "section_id": "sec011",
+    "text": "2\n\nThese strategies are applied to five representative multimodal reasoning models and evaluated on six benchmark datasets, covering both reasoning and perception tasks.",
+    "char_start": 16134,
+    "char_end": 16303,
+    "sentence_index": 95,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0097",
+    "section_id": "sec011",
+    "text": "In\nFigure , we present two benchmarks for both tasks.",
+    "char_start": 16304,
+    "char_end": 16357,
+    "sentence_index": 96,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0098",
+    "section_id": "sec011",
+    "text": "All implementation details and results are provided in Appendix C.",
+    "char_start": 16358,
+    "char_end": 16424,
+    "sentence_index": 97,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0099",
+    "section_id": "sec011",
+    "text": "[h]\nimages/length.pdf\nReasoning-Hallucination balance of multimodal reasoning models under varying reasoning lengths.",
+    "char_start": 16426,
+    "char_end": 16543,
+    "sentence_index": 98,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0100",
+    "section_id": "sec011",
+    "text": "Thinking lengths are controlled within [0\u2013600] tokens for reasoning and [0\u2013300] for hallucination, corresponding to the longer chains required for reasoning and shorter for hallucination.",
+    "char_start": 16544,
+    "char_end": 16731,
+    "sentence_index": 99,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0101",
+    "section_id": "sec012",
+    "text": "Non-monotonic Effect of Reasoning Length on Reasoning and Perception Performance.",
+    "char_start": 16733,
+    "char_end": 16814,
+    "sentence_index": 100,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0102",
+    "section_id": "sec012",
+    "text": "The relationship between reasoning length and model performance typically exhibits a non-monotonic pattern under reasoning and perception tasks.",
+    "char_start": 16815,
+    "char_end": 16959,
+    "sentence_index": 101,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0103",
+    "section_id": "sec012",
+    "text": "Across various length control strategies, a consistent trend emerges: moderate reasoning depth tends to yield optimal performance, whereas overly short or excessively long reasoning chains often lead to a decline in accuracy.",
+    "char_start": 16960,
+    "char_end": 17185,
+    "sentence_index": 102,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0104",
+    "section_id": "sec012",
+    "text": "As shown in Figure , we employ the Latent State Steering method adjusts the thinking step for reasoning and perception tasks.",
+    "char_start": 17186,
+    "char_end": 17311,
+    "sentence_index": 103,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0105",
+    "section_id": "sec012",
+    "text": "It is evident that as the thinking length increases, the model's performance across tasks generally follows a rising-then-falling trajectory.",
+    "char_start": 17312,
+    "char_end": 17453,
+    "sentence_index": 104,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0106",
+    "section_id": "sec012",
+    "text": "This indicates that enhanced reasoning does not linearly improve model performance, but instead follows a dynamic trade-off pattern.",
+    "char_start": 17454,
+    "char_end": 17586,
+    "sentence_index": 105,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0107",
+    "section_id": "sec012",
+    "text": "Task-Specific Variability of Optimal Reasoning Intervals.",
+    "char_start": 17588,
+    "char_end": 17645,
+    "sentence_index": 106,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0108",
+    "section_id": "sec012",
+    "text": "While most tasks exhibit non-monotonic relationships between reasoning length and performance, we further observe that the optimal reasoning length varies significantly across tasks.",
+    "char_start": 17646,
+    "char_end": 17828,
+    "sentence_index": 107,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0109",
+    "section_id": "sec012",
+    "text": "Figure reveals that reasoning benchmarks such as MathVista mathvista tend to benefit from longer reasoning chains, whereas perception and hallucination-oriented tasks such as MMHalu achieve their best performance at shorter or moderate lengths.",
+    "char_start": 17829,
+    "char_end": 18073,
+    "sentence_index": 108,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0110",
+    "section_id": "sec012",
+    "text": "This indicates that the balance between reasoning depth and performance is task-specific, and unified length control strategies are unlikely to be effective across all task types.",
+    "char_start": 18074,
+    "char_end": 18253,
+    "sentence_index": 109,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0111",
+    "section_id": "sec012",
+    "text": "Impact of the Zerothink Condition.",
+    "char_start": 18255,
+    "char_end": 18289,
+    "sentence_index": 110,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0112",
+    "section_id": "sec012",
+    "text": "Zerothink retains the reasoning structure but lacks substantive content.",
+    "char_start": 18290,
+    "char_end": 18362,
+    "sentence_index": 111,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0113",
+    "section_id": "sec012",
+    "text": "As shown in Figure , this setting leads to a consistent drop in model performance on both reasoning and perception benchmarks, notably lower than results under normal reasoning lengths.",
+    "char_start": 18363,
+    "char_end": 18548,
+    "sentence_index": 112,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0114",
+    "section_id": "sec012",
+    "text": "These results indicate that the absence of reasoning content diminishes the reasoning model's performance in both perception and reasoning.",
+    "char_start": 18549,
+    "char_end": 18688,
+    "sentence_index": 113,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0115",
+    "section_id": "sec012",
+    "text": "Limitation of Conventional Metric.",
+    "char_start": 18690,
+    "char_end": 18724,
+    "sentence_index": 114,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0116",
+    "section_id": "sec012",
+    "text": "Conventional metrics like reasoning accuracy and hallucination rate, when computed at a fixed generation length, fail to capture the dynamic balance between deeper reasoning and perception.",
+    "char_start": 18725,
+    "char_end": 18914,
+    "sentence_index": 115,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0117",
+    "section_id": "sec012",
+    "text": "Figure shows that reasoning and perception often peak at different reasoning lengths, making it misleading to evaluate models using single-point metrics or simple averages between reasoning and hallucination performance.",
+    "char_start": 18915,
+    "char_end": 19135,
+    "sentence_index": 116,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0118",
+    "section_id": "sec012",
+    "text": "For instance, a short reasoning trace may yield a lower hallucination rate but poor reasoning depth, while a longer trace may improve reasoning at the cost of increased hallucination, yet both scenarios could yield the same average score.",
+    "char_start": 19136,
+    "char_end": 19374,
+    "sentence_index": 117,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0119",
+    "section_id": "sec012",
+    "text": "To capture this evolving balance, in the next section, we propose an AUC-style metric that summarizes the balance curve between reasoning and perception fidelity across various reasoning lengths.",
+    "char_start": 19376,
+    "char_end": 19571,
+    "sentence_index": 118,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0120",
+    "section_id": "sec012",
+    "text": "This provides a more faithful and holistic measure of performance, revealing both the model\u2019s optimal balance and its stability across varying generation lengths.",
+    "char_start": 19572,
+    "char_end": 19734,
+    "sentence_index": 119,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0121",
+    "section_id": "sec012",
+    "text": "[colframe=myLightBlueFrame, colback=myExtremelyLightBlue, title= Takeaway 2: Moderate Reasoning Length Strikes the Best Reasoning-Hallucination Balance]\nReasoning length exerts a non-monotonic effect on model performance: both insufficient and excessive reasoning degrade accuracy, and the optimal length is task-dependent.",
+    "char_start": 19736,
+    "char_end": 20059,
+    "sentence_index": 120,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0122",
+    "section_id": "sec013",
+    "text": "To comprehensively quantify the balance between reasoning and hallucination in multimodal large reasoning models at different reasoning depths, we introduce a new metric RH-AUC .",
+    "char_start": 20061,
+    "char_end": 20239,
+    "sentence_index": 121,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0123",
+    "section_id": "sec013",
+    "text": "This metric captures how hallucination risk evolves with reasoning depth while also reflecting the cumulative effects of reasoning and perception.",
+    "char_start": 20240,
+    "char_end": 20386,
+    "sentence_index": 122,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0124",
+    "section_id": "sec013",
+    "text": "Additionally, we present RH-Bench , a new diagnostic dataset of 1000 samples, designed for the integrated evaluation of reasoning and perception tasks, offering a robust basis for analyzing reasoning ability and perceptual hallucinations.",
+    "char_start": 20387,
+    "char_end": 20625,
+    "sentence_index": 123,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0125",
+    "section_id": "sec014",
+    "text": "Benchmark Overview.",
+    "char_start": 20627,
+    "char_end": 20646,
+    "sentence_index": 124,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0126",
+    "section_id": "sec014",
+    "text": "RH-Bench consists of two types of tasks: reasoning and perception, with each task including two types of questions: multiple-choice and open-ended.",
+    "char_start": 20647,
+    "char_end": 20794,
+    "sentence_index": 125,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0127",
+    "section_id": "sec014",
+    "text": "The reasoning task includes 500 samples sourced from MathVision mathvision , MathVista mathvista , MMMU yue2024mmmu , and ScienceQA lu2022learnexplainmultimodalreasoning , while the visual perception task includes 500 samples from MMhalu, MMVP, HallusionBench, and VMCBench.",
+    "char_start": 20795,
+    "char_end": 21069,
+    "sentence_index": 126,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0128",
+    "section_id": "sec014",
+    "text": "Both task types use accuracy as the evaluation metric.",
+    "char_start": 21070,
+    "char_end": 21124,
+    "sentence_index": 127,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0129",
+    "section_id": "sec014",
+    "text": "For multiple-choice questions, evaluation is based on matching the final options.",
+    "char_start": 21125,
+    "char_end": 21206,
+    "sentence_index": 128,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0130",
+    "section_id": "sec014",
+    "text": "For open-ended questions, both tasks are evaluated using GPT-4o.",
+    "char_start": 21207,
+    "char_end": 21271,
+    "sentence_index": 129,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0131",
+    "section_id": "sec014",
+    "text": "The reasoning task determines whether the generated response is consistent with the correct answer, whereas the visual task evaluates the generated response against the correct answer, assigning a score within the range of 0 to 6.",
+    "char_start": 21272,
+    "char_end": 21502,
+    "sentence_index": 130,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0132",
+    "section_id": "sec014",
+    "text": "Responses with a score below 3 are classified as hallucinations.",
+    "char_start": 21503,
+    "char_end": 21567,
+    "sentence_index": 131,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0133",
+    "section_id": "sec014",
+    "text": "All sample ground-truth and evaluation answers have undergone manual inspection.",
+    "char_start": 21568,
+    "char_end": 21648,
+    "sentence_index": 132,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0134",
+    "section_id": "sec014",
+    "text": "[!h]\n\n!",
+    "char_start": 21650,
+    "char_end": 21657,
+    "sentence_index": 133,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0135",
+    "section_id": "sec014",
+    "text": "5pt\n1pt\n1\nl|c| c c | c c | c c | c\n\nmyVeryLightBlue\n1 c| 2 * [1ex] Method &\n1 c| 2 * [1ex] Paradigms &\n2 c| Perception &\n2 c| Reasoning &\n2 c| Training Data &\n1 c 2 * [1ex] RH-AUC\n\nmyVeryLightBlue\n& & Acc.(\\%) $ $ & Length & Acc.(\\%) $ $ & Length & Perc.",
+    "char_start": 21658,
+    "char_end": 21912,
+    "sentence_index": 134,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0136",
+    "section_id": "sec014",
+    "text": "& Reas.",
+    "char_start": 21913,
+    "char_end": 21920,
+    "sentence_index": 135,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0137",
+    "section_id": "sec014",
+    "text": "&\n\nLLM-R1-3B & RL & 48.7 & 121.9 & 43.8 & 391.8 & 65k & 40k & 0.46\n\nCurr-ReFT-3B & SFT+RL & 50.6 & 133.7 & 42.5 & 472.61 & 6k & 3k & 0.47\n\nOcean-R1-3B & RL & 52.8 & 131.2 & 45.6 & 414.5 & 20k & 63k & 0.53\n\n1-9\nR1-OneVision-7B & SFT+RL & 55.7 & 162.9 & 44.2 & 457.3 & 80k & 77k & 0.46\n\nThinkLite-VL-7B & RL & 63.3 & 110.4 & 50.4 & 435.4 & 62k & 8k & 0.52\n\nOpenVLThinker-7B & SFT+RL & 59.2 & 187.7 & 48.9 & 460.1 & 25k & 25k & 0.54\n\nMM-Eureka-7B & RL & 62.0 & 139.6 & 54.0 & 450.5 & - & 15k & 0.55\n\nMM-R1-7B & RL & 60.3 & 139.6 & 54.0 & 430.0 & - & 6k & 0.57\n\nOcean-R1-7B & RL & 62.3 & 90.4 & 51.8 & 262.2 & 20k & 63k & 0.63\n\nComparison of model performance on RH-Bench , including task-specific accuracy and RH-AUC scores.",
+    "char_start": 21921,
+    "char_end": 22642,
+    "sentence_index": 136,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0138",
+    "section_id": "sec014",
+    "text": "Perc.",
+    "char_start": 22643,
+    "char_end": 22648,
+    "sentence_index": 137,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0139",
+    "section_id": "sec014",
+    "text": "and Reas.",
+    "char_start": 22649,
+    "char_end": 22658,
+    "sentence_index": 138,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0140",
+    "section_id": "sec014",
+    "text": "respectively denote training data for visual perception and reasoning.",
+    "char_start": 22659,
+    "char_end": 22729,
+    "sentence_index": 139,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0141",
+    "section_id": "sec014",
+    "text": "RH-AUC\nWe define reasoning length as $T$, which controls the extent of the model\u2019s generated reasoning trace.",
+    "char_start": 22731,
+    "char_end": 22840,
+    "sentence_index": 140,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0142",
+    "section_id": "sec014",
+    "text": "For each length $T$, we compute $R_T$, which represents the reasoning performance at length $T$, and $H_T$, representing performance on hallucination at the same length.",
+    "char_start": 22841,
+    "char_end": 23010,
+    "sentence_index": 141,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0143",
+    "section_id": "sec014",
+    "text": "By evaluating the model at multiple lengths on the RH-bench benchmark, we obtain a series of $(R_T, H_T)$ pairs that form a balance curve between reasoning and perceptual hallucination.",
+    "char_start": 23012,
+    "char_end": 23197,
+    "sentence_index": 142,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0144",
+    "section_id": "sec014",
+    "text": "To compute the area under this curve, we first sort the pairs in ascending order of reasoning performance $R_T$.",
+    "char_start": 23198,
+    "char_end": 23310,
+    "sentence_index": 143,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0145",
+    "section_id": "sec014",
+    "text": "Let the sorted indices be denoted as $T^ (0) , T^ (1) , , T^ (n-1) $, such that $R_ T^ (0) R_ T^ (1) R_ T^ (n-1) $.",
+    "char_start": 23311,
+    "char_end": 23426,
+    "sentence_index": 144,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0146",
+    "section_id": "sec014",
+    "text": "To ensure comparability across models, both $R_T$ and $H_T$ are min-max normalized to the range $[0, 1]$.",
+    "char_start": 23427,
+    "char_end": 23532,
+    "sentence_index": 145,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0147",
+    "section_id": "sec014",
+    "text": "The RH-AUC is then computed using the trapezoidal rule as:\n\nRH-AUC = _ i=0 ^ n-2 R_ T^ (i+1) - R_ T^ (i) 2 (H_ T^ (i+1) + H_ T^ (i) ),\n3\n\nwhere $n$ is the number of evaluated reasoning lengths.",
+    "char_start": 23533,
+    "char_end": 23726,
+    "sentence_index": 146,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0148",
+    "section_id": "sec014",
+    "text": "A higher RH-AUC indicates a model that better balances reasoning and hallucination across different reasoning lengths.",
+    "char_start": 23727,
+    "char_end": 23845,
+    "sentence_index": 147,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0149",
+    "section_id": "sec014",
+    "text": "[h]\nimages/fig8.pdf\n-0.7cm\n(a) Accuracy trends on the RH-Bench reasoning task across different reasoning lengths for 3B and 7B models.",
+    "char_start": 23847,
+    "char_end": 23981,
+    "sentence_index": 148,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0150",
+    "section_id": "sec014",
+    "text": "Larger models typically exhibit more stable performance across varying reasoning lengths.",
+    "char_start": 23982,
+    "char_end": 24071,
+    "sentence_index": 149,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0151",
+    "section_id": "sec014",
+    "text": "(b) Comparison of SFT+RL and RL-only training paradigms in terms of RH-AUC , with arrow directions indicating the increase in reasoning length for SFT+RL relative to RL-only.",
+    "char_start": 24072,
+    "char_end": 24246,
+    "sentence_index": 150,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0152",
+    "section_id": "sec014",
+    "text": "RL-only training tends to generate more concise reasoning chains, leading to a better perception hallucination balance.",
+    "char_start": 24247,
+    "char_end": 24366,
+    "sentence_index": 151,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0153",
+    "section_id": "sec014",
+    "text": "(c) Case study comparing RL-only and SFT+RL models.",
+    "char_start": 24367,
+    "char_end": 24418,
+    "sentence_index": 152,
+    "section_sentence_index": 28
+  },
+  {
+    "sentence_id": "s0154",
+    "section_id": "sec014",
+    "text": "SFT+RL models often introduce rigid imitation reasoning paths, which limit the flexibility of visual reasoning.",
+    "char_start": 24419,
+    "char_end": 24530,
+    "sentence_index": 153,
+    "section_sentence_index": 29
+  },
+  {
+    "sentence_id": "s0155",
+    "section_id": "sec015",
+    "text": "We conduct an in-depth analysis of model performance based on the evaluation results from the RH-Bench diagnostic dataset, investigating the influence of three key factors: model scale, training paradigm, and training dataset on the reasoning-hallucination balance.",
+    "char_start": 24532,
+    "char_end": 24797,
+    "sentence_index": 154,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0156",
+    "section_id": "sec015",
+    "text": "Model Scaling.",
+    "char_start": 24799,
+    "char_end": 24813,
+    "sentence_index": 155,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0157",
+    "section_id": "sec015",
+    "text": "As shown in Table , the 7B model generally outperforms the 3B model in RH-Bench , demonstrating higher RH-AUC , primarily due to its larger parameter size and stronger representational capacity.",
+    "char_start": 24814,
+    "char_end": 25008,
+    "sentence_index": 156,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0158",
+    "section_id": "sec015",
+    "text": "As illustrated in Figure a, the larger model maintains higher stability, especially under longer reasoning chains, while the smaller models show a noticeable decline in performance.",
+    "char_start": 25009,
+    "char_end": 25190,
+    "sentence_index": 157,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0159",
+    "section_id": "sec015",
+    "text": "This suggests that larger models typically exhibit better robustness and adaptability.",
+    "char_start": 25191,
+    "char_end": 25277,
+    "sentence_index": 158,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0160",
+    "section_id": "sec015",
+    "text": "Training Paradigms.",
+    "char_start": 25279,
+    "char_end": 25298,
+    "sentence_index": 159,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0161",
+    "section_id": "sec015",
+    "text": "A comparison between the two-stage SFT+RL-trained model and the RL-only trained model reveals that RL demonstrates a stronger balance between reasoning and perception.",
+    "char_start": 25299,
+    "char_end": 25466,
+    "sentence_index": 160,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0162",
+    "section_id": "sec015",
+    "text": "For example, in Figure c, although the OpenVLThinker model maintains a longer reasoning chain, the introduction of redundant reasoning interferes with visual perception, leading to an incorrect inference that the shoe is already tied.",
+    "char_start": 25467,
+    "char_end": 25701,
+    "sentence_index": 161,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0163",
+    "section_id": "sec015",
+    "text": "In contrast, the RL-only model, Ocean-R1, uses a shorter reasoning chain, enabling it to more efficiently capture key visual features and avoid unnecessary complex reasoning steps.",
+    "char_start": 25702,
+    "char_end": 25882,
+    "sentence_index": 162,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0164",
+    "section_id": "sec015",
+    "text": "This advantage is particularly evident at different reasoning length, as shown in the average RH-AUC in Figure b, which is significantly higher for the RL-only model compared to SFT+RL.",
+    "char_start": 25883,
+    "char_end": 26068,
+    "sentence_index": 163,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0165",
+    "section_id": "sec015",
+    "text": "This phenomenon suggests that although SFT helps the model learn reasoning formats, it may introduce rigid imitation reasoning paths, limiting the model's adaptability to dynamic tasks and ultimately resulting in redundant reasoning.",
+    "char_start": 26069,
+    "char_end": 26302,
+    "sentence_index": 164,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0166",
+    "section_id": "sec015",
+    "text": "In contrast, RL encourages the model to generate more adaptive reasoning behaviors, enhancing the integration of reasoning and perception.",
+    "char_start": 26303,
+    "char_end": 26441,
+    "sentence_index": 165,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0167",
+    "section_id": "sec015",
+    "text": "Training Dataset.",
+    "char_start": 26443,
+    "char_end": 26460,
+    "sentence_index": 166,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0168",
+    "section_id": "sec015",
+    "text": "The diversity and quality of training data play a crucial role in the reasoning-hallucination balance of models.",
+    "char_start": 26461,
+    "char_end": 26573,
+    "sentence_index": 167,
+    "section_sentence_index": 13
+  },
+  {
+    "sentence_id": "s0169",
+    "section_id": "sec015",
+    "text": "Through a statistical analysis of the multimodel reasoning models training data and a comparison with the results in Table , we have observed some interesting phenomena: (1) More visual perception data does not necessarily improve the balance between reasoning and perception.",
+    "char_start": 26574,
+    "char_end": 26850,
+    "sentence_index": 168,
+    "section_sentence_index": 14
+  },
+  {
+    "sentence_id": "s0170",
+    "section_id": "sec015",
+    "text": "Increasing the training samples of visual perception data can enhance the balance of reasoning models to a certain degree.",
+    "char_start": 26851,
+    "char_end": 26973,
+    "sentence_index": 169,
+    "section_sentence_index": 15
+  },
+  {
+    "sentence_id": "s0171",
+    "section_id": "sec015",
+    "text": "For example, the ThinkLite-VL model, supported by large scale visual perception data, demonstrates strong hallucination and reasoning balance.",
+    "char_start": 26974,
+    "char_end": 27116,
+    "sentence_index": 170,
+    "section_sentence_index": 16
+  },
+  {
+    "sentence_id": "s0172",
+    "section_id": "sec015",
+    "text": "Similarly, the Ocean-R1 model adopts a two-stage training strategy, first enhancing reasoning ability and then strengthening visual perception, achieving the highest RH-AUC on RH-bench .",
+    "char_start": 27117,
+    "char_end": 27303,
+    "sentence_index": 171,
+    "section_sentence_index": 17
+  },
+  {
+    "sentence_id": "s0173",
+    "section_id": "sec015",
+    "text": "However, this phenomenon is not consistent.",
+    "char_start": 27304,
+    "char_end": 27347,
+    "sentence_index": 172,
+    "section_sentence_index": 18
+  },
+  {
+    "sentence_id": "s0174",
+    "section_id": "sec015",
+    "text": "For example, despite the R1-OneVision model utilizing a large amount of visual perception data, it demonstrates a weaker balance between reasoning and perception, which may be attributed to the limitations of its training paradigm design.",
+    "char_start": 27348,
+    "char_end": 27586,
+    "sentence_index": 173,
+    "section_sentence_index": 19
+  },
+  {
+    "sentence_id": "s0175",
+    "section_id": "sec015",
+    "text": "(2) Perception and Reasoning balance can be achieved through training on domain-specific data.",
+    "char_start": 27587,
+    "char_end": 27681,
+    "sentence_index": 174,
+    "section_sentence_index": 20
+  },
+  {
+    "sentence_id": "s0176",
+    "section_id": "sec015",
+    "text": "Training on domain-specific data helps enhance the balance of the reasoning model.",
+    "char_start": 27682,
+    "char_end": 27764,
+    "sentence_index": 175,
+    "section_sentence_index": 21
+  },
+  {
+    "sentence_id": "s0177",
+    "section_id": "sec015",
+    "text": "For example, the MM-Eureka model, trained on a larger mathematical dataset, shows a higher RH-AUC , proving its effectiveness in balancing reasoning and perception.",
+    "char_start": 27765,
+    "char_end": 27929,
+    "sentence_index": 176,
+    "section_sentence_index": 22
+  },
+  {
+    "sentence_id": "s0178",
+    "section_id": "sec015",
+    "text": "Similarly, despite being trained on only 6k mathematical data, the MM-R1 model still performs well on RH-bench .",
+    "char_start": 27930,
+    "char_end": 28042,
+    "sentence_index": 177,
+    "section_sentence_index": 23
+  },
+  {
+    "sentence_id": "s0179",
+    "section_id": "sec015",
+    "text": "This highlights the potential of domain-specific data to stimulate the balance capabilities of reasoning models, even with smaller datasets.",
+    "char_start": 28043,
+    "char_end": 28183,
+    "sentence_index": 178,
+    "section_sentence_index": 24
+  },
+  {
+    "sentence_id": "s0180",
+    "section_id": "sec015",
+    "text": "(3) The size of the training data is not always a guarantee for the reasoning-perception balance.",
+    "char_start": 28184,
+    "char_end": 28281,
+    "sentence_index": 179,
+    "section_sentence_index": 25
+  },
+  {
+    "sentence_id": "s0181",
+    "section_id": "sec015",
+    "text": "The traing data size does not always directly correlate with the model's balance capability.",
+    "char_start": 28282,
+    "char_end": 28374,
+    "sentence_index": 180,
+    "section_sentence_index": 26
+  },
+  {
+    "sentence_id": "s0182",
+    "section_id": "sec015",
+    "text": "For example, both the LLM-R1, trained on over 60k visual perception samples, and the R1-OneVision, with a dataset of 150k samples, exhibit inadequate reasoning-hallucination balance, with the RH-AUC of only 0.46.",
+    "char_start": 28375,
+    "char_end": 28587,
+    "sentence_index": 181,
+    "section_sentence_index": 27
+  },
+  {
+    "sentence_id": "s0183",
+    "section_id": "sec016",
+    "text": "Multimodal Reasoning Tasks.",
+    "char_start": 28589,
+    "char_end": 28616,
+    "sentence_index": 182,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0184",
+    "section_id": "sec016",
+    "text": "Multimodal reasoning requires integrating information across modalities to solve complex problems.",
+    "char_start": 28617,
+    "char_end": 28715,
+    "sentence_index": 183,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0185",
+    "section_id": "sec016",
+    "text": "It is generally categorized into general reasoning and domain-specific reasoning.",
+    "char_start": 28716,
+    "char_end": 28797,
+    "sentence_index": 184,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0186",
+    "section_id": "sec016",
+    "text": "General reasoning typically occurs in natural image scenarios, where models must combine visual perception with knowledge and commonsense.",
+    "char_start": 28798,
+    "char_end": 28936,
+    "sentence_index": 185,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0187",
+    "section_id": "sec016",
+    "text": "Representative benchmarks include multiple-choice datasets such as MMMU yue2024mmmu , MMVP tong2024eyes , MMBench liu2024mmbench , MMStar chen2024we , MMEval-Pro huang2024mmevalpro , and VMCBench zhang2025automated , as well as open-ended evaluations like Bingo cui2023holistic , MMHAL-Bench huang2024mmevalpro , POPE li-etal-2023-evaluating , CHAIR rohrbach2018object , and HallusionBench guan2024hallusionbench .",
+    "char_start": 28937,
+    "char_end": 29351,
+    "sentence_index": 186,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0188",
+    "section_id": "sec016",
+    "text": "Domain-specific reasoning focuses on technical tasks within particular domains.",
+    "char_start": 29352,
+    "char_end": 29431,
+    "sentence_index": 187,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0189",
+    "section_id": "sec016",
+    "text": "For mathematical reasoning, benchmarks such as MathVista mathvista , MATH-Vision mathvision , MM-Math mmmath , WeMath wemath evaluate models\u2019 ability to solve math problems grounded in visual contexts.",
+    "char_start": 29432,
+    "char_end": 29633,
+    "sentence_index": 188,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0190",
+    "section_id": "sec016",
+    "text": "For physical reasoning, datasets like PhysBench chow2025physbench and CRAVE sun2025content test understanding of physics and commonsense reasoning from visual inputs.",
+    "char_start": 29634,
+    "char_end": 29800,
+    "sentence_index": 189,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0191",
+    "section_id": "sec016",
+    "text": "Reinforcement Learning in MLLMs.",
+    "char_start": 29802,
+    "char_end": 29834,
+    "sentence_index": 190,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0192",
+    "section_id": "sec016",
+    "text": "Recent approaches enhance the reasoning capabilities of multimodal large models by incorporating chain-of-thought supervision during supervised fine-tuning or reinforcement learning zhao2024marco,zhang2024llamaberry,xu2024llava,thawakar2025llamav_o1,xu2025redstar,yao2024mulberry .",
+    "char_start": 29835,
+    "char_end": 30116,
+    "sentence_index": 191,
+    "section_sentence_index": 9
+  },
+  {
+    "sentence_id": "s0193",
+    "section_id": "sec016",
+    "text": "Methods like RLHF-V yu2024rlhf , LLaVA-Reasoner zhang2024improve , and Insight-V dong2024insight leverage large-scale CoT-style datasets and preference optimization to improve model reasoning.",
+    "char_start": 30117,
+    "char_end": 30309,
+    "sentence_index": 192,
+    "section_sentence_index": 10
+  },
+  {
+    "sentence_id": "s0194",
+    "section_id": "sec016",
+    "text": "Following DeepSeek-R1, the GRPO algorithm has become a standard paradigm in training multimodal large reasoning models liu2025visual,liu2025segzero,xiao2025fast,wang2025vl,li2025q,wang2025visualprm .",
+    "char_start": 30310,
+    "char_end": 30509,
+    "sentence_index": 193,
+    "section_sentence_index": 11
+  },
+  {
+    "sentence_id": "s0195",
+    "section_id": "sec016",
+    "text": "Some models, such as R1-OneVision r1onevision , Reason-RFT tan2025reason , and R1-VL zhang2025r1 , follow a two-stage SFT + RL pipeline, while others like Ocean-R1 ming2025oceanr1 , ThinkLite-VL wang2025sota , and MM-Eureka mmeureka apply rule-based reinforcement learning directly at scale.",
+    "char_start": 30510,
+    "char_end": 30801,
+    "sentence_index": 194,
+    "section_sentence_index": 12
+  },
+  {
+    "sentence_id": "s0196",
+    "section_id": "sec017",
+    "text": "In conclusion, this paper investigates the balance between reasoning and hallucination in multimodal reasoning models, with a focus on how reasoning chain length and visual attention allocation impact performance.",
+    "char_start": 30803,
+    "char_end": 31016,
+    "sentence_index": 195,
+    "section_sentence_index": 0
+  },
+  {
+    "sentence_id": "s0197",
+    "section_id": "sec017",
+    "text": "While longer reasoning chains enhance performance on complex tasks, they also exacerbate hallucinations by diminishing visual attention and increasing reliance on language priors.",
+    "char_start": 31017,
+    "char_end": 31196,
+    "sentence_index": 196,
+    "section_sentence_index": 1
+  },
+  {
+    "sentence_id": "s0198",
+    "section_id": "sec017",
+    "text": "To address these challenges, the paper introduces the RH-AUC metric and the RH-Bench benchmark, which provide a systematic method to evaluate the balance between reasoning ability and hallucination risk.",
+    "char_start": 31197,
+    "char_end": 31400,
+    "sentence_index": 197,
+    "section_sentence_index": 2
+  },
+  {
+    "sentence_id": "s0199",
+    "section_id": "sec017",
+    "text": "The findings reveal that reasoning-augmented models are more prone to hallucinations, highlighting the importance of developing evaluation frameworks that assess both the quality of reasoning and the accuracy of perception.",
+    "char_start": 31401,
+    "char_end": 31624,
+    "sentence_index": 198,
+    "section_sentence_index": 3
+  },
+  {
+    "sentence_id": "s0200",
+    "section_id": "sec017",
+    "text": "Limitation.",
+    "char_start": 31626,
+    "char_end": 31637,
+    "sentence_index": 199,
+    "section_sentence_index": 4
+  },
+  {
+    "sentence_id": "s0201",
+    "section_id": "sec017",
+    "text": "Although our study provides a comprehensive analysis of visual hallucinations in multimodal reasoning models, it also has several limitations.",
+    "char_start": 31638,
+    "char_end": 31780,
+    "sentence_index": 200,
+    "section_sentence_index": 5
+  },
+  {
+    "sentence_id": "s0202",
+    "section_id": "sec017",
+    "text": "First, our evaluation is limited to models built on the Qwen2.5-VL backbone, which may constrain the generalizability of our findings to architectures with different modalities or pretraining objectives.",
+    "char_start": 31781,
+    "char_end": 31984,
+    "sentence_index": 201,
+    "section_sentence_index": 6
+  },
+  {
+    "sentence_id": "s0203",
+    "section_id": "sec017",
+    "text": "Second, our analysis of the influence of training data is based solely on technical reports and publicly available documentation of existing models, without conducting controlled retraining experiments.",
+    "char_start": 31985,
+    "char_end": 32187,
+    "sentence_index": 202,
+    "section_sentence_index": 7
+  },
+  {
+    "sentence_id": "s0204",
+    "section_id": "sec017",
+    "text": "Therefore, our conclusions are observational and may not fully capture causal effects.",
+    "char_start": 32188,
+    "char_end": 32274,
+    "sentence_index": 203,
+    "section_sentence_index": 8
+  },
+  {
+    "sentence_id": "s0205",
+    "section_id": "sec017",
+    "text": "plain\nneurips_2025",
+    "char_start": 32276,
+    "char_end": 32294,
+    "sentence_index": 204,
+    "section_sentence_index": 9
+  }
+]

@@ -1,0 +1,313 @@
+{
+  "model": "gpt-5.4",
+  "seed": 17,
+  "n_candidates_total": 155,
+  "n_sampled": 30,
+  "distribution": {
+    "complementary": 16,
+    "unrelated": 11,
+    "same_signal": 3
+  },
+  "rows": [
+    {
+      "paper_id": "arxiv:2504.20930",
+      "arxiv_id": "2504.20930",
+      "n_bottlenecks": 5,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2505.18536, rel=compares): The paper identifies a need for significant advancements in medical reasoning capabilities for MLLMs in the specific domain of medical vision.\n  - (from 2506.16962, rel=compares): The paper identifies that existing medical reasoning models, including those using RL like ChestX-Reasoner, often suffer from superficial reasoning or hallucinations and may lose basic VQA capabilities.\n  - (from 2509.06409, rel=compares): Existing models, including reasoning-based ones, may not fully capture the hierarchical clinical reasoning and structured diagnostic workflows required for accurate diagnosis of rare thoracic diseases.",
+      "aigraph_weakness_top3": "  - [comparison / negative] GPT-4o was much worse than ChestX-Reasoner on binary, single, and multiple disease diagnosis accuracy.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A discusses broader weaknesses in current medical reasoning models such as superficial reasoning, hallucinations, and failure to capture structured clinical workflows, while Observation B reports a specific comparative limitation/negative result about GPT-4o underperforming ChestX-Reasoner, so they address different but compatible aspects of model weakness."
+    },
+    {
+      "paper_id": "arxiv:2407.01178",
+      "arxiv_id": "2407.01178",
+      "n_bottlenecks": 9,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2409.13265, rel=uses_component): The paper identifies that existing fixed-sized memory modules often require significant training and have limited flexibility in storing large-scale pretraining knowledge, whereas Memory3 offers a flexible-sized hidden space memory.\n  - (from 2412.18069, rel=compares): Memory3 encodes a static training corpus into KV caches, which limits its ability to incorporate new, dynamic information from online retrieval during generation.\n  - (from 2503.23513, rel=compares): Existing methods like Memory3 externalize knowledge into retrievable formats but do not address the systematic learning of domain-specific reasoning patterns, focusing instead on knowledge supplementation.",
+      "aigraph_weakness_top3": "  - [comparison / negative] The -2B model is 35.2% slower at inference than the same model without using memory.\n  - [setting_effect / negative] Transformer accuracy drops significantly when depth or width is reduced below task-specific minimum values needed for perfect accuracy.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Atlas discusses Memory3’s knowledge-storage limitations such as static caches and lack of domain-reasoning learning, while the paper’s own negatives concern inference slowdown and general transformer capacity sensitivity, with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2403.18120",
+      "arxiv_id": "2403.18120",
+      "n_bottlenecks": 7,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2402.17671, rel=compares): LLMs lack foresight and backtracking abilities, leading to inconsistency in complex reasoning tasks like math solving.\n  - (from 2404.09939, rel=compares): The survey highlights that state-of-the-art LLMs with few-shot prompting have modest success in autoformalizing statements (e.g., 25% and 13% accuracy), highlighting the challenge in autoformalization.\n  - (from 2410.12608, rel=replaces): The paper identifies that verification via formalization is complex, requires few-shot demonstrations, and relies on more advanced models, creating a barrier to efficient verification.",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] In ablation, removing formal solution sketch lowers DTV solve rate relative to full DTV formalization with Minerva 62B.",
+      "judge_label": "complementary",
+      "judge_rationale": "A discusses broad external weaknesses in LLM reasoning and the difficulty/complexity of autoformalization and verification, while B reports an internal ablation showing that removing the formal solution sketch hurts performance, a different but compatible limitation signal about the value of structured formalization."
+    },
+    {
+      "paper_id": "arxiv:2404.15522v2",
+      "arxiv_id": "2404.15522",
+      "n_bottlenecks": 1,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2409.13724, rel=compares): Existing benchmarks like LogicBench cast logical reasoning as a QA task, which may not fully capture the consistency challenges addressed by neuro-symbolic integration.",
+      "aigraph_weakness_top3": "  - [limitation / negative] Classical logical reasoning remains challenging for larger LLMs, with ChatGPT averaging 48.04% and GPT-4 averaging 63.98% A(Yes).\n  - [setting_effect / negative] GPT-4 performance drops to 59% A(Yes) on PL(MT).",
+      "judge_label": "complementary",
+      "judge_rationale": "A critiques benchmark/task formulation for not capturing consistency issues in logical reasoning, while B reports empirical limits of LLM performance on classical logic tasks, so they highlight different but compatible weaknesses."
+    },
+    {
+      "paper_id": "arxiv:2309.15217",
+      "arxiv_id": "2309.15217",
+      "n_bottlenecks": 188,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2311.09476, rel=compares): RAGAS relies on fixed, heuristically hand-written prompts that offer little adaptability to various evaluation contexts and lack guarantees about quality.\n  - (from 2402.01767, rel=replaces): RAGAS relies heavily on LLMs for generating questions/answers, introducing noise/hallucinations, and focuses only on top-k results, which is inadequate for large corpora where relevant knowledge might not be in the top-k.\n  - (from 2402.01717, rel=uses_component): Traditional evaluation metrics like BLEU and ROUGE are inadequate for assessing the quality of RAG systems, and human evaluation is too costly.",
+      "aigraph_weakness_top3": "  - [limitation / negative] For closed models like ChatGPT and GPT-4 that do not expose token probabilities, different evaluation methods are required.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses weaknesses of RAGAS such as fixed prompts, LLM-induced noise, top-k limitations, and metric inadequacy, whereas Observation B only notes that closed-source models without token probabilities require different evaluation methods, with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2402.01680v2",
+      "arxiv_id": "2402.01680",
+      "n_bottlenecks": 24,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2406.00252, rel=compares): Existing surveys often focus on components and architectures without providing a unified lens of rationality to interpret their contributions.\n  - (from 2404.17977, rel=extends): Traditional monolithic AI frameworks lack the modularity, scalability, and robustness required for complex, decomposable tasks.\n  - (from 2405.11106, rel=compares): Existing surveys like Guo et al. [20] lack a dedicated focus on Multi-Agent Reinforcement Learning (MARL), instead covering broader LLM-based multi-agent frameworks without emphasizing cooperative task accomplishment via RL.",
+      "aigraph_weakness_top3": "  - [limitation / negative] Each LLM-based agent, often built on models like GPT-4, requires substantial computational power and memory.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses conceptual/framework and survey-scope gaps in multi-agent and MARL research, while Observation B concerns the high compute and memory cost of individual LLM-based agents, with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2412.10380",
+      "arxiv_id": "2412.10380",
+      "n_bottlenecks": 2,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2507.22358, rel=adapts): Lack of operationalized systems to address open challenges in human-agent communication.\n  - (from 2602.07283, rel=adapts): The paper seeks to develop a taxonomy for computer use agents but lacks a comprehensive framework for human-agent communication challenges specific to this domain, drawing on prior work to fill this gap.",
+      "aigraph_weakness_top3": "  - [limitation / negative] A lack of safeguards against system disruptions is a limitation even when the primary task is achieved.\n  - [limitation / negative] Agents with greater capacity to act in the open world and complete goals bring a wider range of failure modes and associated costs.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A focuses on missing frameworks for human-agent communication and taxonomy, whereas Observation B discusses safety, disruptions, and broader failure modes of capable agents, with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2402.11457",
+      "arxiv_id": "2402.11457",
+      "n_bottlenecks": 5,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2307.11019, rel=compares): Existing studies lack a deep understanding of LLMs' capabilities in perceiving their factual knowledge boundaries, particularly regarding how retrieval augmentation affects this perception.\n  - (from 2409.18786, rel=compares): The paper identifies that LLMs often fail to recognize their own knowledge limitations, leading to overconfidence and the provision of incorrect answers without seeking external help.\n  - (from 2507.19333, rel=compares): Low-quality retrieved documents may mislead the model, resulting in incorrect answers, which undermines the reliability of RAG systems.",
+      "aigraph_weakness_top3": "  - [limitation / negative] On NQ, GPT-4 answers fewer than 49% of questions correctly and falsely confirms wrong answers in 18.94% of cases.\n  - [limitation / negative] Due to budget limits, the GPT-4 experiments only use the most efficient methods.",
+      "judge_label": "complementary",
+      "judge_rationale": "Both sets concern weaknesses in LLM/RAG reliability, but A emphasizes conceptual/systemic issues like poor self-knowledge calibration and susceptibility to bad retrieval, while B reports this paper’s concrete empirical shortcomings and an experimental budget constraint."
+    },
+    {
+      "paper_id": "arxiv:2310.07298",
+      "arxiv_id": "2310.07298",
+      "n_bottlenecks": 7,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2407.11770, rel=compares): Existing anonymization techniques are vulnerable to re-identification attacks by sophisticated LLMs that can reason over dispersed patterns.\n  - (from unknown, rel=compares): The paper identifies that LLMs have association capabilities that allow them to infer PII without exact prefixes, highlighting a vulnerability beyond simple memorization.\n  - (from unknown, rel=compares): Existing black-box attacks relying solely on output probabilities may miss privacy signals that are only visible through internal model states, such as gradient magnitudes at training data points.",
+      "aigraph_weakness_top3": "  - [limitation / negative] Anonymizing text only slightly decreases GPT-4's accuracy across attributes, and the drop is smaller than desired.",
+      "judge_label": "same_signal",
+      "judge_rationale": "Both sets point to the same core weakness: current text anonymization is insufficient because powerful LLMs can still infer or re-identify private attributes despite anonymization."
+    },
+    {
+      "paper_id": "arxiv:2406.14515",
+      "arxiv_id": "2406.14515",
+      "n_bottlenecks": 46,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from unknown, rel=compares): MMBench-Video, like other existing benchmarks, focuses on object appearance and static events, neglecting the evaluation of motion-related hallucinations and continuous action understanding.\n  - (from 2505.20124, rel=adapts): Existing QA benchmarks may allow questions to be answered using single frames, failing to test true temporal understanding.\n  - (from 2503.06157, rel=compares): MMBench-Video focuses on life content from YouTube, which lacks the embodied, egocentric perspective required for evaluating urban navigation and spatial reasoning.",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] GPT-4o's performance declines substantially on videos with over 50 shots.\n  - [comparison / negative] On MMBench-Video, GPT-4o with 1-frame input retains only 47.8% of its efficacy relative to 8-frame input, with a normalized score of 26.0%.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A criticizes MMBench-Video’s benchmark coverage and realism—especially weak temporal, motion, and egocentric/spatial evaluation—while Observation B reports model performance drops with more shots and fewer frames on that benchmark, so they point to different but compatible weaknesses."
+    },
+    {
+      "paper_id": "arxiv:2306.05715",
+      "arxiv_id": "2306.05715",
+      "n_bottlenecks": 24,
+      "n_weakness_claims": 3,
+      "atlas_bottlenecks_top3": "  - (from 2309.00029, rel=compares): No specific bottleneck is identified; the reference is cited as a concurrent study appearing during the research period, indicating similar research directions.\n  - (from 2308.06921, rel=compares): LLMs tend to act as 'unreliable tutors' that directly reveal solutions even when instructed not to, leading to student over-reliance.\n  - (from 2310.16984, rel=compares): AI models (Codex, GPT-3.5) struggle to accurately identify all issues in student help requests and produce common false positives.",
+      "aigraph_weakness_top3": "  - [limitation / negative] GPT-3.5 did not consistently find all issues, doing so 57% of the time.\n  - [limitation / negative] False positives were common for GPT-3.5, with a 40% chance.\n  - [limitation / negative] The analysis did not account for whether help request responses addressed a specific issue type.",
+      "judge_label": "complementary",
+      "judge_rationale": "Both sets overlap on GPT-3.5 missing issues and producing false positives, but A also adds a distinct concern about LLMs revealing solutions and fostering over-reliance while B adds a separate methodological limitation about not tracking issue-type-specific responses."
+    },
+    {
+      "paper_id": "arxiv:2410.04587v2",
+      "arxiv_id": "2410.04587",
+      "n_bottlenecks": 14,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2409.03797, rel=compares): Standard direct prompting methods often fail to leverage smaller models effectively for complex nested tasks, whereas specialized approaches like Hammer can outperform larger models.\n  - (from 2502.08820, rel=uses_component): Existing function calling models may overfit to specific function/parameter names rather than reasoning about API functionality based on descriptions.\n  - (from 2504.13958, rel=uses_component): No bottleneck in Hammer is discussed; it is used as a data source to improve generalization.",
+      "aigraph_weakness_top3": "  - [limitation / mixed] xLAM-7B-fc shows inconsistent benchmark performance, achieving the best results on most benchmarks but dropping on two others and ending with the lowest overall average.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A highlights task/method weaknesses around direct prompting and function-calling generalization, while Observation B reports inconsistent benchmark performance of xLAM-7B-fc, so they point to different but compatible shortcomings rather than the same issue or a conflict."
+    },
+    {
+      "paper_id": "arxiv:2409.12568",
+      "arxiv_id": "2409.12568",
+      "n_bottlenecks": 11,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2501.04686, rel=compares): Paper A notes that while models like InfiMM-Math focus on STEM reasoning data synthesis, they may still be limited by the lack of effective process supervision in online RL, which URSA addresses.\n  - (from 2412.11936, rel=uses_component): Existing methods may lack the scale and diversity of multimodal interleaved data required for exceptional performance in mathematical reasoning.\n  - (from 2502.11573, rel=uses_component): Small models need high-quality, reasoning-oriented text data, specifically mathematics-related content, to develop strong logical reasoning and deduction capabilities.",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] Using an exact matching technique for URL deduplication reduces sample volume from 5.4 billion to 3.9 billion.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses limitations around process supervision and the scale/quality/diversity of math-oriented multimodal data for reasoning, whereas Observation B only notes a dataset-size reduction from exact URL deduplication, with no substantive overlap in weakness."
+    },
+    {
+      "paper_id": "arxiv:2307.03109",
+      "arxiv_id": "2307.03109",
+      "n_bottlenecks": 23,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2309.03554, rel=compares): The field of automated testing for AI systems is growing rapidly, but there is a need to categorize and understand the diverse focuses of existing research.\n  - (from 2310.11593, rel=compares): General surveys and existing LLM evaluation techniques do not specifically address the unique challenges of evaluating personalized text generation, such as distinguishing personalization from generic quality.\n  - (from 2311.02049, rel=compares): The paper argues that current evaluation methodologies are inconsistent and contradictory, and that existing surveys do not fully address the need for a unified taxonomy or the specific weaknesses of available methods.",
+      "aigraph_weakness_top3": "  - [limitation / mixed] GPT-4 and BingChat answer more than 80% of questions correctly but still remain over 15% short of complete accuracy.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses gaps in evaluation taxonomies and methods for AI testing and personalized text generation, whereas Observation B reports residual inaccuracy of GPT-4/BingChat on a question-answering benchmark, so they concern different weaknesses with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2504.16074v2",
+      "arxiv_id": "2504.16074",
+      "n_bottlenecks": 1,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2505.15472, rel=compares): PHYBench focuses on text-only settings or lacks the multimodal variable and process evaluation dimensions that PHYSICSARENA provides.",
+      "aigraph_weakness_top3": "  - [comparison / negative] PHYBench is more challenging than prior benchmarks, with 25.0 accuracy versus higher accuracies on MATH-500, GPQA, OlympiadBench, and AIME 2024.",
+      "judge_label": "unrelated",
+      "judge_rationale": "A critiques PHYBench for lacking multimodal and process-evaluation dimensions relative to PHYSICSARENA, while B discusses PHYBench’s higher difficulty compared with other benchmarks, so they concern different aspects without overlap or conflict."
+    },
+    {
+      "paper_id": "arxiv:2309.17277",
+      "arxiv_id": "2309.17277",
+      "n_bottlenecks": 11,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2402.11291, rel=compares): LLMs struggle with strategic decision-making in games involving hidden information and opponent modeling, often failing to reach optimal play strategies.\n  - (from 2404.01230, rel=improves): LLMs lack the ability to effectively anticipate and strategize based on the mental states of others in imperfect information games like Poker.\n  - (from 2405.03341, rel=compares): LLM/VLM agents, including Suspicion-Agent, suffer from slow inference speeds and hallucinations when used for planning and control.",
+      "aigraph_weakness_top3": "  - [limitation / negative] GPT-4's large model size causes long inference times, taking several minutes per game of Leduc Hold'em.\n  - [limitation / negative] The vanilla planning method struggles with uncertainty in imperfect information games, especially against opponents who exploit others' strategies.",
+      "judge_label": "same_signal",
+      "judge_rationale": "Both sets highlight the same core weaknesses of the paper’s approach: poor handling of uncertainty/opponent modeling in imperfect-information games and slow inference due to large LLMs, with Atlas mainly restating and slightly broadening the paper’s own limitations."
+    },
+    {
+      "paper_id": "arxiv:2410.20878",
+      "arxiv_id": "2410.20878",
+      "n_bottlenecks": 10,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2405.13576, rel=compares): Existing modular frameworks like AutoRAG lack the implementation of existing RAG methods and their evaluations, making it difficult to reproduce or compare specific algorithmic improvements.\n  - (from 2502.02464, rel=compares): AutoRAG lacks support for diverse datasets and advanced retriever configurations, limiting its utility for broad benchmarking.\n  - (from 2503.20757, rel=compares): AutoRAG automates retrieval pipeline configuration and model selection, which may not dynamically adapt to the specific reasoning needs of each query as effectively as MCTS-RAG's search-based approach.",
+      "aigraph_weakness_top3": "  - [comparison / negative] At RRF-k=3, retrieval precision was lower than baseline BM25.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A concerns AutoRAG's framework-level limitations in method coverage, dataset/retriever support, and query-adaptive search behavior, whereas Observation B is a specific empirical result about lower retrieval precision than BM25 at one setting, with no direct overlap."
+    },
+    {
+      "paper_id": "arxiv:2306.15895",
+      "arxiv_id": "2306.15895",
+      "n_bottlenecks": 5,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from unknown, rel=improves): Prior methods for generating synthetic resume attributes rely on sampling from existing datasets, which limits diversity and realism.\n  - (from 2502.17607, rel=compares): LLM-generated synthetic text lacks diversity, faithfulness to real data, and does not preserve privacy or provide performance guarantees.\n  - (from 2410.12757, rel=uses_component): LLMs struggle with diversity when prompted to generate text examples.",
+      "aigraph_weakness_top3": "  - [limitation / mixed] For GPT-4, generated data results are not directly comparable with other models because only 10% of the full dataset was generated.\n  - [comparison / negative] For SimPrompt, average performance using ChatGPT is worse than using text-curie-001, but this does not hold for AttrPrompt.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A concerns general weaknesses of LLM-based synthetic data generation such as low diversity, realism, faithfulness, privacy, and guarantees, whereas Observation B only reports study-specific comparability and model-performance quirks in this paper without addressing those broader generation-quality issues."
+    },
+    {
+      "paper_id": "arxiv:2406.04744v2",
+      "arxiv_id": "2406.04744",
+      "n_bottlenecks": 37,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2412.16311, rel=compares): Existing RAG methods (text-only, graph-only, or concatenated) struggle to handle both types of questions effectively or are distracted by irrelevant content in long references.\n  - (from unknown, rel=compares): No bottleneck in CRAG is discussed; it is cited as the source for the evaluation protocol.\n  - (from 2409.15337, rel=compares): Existing QA benchmarks fail to adequately evaluate the diverse and dynamic challenges faced by Retrieval-Augmented Generation (RAG) systems, particularly regarding hallucination and temporal accuracy.",
+      "aigraph_weakness_top3": "  - [limitation / negative] The best LLM-only solution, GPT-4 Turbo, achieved only 34% accuracy and 20% truthfulness on CRAG, indicating substantial room for improvement.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A discusses broader weaknesses in existing RAG methods and benchmark coverage, while Observation B reports poor baseline LLM-only performance on CRAG, so they highlight different but compatible shortcomings."
+    },
+    {
+      "paper_id": "arxiv:2504.15253v2",
+      "arxiv_id": "2504.15253",
+      "n_bottlenecks": 3,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2507.10535, rel=compares): Paper A identifies that existing benchmarks like JETTS focus exclusively on code generation, failing to cover the full spectrum of coding activities like repair and test generation.\n  - (from 2510.17793, rel=compares): Inference-time scaling requires evaluators that can effectively rerank responses to achieve near-oracle performance, a task where many existing judges fall short.\n  - (from 2601.22249, rel=compares): LLM-as-a-Judge approaches incur inference costs that scale quadratically with the number of candidate solutions due to pairwise comparisons.",
+      "aigraph_weakness_top3": "  - [limitation / negative] Majority-vote aggregation is computed for GSM8k and MATH but is not feasible for CHAMP because GPT-4o grades natural-language responses without extracting a final answer.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses benchmark coverage and evaluator/reranking cost-quality issues for coding and judge-based inference-time scaling, while Observation B is a specific feasibility limitation of majority-vote aggregation on CHAMP due to grading natural-language answers, with no substantive overlap."
+    },
+    {
+      "paper_id": "arxiv:2302.04023",
+      "arxiv_id": "2302.04023",
+      "n_bottlenecks": 26,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2211.13873, rel=compares): Large Language Models like ChatGPT struggle to comprehend abstract sense structures and extract relevant language features for implicit discourse relations, leading to poor performance compared to specialized models.\n  - (from 2302.13793, rel=compares): {}\n  - (from 2302.08081, rel=compares): Prior evaluations of ChatGPT focused on general summarization tasks using datasets not explicitly designed for text summarization, leaving aspect- or query-based summarization underexplored.",
+      "aigraph_weakness_top3": "  - [limitation / negative] There is still room for improvement in extremely low-resource languages and reasoning skills, especially on complex reasoning tasks.",
+      "judge_label": "complementary",
+      "judge_rationale": "The third-party observations focus on weaknesses in abstract discourse understanding and gaps in evaluation coverage, while the paper’s own limitation highlights low-resource language performance and complex reasoning, so they identify different but compatible shortcomings."
+    },
+    {
+      "paper_id": "arxiv:2310.08753",
+      "arxiv_id": "2310.08753",
+      "n_bottlenecks": 9,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from unknown, rel=improves): CompA-CLAP is trained on a smaller dataset (660k pairs) compared to ReCLAP's 2.3M pairs, and lacks the caption augmentation strategy.\n  - (from 2505.05335, rel=compares): No specific bottleneck in CompA is identified; rather, CompA is used as a baseline to demonstrate FLAM's competitive performance in retrieval tasks despite being trained on a different, potentially noisier dataset.\n  - (from 2503.03983, rel=improves): CLAP-like models struggle to capture nuances in compositional reasoning, such as temporal sequencing or attribute binding, due to limitations in their training objectives.",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] Skipping compositionally-aware hard negative training before modular contrastive training causes a 4%-13% performance degradation.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A raises external concerns about limited training scale/augmentation and broader CLAP-style compositional reasoning weaknesses, while Observation B specifically identifies the importance of compositionally-aware hard negative training for performance, so they are different but compatible limitations."
+    },
+    {
+      "paper_id": "arxiv:2302.12813",
+      "arxiv_id": "2302.12813",
+      "n_bottlenecks": 38,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2303.14100, rel=compares): LLM-AUGMENTER improves outputs by giving access to external knowledge and revising prompts in natural language, which may lack the formal rigor required for executable structured languages.\n  - (from 2305.14002, rel=compares): Using an LLM (like ChatGPT) to generate feedback based on retrieved evidence is less efficient than using the documents directly.\n  - (from 2305.09067, rel=compares): LLMs may suffer from hallucinations or lack of factual grounding in specialized tasks, which Peng et al. (2023) address via external knowledge and feedback.",
+      "aigraph_weakness_top3": "  - [limitation / negative] There remains a noticeable performance gap relative to a state-of-the-art fine-tuned model using top-50 consolidated evidence.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A highlights concerns about the method’s reliance on LLM-mediated feedback and external knowledge—such as inefficiency, lack of formal rigor, and hallucination risk—while Observation B instead notes a residual performance gap to a stronger fine-tuned evidence-based model, so they describe different but compatible weaknesses."
+    },
+    {
+      "paper_id": "arxiv:2401.15884v3",
+      "arxiv_id": "2401.15884",
+      "n_bottlenecks": 72,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2404.10981, rel=compares): The paper identifies that initial retrieval may not always yield the most relevant documents, necessitating a refinement step to ensure high-quality inputs for generation.\n  - (from 2405.16178, rel=replaces): CRAG requires maintaining an extra external model (T5-XXL) for classification, which increases serving infrastructure complexity and adds additional model runs during inference.\n  - (from 2406.13249, rel=compares): CRAG's simplistic approach of filtering out documents can omit crucial connections needed for understanding complex queries, leading to performance declines in multi-hop datasets.",
+      "aigraph_weakness_top3": "  - [limitation / mixed] The efficacy of CRAG is easily affected by the accuracy of the retrieval evaluator when only Correct and Incorrect actions are used.",
+      "judge_label": "complementary",
+      "judge_rationale": "Both sets touch retrieval-quality sensitivity—A notes imperfect initial retrieval and over-filtering can hurt results, while B says CRAG depends heavily on evaluator accuracy—and A also adds an infrastructure-complexity weakness not mentioned in B, so they are different but compatible."
+    },
+    {
+      "paper_id": "arxiv:2401.13919",
+      "arxiv_id": "2401.13919",
+      "n_bottlenecks": 109,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from unknown, rel=compares): No specific bottleneck or limitation of WebVoyager is discussed in the text; it is merely listed as an example of academic research.\n  - (from 2505.16421, rel=compares): Existing methods may lack generalization capabilities to out-of-distribution (OOD) web domains not seen during training.\n  - (from 2505.00684, rel=compares): No specific bottleneck in WebVoyager is identified; it is used as a benchmark to demonstrate the effectiveness of RegionFocus in web interaction scenarios.",
+      "aigraph_weakness_top3": "  - [limitation / mixed] WebVoyager is slightly worse than the text-only setting on Allrecipes and similar on Github, ESPN, Cambridge Dictionary, and Wolfram Alpha.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A raises a broad possible weakness about out-of-distribution generalization (while other items note no specific bottleneck), whereas Observation B reports site-specific underperformance versus text-only on certain domains, so they concern different but compatible weaknesses."
+    },
+    {
+      "paper_id": "arxiv:2403.14403v2",
+      "arxiv_id": "2403.14403",
+      "n_bottlenecks": 20,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2505.21250, rel=uses_component): No specific bottleneck is attributed to Adaptive-RAG; rather, Paper A adopts a specific hyperparameter constraint from it.\n  - (from 2407.18553, rel=adapts): Adaptive-RAG still relies on interleaved Chain-of-Thought (CoT) reasoning and retrieval steps, which introduces significant latency due to multiple LLM calls.\n  - (from 2501.12835, rel=compares): The paper identifies that AdaptiveRAG, while effective for complex reasoning, is part of a class of complex pipelines that often neglect efficiency evaluations and lack comparisons with uncertainty estimation techniques.",
+      "aigraph_weakness_top3": "  - [comparison / negative] Adaptive-RAG underperforms the Multi-step Approach on HotpotQA with GPT-3.5 in accuracy.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A highlights efficiency and evaluation-related weaknesses of Adaptive-RAG, while Observation B reports a separate task-specific accuracy underperformance against a multi-step baseline, so they describe different but compatible limitations."
+    },
+    {
+      "paper_id": "arxiv:2311.17227v2",
+      "arxiv_id": "2311.17227",
+      "n_bottlenecks": 19,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2402.01680, rel=compares): The paper notes that simulating complex real-world interactions, such as war and policy-making, requires agents to handle competitive dynamics and decentralized communication, which are challenging for standard cooperative multi-agent systems.\n  - (from 2403.13433, rel=compares): Social simulations focusing on large-scale phenomena like war evolution or competitive behaviors often lack the fine-grained linguistic interaction and individual persona dynamics necessary to study emergent social norms and collective intelligence in group chats.\n  - (from 2404.01230, rel=compares): No specific bottleneck is identified; the paper cites WarAgent as an example of recreating and analyzing historical conflicts.",
+      "aigraph_weakness_top3": "  - [limitation / negative] In GPT-4 war-declaration simulations, mistakes mostly come from whether Britain and France choose to declare war against Austria-Hungary or the German Empire.",
+      "judge_label": "complementary",
+      "judge_rationale": "The third-party observations discuss broad modeling challenges in war/social simulations such as competition, decentralized communication, and missing fine-grained persona-linguistic dynamics, while the paper’s own limitation points to a specific empirical failure mode in alliance/war-declaration decisions, so they are different but compatible weaknesses."
+    },
+    {
+      "paper_id": "arxiv:2503.22020v1",
+      "arxiv_id": "2503.22020",
+      "n_bottlenecks": 70,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from 2412.20451, rel=compares): Existing approaches like CoT-VLA generate sub-goals for autoregressive VLAs, but CoA-VLA argues that its affordance taxonomy and dynamic selection offer a more computationally efficient and robust alternative.\n  - (from 2505.13888, rel=compares): CoT-VLA relies on complex intermediate computations or external models for reasoning, which can be inefficient and less parameter-efficient than intrinsic spatial reasoning.\n  - (from 2504.20520, rel=compares): Vision-Language-Action (VLA) models, including those with chain-of-thought reasoning, require large-scale, high-quality real-world data which is scarce and expensive to collect, limiting their practical deployment.",
+      "aigraph_weakness_top3": "  - [limitation / negative] Current VLAs lack intermediate reasoning steps crucial for complex manipulation tasks.",
+      "judge_label": "complementary",
+      "judge_rationale": "Observation A emphasizes inefficiency and data-scarcity issues in existing VLA/CoT-VLA approaches, while Observation B highlights the separate weakness that current VLAs lack intermediate reasoning for complex manipulation, making the two sets different but compatible."
+    },
+    {
+      "paper_id": "arxiv:2403.14624v2",
+      "arxiv_id": "2403.14624",
+      "n_bottlenecks": 246,
+      "n_weakness_claims": 1,
+      "atlas_bottlenecks_top3": "  - (from unknown, rel=compares): Existing MLLMs struggle to effectively see and comprehend diagrams in visual math problems, leading to poor performance on benchmarks like MathVerse.\n  - (from unknown, rel=compares): No specific bottleneck in MathVerse is identified; it is used as a benchmark specifically designed to evaluate deep visual understanding in math problems, highlighting TVC's strength in this area.\n  - (from 2502.13383, rel=compares): The paper uses the MathVerse benchmark to evaluate and demonstrate the robustness of its MM-Verifier and MM-Reasoner in handling visual math problems, comparing against baselines.",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] Most MLLMs perform worse on Vision-dominant problems than on Text-lite problems; GPT-4V drops by 5.8% and InternLM-XComposer2 by 3.9%.",
+      "judge_label": "same_signal",
+      "judge_rationale": "Both observations point to the same underlying weakness: current multimodal LLMs have difficulty with visually intensive/diagram-based math problems, which is reflected in poorer performance on benchmarks like MathVerse and especially on vision-dominant items."
+    },
+    {
+      "paper_id": "arxiv:2508.20453v1",
+      "arxiv_id": "2508.20453",
+      "n_bottlenecks": 20,
+      "n_weakness_claims": 2,
+      "atlas_bottlenecks_top3": "  - (from 2509.17158, rel=compares): No specific bottleneck is attributed to MCP-Bench; it is cited as an example of an MCP-based benchmark that can be reproduced within ARE, serving as a reference for platform compatibility.\n  - (from 2510.02271, rel=compares): MCP-Bench exposes agents to large-scale tool environments but stops short of evaluating information seeking and long-horizon reasoning across tools, focusing instead on invocation correctness and execution robustness.\n  - (from 2510.00229, rel=uses_component): There is a need for standardized benchmarks to evaluate LLM agents in realistic tool-use scenarios using the Model Context Protocol (MCP).",
+      "aigraph_weakness_top3": "  - [setting_effect / negative] llama-3-1-8b-instruct performs worse with multiple servers than in the single-server case.\n  - [setting_effect / negative] nova-micro-v1 performs worse with multiple servers than in the single-server case.",
+      "judge_label": "unrelated",
+      "judge_rationale": "Observation A discusses benchmark scope and the need for standardized MCP tool-use evaluation, while Observation B reports model performance degradation in multi-server settings, with no substantive overlap in the specific weakness identified."
+    }
+  ]
+}

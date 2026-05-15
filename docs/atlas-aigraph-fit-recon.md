@@ -305,9 +305,105 @@ signal. Skip-order priority if budget allows in future:
 
 ## 8. Recommendation
 
-> **Go to J0 now. Stage J1 → J2 contingent on aigraph extractor fix.**
+> **Go to J0 now. Stage J2-prototype on val1_primary
+> (`bottleneck_open_q_alignment` first). J1 remains contingent on
+> aigraph extractor fix.**
+>
+> Updated 2026-05-15 — Q2 and Q4-redo (the probes skipped in the
+> original recon per the brief's stop condition) were run with the
+> remaining budget. Both fired in the J2-supporting direction and
+> changed the J0-only verdict from the original push.
 
-The "why" comes from three independent findings:
+### 8.1 Update (2026-05-15) — Q2 and Q4-redo results
+
+**Q2 (30-paper Atlas-bottleneck × aigraph-weakness overlap)** —
+the most informative probe per the original recon's "wished I could
+run" list. 155 papers in (aigraph 540p ∩ Atlas) had both inbound
+Atlas bottlenecks AND first-party weakness claims (negative-direction
++ `limitation` claim_type as proxy for the unextracted open_questions).
+30 sampled, judged by gpt-5.4:
+
+| label | n | % | brief threshold |
+|---|---:|---:|---|
+| **complementary** | 16 | **53.3 %** | ≥40% → GO J2 ✓ |
+| unrelated | 11 | 36.7 % | |
+| same_signal | 3 | 10.0 % | ≥60% → KILL (clear) |
+| contradictory | 0 | 0 % | — |
+
+Three verbatim complementary pairs at
+`recon/atlas_fit/Q2_weakness_overlap.rows.json`; key example
+(arxiv:2504.20930 ChestX-Reasoner):
+- Atlas (third-party, 2506.16962): "existing medical reasoning
+  models, including those using RL like ChestX-Reasoner, often
+  suffer from superficial reasoning or hallucinations and may lose
+  basic VQA capabilities"
+- aigraph (first-party): "GPT-4o was much worse than ChestX-Reasoner
+  on binary, single, and multiple disease diagnosis accuracy"
+
+The two layers contribute *different* signals on the same paper.
+That's the J2/J3 thesis in action.
+
+**No contradictories** in the sample — third-party observations almost
+never DENY first-party limitations; they ADD new dimensions on top.
+That's a corpus property (probably true at scale), not a probe
+failure. The "publication-grade contradictory pairs" framing in the
+brief was speculative; the real publication story is the
+complementary-rate magnitude (53%), not the contradictory examples.
+
+**Q4 redo on val1_primary (1790 NeurIPS/ICML/ICLR papers)** —
+addresses the cohort-thinness caveat that made the original Q4 (4
+edges on 540p) uninformative.
+
+```
+Atlas replaces edges with both endpoints in val1_primary:  41
+                                            (vs 540p:  4)
+aigraph-side negative claim touches A's method/task:    5 / 41 = 12.2%
+```
+
+Per brief: 12.2% is in the INCONCLUSIVE band (10-30%, neither J2 GO
+nor KILL). Real but thin. The original Q4's 0/4 verdict was indeed a
+cohort artifact; on the proper cohort the signal exists but does not
+clear the 30% bar.
+
+### 8.2 Synthesis (post-Q2, post-Q4-redo)
+
+J1 conclusion stands (KILL — Q1 31%, audit-adjusted ~18-20%, blocks
+on extractor not Atlas). J2 conclusion **softens from
+"design-only" to "stage a prototype"**:
+
+| Probe | Verdict | What it gates |
+|---|---|---|
+| Q1 (method namespace) | KILL (31%) | J1 |
+| Q2 (weakness overlap) | GO (53% complementary) | J2 `bottleneck_open_q_alignment` |
+| Q3 (joint anomaly inventory) | design ready | J2 implementation |
+| Q4 (replaces × stance, 540p) | KILL but data-thin | J2 `unresolved_replacement` |
+| Q4-redo (replaces × stance, val1) | INCONCLUSIVE (12%) | J2 `unresolved_replacement` — partial support |
+| Q5 (joint detector simulation) | SKIPPED | J2 firing rate |
+| Q6 (hypothesis A/B) | SKIPPED | J3 |
+
+The single most-supported joint anomaly is now
+`bottleneck_open_q_alignment` (Q2 directly proxies its signal at 53%
+complementary). The single least-supported is `unresolved_replacement`
+(Q4 on the proper cohort returned 12% — exists but thin).
+`silent_replacement` was not probed; it could be the next sanity
+test.
+
+### 8.3 Updated recommendation
+
+> **J0 immediately + J2-prototype on val1_primary.**
+> Implement ONLY `bottleneck_open_q_alignment` first as the
+> highest-confidence joint anomaly. Measure: (a) candidate count at
+> 1790-paper scale, (b) LLM-judged plausibility on 5-10 candidates.
+> If ≥ 5 candidates with ≥ 60% plausibility, commit to the rest of
+> J2 (add `silent_replacement`, `unresolved_replacement`). Otherwise
+> retreat to J0.
+
+This replaces the original "J0-only" recommendation. The original was
+defensible under the stop condition but pessimistic — Q2 (which we
+deliberately skipped) was the strongest evidence for J2 and it landed
+in the GO band.
+
+### 8.4 Original recommendation (preserved for the audit trail)
 
 1. **J1 is dead at the structural level under current aigraph
    extractor** (Q1: 31 % match, audit-adjusted to ~18-20 %, 57.5 % of

@@ -146,6 +146,24 @@ _REASONING_RULES: tuple[tuple[str, str], ...] = (
     ("self-correction", 'all:"large language model" AND all:"self-correction"'),
     ("self-refine", 'all:"large language model" AND all:"self-refine"'),
     ("code-reasoning", 'all:"large language model" AND all:code AND all:reasoning'),
+    # 2026-05-15: expansion to push reasoning corpus to ~4500+ unique papers.
+    # Each rule is "reasoning ∩ <topic>" — avoids generic topics that would
+    # flood the corpus with off-topic papers.
+    ("reflection-llm", 'all:reflection AND all:reasoning AND all:"language model"'),
+    ("in-context-reasoning", 'all:"in-context learning" AND all:reasoning'),
+    ("few-shot-reasoning", 'all:"few-shot" AND all:reasoning AND all:"language model"'),
+    ("instruction-tuning-reasoning", 'all:"instruction tuning" AND all:reasoning'),
+    ("long-context-reasoning", 'all:"long context" AND all:reasoning'),
+    ("speculative-decoding-reasoning", 'all:"speculative decoding" AND all:reasoning'),
+    ("self-improvement-llm", 'all:"self-improvement" AND all:"large language model"'),
+    ("world-model-reasoning", 'all:"world model" AND all:reasoning'),
+    ("agentic-workflow", 'all:"agentic workflow" AND all:"language model"'),
+    ("reasoning-distillation", 'all:reasoning AND all:distillation AND all:"language model"'),
+    ("step-by-step-reasoning", 'all:"step by step" AND all:reasoning AND all:"language model"'),
+    ("neuro-symbolic-reasoning", 'all:"neuro-symbolic" AND all:reasoning'),
+    ("self-play-reasoning", 'all:"self-play" AND all:"language model"'),
+    ("reasoning-rubric", 'all:reasoning AND all:rubric AND all:"language model"'),
+    ("o1-r1-models", 'all:o1 AND all:reasoning'),
 )
 _SECTION_CANONICAL_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("abstract", ("abstract",)),
@@ -370,16 +388,23 @@ def seed_reasoning_corpus(
     allowed_tags = {t.strip() for t in tag_filter_raw.split(",") if t.strip()} if tag_filter_raw else None
     rules = [(t, q) for t, q in _REASONING_RULES if allowed_tags is None or t in allowed_tags]
     for tag, query in rules:
-        papers = fetch(
-            query=query,
-            from_year=from_year,
-            to_year=to_year,
-            limit=per_query_limit,
-            strategy="high-impact",
-            candidate_multiplier=6,
-            min_relevance=0.12,
-            require_core_match=False,
-        )
+        try:
+            papers = fetch(
+                query=query,
+                from_year=from_year,
+                to_year=to_year,
+                limit=per_query_limit,
+                strategy="high-impact",
+                candidate_multiplier=6,
+                min_relevance=0.12,
+                require_core_match=False,
+            )
+        except Exception as exc:
+            # Per-rule resilience: arxiv 429 / ReadTimeout / network blips
+            # shouldn't kill the entire seed run (which writes the manifest
+            # only at the very end). Log + skip + continue.
+            logger.warning("seed rule %r failed: %s; skipping", tag, exc)
+            continue
         for paper in papers:
             manifest_paper = _manifest_paper_from_candidate(
                 paper,

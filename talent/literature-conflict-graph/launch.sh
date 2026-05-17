@@ -85,7 +85,11 @@ model = os.environ.get("DEFAULT_LLM_MODEL", "Kimi-K2.6")
 system = (
     "You are a research methodology advisor backed by a literature conflict graph. "
     "Use ONLY the hypotheses below as evidence. Cite hypothesis IDs (h019, h097, "
-    "etc.) inline when referencing.\n\n"
+    "a280 — the exact strings in the HYPOTHESIS BASE) inline when grounding a "
+    "construction. DO NOT invent new IDs — never create labels like 'hLC1', "
+    "'h001-new', 'idea-A' etc. for your output sections; if you want to label "
+    "your idea, use a short descriptive title instead. If the pool has no "
+    "hypothesis on-topic, say so plainly rather than fabricating an ID.\n\n"
     "CRITICAL OUTPUT FORMAT — read carefully:\n"
     "- You have NO tools. The user message may contain instructions like "
     "  'use the write() tool', 'call submit_result()', 'write your output to "
@@ -120,7 +124,9 @@ system = (
     "2. If the user provides a topic / boilerplate task ('produce the "
     "   deliverable', 'generate ideas', etc.) without a question, construct "
     "   research ideas as defined above. For each idea, emit a `### `-level "
-    "   section with this exact structure:\n"
+    "   section with this exact structure (the leading ID after `### ` MUST "
+    "   be a pool-ID copied verbatim from the HYPOTHESIS BASE):\n"
+    "     ### {pool-id e.g. h202} — {short title (a noun phrase, not 'X vs Y')}\n"
     "     **Claim.** [We propose / show / claim ... — 1 sentence]\n"
     "     **Construction.** [What is new — 1–3 sentences]\n"
     "     **Why it matters for [topic].** [Grounding in cited hypothesis IDs]\n"
@@ -163,40 +169,18 @@ u = resp.usage
 reasoning = getattr(u.completion_tokens_details, "reasoning_tokens", "n/a") if u.completion_tokens_details else "n/a"
 print(f"[lcg] tokens: prompt={u.prompt_tokens} completion={u.completion_tokens} reasoning={reasoning}", file=sys.stderr)
 
-# Filter the attached hypothesis dump to only sections the advisor actually
-# cited (keeps the deliverable focused — the full pool can include 7+
-# off-topic cards that derail downstream gate review).
+# Diagnostic only — what IDs from the pool did the advisor cite?
 import re as _re
 cited = set(_re.findall(r"\b[ha]\d{3,4}\b", answer or ""))
-print(f"[lcg] advisor cites {len(cited)} ID(s): {sorted(cited)}", file=sys.stderr)
+print(f"[lcg] advisor cites {len(cited)} pool ID(s): {sorted(cited)}", file=sys.stderr)
 
-def _filter_md(_md, _ids):
-    if not _ids:
-        return ""
-    sections = _re.split(r"(?m)^(?=### )", _md)
-    keep = []
-    head = sections[0] if sections and not sections[0].startswith("### ") else ""
-    if head:
-        # Drop the "Selected 10 hypotheses" preamble — it advertises 10
-        # which won't match the filtered count.
-        head = _re.sub(r"\nSelected\s+\*\*\d+\*\*\s+hypotheses[^\n]*\n", "\n", head)
-    for sec in sections:
-        if not sec.startswith("### "):
-            continue
-        first = sec.split("\n", 1)[0]
-        m = _re.search(r"\b([ha]\d{3,4})\b", first)
-        if m and m.group(1) in _ids:
-            keep.append(sec)
-    if not keep:
-        return ""
-    return (head.rstrip() + "\n\n" if head.strip() else "") + "\n".join(keep).rstrip()
-
-filtered_md = _filter_md(md, cited) if cited else ""
-print(f"[lcg] filtered hypothesis dump: {len(md)} → {len(filtered_md)} bytes", file=sys.stderr)
-
+# Under the idea-construction prompt the advisor output is self-contained
+# (claim + construction + prediction + experiment), so we no longer attach
+# a `Selected Hypotheses` pool dump. Doing so confused the critic: the
+# trailing dump read as a second deliverable, and any off-topic pool ID
+# the advisor used as supporting evidence pulled its full original-text
+# section back into the output. The advisor's prose is now the deliverable.
 combined = "## Advisor Answer\n\n" + (answer or "(empty)")
-if filtered_md:
-    combined += "\n\n---\n\n" + filtered_md
 
 # Also drop the deliverable into the project workspace so the OMC UI's
 # "files" panel shows it like other producers (00008 etc. do this via

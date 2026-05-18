@@ -936,6 +936,23 @@ def serve_cmd(
     serve(host=host, port=port, runs_dir=runs_dir)
 
 
+@app.command("web")
+def web_cmd(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8000, "--port"),
+    runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+) -> None:
+    """Run the v0.7-frozen explorer (cached-hypothesis browser, 0 LLM).
+
+    Reads run directories under --runs-root (default artifacts/runs) and
+    serves them at /, /api/runs, /run/{id}, /query, /query/graph. CORS is
+    enabled so the API can be embedded in cross-origin browser apps.
+    """
+    from .web import serve as web_serve
+
+    web_serve(host=host, port=port, runs_root=runs_root)
+
+
 @app.command("rebuild-community")
 def rebuild_community_cmd(
     runs_dir: Path = typer.Option(Path("outputs/runs"), "--runs-dir"),

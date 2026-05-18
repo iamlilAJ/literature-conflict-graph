@@ -27,6 +27,7 @@ EMPLOYEE_DIR="$(cd "$EMPLOYEE_DIR" && pwd)"
 
 LCG_REPO="${LCG_REPO:-$HOME/projects/literature-conflict-graph}"
 LCG_RUN_DIR="${LCG_RUN_DIR:-$LCG_REPO/artifacts/runs/arxiv-reasoning-v0.7-540p}"
+export LCG_RUN_DIR  # needed by the references-building Python heredoc below
 LCG_PYTHON="${LCG_PYTHON:-$LCG_REPO/.venv/bin/python3}"
 LCG_K="${LCG_K:-10}"
 
@@ -181,6 +182,144 @@ print(f"[lcg] advisor cites {len(cited)} pool ID(s): {sorted(cited)}", file=sys.
 # the advisor used as supporting evidence pulled its full original-text
 # section back into the output. The advisor's prose is now the deliverable.
 combined = "## Advisor Answer\n\n" + (answer or "(empty)")
+
+# Append a `## References` section grouping arxiv papers behind each cited
+# hypothesis ID. Downstream stages (Methodology Design, Experiment Design)
+# need (idea + refs) — without refs, Stage 4 has to guess which papers
+# support each construction.
+def _build_references_md(_cited_ids, _run_dir):
+    """For each cited hypothesis ID, list arxiv papers in two tiers:
+       1. Directly cited: hypothesis.explains_claims (the papers whose
+          concrete claims the hypothesis ties together)
+       2. Anomaly evidence pool: the rest of anomaly.claim_ids (broader
+          background evidence for the same conflict / gap)
+
+    Returns "" when nothing maps."""
+    import os.path as _op
+    hyp_path = _op.join(_run_dir, "hypotheses_scored.jsonl")
+    anom_path = _op.join(_run_dir, "anomalies.jsonl")
+    papers_path = _op.join(_run_dir, "papers.jsonl")
+    if not (_op.exists(hyp_path) and _op.exists(papers_path)):
+        return ""
+
+    hyps_by_id = {}
+    try:
+        with open(hyp_path, encoding="utf-8") as _f:
+            for line in _f:
+                d = json.loads(line)
+                hyps_by_id[d["hypothesis_id"]] = d
+    except (OSError, json.JSONDecodeError):
+        return ""
+
+    anoms_by_id = {}
+    if _op.exists(anom_path):
+        try:
+            with open(anom_path, encoding="utf-8") as _f:
+                for line in _f:
+                    d = json.loads(line)
+                    anoms_by_id[d["anomaly_id"]] = d
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    # Caps so each idea's ref block stays readable.
+    HYP_DIRECT_CAP = 6
+    ANOM_POOL_CAP = 8
+
+    def _paper_id_of(cid):
+        return cid.split("#", 1)[0] if "#" in cid else cid
+
+    # Collect every paper_id we'll need — both direct cites + anomaly pool.
+    wanted_paper_ids = set()
+    plans = []  # [(hid, direct_pids_in_order, pool_pids_in_order)]
+    for hid in _cited_ids:
+        h = hyps_by_id.get(hid)
+        if not h:
+            continue
+        direct_cids = (h.get("explains_claims") or [])[:HYP_DIRECT_CAP]
+        direct_pids = []
+        for cid in direct_cids:
+            pid = _paper_id_of(cid).replace("arxiv:arxiv:", "arxiv:")
+            if pid not in direct_pids:
+                direct_pids.append(pid)
+            wanted_paper_ids.add(pid)
+
+        pool_pids = []
+        aid = h.get("anomaly_id")
+        anom = anoms_by_id.get(aid) if aid else None
+        if anom:
+            for cid in (anom.get("claim_ids") or []):
+                pid = _paper_id_of(cid).replace("arxiv:arxiv:", "arxiv:")
+                if pid in direct_pids or pid in pool_pids:
+                    continue  # dedupe vs direct + within pool
+                pool_pids.append(pid)
+                wanted_paper_ids.add(pid)
+                if len(pool_pids) >= ANOM_POOL_CAP:
+                    break
+        plans.append((hid, direct_pids, pool_pids, aid))
+
+    if not wanted_paper_ids:
+        return ""
+
+    papers_by_id = {}
+    try:
+        with open(papers_path, encoding="utf-8") as _f:
+            for line in _f:
+                p = json.loads(line)
+                pid = p.get("paper_id") or p.get("arxiv_id_full") or p.get("arxiv_id_base")
+                if not pid:
+                    continue
+                norm = pid.replace("arxiv:arxiv:", "arxiv:")
+                if norm in wanted_paper_ids or pid in wanted_paper_ids:
+                    papers_by_id[norm] = {
+                        "title": (p.get("title") or "").strip(),
+                        "year": p.get("year") or "",
+                        "arxiv": norm,
+                    }
+    except (OSError, json.JSONDecodeError):
+        return ""
+
+    if not papers_by_id:
+        return ""
+
+    def _fmt(pid):
+        info = papers_by_id.get(pid)
+        if not info:
+            return None
+        year = f" ({info['year']})" if info['year'] else ""
+        title = info['title'] or "(no title)"
+        return f"- [`{info['arxiv']}`] {title}{year}"
+
+    lines = ["", "## References", ""]
+    emitted_any = False
+    for hid, direct_pids, pool_pids, aid in plans:
+        direct_block = [_fmt(p) for p in direct_pids]
+        direct_block = [b for b in direct_block if b]
+        pool_block = [_fmt(p) for p in pool_pids]
+        pool_block = [b for b in pool_block if b]
+        if not direct_block and not pool_block:
+            continue
+        emitted_any = True
+        lines.append(f"### {hid}")
+        if direct_block:
+            lines.append("**Directly cited by hypothesis:**")
+            lines.extend(direct_block)
+        if pool_block:
+            label = f"**Anomaly evidence pool ({aid}):**" if aid else "**Anomaly evidence pool:**"
+            if direct_block:
+                lines.append("")
+            lines.append(label)
+            lines.extend(pool_block)
+        lines.append("")
+    if not emitted_any:
+        return ""
+    return "\n".join(lines).rstrip() + "\n"
+
+refs_md = _build_references_md(sorted(cited), LCG_RUN_DIR_PATH := os.environ.get("LCG_RUN_DIR", ""))
+if refs_md:
+    print(f"[lcg] references section: {len(refs_md)} bytes", file=sys.stderr)
+    combined += "\n\n" + refs_md
+else:
+    print("[lcg] no references built (corpus files unavailable or no matches)", file=sys.stderr)
 
 # Also drop the deliverable into the project workspace so the OMC UI's
 # "files" panel shows it like other producers (00008 etc. do this via

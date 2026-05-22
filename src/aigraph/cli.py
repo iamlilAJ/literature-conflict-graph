@@ -941,11 +941,28 @@ def web_cmd(
     host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(8000, "--port"),
     runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+    with_mcp: bool = typer.Option(True, "--with-mcp/--no-mcp",
+                                  help="Mount the MCP server at /mcp."),
 ) -> None:
-    """Run the v0.7-frozen explorer (cached-hypothesis browser, 0 LLM)."""
+    """Run the v0.7-frozen explorer (cached-hypothesis browser + MCP, 0 LLM)."""
     from .web import serve as web_serve
 
-    web_serve(host=host, port=port, runs_root=runs_root)
+    web_serve(host=host, port=port, runs_root=runs_root, with_mcp=with_mcp)
+
+
+@app.command("mcp")
+def mcp_cmd(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8000, "--port"),
+    runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+) -> None:
+    """Run aigraph as an MCP server (streamable-http at /mcp) + web UI.
+
+    Alias for `aigraph web --with-mcp`; both serve the browser UI and the
+    MCP endpoint on the same port."""
+    from .web import serve as web_serve
+
+    web_serve(host=host, port=port, runs_root=runs_root, with_mcp=True)
 
 
 @app.command("rebuild-community")

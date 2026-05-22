@@ -107,6 +107,61 @@ def _load_run_dir(
     return hyps, anoms, claims, papers
 
 
+def _select(
+    run_dir: Path,
+    topic: str,
+    *,
+    k: int,
+    max_hypotheses: int,
+    mmr_lambda: float,
+    min_anomalies: int,
+):
+    """Shared core: topic-filter + MMR-select. Returns
+    ``(selected, breakdowns, anoms, claims, papers, stats)`` or
+    ``(None, None, anoms, claims, papers, stats)`` on no-match.
+    """
+    t0 = time.monotonic()
+    hyps, anoms, claims, papers = _load_run_dir(run_dir)
+
+    query_tokens = _tokenize(topic)
+    if not query_tokens:
+        raise ValueError(f"no usable tokens in topic {topic!r} after stopword strip")
+
+    anom_lookup = {a.anomaly_id: a for a in anoms}
+    claim_lookup = {c.claim_id: c for c in claims}
+
+    scored = [
+        (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
+        for h in hyps
+    ]
+    matched = [(h, r) for (h, r) in scored if r > 0]
+    matched.sort(key=lambda hr: -hr[1])
+
+    base_stats = {
+        "n_hypotheses_total": len(hyps),
+        "n_matched": len(matched),
+        "topic_tokens": sorted(query_tokens),
+        "llm_calls": 0,
+    }
+    if not matched:
+        base_stats.update(n_candidates=0, n_selected=0,
+                          wall_seconds=round(time.monotonic() - t0, 3))
+        return None, None, anoms, claims, papers, base_stats
+
+    candidates = [h for (h, _) in matched[:max_hypotheses]]
+    breakdowns = score_all(candidates, anoms, claims)
+    selected = select_mmr(
+        candidates, breakdowns,
+        k=k, lambda_=mmr_lambda, min_anomalies=min_anomalies,
+    )
+    base_stats.update(
+        n_candidates=len(candidates),
+        n_selected=len(selected),
+        wall_seconds=round(time.monotonic() - t0, 3),
+    )
+    return selected, breakdowns, anoms, claims, papers, base_stats
+
+
 def query(
     run_dir: Path,
     topic: str,
@@ -120,63 +175,91 @@ def query(
 
     Returns (markdown, stats). Zero LLM calls.
     """
-    t0 = time.monotonic()
-    hyps, anoms, claims, papers = _load_run_dir(run_dir)
-
-    query_tokens = _tokenize(topic)
-    if not query_tokens:
-        raise ValueError(f"no usable tokens in topic {topic!r} after stopword strip")
-
-    anom_lookup = {a.anomaly_id: a for a in anoms}
-    claim_lookup = {c.claim_id: c for c in claims}
-    paper_lookup = {p.paper_id: p for p in papers}
-
-    # Score each hypothesis's topic relevance, drop zero hits.
-    scored = [
-        (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
-        for h in hyps
-    ]
-    matched = [(h, r) for (h, r) in scored if r > 0]
-    matched.sort(key=lambda hr: -hr[1])
-
-    if not matched:
-        return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", {
-            "n_hypotheses_total": len(hyps),
-            "n_matched": 0,
-            "n_selected": 0,
-            "wall_seconds": round(time.monotonic() - t0, 3),
-            "llm_calls": 0,
-        }
-
-    candidates = [h for (h, _) in matched[:max_hypotheses]]
-
-    # Reuse existing utility scorer + MMR. score_all wants the full
-    # claim list to compute grounding etc.; that's already loaded.
-    breakdowns = score_all(candidates, anoms, claims)
-    selected = select_mmr(
-        candidates, breakdowns,
-        k=k, lambda_=mmr_lambda, min_anomalies=min_anomalies,
+    selected, breakdowns, anoms, claims, papers, stats = _select(
+        run_dir, topic, k=k, max_hypotheses=max_hypotheses,
+        mmr_lambda=mmr_lambda, min_anomalies=min_anomalies,
     )
-
+    if selected is None:
+        return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
     md = render_report(
         selected=selected,
         anomalies=anoms,
         claims=claims,
         scores=breakdowns,
-        paper_lookup=paper_lookup,
+        paper_lookup={p.paper_id: p for p in papers},
         topic=topic,
         paper_count=len(papers),
     )
-    stats = {
-        "n_hypotheses_total": len(hyps),
-        "n_matched": len(matched),
-        "n_candidates": len(candidates),
-        "n_selected": len(selected),
-        "topic_tokens": sorted(query_tokens),
-        "wall_seconds": round(time.monotonic() - t0, 3),
-        "llm_calls": 0,
-    }
     return md, stats
+
+
+def query_records(
+    run_dir: Path,
+    topic: str,
+    *,
+    k: int = 5,
+    max_hypotheses: int = 30,
+    mmr_lambda: float = 0.7,
+    min_anomalies: int = 2,
+) -> tuple[list[dict], dict]:
+    """Like ``query()`` but returns structured hypothesis records (for
+    MCP / programmatic clients) instead of rendered markdown.
+
+    Each record: hypothesis_id, anomaly_id, anomaly_type,
+    central_question, hypothesis, mechanism, predictions, minimal_test,
+    scope_conditions, evidence_gap, graph_bridge, evidence_claims
+    (list of {claim_id, paper_id, title, year, direction, claim_text}),
+    and utility (the score breakdown). Returns (records, stats).
+    Zero LLM calls.
+    """
+    selected, breakdowns, anoms, claims, papers, stats = _select(
+        run_dir, topic, k=k, max_hypotheses=max_hypotheses,
+        mmr_lambda=mmr_lambda, min_anomalies=min_anomalies,
+    )
+    if selected is None:
+        return [], stats
+
+    anom_lookup = {a.anomaly_id: a for a in anoms}
+    claim_lookup = {c.claim_id: c for c in claims}
+    paper_lookup = {p.paper_id: p for p in papers}
+    # score_all returns dict[hypothesis_id, ScoreBreakdown]
+    score_lookup = breakdowns
+
+    records = []
+    for h in selected:
+        anom = anom_lookup.get(h.anomaly_id)
+        ev = []
+        for cid in (h.explains_claims or []):
+            c = claim_lookup.get(cid)
+            if not c:
+                continue
+            p = paper_lookup.get(c.paper_id)
+            ev.append({
+                "claim_id": cid,
+                "paper_id": c.paper_id,
+                "title": p.title if p else None,
+                "year": p.year if p else None,
+                "direction": c.direction,
+                "claim_text": c.claim_text,
+            })
+        sb = score_lookup.get(h.hypothesis_id)
+        records.append({
+            "hypothesis_id": h.hypothesis_id,
+            "anomaly_id": h.anomaly_id,
+            "anomaly_type": anom.type if anom else None,
+            "central_question": anom.central_question if anom else None,
+            "hypothesis": h.hypothesis,
+            "mechanism": h.mechanism,
+            "predictions": list(h.predictions or []),
+            "minimal_test": h.minimal_test,
+            "scope_conditions": dict(h.scope_conditions or {}),
+            "evidence_gap": h.evidence_gap,
+            "graph_bridge": {"from": h.graph_bridge.from_, "to": h.graph_bridge.to}
+                            if h.graph_bridge else None,
+            "evidence_claims": ev,
+            "utility": (sb.model_dump() if sb else None),
+        })
+    return records, stats
 
 
 def main() -> None:

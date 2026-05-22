@@ -25,13 +25,20 @@ from pathlib import Path
 
 import markdown as md
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
 # Locate scripts/aigraph_query.py without making the script importable as
 # a package — we just need the `query` symbol.
 _REPO = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO / "scripts"))
-from aigraph_query import query as _run_query  # noqa: E402
+from aigraph_query import (  # noqa: E402
+    query as _run_query,
+    _load_run_dir,
+    _topic_relevance,
+    _tokenize,
+)
+from aigraph.scoring import score_all, select_mmr  # noqa: E402
 
 
 # Default location; can be overridden at app-creation time.
@@ -49,6 +56,10 @@ def _discover_runs(runs_root: Path) -> list[dict]:
             continue
         scored = d / "hypotheses_scored.jsonl"
         if not scored.exists():
+            # Interactive (server.py) runs emit hypotheses.jsonl only;
+            # the query layer falls back to it, so list them too.
+            scored = d / "hypotheses.jsonl"
+        if not scored.exists():
             continue
         try:
             n = sum(1 for _ in scored.open())
@@ -60,9 +71,49 @@ def _discover_runs(runs_root: Path) -> list[dict]:
     return out
 
 
-def create_app(runs_root: Path | None = None) -> FastAPI:
+def create_app(runs_root: Path | None = None, *, with_mcp: bool = True) -> FastAPI:
     runs_root = Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT
-    app = FastAPI(title="aigraph v0.7-frozen explorer")
+
+    # Build the MCP ASGI app FIRST so its streamable-http session-manager
+    # lifespan can be wired into the FastAPI host. Mounting a streamable
+    # MCP app without running its lifespan raises "Task group is not
+    # initialized" at request time.
+    mcp_app = None
+    if with_mcp:
+        try:
+            from .mcp_server import build_mcp
+
+            try:
+                from .server import SearchService
+
+                search_service = SearchService(runs_root)
+            except Exception:
+                search_service = None  # query-only MCP if service init fails
+
+            mcp_app = build_mcp(runs_root, search_service=search_service).streamable_http_app()
+        except ImportError:
+            mcp_app = None  # mcp SDK not installed — serve UI without MCP
+
+    lifespan = None
+    if mcp_app is not None:
+        from contextlib import asynccontextmanager
+
+        @asynccontextmanager
+        async def lifespan(_app):  # noqa: F811
+            async with mcp_app.router.lifespan_context(mcp_app):
+                yield
+
+    app = FastAPI(title="aigraph v0.7-frozen explorer", lifespan=lifespan)
+
+    # Allow embedding in cross-origin browser apps (e.g. OMC on :8001).
+    # Browse-only API, no credentials, so a permissive wildcard is fine.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["GET", "OPTIONS"],
+        allow_headers=["*"],
+    )
 
     @app.get("/api/runs")
     def api_runs():
@@ -122,7 +173,173 @@ def create_app(runs_root: Path | None = None) -> FastAPI:
         except Exception as exc:
             return JSONResponse({"error": f"{type(exc).__name__}: {exc}"}, status_code=500)
 
+    @app.get("/query/graph")
+    def query_graph_endpoint(
+        topic: str = Query(..., min_length=1, max_length=500),
+        run: str = Query(...),
+        k: int = Query(5, ge=1, le=20),
+        ids: str | None = Query(None, max_length=400,
+            description="comma-separated hypothesis IDs (h202,h204,...). "
+                        "If given, the graph is built around exactly these "
+                        "IDs and topic-relevance selection is skipped — useful "
+                        "when an upstream advisor has already chosen IDs and "
+                        "the graph must align with them."),
+    ):
+        """Return a topic-filtered conflict graph in D3-friendly shape.
+
+        Nodes: topic centre · selected hypotheses · their anomalies · the
+        anomaly's shared_entities (method/task/dataset) · each hypothesis'
+        graph_bridge target. Edges: topic→hypothesis (selected),
+        hypothesis→anomaly (explains), anomaly→entity (shared),
+        hypothesis→bridge target (bridges).
+        """
+        run_dir = (runs_root / run).resolve()
+        if not str(run_dir).startswith(str(runs_root.resolve())):
+            return JSONResponse({"error": f"invalid run: {run}"}, status_code=400)
+        if not run_dir.exists():
+            return JSONResponse({"error": f"unknown run: {run}"}, status_code=404)
+        id_list: list[str] | None = None
+        if ids:
+            id_list = [s.strip() for s in ids.split(",") if s.strip()]
+            id_list = [s for s in id_list if len(s) <= 8]  # sanity cap
+        try:
+            return JSONResponse(_build_topic_graph(run_dir, topic, k, id_list))
+        except Exception as exc:
+            return JSONResponse(
+                {"error": f"{type(exc).__name__}: {exc}"}, status_code=500
+            )
+
+    if mcp_app is not None:
+        # Mount the pre-built MCP (Model Context Protocol) app at /mcp.
+        # Its lifespan is run via the FastAPI lifespan wired above.
+        app.mount("/mcp", mcp_app)
+
     return app
+
+
+def _build_topic_graph(
+    run_dir: Path,
+    topic: str,
+    k: int,
+    explicit_ids: list[str] | None = None,
+) -> dict:
+    """Pull hypotheses + their anomaly subgraphs.
+
+    If ``explicit_ids`` is given, those hypothesis IDs drive the graph and
+    topic-relevance selection is bypassed. This is how an upstream advisor
+    keeps its citations and the graph aligned — the advisor has already
+    chosen which hypotheses are relevant, so the graph just visualises
+    them and the conflict structure around them.
+
+    Otherwise, fall back to token-overlap match + MMR over the cached
+    hypothesis pool, ``k`` deep.
+    """
+    t0 = time.time()
+    hyps, anoms, claims, _papers = _load_run_dir(run_dir)
+    anom_lookup = {a.anomaly_id: a for a in anoms}
+
+    if explicit_ids:
+        wanted = set(explicit_ids)
+        selected = [h for h in hyps if h.hypothesis_id in wanted]
+        n_matched = len(selected)
+    else:
+        query_tokens = _tokenize(topic)
+        if not query_tokens:
+            return {
+                "nodes": [{"id": "topic", "label": topic, "kind": "topic"}],
+                "edges": [],
+                "stats": {
+                    "n_hypotheses_total": len(hyps),
+                    "n_matched": 0,
+                    "n_selected": 0,
+                    "wall_seconds": round(time.time() - t0, 3),
+                },
+            }
+        claim_lookup = {c.claim_id: c for c in claims}
+        scored = [
+            (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
+            for h in hyps
+        ]
+        matched = [(h, r) for (h, r) in scored if r > 0]
+        matched.sort(key=lambda hr: -hr[1])
+        candidates = [h for (h, _) in matched[:30]]
+        if not candidates:
+            return {
+                "nodes": [{"id": "topic", "label": topic, "kind": "topic"}],
+                "edges": [],
+                "stats": {
+                    "n_hypotheses_total": len(hyps),
+                    "n_matched": 0,
+                    "n_selected": 0,
+                    "wall_seconds": round(time.time() - t0, 3),
+                },
+            }
+        breakdowns = score_all(candidates, anoms, claims)
+        selected = select_mmr(
+            candidates, breakdowns, k=k, lambda_=0.7, min_anomalies=2,
+        )
+        n_matched = len(matched)
+
+    nodes: list[dict] = [{"id": "topic", "label": topic, "kind": "topic"}]
+    edges: list[dict] = []
+    seen_ids: set[str] = {"topic"}
+
+    def _add_node(node_id: str, **fields) -> None:
+        if node_id not in seen_ids:
+            seen_ids.add(node_id)
+            nodes.append({"id": node_id, **fields})
+
+    for h in selected:
+        hid = h.hypothesis_id
+        hyp_text = (h.hypothesis or "")[:300]
+        _add_node(
+            hid,
+            label=hid,
+            kind="hypothesis",
+            title=hyp_text,
+            mechanism=(h.mechanism or "")[:300],
+            anomaly_id=h.anomaly_id,
+        )
+        edges.append({"source": "topic", "target": hid, "kind": "selected"})
+
+        anomaly = anom_lookup.get(h.anomaly_id)
+        if anomaly is not None:
+            aid = anomaly.anomaly_id
+            _add_node(
+                aid,
+                label=aid,
+                kind="anomaly",
+                title=anomaly.central_question[:300] if anomaly.central_question else aid,
+                anomaly_type=getattr(anomaly, "type", "").value
+                if hasattr(getattr(anomaly, "type", None), "value")
+                else str(getattr(anomaly, "type", "")),
+            )
+            edges.append({"source": hid, "target": aid, "kind": "explains"})
+
+            for ekey, evalue in (anomaly.shared_entities or {}).items():
+                ent_id = f"entity:{ekey}={evalue}"
+                _add_node(ent_id, label=f"{ekey}={evalue}", kind="entity")
+                edges.append({"source": aid, "target": ent_id, "kind": "shared"})
+
+        # graph_bridge: hypothesis → bridge target (the "to" side)
+        bridge = h.graph_bridge
+        if bridge and (bridge.to or bridge.from_):
+            br_label = f"{bridge.from_} → {bridge.to}" if bridge.from_ else bridge.to
+            br_id = f"bridge:{br_label}"
+            _add_node(br_id, label=br_label, kind="bridge")
+            edges.append({"source": hid, "target": br_id, "kind": "bridges"})
+
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "stats": {
+            "n_hypotheses_total": len(hyps),
+            "n_matched": n_matched,
+            "n_selected": len(selected),
+            "wall_seconds": round(time.time() - t0, 3),
+            "source": "explicit_ids" if explicit_ids else "topic_match",
+        },
+    }
 
 
 def _render_home(
@@ -279,13 +496,21 @@ document.getElementById('f').addEventListener('submit', async (e) => {{
 </html>"""
 
 
-def serve(host: str = "127.0.0.1", port: int = 8000, runs_root: Path | None = None) -> None:
+def serve(
+    host: str = "127.0.0.1",
+    port: int = 8000,
+    runs_root: Path | None = None,
+    *,
+    with_mcp: bool = True,
+) -> None:
     """Blocking helper: start uvicorn with the FastAPI app."""
     import uvicorn
 
-    app = create_app(runs_root)
+    app = create_app(runs_root, with_mcp=with_mcp)
     print(f"aigraph web explorer on http://{host}:{port}")
     print(f"  runs_root: {Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT}")
+    if with_mcp:
+        print(f"  MCP (streamable-http) endpoint: http://{host}:{port}/mcp")
     discovered = _discover_runs(Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT)
     print(f"  {len(discovered)} run(s): {', '.join(r['id'] for r in discovered)}")
     uvicorn.run(app, host=host, port=port, log_level="info")

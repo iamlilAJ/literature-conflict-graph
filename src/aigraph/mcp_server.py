@@ -10,6 +10,7 @@ Read-only (0 LLM, sub-5s — reuse the cached query layer):
   list_runs()                          — discovered runs + counts
   get_run_summary(run)                 — metadata + anomaly-type histogram
   query_hypotheses(topic, run, k)      — structured top-K hypotheses + stats
+  get_idea_report(topic, run, k)       — rendered Stage 3 markdown deliverable
   get_conflict_graph(topic, run, k)    — D3 {nodes, edges}
 
 Run-trigger (slow, costs $ — reuse server.SearchService background worker):
@@ -146,6 +147,52 @@ def build_mcp(
             return {"topic": topic, "run": run, "hypotheses": records, "stats": stats}
         except Exception as exc:
             return {"error": f"{type(exc).__name__}: {exc}"}
+
+    @mcp.tool()
+    def get_idea_report(topic: str, run: str, k: int = 8, out_path: str = "") -> str:
+        """Render the Stage 3 'Idea Generation' deliverable for `topic` as a
+        COMPLETE markdown document (0 LLM, sub-second).
+
+        The document is a `# Stage 3: Idea Generation — <topic>` heading
+        followed by the `# Selected Hypotheses` report (`### Anomaly a… —` /
+        `### h… —` items grounded in real claim citations). This is the
+        canonical Stage 3 format the downstream critic and the frontend
+        conflict-graph renderer expect. `k` in 1..20.
+
+        If `out_path` is given (an ABSOLUTE path to the stage deliverable, e.g.
+        the project workspace's stage3_idea_generator.md), the report is WRITTEN
+        there directly and only a short confirmation string is returned — so the
+        caller does NOT have to re-emit the (large) document through a write
+        tool. If `out_path` is empty, the full document text is returned as
+        before (caller writes it verbatim)."""
+        k = max(1, min(20, int(k)))
+        heading = f"# Stage 3: Idea Generation — {topic}\n\n"
+        run_dir = _safe_run_dir(runs_root, run)
+        if run_dir is None or not run_dir.exists():
+            doc = heading + f"_Invalid run:_ `{run}`\n"
+        else:
+            try:
+                from aigraph_query import query  # markdown renderer (0 LLM)
+
+                md, _stats = query(run_dir, topic, k=k)
+                doc = heading + md
+            except Exception as exc:
+                doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"
+
+        if out_path:
+            from pathlib import Path as _P
+            try:
+                p = _P(out_path).expanduser()
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(doc, encoding="utf-8")
+                n_h = doc.count("\n### h")
+                return (f"OK: wrote Stage 3 Selected Hypotheses report to {p} "
+                        f"({len(doc)} bytes, {doc.count(chr(10)) + 1} lines, {n_h} hypotheses). "
+                        f"Do NOT re-write it — the deliverable is already on disk.")
+            except Exception as exc:
+                # Fall back to returning the text so the caller can still write it.
+                return doc
+        return doc
 
     @mcp.tool()
     def get_conflict_graph(topic: str, run: str, k: int = 5, ids: str = "") -> dict:

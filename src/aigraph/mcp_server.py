@@ -193,7 +193,13 @@ def build_mcp(
             try:
                 from aigraph_query import query  # markdown renderer (0 LLM)
 
-                md, _stats = query(run_dir, topic, k=k)
+                # Tighter selection than the query() defaults (max_hypotheses=30,
+                # mmr_lambda=0.7): a smaller candidate pool + higher relevance
+                # weight surfaces hypotheses that are actually on-topic instead
+                # of diverse-but-generic cross-field ones (measured: RAG topic
+                # overlap 0.08->0.21, code-gen 0.25->0.56).
+                md, _stats = query(run_dir, topic, k=k,
+                                   max_hypotheses=12, mmr_lambda=0.85)
                 doc = heading + _coverage_banner(_stats) + md
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"

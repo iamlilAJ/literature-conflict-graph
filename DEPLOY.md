@@ -471,3 +471,115 @@ journalctl -u aigraph-corpus -f
 ls /workspace/literature-conflict-graph/data/corpus/arxiv_reasoning
 cat /workspace/literature-conflict-graph/data/corpus/arxiv_reasoning/summary.json
 ```
+
+
+## 13. MCP server (`aigraph-mcp` service)
+
+Exposes the frozen runs to LLM clients (Claude Desktop/Code, Cursor, …) as
+**structured MCP tools** over Streamable HTTP, alongside the cached-hypothesis
+browser UI. It is a *second* compose service (`aigraph-mcp`) that reuses the
+same image as the interactive `aigraph` service; `docker compose up -d --build`
+brings up both.
+
+- **Port:** `8765` (UI at `/`, MCP at `/mcp`).
+- **Runs source:** `./artifacts/runs` (bind-mounted read-only at
+  `/app/artifacts/runs`) — the *frozen* runs, not the interactive
+  `outputs/runs`.
+- **Mode: READ-ONLY** (`--mcp-readonly`). Only the 4 zero-LLM read tools are
+  exposed: `list_runs`, `get_run_summary`, `query_hypotheses`,
+  `get_conflict_graph`. The paid run-trigger tools (`start_run`,
+  `get_run_status`) are **not registered**, so an anonymous public caller
+  cannot spend money on LLM runs.
+
+### Security — why read-only is mandatory for public exposure
+
+`start_run` kicks off the full LLM pipeline (minutes-to-hours, real $ per
+call) and there is **no auth** on the endpoint (matching the wide-open CORS
+of the browser UI). Never expose the full MCP publicly. The compose service
+hard-codes `--mcp-readonly`; keep it that way for anything reachable beyond
+`127.0.0.1`. If you ever need run-triggering, restrict it to a private bind
+or put a token-gated reverse proxy in front first.
+
+### Bring it up
+
+```bash
+cd /workspace/literature-conflict-graph
+docker compose up -d --build        # builds image, starts aigraph + aigraph-mcp
+docker compose ps                   # both should be healthy
+```
+
+### Verify locally on the server
+
+```bash
+# UI homepage
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8765/      # expect 200
+
+# MCP tool list (Streamable HTTP). The python `mcp` client is in the image:
+docker compose exec -T aigraph-mcp python - <<'PY'
+import asyncio
+from mcp.client.streamable_http import streamablehttp_client
+from mcp.client.session import ClientSession
+async def main():
+    async with streamablehttp_client("http://127.0.0.1:8765/mcp") as (r,w,_):
+        async with ClientSession(r,w) as s:
+            await s.initialize()
+            names = [t.name for t in (await s.list_tools()).tools]
+            print("tools:", names)
+            assert "start_run" not in names, "PAID TOOL LEAKED — not read-only!"
+            runs = await s.call_tool("list_runs", {})
+            print("runs:", [r["id"] for r in (runs.structuredContent or {}).get("result", [])])
+asyncio.run(main())
+PY
+```
+
+### Missing-anomalies gotcha (v2 / val1 runs)
+
+`query_hypotheses` and `get_run_summary`'s anomaly histogram read
+`anomalies.jsonl`. For the large runs (`arxiv-reasoning-v2`,
+`validation-v1-primary`) that file is **gitignored** (hundreds of MB), so a
+fresh `git pull` on the deploy host won't have it — those runs will return
+errors until it's present. The smaller runs (`-100p`, `-540p`, `-540p-thaw1`)
+ship their `anomalies.jsonl` in git and work immediately.
+
+To make v2/val1 queryable, regenerate the anomalies in-container (cheap,
+$0, deterministic — same as the realign loop in §11):
+
+```bash
+cd /workspace/literature-conflict-graph
+for run in arxiv-reasoning-v2 validation-v1-primary; do
+  d="artifacts/runs/$run"
+  [ -f "$d/anomalies.jsonl" ] && continue
+  docker compose exec -T aigraph-mcp python -m aigraph.cli build-graph \
+    --claims "/app/$d/claims.jsonl" --papers "/app/$d/papers.jsonl" \
+    --output "/app/$d/graph.json"
+  docker compose exec -T aigraph-mcp python -m aigraph.cli detect-anomalies \
+    --graph "/app/$d/graph.json" --claims "/app/$d/claims.jsonl" \
+    --output "/app/$d/anomalies.jsonl"
+done
+```
+
+(The bind mount is `:ro`; if you regenerate, drop `:ro` in
+`docker-compose.yml` temporarily, or run the build on the host with the local
+`.venv` and let the container read the result.)
+
+### Optional: public MCP subdomain via Cloudflare Tunnel
+
+Add a second ingress rule to `/etc/cloudflared/config.yml` (e.g.
+`mcp.paper-universe.uk`), then route DNS:
+
+```yaml
+ingress:
+  - hostname: graph.paper-universe.uk
+    service: http://127.0.0.1:7860
+  - hostname: mcp.paper-universe.uk
+    service: http://127.0.0.1:8765
+  - service: http_status:404
+```
+
+```bash
+cloudflared tunnel route dns literature-conflict-graph mcp.paper-universe.uk
+systemctl restart cloudflared
+```
+
+Clients then connect to `https://mcp.paper-universe.uk/mcp` (Streamable HTTP).
+Because the service is read-only, this is safe to leave public.

@@ -943,11 +943,16 @@ def web_cmd(
     runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
     with_mcp: bool = typer.Option(True, "--with-mcp/--no-mcp",
                                   help="Mount the MCP server at /mcp."),
+    mcp_readonly: bool = typer.Option(False, "--mcp-readonly/--mcp-full",
+                                  help="Drop the paid run-trigger tools "
+                                       "(start_run/get_run_status). Use for "
+                                       "any network-exposed/public endpoint."),
 ) -> None:
     """Run the v0.7-frozen explorer (cached-hypothesis browser + MCP, 0 LLM)."""
     from .web import serve as web_serve
 
-    web_serve(host=host, port=port, runs_root=runs_root, with_mcp=with_mcp)
+    web_serve(host=host, port=port, runs_root=runs_root,
+              with_mcp=with_mcp, mcp_readonly=mcp_readonly)
 
 
 @app.command("mcp")
@@ -955,6 +960,10 @@ def mcp_cmd(
     host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(8000, "--port"),
     runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+    mcp_readonly: bool = typer.Option(False, "--mcp-readonly/--mcp-full",
+                                  help="Drop the paid run-trigger tools "
+                                       "(start_run/get_run_status). Use for "
+                                       "any network-exposed/public endpoint."),
 ) -> None:
     """Run aigraph as an MCP server (streamable-http at /mcp) + web UI.
 
@@ -962,7 +971,8 @@ def mcp_cmd(
     MCP endpoint on the same port."""
     from .web import serve as web_serve
 
-    web_serve(host=host, port=port, runs_root=runs_root, with_mcp=True)
+    web_serve(host=host, port=port, runs_root=runs_root,
+              with_mcp=True, mcp_readonly=mcp_readonly)
 
 
 @app.command("rebuild-community")

@@ -12,3 +12,36 @@ services:
       AIGRAPH_EXTRACT_CONCURRENCY: "2"
     volumes:
       - ./outputs:/app/outputs
+
+  # MCP + cached-hypothesis browser over the FROZEN runs. Reuses the same
+  # image (depends_on just orders the build). READ-ONLY MCP: --mcp-readonly
+  # drops the paid start_run/get_run_status tools so the public endpoint
+  # cannot spend money on LLM runs. Serves whatever run dirs are mounted at
+  # /app/artifacts/runs (committed runs work out of the box; v2/val1 need
+  # their gitignored anomalies.jsonl regenerated or rsync'd — see DEPLOY.md).
+  aigraph-mcp:
+    image: aigraph:latest
+    container_name: aigraph-mcp
+    depends_on:
+      - aigraph
+    restart: unless-stopped
+    command:
+      - aigraph
+      - web
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8765"
+      - --runs-root
+      - artifacts/runs
+      - --mcp-readonly
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./artifacts:/app/artifacts:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://127.0.0.1:8765', timeout=3); sys.exit(0)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3

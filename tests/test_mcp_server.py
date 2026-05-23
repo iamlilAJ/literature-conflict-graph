@@ -148,3 +148,15 @@ def test_path_traversal_rejected(runs_root):
     mcp = build_mcp(runs_root)
     out = _call(mcp, "get_run_summary", {"run": "../../etc"})
     assert "error" in out
+
+
+def test_readonly_drops_paid_tools(runs_root):
+    from aigraph.mcp_server import build_mcp
+
+    mcp = build_mcp(runs_root, readonly=True)
+    names = _tool_names(mcp)
+    # the 4 read tools stay; the paid run-trigger tools are gone
+    assert {"list_runs", "get_run_summary", "query_hypotheses",
+            "get_conflict_graph"} <= names
+    assert "start_run" not in names
+    assert "get_run_status" not in names

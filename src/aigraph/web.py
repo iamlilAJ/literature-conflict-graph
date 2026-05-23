@@ -71,26 +71,42 @@ def _discover_runs(runs_root: Path) -> list[dict]:
     return out
 
 
-def create_app(runs_root: Path | None = None, *, with_mcp: bool = True) -> FastAPI:
+def create_app(
+    runs_root: Path | None = None,
+    *,
+    with_mcp: bool = True,
+    mcp_readonly: bool = False,
+) -> FastAPI:
     runs_root = Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT
 
     # Build the MCP ASGI app FIRST so its streamable-http session-manager
     # lifespan can be wired into the FastAPI host. Mounting a streamable
     # MCP app without running its lifespan raises "Task group is not
     # initialized" at request time.
+    #
+    # ``mcp_readonly`` drops the paid run-trigger tools (start_run /
+    # get_run_status) so a network-exposed / public endpoint cannot be
+    # used to spend money on LLM runs. Use it for any 0.0.0.0 or
+    # Cloudflare-tunnel deployment.
     mcp_app = None
     if with_mcp:
         try:
             from .mcp_server import build_mcp
 
-            try:
-                from .server import SearchService
+            search_service = None
+            if not mcp_readonly:
+                try:
+                    from .server import SearchService
 
-                search_service = SearchService(runs_root)
-            except Exception:
-                search_service = None  # query-only MCP if service init fails
+                    search_service = SearchService(runs_root)
+                except Exception:
+                    search_service = None  # query-only MCP if service init fails
 
-            mcp_app = build_mcp(runs_root, search_service=search_service).streamable_http_app()
+            mcp_app = build_mcp(
+                runs_root,
+                search_service=search_service,
+                readonly=mcp_readonly,
+            ).streamable_http_app()
         except ImportError:
             mcp_app = None  # mcp SDK not installed — serve UI without MCP
 
@@ -502,15 +518,17 @@ def serve(
     runs_root: Path | None = None,
     *,
     with_mcp: bool = True,
+    mcp_readonly: bool = False,
 ) -> None:
     """Blocking helper: start uvicorn with the FastAPI app."""
     import uvicorn
 
-    app = create_app(runs_root, with_mcp=with_mcp)
+    app = create_app(runs_root, with_mcp=with_mcp, mcp_readonly=mcp_readonly)
     print(f"aigraph web explorer on http://{host}:{port}")
     print(f"  runs_root: {Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT}")
     if with_mcp:
-        print(f"  MCP (streamable-http) endpoint: http://{host}:{port}/mcp")
+        mode = "read-only" if mcp_readonly else "full (incl. paid start_run)"
+        print(f"  MCP (streamable-http) endpoint: http://{host}:{port}/mcp  [{mode}]")
     discovered = _discover_runs(Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT)
     print(f"  {len(discovered)} run(s): {', '.join(r['id'] for r in discovered)}")
     uvicorn.run(app, host=host, port=port, log_level="info")

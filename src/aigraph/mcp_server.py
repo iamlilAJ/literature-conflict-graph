@@ -82,10 +82,24 @@ def _run_summary(run_dir: Path) -> dict[str, Any]:
     return summary
 
 
-def build_mcp(runs_root: Path | str, search_service: Optional[Any] = None) -> FastMCP:
-    """Build the FastMCP server. ``search_service`` is an optional
-    ``aigraph.server.SearchService`` for the run-trigger tools; if None,
-    those tools report that run-triggering is disabled."""
+def build_mcp(
+    runs_root: Path | str,
+    search_service: Optional[Any] = None,
+    *,
+    readonly: bool = False,
+) -> FastMCP:
+    """Build the FastMCP server.
+
+    ``search_service`` is an optional ``aigraph.server.SearchService`` for
+    the run-trigger tools; if None, those tools report run-triggering is
+    disabled.
+
+    ``readonly`` (default False): when True, the paid run-trigger tools
+    (``start_run``, ``get_run_status``) are NOT registered at all. Use
+    this for any network-exposed / public deployment so an anonymous
+    caller cannot trigger LLM runs that cost money. The 4 read-only,
+    0-LLM tools remain available.
+    """
     runs_root = Path(runs_root)
     mcp = FastMCP(
         "aigraph",
@@ -153,44 +167,48 @@ def build_mcp(runs_root: Path | str, search_service: Optional[Any] = None) -> Fa
         except Exception as exc:
             return {"error": f"{type(exc).__name__}: {exc}"}
 
-    @mcp.tool()
-    def start_run(topic: str, max_papers: int = 100, generator: str = "llm") -> dict:
-        """Kick off a NEW pipeline run for `topic` (fetches papers, extracts
-        claims, builds graph, detects anomalies, generates hypotheses).
+    # Paid run-trigger tools — only registered when NOT readonly, so a
+    # network-exposed/public MCP cannot trigger money-spending LLM runs.
+    if not readonly:
 
-        SLOW (minutes-to-hours) and COSTS MONEY (LLM calls). Returns a run_id
-        immediately; poll get_run_status(run_id). When done, the run appears
-        in list_runs and is queryable via query_hypotheses."""
-        if search_service is None:
-            return {"error": "run-trigger disabled (no SearchService configured)"}
-        try:
-            req = search_service.submit(
-                topic=topic,
-                limit=max(1, min(500, int(max_papers))),
-                insight_generator=generator,
-            )
-            return {
-                "run_id": req.run_id,
-                "status": "queued",
-                "poll_with": "get_run_status",
-                "note": "LLM pipeline running in background; this is the only paid tool",
-            }
-        except Exception as exc:
-            return {"error": f"{type(exc).__name__}: {exc}"}
+        @mcp.tool()
+        def start_run(topic: str, max_papers: int = 100, generator: str = "llm") -> dict:
+            """Kick off a NEW pipeline run for `topic` (fetches papers, extracts
+            claims, builds graph, detects anomalies, generates hypotheses).
 
-    @mcp.tool()
-    def get_run_status(run_id: str) -> dict:
-        """Poll the status of a run started with start_run. Returns the
-        run's status.json (stage / progress / done / error)."""
-        run_dir = _safe_run_dir(runs_root, run_id)
-        if run_dir is None:
-            return {"error": f"invalid run id: {run_id}"}
-        status_path = run_dir / "status.json"
-        if not status_path.exists():
-            return {"error": f"no status for run: {run_id}"}
-        try:
-            return json.loads(status_path.read_text())
-        except Exception as exc:
-            return {"error": f"{type(exc).__name__}: {exc}"}
+            SLOW (minutes-to-hours) and COSTS MONEY (LLM calls). Returns a run_id
+            immediately; poll get_run_status(run_id). When done, the run appears
+            in list_runs and is queryable via query_hypotheses."""
+            if search_service is None:
+                return {"error": "run-trigger disabled (no SearchService configured)"}
+            try:
+                req = search_service.submit(
+                    topic=topic,
+                    limit=max(1, min(500, int(max_papers))),
+                    insight_generator=generator,
+                )
+                return {
+                    "run_id": req.run_id,
+                    "status": "queued",
+                    "poll_with": "get_run_status",
+                    "note": "LLM pipeline running in background; this is the only paid tool",
+                }
+            except Exception as exc:
+                return {"error": f"{type(exc).__name__}: {exc}"}
+
+        @mcp.tool()
+        def get_run_status(run_id: str) -> dict:
+            """Poll the status of a run started with start_run. Returns the
+            run's status.json (stage / progress / done / error)."""
+            run_dir = _safe_run_dir(runs_root, run_id)
+            if run_dir is None:
+                return {"error": f"invalid run id: {run_id}"}
+            status_path = run_dir / "status.json"
+            if not status_path.exists():
+                return {"error": f"no status for run: {run_id}"}
+            try:
+                return json.loads(status_path.read_text())
+            except Exception as exc:
+                return {"error": f"{type(exc).__name__}: {exc}"}
 
     return mcp

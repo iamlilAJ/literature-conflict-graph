@@ -52,16 +52,21 @@ def _coverage_banner(stats: dict) -> str:
     cover well — surface that instead of silently returning loose hypotheses."""
     n = int(stats.get("n_matched", 0) or 0)
     r = int(stats.get("top_relevance", 0) or 0)
+    tot = int(stats.get("n_hypotheses_total", 0) or 0)
+    # Use the FRACTION matched, not absolute count, so the assessment is fair
+    # across corpus sizes (a focused 45-hypothesis topic corpus shouldn't look
+    # "weak" just because it has fewer total hypotheses than a 300+ one).
+    frac = (n / tot) if tot else 0.0
     if n == 0:
         level, note = "none", "the corpus has no matching hypotheses — build a topic-specific corpus with `start_run`."
-    elif r >= 3 and n >= 100:
+    elif frac >= 0.40 or (r >= 3 and n >= 80):
         level, note = "strong", "the corpus covers this topic well."
-    elif r >= 2 and n >= 40:
+    elif frac >= 0.12 or (r >= 2 and n >= 30):
         level, note = "moderate", "partial coverage; some hypotheses may be loosely related."
     else:
         level, note = "weak", "hypotheses may not tightly address the topic — consider `start_run` for a topic-specific corpus."
     return (f"> **Corpus coverage: {level}** "
-            f"({n} hypotheses matched, top relevance {r}). {note}\n\n")
+            f"({n}/{tot} hypotheses matched, top relevance {r}). {note}\n\n")
 
 
 def _run_summary(run_dir: Path) -> dict[str, Any]:

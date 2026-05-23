@@ -45,6 +45,25 @@ def _safe_run_dir(runs_root: Path, run_id: str) -> Optional[Path]:
     return run_dir
 
 
+def _coverage_banner(stats: dict) -> str:
+    """A one-line coverage assessment for a topic query, so the Stage 3 reader
+    (critic / downstream) knows how tightly the corpus actually covers the
+    topic. Topical looseness comes from a topic the pre-built corpus doesn't
+    cover well — surface that instead of silently returning loose hypotheses."""
+    n = int(stats.get("n_matched", 0) or 0)
+    r = int(stats.get("top_relevance", 0) or 0)
+    if n == 0:
+        level, note = "none", "the corpus has no matching hypotheses — build a topic-specific corpus with `start_run`."
+    elif r >= 3 and n >= 100:
+        level, note = "strong", "the corpus covers this topic well."
+    elif r >= 2 and n >= 40:
+        level, note = "moderate", "partial coverage; some hypotheses may be loosely related."
+    else:
+        level, note = "weak", "hypotheses may not tightly address the topic — consider `start_run` for a topic-specific corpus."
+    return (f"> **Corpus coverage: {level}** "
+            f"({n} hypotheses matched, top relevance {r}). {note}\n\n")
+
+
 def _run_summary(run_dir: Path) -> dict[str, Any]:
     """Counts + anomaly-type histogram + provenance from run_metadata.json."""
     summary: dict[str, Any] = {"run_id": run_dir.name}
@@ -175,7 +194,7 @@ def build_mcp(
                 from aigraph_query import query  # markdown renderer (0 LLM)
 
                 md, _stats = query(run_dir, topic, k=k)
-                doc = heading + md
+                doc = heading + _coverage_banner(_stats) + md
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"
 

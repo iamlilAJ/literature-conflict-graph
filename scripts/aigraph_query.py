@@ -140,6 +140,7 @@ def _select(
     base_stats = {
         "n_hypotheses_total": len(hyps),
         "n_matched": len(matched),
+        "top_relevance": matched[0][1] if matched else 0,
         "topic_tokens": sorted(query_tokens),
         "llm_calls": 0,
     }

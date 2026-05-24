@@ -52,6 +52,27 @@ def _tokenize(s: str) -> set[str]:
     return {t for t in _TOKEN_RE.findall((s or "").lower()) if t not in _STOPWORDS and len(t) > 1}
 
 
+# Critic (conflict-explanation) hypotheses frequently open with meta-commentary
+# about *why two research communities disagree* ("The disconnect may persist
+# because…", "The contradiction arises because…", cross-pollination/venue/
+# terminology framing) rather than proposing an actionable method. These read
+# poorly as research ideas (measured: LLM-judge 2/10 vs creator 8/10). We don't
+# drop them — they can be a last-resort fallback — but we demote them below any
+# concrete hypothesis so the actionable bridges surface first. Creator
+# hypotheses never match this pattern.
+_BOILERPLATE_RE = re.compile(
+    r"\b(the disconnect may persist|the disconnect persists|the contradiction "
+    r"(?:arises|reflects|is driven)|cross-pollinat|may remain disconnected|"
+    r"generational lag|venue separation|terminology drift|methodological prior)",
+    re.IGNORECASE,
+)
+
+
+def _is_boilerplate(hyp: Hypothesis) -> bool:
+    """True for conflict-explanation meta-commentary (see _BOILERPLATE_RE)."""
+    return bool(_BOILERPLATE_RE.search(hyp.hypothesis or ""))
+
+
 def _topic_relevance(
     hyp: Hypothesis,
     anomaly_lookup: dict[str, Anomaly],
@@ -154,7 +175,9 @@ def _select(
         for h in hyps
     ]
     matched = [(h, r) for (h, r) in scored if r > 0]
-    matched.sort(key=lambda hr: -hr[1])
+    # Rank concrete hypotheses ahead of conflict-explanation boilerplate, then
+    # by topic relevance. Boilerplate stays in the list as a last-resort filler.
+    matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
 
     base_stats = {
         "n_hypotheses_total": len(hyps),

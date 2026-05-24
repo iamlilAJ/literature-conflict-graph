@@ -87,20 +87,38 @@ def _topic_relevance(
 
 def _load_run_dir(
     run_dir: Path,
+    hyp_kind: str = "critic",
 ) -> tuple[list[Hypothesis], list[Anomaly], list[Claim], list[Paper]]:
+    """Load a run. ``hyp_kind`` selects which hypotheses to return:
+      - "critic"  (default): conflict-explanation hypotheses (hypotheses_scored
+        .jsonl, falling back to hypotheses.jsonl)
+      - "creator": new-method-proposal hypotheses (creator_hypotheses.jsonl);
+        these are the forward-looking research ideas. Falls back to critic if
+        no creator file exists.
+      - "both": creator hypotheses first, then critic.
+    """
+    critic_path = run_dir / "hypotheses_scored.jsonl"
+    if not critic_path.exists():
+        critic_path = run_dir / "hypotheses.jsonl"
+    creator_path = run_dir / "creator_hypotheses.jsonl"
+
+    hyp_paths: list[Path] = []
+    if hyp_kind in ("creator", "both") and creator_path.exists():
+        hyp_paths.append(creator_path)
+    if hyp_kind in ("critic", "both") or not hyp_paths:
+        hyp_paths.append(critic_path)
+
     needed = {
-        "hypotheses": run_dir / "hypotheses_scored.jsonl",
         "anomalies": run_dir / "anomalies.jsonl",
         "claims": run_dir / "claims.jsonl",
         "papers": run_dir / "papers.jsonl",
     }
-    # Fall back to hypotheses.jsonl if hypotheses_scored.jsonl missing
-    if not needed["hypotheses"].exists():
-        needed["hypotheses"] = run_dir / "hypotheses.jsonl"
-    for label, path in needed.items():
+    for path in hyp_paths + list(needed.values()):
         if not path.exists():
-            raise FileNotFoundError(f"missing {label} at {path}")
-    hyps = read_jsonl(needed["hypotheses"], Hypothesis)
+            raise FileNotFoundError(f"missing required file at {path}")
+    hyps: list[Hypothesis] = []
+    for p in hyp_paths:
+        hyps.extend(read_jsonl(p, Hypothesis))
     anoms = read_jsonl(needed["anomalies"], Anomaly)
     claims = read_jsonl(needed["claims"], Claim)
     papers = read_jsonl(needed["papers"], Paper)
@@ -115,13 +133,14 @@ def _select(
     max_hypotheses: int,
     mmr_lambda: float,
     min_anomalies: int,
+    hyp_kind: str = "critic",
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
     ``(None, None, anoms, claims, papers, stats)`` on no-match.
     """
     t0 = time.monotonic()
-    hyps, anoms, claims, papers = _load_run_dir(run_dir)
+    hyps, anoms, claims, papers = _load_run_dir(run_dir, hyp_kind)
 
     query_tokens = _tokenize(topic)
     if not query_tokens:
@@ -171,14 +190,17 @@ def query(
     max_hypotheses: int = 30,
     mmr_lambda: float = 0.7,
     min_anomalies: int = 2,
+    hyp_kind: str = "critic",
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
+    ``hyp_kind``: "critic" (conflict explanations), "creator" (new-method
+    proposals — the forward-looking research ideas), or "both".
     Returns (markdown, stats). Zero LLM calls.
     """
     selected, breakdowns, anoms, claims, papers, stats = _select(
         run_dir, topic, k=k, max_hypotheses=max_hypotheses,
-        mmr_lambda=mmr_lambda, min_anomalies=min_anomalies,
+        mmr_lambda=mmr_lambda, min_anomalies=min_anomalies, hyp_kind=hyp_kind,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats

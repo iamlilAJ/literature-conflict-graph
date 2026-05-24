@@ -173,9 +173,15 @@ def build_mcp(
             return {"error": f"{type(exc).__name__}: {exc}"}
 
     @mcp.tool()
-    def get_idea_report(topic: str, run: str, k: int = 8, out_path: str = "") -> str:
+    def get_idea_report(topic: str, run: str, k: int = 8, out_path: str = "", kind: str = "critic") -> str:
         """Render the Stage 3 'Idea Generation' deliverable for `topic` as a
         COMPLETE markdown document (0 LLM, sub-second).
+
+        `kind` selects the hypothesis type: "critic" (default — conflict
+        explanations, `### h…` ids that the frontend/critic parse), "creator"
+        (new-method-proposal research ideas — higher quality but use `### a…#cr…`
+        ids; needs the frontend regex + Stage-3 critic updated to accept them
+        before it can be the default), or "both".
 
         The document is a `# Stage 3: Idea Generation — <topic>` heading
         followed by the `# Selected Hypotheses` report (`### Anomaly a… —` /
@@ -204,7 +210,8 @@ def build_mcp(
                 # of diverse-but-generic cross-field ones (measured: RAG topic
                 # overlap 0.08->0.21, code-gen 0.25->0.56).
                 md, _stats = query(run_dir, topic, k=k,
-                                   max_hypotheses=12, mmr_lambda=0.85)
+                                   max_hypotheses=12, mmr_lambda=0.85,
+                                   hyp_kind=kind)
                 doc = heading + _coverage_banner(_stats) + md
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"

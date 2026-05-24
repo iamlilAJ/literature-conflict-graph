@@ -173,19 +173,21 @@ def build_mcp(
             return {"error": f"{type(exc).__name__}: {exc}"}
 
     @mcp.tool()
-    def get_idea_report(topic: str, run: str, k: int = 8, out_path: str = "", kind: str = "critic") -> str:
+    def get_idea_report(topic: str, run: str, k: int = 8, out_path: str = "", kind: str = "creator") -> str:
         """Render the Stage 3 'Idea Generation' deliverable for `topic` as a
         COMPLETE markdown document (0 LLM, sub-second).
 
-        `kind` selects the hypothesis type: "critic" (default — conflict
-        explanations, `### h…` ids that the frontend/critic parse), "creator"
-        (new-method-proposal research ideas — higher quality but use `### a…#cr…`
-        ids; needs the frontend regex + Stage-3 critic updated to accept them
-        before it can be the default), or "both".
+        `kind` selects the hypothesis type: "creator" (default — new-method
+        -proposal research ideas, `### a…#cr…` ids; these are the forward-looking
+        ideas and are the better Stage-3 deliverable), "critic" (conflict
+        explanations, `### h…` ids), or "both". For a run with no
+        creator_hypotheses.jsonl, "creator"/"both" fall back to critic
+        automatically. The frontend conflict-graph renderer and the Stage-3
+        critic accept BOTH id shapes (`### h…` and `### a…#cr…`).
 
         The document is a `# Stage 3: Idea Generation — <topic>` heading
         followed by the `# Selected Hypotheses` report (`### Anomaly a… —` /
-        `### h… —` items grounded in real claim citations). This is the
+        `### h… —` / `### a…#cr… —` items grounded in real claim citations). This is the
         canonical Stage 3 format the downstream critic and the frontend
         conflict-graph renderer expect. `k` in 1..20.
 

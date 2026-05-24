@@ -211,9 +211,14 @@ def build_mcp(
                 # weight surfaces hypotheses that are actually on-topic instead
                 # of diverse-but-generic cross-field ones (measured: RAG topic
                 # overlap 0.08->0.21, code-gen 0.25->0.56).
+                # min_anomalies=3 (vs default 2): with the enlarged creator pool
+                # a single high-utility anomaly could fill 3 of 4 slots (measured:
+                # "tree search reasoning" → 3x a016 tool ideas). Forcing 3 distinct
+                # anomalies in the top-k spreads selection across the on-topic
+                # anomalies (brings in a012 reasoning for that topic).
                 md, _stats = query(run_dir, topic, k=k,
                                    max_hypotheses=12, mmr_lambda=0.85,
-                                   hyp_kind=kind)
+                                   min_anomalies=3, hyp_kind=kind)
                 doc = heading + _coverage_banner(_stats) + md
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"

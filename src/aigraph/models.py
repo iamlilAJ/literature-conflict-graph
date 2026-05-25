@@ -33,6 +33,10 @@ AnomalyType = Literal[
     "community_disconnect",
     "impact_conflict",
     "replication_conflict",
+    # Joint (Atlas-grounded) anomaly — additive, NOT one of the 8 frozen
+    # v0.7 types. Produced only by the optional joint_anomalies module when
+    # Intern-Atlas data is supplied; the 8 frozen detectors never emit it.
+    "bottleneck_open_q_alignment",
 ]
 InsightType = Literal[
     "unifying_theory",
@@ -66,6 +70,11 @@ class Paper(LooseModel):
     openalex_id: Optional[str] = None
     arxiv_id_full: Optional[str] = None
     arxiv_id_base: Optional[str] = None
+    # Intern-Atlas enrichment (J0). Optional; populated by intern_atlas_loader.
+    s2_id: Optional[str] = None
+    venue_canonical: Optional[str] = None
+    venue_tier: Optional[str] = None
+    influential_citation_count: int = 0
     corpus_tag: Optional[str] = None
     seed_reason: Optional[str] = None
     academic_impact: float = 0.0
@@ -242,6 +251,10 @@ class Anomaly(LooseModel):
     citation_bridge_score: float = 0.0
     replication_score: float = 0.0
     topology_score: float = 0.0
+    # Atlas-grounded provenance for joint anomalies (empty for the 8 frozen
+    # types). Each entry: {source_paper, relation, dimension, severity,
+    # quote} from a third-party paper's bottleneck_json edge into this paper.
+    bottleneck_signals: list[dict] = Field(default_factory=list)
 
 
 class Insight(LooseModel):

@@ -287,6 +287,46 @@ def detect_anomalies_cmd(
     console.print(f"[green]Found {len(anomalies)} anomalies[/] {by_type} -> {output}")
 
 
+@app.command("detect-joint-anomalies")
+def detect_joint_anomalies_cmd(
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    papers: Path = typer.Option(DEFAULT_PAPERS, "--papers"),
+    output: Path = typer.Option(Path("outputs/joint_anomalies.jsonl"), "--output"),
+    atlas_dir: Optional[Path] = typer.Option(None, "--atlas-dir",
+        help="Intern-Atlas mirror dir (default $AIGRAPH_INTERN_ATLAS_DIR or data/intern_atlas)."),
+    merge_into: Optional[Path] = typer.Option(None, "--merge-into",
+        help="Existing anomalies.jsonl to append joint anomalies to (writes the merged set to --output)."),
+    min_confidence: float = typer.Option(0.0, "--min-confidence"),
+) -> None:
+    """Detect Atlas-grounded joint anomalies (bottleneck_open_q_alignment).
+
+    Opt-in J2 detector — needs Intern-Atlas data; does NOT touch the frozen
+    8-type pipeline. Surfaces papers whose first-party weakness aligns with a
+    third-party Atlas bottleneck."""
+    from .intern_atlas_loader import is_available
+    from .joint_anomalies import detect_bottleneck_open_q_alignment, merge_joint_anomalies
+
+    if not is_available(atlas_dir):
+        console.print("[red]Intern-Atlas not available[/] (missing parquet mirror or polars). "
+                      "Set --atlas-dir / $AIGRAPH_INTERN_ATLAS_DIR and `pip install polars`.")
+        raise typer.Exit(1)
+
+    claim_records = read_jsonl(claims, Claim)
+    paper_records = read_jsonl(papers, Paper)
+    joint = detect_bottleneck_open_q_alignment(
+        claim_records, paper_records, atlas_dir, min_confidence=min_confidence)
+    console.print(f"[green]Joint anomalies (bottleneck_open_q_alignment): {len(joint)}[/]")
+
+    if merge_into is not None:
+        existing = read_jsonl(merge_into, Anomaly)
+        merged = merge_joint_anomalies(existing, joint)
+        write_jsonl(output, merged)
+        console.print(f"merged {len(existing)} frozen + {len(joint)} joint = {len(merged)} -> {output}")
+    else:
+        write_jsonl(output, joint)
+        console.print(f"-> {output}")
+
+
 @app.command("generate-hypotheses")
 def generate_hypotheses_cmd(
     anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),

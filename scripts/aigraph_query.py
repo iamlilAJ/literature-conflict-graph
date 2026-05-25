@@ -333,13 +333,18 @@ def main() -> None:
     )
 
     if args.output == "-":
-        sys.stdout.write(md)
+        # The report contains non-ASCII (em-dash —, arrow →): write UTF-8 bytes
+        # directly so output is correct regardless of the process locale
+        # (cron/tmux often run under a C/POSIX locale → stdout defaults to ascii,
+        # which mangles or crashes on these characters → mojibake downstream).
+        sys.stdout.buffer.write(md.encode("utf-8"))
     else:
-        Path(args.output).write_text(md)
+        Path(args.output).write_text(md, encoding="utf-8")
         print(f"wrote {args.output}", file=sys.stderr)
 
     if args.stats_out:
-        Path(args.stats_out).write_text(json.dumps(stats, indent=2, ensure_ascii=False))
+        Path(args.stats_out).write_text(
+            json.dumps(stats, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(json.dumps(stats, indent=2, ensure_ascii=False), file=sys.stderr)
 

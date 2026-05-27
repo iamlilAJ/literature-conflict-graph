@@ -93,6 +93,69 @@ prompt-padding signal.**
 3. Re-judge the 129 Phase-1 ERROR rows (endpoint timeouts) to tighten the
    distribution — though 353 valid is already decisive.
 
+## Post-implementation test (2026-05-27): does integration make output BETTER?
+
+After implementing the detector (`joint_anomalies.py`), a head-to-head on
+val1-primary. Artifacts: `artifacts/atlas_test/testB_*.{json,jsonl}`,
+script `scripts/atlas_bottleneck_align_test.py` + remote judges.
+
+**Test A — coverage (0 LLM, decisive):**
+- baseline (8 frozen types): 1423 anomalies covering **638 papers (36%)**.
+- joint: 484 anomalies → **154 net-new papers** (zero baseline anomaly) +
+  330 papers augmented. Run coverage **36% → 44%**.
+- ✅ Integration clearly adds *more* weakness-grounded candidates.
+
+**Test B — quality A/B (Kimi-K2.6, model-controlled, blind):**
+- **B1 (net-new papers): joint-grounded hyp vs generic ungrounded hyp.**
+  Valid n=14 (26/40 lost to LLM timeouts): **generic 9, joint 5** — the
+  Atlas-grounded hypothesis LOST to a generic "advance this paper" prompt.
+- **B2 (overlap papers): joint vs baseline anomaly.** Valid n=23 (17 errors):
+  **baseline 13, joint 10** — no lift (consistent with the earlier phase-2).
+
+**Root cause of the quality miss (definitive): broken central_question.**
+**40/40 B1 and 35/40 B2 joint CQs read "Paper P studies _other_ on …"** —
+the CQ is templated from the weakness claim's `method` field, which is the
+degenerate `"other"`/empty value (the same extractor-hygiene problem Thaw #2
+only partly fixed). So the joint hypotheses were handicapped by clunky
+framing, not by the Atlas signal itself — the clean `bottleneck_json`
+(dimension/severity/quote) was in the prompt but the CQ spine was contaminated.
+
+### CQ fix + clean re-test (2026-05-28)
+
+The `central_question` was rebuilt around the clean bottleneck
+(`{dimension, quote}`) as the spine, dropping the degenerate `method` slot
+(commit pending). Re-ran B1/B2 with a 420s timeout (Kimi's reasoning was
+timing out 70% of calls at 150s). Errors dropped to ~2%, giving clean
+samples:
+
+| arm | before fix | **after fix (clean, larger n)** |
+|---|---|---|
+| **B1** net-new: joint vs generic | generic 9 / joint 5 (n=14) | **joint 22 / generic 22 / tie 5 (n=49)** — dead even |
+| **B2** overlap: joint vs baseline | baseline 13 / joint 10 (n=23) | **joint 9 / baseline 9 / tie 1 (n=19)** — dead even |
+
+The fix erased the quality penalty: the broken "studies _other_ on …" CQ was
+the entire reason joint lost the first time. With clean CQs, joint hypotheses
+are **statistically tied** with both a generic prompt (net-new) and the
+baseline anomaly (overlap).
+
+### FINAL VERDICT: integration is a net positive, but modest
+- **Coverage — better (clear):** +154 net-new papers (24% more covered),
+  36% → 44% run coverage. Real, bankable.
+- **Per-hypothesis quality — no change:** joint hypotheses tie generic
+  (net-new, n=49) and tie baseline (overlap, n=19). Atlas grounding neither
+  raises nor lowers per-idea quality once the CQ is clean.
+- **Net effect:** integration gives you MORE weakness-grounded ideas — on
+  papers the frozen pipeline produces nothing for — at the SAME quality bar.
+  It does NOT produce higher-quality ideas per se. "More, equally good," not
+  "better."
+- Phase-1's 87%-complementary signal is real (the third-party bottleneck IS a
+  distinct dimension) but does not, by itself, translate into measurably
+  better generated hypotheses.
+
+Caveat: single judge (Kimi K2.6, also the generator); the production model
+(gpt-5.4) endpoint is dead, so this couldn't use it. Direction is consistent
+across 4 runs though.
+
 ## Caveats
 
 - Judge = Kimi-K2.6 (reasoning model; needed `max_tokens≥3000` or reasoning

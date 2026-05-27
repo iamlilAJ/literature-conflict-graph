@@ -94,18 +94,31 @@ def detect_bottleneck_open_q_alignment(
         btls = sorted(btls, key=lambda b: (sev_rank.get(b.get("severity", ""), 0),
                                            b.get("confidence", 0.0)), reverse=True)[:max_bottlenecks_per_paper]
         lead = wk[0]
-        method = _entity(lead, "canonical_method", "method") or "the method"
-        task = _entity(lead, "canonical_task", "task") or "the task"
+        method = _entity(lead, "canonical_method", "method")
+        task = _entity(lead, "canonical_task", "task")
         top = btls[0]
         dim = top.get("dimension") or "an unaddressed dimension"
-        third = top.get("description") or top.get("quote") or "a limitation"
+        third = (top.get("quote") or top.get("description") or "a limitation").strip()
         first = (lead.claim_text or "").strip()
 
+        # Build the central question around the CLEAN signals — the concrete
+        # first-party limitation quote and the third-party bottleneck
+        # (dimension + verbatim quote). Only name method/task when they are
+        # real (the extractor often emits "other"/empty, which made earlier
+        # CQs read "studies other on …" and dragged hypothesis quality down —
+        # see docs/atlas-value-test-findings.md). The clean bottleneck is the
+        # spine; method/task is an optional scope tag.
+        _bad = {"", "other", "the method", "the task", "unknown", "none"}
+        scope = ""
+        if method.lower() not in _bad and task.lower() not in _bad:
+            scope = f" (on {method} for {task})"
+        elif method.lower() not in _bad:
+            scope = f" (on {method})"
         cq = (
-            f"Paper P studies {method} on {task} and reports its own limitation "
-            f"(\"{first[:160]}\"). Independently, later work flags a {dim} bottleneck "
-            f"in P (\"{third[:160]}\"). What mechanism would resolve the first-party "
-            f"limitation and the third-party {dim} bottleneck together?"
+            f"This paper{scope} reports a limitation: \"{first[:200]}\". "
+            f"Independently, later work identifies a {dim} bottleneck in it: "
+            f"\"{third[:200]}\". What concrete mechanism would resolve both the "
+            f"self-reported limitation and this {dim} bottleneck?"
         )
 
         anomalies.append(Anomaly(

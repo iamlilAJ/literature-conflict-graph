@@ -73,6 +73,36 @@ def _is_boilerplate(hyp: Hypothesis) -> bool:
     return bool(_BOILERPLATE_RE.search(hyp.hypothesis or ""))
 
 
+def _norm_entity(s) -> str:
+    """Normalize an entity label for self-reference comparison."""
+    return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower()).strip()
+
+
+def _is_degenerate_anomaly(anom: "Anomaly | None") -> bool:
+    """True for self-referential anomalies whose two sides are the same entity
+    — e.g. method == task ("when does planning help on planning?") or a bridge
+    whose from/to collapse. The frozen detectors emit these unguarded (no
+    method != task check); they produce vacuous central questions, so we drop
+    them at delivery time (the cached anomaly file is untouched).
+    """
+    if anom is None:
+        return False
+    se = anom.shared_entities or {}
+    m, t = _norm_entity(se.get("method")), _norm_entity(se.get("task"))
+    if m and t and m == t:
+        return True
+    mf, mt = _norm_entity(se.get("method_from")), _norm_entity(se.get("method_to"))
+    tf, tt = _norm_entity(se.get("task_from")), _norm_entity(se.get("task_to"))
+    if mf and mt and tf and tt and mf == mt and tf == tt:
+        return True
+    # community_disconnect / generic two-sided keys collapsing to one entity
+    for a, b in (("from", "to"), ("community_from", "community_to"), ("source", "target")):
+        va, vb = _norm_entity(se.get(a)), _norm_entity(se.get(b))
+        if va and vb and va == vb:
+            return True
+    return False
+
+
 def _topic_relevance(
     hyp: Hypothesis,
     anomaly_lookup: dict[str, Anomaly],
@@ -155,6 +185,10 @@ def _select(
     mmr_lambda: float,
     min_anomalies: int,
     hyp_kind: str = "critic",
+    drop_boilerplate: bool = False,
+    min_relevance: int = 1,
+    drop_self_conflict: bool = True,
+    max_per_anomaly: int = 2,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -174,10 +208,42 @@ def _select(
         (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
         for h in hyps
     ]
-    matched = [(h, r) for (h, r) in scored if r > 0]
+    # min_relevance gates topic scope-drift: when the corpus only loosely
+    # matches the query (low token overlap), returning those hypotheses misleads
+    # downstream stages into "off-topic" research ideas. Require >= min_relevance
+    # query-token hits; if nothing clears the bar, the caller gets a no-match
+    # (honest "insufficient coverage") instead of plausible-but-irrelevant output.
+    matched = [(h, r) for (h, r) in scored if r >= min_relevance]
+    if drop_boilerplate:
+        concrete = [(h, r) for (h, r) in matched if not _is_boilerplate(h)]
+        if concrete:  # only drop meta-commentary when actionable ones remain
+            matched = concrete
+    # Drop hypotheses whose parent anomaly is a degenerate self-conflict
+    # (method==task etc.) — vacuous "X on X" framings the frozen detectors emit
+    # unguarded. Only drop when non-degenerate candidates remain.
+    if drop_self_conflict:
+        non_degen = [
+            (h, r) for (h, r) in matched
+            if not _is_degenerate_anomaly(anom_lookup.get(h.anomaly_id))
+        ]
+        if non_degen:
+            matched = non_degen
     # Rank concrete hypotheses ahead of conflict-explanation boilerplate, then
     # by topic relevance. Boilerplate stays in the list as a last-resort filler.
     matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
+    # Cap near-duplicate frames per anomaly: the frozen generator emits EXACTLY
+    # 3 near-identical hypotheses per anomaly (differ only by moderator). MMR
+    # handles cross-anomaly diversity; this removes the within-anomaly dups it
+    # doesn't catch. Applied post-sort so the highest-relevance frames survive.
+    if max_per_anomaly and max_per_anomaly > 0:
+        per_anom: dict[str, int] = {}
+        capped: list = []
+        for h, r in matched:
+            n = per_anom.get(h.anomaly_id, 0) + 1
+            per_anom[h.anomaly_id] = n
+            if n <= max_per_anomaly:
+                capped.append((h, r))
+        matched = capped
 
     base_stats = {
         "n_hypotheses_total": len(hyps),
@@ -214,6 +280,10 @@ def query(
     mmr_lambda: float = 0.7,
     min_anomalies: int = 2,
     hyp_kind: str = "critic",
+    drop_boilerplate: bool = False,
+    min_relevance: int = 1,
+    drop_self_conflict: bool = True,
+    max_per_anomaly: int = 2,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -224,6 +294,8 @@ def query(
     selected, breakdowns, anoms, claims, papers, stats = _select(
         run_dir, topic, k=k, max_hypotheses=max_hypotheses,
         mmr_lambda=mmr_lambda, min_anomalies=min_anomalies, hyp_kind=hyp_kind,
+        drop_boilerplate=drop_boilerplate, min_relevance=min_relevance,
+        drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -247,6 +319,11 @@ def query_records(
     max_hypotheses: int = 30,
     mmr_lambda: float = 0.7,
     min_anomalies: int = 2,
+    hyp_kind: str = "critic",
+    drop_boilerplate: bool = False,
+    min_relevance: int = 1,
+    drop_self_conflict: bool = True,
+    max_per_anomaly: int = 2,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -261,6 +338,9 @@ def query_records(
     selected, breakdowns, anoms, claims, papers, stats = _select(
         run_dir, topic, k=k, max_hypotheses=max_hypotheses,
         mmr_lambda=mmr_lambda, min_anomalies=min_anomalies,
+        hyp_kind=hyp_kind, drop_boilerplate=drop_boilerplate,
+        min_relevance=min_relevance,
+        drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
     )
     if selected is None:
         return [], stats
@@ -317,6 +397,23 @@ def main() -> None:
                     help="Cap on candidates fed to MMR")
     ap.add_argument("--mmr-lambda", type=float, default=0.7)
     ap.add_argument("--min-anomalies", type=int, default=2)
+    ap.add_argument("--hyp-kind", choices=["critic", "creator", "both"],
+                    default="critic",
+                    help="Which hypothesis set to surface (creator = new-method "
+                         "proposals; falls back to critic if absent)")
+    ap.add_argument("--drop-boilerplate", action="store_true",
+                    help="Drop conflict-explanation meta-commentary hypotheses "
+                         "(LLM-judge ~2/10) when actionable ones also match")
+    ap.add_argument("--min-relevance", type=int, default=1,
+                    help="Min query-token hits a hypothesis must have to be "
+                         "surfaced; raise to 2-3 to gate off-topic scope-drift "
+                         "when the corpus only loosely matches the topic")
+    ap.add_argument("--keep-self-conflict", action="store_true",
+                    help="Keep degenerate self-conflict anomalies (method==task, "
+                         "'X on X'); default drops them at delivery")
+    ap.add_argument("--max-per-anomaly", type=int, default=2,
+                    help="Max near-duplicate hypotheses kept per anomaly "
+                         "(frozen generator emits 3 near-identical frames); 0 = no cap")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
@@ -330,6 +427,11 @@ def main() -> None:
         max_hypotheses=args.max_hypotheses,
         mmr_lambda=args.mmr_lambda,
         min_anomalies=args.min_anomalies,
+        hyp_kind=args.hyp_kind,
+        drop_boilerplate=args.drop_boilerplate,
+        min_relevance=args.min_relevance,
+        drop_self_conflict=not args.keep_self_conflict,
+        max_per_anomaly=args.max_per_anomaly,
     )
 
     if args.output == "-":

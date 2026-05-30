@@ -418,6 +418,13 @@ def main() -> None:
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
                     help="Optional path to write stats as JSON")
+    ap.add_argument("--records-out", default=None,
+                    help="Optional path to write the selected hypotheses as a "
+                         "structured JSON list (one record per hypothesis with "
+                         "utility score breakdown). Use this when the caller "
+                         "wants to consume ranked candidates programmatically "
+                         "(e.g. inject LCG scores into a downstream LLM prompt) "
+                         "instead of (or in addition to) the rendered markdown.")
     args = ap.parse_args()
 
     md, stats = query(
@@ -447,6 +454,23 @@ def main() -> None:
     if args.stats_out:
         Path(args.stats_out).write_text(
             json.dumps(stats, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    if args.records_out:
+        records, _ = query_records(
+            run_dir=args.run_dir,
+            topic=args.topic,
+            k=args.k,
+            max_hypotheses=args.max_hypotheses,
+            mmr_lambda=args.mmr_lambda,
+            min_anomalies=args.min_anomalies,
+            hyp_kind=args.hyp_kind,
+            drop_boilerplate=args.drop_boilerplate,
+            min_relevance=args.min_relevance,
+            drop_self_conflict=not args.keep_self_conflict,
+            max_per_anomaly=args.max_per_anomaly,
+        )
+        Path(args.records_out).write_text(
+            json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(json.dumps(stats, indent=2, ensure_ascii=False), file=sys.stderr)
 

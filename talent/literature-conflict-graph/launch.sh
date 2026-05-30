@@ -61,13 +61,18 @@ trap 'rm -f "$MD" "$RECORDS"' EXIT
 # --drop-untestable matches the chat-mode advisor's downstream filter
 # (claim + construction + falsifiable-prediction); dropping in-query frees
 # MMR slots from candidates the LLM would reject anyway.
+# --semantic (LCG_SEMANTIC=1) adds TF-IDF cosine alongside bag-of-words so
+# phrase-level matches survive when the topic doesn't share single tokens
+# with the corpus (e.g. "tree search" vs hypotheses that say "MCTS").
+SEMANTIC_FLAG=""
+[ "${LCG_SEMANTIC:-0}" = "1" ] && SEMANTIC_FLAG="--semantic"
 "$LCG_PYTHON" "$LCG_REPO/scripts/aigraph_query.py" \
     --run-dir "$LCG_RUN_DIR" \
     --topic "$TASK_TEXT" \
     --k "$LCG_K" \
     --output "$MD" \
     --records-out "$RECORDS" \
-    --drop-untestable 1>&2
+    --drop-untestable $SEMANTIC_FLAG 1>&2
 
 # Step 2: in chat mode, fall back to topic if no LLM key is available.
 if [ "$MODE" = "chat" ]; then

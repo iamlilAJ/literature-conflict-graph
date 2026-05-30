@@ -206,6 +206,8 @@ def _select(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.15,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -225,12 +227,45 @@ def _select(
         (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
         for h in hyps
     ]
+    # Optional TF-IDF cosine layer: catches "tree search" ↔ "MCTS" and other
+    # phrase-level matches the per-token bag-of-words misses. When enabled,
+    # a hypothesis enters `matched` if EITHER bag-of-words ≥ min_relevance
+    # OR TF-IDF cosine ≥ semantic_threshold. Default off (back-compat).
+    sem_by_id: dict[str, float] = {}
+    if semantic:
+        from aigraph.relevance import hypothesis_haystack, tfidf_topic_scores
+        cited_per_h = {
+            h.hypothesis_id: [claim_lookup[c] for c in (h.explains_claims or [])
+                              if c in claim_lookup]
+            for h in hyps
+        }
+        hyp_texts = [
+            hypothesis_haystack(h, anom_lookup.get(h.anomaly_id),
+                                cited_per_h.get(h.hypothesis_id))
+            for h in hyps
+        ]
+        sem_scores = tfidf_topic_scores(hyp_texts, topic)
+        sem_by_id = {h.hypothesis_id: s for h, s in zip(hyps, sem_scores)}
     # min_relevance gates topic scope-drift: when the corpus only loosely
     # matches the query (low token overlap), returning those hypotheses misleads
     # downstream stages into "off-topic" research ideas. Require >= min_relevance
     # query-token hits; if nothing clears the bar, the caller gets a no-match
     # (honest "insufficient coverage") instead of plausible-but-irrelevant output.
-    matched = [(h, r) for (h, r) in scored if r >= min_relevance]
+    if semantic:
+        matched = [(h, r) for (h, r) in scored
+                   if r >= min_relevance
+                   or sem_by_id.get(h.hypothesis_id, 0.0) >= semantic_threshold]
+    else:
+        matched = [(h, r) for (h, r) in scored if r >= min_relevance]
+    # Diagnostic: how many candidates the TF-IDF layer rescued (bow < gate
+    # but sem ≥ threshold). 0 means the corpus had no semantic-only neighbors
+    # for this topic (typical when bag-of-words already catches everything).
+    semantic_only_added = 0
+    if semantic:
+        bow_matched_ids = {h.hypothesis_id for (h, r) in scored if r >= min_relevance}
+        semantic_only_added = sum(
+            1 for (h, _) in matched if h.hypothesis_id not in bow_matched_ids
+        )
     if drop_boilerplate:
         concrete = [(h, r) for (h, r) in matched if not _is_boilerplate(h)]
         if concrete:  # only drop meta-commentary when actionable ones remain
@@ -254,7 +289,16 @@ def _select(
             matched = testable
     # Rank concrete hypotheses ahead of conflict-explanation boilerplate, then
     # by topic relevance. Boilerplate stays in the list as a last-resort filler.
-    matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
+    # When semantic is enabled, blend bag-of-words count with TF-IDF cosine so a
+    # high-semantic / low-token hypothesis isn't demoted (×10 scales cosine into
+    # the same ballpark as token-hit counts for typical topics).
+    if semantic:
+        matched.sort(key=lambda hr: (
+            _is_boilerplate(hr[0]),
+            -max(hr[1], sem_by_id.get(hr[0].hypothesis_id, 0.0) * 10),
+        ))
+    else:
+        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
     # Cap near-duplicate frames per anomaly: the frozen generator emits EXACTLY
     # 3 near-identical hypotheses per anomaly (differ only by moderator). MMR
     # handles cross-anomaly diversity; this removes the within-anomaly dups it
@@ -275,6 +319,8 @@ def _select(
         "top_relevance": matched[0][1] if matched else 0,
         "topic_tokens": sorted(query_tokens),
         "llm_calls": 0,
+        "semantic_enabled": semantic,
+        "semantic_only_added": semantic_only_added,
     }
     if not matched:
         base_stats.update(n_candidates=0, n_selected=0,
@@ -309,6 +355,8 @@ def query(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.15,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -322,6 +370,7 @@ def query(
         drop_boilerplate=drop_boilerplate, min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
+        semantic=semantic, semantic_threshold=semantic_threshold,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -351,6 +400,8 @@ def query_records(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.15,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -369,6 +420,7 @@ def query_records(
         min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
+        semantic=semantic, semantic_threshold=semantic_threshold,
     )
     if selected is None:
         return [], stats
@@ -447,6 +499,17 @@ def main() -> None:
                          "predictions — the chat-mode advisor rejects these "
                          "anyway, so dropping them earlier means MMR picks "
                          "from a higher-quality pool")
+    ap.add_argument("--semantic", action="store_true",
+                    help="Enable TF-IDF cosine relevance alongside bag-of-words. "
+                         "Catches phrase-level matches the per-token filter "
+                         "misses ('tree search' ↔ 'MCTS', 'uncertainty "
+                         "quantification' ↔ 'calibration'). Off by default for "
+                         "back-compat. Adds ~milliseconds per query.")
+    ap.add_argument("--semantic-threshold", type=float, default=0.15,
+                    help="Min TF-IDF cosine for a hypothesis to clear the "
+                         "topic filter on semantic similarity alone (when its "
+                         "bag-of-words hit-count is below --min-relevance). "
+                         "Only used when --semantic is set.")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
@@ -473,6 +536,8 @@ def main() -> None:
         drop_self_conflict=not args.keep_self_conflict,
         max_per_anomaly=args.max_per_anomaly,
         drop_untestable=args.drop_untestable,
+        semantic=args.semantic,
+        semantic_threshold=args.semantic_threshold,
     )
 
     if args.output == "-":
@@ -503,6 +568,8 @@ def main() -> None:
             drop_self_conflict=not args.keep_self_conflict,
             max_per_anomaly=args.max_per_anomaly,
             drop_untestable=args.drop_untestable,
+            semantic=args.semantic,
+            semantic_threshold=args.semantic_threshold,
         )
         Path(args.records_out).write_text(
             json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")

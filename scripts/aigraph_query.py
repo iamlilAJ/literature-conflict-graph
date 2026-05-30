@@ -207,7 +207,7 @@ def _select(
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
     semantic: bool = False,
-    semantic_threshold: float = 0.15,
+    semantic_threshold: float = 0.05,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -356,7 +356,7 @@ def query(
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
     semantic: bool = False,
-    semantic_threshold: float = 0.15,
+    semantic_threshold: float = 0.05,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -401,7 +401,7 @@ def query_records(
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
     semantic: bool = False,
-    semantic_threshold: float = 0.15,
+    semantic_threshold: float = 0.05,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -505,11 +505,19 @@ def main() -> None:
                          "misses ('tree search' ↔ 'MCTS', 'uncertainty "
                          "quantification' ↔ 'calibration'). Off by default for "
                          "back-compat. Adds ~milliseconds per query.")
-    ap.add_argument("--semantic-threshold", type=float, default=0.15,
+    ap.add_argument("--semantic-threshold", type=float, default=0.05,
                     help="Min TF-IDF cosine for a hypothesis to clear the "
                          "topic filter on semantic similarity alone (when its "
                          "bag-of-words hit-count is below --min-relevance). "
-                         "Only used when --semantic is set.")
+                         "Empirically the max cosine on a 4-token query vs the "
+                         "540p reasoning corpus is ~0.14; the previous default "
+                         "0.15 was a never-triggers threshold. 0.05 keeps the "
+                         "top ~2-3% of semantically-related hypotheses. Only "
+                         "actually changes selection when paired with a "
+                         "stricter --min-relevance (≥ 2) — at min_relevance=1 "
+                         "bag-of-words usually already catches everything "
+                         "semantic would also catch. Only used when --semantic "
+                         "is set.")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,

@@ -58,12 +58,16 @@ MODE="${LCG_MODE:-chat}"
 MD=$(mktemp -t lcg-md.XXXXXX)
 RECORDS=$(mktemp -t lcg-records.XXXXXX)
 trap 'rm -f "$MD" "$RECORDS"' EXIT
+# --drop-untestable matches the chat-mode advisor's downstream filter
+# (claim + construction + falsifiable-prediction); dropping in-query frees
+# MMR slots from candidates the LLM would reject anyway.
 "$LCG_PYTHON" "$LCG_REPO/scripts/aigraph_query.py" \
     --run-dir "$LCG_RUN_DIR" \
     --topic "$TASK_TEXT" \
     --k "$LCG_K" \
     --output "$MD" \
-    --records-out "$RECORDS" 1>&2
+    --records-out "$RECORDS" \
+    --drop-untestable 1>&2
 
 # Step 2: in chat mode, fall back to topic if no LLM key is available.
 if [ "$MODE" = "chat" ]; then

@@ -73,6 +73,22 @@ def _is_boilerplate(hyp: Hypothesis) -> bool:
     return bool(_BOILERPLATE_RE.search(hyp.hypothesis or ""))
 
 
+def _is_untestable(hyp: Hypothesis) -> bool:
+    """True if the hypothesis carries no minimal_test AND no concrete
+    predictions — nothing to actually run as an experiment.
+
+    Downstream the chat-mode advisor (talent/literature-conflict-graph
+    launch.sh) is instructed to drop any hypothesis it can't turn into
+    a (claim, construction, falsifiable-prediction) triple — these are
+    exactly the ones it would drop. Filtering them earlier means MMR
+    selects from a higher-quality pool instead of spending one of K
+    slots on a candidate the LLM will discard.
+    """
+    has_test = bool((hyp.minimal_test or "").strip())
+    has_predictions = any((p or "").strip() for p in (hyp.predictions or []))
+    return not (has_test or has_predictions)
+
+
 def _norm_entity(s) -> str:
     """Normalize an entity label for self-reference comparison."""
     return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower()).strip()
@@ -189,6 +205,7 @@ def _select(
     min_relevance: int = 1,
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
+    drop_untestable: bool = False,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -228,6 +245,13 @@ def _select(
         ]
         if non_degen:
             matched = non_degen
+    # Drop hypotheses that lack any concrete test/prediction (the chat-mode
+    # advisor would reject them anyway via its claim/construction/prediction
+    # rule). Only drop when testable candidates remain.
+    if drop_untestable:
+        testable = [(h, r) for (h, r) in matched if not _is_untestable(h)]
+        if testable:
+            matched = testable
     # Rank concrete hypotheses ahead of conflict-explanation boilerplate, then
     # by topic relevance. Boilerplate stays in the list as a last-resort filler.
     matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
@@ -284,6 +308,7 @@ def query(
     min_relevance: int = 1,
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
+    drop_untestable: bool = False,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -296,6 +321,7 @@ def query(
         mmr_lambda=mmr_lambda, min_anomalies=min_anomalies, hyp_kind=hyp_kind,
         drop_boilerplate=drop_boilerplate, min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
+        drop_untestable=drop_untestable,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -324,6 +350,7 @@ def query_records(
     min_relevance: int = 1,
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
+    drop_untestable: bool = False,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -341,6 +368,7 @@ def query_records(
         hyp_kind=hyp_kind, drop_boilerplate=drop_boilerplate,
         min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
+        drop_untestable=drop_untestable,
     )
     if selected is None:
         return [], stats
@@ -414,10 +442,22 @@ def main() -> None:
     ap.add_argument("--max-per-anomaly", type=int, default=2,
                     help="Max near-duplicate hypotheses kept per anomaly "
                          "(frozen generator emits 3 near-identical frames); 0 = no cap")
+    ap.add_argument("--drop-untestable", action="store_true",
+                    help="Drop hypotheses with no minimal_test AND no concrete "
+                         "predictions — the chat-mode advisor rejects these "
+                         "anyway, so dropping them earlier means MMR picks "
+                         "from a higher-quality pool")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
                     help="Optional path to write stats as JSON")
+    ap.add_argument("--records-out", default=None,
+                    help="Optional path to write the selected hypotheses as a "
+                         "structured JSON list (one record per hypothesis with "
+                         "utility score breakdown). Use this when the caller "
+                         "wants to consume ranked candidates programmatically "
+                         "(e.g. inject LCG scores into a downstream LLM prompt) "
+                         "instead of (or in addition to) the rendered markdown.")
     args = ap.parse_args()
 
     md, stats = query(
@@ -432,6 +472,7 @@ def main() -> None:
         min_relevance=args.min_relevance,
         drop_self_conflict=not args.keep_self_conflict,
         max_per_anomaly=args.max_per_anomaly,
+        drop_untestable=args.drop_untestable,
     )
 
     if args.output == "-":
@@ -447,6 +488,24 @@ def main() -> None:
     if args.stats_out:
         Path(args.stats_out).write_text(
             json.dumps(stats, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    if args.records_out:
+        records, _ = query_records(
+            run_dir=args.run_dir,
+            topic=args.topic,
+            k=args.k,
+            max_hypotheses=args.max_hypotheses,
+            mmr_lambda=args.mmr_lambda,
+            min_anomalies=args.min_anomalies,
+            hyp_kind=args.hyp_kind,
+            drop_boilerplate=args.drop_boilerplate,
+            min_relevance=args.min_relevance,
+            drop_self_conflict=not args.keep_self_conflict,
+            max_per_anomaly=args.max_per_anomaly,
+            drop_untestable=args.drop_untestable,
+        )
+        Path(args.records_out).write_text(
+            json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(json.dumps(stats, indent=2, ensure_ascii=False), file=sys.stderr)
 

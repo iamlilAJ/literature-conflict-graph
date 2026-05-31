@@ -51,14 +51,23 @@ TASK_TEXT="$(cat "$TASK_FILE")"
 MODE="${LCG_MODE:-chat}"
 >&2 echo "[lcg] employee=${OMC_EMPLOYEE_ID:-?} task=${OMC_TASK_ID:-?} chars=${#TASK_TEXT} mode=$MODE"
 
-# Step 1: query layer — topic-filtered hypothesis markdown (cheap, 0 LLM).
+# Step 1: query layer — topic-filtered hypothesis markdown + structured
+# records (cheap, 0 LLM). The records carry LCG's per-hypothesis utility
+# score breakdown so the chat-mode advisor can be told the candidates are
+# already ranked, instead of re-judging from scratch off raw prose.
 MD=$(mktemp -t lcg-md.XXXXXX)
-trap 'rm -f "$MD"' EXIT
+RECORDS=$(mktemp -t lcg-records.XXXXXX)
+trap 'rm -f "$MD" "$RECORDS"' EXIT
+# --drop-untestable matches the chat-mode advisor's downstream filter
+# (claim + construction + falsifiable-prediction); dropping in-query frees
+# MMR slots from candidates the LLM would reject anyway.
 "$LCG_PYTHON" "$LCG_REPO/scripts/aigraph_query.py" \
     --run-dir "$LCG_RUN_DIR" \
     --topic "$TASK_TEXT" \
     --k "$LCG_K" \
-    --output "$MD" 1>&2
+    --output "$MD" \
+    --records-out "$RECORDS" \
+    --drop-untestable 1>&2
 
 # Step 2: in chat mode, fall back to topic if no LLM key is available.
 if [ "$MODE" = "chat" ]; then
@@ -70,12 +79,51 @@ if [ "$MODE" = "chat" ]; then
 fi
 
 if [ "$MODE" = "chat" ]; then
-    "$LCG_PYTHON" - "$MD" "$TASK_FILE" <<'PY'
+    "$LCG_PYTHON" - "$MD" "$TASK_FILE" "$RECORDS" <<'PY'
 import json, os, sys
 from openai import OpenAI
 
 md = open(sys.argv[1], encoding="utf-8").read()
 task = open(sys.argv[2], encoding="utf-8").read()
+
+# LCG's structured records carry per-hypothesis utility scores
+# (explain / grounding / testability / novelty / discriminability /
+# impact / topology / utility-total). We render a compact ranked table
+# and prepend it to the system prompt so the advisor uses LCG's quality
+# signal as its anchor instead of re-judging from raw prose.
+ranked_block = ""
+_records_path = sys.argv[3] if len(sys.argv) > 3 else ""
+if _records_path and os.path.exists(_records_path):
+    try:
+        _records = json.load(open(_records_path, encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        _records = []
+    if _records:
+        def _f(x):
+            return f"{x:.2f}" if isinstance(x, (int, float)) else "?"
+        _lines = [
+            "=== RANKED CANDIDATES (LCG quality signal — already scored & ordered) ===",
+            "Candidates below are pre-ranked by LCG's per-hypothesis utility score",
+            "(blend of explain, grounding, testability, novelty, discriminability,",
+            "impact, topology). DEFAULT to the top-ranked IDs when constructing",
+            "your 1-3 ideas; only deviate from this order when you have an explicit",
+            "construction reason and state it in your Construction paragraph.",
+            "",
+            "| Rank | ID | utility | testability | novelty | discriminability | one-line |",
+            "|------|----|---------|-------------|---------|------------------|----------|",
+        ]
+        for _i, _rec in enumerate(_records, 1):
+            _u = _rec.get("utility") or {}
+            _hid = _rec.get("hypothesis_id", "?")
+            _one = (_rec.get("hypothesis") or "").replace("|", "/").replace("\n", " ")[:80]
+            _lines.append(
+                f"| {_i} | {_hid} | {_f(_u.get('utility'))} | "
+                f"{_f(_u.get('testability'))} | {_f(_u.get('novelty'))} | "
+                f"{_f(_u.get('discriminability'))} | {_one} |"
+            )
+        ranked_block = "\n".join(_lines) + "\n\n"
+        print(f"[lcg] ranked-candidates block: {len(_records)} rows, "
+              f"{len(ranked_block)} chars", file=sys.stderr)
 
 client = OpenAI(
     api_key=os.environ.get("CUSTOM_API_KEY") or os.environ.get("OPENROUTER_API_KEY"),
@@ -138,6 +186,7 @@ system = (
     "   (a)+(b)+(c), say that too — do not pad with phenomena.\n\n"
     "Word budget: ~600 words across all ideas (more if all 3 slots are "
     "real ideas; far fewer if only 1 survives).\n\n"
+    + ranked_block +
     "=== HYPOTHESIS BASE ===\n" + md
 )
 

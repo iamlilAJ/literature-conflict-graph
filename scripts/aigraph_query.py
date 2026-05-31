@@ -119,6 +119,40 @@ def _is_degenerate_anomaly(anom: "Anomaly | None") -> bool:
     return False
 
 
+def _load_atlas_overlap_sidecar(run_dir: Path) -> dict[str, int]:
+    """Load per-hypothesis Atlas-overlap scores from a sidecar produced by
+    scripts/precompute_atlas_overlap.py (or the analytic m12_joined.jsonl).
+
+    The sidecar format is one JSON record per line with at least
+    {hypothesis_id, atlas_overlap}. Returns hyp_id → atlas_overlap (1-5);
+    hypotheses missing from the sidecar are treated as "unscored" (return
+    value is 0 for those when consulted).
+
+    Empirical motivation (docs/method12-likert-vs-utility-verdict.md): the
+    production scorer leaks ~20% tangential/unanchored hyps into the top-K;
+    Likert atlas_overlap is statistically independent of utility (ρ=0.112)
+    and identifies them. Filtering overlap ∈ {1, 2} drops 21% of hyps with
+    no false-negative cost on the verified 259-hyp run.
+    """
+    sidecar = run_dir / "atlas_overlap.jsonl"
+    if not sidecar.exists():
+        return {}
+    out: dict[str, int] = {}
+    for line in sidecar.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue
+        hid = rec.get("hypothesis_id") or rec.get("hyp_id")
+        ov = rec.get("atlas_overlap")
+        if hid and isinstance(ov, int):
+            out[hid] = ov
+    return out
+
+
 def _topic_relevance(
     hyp: Hypothesis,
     anomaly_lookup: dict[str, Anomaly],
@@ -206,6 +240,9 @@ def _select(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -225,12 +262,45 @@ def _select(
         (h, _topic_relevance(h, anom_lookup, claim_lookup, query_tokens))
         for h in hyps
     ]
+    # Optional TF-IDF cosine layer: catches "tree search" ↔ "MCTS" and other
+    # phrase-level matches the per-token bag-of-words misses. When enabled,
+    # a hypothesis enters `matched` if EITHER bag-of-words ≥ min_relevance
+    # OR TF-IDF cosine ≥ semantic_threshold. Default off (back-compat).
+    sem_by_id: dict[str, float] = {}
+    if semantic:
+        from aigraph.relevance import hypothesis_haystack, tfidf_topic_scores
+        cited_per_h = {
+            h.hypothesis_id: [claim_lookup[c] for c in (h.explains_claims or [])
+                              if c in claim_lookup]
+            for h in hyps
+        }
+        hyp_texts = [
+            hypothesis_haystack(h, anom_lookup.get(h.anomaly_id),
+                                cited_per_h.get(h.hypothesis_id))
+            for h in hyps
+        ]
+        sem_scores = tfidf_topic_scores(hyp_texts, topic)
+        sem_by_id = {h.hypothesis_id: s for h, s in zip(hyps, sem_scores)}
     # min_relevance gates topic scope-drift: when the corpus only loosely
     # matches the query (low token overlap), returning those hypotheses misleads
     # downstream stages into "off-topic" research ideas. Require >= min_relevance
     # query-token hits; if nothing clears the bar, the caller gets a no-match
     # (honest "insufficient coverage") instead of plausible-but-irrelevant output.
-    matched = [(h, r) for (h, r) in scored if r >= min_relevance]
+    if semantic:
+        matched = [(h, r) for (h, r) in scored
+                   if r >= min_relevance
+                   or sem_by_id.get(h.hypothesis_id, 0.0) >= semantic_threshold]
+    else:
+        matched = [(h, r) for (h, r) in scored if r >= min_relevance]
+    # Diagnostic: how many candidates the TF-IDF layer rescued (bow < gate
+    # but sem ≥ threshold). 0 means the corpus had no semantic-only neighbors
+    # for this topic (typical when bag-of-words already catches everything).
+    semantic_only_added = 0
+    if semantic:
+        bow_matched_ids = {h.hypothesis_id for (h, r) in scored if r >= min_relevance}
+        semantic_only_added = sum(
+            1 for (h, _) in matched if h.hypothesis_id not in bow_matched_ids
+        )
     if drop_boilerplate:
         concrete = [(h, r) for (h, r) in matched if not _is_boilerplate(h)]
         if concrete:  # only drop meta-commentary when actionable ones remain
@@ -245,6 +315,25 @@ def _select(
         ]
         if non_degen:
             matched = non_degen
+    # Drop hypotheses whose precomputed Atlas-overlap score is below the
+    # caller's threshold (default 0 = off). Overlap is a 1-5 Likert from a
+    # one-time Kimi judge run; sidecar lives at run_dir/atlas_overlap.jsonl.
+    # The Method 12 verdict (docs/method12-likert-vs-utility-verdict.md):
+    # production utility leaks 20% tangential/unanchored hyps into top-K;
+    # filtering overlap < 3 drops them with 79% survival rate.
+    # Defensive: hypotheses not in the sidecar are kept (unscored ≠ bad);
+    # the drop is skipped entirely when no candidate clears the bar.
+    atlas_overlap_lookup: dict[str, int] = {}
+    if min_atlas_overlap and min_atlas_overlap > 0:
+        atlas_overlap_lookup = _load_atlas_overlap_sidecar(run_dir)
+        if atlas_overlap_lookup:
+            anchored = [
+                (h, r) for (h, r) in matched
+                if atlas_overlap_lookup.get(h.hypothesis_id, 0) == 0  # unscored: keep
+                or atlas_overlap_lookup[h.hypothesis_id] >= min_atlas_overlap
+            ]
+            if anchored:
+                matched = anchored
     # Drop hypotheses that lack any concrete test/prediction (the chat-mode
     # advisor would reject them anyway via its claim/construction/prediction
     # rule). Only drop when testable candidates remain.
@@ -254,7 +343,16 @@ def _select(
             matched = testable
     # Rank concrete hypotheses ahead of conflict-explanation boilerplate, then
     # by topic relevance. Boilerplate stays in the list as a last-resort filler.
-    matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
+    # When semantic is enabled, blend bag-of-words count with TF-IDF cosine so a
+    # high-semantic / low-token hypothesis isn't demoted (×10 scales cosine into
+    # the same ballpark as token-hit counts for typical topics).
+    if semantic:
+        matched.sort(key=lambda hr: (
+            _is_boilerplate(hr[0]),
+            -max(hr[1], sem_by_id.get(hr[0].hypothesis_id, 0.0) * 10),
+        ))
+    else:
+        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
     # Cap near-duplicate frames per anomaly: the frozen generator emits EXACTLY
     # 3 near-identical hypotheses per anomaly (differ only by moderator). MMR
     # handles cross-anomaly diversity; this removes the within-anomaly dups it
@@ -275,6 +373,8 @@ def _select(
         "top_relevance": matched[0][1] if matched else 0,
         "topic_tokens": sorted(query_tokens),
         "llm_calls": 0,
+        "semantic_enabled": semantic,
+        "semantic_only_added": semantic_only_added,
     }
     if not matched:
         base_stats.update(n_candidates=0, n_selected=0,
@@ -309,6 +409,9 @@ def query(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -322,6 +425,8 @@ def query(
         drop_boilerplate=drop_boilerplate, min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
+        semantic=semantic, semantic_threshold=semantic_threshold,
+        min_atlas_overlap=min_atlas_overlap,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -351,6 +456,9 @@ def query_records(
     drop_self_conflict: bool = True,
     max_per_anomaly: int = 2,
     drop_untestable: bool = False,
+    semantic: bool = False,
+    semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -369,6 +477,8 @@ def query_records(
         min_relevance=min_relevance,
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
+        semantic=semantic, semantic_threshold=semantic_threshold,
+        min_atlas_overlap=min_atlas_overlap,
     )
     if selected is None:
         return [], stats
@@ -447,6 +557,35 @@ def main() -> None:
                          "predictions — the chat-mode advisor rejects these "
                          "anyway, so dropping them earlier means MMR picks "
                          "from a higher-quality pool")
+    ap.add_argument("--semantic", action="store_true",
+                    help="Enable TF-IDF cosine relevance alongside bag-of-words. "
+                         "Catches phrase-level matches the per-token filter "
+                         "misses ('tree search' ↔ 'MCTS', 'uncertainty "
+                         "quantification' ↔ 'calibration'). Off by default for "
+                         "back-compat. Adds ~milliseconds per query.")
+    ap.add_argument("--semantic-threshold", type=float, default=0.05,
+                    help="Min TF-IDF cosine for a hypothesis to clear the "
+                         "topic filter on semantic similarity alone (when its "
+                         "bag-of-words hit-count is below --min-relevance). "
+                         "Empirically the max cosine on a 4-token query vs the "
+                         "540p reasoning corpus is ~0.14; the previous default "
+                         "0.15 was a never-triggers threshold. 0.05 keeps the "
+                         "top ~2-3 percent of semantically-related hypotheses. Only "
+                         "actually changes selection when paired with a "
+                         "stricter --min-relevance (≥ 2) — at min_relevance=1 "
+                         "bag-of-words usually already catches everything "
+                         "semantic would also catch. Only used when --semantic "
+                         "is set.")
+    ap.add_argument("--min-atlas-overlap", type=int, default=0,
+                    help="Drop hypotheses whose precomputed Atlas-overlap "
+                         "score (Likert 1-5) is below this threshold. 0 = off "
+                         "(default; back-compat). 3 = Method 12 recommended "
+                         "(filters tangential overlap=2 and unanchored "
+                         "overlap=1 hyps). Requires a "
+                         "<run_dir>/atlas_overlap.jsonl sidecar produced by "
+                         "scripts/precompute_atlas_overlap.py — hyps not in "
+                         "the sidecar are kept (unscored ≠ bad). See "
+                         "docs/method12-likert-vs-utility-verdict.md.")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
@@ -473,6 +612,9 @@ def main() -> None:
         drop_self_conflict=not args.keep_self_conflict,
         max_per_anomaly=args.max_per_anomaly,
         drop_untestable=args.drop_untestable,
+        semantic=args.semantic,
+        semantic_threshold=args.semantic_threshold,
+        min_atlas_overlap=args.min_atlas_overlap,
     )
 
     if args.output == "-":
@@ -503,6 +645,9 @@ def main() -> None:
             drop_self_conflict=not args.keep_self_conflict,
             max_per_anomaly=args.max_per_anomaly,
             drop_untestable=args.drop_untestable,
+            semantic=args.semantic,
+            semantic_threshold=args.semantic_threshold,
+            min_atlas_overlap=args.min_atlas_overlap,
         )
         Path(args.records_out).write_text(
             json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")

@@ -61,13 +61,29 @@ trap 'rm -f "$MD" "$RECORDS"' EXIT
 # --drop-untestable matches the chat-mode advisor's downstream filter
 # (claim + construction + falsifiable-prediction); dropping in-query frees
 # MMR slots from candidates the LLM would reject anyway.
+# --semantic (LCG_SEMANTIC=1) adds TF-IDF cosine alongside bag-of-words so
+# phrase-level matches survive when the topic doesn't share single tokens
+# with the corpus (e.g. "tree search" vs hypotheses that say "MCTS").
+SEMANTIC_FLAGS=""
+if [ "${LCG_SEMANTIC:-0}" = "1" ]; then
+    SEMANTIC_FLAGS="--semantic"
+    [ -n "${LCG_SEMANTIC_THRESHOLD:-}" ] && SEMANTIC_FLAGS="$SEMANTIC_FLAGS --semantic-threshold $LCG_SEMANTIC_THRESHOLD"
+fi
+# LCG_MIN_RELEVANCE lets callers tighten the bag-of-words gate so the
+# semantic layer actually has space to rescue. Empirically --semantic at
+# the default --min-relevance=1 is a no-op on the reasoning corpus (BoW
+# already catches everything TF-IDF would); the recommended combo for
+# real semantic effect is LCG_SEMANTIC=1 LCG_MIN_RELEVANCE=2
+# LCG_SEMANTIC_THRESHOLD=0.05.
+MIN_REL_FLAG=""
+[ -n "${LCG_MIN_RELEVANCE:-}" ] && MIN_REL_FLAG="--min-relevance $LCG_MIN_RELEVANCE"
 "$LCG_PYTHON" "$LCG_REPO/scripts/aigraph_query.py" \
     --run-dir "$LCG_RUN_DIR" \
     --topic "$TASK_TEXT" \
     --k "$LCG_K" \
     --output "$MD" \
     --records-out "$RECORDS" \
-    --drop-untestable 1>&2
+    --drop-untestable $SEMANTIC_FLAGS $MIN_REL_FLAG 1>&2
 
 # Step 2: in chat mode, fall back to topic if no LLM key is available.
 if [ "$MODE" = "chat" ]; then

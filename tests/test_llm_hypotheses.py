@@ -128,14 +128,35 @@ def _claim(claim_id: str) -> Claim:
     )
 
 
-def test_system_prompts_covers_every_anomaly_type():
-    """Every value in the AnomalyType Literal must have a specialized prompt.
-    Adding a new anomaly type without a prompt entry should fail CI rather
-    than silently fall through to _DEFAULT_PROMPT."""
-    expected = set(get_args(AnomalyType))
-    actual = set(SYSTEM_PROMPTS.keys())
-    missing = expected - actual
+# The 8 frozen v0.7 anomaly types that llm_hypotheses.py (frozen) is
+# contractually responsible for. Joint/Atlas-grounded types (e.g.
+# bottleneck_open_q_alignment) are produced by the optional, non-frozen
+# joint_anomalies module and intentionally fall back to _DEFAULT_PROMPT —
+# the empirical test (docs/atlas-value-test-findings.md) showed a dedicated
+# prompt does not improve their hypotheses, so they stay outside the frozen
+# prompt set.
+_FROZEN_ANOMALY_TYPES = {
+    "benchmark_inconsistency", "setting_mismatch", "bridge_opportunity",
+    "metric_mismatch", "evidence_gap", "community_disconnect",
+    "impact_conflict", "replication_conflict",
+}
+
+
+def test_system_prompts_covers_every_frozen_anomaly_type():
+    """Every FROZEN v0.7 anomaly type must have a specialized prompt. Adding a
+    new frozen type without a prompt entry should fail CI rather than silently
+    fall through to _DEFAULT_PROMPT. (Joint types are exempt by design.)"""
+    missing = _FROZEN_ANOMALY_TYPES - set(SYSTEM_PROMPTS.keys())
     assert not missing, f"SYSTEM_PROMPTS missing entries for: {sorted(missing)}"
+    # sanity: the frozen set really is a subset of the AnomalyType literal
+    assert _FROZEN_ANOMALY_TYPES <= set(get_args(AnomalyType))
+
+
+def test_joint_anomaly_type_falls_back_to_default_prompt():
+    """Non-frozen joint types are not in SYSTEM_PROMPTS — they use the
+    default prompt rather than crashing."""
+    assert "bottleneck_open_q_alignment" in set(get_args(AnomalyType))
+    assert "bottleneck_open_q_alignment" not in SYSTEM_PROMPTS
 
 
 def test_distinct_anomaly_types_route_to_distinct_prompts(monkeypatch):

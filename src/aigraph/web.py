@@ -56,6 +56,10 @@ def _discover_runs(runs_root: Path) -> list[dict]:
             continue
         scored = d / "hypotheses_scored.jsonl"
         if not scored.exists():
+            # Interactive (server.py) runs emit hypotheses.jsonl only;
+            # the query layer falls back to it, so list them too.
+            scored = d / "hypotheses.jsonl"
+        if not scored.exists():
             continue
         try:
             n = sum(1 for _ in scored.open())
@@ -67,9 +71,55 @@ def _discover_runs(runs_root: Path) -> list[dict]:
     return out
 
 
-def create_app(runs_root: Path | None = None) -> FastAPI:
+def create_app(
+    runs_root: Path | None = None,
+    *,
+    with_mcp: bool = True,
+    mcp_readonly: bool = False,
+) -> FastAPI:
     runs_root = Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT
-    app = FastAPI(title="aigraph v0.7-frozen explorer")
+
+    # Build the MCP ASGI app FIRST so its streamable-http session-manager
+    # lifespan can be wired into the FastAPI host. Mounting a streamable
+    # MCP app without running its lifespan raises "Task group is not
+    # initialized" at request time.
+    #
+    # ``mcp_readonly`` drops the paid run-trigger tools (start_run /
+    # get_run_status) so a network-exposed / public endpoint cannot be
+    # used to spend money on LLM runs. Use it for any 0.0.0.0 or
+    # Cloudflare-tunnel deployment.
+    mcp_app = None
+    if with_mcp:
+        try:
+            from .mcp_server import build_mcp
+
+            search_service = None
+            if not mcp_readonly:
+                try:
+                    from .server import SearchService
+
+                    search_service = SearchService(runs_root)
+                except Exception:
+                    search_service = None  # query-only MCP if service init fails
+
+            mcp_app = build_mcp(
+                runs_root,
+                search_service=search_service,
+                readonly=mcp_readonly,
+            ).streamable_http_app()
+        except ImportError:
+            mcp_app = None  # mcp SDK not installed — serve UI without MCP
+
+    lifespan = None
+    if mcp_app is not None:
+        from contextlib import asynccontextmanager
+
+        @asynccontextmanager
+        async def lifespan(_app):  # noqa: F811
+            async with mcp_app.router.lifespan_context(mcp_app):
+                yield
+
+    app = FastAPI(title="aigraph v0.7-frozen explorer", lifespan=lifespan)
 
     # Allow embedding in cross-origin browser apps (e.g. OMC on :8001).
     # Browse-only API, no credentials, so a permissive wildcard is fine.
@@ -174,6 +224,11 @@ def create_app(runs_root: Path | None = None) -> FastAPI:
             return JSONResponse(
                 {"error": f"{type(exc).__name__}: {exc}"}, status_code=500
             )
+
+    if mcp_app is not None:
+        # Mount the pre-built MCP (Model Context Protocol) app at /mcp.
+        # Its lifespan is run via the FastAPI lifespan wired above.
+        app.mount("/mcp", mcp_app)
 
     return app
 
@@ -457,13 +512,23 @@ document.getElementById('f').addEventListener('submit', async (e) => {{
 </html>"""
 
 
-def serve(host: str = "127.0.0.1", port: int = 8000, runs_root: Path | None = None) -> None:
+def serve(
+    host: str = "127.0.0.1",
+    port: int = 8000,
+    runs_root: Path | None = None,
+    *,
+    with_mcp: bool = True,
+    mcp_readonly: bool = False,
+) -> None:
     """Blocking helper: start uvicorn with the FastAPI app."""
     import uvicorn
 
-    app = create_app(runs_root)
+    app = create_app(runs_root, with_mcp=with_mcp, mcp_readonly=mcp_readonly)
     print(f"aigraph web explorer on http://{host}:{port}")
     print(f"  runs_root: {Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT}")
+    if with_mcp:
+        mode = "read-only" if mcp_readonly else "full (incl. paid start_run)"
+        print(f"  MCP (streamable-http) endpoint: http://{host}:{port}/mcp  [{mode}]")
     discovered = _discover_runs(Path(runs_root) if runs_root else DEFAULT_RUNS_ROOT)
     print(f"  {len(discovered)} run(s): {', '.join(r['id'] for r in discovered)}")
     uvicorn.run(app, host=host, port=port, log_level="info")

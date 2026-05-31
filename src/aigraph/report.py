@@ -157,6 +157,20 @@ def _render_insights(insights: list[Insight], paper_lookup: dict[str, Paper]) ->
     return lines
 
 
+def _clean_central_question(anomaly: Anomaly) -> str:
+    """Defense-in-depth for degenerate self-conflict anomalies (method==task)
+    that survive the query-layer filter only because every candidate was
+    degenerate. Rewrites the vacuous "… on X on X" question to a clean generic
+    form instead of emitting it verbatim. Non-degenerate questions pass through.
+    """
+    se = anomaly.shared_entities or {}
+    m = str(se.get("method") or "").strip().lower()
+    t = str(se.get("task") or "").strip().lower()
+    if m and t and m == t:
+        return f"What explains the mixed results reported for {se.get('method')}?"
+    return anomaly.central_question
+
+
 def _render_anomaly(
     anomaly: Anomaly,
     hyps: list[Hypothesis],
@@ -182,7 +196,7 @@ def _render_anomaly(
         question_label = "Replication question"
     else:
         question_label = "Central question"
-    lines.append(f"**{question_label}:** {anomaly.central_question}")
+    lines.append(f"**{question_label}:** {_clean_central_question(anomaly)}")
     lines.append("")
     if anomaly.shared_entities:
         items = ", ".join(f"{k}={v}" for k, v in anomaly.shared_entities.items())

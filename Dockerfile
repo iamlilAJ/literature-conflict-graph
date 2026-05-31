@@ -22,8 +22,12 @@ ENV PATH="/root/.local/bin:${PATH}"
 COPY pyproject.toml README.md ./
 COPY src ./src
 
+# [real] = LLM pipeline (interactive `aigraph serve` on :7860).
+# [web,mcp] = the cached-hypothesis browser + MCP endpoint that the
+# `aigraph-mcp` compose service runs (`aigraph web` on :8765). One image
+# backs both compose services.
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install --system ".[real]"
+    uv pip install --system ".[real,web,mcp]"
 
 RUN useradd --create-home --shell /bin/bash appuser && \
     mkdir -p /app/outputs/runs && \

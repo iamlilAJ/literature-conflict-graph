@@ -119,6 +119,40 @@ def _is_degenerate_anomaly(anom: "Anomaly | None") -> bool:
     return False
 
 
+def _load_atlas_overlap_sidecar(run_dir: Path) -> dict[str, int]:
+    """Load per-hypothesis Atlas-overlap scores from a sidecar produced by
+    scripts/precompute_atlas_overlap.py (or the analytic m12_joined.jsonl).
+
+    The sidecar format is one JSON record per line with at least
+    {hypothesis_id, atlas_overlap}. Returns hyp_id → atlas_overlap (1-5);
+    hypotheses missing from the sidecar are treated as "unscored" (return
+    value is 0 for those when consulted).
+
+    Empirical motivation (docs/method12-likert-vs-utility-verdict.md): the
+    production scorer leaks ~20% tangential/unanchored hyps into the top-K;
+    Likert atlas_overlap is statistically independent of utility (ρ=0.112)
+    and identifies them. Filtering overlap ∈ {1, 2} drops 21% of hyps with
+    no false-negative cost on the verified 259-hyp run.
+    """
+    sidecar = run_dir / "atlas_overlap.jsonl"
+    if not sidecar.exists():
+        return {}
+    out: dict[str, int] = {}
+    for line in sidecar.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue
+        hid = rec.get("hypothesis_id") or rec.get("hyp_id")
+        ov = rec.get("atlas_overlap")
+        if hid and isinstance(ov, int):
+            out[hid] = ov
+    return out
+
+
 def _topic_relevance(
     hyp: Hypothesis,
     anomaly_lookup: dict[str, Anomaly],
@@ -208,6 +242,7 @@ def _select(
     drop_untestable: bool = False,
     semantic: bool = False,
     semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
@@ -280,6 +315,25 @@ def _select(
         ]
         if non_degen:
             matched = non_degen
+    # Drop hypotheses whose precomputed Atlas-overlap score is below the
+    # caller's threshold (default 0 = off). Overlap is a 1-5 Likert from a
+    # one-time Kimi judge run; sidecar lives at run_dir/atlas_overlap.jsonl.
+    # The Method 12 verdict (docs/method12-likert-vs-utility-verdict.md):
+    # production utility leaks 20% tangential/unanchored hyps into top-K;
+    # filtering overlap < 3 drops them with 79% survival rate.
+    # Defensive: hypotheses not in the sidecar are kept (unscored ≠ bad);
+    # the drop is skipped entirely when no candidate clears the bar.
+    atlas_overlap_lookup: dict[str, int] = {}
+    if min_atlas_overlap and min_atlas_overlap > 0:
+        atlas_overlap_lookup = _load_atlas_overlap_sidecar(run_dir)
+        if atlas_overlap_lookup:
+            anchored = [
+                (h, r) for (h, r) in matched
+                if atlas_overlap_lookup.get(h.hypothesis_id, 0) == 0  # unscored: keep
+                or atlas_overlap_lookup[h.hypothesis_id] >= min_atlas_overlap
+            ]
+            if anchored:
+                matched = anchored
     # Drop hypotheses that lack any concrete test/prediction (the chat-mode
     # advisor would reject them anyway via its claim/construction/prediction
     # rule). Only drop when testable candidates remain.
@@ -357,6 +411,7 @@ def query(
     drop_untestable: bool = False,
     semantic: bool = False,
     semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
@@ -371,6 +426,7 @@ def query(
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
         semantic=semantic, semantic_threshold=semantic_threshold,
+        min_atlas_overlap=min_atlas_overlap,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -402,6 +458,7 @@ def query_records(
     drop_untestable: bool = False,
     semantic: bool = False,
     semantic_threshold: float = 0.05,
+    min_atlas_overlap: int = 0,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -421,6 +478,7 @@ def query_records(
         drop_self_conflict=drop_self_conflict, max_per_anomaly=max_per_anomaly,
         drop_untestable=drop_untestable,
         semantic=semantic, semantic_threshold=semantic_threshold,
+        min_atlas_overlap=min_atlas_overlap,
     )
     if selected is None:
         return [], stats
@@ -512,12 +570,22 @@ def main() -> None:
                          "Empirically the max cosine on a 4-token query vs the "
                          "540p reasoning corpus is ~0.14; the previous default "
                          "0.15 was a never-triggers threshold. 0.05 keeps the "
-                         "top ~2-3% of semantically-related hypotheses. Only "
+                         "top ~2-3 percent of semantically-related hypotheses. Only "
                          "actually changes selection when paired with a "
                          "stricter --min-relevance (≥ 2) — at min_relevance=1 "
                          "bag-of-words usually already catches everything "
                          "semantic would also catch. Only used when --semantic "
                          "is set.")
+    ap.add_argument("--min-atlas-overlap", type=int, default=0,
+                    help="Drop hypotheses whose precomputed Atlas-overlap "
+                         "score (Likert 1-5) is below this threshold. 0 = off "
+                         "(default; back-compat). 3 = Method 12 recommended "
+                         "(filters tangential overlap=2 and unanchored "
+                         "overlap=1 hyps). Requires a "
+                         "<run_dir>/atlas_overlap.jsonl sidecar produced by "
+                         "scripts/precompute_atlas_overlap.py — hyps not in "
+                         "the sidecar are kept (unscored ≠ bad). See "
+                         "docs/method12-likert-vs-utility-verdict.md.")
     ap.add_argument("--output", default="-",
                     help="'-' for stdout, else a file path")
     ap.add_argument("--stats-out", default=None,
@@ -546,6 +614,7 @@ def main() -> None:
         drop_untestable=args.drop_untestable,
         semantic=args.semantic,
         semantic_threshold=args.semantic_threshold,
+        min_atlas_overlap=args.min_atlas_overlap,
     )
 
     if args.output == "-":
@@ -578,6 +647,7 @@ def main() -> None:
             drop_untestable=args.drop_untestable,
             semantic=args.semantic,
             semantic_threshold=args.semantic_threshold,
+            min_atlas_overlap=args.min_atlas_overlap,
         )
         Path(args.records_out).write_text(
             json.dumps(records, indent=2, ensure_ascii=False), encoding="utf-8")

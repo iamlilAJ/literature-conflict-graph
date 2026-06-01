@@ -17,6 +17,7 @@ No LLM calls. 0.5-5 s per query depending on cache size.
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 from contextlib import redirect_stderr
@@ -35,6 +36,7 @@ sys.path.insert(0, str(_REPO / "scripts"))
 from aigraph_query import (  # noqa: E402
     query as _run_query,
     _load_run_dir,
+    _load_atlas_overlap_sidecar,
     _topic_relevance,
     _tokenize,
 )
@@ -156,11 +158,20 @@ def create_app(
         )
         return _render_home(runs_root, preselected_run=run_id, initial_html=initial_html)
 
+    # Atlas-overlap filter threshold for REST endpoints. Env-tunable so ops
+    # can roll forward / back without code changes; default 3 matches the
+    # MCP get_idea_report default (Methods 12, 13, 15). 0 = off.
+    _default_min_atlas = int(os.environ.get("AIGRAPH_MIN_ATLAS_OVERLAP", "3"))
+
     @app.get("/query")
     def query_endpoint(
         topic: str = Query(..., min_length=1, max_length=500),
         run: str = Query(...),
         k: int = Query(5, ge=1, le=20),
+        min_atlas_overlap: int = Query(_default_min_atlas, ge=0, le=5,
+            description="Drop hyps with atlas_overlap below this. Default "
+                        "3 (matches MCP). 0 = off. Requires the run's "
+                        "atlas_overlap.jsonl sidecar; no-op if absent."),
     ):
         run_dir = (runs_root / run).resolve()
         if not str(run_dir).startswith(str(runs_root.resolve())):
@@ -178,6 +189,7 @@ def create_app(
                     max_hypotheses=30,
                     mmr_lambda=0.7,
                     min_anomalies=1,
+                    min_atlas_overlap=min_atlas_overlap,
                 )
             html = md.markdown(output_md, extensions=["tables", "fenced_code"])
             return JSONResponse(
@@ -200,6 +212,10 @@ def create_app(
                         "IDs and topic-relevance selection is skipped — useful "
                         "when an upstream advisor has already chosen IDs and "
                         "the graph must align with them."),
+        min_atlas_overlap: int = Query(_default_min_atlas, ge=0, le=5,
+            description="Drop hyps with atlas_overlap below this. Default "
+                        "3 (matches MCP). 0 = off. Ignored when `ids` is set "
+                        "(caller-pinned selection bypasses the filter)."),
     ):
         """Return a topic-filtered conflict graph in D3-friendly shape.
 
@@ -219,7 +235,10 @@ def create_app(
             id_list = [s.strip() for s in ids.split(",") if s.strip()]
             id_list = [s for s in id_list if len(s) <= 8]  # sanity cap
         try:
-            return JSONResponse(_build_topic_graph(run_dir, topic, k, id_list))
+            return JSONResponse(_build_topic_graph(
+                run_dir, topic, k, id_list,
+                min_atlas_overlap=min_atlas_overlap,
+            ))
         except Exception as exc:
             return JSONResponse(
                 {"error": f"{type(exc).__name__}: {exc}"}, status_code=500
@@ -238,6 +257,8 @@ def _build_topic_graph(
     topic: str,
     k: int,
     explicit_ids: list[str] | None = None,
+    *,
+    min_atlas_overlap: int = 0,
 ) -> dict:
     """Pull hypotheses + their anomaly subgraphs.
 
@@ -249,6 +270,11 @@ def _build_topic_graph(
 
     Otherwise, fall back to token-overlap match + MMR over the cached
     hypothesis pool, ``k`` deep.
+
+    ``min_atlas_overlap``: if > 0 AND the run has an atlas_overlap.jsonl
+    sidecar, drop hyps below the threshold. Same semantics as
+    aigraph_query._select(). Skipped when ``explicit_ids`` is set —
+    caller-pinned selections override the filter.
     """
     t0 = time.time()
     hyps, anoms, claims, _papers = _load_run_dir(run_dir)
@@ -277,6 +303,19 @@ def _build_topic_graph(
             for h in hyps
         ]
         matched = [(h, r) for (h, r) in scored if r > 0]
+        # Apply Atlas overlap filter — same defensive semantics as _select:
+        # hyps not in the sidecar are kept (unscored ≠ bad), only drop when
+        # candidates with overlap≥threshold actually exist.
+        if min_atlas_overlap and min_atlas_overlap > 0:
+            sidecar = _load_atlas_overlap_sidecar(run_dir)
+            if sidecar:
+                anchored = [
+                    (h, r) for (h, r) in matched
+                    if sidecar.get(h.hypothesis_id, 0) == 0
+                    or sidecar[h.hypothesis_id] >= min_atlas_overlap
+                ]
+                if anchored:
+                    matched = anchored
         matched.sort(key=lambda hr: -hr[1])
         candidates = [h for (h, _) in matched[:30]]
         if not candidates:

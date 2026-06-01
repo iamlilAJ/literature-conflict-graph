@@ -1,27 +1,31 @@
 """End-to-end Atlas overlap precompute for a run directory.
 
-Wraps the 3-step Method 13 operator workflow as one command:
+Wraps the 3-step Method 13 operator workflow as one command. Two modes:
 
-  1. LOCAL: For each hypothesis in <run>/hypotheses_scored.jsonl (and
-     optionally creator_hypotheses.jsonl), retrieve top-K Atlas bottleneck
-     quotes via TF-IDF and write a judge-input JSONL.
-  2. REMOTE: scp judge input to <host>, kick off run_method3_judge.py in
-     a tmux session, poll until completion.
-  3. LOCAL: pull judge output back, convert to sidecar format, write
-     <run>/atlas_overlap.jsonl alongside hypotheses_scored.jsonl. If the
-     sidecar already exists, merge (preserving any prior records).
+  REMOTE MODE (default — when this script runs on a workstation and the
+  LLM endpoint is on a different host):
+    1. LOCAL: TF-IDF top-K Atlas quotes per hyp → judge-input JSONL.
+    2. REMOTE: scp input to --host, run judge in tmux, poll until done.
+    3. LOCAL: scp output back, convert to sidecar at <run>/atlas_overlap.jsonl.
+
+  LOCAL MODE (--local-judge — when this script runs on the LLM host itself,
+  e.g. on the aigraph server after ~/aigraph is a git clone):
+    1. TF-IDF top-K Atlas quotes per hyp → judge-input JSONL.
+    2. Run the judge via subprocess on the same machine (no scp).
+    3. Convert output to sidecar at <run>/atlas_overlap.jsonl.
 
 After this completes, query-time consumers (scripts/aigraph_query.py with
 --min-atlas-overlap 3, or the MCP get_idea_report) automatically use the
-new sidecar. The aigraph production server pulls fresh sidecars via the
-caller's normal scp procedure — this script handles local-side compute.
+new sidecar.
 
 Usage:
+    # workstation-driven (Mac → server):
     python scripts/precompute_atlas_overlap.py \\
-        --run artifacts/runs/<run-id> \\
-        [--host admin@8.208.118.99] \\
-        [--remote-script /tmp/run_method3_judge.py] \\
-        [--include-creator]
+        --run artifacts/runs/<run-id> --include-creator
+
+    # server-local (run directly on 8.208.118.99 after the git-clone migration):
+    cd ~/aigraph && .venv/bin/python scripts/precompute_atlas_overlap.py \\
+        --run artifacts/runs/<run-id> --include-creator --local-judge
 """
 from __future__ import annotations
 import argparse
@@ -38,7 +42,9 @@ from pathlib import Path
 _REPO = Path(__file__).resolve().parent.parent
 DEFAULT_QUOTES = _REPO / "artifacts/atlas_test/method3_atlas_quotes.jsonl"
 DEFAULT_HOST = "admin@8.208.118.99"
-DEFAULT_REMOTE_SCRIPT = "/tmp/run_method3_judge.py"
+# After the ~/aigraph → git clone migration, the judge script lives at this
+# path on the server. Older deployments may still have it at /tmp/.
+DEFAULT_REMOTE_SCRIPT = "scripts/run_method3_judge.py"
 
 
 # --- TF-IDF retrieval (same as method3_build_retrieval.py) ----------------
@@ -146,7 +152,8 @@ def build_judge_input(run_dir: Path, include_creator: bool,
 def run_remote_judge(input_path: Path, host: str, remote_script: str,
                      workers: int = 6) -> Path:
     """Stage 2 — REMOTE. scp input to /tmp, run judge in tmux, poll for ALL_DONE,
-    pull output back. Returns local output path."""
+    pull output back. Returns local output path. Used when this script runs
+    on a workstation and the LLM endpoint is on a different host."""
     remote_input = "/tmp/atlas_judge_input.jsonl"
     remote_output = "/tmp/atlas_judge_output.jsonl"
     remote_stderr = "/tmp/atlas_judge.stderr"
@@ -157,7 +164,7 @@ def run_remote_judge(input_path: Path, host: str, remote_script: str,
     tmux_cmd = (
         f"tmux kill-session -t atlas_judge 2>/dev/null; "
         f"tmux new-session -d -s atlas_judge "
-        f"'cd /tmp && /home/admin/onemancompany/.venv/bin/python3 {remote_script} "
+        f"'cd ~/aigraph && /home/admin/onemancompany/.venv/bin/python3 {remote_script} "
         f"{remote_input} {remote_output} {workers} 2>{remote_stderr}; "
         f"echo ALL_DONE >>{remote_stderr}'"
     )
@@ -174,6 +181,40 @@ def run_remote_judge(input_path: Path, host: str, remote_script: str,
     out_path = input_path.parent / "atlas_judge_output.jsonl"
     subprocess.run(["scp", "-q", f"{host}:{remote_output}", str(out_path)],
                    check=True)
+    return out_path
+
+
+def run_local_judge(input_path: Path, judge_python: str, judge_script: str,
+                    workers: int = 6) -> Path:
+    """Stage 2 — LOCAL. Run the judge in a tmux session on the same machine
+    where this wrapper is invoked (no scp). Used when this script runs on
+    the LLM host directly, after ~/aigraph is a git clone of the repo so
+    run_method3_judge.py is at scripts/run_method3_judge.py.
+    """
+    judge_script = str(Path(judge_script).expanduser())
+    input_path = input_path.resolve()
+    out_path = input_path.parent / "atlas_judge_output.jsonl"
+    stderr_path = input_path.parent / "atlas_judge.stderr"
+    print(f"[stage 2 local] launching {judge_python} {judge_script}", file=sys.stderr)
+    # Kill any previous session, start fresh; tmux survives the parent exiting.
+    subprocess.run(["tmux", "kill-session", "-t", "atlas_judge"],
+                   capture_output=True)
+    cmd = (f"{judge_python} {judge_script} "
+           f"{shlex.quote(str(input_path))} {shlex.quote(str(out_path))} {workers} "
+           f"2>{shlex.quote(str(stderr_path))}; "
+           f"echo ALL_DONE >>{shlex.quote(str(stderr_path))}")
+    subprocess.run(["tmux", "new-session", "-d", "-s", "atlas_judge", cmd],
+                   check=True)
+    print(f"[stage 2 local] judge running in tmux; polling stderr...", file=sys.stderr)
+    while True:
+        try:
+            tail = stderr_path.read_text()
+        except FileNotFoundError:
+            tail = ""
+        if "ALL_DONE" in tail:
+            break
+        time.sleep(20)
+    print(f"[stage 2 local] judge completed", file=sys.stderr)
     return out_path
 
 
@@ -257,6 +298,14 @@ def main():
     ap.add_argument("--skip-judge", action="store_true",
                     help="Skip stages 2-3 — only build the judge input. For "
                          "ops that prefer to run the judge manually.")
+    ap.add_argument("--local-judge", action="store_true",
+                    help="Run stage 2 on the SAME machine instead of over SSH. "
+                         "Use when this script is invoked on the LLM host "
+                         "directly (server-local mode). Skips scp roundtrips.")
+    ap.add_argument("--judge-python", default="/home/admin/onemancompany/.venv/bin/python3",
+                    help="Path to a Python interpreter with `openai` installed "
+                         "and access to the LLM endpoint .env. Used with "
+                         "--local-judge.")
     args = ap.parse_args()
 
     if not args.run.exists():
@@ -274,13 +323,20 @@ def main():
         print("--skip-judge set; not running stages 2-3", file=sys.stderr)
         return 0
 
-    judge_output = run_remote_judge(judge_input, args.host, args.remote_script,
-                                     args.workers)
+    if args.local_judge:
+        judge_output = run_local_judge(judge_input, args.judge_python,
+                                       args.remote_script, args.workers)
+    else:
+        judge_output = run_remote_judge(judge_input, args.host,
+                                        args.remote_script, args.workers)
     sidecar = write_sidecar(judge_output, args.run)
     print(f"\nOK. Sidecar at {sidecar}.")
-    print("To activate in production: scp this file to the matching path on the "
-          "aigraph server (~/aigraph/artifacts/runs/<run>/atlas_overlap.jsonl).",
-          file=sys.stderr)
+    if not args.local_judge:
+        print("To activate in production: scp this file to the matching path "
+              "on the aigraph server (~/aigraph/artifacts/runs/<run>/atlas_overlap.jsonl). "
+              "If you run this script on the server itself with --local-judge, "
+              "the sidecar is already in place and the next query uses it.",
+              file=sys.stderr)
     return 0
 
 

@@ -216,9 +216,16 @@ def build_mcp(
                 # "tree search reasoning" → 3x a016 tool ideas). Forcing 3 distinct
                 # anomalies in the top-k spreads selection across the on-topic
                 # anomalies (brings in a012 reasoning for that topic).
+                # min_atlas_overlap=3 enables the Atlas-overlap delivery
+                # filter (Methods 12, 13, 15, 28, 29 in docs/method*.md).
+                # Drops the ~20% of hyps the production scorer leaks into
+                # top-K that are tangential or unrelated to any known Atlas
+                # bottleneck. Safe no-op for runs without an
+                # atlas_overlap.jsonl sidecar (defensive: unscored hyps kept).
                 md, _stats = query(run_dir, topic, k=k,
                                    max_hypotheses=12, mmr_lambda=0.85,
-                                   min_anomalies=3, hyp_kind=kind)
+                                   min_anomalies=3, hyp_kind=kind,
+                                   min_atlas_overlap=3)
                 doc = heading + _coverage_banner(_stats) + md
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"

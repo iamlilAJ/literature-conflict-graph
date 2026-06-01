@@ -79,12 +79,22 @@ minimal and does not include the client adapters.
 
 ### 2.3 Remote clients
 
-The endpoint is intentionally not reachable from outside the host: uvicorn
-returns `400 Invalid Host header` for any request whose `Host` header is not
-the loopback name. This is a deliberate boundary. For supported external
+The endpoint is bound to `0.0.0.0:8765` but uvicorn returns
+`421 Misdirected Request` for any request whose `Host` header is not the
+loopback name. This is a deliberate boundary. For supported external
 integration:
 
-- **Bastion access** — `ssh` into the host and invoke either pattern above.
+- **SSH tunnel (recommended for local IDE / Mac clients)** —
+  ```bash
+  ssh -L 18765:127.0.0.1:8765 admin@8.208.118.99
+  ```
+  Then point any local MCP client at `http://localhost:18765/mcp/`. The
+  Host header is `localhost`, which uvicorn accepts. Picking a non-8765
+  local port (e.g. 18765) avoids colliding with other local services.
+  For a backgrounded tunnel: add `-fN` flags. Verified working:
+  `curl http://localhost:18765/mcp/ → 200 OK`.
+- **Bastion access** — `ssh` into the host and invoke either pattern above
+  (loopback curl from inside the server itself).
 - **Reverse proxy** — terminate TLS in front of the endpoint and rewrite the
   `Host` header to `localhost`; expose only the rewritten origin.
 - **Re-binding** — start uvicorn with `--forwarded-allow-ips '*'` and adjust
@@ -251,17 +261,22 @@ ssh -t admin@8.208.118.99 'tmux attach -t aigraph'
 
 ### 5.4 Deploying code changes
 
-`~/aigraph/` is not a git checkout; it is populated by `scp` from a developer
-workstation. To roll out a change:
+`~/aigraph/` is a git clone of `feat/lcg-tfidf-relevance` (since 2026-06-01).
+To roll out a change pushed to that branch:
 
 ```bash
-# from the local repo root
-cd "/Users/liuanjie/Documents/New project/hypothesis_generation"
-scp -q scripts/aigraph_query.py    admin@8.208.118.99:~/aigraph/scripts/aigraph_query.py
-scp -q src/aigraph/report.py       admin@8.208.118.99:~/aigraph/src/aigraph/report.py
-scp -q src/aigraph/mcp_server.py   admin@8.208.118.99:~/aigraph/src/aigraph/mcp_server.py
-# any change under src/aigraph/*.py requires the restart in §5.2
+ssh admin@8.208.118.99 'cd ~/aigraph && git pull --ff-only'
+# any change under src/aigraph/*.py also requires the restart in §5.2
 ```
+
+Server-only files (`.venv`, `MCP_README.md`, run-dir data files, `findings/`,
+`outputs/`) are preserved by the clone — they live alongside the tracked
+files. If a run dir needs new data files (`papers.jsonl`, `claims.jsonl`,
+…), scp those individually; the sidecar `atlas_overlap.jsonl` is tracked
+in the repo.
+
+For backward reference, the older `scp scripts/aigraph_query.py …` flow
+worked while `~/aigraph` was not git-tracked; that workflow is deprecated.
 
 ## 6. OMC Stage 3 integration
 

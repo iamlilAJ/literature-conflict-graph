@@ -618,7 +618,24 @@ def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
     qtok = _tokenize(topic)
     if not qtok:
         return None
-    best_id, best_score = None, 0.0
+
+    def _completeness(d: Path) -> int:
+        # prefer a fully-finished corpus over a papers-only failed run
+        score = 0
+        cf = d / "claims.jsonl"
+        if cf.exists() and cf.stat().st_size > 0:
+            score += 2
+        sp = d / "status.json"
+        if sp.exists():
+            try:
+                if json.loads(sp.read_text(encoding="utf-8")).get("status") == "done":
+                    score += 1
+            except Exception:
+                pass
+        return score
+
+    # rank by (topic overlap, completeness); tie-break favors finished corpora
+    best_id, best_key = None, (0.0, -1)
     for d in sorted(runs_root.iterdir()):
         if not d.is_dir() or d.name.startswith("_"):
             continue
@@ -646,14 +663,18 @@ def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
         if not rtok:
             continue
         overlap = len(qtok & rtok) / len(qtok)
-        if overlap <= best_score:
+        if overlap < min_overlap:
             continue
         if require_done:
-            pf = d / "papers.jsonl"
-            if not pf.exists() or pf.stat().st_size == 0:
+            # a usable corpus must have claims (a papers-only failed run is not
+            # auto-reused; pass its run_id to generate_ideas explicitly to use it)
+            cf = d / "claims.jsonl"
+            if not cf.exists() or cf.stat().st_size == 0:
                 continue
-        best_id, best_score = d.name, overlap
-    return best_id if best_score >= min_overlap else None
+        key = (round(overlap, 4), _completeness(d))
+        if key > best_key:
+            best_id, best_key = d.name, key
+    return best_id
 
 
 def render_ideas_markdown(result: dict) -> str:

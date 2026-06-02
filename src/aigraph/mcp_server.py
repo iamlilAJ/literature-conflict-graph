@@ -265,6 +265,46 @@ def build_mcp(
         except Exception as exc:
             return {"error": f"{type(exc).__name__}: {exc}"}
 
+    @mcp.tool()
+    def generate_ideas(topic: str, run: str, min_ideas: int = 5,
+                       as_markdown: bool = True) -> Any:
+        """Generate research ideas for `topic` from an existing `run`, with a
+        guarantee the result is NEVER empty as long as the run has >=1 paper.
+
+        Cascades five tiers from highest-signal to most-permissive, stopping
+        when it has >= min_ideas:
+          A critic-conflict   (cross-paper contradictions; needs anomalies)
+          B creator-newmethod (new methods grounded in open questions)
+          C community-bridge  (cross-community unifying insights)
+          D method-extension  (per-paper "extend this method"; LLM)
+          E limitation-forward(turn limitations into directions; LLM)
+          F paper-seeded      (deterministic, LLM-free terminal backstop)
+
+        Unlike start_run, this works on a sparse/too-new corpus where no
+        cross-paper anomalies form (so critic+creator are empty): it falls
+        through to community bridges, then per-paper LLM ideas, then a
+        deterministic abstract-seeded backstop that cannot fail. Tiers D/E are
+        cached to <run>/forward_ideas.jsonl so repeat calls are 0-LLM.
+
+        `min_ideas`: target count (clamped 1..20). `as_markdown`: return a
+        rendered report string (default) or the structured {ideas, stats} dict.
+        On a public/readonly deployment the paid D/E tiers are disabled and the
+        cascade relies on cached + deterministic tiers."""
+        min_ideas = max(1, min(20, int(min_ideas)))
+        run_dir = _safe_run_dir(runs_root, run)
+        if run_dir is None or not run_dir.exists():
+            return {"error": f"unknown run: {run}"}
+        try:
+            # idea_cascade lives in scripts/, already on sys.path (line ~33).
+            import idea_cascade as ic
+            result = ic.generate_ideas(run_dir, topic, min_ideas=min_ideas,
+                                       allow_llm=not readonly)
+            if as_markdown:
+                return ic.render_ideas_markdown(result)
+            return result
+        except Exception as exc:
+            return {"error": f"{type(exc).__name__}: {exc}"}
+
     # Paid run-trigger tools — only registered when NOT readonly, so a
     # network-exposed/public MCP cannot trigger money-spending LLM runs.
     if not readonly:

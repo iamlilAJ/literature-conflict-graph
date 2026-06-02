@@ -11,17 +11,34 @@ procedures for client integrators.
 | Attribute | Value |
 |---|---|
 | Host | `8.208.118.99` |
-| Endpoint | `http://127.0.0.1:8765/mcp/` (loopback only — see §4) |
+| Endpoint (same-host) | `http://127.0.0.1:8765/mcp/` |
+| Endpoint (local client) | SSH tunnel → `http://localhost:18765/mcp/` (see §2.3) |
 | Transport | Streamable HTTP (MCP spec) |
 | Process supervisor | `tmux` session `aigraph` |
-| Repository | `github.com/iamlilAJ/literature-conflict-graph`, branch `stable/v0.7-runner-local` |
-| Server-side install | `~/aigraph/` (scp-deployed; not a git clone) |
-| Available run | `arxiv-reasoning-v0.7-540p-thaw1` (474 papers, 2 011 claims, 300 hypotheses) |
+| Repository | `github.com/iamlilAJ/literature-conflict-graph`, branch `feat/lcg-tfidf-relevance` |
+| Server-side install | `~/aigraph/` (**git clone** since 2026-06-01; deploy via `git pull` — see §5.4) |
+| LLM endpoint | DeepSeek-V4-Flash via `litellm.yangtzeailab.com` (`AIGRAPH_BASE_URL` in `~/aigraph/.env`) — **live** |
+| Reference run | `arxiv-reasoning-v0.7-540p-thaw1` (474 papers, 300 hypotheses, 330-record `atlas_overlap.jsonl` sidecar) |
 
 The MCP, browser UI, query endpoint, and conflict-graph endpoint are served by
-a single uvicorn process bound to `0.0.0.0:8765`. CORS is open; there is no
-authentication layer in front of the MCP — exposure is restricted by HTTP
-Host validation (§4).
+a single uvicorn process bound to `0.0.0.0:8765`. CORS is open. The `/mcp/`
+endpoint enforces HTTP Host validation (§4) so only same-host / tunnelled
+clients reach the MCP tools; the REST endpoints (`/query`, `/query/graph`,
+`/api/runs`) are reachable from the public internet without auth (§4).
+
+### 1.1 Two-phase mental model
+
+Everything below maps onto two halves — understand these and the tools make
+sense:
+
+- **① Build a corpus (write; heavy LLM; minutes).** `start_run` /
+  `research_ideas(reuse=false)` fetch papers → extract claims (1 LLM call per
+  paper) → build graph → detect anomalies → generate hypotheses + insights,
+  and persist everything to a run directory under `artifacts/runs/<run_id>/`.
+- **② Serve ideas (read; mostly 0 LLM; sub-second).** `query_hypotheses`,
+  `get_idea_report`, `get_conflict_graph`, `generate_ideas` read those cached
+  files, topic-filter + rank, and return. A corpus is built once and queried
+  many times. See `docs/idea-generation-pipeline.md` for the full data flow.
 
 ## 2. Connection patterns
 
@@ -79,17 +96,17 @@ minimal and does not include the client adapters.
 
 ### 2.3 Remote clients
 
-The endpoint is bound to `0.0.0.0:8765` but uvicorn returns
-`421 Misdirected Request` for any request whose `Host` header is not the
-loopback name. This is a deliberate boundary. For supported external
-integration:
+The endpoint is bound to `0.0.0.0:8765`, but the `/mcp/` transport returns
+`421 Misdirected Request` for any request whose `Host` header is not in its
+allow-list (the MCP SDK's DNS-rebinding protection — see §4). This is a
+deliberate boundary. For supported external integration:
 
 - **SSH tunnel (recommended for local IDE / Mac clients)** —
   ```bash
   ssh -L 18765:127.0.0.1:8765 admin@8.208.118.99
   ```
   Then point any local MCP client at `http://localhost:18765/mcp/`. The
-  Host header is `localhost`, which uvicorn accepts. Picking a non-8765
+  Host header is `localhost`, which the transport accepts. Picking a non-8765
   local port (e.g. 18765) avoids colliding with other local services.
   For a backgrounded tunnel: add `-fN` flags. Verified working:
   `curl http://localhost:18765/mcp/ → 200 OK`.
@@ -97,17 +114,19 @@ integration:
   (loopback curl from inside the server itself).
 - **Reverse proxy** — terminate TLS in front of the endpoint and rewrite the
   `Host` header to `localhost`; expose only the rewritten origin.
-- **Re-binding** — start uvicorn with `--forwarded-allow-ips '*'` and adjust
-  trusted hosts in `web.py`. Not currently configured.
+- **Widen the allow-list** — pass `TransportSecuritySettings(allowed_hosts=…)`
+  when building the FastMCP app (mcp_server.py), or disable
+  `enable_dns_rebinding_protection`. Not currently configured.
 
 The OMC frontend's conflict-graph component (`frontend/src/lcg-graph.js`)
 already follows the same-host pattern; see §6.
 
 ## 3. Tool reference
 
-All seven tools follow the JSON-RPC 2.0 envelope. The five read-only tools
-make zero LLM calls and respond sub-second; the two run-trigger tools depend
-on a configured LLM endpoint and are currently inert (§7).
+Nine tools follow the JSON-RPC 2.0 envelope. The five read-only tools (§3.1)
+make zero LLM calls and respond sub-second. The two run-trigger tools (§3.2)
+build corpora via the now-live LLM endpoint. The two idea-generation tools
+(§3.3) cascade with a non-empty guarantee, mostly 0-LLM.
 
 ### 3.1 Read-only (0 LLM)
 
@@ -176,7 +195,7 @@ Returns a D3-friendly `{nodes, edges, stats}` payload for the topic-filtered
 subgraph. The optional `ids` argument accepts a comma-separated list of
 hypothesis IDs to pin the graph to a specific selection.
 
-### 3.2 Run-trigger (paid; currently inert)
+### 3.2 Run-trigger (paid; phase ①, only when NOT readonly)
 
 #### `start_run(topic, max_papers, generator)`
 
@@ -187,13 +206,22 @@ hypothesis IDs to pin the graph to a specific selection.
                "generator":  "llm"}}
 ```
 
-Spawns a full pipeline run via `SearchService.submit`. Returns
-`{run_id, status: "queued", poll_with: "get_run_status"}` immediately. The
-underlying LLM provider declared in `aigraph/.env`
-(`sub2api.us.justafish.top`) is currently unreachable, so submitted runs will
-fail in their fetch/extract stage. Restoring this surface requires repointing
-`AIGRAPH_BASE_URL` to a working endpoint (the OMC LiteLLM proxy is one
-option).
+Spawns a full corpus-build pipeline via `SearchService.submit` (the phase ①
+build of §1.1). Returns `{run_id, status: "queued", poll_with:
+"get_run_status"}` immediately; the work runs on a single background worker
+thread. The configured LLM endpoint (`AIGRAPH_BASE_URL` →
+`litellm.yangtzeailab.com`, model `DeepSeek-V4-Flash`) **is live**. Two
+caveats observed in practice:
+
+- The build is **LLM-heavy** (1 claim-extraction call per paper) and will fail
+  the whole run if the shared endpoint **rate-limits or times out**
+  (`status:"error"`, `error:"the provider is rate-limited right now"` /
+  `"read operation timed out"`). Retry, lower `max_papers`, or use a less
+  contended endpoint. This is an endpoint-capacity issue, not a code fault.
+- The build runs **critic-mode only** (template generator) and is
+  **anomaly-gated** — a too-new/too-homogeneous corpus forms 0 anomalies and
+  produces 0 hypotheses (an empty `selected_hypotheses.md`). Use
+  `generate_ideas` (§3.3) to get a non-empty result from such a corpus.
 
 #### `get_run_status(run_id)`
 
@@ -201,24 +229,87 @@ option).
 {"name": "get_run_status", "arguments": {"run_id": "20260530-…"}}
 ```
 
-Reads `<run_dir>/status.json`. Returns the run's stage/progress/done state.
-Only meaningful once `start_run` is functional.
+Reads `<run_dir>/status.json`. Returns `{status, stage, progress, papers,
+claims, …}`. Poll until `status` is `"done"` or `"error"`.
 
-## 4. HTTP Host validation
+### 3.3 Idea-generation cascade (phase ②; non-empty guarantee)
 
-Direct requests to `http://8.208.118.99:8765/mcp/` from outside the host
-return:
+These two tools solve the anomaly-gating problem: they fall through to
+community bridges, per-paper LLM extensions, and a deterministic
+abstract-seeded backstop, so the result is **never empty** as long as the run
+has ≥1 paper. See `docs/idea-generation-pipeline.md` for the tier mechanics.
+
+#### `generate_ideas(topic, run, min_ideas, as_markdown)`
+
+```json
+{"name": "generate_ideas",
+ "arguments": {"topic":     "agentic memory for self-evolving agent",
+               "run":       "20260602-133529-6a7d4f",
+               "min_ideas": 5}}
+```
+
+Runs the six-tier cascade (A critic → B creator → C community-bridge →
+D method-extension → E limitation-forward → F deterministic backstop) on an
+**existing** run, stopping at `min_ideas` (clamped 1–20). Tiers A/B/C are
+0-LLM reads of cached artifacts; D/E call the LLM and cache results to
+`<run>/forward_ideas.jsonl` (repeat calls are then 0-LLM, sub-second). With
+`as_markdown:true` (default) returns a rendered report string; with `false`
+returns `{topic, run, ideas:[…], stats:{n_ideas, by_tier, tiers_used,
+guaranteed_nonempty}}`. Does **not** build a corpus — pair with `start_run`.
+
+#### `research_ideas(topic, max_papers, min_ideas, reuse, wait_seconds, as_markdown)`
+
+```json
+{"name": "research_ideas",
+ "arguments": {"topic":        "bayesian memory",
+               "max_papers":   20,
+               "min_ideas":    5,
+               "wait_seconds": 600}}
+```
+
+One-shot wrapper: **resolve-or-build → cascade**. With `reuse:true` (default)
+it finds the best existing corpus whose topic matches (token coverage ≥ 0.34,
+must have `claims.jsonl`, prefers `status:"done"` runs) and runs
+`generate_ideas` immediately. Otherwise it submits a fresh build and polls up
+to `wait_seconds` (clamped 0–1500; `0` = submit-and-return
+`{status:"building", run_id}`). On a completed build it returns
+`{status:"done", run, reused, stats, ideas_markdown|ideas}`. Registered only
+when NOT readonly (the build path is paid). For a fresh topic, set
+`wait_seconds≈600` (small corpora finish in ~3–5 min) or poll with
+`get_run_status` then call `generate_ideas`.
+
+> **Reuse threshold caveat:** a 2-token topic that shares one content word
+> with an existing corpus (e.g. "bayesian **memory**" vs "agentic **memory**…")
+> scores 0.5 ≥ 0.34 and will reuse the wrong corpus. Pass `reuse:false` to
+> force a fresh build when the topic is genuinely new.
+
+## 4. HTTP Host validation (and what is NOT protected)
+
+The **`/mcp/` endpoint** rejects requests whose `Host` is not in the MCP
+transport's allow-list. From outside the host:
 
 ```text
-HTTP/1.1 400 Bad Request
-Content-Length: 19
+HTTP/1.1 421 Misdirected Request
 Invalid Host header
 ```
 
-This is uvicorn's default trusted-host enforcement. Spoofing the `Host`
-header on a remote curl does not bypass it, because uvicorn applies the
-check before request routing. Supported access paths are enumerated in
-§2.3.
+This is the **MCP SDK's transport-security layer**
+(`mcp/server/transport_security.py`: `enable_dns_rebinding_protection` +
+`allowed_hosts`), applied by the streamable-HTTP transport to everything under
+the `app.mount("/mcp", …)` sub-app. It is **not** uvicorn and **not** a
+Starlette `TrustedHostMiddleware` (web.py adds only `CORSMiddleware`).
+Spoofing the `Host` header does not bypass it. So the MCP tools are reachable
+only same-host or via the SSH tunnel (§2.3). Empirically verified:
+`/mcp/` → 421 from the public IP, `/mcp/` → 200 over the loopback/tunnel.
+
+**The REST endpoints are NOT Host-protected.** `GET /`, `/api/runs`,
+`/query?...`, and `/query/graph?...` answer `200` to any public client at
+`http://8.208.118.99:8765`. They are read-only (no `start_run`), but they do
+expose cached hypotheses + the run list with no auth. The paid `start_run` is
+only reachable through `/mcp/`, which the Host check protects. If the REST
+surface needs locking down, put a reverse proxy / IP allowlist in front, or
+set the env gate documented in `web.py`. Port `8765` is otherwise open on the
+public IP.
 
 ## 5. Operations
 
@@ -304,8 +395,9 @@ and Stage 3 has no `get_idea_report` to call.
 
 | Symptom | Cause | Remediation |
 |---|---|---|
-| `Invalid Host header` from remote curl | uvicorn TrustedHost check | Use loopback access patterns (§2.3) |
-| `start_run` fails or hangs | Configured LLM endpoint (`sub2api.us.justafish.top`) is unreachable | Repoint `AIGRAPH_BASE_URL` to a working provider |
+| `Invalid Host header` (421) from remote curl on `/mcp/` | MCP SDK transport-security DNS-rebinding check (`allowed_hosts`) | Use loopback / SSH-tunnel access patterns (§2.3) |
+| `start_run` fails with `provider is rate-limited` / `read operation timed out` | Shared LLM endpoint (`litellm.yangtzeailab.com`, `DeepSeek-V4-Flash`) is throttled or slow under the per-paper claim-extraction load | Retry, lower `max_papers`, or point `AIGRAPH_BASE_URL` at a less contended endpoint |
+| `start_run` produces 0 hypotheses / empty `selected_hypotheses.md` | Corpus formed 0 anomalies (too-new/too-homogeneous; both critic+creator are anomaly-gated) | Use `generate_ideas` / `research_ideas` (§3.3) — non-empty guarantee |
 | Stage 3 reports "no tool `get_idea_report`" | OMC started before aigraph; tool registration skipped | Restart in order — aigraph, then OMC |
 | Source change not reflected at runtime | `~/aigraph/` is not git-managed | `scp` + restart (§5.4, §5.2) |
 | Delivered output contains "X on X" self-conflict | Pre-`68f3aa5` aigraph_query | Redeploy `scripts/aigraph_query.py` + restart |

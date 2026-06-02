@@ -1,7 +1,7 @@
 """Cascade idea generator — guarantees a non-empty idea set for any topic+corpus.
 
 Product contract: ideas(topic, run) ALWAYS returns >= min_ideas ideas as long
-as the run has >= 1 paper. It does this by cascading through five tiers from
+as the run has >= 1 paper. It does this by cascading through six tiers from
 highest-signal to most-permissive, stopping as soon as it has enough:
 
   Tier A  critic-conflict      cross-paper contradiction hypotheses (needs anomalies)
@@ -9,11 +9,14 @@ highest-signal to most-permissive, stopping as soon as it has enough:
   Tier C  community-bridge     cross-community unifying-theory insights (needs >=2 communities)
   Tier D  method-extension     per-paper "extend this method" ideas (needs >=1 paper)   [LLM]
   Tier E  limitation-forward   turn self-reported limitations into research directions  [LLM]
+  Tier F  paper-seeded         deterministic abstract/limitation-seeded directions       [no LLM]
 
-Tiers A/B/C read already-generated run artifacts (0 LLM). Tiers D/E are new
-generators that work on a barren corpus (0 anomalies, 0 open_questions) — they
-are the fallback that makes the non-empty guarantee hold. D/E results are
-cached to <run>/forward_ideas.jsonl so subsequent calls are 0-LLM.
+Tiers A/B/C read already-generated run artifacts (0 LLM). Tiers D/E are LLM
+generators that work on a barren corpus (0 anomalies, 0 open_questions). Tier F
+is the DETERMINISTIC terminal backstop (no LLM) that makes the non-empty
+guarantee structural — it cannot fail given >=1 paper, regardless of LLM
+reachability or JSON validity. D/E results are cached to
+<run>/forward_ideas.jsonl so subsequent calls are 0-LLM.
 
 Both critic and creator are anomaly-gated upstream, so on a sparse/too-new
 corpus (many distinct method names, no cross-paper conflicts) A and B yield

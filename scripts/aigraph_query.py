@@ -119,6 +119,38 @@ def _is_degenerate_anomaly(anom: "Anomaly | None") -> bool:
     return False
 
 
+# Conflict-type anomalies whose whole premise is a DISAGREEMENT and therefore
+# require ≥2 distinct papers. A same-paper "conflict" is a detector artifact —
+# the frozen (method,task) grouping in _detect_benchmark_inconsistency et al.
+# pairs a positive vs a non-positive claim without requiring distinct papers,
+# so a single paper that states a result AND (often a mis-labeled) description
+# manufactures a fake conflict (e.g. CoARS a001: c016 'introduces two schemes'
+# mis-tagged mixed + c017 'outperforms baselines', both arxiv:2604.10029).
+# This is a literature-CONFLICT graph; intra-paper "conflicts" don't belong.
+_CROSS_PAPER_CONFLICT_TYPES = frozenset({
+    "benchmark_inconsistency", "impact_conflict", "metric_mismatch", "setting_mismatch",
+})
+
+
+def _is_same_paper_conflict(anom: "Anomaly | None", claim_lookup: dict) -> bool:
+    """True for a conflict-type anomaly whose evidence claims span <2 distinct
+    papers — a fabricated intra-paper conflict. Dropped at delivery (the frozen
+    detector + cached anomaly file are untouched). replication_conflict already
+    enforces distinct papers in its detector, so it's not included here."""
+    if anom is None or anom.type not in _CROSS_PAPER_CONFLICT_TYPES:
+        return False
+    papers = {
+        claim_lookup[c].paper_id
+        for c in (anom.claim_ids or [])
+        if c in claim_lookup and claim_lookup[c].paper_id
+    }
+    # Drop only on POSITIVE confirmation of a single paper. If claims don't
+    # resolve (0 papers — incomplete claim_lookup), fail OPEN (keep): we can't
+    # prove it's an artifact, and dropping unverifiable conflicts would silently
+    # eat legit cross-paper ones.
+    return len(papers) == 1
+
+
 def _load_atlas_overlap_sidecar(run_dir: Path) -> dict[str, int]:
     """Load per-hypothesis Atlas-overlap scores from a sidecar produced by
     scripts/precompute_atlas_overlap.py (or the analytic m12_joined.jsonl).
@@ -307,14 +339,18 @@ def _select(
             matched = concrete
     # Drop hypotheses whose parent anomaly is a degenerate self-conflict
     # (method==task etc.) — vacuous "X on X" framings the frozen detectors emit
-    # unguarded. Only drop when non-degenerate candidates remain.
+    # unguarded — OR a same-paper "conflict" (all evidence from one paper), a
+    # fabricated intra-paper disagreement. Both are detector ARTIFACTS, not
+    # weak-but-real ideas, so the drop is UNCONDITIONAL: a fabricated conflict
+    # is worse than an empty conflict section (the idea-generation cascade
+    # backfills non-emptiness via community-bridge / forward tiers). This is
+    # the only filter here that drops even when nothing remains.
     if drop_self_conflict:
-        non_degen = [
+        matched = [
             (h, r) for (h, r) in matched
             if not _is_degenerate_anomaly(anom_lookup.get(h.anomaly_id))
+            and not _is_same_paper_conflict(anom_lookup.get(h.anomaly_id), claim_lookup)
         ]
-        if non_degen:
-            matched = non_degen
     # Drop hypotheses whose precomputed Atlas-overlap score is below the
     # caller's threshold (default 0 = off). Overlap is a 1-5 Likert from a
     # one-time Kimi judge run; sidecar lives at run_dir/atlas_overlap.jsonl.

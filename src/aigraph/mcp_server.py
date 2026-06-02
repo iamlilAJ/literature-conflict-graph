@@ -349,4 +349,94 @@ def build_mcp(
             except Exception as exc:
                 return {"error": f"{type(exc).__name__}: {exc}"}
 
+        @mcp.tool()
+        def research_ideas(topic: str, max_papers: int = 50, min_ideas: int = 5,
+                          reuse: bool = True, wait_seconds: int = 0,
+                          as_markdown: bool = True) -> Any:
+            """One-shot: topic in → ideas out. Reuses a matching existing corpus
+            if one exists (instant), otherwise builds a fresh one, then runs the
+            generate_ideas cascade — guaranteeing a NON-EMPTY idea set.
+
+            Flow:
+              1. If `reuse`, find the best existing run whose topic matches and
+                 generate ideas from it immediately (0 corpus-build cost).
+              2. Otherwise kick off a new corpus build (start_run-style, SLOW +
+                 paid), poll up to `wait_seconds`, and on completion generate
+                 ideas. If the build is not done within the budget, returns
+                 {status:"building", run_id} so you can poll get_run_status and
+                 then call generate_ideas(run=run_id) yourself.
+
+            `wait_seconds` is clamped to 0..1500; 0 = submit-and-return (no
+            block). For small corpora (max_papers<=30, ~3-5 min) a wait of
+            ~600 makes it truly one-shot. `min_ideas` clamped 1..20."""
+            import time as _time
+            min_ideas = max(1, min(20, int(min_ideas)))
+            wait_seconds = max(0, min(1500, int(wait_seconds)))
+            try:
+                import idea_cascade as ic
+            except Exception as exc:
+                return {"error": f"cascade import failed: {exc}"}
+
+            def _ideas_for(run_id: str, reused: bool) -> dict:
+                rdir = _safe_run_dir(runs_root, run_id)
+                result = ic.generate_ideas(rdir, topic, min_ideas=min_ideas,
+                                           allow_llm=not readonly)
+                out = {"status": "done", "run": run_id, "reused": reused,
+                       "stats": result.get("stats", {})}
+                out["ideas_markdown" if as_markdown else "ideas"] = (
+                    ic.render_ideas_markdown(result) if as_markdown else result.get("ideas", []))
+                return out
+
+            # 1. reuse an existing corpus
+            if reuse:
+                try:
+                    rid = ic.resolve_best_run(runs_root, topic)
+                except Exception:
+                    rid = None
+                if rid:
+                    try:
+                        return _ideas_for(rid, reused=True)
+                    except Exception as exc:
+                        return {"error": f"{type(exc).__name__}: {exc}"}
+
+            # 2. build a fresh corpus
+            if search_service is None:
+                return {"error": "no matching corpus and run-trigger disabled "
+                                 "(no SearchService configured)"}
+            try:
+                req = search_service.submit(
+                    topic=topic, limit=max(1, min(500, int(max_papers))),
+                    insight_generator="llm")
+            except Exception as exc:
+                return {"error": f"submit failed: {type(exc).__name__}: {exc}"}
+            run_id = req.run_id
+            run_dir = _safe_run_dir(runs_root, run_id)
+
+            # 3. bounded poll
+            waited = 0
+            while waited < wait_seconds:
+                _time.sleep(5)
+                waited += 5
+                sp = (run_dir / "status.json") if run_dir else None
+                if sp is None or not sp.exists():
+                    continue
+                try:
+                    st = json.loads(sp.read_text())
+                except Exception:
+                    continue
+                state = st.get("status")
+                if state == "done":
+                    try:
+                        return _ideas_for(run_id, reused=False)
+                    except Exception as exc:
+                        return {"error": f"{type(exc).__name__}: {exc}", "run": run_id}
+                if state == "error":
+                    return {"status": "error", "run": run_id,
+                            "message": st.get("message") or st.get("error") or "run failed"}
+
+            return {"status": "building", "run_id": run_id,
+                    "poll_with": "get_run_status",
+                    "next": f"once status=done, call generate_ideas(run='{run_id}')",
+                    "note": "corpus build runs in the background (minutes)"}
+
     return mcp

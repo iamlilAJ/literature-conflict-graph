@@ -602,6 +602,60 @@ def generate_ideas(run_dir: Path, topic: str, *, min_ideas: int = 5,
     }
 
 
+def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
+                     require_done: bool = True) -> str | None:
+    """Find an existing run whose topic best matches `topic`, for corpus reuse.
+
+    Scores each run by the fraction of the query's tokens covered by the run's
+    topic (read from query.txt / status.json / run_metadata.json). Returns the
+    best run id if it clears `min_overlap` AND (when require_done) the run
+    actually finished (has a non-empty papers.jsonl). Returns None otherwise so
+    the caller knows to build a fresh corpus.
+    """
+    runs_root = Path(runs_root)
+    if not runs_root.exists():
+        return None
+    qtok = _tokenize(topic)
+    if not qtok:
+        return None
+    best_id, best_score = None, 0.0
+    for d in sorted(runs_root.iterdir()):
+        if not d.is_dir() or d.name.startswith("_"):
+            continue
+        # run's own topic
+        rtopic = ""
+        qf = d / "query.txt"
+        if qf.exists():
+            try:
+                rtopic = qf.read_text(encoding="utf-8").strip()
+            except Exception:
+                rtopic = ""
+        if not rtopic:
+            for meta in ("status.json", "run_metadata.json"):
+                mf = d / meta
+                if mf.exists():
+                    try:
+                        rtopic = (json.loads(mf.read_text(encoding="utf-8")).get("topic") or "")
+                    except Exception:
+                        rtopic = ""
+                    if rtopic:
+                        break
+        if not rtopic:
+            continue
+        rtok = _tokenize(rtopic)
+        if not rtok:
+            continue
+        overlap = len(qtok & rtok) / len(qtok)
+        if overlap <= best_score:
+            continue
+        if require_done:
+            pf = d / "papers.jsonl"
+            if not pf.exists() or pf.stat().st_size == 0:
+                continue
+        best_id, best_score = d.name, overlap
+    return best_id if best_score >= min_overlap else None
+
+
 def render_ideas_markdown(result: dict) -> str:
     topic = result["topic"]
     ideas = result["ideas"]

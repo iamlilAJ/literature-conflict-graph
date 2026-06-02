@@ -48,50 +48,91 @@ def _raw_label(canon, raw):
     return None
 
 
-_SYS_METHOD = (
-    "You are organizing a research corpus's taxonomy. Given a list of raw METHOD "
-    "names extracted from papers on a topic (many are one-off names for the same "
-    "underlying technique family), cluster them into 8-15 STABLE MID-LEVEL method "
-    "categories that a reviewer would use to compare papers. Each category is a "
-    "short kebab-case label (e.g. 'experience-replay', 'graph-memory', "
-    "'self-evolution', 'memory-poisoning'). Output STRICT JSON mapping EVERY raw "
-    'label to one category: {"<raw label>": "<mid-level-category>", ...}. '
-    "Group aggressively — different paper-specific names for the same idea MUST "
-    "share a category. Use 'other' only for genuinely uncategorizable labels."
-)
-_SYS_TASK = _SYS_METHOD.replace("METHOD", "TASK").replace("method categories",
-    "task categories").replace("'experience-replay', 'graph-memory', "
-    "'self-evolution', 'memory-poisoning'",
-    "'agentic-memory', 'memory-consolidation', 'lifelong-adaptation', "
-    "'gui-automation'")
+def _parse_json(raw):
+    for op, cl in (("{", "}"), ("[", "]")):
+        s, e = raw.find(op), raw.rfind(cl)
+        if s >= 0 and e > s:
+            try:
+                return json.loads(raw[s:e + 1])
+            except Exception:
+                pass
+    return None
 
 
-def _build_mapping(client, model, topic, labels, system):
-    """One LLM call → {raw_label: mid_level}. Falls back to identity on failure."""
+def _propose_buckets(client, model, topic, labels, axis, n_buckets):
+    """Stage 1: a SHORT call returning ~n_buckets mid-level category names.
+    Weak models can do this (small output) where one-shot full clustering fails.
+    """
+    listed = ", ".join(lab for lab, _ in labels[:200])
+    system = (
+        f"You define a reviewer-level taxonomy. Given many raw {axis} names from "
+        f"papers on a topic (most are one-off names for the same underlying "
+        f"family), output a JSON list of AT MOST {n_buckets} broad, stable, "
+        f"mid-level {axis} categories (kebab-case) that together cover them. "
+        f"Categories must be general enough that several raw names map to each "
+        f"(e.g. 'memory-poisoning', 'experience-replay', 'self-evolution'). "
+        f"Output ONLY a JSON list of strings, no prose."
+    )
+    try:
+        raw = call_llm_text(client, model=model, system=system,
+                            user=f"Topic: {topic}\n\n{axis} names:\n{listed}",
+                            max_tokens=1200)
+    except Exception as exc:
+        print(f"  [warn] propose-buckets failed: {exc}", file=sys.stderr)
+        return []
+    arr = _parse_json(raw)
+    if not isinstance(arr, list):
+        return []
+    return [str(b).strip().lower() for b in arr if str(b).strip()][:n_buckets]
+
+
+def _assign_to_buckets(client, model, topic, labels, buckets, axis, chunk=50):
+    """Stage 2: force-assign each raw label to ONE of the fixed buckets. The
+    constrained output space (only `buckets` allowed) is what forces merging.
+    Chunked so the JSON never truncates. Values snapped to the bucket set."""
+    bucket_set = set(buckets)
+    mapping = {}
+    names = [lab for lab, _ in labels]
+    blist = ", ".join(buckets)
+    system = (
+        f"Assign each {axis} label to EXACTLY ONE category from this fixed list:\n"
+        f"[{blist}]\n"
+        f"Use ONLY these categories — never invent new ones. Pick the closest. "
+        f'Output STRICT JSON {{"<label>": "<category>", ...}} for EVERY label.'
+    )
+    for i in range(0, len(names), chunk):
+        part = names[i:i + chunk]
+        try:
+            raw = call_llm_text(client, model=model, system=system,
+                                user="Labels:\n" + "\n".join(f"- {n}" for n in part),
+                                max_tokens=4000)
+        except Exception as exc:
+            print(f"  [warn] assign chunk failed: {exc}", file=sys.stderr)
+            continue
+        m = _parse_json(raw)
+        if not isinstance(m, dict):
+            continue
+        for k, v in m.items():
+            if not isinstance(v, str):
+                continue
+            vv = v.strip().lower()
+            if vv in bucket_set:
+                mapping[str(k).strip().lower()] = vv
+            else:
+                # snap an invented value to a bucket by substring overlap, else 'other'
+                hit = next((b for b in buckets if b in vv or vv in b), None)
+                mapping[str(k).strip().lower()] = hit or "other"
+    return mapping
+
+
+def _build_mapping(client, model, topic, labels, axis, n_buckets=12):
+    """Two-stage: propose ~n_buckets categories, then force-assign every label."""
     if not labels:
         return {}
-    # Show labels with frequency so the model groups the important ones well.
-    listed = "\n".join(f"- {lab}  (x{cnt})" for lab, cnt in labels)
-    user = f"Topic: {topic}\n\nRaw labels (with frequency):\n{listed}"
-    try:
-        raw = call_llm_text(client, model=model, system=system, user=user,
-                            max_tokens=4000)
-    except Exception as exc:
-        print(f"  [warn] mapping LLM call failed: {exc}", file=sys.stderr)
+    buckets = _propose_buckets(client, model, topic, labels, axis, n_buckets)
+    if not buckets:
         return {}
-    s, e = raw.find("{"), raw.rfind("}")
-    if s < 0:
-        return {}
-    try:
-        m = json.loads(raw[s:e + 1])
-    except Exception:
-        return {}
-    # normalize keys/values
-    out = {}
-    for k, v in m.items():
-        if isinstance(v, str) and v.strip():
-            out[str(k).strip().lower()] = v.strip().lower()
-    return out
+    return _assign_to_buckets(client, model, topic, labels, buckets, axis)
 
 
 def _group_hist(claims):
@@ -140,10 +181,11 @@ def main():
 
     # --- build mid-level mappings from the corpus vocabulary ---
     client, model = build_openai_client(), configured_model()
-    print("clustering raw labels into mid-level taxonomy (2 LLM calls)...", file=sys.stderr)
-    mmap = _build_mapping(client, model, topic, methods_raw.most_common(args.top_labels), _SYS_METHOD)
-    tmap = _build_mapping(client, model, topic, tasks_raw.most_common(args.top_labels), _SYS_TASK)
-    print(f"  method buckets: {len(set(mmap.values()))}  task buckets: {len(set(tmap.values()))}")
+    print("clustering raw labels into mid-level taxonomy (two-stage)...", file=sys.stderr)
+    mmap = _build_mapping(client, model, topic, methods_raw.most_common(args.top_labels), "method", n_buckets=12)
+    tmap = _build_mapping(client, model, topic, tasks_raw.most_common(args.top_labels), "task", n_buckets=14)
+    print(f"  method: {len(mmap)} labels → {len(set(mmap.values()))} buckets | "
+          f"task: {len(tmap)} labels → {len(set(tmap.values()))} buckets")
 
     # --- apply: rewrite canonical fields ---
     normalized = []

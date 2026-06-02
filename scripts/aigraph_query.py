@@ -63,7 +63,11 @@ def _tokenize(s: str) -> set[str]:
 _BOILERPLATE_RE = re.compile(
     r"\b(the disconnect may persist|the disconnect persists|the contradiction "
     r"(?:arises|reflects|is driven)|cross-pollinat|may remain disconnected|"
-    r"generational lag|venue separation|terminology drift|methodological prior)",
+    r"generational lag|venue separation|terminology drift|methodological prior|"
+    # P4: the frozen template-generator's generic fallback frame — a vacuous
+    # "some hidden variable explains the conflict" non-explanation.
+    r"unreported moderator|moderator variable (?:drives|explains|accounts)|"
+    r"an? (?:unreported|unmeasured|hidden|confounding) (?:moderator|variable|confound))",
     re.IGNORECASE,
 )
 

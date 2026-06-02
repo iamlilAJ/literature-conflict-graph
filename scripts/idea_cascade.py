@@ -77,7 +77,7 @@ def _mk_idea(tier: str, *, title: str, statement: str, mechanism: str = "",
              minimal_test: str = "", predictions: list[str] | None = None,
              source_papers: list[str] | None = None, grounding: str = "",
              confidence: float = 0.5, scope: dict | None = None,
-             seed: str = "") -> dict:
+             seed: str = "", extra: dict | None = None) -> dict:
     # predictions may arrive straight from LLM JSON — coerce non-list shapes
     # (a bare string would otherwise iterate into single characters).
     if isinstance(predictions, list):
@@ -103,6 +103,8 @@ def _mk_idea(tier: str, *, title: str, statement: str, mechanism: str = "",
         "grounding": (grounding or "").strip()[:300],
         "confidence": conf,
         "scope": scope or {},
+        **({"novelty_vs_paper": str(extra["novelty_vs_paper"]).strip()[:300]}
+           if extra and extra.get("novelty_vs_paper") else {}),
     }
 
 
@@ -261,13 +263,59 @@ def _topic_rank_papers(papers: list[Paper], topic: str) -> list[Paper]:
 _D_SYS = (
     "You are a research scientist proposing concrete, testable extensions of an "
     "existing method. Given ONE paper (its method, claims, and any stated "
-    "limitations), propose ONE specific NEW method that extends or fixes it. "
+    "limitations), propose ONE specific NEW method that extends or fixes it.\n"
+    "CRITICAL NOVELTY RULE: the abstract describes what the paper ALREADY does. "
+    "Your proposal must go strictly BEYOND it — do NOT restate, rename, or "
+    "re-operationalize the paper's own contribution. If the paper already adds "
+    "memory / dense rewards / diversity / retrieval / self-distillation, "
+    "proposing to 'add' that is NOT novel. Name explicitly what is NEW that the "
+    "paper does not already do.\n"
     "Output STRICT JSON, no markdown:\n"
     '{"title":"<=10 word name","statement":"2-3 sentence proposal naming a '
     'concrete mechanism","mechanism":"the causal mechanism","minimal_test":'
     '"one single-variable experiment with named dataset+metric","predictions":'
-    '["short prediction 1","short prediction 2"]}'
+    '["short prediction 1","short prediction 2"],"novelty_vs_paper":"one '
+    'sentence: what this adds that the paper does NOT already do"}'
 )
+
+# P5 novelty gate: a separate adversarial check that catches the failure mode
+# the research_ideas eval found (4/5 ideas restated the cited paper's own
+# contribution). Asks a skeptic whether the abstract ALREADY covers the
+# proposal; drops ideas that do. Cheap (1 short LLM call per tier-D idea,
+# cached with the idea). Fails OPEN (keep) on any error — never blocks the
+# non-empty guarantee.
+_NOVELTY_GATE_SYS = (
+    "You are a strict novelty reviewer. Given a paper ABSTRACT and a PROPOSED "
+    "extension, decide whether the abstract ALREADY describes that proposal as "
+    "the paper's own contribution (i.e. the proposal is a restatement, not a "
+    "novel extension). Be skeptical: 'add memory/diversity/dense-reward to X' "
+    "when the abstract says X already has it is NOT novel. "
+    'Output STRICT JSON: {"already_in_paper": true|false, "reason":"one sentence"}'
+)
+
+
+def _novelty_gate(client, model, abstract: str, idea: dict) -> bool:
+    """True if the idea is genuinely novel vs the paper abstract (keep it);
+    False if the abstract already covers it (drop). Fails OPEN (True)."""
+    if not abstract:
+        return True
+    user = json.dumps({
+        "abstract": abstract[:1500],
+        "proposed_title": idea.get("title", ""),
+        "proposed_statement": idea.get("statement", ""),
+        "claimed_novelty": idea.get("novelty_vs_paper", ""),
+    }, ensure_ascii=False)
+    try:
+        raw = call_llm_text(client, model=model, system=_NOVELTY_GATE_SYS,
+                            user=user, max_tokens=400)
+        obj = _parse_json_block(raw)
+        if isinstance(obj, list):
+            obj = next((x for x in obj if isinstance(x, dict)), None)
+        if isinstance(obj, dict) and obj.get("already_in_paper") is True:
+            return False
+    except Exception:
+        return True
+    return True
 
 _E_SYS = (
     "You are a research scientist turning papers' self-reported limitations into "
@@ -327,6 +375,10 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
             obj = next((x for x in obj if isinstance(x, dict)), None)
         if not isinstance(obj, dict) or not obj.get("statement"):
             continue
+        # P5 novelty gate: drop ideas that merely restate the paper's own
+        # contribution (the eval's dominant failure). Fails open on error.
+        if not _novelty_gate(client, model, p.abstract or "", obj):
+            continue
         ideas.append(_mk_idea(
             "D",
             title=obj.get("title", "") or f"Extension of {method}",
@@ -339,6 +391,7 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
             confidence=0.55,
             scope={"method": method},
             seed=p.paper_id,
+            extra={"novelty_vs_paper": obj.get("novelty_vs_paper", "")},
         ))
     return ideas
 

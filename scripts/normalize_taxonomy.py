@@ -161,7 +161,9 @@ def main():
     ap.add_argument("--topic", default=None, help="defaults to the run's query.txt")
     ap.add_argument("--apply", action="store_true", help="write claims_normalized.jsonl")
     ap.add_argument("--redetect", action="store_true", help="re-run detect_anomalies on normalized claims")
-    ap.add_argument("--top-labels", type=int, default=120, help="max distinct labels per axis to send to the LLM")
+    ap.add_argument("--top-labels", type=int, default=200, help="max distinct labels per axis to send to the LLM")
+    ap.add_argument("--n-method-buckets", type=int, default=20)
+    ap.add_argument("--n-task-buckets", type=int, default=20)
     args = ap.parse_args()
 
     run = args.run
@@ -182,8 +184,8 @@ def main():
     # --- build mid-level mappings from the corpus vocabulary ---
     client, model = build_openai_client(), configured_model()
     print("clustering raw labels into mid-level taxonomy (two-stage)...", file=sys.stderr)
-    mmap = _build_mapping(client, model, topic, methods_raw.most_common(args.top_labels), "method", n_buckets=12)
-    tmap = _build_mapping(client, model, topic, tasks_raw.most_common(args.top_labels), "task", n_buckets=14)
+    mmap = _build_mapping(client, model, topic, methods_raw.most_common(args.top_labels), "method", n_buckets=args.n_method_buckets)
+    tmap = _build_mapping(client, model, topic, tasks_raw.most_common(args.top_labels), "task", n_buckets=args.n_task_buckets)
     print(f"  method: {len(mmap)} labels → {len(set(mmap.values()))} buckets | "
           f"task: {len(tmap)} labels → {len(set(tmap.values()))} buckets")
 

@@ -431,10 +431,94 @@ def _atlas_novelty_ok(client, model, idea: dict) -> bool:
     return True
 
 
+# --------------------------------------------------------------------------- #
+# Real-time web novelty gate (Semantic Scholar + arxiv). The Atlas oracle is a
+# static snapshot — it MISSES frontier prior art (live test on 'agent memory':
+# 0/4 ideas novel, all prior art was Feb-Apr 2026 papers not yet in Atlas; see
+# docs/atlas-tti-methodology.md correction). This queries live scholarly search
+# to catch the frontier Atlas can't. OFF by default (AIGRAPH_WEB_NOVELTY=1):
+# scholarly APIs throttle cloud IPs, so set S2_API_KEY (free key, higher limit)
+# for it to function reliably. Fails OPEN everywhere.
+# --------------------------------------------------------------------------- #
+_WEB_CACHE: dict = {}
+
+
+def _http_json(url: str, headers: dict | None = None, timeout: int = 12):
+    import urllib.request
+    req = urllib.request.Request(url, headers=headers or {"User-Agent": "aigraph-novelty/1.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read().decode("utf-8", "replace"))
+
+
+def web_prior_art(query: str, k: int = 6) -> list:
+    """Recent scholarly papers matching the idea (Semantic Scholar, arxiv
+    fallback). Returns ['(year) title', ...]. Fails OPEN ([]) on throttle/error."""
+    import urllib.parse
+    key = query[:200]
+    if key in _WEB_CACHE:
+        return _WEB_CACHE[key]
+    terms = " ".join(sorted(set(_atlas_toks(query)), key=len, reverse=True)[:8])
+    if not terms:
+        return []
+    out: list = []
+    # Semantic Scholar (key-aware: free key lifts the rate limit)
+    try:
+        s2_key = os.environ.get("S2_API_KEY")
+        url = ("https://api.semanticscholar.org/graph/v1/paper/search?query="
+               + urllib.parse.quote(terms) + "&fields=title,year&limit=" + str(k))
+        d = _http_json(url, headers={"x-api-key": s2_key} if s2_key else None)
+        for p in (d.get("data") or []):
+            if p.get("title"):
+                out.append(f"({p.get('year','?')}) {p['title']}")
+    except Exception:
+        pass
+    # arxiv fallback (recency-sorted to catch the frontier)
+    if not out:
+        try:
+            import re as _re2
+            au = ("http://export.arxiv.org/api/query?search_query=all:"
+                  + urllib.parse.quote(terms) + "&sortBy=submittedDate&sortOrder=descending&max_results=" + str(k))
+            import urllib.request
+            with urllib.request.urlopen(au, timeout=12) as r:
+                xml = r.read().decode("utf-8", "replace")
+            if "Rate exceeded" not in xml:
+                for t in _re2.findall(r"<entry>.*?<title>(.*?)</title>", xml, _re2.S):
+                    out.append(t.strip().replace("\n", " "))
+        except Exception:
+            pass
+    _WEB_CACHE[key] = out
+    return out
+
+
+def _web_novelty_ok(client, model, idea: dict) -> bool:
+    """True if novel vs live scholarly search; False if covered. Fails OPEN."""
+    pa = web_prior_art(f"{idea.get('title','')} {idea.get('statement','')} {idea.get('mechanism','')}", k=6)
+    if not pa:
+        return True
+    user = json.dumps({"proposal": {"title": idea.get("title"), "statement": idea.get("statement")},
+                       "recent_papers": pa}, ensure_ascii=False)
+    try:
+        obj = _parse_json_block(call_llm_text(client, model=model, system=_NOVELTY_STRONG_SYS,
+                                              user=user, max_tokens=300))
+        if isinstance(obj, list):
+            obj = next((x for x in obj if isinstance(x, dict)), None)
+        if isinstance(obj, dict) and obj.get("novel") is False:
+            return False
+    except Exception:
+        return True
+    return True
+
+
 def _novelty_ok(client, model, abstract: str, idea: dict) -> bool:
-    """Combined gate (M5): the idea must pass BOTH the cited-abstract check AND
-    the strong 4.2M-paper Atlas prior-art check. Each fails open independently."""
-    return _novelty_gate(client, model, abstract, idea) and _atlas_novelty_ok(client, model, idea)
+    """Combined gate (M5): the idea must pass the cited-abstract check AND the
+    strong 4.2M-paper Atlas check, AND (when AIGRAPH_WEB_NOVELTY=1) a live
+    scholarly-search check that catches the frontier prior art Atlas misses.
+    Each layer fails open independently."""
+    if not (_novelty_gate(client, model, abstract, idea) and _atlas_novelty_ok(client, model, idea)):
+        return False
+    if os.environ.get("AIGRAPH_WEB_NOVELTY") == "1":
+        return _web_novelty_ok(client, model, idea)
+    return True
 
 
 # Diverse angles for best-of-N sampling (one per candidate, cycled).

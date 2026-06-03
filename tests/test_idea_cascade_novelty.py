@@ -79,6 +79,34 @@ def test_combined_gate_requires_both(monkeypatch):
     # abstract gate says novel, atlas gate says exists -> combined drops
     monkeypatch.setattr(ic, "_novelty_gate", lambda *a, **k: True)
     monkeypatch.setattr(ic, "_atlas_novelty_ok", lambda *a, **k: False)
+    monkeypatch.delenv("AIGRAPH_WEB_NOVELTY", raising=False)
     assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is False
     monkeypatch.setattr(ic, "_atlas_novelty_ok", lambda *a, **k: True)
     assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is True
+
+
+# ---- live web novelty gate (frontier prior art) ----
+
+def test_web_gate_fails_open_when_no_results(monkeypatch):
+    monkeypatch.setattr(ic, "web_prior_art", lambda *a, **k: [])
+    called = {"n": 0}
+    monkeypatch.setattr(ic, "call_llm_text", lambda *a, **k: called.__setitem__("n", called["n"] + 1) or "{}")
+    assert ic._web_novelty_ok(object(), "m", {"title": "x", "statement": "y"}) is True
+    assert called["n"] == 0
+
+
+def test_web_gate_drops_when_covered(monkeypatch):
+    monkeypatch.setattr(ic, "web_prior_art", lambda *a, **k: ["(2026) Exactly This Paper"])
+    _patch(monkeypatch, '{"novel": false}')
+    assert ic._web_novelty_ok(object(), "m", {"title": "x", "statement": "y"}) is False
+
+
+def test_web_gate_off_by_default(monkeypatch):
+    # AIGRAPH_WEB_NOVELTY unset -> web gate not consulted even if it would drop
+    monkeypatch.delenv("AIGRAPH_WEB_NOVELTY", raising=False)
+    monkeypatch.setattr(ic, "_novelty_gate", lambda *a, **k: True)
+    monkeypatch.setattr(ic, "_atlas_novelty_ok", lambda *a, **k: True)
+    monkeypatch.setattr(ic, "_web_novelty_ok", lambda *a, **k: False)  # would drop if consulted
+    assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is True
+    monkeypatch.setenv("AIGRAPH_WEB_NOVELTY", "1")
+    assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is False

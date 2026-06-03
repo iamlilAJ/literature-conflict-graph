@@ -54,3 +54,13 @@
 把已上线的 P5 novelty gate(`idea_cascade._novelty_gate`,现在**只查被引那一篇**的摘要)→ **升级成查强 Atlas oracle(4.2M 篇)**。这就是 M5 配方进生产,drop-in、不需 thaw、已验证。改完用 sub-agent 复测确认线上 novelty 真涨。
 
 **TL;DR 配方:** 前瞻框架生成 N 个 → 强 Atlas oracle(4.2M 篇)过滤掉已存在的 → 排序选 top-K;成熟论文再加 graph-RAG 锁定开放缺口;质量永远用独立 web sub-agent 盲评,不用自评。
+
+---
+
+## ⚠️ 修正 (2026-06-03,线上 M5 实测 agent-memory)
+
+线上 M5(强 Atlas oracle 门)在「agent memory」这个**前沿热门 topic** 上实测,sub-agent web 盲评:**4 个 idea 0 个 novel**(2 KILL / 2 REVISE),且每个 agent 都指出「Atlas filter MISSED 已有工作」。
+
+**根因**:(1) **Atlas 快照追不上前沿** —— 真正的先验是 2026-02~04 的新论文(AMEM4Rec/MemCollab/SkillClaw),还没进 Atlas 库;(2) **词匹配 ≠ 语义匹配** —— 换了说法的同一 idea 抓不到。
+
+**结论修正**:之前「M5 novelty 翻倍」在真·web 审查 + 前沿 topic 下**不复现**。Atlas 当新颖性 verifier **对成熟 topic 有效、对前沿热门 topic 基本失效**。真正可靠的 verifier 是 **实时 web/arxiv 检索(sub-agent 那套)**,不是静态语料词扫描。上线的门 fail-open、无害、能拦老的重复,但不是强保护。**真要产「新 idea」:verifier 换 web 检索,或 Atlas+web 双查。**

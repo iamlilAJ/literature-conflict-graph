@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -317,6 +318,136 @@ def _novelty_gate(client, model, abstract: str, idea: dict) -> bool:
         return True
     return True
 
+
+# --------------------------------------------------------------------------- #
+# M5: strong Atlas prior-art oracle + best-of-N (verified-best recipe, see
+# docs/atlas-tti-methodology.md). The cited-paper-abstract gate above only
+# catches restatements of ONE paper; this scans the whole Intern-Atlas corpus
+# (4.2M paper titles+abstracts) so the novelty filter is as strong as a web
+# search. Both gates fail OPEN (keep) when unavailable. Opt-in via the corpus
+# being present; AIGRAPH_DISABLE_ATLAS_ORACLE=1 forces off.
+# --------------------------------------------------------------------------- #
+_ATLAS_TOK = re.compile(r"[a-z0-9][a-z0-9\-]+")
+_ATLAS_STOP = set(
+    "the a an of for and or in on to by with as is are be this that from into we you our "
+    "using based via toward method model approach framework system agent new propose "
+    "hypothesize which".split()
+)
+_ATLAS_ORACLE_CACHE: dict = {}
+_ATLAS_PAPER_FILES: list | None = None
+
+
+def _atlas_paper_files() -> list:
+    """Resolve the Intern-Atlas papers parquet shards once. Returns [] if the
+    corpus or polars is unavailable (-> oracle fails open)."""
+    global _ATLAS_PAPER_FILES
+    if _ATLAS_PAPER_FILES is not None:
+        return _ATLAS_PAPER_FILES
+    if os.environ.get("AIGRAPH_DISABLE_ATLAS_ORACLE") == "1":
+        _ATLAS_PAPER_FILES = []
+        return _ATLAS_PAPER_FILES
+    import glob
+    candidates = [
+        os.environ.get("AIGRAPH_INTERN_ATLAS_DIR", ""),
+        str(_REPO / "data" / "intern_atlas" / "data"),
+        os.path.expanduser("~/aigraph.bak/data/intern_atlas/data"),
+        os.path.expanduser("~/aigraph/data/intern_atlas/data"),
+    ]
+    for base in candidates:
+        if not base:
+            continue
+        files = glob.glob(os.path.join(base, "papers", "*.parquet"))
+        if files:
+            _ATLAS_PAPER_FILES = files
+            return files
+    _ATLAS_PAPER_FILES = []
+    return _ATLAS_PAPER_FILES
+
+
+def _atlas_toks(s: str) -> list:
+    return [t for t in _ATLAS_TOK.findall((s or "").lower())
+            if t not in _ATLAS_STOP and len(t) > 2]
+
+
+def atlas_prior_art_strong(query: str, k: int = 6) -> list:
+    """Top-k Atlas paper titles whose title+abstract contain >=2 of the idea's
+    most distinctive tokens — a 4.2M-paper prior-art search. Fails open ([])."""
+    files = _atlas_paper_files()
+    if not files:
+        return []
+    key = query[:200]
+    if key in _ATLAS_ORACLE_CACHE:
+        return _ATLAS_ORACLE_CACHE[key]
+    kt = sorted(set(_atlas_toks(query)), key=len, reverse=True)[:6]
+    if not kt:
+        return []
+    try:
+        import functools
+        import operator
+        import polars as pl
+        conds = [
+            (pl.col("title").str.to_lowercase().str.contains(t, literal=True).cast(pl.Int32)
+             + pl.col("abstract").str.to_lowercase().fill_null("").str.contains(t, literal=True).cast(pl.Int32))
+            for t in kt
+        ]
+        hits = functools.reduce(operator.add, conds)
+        df = (pl.scan_parquet(files).select("title", "abstract").with_columns(hits.alias("h"))
+              .filter(pl.col("h") >= 2).select("title", "h").sort("h", descending=True).head(k).collect())
+        out = [r["title"] for r in df.to_dicts()]
+    except Exception:
+        out = []
+    _ATLAS_ORACLE_CACHE[key] = out
+    return out
+
+
+_NOVELTY_STRONG_SYS = (
+    "You are a strict prior-art reviewer. Given a PROPOSAL and a list of EXISTING "
+    "paper titles from a 4.2M-paper corpus, decide whether the proposal is already "
+    "covered by prior art (i.e. not novel). Be skeptical. "
+    'Output STRICT JSON: {"novel": true|false, "reason":"one sentence"}'
+)
+
+
+def _atlas_novelty_ok(client, model, idea: dict) -> bool:
+    """True if the idea is novel vs the Atlas corpus (keep); False if prior art
+    already covers it (drop). Fails OPEN when the corpus/LLM is unavailable."""
+    pa = atlas_prior_art_strong(
+        f"{idea.get('title','')} {idea.get('statement','')} {idea.get('mechanism','')}", k=6)
+    if not pa:
+        return True
+    user = json.dumps({
+        "proposal": {"title": idea.get("title"), "statement": idea.get("statement")},
+        "existing_titles": pa,
+    }, ensure_ascii=False)
+    try:
+        obj = _parse_json_block(call_llm_text(client, model=model, system=_NOVELTY_STRONG_SYS,
+                                              user=user, max_tokens=300))
+        if isinstance(obj, list):
+            obj = next((x for x in obj if isinstance(x, dict)), None)
+        if isinstance(obj, dict) and obj.get("novel") is False:
+            return False
+    except Exception:
+        return True
+    return True
+
+
+def _novelty_ok(client, model, abstract: str, idea: dict) -> bool:
+    """Combined gate (M5): the idea must pass BOTH the cited-abstract check AND
+    the strong 4.2M-paper Atlas prior-art check. Each fails open independently."""
+    return _novelty_gate(client, model, abstract, idea) and _atlas_novelty_ok(client, model, idea)
+
+
+# Diverse angles for best-of-N sampling (one per candidate, cycled).
+_BESTOF_ANGLES = [
+    "focus on the core causal mechanism",
+    "attack a specific failure mode the paper admits",
+    "propose a cross-method transfer",
+    "target a scalability/efficiency limit",
+    "exploit an unaddressed evaluation gap",
+    "combine two lines the field keeps separate",
+]
+
+
 _E_SYS = (
     "You are a research scientist turning papers' self-reported limitations into "
     "forward research directions. Given a list of limitations/failure-modes from "
@@ -356,7 +487,7 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
         method = next((c.method for c in pclaims if c.method), None) or "the paper's method"
         limits = [c.claim_text for c in pclaims if c.claim_type == "limitation"][:4]
         fails = [c.failure_mode for c in pclaims if (c.failure_mode or "").strip()][:4]
-        user = json.dumps({
+        base_payload = {
             "paper_title": p.title,
             "paper_id": p.paper_id,
             "abstract": (p.abstract or "")[:1200],
@@ -364,20 +495,34 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
             "limitations": limits,
             "failure_modes": fails,
             "topic": topic,
-        }, ensure_ascii=False)
+        }
+        # M5 best-of-N: sample several candidates with diverse angles, keep the
+        # FIRST that passes BOTH novelty gates (cited-abstract + strong Atlas
+        # 4.2M-paper oracle). best-of-N + strong filter is the verified-best
+        # recipe (docs/atlas-tti-methodology.md). N tunable via AIGRAPH_BESTOF_N.
         try:
-            raw = call_llm_text(client, model=model, system=_D_SYS, user=user,
-                                max_tokens=2000)
-        except Exception:
-            continue
-        obj = _parse_json_block(raw)
-        if isinstance(obj, list):  # model wrapped the object in an array
-            obj = next((x for x in obj if isinstance(x, dict)), None)
+            n_cand = max(1, min(6, int(os.environ.get("AIGRAPH_BESTOF_N", "3"))))
+        except ValueError:
+            n_cand = 3
+        obj = None
+        for ci in range(n_cand):
+            angle = _BESTOF_ANGLES[ci % len(_BESTOF_ANGLES)]
+            user = json.dumps({**base_payload, "angle": angle}, ensure_ascii=False)
+            try:
+                raw = call_llm_text(client, model=model, system=_D_SYS, user=user,
+                                    max_tokens=2000, temperature=0.2 if ci == 0 else 0.8)
+            except Exception:
+                continue
+            cand = _parse_json_block(raw)
+            if isinstance(cand, list):
+                cand = next((x for x in cand if isinstance(x, dict)), None)
+            if not isinstance(cand, dict) or not cand.get("statement"):
+                continue
+            if _novelty_ok(client, model, p.abstract or "", cand):
+                obj = cand
+                break
+            obj = obj or cand  # remember a fallback in case all fail the gate
         if not isinstance(obj, dict) or not obj.get("statement"):
-            continue
-        # P5 novelty gate: drop ideas that merely restate the paper's own
-        # contribution (the eval's dominant failure). Fails open on error.
-        if not _novelty_gate(client, model, p.abstract or "", obj):
             continue
         ideas.append(_mk_idea(
             "D",

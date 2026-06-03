@@ -50,3 +50,35 @@ def test_gate_keeps_when_no_abstract(monkeypatch):
 def test_gate_keeps_on_unparseable(monkeypatch):
     _patch(monkeypatch, "not json at all")
     assert ic._novelty_gate(object(), "m", "abstract", {"title": "x"}) is True
+
+
+# ---- M5 strong Atlas oracle gate ----
+
+def test_atlas_gate_fails_open_when_no_corpus(monkeypatch):
+    # no prior art returned (corpus absent) -> keep, and no LLM call made
+    monkeypatch.setattr(ic, "atlas_prior_art_strong", lambda *a, **k: [])
+    called = {"n": 0}
+    monkeypatch.setattr(ic, "call_llm_text", lambda *a, **k: called.__setitem__("n", called["n"] + 1) or "{}")
+    assert ic._atlas_novelty_ok(object(), "m", {"title": "x", "statement": "y"}) is True
+    assert called["n"] == 0
+
+
+def test_atlas_gate_drops_when_prior_art_covers(monkeypatch):
+    monkeypatch.setattr(ic, "atlas_prior_art_strong", lambda *a, **k: ["Existing Paper On X"])
+    _patch(monkeypatch, '{"novel": false, "reason": "covered by Existing Paper On X"}')
+    assert ic._atlas_novelty_ok(object(), "m", {"title": "x", "statement": "y"}) is False
+
+
+def test_atlas_gate_keeps_when_novel(monkeypatch):
+    monkeypatch.setattr(ic, "atlas_prior_art_strong", lambda *a, **k: ["Somewhat Related Paper"])
+    _patch(monkeypatch, '{"novel": true}')
+    assert ic._atlas_novelty_ok(object(), "m", {"title": "x", "statement": "y"}) is True
+
+
+def test_combined_gate_requires_both(monkeypatch):
+    # abstract gate says novel, atlas gate says exists -> combined drops
+    monkeypatch.setattr(ic, "_novelty_gate", lambda *a, **k: True)
+    monkeypatch.setattr(ic, "_atlas_novelty_ok", lambda *a, **k: False)
+    assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is False
+    monkeypatch.setattr(ic, "_atlas_novelty_ok", lambda *a, **k: True)
+    assert ic._novelty_ok(object(), "m", "abstract", {"title": "x"}) is True

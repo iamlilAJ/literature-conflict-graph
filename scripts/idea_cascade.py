@@ -167,8 +167,13 @@ def _records_to_ideas(records: list[dict], tier: str) -> list[dict]:
 
 def tier_a_critic(run_dir: Path, topic: str, k: int) -> list[dict]:
     try:
+        # drop_boilerplate=True: the frozen template generator emits a generic
+        # "an unreported moderator variable drives the conflicting results"
+        # fallback that otherwise leaks into tier-A here (the get_idea_report
+        # path already filters it; this path did not).
         records, _ = query_records(run_dir, topic, k=k, hyp_kind="critic",
-                                   min_anomalies=1, min_atlas_overlap=0)
+                                   min_anomalies=1, min_atlas_overlap=0,
+                                   drop_boilerplate=True)
     except Exception:
         return []
     return _records_to_ideas(records, "A")
@@ -761,15 +766,31 @@ def _idea_key(idea: dict) -> str:
     return re.sub(r"\W+", " ", text.lower()).strip()[:80]
 
 
+def _title_tokens(idea: dict) -> set:
+    return {t for t in re.findall(r"[a-z0-9]+", (idea.get("title") or "").lower())
+            if len(t) > 2 and t not in {"the", "for", "via", "and", "with"}}
+
+
 def _dedup(ideas: list[dict]) -> list[dict]:
-    seen, out = set(), []
+    """Drop exact-prefix duplicates AND near-duplicates — ideas whose titles
+    overlap heavily (Jaccard >= 0.6), e.g. 'Adversarial Reflection
+    Diversification' vs 'Adversarial Memory Diversification Defense'. Keeps
+    the first occurrence."""
+    seen, kept_titles, out = set(), [], []
     for idea in ideas:
         if not isinstance(idea, dict):
             continue
         key = _idea_key(idea)
         if key and key in seen:
             continue
+        tt = _title_tokens(idea)
+        if tt and any(
+            len(tt & kt) / max(1, len(tt | kt)) >= 0.6 for kt in kept_titles
+        ):
+            continue  # near-duplicate title
         seen.add(key)
+        if tt:
+            kept_titles.append(tt)
         out.append(idea)
     return out
 

@@ -89,9 +89,9 @@ _COMMAND_WITH_ARG_RE = re.compile(r"\\[A-Za-z]+\*?(?:\[[^\]]*\])?\{([^{}]*)\}")
 _COMMAND_RE = re.compile(r"\\[A-Za-z@]+\*?(?:\[[^\]]*\])?")
 _MULTISPACE_RE = re.compile(r"[ \t\r\f\v]+")
 _BLANKLINE_RE = re.compile(r"\n{3,}")
-_PDF_LITERAL_RE = re.compile(r"\(([^()]*(?:\\.[^()]*)*)\)\s*Tj")
+_PDF_LITERAL_RE = re.compile(r"\(((?:[^()\\]|\\.)*)\)\s*Tj", re.S)
 _PDF_ARRAY_RE = re.compile(r"\[(.*?)\]\s*TJ", re.S)
-_PDF_ARRAY_LITERAL_RE = re.compile(r"\(([^()]*(?:\\.[^()]*)*)\)")
+_PDF_ARRAY_LITERAL_RE = re.compile(r"\(((?:[^()\\]|\\.)*)\)", re.S)
 _PDF_HEADING_RE = re.compile(r"^(?:\d+(?:\.\d+)*)\s+([A-Z][A-Za-z0-9 ,:/_-]{2,})$")
 _APPENDIX_HEADING_RE = re.compile(r"^Appendix(?:\s+[A-Z0-9]+)?[:\s-]*(.*)$", re.IGNORECASE)
 _SECTION_TITLE_TOKEN_RE = re.compile(r"[^a-z0-9]+")
@@ -146,6 +146,24 @@ _REASONING_RULES: tuple[tuple[str, str], ...] = (
     ("self-correction", 'all:"large language model" AND all:"self-correction"'),
     ("self-refine", 'all:"large language model" AND all:"self-refine"'),
     ("code-reasoning", 'all:"large language model" AND all:code AND all:reasoning'),
+    # 2026-05-15: expansion to push reasoning corpus to ~4500+ unique papers.
+    # Each rule is "reasoning ∩ <topic>" — avoids generic topics that would
+    # flood the corpus with off-topic papers.
+    ("reflection-llm", 'all:reflection AND all:reasoning AND all:"language model"'),
+    ("in-context-reasoning", 'all:"in-context learning" AND all:reasoning'),
+    ("few-shot-reasoning", 'all:"few-shot" AND all:reasoning AND all:"language model"'),
+    ("instruction-tuning-reasoning", 'all:"instruction tuning" AND all:reasoning'),
+    ("long-context-reasoning", 'all:"long context" AND all:reasoning'),
+    ("speculative-decoding-reasoning", 'all:"speculative decoding" AND all:reasoning'),
+    ("self-improvement-llm", 'all:"self-improvement" AND all:"large language model"'),
+    ("world-model-reasoning", 'all:"world model" AND all:reasoning'),
+    ("agentic-workflow", 'all:"agentic workflow" AND all:"language model"'),
+    ("reasoning-distillation", 'all:reasoning AND all:distillation AND all:"language model"'),
+    ("step-by-step-reasoning", 'all:"step by step" AND all:reasoning AND all:"language model"'),
+    ("neuro-symbolic-reasoning", 'all:"neuro-symbolic" AND all:reasoning'),
+    ("self-play-reasoning", 'all:"self-play" AND all:"language model"'),
+    ("reasoning-rubric", 'all:reasoning AND all:rubric AND all:"language model"'),
+    ("o1-r1-models", 'all:o1 AND all:reasoning'),
 )
 _SECTION_CANONICAL_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("abstract", ("abstract",)),
@@ -370,16 +388,23 @@ def seed_reasoning_corpus(
     allowed_tags = {t.strip() for t in tag_filter_raw.split(",") if t.strip()} if tag_filter_raw else None
     rules = [(t, q) for t, q in _REASONING_RULES if allowed_tags is None or t in allowed_tags]
     for tag, query in rules:
-        papers = fetch(
-            query=query,
-            from_year=from_year,
-            to_year=to_year,
-            limit=per_query_limit,
-            strategy="high-impact",
-            candidate_multiplier=6,
-            min_relevance=0.12,
-            require_core_match=False,
-        )
+        try:
+            papers = fetch(
+                query=query,
+                from_year=from_year,
+                to_year=to_year,
+                limit=per_query_limit,
+                strategy="high-impact",
+                candidate_multiplier=6,
+                min_relevance=0.12,
+                require_core_match=False,
+            )
+        except Exception as exc:
+            # Per-rule resilience: arxiv 429 / ReadTimeout / network blips
+            # shouldn't kill the entire seed run (which writes the manifest
+            # only at the very end). Log + skip + continue.
+            logger.warning("seed rule %r failed: %s; skipping", tag, exc)
+            continue
         for paper in papers:
             manifest_paper = _manifest_paper_from_candidate(
                 paper,
@@ -403,7 +428,20 @@ def sync_arxiv_corpus(
     refresh: bool = False,
     limit: int | None = None,
     client: Any | None = None,
+    per_paper_timeout: float = 60.0,
 ) -> list[PaperArtifactStatus]:
+    """Sync arxiv artifacts for unfinished papers in the manifest.
+
+    Each ``_sync_one_paper`` call is wrapped in a per-paper hard
+    deadline (default 60s) using a daemon thread. If a paper hangs on
+    an HTTP read (arxiv sometimes trickles bytes slowly enough that
+    httpx's inter-byte timeout never fires), the wrapper times out and
+    marks the paper as failed so sync can move to the next.
+
+    httpx timeout is also tightened to explicit
+    ``connect=10, read=15, write=10, pool=5`` (was a single 45s
+    inter-byte budget).
+    """
     root_path = configured_corpus_root(root)
     papers_path = root_path / "papers.jsonl"
     if not papers_path.exists():
@@ -415,18 +453,81 @@ def sync_arxiv_corpus(
     if client is None:
         import httpx
 
-        client = httpx.Client(timeout=_SOURCE_TIMEOUT, follow_redirects=True)
+        client = httpx.Client(
+            timeout=httpx.Timeout(connect=10.0, read=15.0, write=10.0, pool=5.0),
+            follow_redirects=True,
+        )
         owns_client = True
 
     statuses: list[PaperArtifactStatus] = []
     try:
         for paper in selected:
-            statuses.append(_sync_one_paper(root_path, paper, client=client, refresh=refresh))
+            statuses.append(
+                _sync_one_paper_with_deadline(
+                    root_path, paper, client=client, refresh=refresh,
+                    deadline_seconds=per_paper_timeout,
+                )
+            )
     finally:
         if owns_client:
             client.close()
     _update_manifest_after_sync(root_path, papers, selected, statuses, refresh=refresh)
     return statuses
+
+
+def _sync_one_paper_with_deadline(
+    root: Path,
+    paper: Paper,
+    *,
+    client: Any,
+    refresh: bool,
+    deadline_seconds: float,
+) -> PaperArtifactStatus:
+    """Run ``_sync_one_paper`` with a hard per-paper deadline.
+
+    Uses a daemon thread + join(timeout). If the thread doesn't return
+    within ``deadline_seconds``, we abandon it (it stays alive until
+    the underlying socket call finishes, but the main loop moves on).
+    This is the minimum-viable defense against arxiv slow-trickle
+    hangs — the leaked thread/socket eventually dies when httpx hits
+    its own read timeout. Worst case, a few threads accumulate over a
+    large sync run; daemon threads exit cleanly when the process does.
+    """
+    import threading
+
+    result: list[PaperArtifactStatus | None] = [None]
+    exc: list[BaseException | None] = [None]
+
+    def _runner() -> None:
+        try:
+            result[0] = _sync_one_paper(root, paper, client=client, refresh=refresh)
+        except BaseException as e:  # noqa: BLE001
+            exc[0] = e
+
+    t = threading.Thread(target=_runner, daemon=True, name=f"sync-{paper.paper_id}")
+    t.start()
+    t.join(timeout=deadline_seconds)
+    if t.is_alive():
+        logger.warning(
+            "sync timeout for %s after %.0fs; abandoning paper",
+            paper.paper_id, deadline_seconds,
+        )
+        return PaperArtifactStatus(
+            paper_id=paper.paper_id,
+            parse_status="failed",
+            errors=[f"per-paper deadline {deadline_seconds:.0f}s exceeded"],
+        )
+    if exc[0] is not None:
+        return PaperArtifactStatus(
+            paper_id=paper.paper_id,
+            parse_status="failed",
+            errors=[f"exception: {type(exc[0]).__name__}: {exc[0]}"],
+        )
+    return result[0] or PaperArtifactStatus(
+        paper_id=paper.paper_id,
+        parse_status="failed",
+        errors=["empty result"],
+    )
 
 
 def validate_corpus(root: str | Path) -> dict[str, Any]:

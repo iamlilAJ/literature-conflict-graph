@@ -287,6 +287,46 @@ def detect_anomalies_cmd(
     console.print(f"[green]Found {len(anomalies)} anomalies[/] {by_type} -> {output}")
 
 
+@app.command("detect-joint-anomalies")
+def detect_joint_anomalies_cmd(
+    claims: Path = typer.Option(DEFAULT_CLAIMS, "--claims"),
+    papers: Path = typer.Option(DEFAULT_PAPERS, "--papers"),
+    output: Path = typer.Option(Path("outputs/joint_anomalies.jsonl"), "--output"),
+    atlas_dir: Optional[Path] = typer.Option(None, "--atlas-dir",
+        help="Intern-Atlas mirror dir (default $AIGRAPH_INTERN_ATLAS_DIR or data/intern_atlas)."),
+    merge_into: Optional[Path] = typer.Option(None, "--merge-into",
+        help="Existing anomalies.jsonl to append joint anomalies to (writes the merged set to --output)."),
+    min_confidence: float = typer.Option(0.0, "--min-confidence"),
+) -> None:
+    """Detect Atlas-grounded joint anomalies (bottleneck_open_q_alignment).
+
+    Opt-in J2 detector — needs Intern-Atlas data; does NOT touch the frozen
+    8-type pipeline. Surfaces papers whose first-party weakness aligns with a
+    third-party Atlas bottleneck."""
+    from .intern_atlas_loader import is_available
+    from .joint_anomalies import detect_bottleneck_open_q_alignment, merge_joint_anomalies
+
+    if not is_available(atlas_dir):
+        console.print("[red]Intern-Atlas not available[/] (missing parquet mirror or polars). "
+                      "Set --atlas-dir / $AIGRAPH_INTERN_ATLAS_DIR and `pip install polars`.")
+        raise typer.Exit(1)
+
+    claim_records = read_jsonl(claims, Claim)
+    paper_records = read_jsonl(papers, Paper)
+    joint = detect_bottleneck_open_q_alignment(
+        claim_records, paper_records, atlas_dir, min_confidence=min_confidence)
+    console.print(f"[green]Joint anomalies (bottleneck_open_q_alignment): {len(joint)}[/]")
+
+    if merge_into is not None:
+        existing = read_jsonl(merge_into, Anomaly)
+        merged = merge_joint_anomalies(existing, joint)
+        write_jsonl(output, merged)
+        console.print(f"merged {len(existing)} frozen + {len(joint)} joint = {len(merged)} -> {output}")
+    else:
+        write_jsonl(output, joint)
+        console.print(f"-> {output}")
+
+
 @app.command("generate-hypotheses")
 def generate_hypotheses_cmd(
     anomalies: Path = typer.Option(DEFAULT_ANOMALIES, "--anomalies"),
@@ -941,16 +981,38 @@ def web_cmd(
     host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(8000, "--port"),
     runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+    with_mcp: bool = typer.Option(True, "--with-mcp/--no-mcp",
+                                  help="Mount the MCP server at /mcp."),
+    mcp_readonly: bool = typer.Option(False, "--mcp-readonly/--mcp-full",
+                                  help="Drop the paid run-trigger tools "
+                                       "(start_run/get_run_status). Use for "
+                                       "any network-exposed/public endpoint."),
 ) -> None:
-    """Run the v0.7-frozen explorer (cached-hypothesis browser, 0 LLM).
-
-    Reads run directories under --runs-root (default artifacts/runs) and
-    serves them at /, /api/runs, /run/{id}, /query, /query/graph. CORS is
-    enabled so the API can be embedded in cross-origin browser apps.
-    """
+    """Run the v0.7-frozen explorer (cached-hypothesis browser + MCP, 0 LLM)."""
     from .web import serve as web_serve
 
-    web_serve(host=host, port=port, runs_root=runs_root)
+    web_serve(host=host, port=port, runs_root=runs_root,
+              with_mcp=with_mcp, mcp_readonly=mcp_readonly)
+
+
+@app.command("mcp")
+def mcp_cmd(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8000, "--port"),
+    runs_root: Path = typer.Option(Path("artifacts/runs"), "--runs-root"),
+    mcp_readonly: bool = typer.Option(False, "--mcp-readonly/--mcp-full",
+                                  help="Drop the paid run-trigger tools "
+                                       "(start_run/get_run_status). Use for "
+                                       "any network-exposed/public endpoint."),
+) -> None:
+    """Run aigraph as an MCP server (streamable-http at /mcp) + web UI.
+
+    Alias for `aigraph web --with-mcp`; both serve the browser UI and the
+    MCP endpoint on the same port."""
+    from .web import serve as web_serve
+
+    web_serve(host=host, port=port, runs_root=runs_root,
+              with_mcp=True, mcp_readonly=mcp_readonly)
 
 
 @app.command("rebuild-community")

@@ -46,7 +46,7 @@ from .visualize import render_visualization
 
 
 DEFAULT_LIMIT = 20
-ALLOWED_LIMITS = {10, 20, 30}
+ALLOWED_LIMITS = {10, 20, 30, 50, 100}
 ALLOWED_SOURCES = {"arxiv", "openalex"}
 ALLOWED_STRATEGIES = {"balanced", "high-impact", "recent"}
 RUN_ID_RE = re.compile(r"^[0-9]{8}-[0-9]{6}-[a-f0-9]{6}$")
@@ -558,7 +558,7 @@ def extract_claims_with_status(
                 progress=round(progress, 4),
                 message=f"Extracted claims {completed}/{len(papers)}: {paper.title[:80]}",
                 papers=len(papers),
-                claims=sum(len(cs) for _, cs in results.values()),
+                claims=sum(len(cs) for _, cs, _, _ in results.values()),
                 **base_status,
             )
 

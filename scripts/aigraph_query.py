@@ -338,9 +338,15 @@ def _select(
             1 for (h, _) in matched if h.hypothesis_id not in bow_matched_ids
         )
     if drop_boilerplate:
-        concrete = [(h, r) for (h, r) in matched if not _is_boilerplate(h)]
-        if concrete:  # only drop meta-commentary when actionable ones remain
-            matched = concrete
+        # UNCONDITIONAL drop (caller opts in explicitly): the "an unreported
+        # moderator variable drives the conflicting results" text is a frozen
+        # template artifact, not a weak-but-real idea, so keeping it as filler
+        # just leaks low-value meta-commentary into delivery. Both opt-in callers
+        # tolerate an empty result — the idea cascade backfills non-emptiness via
+        # the community-bridge / method-extension tiers, and get_idea_report has
+        # other sections. (Default drop_boilerplate=False is unchanged: boilerplate
+        # is kept but demoted to last by the sort below.)
+        matched = [(h, r) for (h, r) in matched if not _is_boilerplate(h)]
     # Drop hypotheses whose parent anomaly is a degenerate self-conflict
     # (method==task etc.) — vacuous "X on X" framings the frozen detectors emit
     # unguarded — OR a same-paper "conflict" (all evidence from one paper), a

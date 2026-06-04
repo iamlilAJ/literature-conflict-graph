@@ -30,6 +30,11 @@ from typing import Any, Optional
 
 from mcp.server.fastmcp import FastMCP
 
+try:  # MCP SDK >=1.x ships DNS-rebinding protection that 421s non-localhost Host headers
+    from mcp.server.transport_security import TransportSecuritySettings
+except Exception:  # pragma: no cover - older SDKs have no host check
+    TransportSecuritySettings = None  # type: ignore
+
 _REPO = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO / "scripts"))
 from aigraph_query import query_records  # noqa: E402
@@ -126,6 +131,17 @@ def build_mcp(
     0-LLM tools remain available.
     """
     runs_root = Path(runs_root)
+    # Public deployment binds 0.0.0.0; the SDK's default DNS-rebinding protection
+    # only trusts localhost Host headers, so external clients (e.g. a teammate
+    # hitting the public IP) get HTTP 421 "Invalid Host header". This is a
+    # server-to-server, query-only endpoint, so relax the Host/Origin allowlist.
+    _security = None
+    if TransportSecuritySettings is not None:
+        _security = TransportSecuritySettings(
+            enable_dns_rebinding_protection=False,
+            allowed_hosts=["*"],
+            allowed_origins=["*"],
+        )
     mcp = FastMCP(
         "aigraph",
         instructions=(
@@ -138,6 +154,7 @@ def build_mcp(
         ),
         stateless_http=True,
         streamable_http_path="/",
+        transport_security=_security,
     )
 
     @mcp.tool()

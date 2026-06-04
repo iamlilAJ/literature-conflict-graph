@@ -96,6 +96,7 @@ def _mk_idea(tier: str, *, title: str, statement: str, mechanism: str = "",
         "tier": tier,
         "tier_label": TIER_LABELS.get(tier, tier),
         "title": (title or "").strip()[:200],
+        "abstract": "",  # filled by _add_abstracts() post-assembly (TL;DR of the method)
         "statement": (statement or "").strip(),
         "mechanism": (mechanism or "").strip(),
         "minimal_test": (minimal_test or "").strip(),
@@ -890,6 +891,10 @@ def generate_ideas(run_dir: Path, topic: str, *, min_ideas: int = 5,
     ideas = _dedup(collected)
     ideas.sort(key=lambda i: (TIER_RANK.get(i.get("tier"), 0),
                               i.get("confidence", 0.0)), reverse=True)
+    # Attach a readable abstract/TL;DR so the proposed METHOD is legible at a
+    # glance (the structured fields alone read too terse). LLM-elaborated when
+    # allowed, deterministic otherwise — always present.
+    _add_abstracts(ideas, allow_llm=allow_llm)
 
     return {
         "topic": topic,
@@ -983,6 +988,93 @@ def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
     return best_id
 
 
+_ABSTRACT_SYS = (
+    "You turn a research idea's terse fields into a clear, self-contained ABSTRACT (a TL;DR) so a "
+    "reader instantly understands WHAT METHOD is being proposed and how it works — the existing "
+    "fields are too fragmented to see the method. For EACH idea produce: (a) a concise `title` of "
+    "<=10 words that NAMES the proposed method or core claim (a real title, not a truncated "
+    "sentence), and (b) an `abstract` of 3-5 sentences covering, in order: (1) the gap/motivation, "
+    "(2) the proposed method/mechanism stated CONCRETELY — what you build and how it works; this is "
+    "the most important part and must be specific, (3) how it is evaluated (dataset/metric/baseline). "
+    "Stay faithful to the given fields; do NOT invent results, datasets, or numbers not implied by "
+    "them, and do not hedge. Return STRICT JSON: "
+    '{"abstracts":[{"id":"<idea_id>","title":"<=10 words","abstract":"<3-5 sentence paragraph>"}]}'
+)
+
+
+def _deterministic_abstract(idea: dict) -> str:
+    """LLM-free TL;DR: weave the structured fields into one flowing paragraph.
+    Used on readonly/offline deployments and as a fallback when the LLM call
+    fails, so every idea always carries an abstract."""
+    def _clean(s: str) -> str:
+        return (s or "").strip().rstrip(".")
+    parts = []
+    if _clean(idea.get("statement")):
+        parts.append(_clean(idea["statement"]))
+    if _clean(idea.get("mechanism")):
+        parts.append("Concretely, the proposed method works as follows: " + _clean(idea["mechanism"]))
+    if _clean(idea.get("minimal_test")):
+        parts.append("It is evaluated by: " + _clean(idea["minimal_test"]))
+    preds = [p for p in (idea.get("predictions") or []) if str(p).strip()]
+    if preds:
+        parts.append("Expected outcome: " + _clean(str(preds[0])))
+    return (". ".join(parts) + ".") if parts else ""
+
+
+def _add_abstracts(ideas: list[dict], *, allow_llm: bool) -> None:
+    """Attach a readable `abstract` (TL;DR of the proposed method) to each idea.
+    Always sets a deterministic abstract first, then upgrades to an LLM-elaborated
+    one in a single batched call when `allow_llm` and a client are available.
+    Mutates `ideas` in place; never raises (keeps the deterministic abstract on
+    any failure)."""
+    if not ideas:
+        return
+    for idea in ideas:
+        if not idea.get("abstract"):
+            idea["abstract"] = _deterministic_abstract(idea)
+    if not allow_llm:
+        return
+    try:
+        client, model = _llm_client_and_model()
+    except Exception:
+        return
+    if client is None:
+        return
+    payload = [{
+        "id": i.get("idea_id"),
+        "title": i.get("title"),
+        "statement": i.get("statement"),
+        "mechanism": i.get("mechanism"),
+        "minimal_test": i.get("minimal_test"),
+        "predictions": i.get("predictions"),
+    } for i in ideas]
+    try:
+        raw = call_llm_text(
+            client, model=model, system=_ABSTRACT_SYS,
+            user=json.dumps({"ideas": payload}, ensure_ascii=False),
+            max_tokens=2200, temperature=0.3,
+        )
+        s, e = raw.find("{"), raw.rfind("}")
+        data = json.loads(raw[s:e + 1]) if s != -1 else {}
+        by_id = {a.get("id"): a
+                 for a in (data.get("abstracts") or []) if isinstance(a, dict) and a.get("id")}
+        for idea in ideas:
+            got = by_id.get(idea.get("idea_id"))
+            if not got:
+                continue
+            ab = (got.get("abstract") or "").strip()
+            if ab:
+                idea["abstract"] = ab
+            # Swap in the concise generated title only for the long/truncated ones
+            # (tier A/B use hypothesis[:120]); leave the already-short forward-tier
+            # titles (<=10 words) untouched.
+            new_title = (got.get("title") or "").strip()
+            if new_title and len(idea.get("title", "")) > 60:
+                idea["title"] = new_title[:200]
+    except Exception:
+        return  # keep the deterministic abstracts already attached
+
+
 def render_ideas_markdown(result: dict) -> str:
     topic = result["topic"]
     ideas = result["ideas"]
@@ -995,7 +1087,12 @@ def render_ideas_markdown(result: dict) -> str:
     for i, idea in enumerate(ideas, 1):
         out.append(f"## {i}. {idea['title']}  _({idea['tier_label']}, conf={idea['confidence']})_")
         out.append("")
-        out.append(idea["statement"])
+        # Lead with the abstract/TL;DR (subsumes the bare statement); fall back to
+        # the statement if no abstract was attached.
+        if idea.get("abstract"):
+            out.append(f"**TL;DR.** {idea['abstract']}")
+        elif idea.get("statement"):
+            out.append(idea["statement"])
         out.append("")
         if idea["mechanism"]:
             out.append(f"**Mechanism.** {idea['mechanism']}")

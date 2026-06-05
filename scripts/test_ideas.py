@@ -86,8 +86,20 @@ def print_result(out):
         print(f"   then:  python3 {sys.argv[0]} \"<topic>\" --run {out.get('run_id')}")
         return
     if status == "error":
-        print(f"❌ build failed: {out.get('message')}")
-        print("   (usually the shared LLM endpoint is rate-limited — retry or lower --max-papers)")
+        # Distinguish failure source so operators don't chase the wrong thing:
+        # a paper-retrieval provider (arxiv/openalex) 429 is NOT the LLM endpoint
+        # being rate-limited (issue #42).
+        src = str(out.get("source") or "").lower()
+        kind = str(out.get("error_kind") or "").lower()
+        msg = out.get("message") or out.get("error") or "unknown error"
+        print(f"❌ build failed: {msg}")
+        if kind == "rate_limit" and src in ("arxiv", "openalex"):
+            print(f"   (the {src} PAPER-RETRIEVAL provider returned HTTP 429 — this is NOT the")
+            print("    shared LLM endpoint. Wait and retry, lower --max-papers, or switch source.)")
+        elif kind == "rate_limit":
+            print("   (the shared LLM endpoint is rate-limited — retry or lower --max-papers)")
+        else:
+            print(f"   (failure source: {src or 'unknown'}, kind: {kind or 'error'})")
         return
     md = out.get("ideas_markdown")
     stats = out.get("stats", {})

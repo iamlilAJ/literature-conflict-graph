@@ -85,6 +85,20 @@ MIN_REL_FLAG=""
     --records-out "$RECORDS" \
     --drop-untestable $SEMANTIC_FLAGS $MIN_REL_FLAG 1>&2
 
+# Stage 3 -> Stage 4 structured-records contract (issue #38): also persist the
+# JSON records ($RECORDS) into the project workspace so Stage 4 can read the
+# structured fields (evidence_claims[].claim_id, minimal_test, predictions,
+# graph_bridge) directly instead of re-parsing the markdown prose for citations.
+# Strictly additive: the markdown deliverable below is unchanged. The OMC-side
+# Stage 4 consumer change is a separate Memento-Research PR.
+if [ -n "${OMC_PROJECT_DIR:-}" ] && [ -s "$RECORDS" ]; then
+    if cp "$RECORDS" "$OMC_PROJECT_DIR/stage3_lcg_records.json" 2>/dev/null; then
+        >&2 echo "[lcg] wrote records: $OMC_PROJECT_DIR/stage3_lcg_records.json ($(wc -c < "$RECORDS" | tr -d ' ') bytes)"
+    else
+        >&2 echo "[lcg] WARN: could not write stage3_lcg_records.json"
+    fi
+fi
+
 # Step 2: in chat mode, fall back to topic if no LLM key is available.
 if [ "$MODE" = "chat" ]; then
     LLM_KEY="${CUSTOM_API_KEY:-${OPENROUTER_API_KEY:-}}"

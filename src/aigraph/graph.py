@@ -87,6 +87,7 @@ def build_graph(
     classify_stance: bool = False,
     stance_client: object | None = None,
     stance_model: str | None = None,
+    prediction_year_cutoff: int | None = None,
 ) -> nx.MultiDiGraph:
     g: nx.MultiDiGraph = nx.MultiDiGraph()
 
@@ -170,7 +171,44 @@ def build_graph(
     # attributes exist anywhere in the graph.
     from .citation_stance_validation import validate_contradicts_via_stance
     validate_contradicts_via_stance(g)
+    # Hard gate against look-ahead leakage (issue #21, thaw #3): when a
+    # prediction cutoff is set, drop every edge whose SOURCE paper was
+    # published after the cutoff — those edges (a post-cutoff paper's claims,
+    # citations, couplings) are future information that must not leak into an
+    # as-of-cutoff influence prediction. Default None preserves behaviour.
+    if prediction_year_cutoff is not None:
+        _drop_post_cutoff_edges(g, claims, papers_by_id, int(prediction_year_cutoff))
     return g
+
+
+def _drop_post_cutoff_edges(
+    g: nx.MultiDiGraph,
+    claims: list[Claim],
+    papers_by_id: dict[str, Paper],
+    cutoff: int,
+) -> None:
+    """Remove edges whose source node resolves to a paper published after
+    ``cutoff``. Paper-node sources use the paper's year; Claim-node sources use
+    their owning paper's year; entity-node sources have no single source paper
+    and are left untouched. Mutates ``g`` in place."""
+    claim_paper = {f"Claim:{c.claim_id}": c.paper_id for c in claims}
+
+    def _source_year(node: str) -> int | None:
+        if node.startswith("Paper:"):
+            paper = papers_by_id.get(node[len("Paper:"):])
+        elif node.startswith("Claim:"):
+            paper = papers_by_id.get(claim_paper.get(node, ""))
+        else:
+            return None
+        return int(paper.year) if (paper is not None and paper.year) else None
+
+    to_drop = [
+        (u, v, k)
+        for u, v, k in g.edges(keys=True)
+        if (yr := _source_year(u)) is not None and yr > cutoff
+    ]
+    for u, v, k in to_drop:
+        g.remove_edge(u, v, k)
 
 
 def citation_metrics(paper: Paper, current_year: int | None = None) -> dict[str, float | int]:

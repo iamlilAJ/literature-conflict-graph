@@ -49,6 +49,41 @@ WEIGHTS_PHASE1: dict[str, float] = {
     "scope_overreach": 0.20,    # Risk_scope (subtractive)
 }
 
+# Two-regime weights (thaw #3, issues #25 + #26). The val1_primary real-venue
+# cohort (findings/2026-05-14-validation-v1-primary-real-venue-cohort.md) showed
+# the single WEIGHTS_PHASE1 vector fails on aggregate (ρ_total = −0.069, a freeze
+# §4 trip) because the novel and known regimes want OPPOSITE handling of the risk
+# dimension: scope_overreach correlates −0.430 with citations on known hypotheses
+# (the (1−risk) term is right) but +0.362 on novel ones (the term hurts). A single
+# vector can't capture both. So weight known hyps heavily on low-risk grounding and
+# novel hyps on the novelty signal, dropping the (mis-signed) risk term for novel.
+WEIGHTS_KNOWN: dict[str, float] = {
+    "community_reach": 0.25,
+    "novelty": 0.0,
+    "grounding_depth": 0.25,
+    "scope_overreach": 0.50,   # (1−risk) term carries the known-subset signal
+}
+WEIGHTS_NOVEL: dict[str, float] = {
+    "community_reach": 0.25,
+    "novelty": 0.50,
+    "grounding_depth": 0.25,
+    "scope_overreach": 0.0,    # risk term is mis-signed for novel hyps — drop it
+}
+
+
+def weights_for(is_novel: Optional[bool]) -> dict[str, float]:
+    """Phase-1 weight vector conditioned on novelty regime (thaw #3).
+
+    ``True`` -> novelty-weighted, no risk term. ``False`` -> risk-weighted,
+    no novelty term. ``None`` (no novelty_check available) -> the original
+    single-regime ``WEIGHTS_PHASE1`` (preserves behaviour when novelty data
+    is absent, e.g. corpora without an arxiv-novelty-check pass)."""
+    if is_novel is True:
+        return WEIGHTS_NOVEL
+    if is_novel is False:
+        return WEIGHTS_KNOWN
+    return WEIGHTS_PHASE1
+
 
 _EMPTY_HIERARCHY: dict = {
     "domains": {},
@@ -290,7 +325,9 @@ def predict_influence_phase1(
 ) -> InfluenceScore:
     """Compute the Phase 1 (4-dim) influence score for one hypothesis.
 
-    ``weights`` defaults to ``WEIGHTS_PHASE1``. ``claim_to_cluster`` is
+    ``weights``, when None (default), is selected per-hypothesis by novelty
+    regime via ``weights_for(is_novel)`` (thaw #3); pass an explicit dict to
+    pin a single vector (e.g. for ablations). ``claim_to_cluster`` is
     an optional pre-built index from
     ``_build_claim_to_cluster_index(hierarchy)``; pass it from
     ``predict_influence_batch`` to amortize the index build across many
@@ -301,11 +338,14 @@ def predict_influence_phase1(
     overreach contribution is ``(1 - risk)`` — low overreach raises the
     total, high overreach lowers it.
     """
-    weights = weights or WEIGHTS_PHASE1
+    explicit_weights = weights  # caller override (ablations); None = auto-by-regime
     reach, n_comms = community_reach(h, hierarchy, claim_to_cluster=claim_to_cluster)
     nov, is_nov, n_sim = novelty_score(h)
     grounding = grounding_depth(h, claims_by_id)
     overreach = scope_overreach(h, claims_by_id)
+    # thaw #3: pick the novelty-regime weights from the hypothesis' own is_novel
+    # unless the caller pinned an explicit vector.
+    weights = explicit_weights if explicit_weights is not None else weights_for(is_nov)
 
     total = (
         weights.get("community_reach", 0.0) * reach

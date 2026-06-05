@@ -216,6 +216,65 @@ def test_predict_influence_phase1_combines_correctly():
     assert score.scope_overreach_risk == 0.0
 
 
+def test_weights_for_selects_two_regime():
+    """thaw #3 (#25/#26): weights vary by novelty regime; None -> original."""
+    from aigraph.influence import weights_for, WEIGHTS_NOVEL, WEIGHTS_KNOWN, WEIGHTS_PHASE1
+    assert weights_for(True) == WEIGHTS_NOVEL
+    assert weights_for(False) == WEIGHTS_KNOWN
+    assert weights_for(None) == WEIGHTS_PHASE1
+    # the regimes genuinely differ on the load-bearing dims
+    assert WEIGHTS_NOVEL["novelty"] > WEIGHTS_KNOWN["novelty"]
+    assert WEIGHTS_KNOWN["scope_overreach"] > WEIGHTS_NOVEL["scope_overreach"]
+
+
+def test_predict_uses_regime_weights_by_novelty():
+    """The scorer picks the regime from each hypothesis' own is_novel, and the
+    total matches that regime's formula; novel vs known score the SAME dims
+    differently."""
+    from aigraph.influence import weights_for
+    c1 = _make_claim(
+        canonical_method="rag", canonical_task="qa", dataset_canonical="natural_questions",
+        evidence_span="RAG improves factual QA over the closed-book baseline",
+        magnitude_value=5.2,
+    )
+    hierarchy = {
+        "communities": {"c000": {}},
+        "cluster_to_community": {"rag-qa": "c000"},
+        "clusters": {"rag-qa": {"claim_ids": ["c1"]}},
+    }
+    totals = {}
+    for is_novel in (True, False):
+        # 1 similar paper -> novel novelty = 1/(1+1) = 0.5, which separates the
+        # two regime totals (avoids the novelty==(1-risk) coincidence at 0 similar).
+        h = _make_hypothesis(explains_claims=["c1"], scope={"method": "rag"},
+                             novelty={"is_novel": is_novel, "similar_papers": [{"x": 1}]})
+        s = predict_influence_phase1(h, hierarchy, {"c1": c1})
+        assert s.is_novel is is_novel
+        w = weights_for(is_novel)
+        expected = (w["community_reach"] * s.community_reach
+                    + w["novelty"] * s.novelty
+                    + w["grounding_depth"] * s.grounding_depth
+                    + w["scope_overreach"] * (1.0 - s.scope_overreach_risk))
+        assert abs(s.total - expected) < 1e-9
+        totals[is_novel] = s.total
+    assert totals[True] != totals[False]  # different regimes -> different scores
+
+
+def test_explicit_weights_pin_overrides_regime():
+    """Back-compat: an explicit weights dict is honoured even when is_novel is set."""
+    from aigraph.influence import WEIGHTS_KNOWN
+    c1 = _make_claim(canonical_method="rag", canonical_task="qa")
+    hierarchy = {"communities": {}, "cluster_to_community": {}, "clusters": {}}
+    h = _make_hypothesis(explains_claims=["c1"],
+                         novelty={"is_novel": True, "similar_papers": []})
+    s = predict_influence_phase1(h, hierarchy, {"c1": c1}, weights=WEIGHTS_KNOWN)
+    w = WEIGHTS_KNOWN
+    expected = (w["community_reach"] * s.community_reach + w["novelty"] * s.novelty
+                + w["grounding_depth"] * s.grounding_depth
+                + w["scope_overreach"] * (1.0 - s.scope_overreach_risk))
+    assert abs(s.total - expected) < 1e-9  # pinned vector used despite is_novel=True
+
+
 def test_predict_influence_batch_uses_shared_index():
     """Batch path returns one score per input, in input order, using a
     single claim_to_cluster index. Smoke-check correctness; the

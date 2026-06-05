@@ -583,3 +583,38 @@ def test_build_graph_does_not_classify_stance_by_default():
     for nd in cites_attrs:
         assert "stance" not in nd
         assert "stance_confidence" not in nd
+
+
+def test_prediction_year_cutoff_drops_post_cutoff_source_edges():
+    """#21 / thaw #3: when a cutoff is set, every edge whose SOURCE paper was
+    published after the cutoff is removed; default (None) preserves all edges."""
+    claims = [
+        Claim(claim_id="c_old", paper_id="p_old", claim_text="old", method="RAG",
+              task="qa", direction="positive"),
+        Claim(claim_id="c_new", paper_id="p_new", claim_text="new", method="RAG",
+              task="qa", direction="positive"),
+    ]
+    papers = [
+        Paper(paper_id="p_old", title="Old", year=2018, venue="ICLR"),
+        Paper(paper_id="p_new", title="New", year=2025, venue="NeurIPS",
+              referenced_works=["p_old"]),
+    ]
+    # default: the post-2020 paper's edges are present
+    g_all = build_graph(claims, papers)
+    assert g_all.has_edge("Paper:p_new", "Claim:c_new")
+
+    # cutoff 2020: nothing sourced from p_new (year 2025) may survive
+    g = build_graph(claims, papers, prediction_year_cutoff=2020)
+    papers_by_id = {p.paper_id: p for p in papers}
+    claim_paper = {f"Claim:{c.claim_id}": c.paper_id for c in claims}
+    for u, _v, _k in g.edges(keys=True):
+        if u.startswith("Paper:"):
+            p = papers_by_id.get(u[len("Paper:"):])
+        elif u.startswith("Claim:"):
+            p = papers_by_id.get(claim_paper.get(u, ""))
+        else:
+            p = None
+        if p is not None and p.year:
+            assert p.year <= 2020, f"edge from post-cutoff paper survived: {u}"
+    assert g.has_edge("Paper:p_old", "Claim:c_old")      # pre-cutoff kept
+    assert not g.has_edge("Paper:p_new", "Claim:c_new")  # post-cutoff dropped

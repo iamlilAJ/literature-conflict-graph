@@ -90,3 +90,45 @@ def test_fetch_arxiv_recent_strategy_uses_submitted_date_sort():
     )
     assert fake.calls[0]["sortBy"] == "submittedDate"
     assert papers[0].retrieval_channel == "arxiv-recent"
+
+
+class _CodedResponse:
+    def __init__(self, status_code: int, text: str = ""):
+        self.status_code = status_code
+        self.text = text
+        self.headers: dict = {}
+
+    def raise_for_status(self) -> None:
+        if self.status_code >= 400:
+            raise RuntimeError(f"HTTP {self.status_code}")
+
+
+class _SeqClient:
+    def __init__(self, responses: list):
+        self.responses = responses
+        self.calls = 0
+
+    def get(self, url: str, params: dict):
+        resp = self.responses[min(self.calls, len(self.responses) - 1)]
+        self.calls += 1
+        return resp
+
+
+def test_arxiv_get_retries_on_429_then_succeeds(monkeypatch):
+    # issue #41: a transient 429 must be retried, not turned into a terminal error.
+    import aigraph.fetch_arxiv as fa
+    monkeypatch.setattr(fa.time, "sleep", lambda *_a, **_k: None)
+    client = _SeqClient([_CodedResponse(429), _CodedResponse(429), _CodedResponse(200, "<ok/>")])
+    resp = fa._arxiv_get(client, {"search_query": "x"})
+    assert resp.status_code == 200
+    assert client.calls == 3  # two 429 retries, then success
+
+
+def test_arxiv_get_raises_after_retries_exhausted(monkeypatch):
+    import pytest
+    import aigraph.fetch_arxiv as fa
+    monkeypatch.setattr(fa.time, "sleep", lambda *_a, **_k: None)
+    client = _SeqClient([_CodedResponse(429)])
+    with pytest.raises(RuntimeError):
+        fa._arxiv_get(client, {"search_query": "x"})
+    assert client.calls == fa._ARXIV_MAX_RETRIES + 1  # initial attempt + N retries

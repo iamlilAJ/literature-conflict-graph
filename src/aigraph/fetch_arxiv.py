@@ -13,6 +13,50 @@ from .paper_select import select_representative_papers
 ARXIV_QUERY_URL = "https://export.arxiv.org/api/query"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
 
+# Bounded retry for transient arXiv failures (HTTP 429 / 5xx). arXiv throttles
+# per-IP, so a single 429 must NOT kill a whole corpus build before any product
+# is written (issue #41). Mirrors fetch_openalex._openalex_get: retry with
+# exponential backoff (honouring Retry-After), then raise only once exhausted.
+_ARXIV_MAX_RETRIES = 3
+_ARXIV_DEFAULT_BACKOFF = 5.0
+_ARXIV_MAX_BACKOFF = 60.0
+
+
+def _arxiv_get(client: Any, params: dict[str, Any]) -> Any:
+    """GET the arXiv API with bounded retry/backoff on 429/5xx.
+
+    Returns a successful (raise_for_status-passing) response, or raises the
+    underlying HTTP error after retries are exhausted so the caller can mark the
+    run as a terminal retrieval failure (source=arxiv)."""
+    attempt = 0
+    while True:
+        response = client.get(ARXIV_QUERY_URL, params=params)
+        status = getattr(response, "status_code", 200)
+        if status == 429 or status >= 500:
+            if attempt >= _ARXIV_MAX_RETRIES:
+                response.raise_for_status()
+                return response
+            retry_after_raw = ""
+            headers = getattr(response, "headers", None)
+            if headers is not None:
+                retry_after_raw = str(
+                    headers.get("Retry-After") or headers.get("retry-after") or ""
+                )
+            try:
+                backoff = (
+                    float(retry_after_raw)
+                    if retry_after_raw
+                    else _ARXIV_DEFAULT_BACKOFF * (2 ** attempt)
+                )
+            except ValueError:
+                backoff = _ARXIV_DEFAULT_BACKOFF * (2 ** attempt)
+            backoff = min(max(backoff, 1.0), _ARXIV_MAX_BACKOFF)
+            time.sleep(backoff)
+            attempt += 1
+            continue
+        response.raise_for_status()
+        return response
+
 
 def entry_to_paper(entry: ET.Element) -> Paper:
     arxiv_url = _text(entry, "atom:id")
@@ -110,9 +154,9 @@ def _iter_entries(
     start = 0
     while fetched < max_results:
         batch_size = min(page_size, max_results - fetched)
-        response = client.get(
-            ARXIV_QUERY_URL,
-            params={
+        response = _arxiv_get(
+            client,
+            {
                 "search_query": query,
                 "start": start,
                 "max_results": batch_size,
@@ -120,7 +164,6 @@ def _iter_entries(
                 "sortOrder": "descending",
             },
         )
-        response.raise_for_status()
         root = ET.fromstring(response.text)
         entries = root.findall("atom:entry", ATOM_NS)
         if not entries:

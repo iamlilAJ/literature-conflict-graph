@@ -47,7 +47,7 @@ from .visualize import render_visualization
 
 DEFAULT_LIMIT = 20
 ALLOWED_LIMITS = {10, 20, 30, 50, 100}
-ALLOWED_SOURCES = {"arxiv", "openalex"}
+ALLOWED_SOURCES = {"arxiv", "openalex", "union"}
 ALLOWED_STRATEGIES = {"balanced", "high-impact", "recent"}
 RUN_ID_RE = re.compile(r"^[0-9]{8}-[0-9]{6}-[a-f0-9]{6}$")
 ARXIV_SYNTAX_RE = re.compile(r"\b(all|ti|abs|au|cat|id):|(\bAND\b|\bOR\b|\bANDNOT\b)", re.IGNORECASE)
@@ -306,6 +306,113 @@ def friendly_error_payload(exc: Exception, request: SearchRequest) -> dict[str, 
     }
 
 
+# If the union of all sources/variants returns fewer than this fraction of the
+# requested limit, the corpus is flagged weak (#48) and single-source modes fall
+# back to the other source.
+_RETRIEVAL_RECALL_FRACTION = 0.6
+
+
+def _paper_dedup_key(paper: Paper) -> str:
+    """Dedup key that survives the arXiv/OpenAlex id-namespace split: prefer the
+    normalized title (catches the same paper arriving from both sources), else the
+    version-stripped paper_id."""
+    title = (getattr(paper, "title", "") or "").strip().lower()
+    if title:
+        return " ".join(title.split())
+    pid = (getattr(paper, "paper_id", "") or "").strip().lower()
+    return re.sub(r"v\d+$", "", pid)
+
+
+def _dedup_papers(papers: list[Paper]) -> list[Paper]:
+    seen: set[str] = set()
+    out: list[Paper] = []
+    for p in papers:
+        key = _paper_dedup_key(p)
+        if key and key in seen:
+            continue
+        if key:
+            seen.add(key)
+        out.append(p)
+    return out
+
+
+def _retrieve_corpus(
+    request: SearchRequest,
+    status: Callable[..., None],
+    base_status: dict,
+) -> tuple[list[Paper], dict]:
+    """Resilient, multi-source, variant-aware retrieval (issues #46/#47/#48).
+
+    - #46 arXiv tries a TIERED query plan (the primary normalized query first,
+      then broader ``retrieval_variants``) rather than one hard-AND query.
+    - #47 ``source="union"`` fetches arXiv AND OpenAlex and dedups; single-source
+      modes fall back to the other source only when recall is short.
+    - #48 each source/query is wrapped so a 429/timeout/error skips that step and
+      continues instead of killing the run; returns a ``retrieval_quality`` flag
+      and a ``retrieval_attempts`` audit trail.
+    """
+    target = max(1, int(request.limit))
+    recall_floor = max(8, int(round(target * _RETRIEVAL_RECALL_FRACTION)))
+    collected: list[Paper] = []
+    attempts: list[dict] = []
+
+    def _enough() -> bool:
+        return len(_dedup_papers(collected)) >= recall_floor
+
+    def _try_openalex() -> None:
+        try:
+            ps = fetch_openalex_papers(
+                request.retrieval_topic, from_year=2020, to_year=2026, limit=target,
+                strategy=request.strategy, citation_weight=request.citation_weight,
+                min_relevance=request.min_relevance,
+                query_variants=request.retrieval_variants,
+            )
+            collected.extend(ps)
+            attempts.append({"source": "openalex", "query": request.retrieval_topic,
+                             "papers": len(ps), "ok": True})
+        except Exception as exc:  # 429 / timeout / network — skip, don't kill the run
+            attempts.append({"source": "openalex", "papers": 0, "ok": False,
+                             "error": "rate_limit" if is_rate_limit_error(exc) else type(exc).__name__})
+
+    def _try_arxiv() -> None:
+        plan = [request.arxiv_query]
+        for variant in (request.retrieval_variants or []):
+            q = normalize_arxiv_query(variant)
+            if q and q not in plan:
+                plan.append(q)  # broader fallback tiers (#46)
+        for q in plan:
+            try:
+                ps = fetch_arxiv_papers(q, from_year=2020, to_year=2026,
+                                        limit=target, strategy=request.strategy)
+                collected.extend(ps)
+                attempts.append({"source": "arxiv", "query": q, "papers": len(ps), "ok": True})
+            except Exception as exc:
+                attempts.append({"source": "arxiv", "query": q, "papers": 0, "ok": False,
+                                 "error": "rate_limit" if is_rate_limit_error(exc) else type(exc).__name__})
+                continue
+            if _enough():
+                break
+
+    union = request.source == "union"
+    order = [_try_arxiv, _try_openalex] if request.source == "arxiv" else [_try_openalex, _try_arxiv]
+    for i, step in enumerate(order):
+        if i > 0 and not union and _enough():
+            break  # single-source: only hit the fallback source when recall is short
+        step()
+        status(status="running", stage="fetching", progress=0.08 + 0.02 * i,
+               message=f"Retrieved {len(_dedup_papers(collected))} papers so far.", **base_status)
+
+    papers = _dedup_papers(collected)
+    quality = "empty" if not papers else ("weak" if len(papers) < recall_floor else "ok")
+    return papers, {
+        "retrieval_quality": quality,
+        "retrieval_attempts": attempts,
+        "papers_retrieved": len(papers),
+        "recall_floor": recall_floor,
+        "target": target,
+    }
+
+
 def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     run_dir = request.run_dir
     papers_path = run_dir / "papers.jsonl"
@@ -336,7 +443,7 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
         "data_url": f"/runs/{request.run_id}/",
     }
 
-    source_label = "OpenAlex" if request.source == "openalex" else "arXiv"
+    source_label = {"openalex": "OpenAlex", "union": "arXiv + OpenAlex"}.get(request.source, "arXiv")
     status(
         status="running",
         stage="fetching",
@@ -344,44 +451,20 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
         message=f"Searching {source_label} papers with {request.strategy} strategy.",
         **base_status,
     )
-    if request.source == "openalex":
-        try:
-            papers = fetch_openalex_papers(
-                request.retrieval_topic,
-                from_year=2020,
-                to_year=2026,
-                limit=request.limit,
-                strategy=request.strategy,
-                citation_weight=request.citation_weight,
-                min_relevance=request.min_relevance,
-                query_variants=request.retrieval_variants,
-            )
-        except Exception as exc:
-            if not is_rate_limit_error(exc):
-                raise
-            status(
-                status="running",
-                stage="fetching",
-                progress=0.08,
-                message="OpenAlex is rate-limited. Falling back to arXiv so the run can keep going.",
-                source_fallback="arxiv",
-                **base_status,
-            )
-            papers = fetch_arxiv_papers(
-                request.arxiv_query,
-                from_year=2020,
-                to_year=2026,
-                limit=request.limit,
-                strategy="balanced",
-            )
-            base_status["source_fallback"] = "arxiv"
-    else:
-        papers = fetch_arxiv_papers(
-            request.arxiv_query,
-            from_year=2020,
-            to_year=2026,
-            limit=request.limit,
-            strategy=request.strategy,
+    # Resilient, multi-source, variant-aware retrieval (#46/#47/#48).
+    papers, retrieval_report = _retrieve_corpus(request, status, base_status)
+    base_status["retrieval_quality"] = retrieval_report["retrieval_quality"]
+    base_status["retrieval_attempts"] = retrieval_report["retrieval_attempts"]
+    if retrieval_report["retrieval_quality"] in ("empty", "weak"):
+        status(
+            status="running",
+            stage="fetching",
+            progress=0.12,
+            message=(
+                f"Weak retrieval: {retrieval_report['papers_retrieved']} papers "
+                f"(wanted ~{request.limit}). Continuing — downstream graph/anomalies may be sparse."
+            ),
+            **base_status,
         )
     papers, hydration_counters = hydrate_papers_from_corpus(papers)
     print(

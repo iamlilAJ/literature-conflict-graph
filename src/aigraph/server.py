@@ -42,6 +42,7 @@ from .paper_reader import (
 )
 from .report import render_report
 from .scoring import score_all, select_mmr
+from .semantic_gate import apply_semantic_gate
 from .visualize import render_visualization
 
 
@@ -403,13 +404,32 @@ def _retrieve_corpus(
                message=f"Retrieved {len(_dedup_papers(collected))} papers so far.", **base_status)
 
     papers = _dedup_papers(collected)
+    # retrieval_quality is a RECALL signal (did we find enough?) — measure it on
+    # the pre-gate union so the semantic precision pass below can never make the
+    # corpus look "weak".
     quality = "empty" if not papers else ("weak" if len(papers) < recall_floor else "ok")
+
+    # Semantic precision gate (#46/#47/#48 follow-up): the frozen per-source
+    # selection ranks by LEXICAL overlap, so off-topic papers sharing generic
+    # tokens leak into broad/union corpora. Drop the off-topic tail and re-order
+    # survivors by semantic relevance (fail-open: a no-op without an LLM key).
+    gate_floor = max(8, recall_floor) if papers else 0
+    status(status="running", stage="fetching", progress=0.12,
+           message=f"Filtering {len(papers)} papers for topical relevance.", **base_status)
+    papers, gate_report = apply_semantic_gate(
+        request.topic or request.retrieval_topic,
+        papers,
+        keep_floor=gate_floor,
+    )
+
     return papers, {
         "retrieval_quality": quality,
         "retrieval_attempts": attempts,
         "papers_retrieved": len(papers),
+        "papers_before_gate": gate_report.get("before", len(papers)),
         "recall_floor": recall_floor,
         "target": target,
+        "semantic_gate": gate_report,
     }
 
 
@@ -455,6 +475,7 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     papers, retrieval_report = _retrieve_corpus(request, status, base_status)
     base_status["retrieval_quality"] = retrieval_report["retrieval_quality"]
     base_status["retrieval_attempts"] = retrieval_report["retrieval_attempts"]
+    base_status["semantic_gate"] = retrieval_report.get("semantic_gate", {"applied": False})
     if retrieval_report["retrieval_quality"] in ("empty", "weak"):
         status(
             status="running",

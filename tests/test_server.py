@@ -58,6 +58,79 @@ def test_normalize_arxiv_query_dedupes_overlapping_phrases():
     assert "all:reasoning" in q
 
 
+# -- resilient multi-source retrieval (#46/#47/#48) --------------------------
+
+def _mk_paper(pid, title, year=2024):
+    from aigraph.models import Paper
+    return Paper(paper_id=pid, title=title, year=year, venue="x")
+
+
+def _mk_request(**over):
+    from pathlib import Path
+    from aigraph.server import SearchRequest
+    base = dict(
+        run_id="r", topic="t", retrieval_topic="memory policy distillation",
+        retrieval_variants=["policy distillation"], arxiv_query="all:memory AND all:policy",
+        limit=10, insight_generator="llm", source="arxiv", strategy="balanced",
+        citation_weight=0.45, min_relevance=0.3, run_dir=Path("/tmp"),
+    )
+    base.update(over)
+    return SearchRequest(**base)
+
+
+def test_retrieve_corpus_unions_and_dedups_across_sources(monkeypatch):
+    import aigraph.server as s
+    monkeypatch.setattr(s, "fetch_arxiv_papers",
+                        lambda *a, **k: [_mk_paper("arxiv:1", "Shared Title"), _mk_paper("arxiv:2", "A only")])
+    monkeypatch.setattr(s, "fetch_openalex_papers",
+                        lambda *a, **k: [_mk_paper("openalex:W9", "Shared Title"), _mk_paper("openalex:W8", "B only")])
+    papers, rep = s._retrieve_corpus(_mk_request(source="union"), lambda **kw: None, {})
+    assert sorted(p.title for p in papers) == ["A only", "B only", "Shared Title"]  # dup title collapsed
+    assert {a["source"] for a in rep["retrieval_attempts"]} == {"arxiv", "openalex"}  # union hits both
+
+
+def test_retrieve_corpus_arxiv_tiers_to_variants_then_falls_back(monkeypatch):
+    import aigraph.server as s
+    arxiv_qs = []
+    def fake_arxiv(query, **k):
+        arxiv_qs.append(query)
+        return [_mk_paper(f"arxiv:{len(arxiv_qs)}", f"p{len(arxiv_qs)}")]  # only 1 each -> below floor
+    monkeypatch.setattr(s, "fetch_arxiv_papers", fake_arxiv)
+    monkeypatch.setattr(s, "fetch_openalex_papers",
+                        lambda *a, **k: [_mk_paper(f"openalex:{i}", f"oa{i}") for i in range(10)])
+    papers, rep = s._retrieve_corpus(
+        _mk_request(source="arxiv", arxiv_query="all:primary", retrieval_variants=["alpha", "beta"]),
+        lambda **kw: None, {})
+    assert "all:primary" in arxiv_qs and len(arxiv_qs) >= 2  # tiered to the broader variant queries
+    assert any(a["source"] == "openalex" for a in rep["retrieval_attempts"])  # low recall -> openalex fallback
+    assert len(papers) >= 8 and rep["retrieval_quality"] == "ok"
+
+
+def test_retrieve_corpus_skips_failing_source_without_killing_run(monkeypatch):
+    import aigraph.server as s
+    def boom(*a, **k):
+        raise TimeoutError("slow provider")
+    monkeypatch.setattr(s, "fetch_openalex_papers", boom)
+    monkeypatch.setattr(s, "fetch_arxiv_papers",
+                        lambda *a, **k: [_mk_paper(f"arxiv:{i}", f"t{i}") for i in range(10)])
+    papers, rep = s._retrieve_corpus(_mk_request(source="openalex"), lambda **kw: None, {})
+    oa = [a for a in rep["retrieval_attempts"] if a["source"] == "openalex"][0]
+    assert oa["ok"] is False  # failure recorded, not raised
+    assert len(papers) == 10  # arxiv fallback supplied the corpus
+
+
+def test_retrieve_corpus_quality_flags(monkeypatch):
+    import aigraph.server as s
+    monkeypatch.setattr(s, "fetch_openalex_papers", lambda *a, **k: [])
+    monkeypatch.setattr(s, "fetch_arxiv_papers", lambda *a, **k: [])
+    _, rep = s._retrieve_corpus(_mk_request(source="arxiv", retrieval_variants=[]), lambda **kw: None, {})
+    assert rep["retrieval_quality"] == "empty"
+    monkeypatch.setattr(s, "fetch_arxiv_papers",
+                        lambda *a, **k: [_mk_paper(f"a{i}", f"t{i}") for i in range(3)])
+    _, rep = s._retrieve_corpus(_mk_request(source="arxiv", retrieval_variants=[]), lambda **kw: None, {})
+    assert rep["retrieval_quality"] == "weak"  # 3 < recall floor (8)
+
+
 def test_public_redirect_url_redirects_apex_domain_to_graph_subdomain():
     assert public_redirect_url("paper-universe.uk", "/") == f"https://{PRIMARY_PUBLIC_HOST}/"
     assert public_redirect_url("www.paper-universe.uk", "/search/demo") == f"https://{PRIMARY_PUBLIC_HOST}/search/demo"

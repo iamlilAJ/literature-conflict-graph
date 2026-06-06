@@ -341,6 +341,7 @@ def build_mcp(
                     topic=topic,
                     limit=max(1, min(500, int(max_papers))),
                     insight_generator=generator,
+                    source="union",  # multi-source recall for fresh corpora (#47)
                 )
                 return {
                     "run_id": req.run_id,
@@ -423,7 +424,7 @@ def build_mcp(
             try:
                 req = search_service.submit(
                     topic=topic, limit=max(1, min(500, int(max_papers))),
-                    insight_generator="llm")
+                    insight_generator="llm", source="union")  # multi-source (#47)
             except Exception as exc:
                 return {"error": f"submit failed: {type(exc).__name__}: {exc}"}
             run_id = req.run_id

@@ -8,8 +8,9 @@ set AIGRAPH_MCP=http://localhost:18765/mcp/).
 Usage:
   python3 test_ideas.py                      # smoke test: health + list runs + ideas on an existing run
   python3 test_ideas.py "your topic"         # research_ideas on a topic (reuse a matching corpus if any)
-  python3 test_ideas.py "new topic" --build  # force a FRESH corpus build (slow, paid, may rate-limit)
-  python3 test_ideas.py "t" --build --wait 600   # build and block up to 600s for ideas
+  python3 test_ideas.py "new topic" --build  # FRESH build: start_run -> poll progress -> ideas (resumable)
+  python3 test_ideas.py "t" --build --detach # submit the build, print run_id, don't wait
+  python3 test_ideas.py --resume <run_id>    # reconnect to a build: poll to done, then ideas
   python3 test_ideas.py "t" --run <run_id>   # generate_ideas on a specific existing run
   python3 test_ideas.py --list               # just list available runs
 
@@ -21,6 +22,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 
 MCP = os.environ.get("AIGRAPH_MCP", "http://127.0.0.1:8765/mcp/")
@@ -122,17 +124,91 @@ def print_result(out):
         print(json.dumps(out, ensure_ascii=False, indent=2))
 
 
+def poll_until_done(run_id, *, interval=8, max_wait=1800):
+    """Poll get_run_status with SHORT requests until the run finishes (issue #53).
+
+    This replaces a single long blocking MCP request: a dropped connection or
+    timeout no longer looks like a failed run, the user gets live progress, and
+    the run can be reconnected with --resume. Returns the final status dict."""
+    waited = 0
+    last = None
+    while True:
+        try:
+            st = tool_call("get_run_status", {"run_id": run_id}, timeout=30)
+        except Exception as e:
+            # a transient poll error is not a run failure — keep polling
+            print(f"  (poll hiccup: {str(e)[:60]} — retrying; run continues server-side)")
+            time.sleep(interval); waited += interval
+            if waited >= max_wait:
+                return {"status": "building", "run_id": run_id}
+            continue
+        if not isinstance(st, dict):
+            return {"status": "unknown", "raw": st}
+        status, stage = st.get("status"), st.get("stage")
+        key = (status, stage, st.get("papers"))
+        if key != last:
+            print(f"  [{status}/{stage}] papers={st.get('papers')} "
+                  f"quality={st.get('retrieval_quality')} {str(st.get('message') or '')[:72]}")
+            last = key
+        if status in ("done", "complete", "error"):
+            return st
+        if waited >= max_wait:
+            print(f"  (still running after {max_wait}s — it continues server-side; "
+                  f"reconnect: python3 {sys.argv[0]} --resume {run_id})")
+            return st
+        time.sleep(interval); waited += interval
+
+
+def build_async(topic, *, max_papers, min_ideas, max_wait, detach):
+    """submit (start_run) → poll → generate_ideas. Resumable, non-blocking (#53)."""
+    print(f"→ start_run(topic={topic!r}, max_papers={max_papers}) ...")
+    sub = tool_call("start_run", {"topic": topic, "max_papers": max_papers}, timeout=60)
+    run_id = sub.get("run_id") if isinstance(sub, dict) else None
+    if not run_id:
+        print("  start_run did not return a run_id:")
+        print_result(sub)
+        return 1
+    print(f"  run_id: {run_id}")
+    print(f"  reconnect anytime:  python3 {sys.argv[0]} --resume {run_id}\n")
+    if detach:
+        print("  (--detach: submitted; not waiting. Use --resume to pick up the ideas.)")
+        return 0
+    return finish_run(topic, run_id, min_ideas=min_ideas, max_wait=max_wait)
+
+
+def finish_run(topic, run_id, *, min_ideas, max_wait):
+    """Poll a run to completion (if needed) then generate ideas from it."""
+    st = tool_call("get_run_status", {"run_id": run_id}, timeout=30)
+    if isinstance(st, dict) and st.get("status") not in ("done", "complete", "error"):
+        st = poll_until_done(run_id, max_wait=max_wait)
+    if isinstance(st, dict) and st.get("status") == "error":
+        print_result(st)
+        return 1
+    if isinstance(st, dict) and st.get("status") not in ("done", "complete"):
+        return 0  # still building — user can --resume later
+    print(f"\n→ generate_ideas(run={run_id}, topic={topic!r}) ...\n")
+    out = tool_call("generate_ideas",
+                    {"topic": topic, "run": run_id, "min_ideas": min_ideas, "as_markdown": True},
+                    timeout=300)
+    print_result(out)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description="Test aigraph idea-generation tools")
     ap.add_argument("topic", nargs="?", help="research topic")
     ap.add_argument("--run", help="generate_ideas on this existing run_id")
     ap.add_argument("--build", action="store_true",
-                    help="force a fresh corpus build (reuse=false)")
+                    help="force a fresh corpus build (start_run + poll + generate_ideas)")
+    ap.add_argument("--resume", metavar="RUN_ID",
+                    help="reconnect to an in-progress/finished build: poll to done, then generate ideas")
+    ap.add_argument("--detach", action="store_true",
+                    help="with --build: submit and print run_id without waiting (resume later)")
     ap.add_argument("--wait", type=int, default=0,
-                    help="seconds to block waiting for a fresh build (0=submit-and-return)")
+                    help="max seconds to poll a build before backgrounding it (0=default 1800)")
     ap.add_argument("--max-papers", type=int, default=20)
     ap.add_argument("--min-ideas", type=int, default=5)
-    ap.add_argument("--status", metavar="RUN_ID", help="poll a run's build status")
+    ap.add_argument("--status", metavar="RUN_ID", help="poll a run's build status once")
     ap.add_argument("--list", action="store_true", help="list available runs and exit")
     ap.add_argument("--json", action="store_true", help="print raw JSON")
     args = ap.parse_args()
@@ -158,6 +234,17 @@ def main():
         print_result(tool_call("get_run_status", {"run_id": args.status}, timeout=30))
         return 0
 
+    if args.resume:
+        max_wait = args.wait if args.wait > 0 else 1800
+        topic = args.topic
+        if not topic:
+            try:
+                st0 = tool_call("get_run_status", {"run_id": args.resume}, timeout=30)
+                topic = (st0.get("topic") if isinstance(st0, dict) else None) or "research ideas"
+            except Exception:
+                topic = "research ideas"
+        return finish_run(topic, args.resume, min_ideas=args.min_ideas, max_wait=max_wait)
+
     runs = list_runs()
     print(f"✓ {len(runs)} run(s) available:")
     for r in runs[:10]:
@@ -178,17 +265,28 @@ def main():
         print_result(out)
         return 0
 
-    # 2) topic given → research_ideas (resolve-or-build)
+    # 2) topic given
     if args.topic:
-        print(f"→ research_ideas(topic={args.topic!r}, reuse={not args.build}, "
-              f"wait_seconds={args.wait}) ...\n")
+        if args.build:
+            # fresh build via the async submit+poll+resume flow (#53)
+            max_wait = args.wait if args.wait > 0 else 1800
+            return build_async(args.topic, max_papers=args.max_papers,
+                               min_ideas=args.min_ideas, max_wait=max_wait, detach=args.detach)
+        # reuse path: research_ideas returns fast when a matching corpus exists.
+        # Cap the blocking wait so a would-be build doesn't hang the request; if it
+        # reports building, point the user at the async --resume flow.
+        wait = min(args.wait, 120)
+        print(f"→ research_ideas(topic={args.topic!r}, reuse=True) ...\n")
         out = tool_call("research_ideas",
                         {"topic": args.topic, "max_papers": args.max_papers,
-                         "min_ideas": args.min_ideas, "reuse": not args.build,
-                         "wait_seconds": args.wait, "as_markdown": True},
-                        timeout=max(60, args.wait + 30))
+                         "min_ideas": args.min_ideas, "reuse": True,
+                         "wait_seconds": wait, "as_markdown": True},
+                        timeout=max(60, wait + 30))
         print(json.dumps(out, ensure_ascii=False, indent=2) if args.json else "")
         print_result(out)
+        if isinstance(out, dict) and out.get("status") == "building" and out.get("run_id"):
+            print(f"\n  building a fresh corpus — reconnect: "
+                  f"python3 {sys.argv[0]} --resume {out['run_id']}")
         return 0
 
     # 3) no args → smoke test on the first available run

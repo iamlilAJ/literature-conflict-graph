@@ -858,6 +858,20 @@ def decompose_search_topic(topic: str) -> dict[str, Any]:
     return merged
 
 
+# Generic words that should NOT become per-token `all:<word>` AND constraints:
+# arXiv ANDs every term, so a stopword like "based"/"using" silently shrinks the
+# result pool (e.g. "memory based policy distillation" -> a 4-way AND that returns
+# ~13 papers). These add no topical signal and the downstream relevance ranker
+# re-scores against the full topic anyway, so dropping them only widens recall.
+_ARXIV_STOPWORDS: frozenset[str] = frozenset({
+    "a", "an", "and", "are", "as", "at", "based", "be", "by", "for", "from", "in",
+    "into", "is", "of", "on", "or", "the", "this", "that", "these", "those", "to",
+    "toward", "towards", "use", "used", "uses", "using", "via", "with", "within",
+    "approach", "approaches", "framework", "frameworks", "method", "methods",
+    "system", "systems", "novel", "new", "improving", "improved", "efficient",
+})
+
+
 def normalize_arxiv_query(topic: str) -> str:
     topic = " ".join(topic.strip().split())
     if not topic:
@@ -877,11 +891,12 @@ def normalize_arxiv_query(topic: str) -> str:
     }
     for phrase, query in phrase_map.items():
         if phrase in lower:
-            terms.append(query)
+            if query not in terms:  # two phrases can map to the same query
+                terms.append(query)
             consumed.update(phrase.split())
     words = re.findall(r"[a-zA-Z0-9+.-]+", lower)
     for word in words:
-        if word in consumed or len(word) <= 1:
+        if word in consumed or len(word) <= 1 or word in _ARXIV_STOPWORDS:
             continue
         if word in {"llm", "llms"}:
             query = 'all:"large language models"'

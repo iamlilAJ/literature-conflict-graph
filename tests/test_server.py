@@ -40,6 +40,24 @@ def test_normalize_arxiv_query_keeps_explicit_arxiv_syntax():
     assert normalize_arxiv_query(raw) == raw
 
 
+def test_normalize_arxiv_query_drops_generic_stopwords():
+    # Generic words ("based", "for", ...) must NOT become AND constraints — they
+    # silently shrink the arXiv pool (reported: 50 requested, 13 returned because
+    # "memory based policy distillation" became a 4-way AND including "based").
+    q = normalize_arxiv_query("memory based policy distillation")
+    assert q == "all:memory AND all:policy AND all:distillation"
+    assert "all:based" not in q
+    assert "all:for" not in normalize_arxiv_query("agentic memory for agents")
+
+
+def test_normalize_arxiv_query_dedupes_overlapping_phrases():
+    # "large language models" and "language models" map to the same expansion;
+    # it must appear exactly once, not twice in the AND chain.
+    q = normalize_arxiv_query("large language models reasoning")
+    assert q.count('all:"large language models"') == 1
+    assert "all:reasoning" in q
+
+
 def test_public_redirect_url_redirects_apex_domain_to_graph_subdomain():
     assert public_redirect_url("paper-universe.uk", "/") == f"https://{PRIMARY_PUBLIC_HOST}/"
     assert public_redirect_url("www.paper-universe.uk", "/search/demo") == f"https://{PRIMARY_PUBLIC_HOST}/search/demo"

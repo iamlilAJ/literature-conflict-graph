@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html
 import json
+import logging
 import os
 import re
 import secrets
@@ -23,6 +24,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 from .anomalies import detect_anomalies
 from .community import community_digest, ingest_run, read_community_status
 from .corpus import hydrate_papers_from_corpus
+from .creator import extract_open_questions, generate_creator_hypotheses
 from .fetch_arxiv import fetch_arxiv_papers
 from .fetch_openalex import fetch_openalex_papers
 from .graph import build_graph, save_graph
@@ -44,6 +46,8 @@ from .report import render_report
 from .scoring import score_all, select_mmr
 from .semantic_gate import apply_semantic_gate
 from .visualize import render_visualization
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_LIMIT = 20
@@ -573,6 +577,17 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
     anomalies = detect_anomalies(graph, claims)
     write_jsonl(anomalies_path, anomalies)
 
+    # #51: extract open questions from the papers (additive stage, fully guarded
+    # — an optional generator must never fail the run). Bounded to cap LLM cost.
+    open_questions_path = run_dir / "open_questions.jsonl"
+    open_questions: list = []
+    try:
+        oq_cap = max(1, int(os.environ.get("AIGRAPH_OPENQ_MAX_PAPERS", "20")))
+        open_questions = extract_open_questions(papers, max_papers=min(len(papers), oq_cap))
+        write_jsonl(open_questions_path, open_questions)
+    except Exception as exc:
+        logger.warning("open_questions extraction failed (non-fatal): %s", exc)
+
     status(
         status="running",
         stage="generating",
@@ -584,6 +599,18 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
         **base_status,
     )
     raw_hypotheses = generate_hypotheses(anomalies, claims, generator=TemplateGenerator())
+
+    # #51: creator method-hypotheses from anomalies + open questions (guarded).
+    creator_hypotheses_path = run_dir / "creator_hypotheses.jsonl"
+    creator_hypotheses: list = []
+    if open_questions and anomalies:
+        try:
+            ch_cap = max(1, int(os.environ.get("AIGRAPH_CREATOR_MAX_ANOMALIES", "12")))
+            creator_hypotheses = generate_creator_hypotheses(
+                anomalies, claims, open_questions, max_anomalies=ch_cap)
+            write_jsonl(creator_hypotheses_path, creator_hypotheses)
+        except Exception as exc:
+            logger.warning("creator hypotheses generation failed (non-fatal): %s", exc)
 
     insight_impl = LLMInsightGenerator() if request.insight_generator == "llm" else TemplateInsightGenerator()
     raw_insights = generate_insights(graph, claims, papers, anomalies, generator=insight_impl)
@@ -620,11 +647,17 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
         stage="complete",
         progress=1.0,
         schema_version=SCHEMA_VERSION,
-        message=f"Generated {len(insights)} insight(s), {len(anomalies)} conflict/gap region(s), and {len(selected)} selected hypothesis entries.",
+        message=(
+            f"Generated {len(insights)} insight(s), {len(anomalies)} conflict/gap region(s), "
+            f"{len(open_questions)} open question(s), {len(creator_hypotheses)} creator method(s), "
+            f"and {len(selected)} selected hypothesis entries."
+        ),
         papers=len(papers),
         claims=len(claims),
         anomalies=len(anomalies),
         hypotheses=len(hypotheses),
+        open_questions=len(open_questions),
+        creator_hypotheses=len(creator_hypotheses),
         selected=len(selected),
         insights=len(insights),
         nodes=graph.number_of_nodes(),

@@ -298,6 +298,9 @@ class Hypothesis(LooseModel):
     scope_conditions: dict[str, str] = Field(default_factory=dict)
     evidence_gap: str = ""
     graph_bridge: GraphBridge = Field(default_factory=GraphBridge)
+    # #52 multi-layer novelty audit (optional, additive): per-layer verdicts +
+    # an explicit state in {novel, covered, unknown}. None when not computed.
+    novelty_audit: Optional[dict] = None
 
 
 class ScoreBreakdown(LooseModel):

@@ -107,6 +107,8 @@ def _mk_idea(tier: str, *, title: str, statement: str, mechanism: str = "",
         "scope": scope or {},
         **({"novelty_vs_paper": str(extra["novelty_vs_paper"]).strip()[:300]}
            if extra and extra.get("novelty_vs_paper") else {}),
+        **({"novelty_audit": extra["novelty_audit"]}
+           if extra and extra.get("novelty_audit") else {}),
     }
 
 
@@ -527,6 +529,74 @@ def _novelty_ok(client, model, abstract: str, idea: dict) -> bool:
     return True
 
 
+def _strong_layer_verdict(client, model, idea: dict, fetch, pa_key: str) -> str:
+    """Three-state novelty verdict for one strong layer (#52): ``covered`` (prior
+    art confirms it), ``novel`` (checked against real prior art, nothing covers
+    it), or ``unknown`` (the prior-art lookup returned nothing / errored — we
+    could NOT verify, so we do NOT claim novelty). This is the honest core of the
+    audit: a fail-open bool hides the difference between *verified novel* and
+    *unchecked*."""
+    q = f"{idea.get('title','')} {idea.get('statement','')} {idea.get('mechanism','')}"
+    try:
+        pa = fetch(q, k=6)
+    except Exception:
+        return "unknown"
+    if not pa:
+        return "unknown"
+    user = json.dumps({"proposal": {"title": idea.get("title"), "statement": idea.get("statement")},
+                       pa_key: pa}, ensure_ascii=False)
+    try:
+        obj = _parse_json_block(call_llm_text(client, model=model, system=_NOVELTY_STRONG_SYS,
+                                              user=user, max_tokens=300))
+        if isinstance(obj, list):
+            obj = next((x for x in obj if isinstance(x, dict)), None)
+        if isinstance(obj, dict) and obj.get("novel") is False:
+            return "covered"
+    except Exception:
+        return "unknown"
+    return "novel"
+
+
+def _novelty_audit(client, model, abstract: str, idea: dict) -> tuple[bool, dict]:
+    """Run the novelty layers ONCE and return ``(passed, audit)`` (#52).
+
+    ``passed`` is the SAME gate decision as :func:`_novelty_ok` — drop only on a
+    *confident* "covered". The audit additionally records each layer's 3-state
+    verdict and an explicit overall ``state`` in {novel, covered, unknown}, so
+    delivery never dresses an unverified idea up as certainly-novel.
+    """
+    reasons: list[str] = []
+    try:
+        lexical = "pass" if _novelty_gate(client, model, abstract, idea) else "fail"
+    except Exception:
+        lexical = "unknown"
+        reasons.append("lexical_gate_error")
+    corpus = _strong_layer_verdict(client, model, idea, atlas_prior_art_strong, "existing_titles")
+    if os.environ.get("AIGRAPH_WEB_NOVELTY") == "1":
+        web = _strong_layer_verdict(client, model, idea, web_prior_art, "recent_papers")
+    else:
+        web = "skipped"
+    covered = lexical == "fail" or corpus == "covered" or web == "covered"
+    if covered:
+        state = "covered"
+    elif corpus == "novel" or web == "novel":
+        state = "novel"
+    else:
+        state = "unknown"
+        reasons.append("no_strong_layer_could_confirm_novelty")
+    if corpus == "unknown":
+        reasons.append("atlas_unavailable_or_no_prior_art")
+    audit = {
+        "state": state,
+        "lexical_novelty": lexical,
+        "corpus_verdict": corpus,
+        "web_verdict": web,
+        "reasons": reasons,
+        "oracle_version": "v1",
+    }
+    return (not covered), audit
+
+
 # Diverse angles for best-of-N sampling (one per candidate, cycled).
 _BESTOF_ANGLES = [
     "focus on the core causal mechanism",
@@ -595,6 +665,7 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
         except ValueError:
             n_cand = 3
         obj = None
+        chosen_audit = None
         for ci in range(n_cand):
             angle = _BESTOF_ANGLES[ci % len(_BESTOF_ANGLES)]
             user = json.dumps({**base_payload, "angle": angle}, ensure_ascii=False)
@@ -608,10 +679,13 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
                 cand = next((x for x in cand if isinstance(x, dict)), None)
             if not isinstance(cand, dict) or not cand.get("statement"):
                 continue
-            if _novelty_ok(client, model, p.abstract or "", cand):
+            passed, audit = _novelty_audit(client, model, p.abstract or "", cand)
+            if passed:
                 obj = cand
+                chosen_audit = audit
                 break
             obj = obj or cand  # remember a fallback in case all fail the gate
+            chosen_audit = chosen_audit or audit
         if not isinstance(obj, dict) or not obj.get("statement"):
             continue
         ideas.append(_mk_idea(
@@ -626,7 +700,8 @@ def tier_d_method_extensions(run_dir: Path, topic: str, papers: list[Paper],
             confidence=0.55,
             scope={"method": method},
             seed=p.paper_id,
-            extra={"novelty_vs_paper": obj.get("novelty_vs_paper", "")},
+            extra={"novelty_vs_paper": obj.get("novelty_vs_paper", ""),
+                   "novelty_audit": chosen_audit},
         ))
     return ideas
 

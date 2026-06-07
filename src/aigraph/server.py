@@ -539,6 +539,14 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
             **base_status,
         )
 
+    # #50: run-local controlled taxonomy — re-canonicalize "other" method/task
+    # onto a run-derived vocabulary so anomaly clustering isn't starved. Fail-open
+    # (claims unchanged on any error / no key / too few "other"); claim COUNT is
+    # never altered, only canonical_method/canonical_task on "other" claims.
+    from .canonicalize_local import canonicalize_claims
+    claims = canonicalize_claims(claims)
+    write_jsonl(claims_path, claims)
+
     status(
         status="running",
         stage="building_graph",

@@ -312,6 +312,19 @@ def friendly_error_payload(exc: Exception, request: SearchRequest) -> dict[str, 
 # back to the other source.
 _RETRIEVAL_RECALL_FRACTION = 0.6
 
+# Extraction robustness (#49): retry a paper whose extraction came back empty
+# (the frozen extractor swallows errors and returns [], so an empty result is the
+# only failure signal we get), and flag low claim coverage instead of silently
+# marking a near-empty run "done".
+_EXTRACT_COVERAGE_FLOOR = 0.5
+
+
+def _extract_max_attempts() -> int:
+    try:
+        return max(1, min(4, int(os.environ.get("AIGRAPH_EXTRACT_MAX_ATTEMPTS", "2"))))
+    except (TypeError, ValueError):
+        return 2
+
 
 def _paper_dedup_key(paper: Paper) -> str:
     """Dedup key that survives the arXiv/OpenAlex id-namespace split: prefer the
@@ -505,7 +518,26 @@ def run_pipeline(request: SearchRequest, status: Callable[..., None]) -> None:
         **base_status,
     )
 
-    claims = extract_claims_with_status(papers, claims_path, status, base_status)
+    claims, extraction_report = extract_claims_with_status(papers, claims_path, status, base_status)
+    base_status["extraction_quality"] = extraction_report["extraction_quality"]
+    # #49: corpus-level direction-bias audit (non-frozen; per-claim defaulted
+    # detection needs an llm_extract.py thaw — see extraction_audit.py).
+    from .extraction_audit import audit_direction_bias
+    direction_audit = audit_direction_bias(claims)
+    _write_jsonl_dicts(run_dir / "extraction_audit.jsonl", [direction_audit])
+    base_status["direction_bias_suspected"] = direction_audit["positive_bias_suspected"]
+    if extraction_report["extraction_quality"] in ("empty", "weak"):
+        status(
+            status="running",
+            stage="extracting",
+            progress=0.67,
+            message=(
+                f"Weak extraction: {extraction_report['claims_total']} claims from "
+                f"{extraction_report['papers_with_claims']}/{extraction_report['papers_total']} papers "
+                f"(coverage {extraction_report['coverage']}). Downstream graph/anomalies may be sparse."
+            ),
+            **base_status,
+        )
 
     status(
         status="running",
@@ -604,7 +636,7 @@ def extract_claims_with_status(
     output: Path,
     status: Callable[..., None],
     base_status: dict[str, Any],
-) -> list[Claim]:
+) -> tuple[list[Claim], dict[str, Any]]:
     output.parent.mkdir(parents=True, exist_ok=True)
     extractor = LLMClaimExtractor()
     concurrency = max(1, min(4, int(os.environ.get("AIGRAPH_EXTRACT_CONCURRENCY", "2"))))
@@ -614,13 +646,28 @@ def extract_claims_with_status(
     reader_mode = configured_reader_mode()
     reader_max_candidates = configured_reader_max_candidates()
 
-    def run_one(index: int, paper: Paper) -> tuple[int, Paper, list[Claim], dict[str, Any], list[dict[str, Any]]]:
+    def run_one(index: int, paper: Paper) -> tuple[int, Paper, list[Claim], dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
         read_result = read_paper_candidates(
             paper,
             mode=reader_mode,
             max_candidates=reader_max_candidates,
         )
-        local_claims = extractor.extract(paper, start_index=index * 1000, candidates=read_result.candidates)
+        # #49: retry an empty extraction (the frozen extractor returns [] on any
+        # failure, so empty is the only failure signal). Bounded by max_attempts.
+        local_claims: list[Claim] = []
+        attempts = 0
+        for attempts in range(1, _extract_max_attempts() + 1):
+            local_claims = extractor.extract(paper, start_index=index * 1000, candidates=read_result.candidates)
+            if local_claims:
+                break
+        pstatus = {
+            "run_id": base_status.get("run_id"),
+            "paper_id": paper.paper_id,
+            "paper_title": paper.title,
+            "extraction_status": "ok" if local_claims else "empty",
+            "attempts": attempts,
+            "claim_count": len(local_claims),
+        }
         metrics = {
             "event": "paper_reader",
             "run_id": base_status.get("run_id"),
@@ -643,18 +690,20 @@ def extract_claims_with_status(
             }
             for candidate in read_result.candidates
         ]
-        return index, paper, local_claims, metrics, debug_rows
+        return index, paper, local_claims, metrics, debug_rows, pstatus
 
     completed = 0
     results: dict[int, tuple[Paper, list[Claim], dict[str, Any], list[dict[str, Any]]]] = {}
+    status_rows: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
         futures = {pool.submit(run_one, i, paper): i for i, paper in enumerate(papers)}
         for future in as_completed(futures):
-            index, paper, local_claims, reader_metrics, debug_rows = future.result()
+            index, paper, local_claims, reader_metrics, debug_rows, pstatus = future.result()
             completed += 1
             results[index] = (paper, local_claims, reader_metrics, debug_rows)
             reader_rows.append(reader_metrics)
             reader_debug_rows.extend(debug_rows)
+            status_rows.append(pstatus)
             progress = 0.18 + 0.48 * completed / max(1, len(papers))
             status(
                 status="running",
@@ -680,6 +729,23 @@ def extract_claims_with_status(
     if reader_rows:
         for row in reader_rows:
             _append_analytics_row(output.parent.parent, "reader_metrics.jsonl", row)
+
+    # #49: per-paper extraction status + coverage gate. Coverage is a RELIABILITY
+    # signal (did extraction actually populate claims?) — surfaced as a flag, the
+    # run still continues so partial results aren't lost.
+    if status_rows:
+        _write_jsonl_dicts(output.parent / "extraction_status.jsonl", status_rows)
+    papers_with_claims = sum(1 for r in status_rows if r["claim_count"] > 0)
+    coverage = papers_with_claims / max(1, len(papers))
+    extraction_quality = "empty" if not claims else ("weak" if coverage < _EXTRACT_COVERAGE_FLOOR else "ok")
+    report = {
+        "extraction_quality": extraction_quality,
+        "papers_total": len(papers),
+        "papers_with_claims": papers_with_claims,
+        "coverage": round(coverage, 3),
+        "claims_total": len(claims),
+        "retried_papers": sum(1 for r in status_rows if r["attempts"] > 1),
+    }
     status(
         status="running",
         stage="extracting",
@@ -693,7 +759,7 @@ def extract_claims_with_status(
         reader_fallback_count=sum(1 for row in reader_rows if row.get("reader_fallback_used")),
         **base_status,
     )
-    return claims
+    return claims, report
 
 
 def serve(host: str = "127.0.0.1", port: int = 7860, runs_dir: str | Path = "outputs/runs") -> None:

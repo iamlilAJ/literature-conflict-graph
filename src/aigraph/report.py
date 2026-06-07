@@ -240,6 +240,16 @@ def _render_hypothesis(h: Hypothesis, scores: dict[str, ScoreBreakdown]) -> list
     if h.evidence_gap:
         lines.append(f"**Evidence gap.** {h.evidence_gap}")
         lines.append("")
+    audit = getattr(h, "novelty_audit", None)
+    if isinstance(audit, dict) and audit.get("state"):
+        reasons = ", ".join(audit.get("reasons", []) or [])
+        lines.append(
+            f"**Novelty audit.** state=`{audit.get('state', 'unknown')}` "
+            f"(corpus={audit.get('corpus_verdict', '?')}, web={audit.get('web_verdict', '?')}, "
+            f"lexical={audit.get('lexical_novelty', '?')})"
+            + (f" — {reasons}" if reasons else "")
+        )
+        lines.append("")
     if h.graph_bridge and (h.graph_bridge.from_ or h.graph_bridge.to):
         lines.append(f"**Graph bridge.** {h.graph_bridge.from_} → {h.graph_bridge.to}")
         lines.append("")

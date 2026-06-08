@@ -27,7 +27,7 @@ from pathlib import Path
 import markdown as md
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 
 # Locate scripts/aigraph_query.py without making the script importable as
 # a package — we just need the `query` symbol.
@@ -41,6 +41,11 @@ from aigraph_query import (  # noqa: E402
     _tokenize,
 )
 from aigraph.scoring import score_all, select_mmr  # noqa: E402
+from aigraph.run_dashboard import (  # noqa: E402
+    discover_run_summaries,
+    render_dashboard_html,
+    render_run_flow_html,
+)
 
 
 # Default location; can be overridden at app-creation time.
@@ -157,6 +162,37 @@ def create_app(
             else None
         )
         return _render_home(runs_root, preselected_run=run_id, initial_html=initial_html)
+
+    # ---- Runs dashboard: which requests ran, how they flowed through the
+    # pipeline, and the stage-by-stage detail (#frontend goal). -------------
+    @app.get("/dashboard", response_class=HTMLResponse)
+    def dashboard():
+        return render_dashboard_html(runs_root)
+
+    @app.get("/dashboard/{run_id}", response_class=HTMLResponse)
+    def dashboard_run(run_id: str):
+        run_dir = (runs_root / run_id).resolve()
+        if not str(run_dir).startswith(str(runs_root.resolve())):
+            raise HTTPException(400, "invalid run_id")
+        if not (run_dir / "status.json").exists():
+            raise HTTPException(404, f"run not found: {run_id}")
+        return render_run_flow_html(run_dir)
+
+    @app.get("/api/dashboard")
+    def api_dashboard():
+        return JSONResponse(discover_run_summaries(runs_root))
+
+    @app.get("/runs/{run_id}/{filename}", response_class=PlainTextResponse)
+    def run_artifact(run_id: str, filename: str):
+        # Serve a run's artifact files (jsonl/json/md) as text, path-safe.
+        if Path(filename).suffix not in {".jsonl", ".json", ".md", ".txt"}:
+            raise HTTPException(404, "not found")
+        run_dir = (runs_root / run_id).resolve()
+        target = (run_dir / filename).resolve()
+        rr = runs_root.resolve()
+        if not (str(target).startswith(str(run_dir) + "/") and str(run_dir).startswith(str(rr)) and target.is_file()):
+            raise HTTPException(404, "not found")
+        return target.read_text(encoding="utf-8", errors="replace")
 
     # Atlas-overlap filter threshold for REST endpoints. Env-tunable so ops
     # can roll forward / back without code changes; default 3 matches the

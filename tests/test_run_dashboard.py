@@ -72,6 +72,8 @@ def test_discover_newest_first(tmp_path):
     _make_run(tmp_path, run_id="20260607-200000-bbb")
     # a dir without status.json is ignored
     (tmp_path / "no-status").mkdir()
+    # system/aux dirs (underscore-prefixed) are not user requests
+    _make_run(tmp_path, run_id="_community")
     runs = rd.discover_run_summaries(tmp_path)
     assert [r["id"] for r in runs] == ["20260607-200000-bbb", "20260607-100000-aaa"]
 

@@ -43,6 +43,7 @@ from aigraph_query import (  # noqa: E402
 from aigraph.scoring import score_all, select_mmr  # noqa: E402
 from aigraph.run_dashboard import (  # noqa: E402
     discover_run_summaries,
+    pipeline_flow,
     render_dashboard_html,
     render_run_flow_html,
 )
@@ -166,21 +167,28 @@ def create_app(
     # ---- Runs dashboard: which requests ran, how they flowed through the
     # pipeline, and the stage-by-stage detail (#frontend goal). -------------
     @app.get("/dashboard", response_class=HTMLResponse)
-    def dashboard():
-        return render_dashboard_html(runs_root)
+    def dashboard(fragment: int = 0):
+        return render_dashboard_html(runs_root, fragment=bool(fragment))
 
     @app.get("/dashboard/{run_id}", response_class=HTMLResponse)
-    def dashboard_run(run_id: str):
+    def dashboard_run(run_id: str, fragment: int = 0):
         run_dir = (runs_root / run_id).resolve()
         if not str(run_dir).startswith(str(runs_root.resolve())):
             raise HTTPException(400, "invalid run_id")
         if not (run_dir / "status.json").exists():
             raise HTTPException(404, f"run not found: {run_id}")
-        return render_run_flow_html(run_dir)
+        return render_run_flow_html(run_dir, fragment=bool(fragment))
 
     @app.get("/api/dashboard")
     def api_dashboard():
         return JSONResponse(discover_run_summaries(runs_root))
+
+    @app.get("/api/dashboard/{run_id}")
+    def api_dashboard_run(run_id: str):
+        run_dir = (runs_root / run_id).resolve()
+        if not (str(run_dir).startswith(str(runs_root.resolve())) and (run_dir / "status.json").exists()):
+            raise HTTPException(404, f"run not found: {run_id}")
+        return JSONResponse(pipeline_flow(run_dir))
 
     @app.get("/runs/{run_id}/{filename}", response_class=PlainTextResponse)
     def run_artifact(run_id: str, filename: str):

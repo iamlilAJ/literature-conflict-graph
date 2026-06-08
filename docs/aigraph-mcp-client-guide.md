@@ -283,6 +283,18 @@ when NOT readonly (the build path is paid). For a fresh topic, set
 > scores 0.5 ≥ 0.34 and will reuse the wrong corpus. Pass `reuse:false` to
 > force a fresh build when the topic is genuinely new.
 
+#### `research_e2e(topic, max_papers, min_ideas, k, reuse, wait_seconds)`
+
+**True one-shot.** Resolve-or-build a corpus (like `research_ideas`) and return
+the WHOLE deliverable bundle in a single call:
+`{run_id, status, coverage, idea_report_markdown, ideas, ideas_markdown,
+graph:{nodes,edges}, graph_html, dashboard_url, graph_url}`. `graph_html` is a
+**self-contained D3 star-graph (星球图) page** you can drop into a browser /
+iframe; `idea_report_markdown` is the Stage-3 report. Build path is paid (only
+when NOT readonly); `wait_seconds` clamped 0–1500 (`0` = `{status:"building"}`).
+Use when a caller wants idea report + ideas + graph frontend without chaining
+`start_run` → `get_idea_report` → `get_conflict_graph` itself.
+
 ### 3.4 Web dashboard (browser UI + REST)
 
 Besides the MCP tools, the same process serves an operator **runs dashboard** —

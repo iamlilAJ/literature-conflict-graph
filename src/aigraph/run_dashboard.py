@@ -212,6 +212,9 @@ def discover_run_summaries(runs_root: Path) -> list[dict[str, Any]]:
     if not runs_root.exists():
         return out
     for d in sorted(runs_root.iterdir(), reverse=True):
+        # skip system/aux dirs (e.g. "_community") — they aren't user requests
+        if d.name.startswith("_") or d.name.startswith("."):
+            continue
         if d.is_dir() and (d / "status.json").exists():
             out.append(run_summary(d))
     return out

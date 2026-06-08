@@ -44,6 +44,7 @@ from aigraph.scoring import score_all, select_mmr  # noqa: E402
 from aigraph.run_dashboard import (  # noqa: E402
     discover_run_summaries,
     pipeline_flow,
+    read_query_log,
     render_dashboard_html,
     render_graph_page,
     render_run_flow_html,
@@ -184,6 +185,10 @@ def create_app(
     @app.get("/api/dashboard")
     def api_dashboard():
         return JSONResponse(discover_run_summaries(runs_root))
+
+    @app.get("/api/queries")
+    def api_queries():
+        return JSONResponse(read_query_log(runs_root))
 
     @app.get("/api/dashboard/{run_id}")
     def api_dashboard_run(run_id: str):

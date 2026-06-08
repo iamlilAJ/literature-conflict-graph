@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
@@ -48,6 +49,22 @@ def _safe_run_dir(runs_root: Path, run_id: str) -> Optional[Path]:
     if not str(run_dir).startswith(str(runs_root.resolve())):
         return None
     return run_dir
+
+
+def _log_query(runs_root: Path, **fields: Any) -> None:
+    """Append a read-only QUERY event to ``runs_root/query_log.jsonl``.
+
+    Read-only tools (`get_idea_report`, `query_hypotheses`, `generate_ideas`)
+    answer from an existing corpus and create NO run dir / status.json, so they
+    never show up in the runs dashboard. This log gives the dashboard a record
+    of those grounding calls (e.g. Memento/OMC Stage 3 hitting `get_idea_report`)
+    so they are no longer invisible. Best-effort — must never break a query."""
+    try:
+        row = {"ts": datetime.now().isoformat(timespec="seconds"), **fields}
+        with (runs_root / "query_log.jsonl").open("a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
 
 
 def _coverage_banner(stats: dict) -> str:
@@ -185,6 +202,9 @@ def build_mcp(
             return {"error": f"unknown run: {run}"}
         try:
             records, stats = query_records(run_dir, topic, k=k, min_anomalies=1)
+            _log_query(runs_root, tool="query_hypotheses", topic=topic, run=run, k=k,
+                       n_matched=stats.get("n_matched"), n_total=stats.get("n_hypotheses_total"),
+                       top_relevance=stats.get("top_relevance"), returned=len(records))
             return {"topic": topic, "run": run, "hypotheses": records, "stats": stats}
         except Exception as exc:
             return {"error": f"{type(exc).__name__}: {exc}"}
@@ -244,6 +264,9 @@ def build_mcp(
                                    min_anomalies=3, hyp_kind=kind,
                                    min_atlas_overlap=3)
                 doc = heading + _coverage_banner(_stats) + md
+                _log_query(runs_root, tool="get_idea_report", topic=topic, run=run, k=k, kind=kind,
+                           n_matched=_stats.get("n_matched"), n_total=_stats.get("n_hypotheses_total"),
+                           top_relevance=_stats.get("top_relevance"), chars=len(doc))
             except Exception as exc:
                 doc = heading + f"_query failed: {type(exc).__name__}: {exc}_\n"
 

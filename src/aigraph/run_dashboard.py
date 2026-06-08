@@ -367,6 +367,28 @@ def discover_run_summaries(runs_root: Path) -> list[dict[str, Any]]:
     return out
 
 
+def read_query_log(runs_root: Path, limit: int = 60) -> list[dict[str, Any]]:
+    """Recent read-only query events (get_idea_report / query_hypotheses /
+    generate_ideas) from ``runs_root/query_log.jsonl``, newest first. These are
+    grounding calls that answer from an existing corpus and create NO run, so
+    they don't appear in the runs table — this is where they surface."""
+    rows = _load_jsonl(runs_root / "query_log.jsonl")
+    return list(reversed(rows))[:limit]
+
+
+def _coverage_level(n: int, tot: int, r: int = 0) -> str:
+    """Mirror of mcp_server._coverage_banner so the dashboard labels coverage
+    consistently with the Stage-3 deliverable banner."""
+    frac = (n / tot) if tot else 0.0
+    if not n:
+        return "none"
+    if frac >= 0.40 or (r >= 3 and n >= 80):
+        return "strong"
+    if frac >= 0.12 or (r >= 2 and n >= 30):
+        return "moderate"
+    return "weak"
+
+
 # --------------------------------------------------------------------------- #
 # HTML rendering (plain strings — no markdown dependency)
 # --------------------------------------------------------------------------- #
@@ -507,11 +529,41 @@ def _dashboard_table(runs: list[dict[str, Any]]) -> str:
     )
 
 
+def render_queries_section(runs_root: Path) -> str:
+    """Recent read-only grounding calls (the ones that don't create a run)."""
+    qs = read_query_log(runs_root)
+    if not qs:
+        return ('<div class="ideas"><h2>Read-only queries '
+                '<span class="sub" style="font-size:12px">grounding calls (get_idea_report / query_hypotheses) — none logged yet</span></h2></div>')
+    _cov_cls = {"strong": "novel", "moderate": "unknown", "weak": "covered", "none": "covered"}
+    rows = ""
+    for q in qs:
+        n, tot, r = q.get("n_matched"), q.get("n_total"), q.get("top_relevance") or 0
+        if n is not None and tot:
+            lvl = _coverage_level(int(n), int(tot), int(r))
+            cov = f'{n}/{tot} <span class="chip nov-{_cov_cls.get(lvl, "unknown")}">{lvl}</span>'
+        else:
+            cov = ""
+        run = str(q.get("run") or "")
+        runlink = f'<a href="dashboard/{html.escape(run)}">{html.escape(run[:24])}</a>' if run else ""
+        size = q.get("chars")
+        size = f"{size} chars" if size is not None else (f'{q.get("returned")} recs' if q.get("returned") is not None else "")
+        rows += (f'<tr><td>{_esc(q.get("ts"))}</td><td><span class="chip">{_esc(q.get("tool"))}</span></td>'
+                 f'<td class="topic">{_esc(q.get("topic"))}</td><td>{runlink}</td>'
+                 f'<td>{cov}</td><td>{_esc(size)}</td></tr>')
+    return (
+        f'<div class="ideas"><h2>Read-only queries ({len(qs)}) '
+        f'<span class="sub" style="font-size:12px">grounding calls that DON\'T create a run (get_idea_report / query_hypotheses)</span></h2>'
+        f'<table><thead><tr><th>time</th><th>tool</th><th>topic</th><th>run</th><th>coverage</th><th>size</th></tr></thead>'
+        f'<tbody>{rows}</tbody></table></div>'
+    )
+
+
 def render_dashboard_html(runs_root: Path, fragment: bool = False) -> str:
     runs = discover_run_summaries(runs_root)
-    table = _dashboard_table(runs)
+    inner = _dashboard_table(runs) + render_queries_section(runs_root)
     if fragment:
-        return table
+        return inner
     legend = "".join(
         f'<div class="st"><b>{i+1}. {html.escape(s["label"])}</b><span>{html.escape(s["note"])}</span></div>'
         for i, s in enumerate(_STAGES)
@@ -521,7 +573,7 @@ def render_dashboard_html(runs_root: Path, fragment: bool = False) -> str:
         f'<h1>aigraph MCP — runs <span id="liveind" class="liveind">○ idle</span></h1>'
         f'<p class="sub">{len(runs)} request(s). Each row is one <code>start_run</code>; click a run to see how it flowed through the pipeline. Auto-refreshes while a run is in progress.</p>'
         f'<div class="legend">{legend}</div>'
-        f'<div id="live">{table}</div>'
+        f'<div id="live">{inner}</div>'
         f'{_POLL_JS}</div></body></html>'
     )
 

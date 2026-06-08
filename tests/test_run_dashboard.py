@@ -237,6 +237,47 @@ def test_generated_ideas_empty_shows_hint(tmp_path):
     assert "none yet" in sec and "generate_ideas" in sec
 
 
+# ---- read-only query log (grounding calls that don't create a run) -------
+
+def test_read_query_log_newest_first(tmp_path):
+    (tmp_path / "query_log.jsonl").write_text(
+        json.dumps({"ts": "2026-06-08T20:00:00", "tool": "get_idea_report",
+                    "topic": "tree search for math", "run": "reasoning",
+                    "n_matched": 14, "n_total": 78, "top_relevance": 2, "chars": 48638}) + "\n"
+        + json.dumps({"ts": "2026-06-08T20:05:00", "tool": "query_hypotheses",
+                      "topic": "rag", "run": "r2", "n_matched": 5, "n_total": 40, "returned": 5}) + "\n",
+        encoding="utf-8")
+    qs = rd.read_query_log(tmp_path)
+    assert [q["tool"] for q in qs] == ["query_hypotheses", "get_idea_report"]  # newest first
+
+
+def test_coverage_level():
+    assert rd._coverage_level(0, 78) == "none"
+    assert rd._coverage_level(14, 78, 2) == "moderate"   # frac .18
+    assert rd._coverage_level(40, 78) == "strong"        # frac .51
+    assert rd._coverage_level(2, 78, 1) == "weak"
+
+
+def test_queries_section_and_page(tmp_path):
+    (tmp_path / "query_log.jsonl").write_text(
+        json.dumps({"ts": "2026-06-08T20:00:00", "tool": "get_idea_report",
+                    "topic": "tree search for math", "run": "reasoning",
+                    "n_matched": 14, "n_total": 78, "top_relevance": 2, "chars": 48638}) + "\n",
+        encoding="utf-8")
+    sec = rd.render_queries_section(tmp_path)
+    assert "Read-only queries (1)" in sec and "tree search for math" in sec
+    assert "get_idea_report" in sec and "14/78" in sec and "moderate" in sec
+    page = rd.render_dashboard_html(tmp_path)          # appears on the dashboard page
+    assert "tree search for math" in page and "Read-only queries" in page
+    frag = rd.render_dashboard_html(tmp_path, fragment=True)  # and in the live fragment
+    assert "tree search for math" in frag
+
+
+def test_queries_empty_hint(tmp_path):
+    assert rd.read_query_log(tmp_path) == []
+    assert "none logged yet" in rd.render_queries_section(tmp_path)
+
+
 def test_run_ideas_empty_is_safe(tmp_path):
     d = _make_run(tmp_path, run_id="20260607-185302-empty")
     assert rd.run_ideas(d) == []

@@ -234,6 +234,12 @@ The server writes each run to `outputs/runs/{run_id}/` and defaults to arXiv,
 template hypotheses, and LLM community insights.
 API keys stay in the backend environment and are never sent to the browser.
 
+The server also exposes an operator **runs dashboard** at `/dashboard`: every run
+as a table (live-refreshing while running), each run's stage-by-stage pipeline
+flow, the generated ideas with their source papers + novelty audit, and an
+interactive conflict graph at `/dashboard/{run_id}/graph`. See
+[`docs/aigraph-mcp-client-guide.md` §3.4](docs/aigraph-mcp-client-guide.md).
+
 Paper retrieval uses a candidate-pool strategy before the graph is built:
 
 - `balanced`: relevance + recency + topic diversity, with citation impact when available.

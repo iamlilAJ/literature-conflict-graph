@@ -283,6 +283,33 @@ when NOT readonly (the build path is paid). For a fresh topic, set
 > scores 0.5 ≥ 0.34 and will reuse the wrong corpus. Pass `reuse:false` to
 > force a fresh build when the topic is genuinely new.
 
+### 3.4 Web dashboard (browser UI + REST)
+
+Besides the MCP tools, the same process serves an operator **runs dashboard** —
+which requests ran, how each flowed through the pipeline, and the ideas/graph it
+produced. Plain HTTP (no Host-header restriction, unlike `/mcp/`):
+
+| URL | Returns |
+|---|---|
+| `GET /dashboard` | HTML table of every run (topic, status, stage, counts, quality flags); **auto-refreshes while a run is in progress**. Pipeline legend up top. |
+| `GET /dashboard/{run_id}` | The run's **stage-by-stage flow** (fetch → semantic gate → extract → taxonomy → graph → anomalies → open-questions → creator → hypotheses → insights → render) with per-stage state + audit detail; **💡 Generated ideas** (`forward_ideas.jsonl`, from `generate_ideas`/`research_ideas`) above the precursor **conflict-grounded hypotheses** — each idea expands to its mechanism, predictions, novelty audit, and **source papers** (links). |
+| `GET /dashboard/{run_id}/graph` | Interactive **D3 conflict graph (星球图)**: topic → hypotheses → anomalies + papers. |
+| `GET /api/dashboard` · `/api/dashboard/{run_id}` · `/api/dashboard/{run_id}/graph` | JSON: run summaries · `pipeline_flow` · graph `{nodes,edges}`. |
+| `GET /runs/{run_id}/{file}` | Path-safe raw artifact (`*.jsonl/json/md`). |
+| `GET /` · `/run/{run_id}` · `/query` · `/query/graph` | Original corpus-query UI + the topic-filtered D3 graph the OMC frontend reads. |
+
+Served from `src/aigraph/{web,run_dashboard}.py` (non-frozen). External:
+`http://8.208.118.99:8765/dashboard`.
+
+**Run artifacts** (`artifacts/runs/<run_id>/`): `status.json`, `papers.jsonl`,
+`claims.jsonl`, `extraction_status.jsonl` + `extraction_audit.jsonl` (#49),
+`graph.json`, `anomalies.jsonl`, `open_questions.jsonl` +
+`creator_hypotheses.jsonl` (#51), `hypotheses.jsonl`, `insights.jsonl`,
+`forward_ideas.jsonl` (final cascade ideas), `selected_hypotheses.md`,
+`overview.json`. The pipeline that produces them adds a **semantic relevance
+gate** (#58), a **run-local taxonomy** post-pass (#50), **extraction
+retry/coverage** (#49), and a **novelty audit** field on ideas (#52).
+
 ## 4. HTTP Host validation (and what is NOT protected)
 
 The **`/mcp/` endpoint** rejects requests whose `Host` is not in the MCP
@@ -352,22 +379,42 @@ ssh -t admin@8.208.118.99 'tmux attach -t aigraph'
 
 ### 5.4 Deploying code changes
 
-`~/aigraph/` is a git clone of `feat/lcg-tfidf-relevance` (since 2026-06-01).
-To roll out a change pushed to that branch:
+`~/aigraph/` is a clean git clone tracking **`main`** (reconciled 2026-06-07 —
+the older scp-on-top-of-git drift was removed). **Deploy is git-only:**
 
 ```bash
-ssh admin@8.208.118.99 'cd ~/aigraph && git pull --ff-only'
-# any change under src/aigraph/*.py also requires the restart in §5.2
+# merge your change to main on GitHub, then on the box:
+ssh admin@8.208.118.99 'cd ~/aigraph && git fetch origin && git reset --hard origin/main'
+# any change under src/aigraph/*.py (MCP- or web-loaded) also needs the §5.2 restart.
 ```
 
-Server-only files (`.venv`, `MCP_README.md`, run-dir data files, `findings/`,
-`outputs/`) are preserved by the clone — they live alongside the tracked
-files. If a run dir needs new data files (`papers.jsonl`, `claims.jsonl`,
-…), scp those individually; the sidecar `atlas_overlap.jsonl` is tracked
-in the repo.
+**Do not `scp` source files onto the box** — that recreates the divergence this
+cleaned up. Before restarting a production process, verify the web app builds
+(`.venv/bin/python -c "from aigraph.web import create_app; create_app(runs_root='artifacts/runs')"`)
+so a bad import can't take down `/mcp/`. Server-only files (`.venv`, run-dir data,
+`.env`) live alongside the tracked files and are untouched by the reset.
 
-For backward reference, the older `scp scripts/aigraph_query.py …` flow
-worked while `~/aigraph` was not git-tracked; that workflow is deprecated.
+> **Reboot gotcha:** a box reboot relaunches the MCP via a boot script bound to
+> `127.0.0.1:8765` (not externally reachable). Restore external access with the
+> §5.2 restart (it binds `0.0.0.0`).
+
+### 5.5 Environment variables
+
+Loaded from `~/aigraph/.env` at startup (via dotenv — so they are NOT visible
+in `/proc/<pid>/environ`).
+
+| Var | Default | Effect |
+|---|---|---|
+| `OPENAI_API_KEY` / `AIGRAPH_BASE_URL` / `AIGRAPH_MODEL` | — / litellm gateway / `DeepSeek-V4-Flash` | LLM endpoint used by every stage |
+| `AIGRAPH_LLM_ENDPOINT` | `chat` | `chat` or `responses` API shape |
+| `AIGRAPH_SEMANTIC_GATE` / `_MIN` / `_BATCH` | `1` / `2` / `20` | #58 semantic relevance gate: on/off · keep-score floor (0–3) · batch size |
+| `AIGRAPH_LOCAL_TAXONOMY` | `1` | #50 run-local taxonomy post-pass on/off |
+| `AIGRAPH_EXTRACT_MAX_ATTEMPTS` | `2` | #49 per-paper extraction retries (clamped 1–4) |
+| `AIGRAPH_WEB_NOVELTY` | `0` | #52 live-web novelty layer (needs `S2_API_KEY`) |
+| `AIGRAPH_OPENQ_MAX_PAPERS` / `AIGRAPH_CREATOR_MAX_ANOMALIES` | `20` / `12` | #51 caps for open-question / creator generation |
+
+All gate/quality features are **fail-open**: with no API key or on any error they
+no-op and the run proceeds unchanged.
 
 ## 6. OMC Stage 3 integration
 
@@ -399,8 +446,8 @@ and Stage 3 has no `get_idea_report` to call.
 | `start_run` fails with `provider is rate-limited` / `read operation timed out` | Shared LLM endpoint (`litellm.yangtzeailab.com`, `DeepSeek-V4-Flash`) is throttled or slow under the per-paper claim-extraction load | Retry, lower `max_papers`, or point `AIGRAPH_BASE_URL` at a less contended endpoint |
 | `start_run` produces 0 hypotheses / empty `selected_hypotheses.md` | Corpus formed 0 anomalies (too-new/too-homogeneous; both critic+creator are anomaly-gated) | Use `generate_ideas` / `research_ideas` (§3.3) — non-empty guarantee |
 | Stage 3 reports "no tool `get_idea_report`" | OMC started before aigraph; tool registration skipped | Restart in order — aigraph, then OMC |
-| Source change not reflected at runtime | `~/aigraph/` is not git-managed | `scp` + restart (§5.4, §5.2) |
-| Delivered output contains "X on X" self-conflict | Pre-`68f3aa5` aigraph_query | Redeploy `scripts/aigraph_query.py` + restart |
+| Source change not reflected at runtime | new code needs a process reload | `git reset --hard origin/main` + restart (§5.4, §5.2) |
+| `start_run` yields 0 anomalies on a niche on-topic corpus | frozen extractor often leaves `canonical_task="other"` (raw task null/garbage), which the detector skips; #50 fixes the method axis but not a null task | known gap — see `quality-pass-shipped`; a task-from-claim_text backfill is the next lever |
 
 ## 8. Prerequisites (provisioning new hosts)
 

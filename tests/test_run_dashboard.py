@@ -193,7 +193,7 @@ def test_paper_link_fallbacks():
 def test_ideas_section_renders_papers_and_graph_link(tmp_path):
     d = _make_idea_run(tmp_path)
     page = rd.render_ideas_section(rd.run_ideas(d), d.name)
-    assert "Ideas / hypotheses (1)" in page
+    assert "Conflict-grounded hypotheses (1)" in page
     assert "OPD helps when X" in page and "Papers used (2)" in page
     assert "On-Policy Distillation of LMs" in page and "arxiv.org/abs/2306.13649" in page
     assert "星球图" in page and f'href="{d.name}/graph"' in page
@@ -207,6 +207,34 @@ def test_run_graph_shape_and_page(tmp_path):
     assert len(g["edges"]) >= 4   # topic→h1, h1→anomaly, h1→2 papers
     page = rd.render_graph_page(d)
     assert page.startswith("<!doctype html>") and "forceSimulation" in page and "星球图" in page
+
+
+def test_run_cascade_ideas_and_section(tmp_path):
+    d = _make_idea_run(tmp_path)
+    (d / "forward_ideas.jsonl").write_text(
+        json.dumps({"idea_id": "i1", "tier_label": "D · method extension", "title": "Memory-gated OPD",
+                    "statement": "Use a memory buffer to ...", "mechanism": "gate tokens by ...",
+                    "predictions": ["faster", "better"], "source_papers": ["arxiv:2306.13649v3"],
+                    "novelty_audit": {"state": "covered", "corpus_verdict": "covered", "web_verdict": "skipped"}}) + "\n",
+        encoding="utf-8")
+    ideas = rd.run_cascade_ideas(d)
+    assert len(ideas) == 1 and ideas[0]["title"] == "Memory-gated OPD"
+    assert ideas[0]["tier"] == "D · method extension"
+    assert ideas[0]["papers"][0]["title"] == "On-Policy Distillation of LMs"  # resolved from source_papers
+    assert ideas[0]["novelty_audit"]["state"] == "covered"
+    sec = rd.render_generated_ideas_section(ideas, d.name)
+    assert "💡 Generated ideas (1)" in sec and "Memory-gated OPD" in sec
+    assert "Source papers (1)" in sec and "generate_ideas" in sec
+    # the full run page shows generated ABOVE the precursor hypotheses
+    page = rd.render_run_flow_html(d)
+    assert page.index("Generated ideas") < page.index("Conflict-grounded hypotheses")
+
+
+def test_generated_ideas_empty_shows_hint(tmp_path):
+    d = _make_run(tmp_path, run_id="20260607-185302-noidea")
+    assert rd.run_cascade_ideas(d) == []
+    sec = rd.render_generated_ideas_section([], d.name)
+    assert "none yet" in sec and "generate_ideas" in sec
 
 
 def test_run_ideas_empty_is_safe(tmp_path):

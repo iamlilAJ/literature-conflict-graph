@@ -301,6 +301,29 @@ def run_ideas(run_dir: Path, limit: int = 24) -> list[dict[str, Any]]:
     return out
 
 
+def run_cascade_ideas(run_dir: Path, limit: int = 24) -> list[dict[str, Any]]:
+    """The FINAL generated ideas — the generate_ideas / research_ideas cascade
+    output persisted to forward_ideas.jsonl (Tier A-E, with the #52 novelty
+    audit). Empty when the cascade was never run for this corpus."""
+    raw = _load_jsonl(run_dir / "forward_ideas.jsonl", limit=limit)
+    papers = {p.get("paper_id"): p for p in _load_jsonl(run_dir / "papers.jsonl")}
+    out: list[dict[str, Any]] = []
+    for it in raw:
+        src: list[dict[str, Any]] = []
+        for pid in (it.get("source_papers") or []):
+            p = papers.get(pid) or {"paper_id": pid}
+            src.append({"paper_id": pid, "title": p.get("title") or pid,
+                        "year": p.get("year"), "url": _paper_link(p)})
+        out.append({
+            "id": it.get("idea_id"), "title": it.get("title") or "",
+            "statement": it.get("statement") or "", "mechanism": it.get("mechanism") or "",
+            "minimal_test": it.get("minimal_test") or "", "predictions": it.get("predictions") or [],
+            "tier": it.get("tier_label") or it.get("tier") or "", "confidence": it.get("confidence"),
+            "novelty_audit": it.get("novelty_audit"), "papers": src,
+        })
+    return out
+
+
 def run_graph(run_dir: Path) -> dict[str, Any]:
     """Star graph (星球图) data: topic in the centre, hypotheses around it, each
     linked to its anomaly and the papers it used. Self-contained {nodes,edges}."""
@@ -544,8 +567,9 @@ def render_run_flow_html(run_dir: Path, fragment: bool = False) -> str:
     )
     msg = f'<p class="sub">{_esc(s["message"])}</p>' if s.get("message") else ""
     err = f'<p class="sub" style="color:var(--bad)">error: {_esc(s["error"])}</p>' if s["error"] else ""
+    generated_html = render_generated_ideas_section(run_cascade_ideas(run_dir), run_dir.name)
     ideas_html = render_ideas_section(run_ideas(run_dir), run_dir.name)
-    body = f'{kv}{msg}{err}<div class="flow">{flow_html}</div>{ideas_html}'
+    body = f'{kv}{msg}{err}<div class="flow">{flow_html}</div>{generated_html}{ideas_html}'
     if fragment:
         return body
     return (
@@ -589,8 +613,48 @@ def render_ideas_section(ideas: list[dict[str, Any]], run_id: str) -> str:
             f'<div class="body">{mech}{preds}{test}{nov}{papers_html}</div></details>'
         )
     return (
-        f'<div class="ideas"><h2>Ideas / hypotheses ({len(ideas)})</h2>'
+        f'<div class="ideas"><h2>Conflict-grounded hypotheses ({len(ideas)}) '
+        f'<span class="sub" style="font-size:12px">precursor — templated from anomalies by the pipeline</span></h2>'
         f'<a class="glink" href="{html.escape(run_id)}/graph">🌐 Conflict graph (星球图) ↗</a>'
+        f'{cards}</div>'
+    )
+
+
+def render_generated_ideas_section(ideas: list[dict[str, Any]], run_id: str) -> str:
+    """The FINAL generated ideas (forward_ideas.jsonl) — what generate_ideas /
+    research_ideas actually deliver. Shown above the precursor hypotheses."""
+    if not ideas:
+        return ('<div class="ideas"><h2>💡 Generated ideas <span class="sub" style="font-size:12px">'
+                '(none yet — run <code>generate_ideas</code> / <code>research_ideas</code> on this corpus)</span></h2></div>')
+    cards = ""
+    for it in ideas:
+        if it["papers"]:
+            plist = "".join(
+                ((f'<li><a href="{html.escape(p["url"])}" target="_blank" rel="noopener">{html.escape(p["title"])}</a>'
+                  if p.get("url") else f'<li>{html.escape(p["title"])}')
+                 + (f' <span class="chip">{_esc(p["year"])}</span>' if p.get("year") else "") + '</li>')
+                for p in it["papers"]
+            )
+            papers_html = f'<div class="lbl">Source papers ({len(it["papers"])})</div><ul>{plist}</ul>'
+        else:
+            papers_html = ""
+        stmt = f'<div class="lbl">Statement</div><div class="mech">{html.escape(it["statement"])}</div>' if it["statement"] else ""
+        mech = f'<div class="lbl">Mechanism</div><div class="mech">{html.escape(it["mechanism"])}</div>' if it["mechanism"] else ""
+        preds = ('<div class="lbl">Predictions</div><ul>'
+                 + "".join(f"<li>{html.escape(str(x))}</li>" for x in it["predictions"]) + "</ul>") if it["predictions"] else ""
+        test = f'<div class="lbl">Minimal test</div><div>{html.escape(it["minimal_test"])}</div>' if it["minimal_test"] else ""
+        a = it.get("novelty_audit")
+        nov = (f'<div class="lbl">Novelty audit</div><div class="nov-{html.escape(a["state"])}">'
+               f'state={html.escape(a["state"])} (corpus={_esc(a.get("corpus_verdict"))}, web={_esc(a.get("web_verdict"))})</div>'
+               ) if isinstance(a, dict) and a.get("state") else ""
+        tier = f'<span class="chip">{html.escape(str(it["tier"]))}</span>' if it["tier"] else ""
+        cards += (
+            f'<details class="idea"><summary>{html.escape(it["title"] or str(it["id"]))}{tier}</summary>'
+            f'<div class="body">{stmt}{mech}{preds}{test}{nov}{papers_html}</div></details>'
+        )
+    return (
+        f'<div class="ideas"><h2>💡 Generated ideas ({len(ideas)}) '
+        f'<span class="sub" style="font-size:12px">final — from <code>generate_ideas</code> / <code>research_ideas</code> cascade</span></h2>'
         f'{cards}</div>'
     )
 

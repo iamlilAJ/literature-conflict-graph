@@ -480,4 +480,101 @@ def build_mcp(
                     "next": f"once status=done, call generate_ideas(run='{run_id}')",
                     "note": "corpus build runs in the background (minutes)"}
 
+    @mcp.tool()
+    def research_e2e(topic: str, max_papers: int = 30, min_ideas: int = 5,
+                     k: int = 8, reuse: bool = True, wait_seconds: int = 900) -> Any:
+        """ONE-SHOT end-to-end: topic in → the whole deliverable bundle out.
+
+        Resolves-or-builds a corpus (like `research_ideas`), then assembles and
+        returns IN A SINGLE CALL:
+          - `idea_report_markdown` : the Stage-3 'Idea Generation' report
+          - `ideas` / `ideas_markdown` : the `generate_ideas` cascade output
+          - `graph` : the star-graph `{nodes, edges}`
+          - `graph_html` : a SELF-CONTAINED D3 star-graph (星球图) page you can
+            drop straight into a browser / iframe
+          - `dashboard_url` / `graph_url` : the live dashboard + graph pages
+        `wait_seconds` clamped 0..1500 (0 = submit-and-return `{status:building}`).
+        The build path is paid + only effective when NOT readonly; the reuse path
+        is free."""
+        import time as _time
+        import idea_cascade as ic
+        from aigraph_query import query as _query
+        from .run_dashboard import render_graph_page as _graph_page, run_graph as _run_graph
+        min_ideas = max(1, min(20, int(min_ideas)))
+        k = max(1, min(20, int(k)))
+        wait_seconds = max(0, min(1500, int(wait_seconds)))
+
+        def _bundle(run_id: str, reused: bool) -> dict:
+            rdir = _safe_run_dir(runs_root, run_id)
+            try:
+                md, _stats = _query(rdir, topic, k=k, max_hypotheses=12, mmr_lambda=0.85,
+                                    min_anomalies=3, hyp_kind="creator", min_atlas_overlap=3)
+                report_md = f"# Stage 3: Idea Generation — {topic}\n\n" + _coverage_banner(_stats) + md
+            except Exception as exc:
+                report_md, _stats = f"# Stage 3: Idea Generation — {topic}\n\n_report failed: {exc}_\n", {}
+            try:
+                ideas_res = ic.generate_ideas(rdir, topic, min_ideas=min_ideas, allow_llm=not readonly)
+            except Exception as exc:
+                ideas_res = {"ideas": [], "stats": {"error": str(exc)}}
+            try:
+                graph, graph_html = _run_graph(rdir), _graph_page(rdir)
+            except Exception as exc:
+                graph, graph_html = {"nodes": [], "edges": [], "error": str(exc)}, ""
+            _log_query(runs_root, tool="research_e2e", topic=topic, run=run_id,
+                       n_matched=_stats.get("n_matched"), n_total=_stats.get("n_hypotheses_total"),
+                       top_relevance=_stats.get("top_relevance"), chars=len(report_md))
+            return {
+                "status": "done", "run": run_id, "reused": reused,
+                "coverage": {"n_matched": _stats.get("n_matched"),
+                             "n_total": _stats.get("n_hypotheses_total"),
+                             "top_relevance": _stats.get("top_relevance")},
+                "idea_report_markdown": report_md,
+                "ideas_markdown": ic.render_ideas_markdown(ideas_res) if isinstance(ideas_res, dict) else "",
+                "ideas": ideas_res.get("ideas", []) if isinstance(ideas_res, dict) else [],
+                "graph": graph,
+                "graph_html": graph_html,
+                "dashboard_url": f"/dashboard/{run_id}",
+                "graph_url": f"/dashboard/{run_id}/graph",
+            }
+
+        if reuse:
+            try:
+                rid = ic.resolve_best_run(runs_root, topic)
+            except Exception:
+                rid = None
+            if rid:
+                try:
+                    return _bundle(rid, reused=True)
+                except Exception as exc:
+                    return {"error": f"{type(exc).__name__}: {exc}"}
+        if search_service is None:
+            return {"error": "no matching corpus and run-trigger disabled (no SearchService configured)"}
+        try:
+            req = search_service.submit(topic=topic, limit=max(1, min(500, int(max_papers))),
+                                        insight_generator="llm", source="union")
+        except Exception as exc:
+            return {"error": f"submit failed: {type(exc).__name__}: {exc}"}
+        run_id = req.run_id
+        run_dir = _safe_run_dir(runs_root, run_id)
+        waited = 0
+        while waited < wait_seconds:
+            _time.sleep(5)
+            waited += 5
+            sp = (run_dir / "status.json") if run_dir else None
+            if sp is None or not sp.exists():
+                continue
+            try:
+                st = json.loads(sp.read_text())
+            except Exception:
+                continue
+            if st.get("status") == "done":
+                try:
+                    return _bundle(run_id, reused=False)
+                except Exception as exc:
+                    return {"error": f"{type(exc).__name__}: {exc}", "run": run_id}
+            if st.get("status") == "error":
+                return {"status": "error", "run": run_id, "message": st.get("message") or "run failed"}
+        return {"status": "building", "run_id": run_id, "poll_with": "get_run_status",
+                "next": f"once status=done, call research_e2e(topic='{topic}') again — reuse will hit the built corpus"}
+
     return mcp

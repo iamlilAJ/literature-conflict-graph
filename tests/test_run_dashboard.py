@@ -143,3 +143,74 @@ def test_duration_and_params_in_header(tmp_path):
     page = rd.render_run_flow_html(d)
     assert "duration" in page and "1m12s" in page  # 18:53:00 -> 18:54:12
     assert "citation_weight" in page and "0.45" in page
+
+
+# ---- idea drill-down (papers) + star graph -------------------------------
+
+def _make_idea_run(root, run_id="20260607-185302-idea"):
+    d = _make_run(root, run_id, anomalies=1, hypotheses=1, papers=2, claims=2)
+    (d / "papers.jsonl").write_text(
+        json.dumps({"paper_id": "arxiv:2306.13649v3", "title": "On-Policy Distillation of LMs",
+                    "year": 2024, "url": "https://arxiv.org/abs/2306.13649"}) + "\n"
+        + json.dumps({"paper_id": "openalex:W1", "title": "Some OA paper", "year": 2023,
+                      "openalex_id": "W1"}) + "\n", encoding="utf-8")
+    (d / "claims.jsonl").write_text(
+        json.dumps({"claim_id": "c1", "paper_id": "arxiv:2306.13649v3", "claim_text": "OPD helps", "direction": "positive"}) + "\n"
+        + json.dumps({"claim_id": "c2", "paper_id": "openalex:W1", "claim_text": "contradicts", "direction": "negative"}) + "\n",
+        encoding="utf-8")
+    (d / "anomalies.jsonl").write_text(
+        json.dumps({"anomaly_id": "a1", "type": "impact_conflict", "claim_ids": ["c1", "c2"],
+                    "central_question": "Does OPD help?"}) + "\n", encoding="utf-8")
+    (d / "hypotheses.jsonl").write_text(
+        json.dumps({"hypothesis_id": "h1", "anomaly_id": "a1", "hypothesis": "OPD helps when X",
+                    "mechanism": "because Y", "predictions": ["p1", "p2"],
+                    "explains_claims": ["c1", "c2"],
+                    "novelty_audit": {"state": "unknown", "corpus_verdict": "unknown", "web_verdict": "skipped"}}) + "\n",
+        encoding="utf-8")
+    return d
+
+
+def test_run_ideas_resolves_papers(tmp_path):
+    ideas = rd.run_ideas(_make_idea_run(tmp_path))
+    assert len(ideas) == 1
+    it = ideas[0]
+    assert it["hypothesis"] == "OPD helps when X" and it["anomaly_type"] == "impact_conflict"
+    assert {p["paper_id"] for p in it["papers"]} == {"arxiv:2306.13649v3", "openalex:W1"}
+    arx = next(p for p in it["papers"] if p["paper_id"].startswith("arxiv"))
+    assert arx["url"] == "https://arxiv.org/abs/2306.13649"
+    assert it["novelty_audit"]["state"] == "unknown"
+    assert len(it["claims"]) == 2
+
+
+def test_paper_link_fallbacks():
+    assert rd._paper_link({"arxiv_id_base": "2306.13649"}) == "https://arxiv.org/abs/2306.13649"
+    assert rd._paper_link({"openalex_id": "W123"}) == "https://openalex.org/W123"
+    assert rd._paper_link({"doi": "10.1/x"}) == "https://doi.org/10.1/x"
+    assert rd._paper_link({"url": "http://u"}) == "http://u"
+    assert rd._paper_link({}) == ""
+
+
+def test_ideas_section_renders_papers_and_graph_link(tmp_path):
+    d = _make_idea_run(tmp_path)
+    page = rd.render_ideas_section(rd.run_ideas(d), d.name)
+    assert "Ideas / hypotheses (1)" in page
+    assert "OPD helps when X" in page and "Papers used (2)" in page
+    assert "On-Policy Distillation of LMs" in page and "arxiv.org/abs/2306.13649" in page
+    assert "星球图" in page and f'href="{d.name}/graph"' in page
+
+
+def test_run_graph_shape_and_page(tmp_path):
+    d = _make_idea_run(tmp_path)
+    g = rd.run_graph(d)
+    kinds = {n["kind"] for n in g["nodes"]}
+    assert {"topic", "hypothesis", "anomaly", "paper"} <= kinds
+    assert len(g["edges"]) >= 4   # topic→h1, h1→anomaly, h1→2 papers
+    page = rd.render_graph_page(d)
+    assert page.startswith("<!doctype html>") and "forceSimulation" in page and "星球图" in page
+
+
+def test_run_ideas_empty_is_safe(tmp_path):
+    d = _make_run(tmp_path, run_id="20260607-185302-empty")
+    assert rd.run_ideas(d) == []
+    assert rd.render_ideas_section([], d.name) == ""
+    assert rd.run_graph(d)["nodes"] == [{"id": "topic", "label": "memory based on-policy distillation", "kind": "topic"}]

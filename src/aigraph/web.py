@@ -45,7 +45,9 @@ from aigraph.run_dashboard import (  # noqa: E402
     discover_run_summaries,
     pipeline_flow,
     render_dashboard_html,
+    render_graph_page,
     render_run_flow_html,
+    run_graph,
 )
 
 
@@ -189,6 +191,20 @@ def create_app(
         if not (str(run_dir).startswith(str(runs_root.resolve())) and (run_dir / "status.json").exists()):
             raise HTTPException(404, f"run not found: {run_id}")
         return JSONResponse(pipeline_flow(run_dir))
+
+    @app.get("/dashboard/{run_id}/graph", response_class=HTMLResponse)
+    def dashboard_graph(run_id: str):
+        run_dir = (runs_root / run_id).resolve()
+        if not (str(run_dir).startswith(str(runs_root.resolve())) and (run_dir / "status.json").exists()):
+            raise HTTPException(404, f"run not found: {run_id}")
+        return render_graph_page(run_dir)
+
+    @app.get("/api/dashboard/{run_id}/graph")
+    def api_dashboard_graph(run_id: str):
+        run_dir = (runs_root / run_id).resolve()
+        if not (str(run_dir).startswith(str(runs_root.resolve())) and (run_dir / "status.json").exists()):
+            raise HTTPException(404, f"run not found: {run_id}")
+        return JSONResponse(run_graph(run_dir))
 
     @app.get("/runs/{run_id}/{filename}", response_class=PlainTextResponse)
     def run_artifact(run_id: str, filename: str):

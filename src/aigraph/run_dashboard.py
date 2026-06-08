@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import html
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -192,7 +193,32 @@ def _stage_detail(key: str, st: dict[str, Any], run_dir: Path) -> str:
         return "re-maps only 'other' method/task (fail-open)"
     if key == "graph":
         return f"nodes={st.get('nodes')} · edges={st.get('edges')}"
+    if key == "anomalies":
+        types = _count_by_field(run_dir / "anomalies.jsonl", "type")
+        return ("types: " + ", ".join(f"{t}×{n}" for t, n in types)) if types else ""
+    if key == "hypotheses":
+        sel = st.get("selected")
+        base = f"{st.get('hypotheses', 0)} generated"
+        return base + (f" · {sel} selected" if sel is not None else "")
+    if key == "render":
+        sel = st.get("selected")
+        return f"{sel} selected → selected_hypotheses.md" if sel is not None else ""
     return ""
+
+
+def _count_by_field(path: Path, field: str) -> list[tuple[str, int]]:
+    counts: dict[str, int] = {}
+    try:
+        with path.open(encoding="utf-8") as f:
+            for ln in f:
+                ln = ln.strip()
+                if not ln:
+                    continue
+                v = str(json.loads(ln).get(field) or "?")
+                counts[v] = counts.get(v, 0) + 1
+    except (OSError, json.JSONDecodeError):
+        return []
+    return sorted(counts.items(), key=lambda kv: -kv[1])
 
 
 def _read_first_jsonl(path: Path) -> dict[str, Any]:
@@ -259,6 +285,7 @@ td.topic{white-space:normal;max-width:320px}
 .s-active .nm::before{content:"▶ ";color:var(--act)}.s-pending{opacity:.5}
 .kv{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 16px;color:var(--mut);font-size:13px}.kv b{color:var(--fg)}
 .empty-note{color:var(--mut);padding:30px;text-align:center}
+.liveind{font-size:12px;color:var(--mut);font-weight:400;margin-left:8px}
 </style>
 """
 
@@ -273,14 +300,48 @@ def _esc(v: Any) -> str:
     return html.escape(str(v)) if v is not None else ""
 
 
-def render_dashboard_html(runs_root: Path) -> str:
-    runs = discover_run_summaries(runs_root)
-    legend = "".join(
-        f'<div class="st"><b>{i+1}. {html.escape(s["label"])}</b><span>{html.escape(s["note"])}</span></div>'
-        for i, s in enumerate(_STAGES)
-    )
+def _duration(created: str, updated: str) -> str:
+    """Wall-clock duration from the run-id stamp to the last status update."""
+    try:
+        c = datetime.fromisoformat((created or "").replace(" ", "T"))
+        u = datetime.fromisoformat(updated or "")
+    except (ValueError, TypeError):
+        return ""
+    secs = int((u - c).total_seconds())
+    if secs < 0:
+        return ""
+    m, s = divmod(secs, 60)
+    return f"{m}m{s:02d}s" if m else f"{s}s"
+
+
+# Live auto-refresh: while any run on the page is still "running", re-fetch the
+# server-rendered fragment every few seconds and swap it in (no full reload, no
+# JS duplication of the rendering). Auto-stops once nothing is running.
+_POLL_JS = """
+<script>
+(function(){
+  var POLL=3500;
+  function live(){ return document.querySelector('.badge.b-running'); }
+  function tick(){
+    fetch(location.pathname + '?fragment=1', {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(h){
+        var el=document.getElementById('live'); if(el){el.innerHTML=h;}
+        var ind=document.getElementById('liveind');
+        if(ind){ind.textContent = live() ? '● live' : '○ idle';}
+        if(live()){ setTimeout(tick, POLL); }
+      })
+      .catch(function(){ setTimeout(tick, POLL*2); });
+  }
+  if(live()){ setTimeout(tick, POLL); }
+})();
+</script>
+"""
+
+
+def _dashboard_table(runs: list[dict[str, Any]]) -> str:
     if not runs:
-        rows = '<tr><td colspan="8" class="empty-note">No runs yet. Call <code>start_run</code> via the MCP.</td></tr>'
+        rows = '<tr><td colspan="7" class="empty-note">No runs yet. Call <code>start_run</code> via the MCP.</td></tr>'
     else:
         rows = ""
         for r in runs:
@@ -307,17 +368,32 @@ def render_dashboard_html(runs_root: Path) -> str:
                 f'</tr>'
             )
     return (
-        f'<!doctype html><html><head><meta charset="utf-8"><title>aigraph runs</title>{_CSS}</head><body><div class="wrap">'
-        f'<h1>aigraph MCP — runs</h1>'
-        f'<p class="sub">{len(runs)} request(s). Each row is one <code>start_run</code>; click a run to see how it flowed through the pipeline.</p>'
-        f'<div class="legend">{legend}</div>'
-        f'<table><thead><tr><th>run id</th><th>topic</th><th>status</th><th>stage</th><th>counts</th><th>flags</th><th>created</th></tr></thead>'
+        '<table><thead><tr><th>run id</th><th>topic</th><th>status</th><th>stage</th>'
+        '<th>counts</th><th>flags</th><th>created</th></tr></thead>'
         f'<tbody>{rows}</tbody></table>'
-        f'</div></body></html>'
     )
 
 
-def render_run_flow_html(run_dir: Path) -> str:
+def render_dashboard_html(runs_root: Path, fragment: bool = False) -> str:
+    runs = discover_run_summaries(runs_root)
+    table = _dashboard_table(runs)
+    if fragment:
+        return table
+    legend = "".join(
+        f'<div class="st"><b>{i+1}. {html.escape(s["label"])}</b><span>{html.escape(s["note"])}</span></div>'
+        for i, s in enumerate(_STAGES)
+    )
+    return (
+        f'<!doctype html><html><head><meta charset="utf-8"><title>aigraph runs</title>{_CSS}</head><body><div class="wrap">'
+        f'<h1>aigraph MCP — runs <span id="liveind" class="liveind">○ idle</span></h1>'
+        f'<p class="sub">{len(runs)} request(s). Each row is one <code>start_run</code>; click a run to see how it flowed through the pipeline. Auto-refreshes while a run is in progress.</p>'
+        f'<div class="legend">{legend}</div>'
+        f'<div id="live">{table}</div>'
+        f'{_POLL_JS}</div></body></html>'
+    )
+
+
+def render_run_flow_html(run_dir: Path, fragment: bool = False) -> str:
     flow = pipeline_flow(run_dir)
     s = flow["summary"]
     stages = flow["stages"]
@@ -338,22 +414,34 @@ def render_run_flow_html(run_dir: Path) -> str:
             f'{detail}'
             f'</div></div>'
         )
+    raw = flow["raw_status"]
+    dur = _duration(s["created"], s["updated"])
+    params = []
+    for label, key in (("source", "source"), ("strategy", "strategy"),
+                       ("citation_weight", "citation_weight"), ("limit", "limit"),
+                       ("min_relevance", "min_relevance")):
+        if raw.get(key) is not None:
+            params.append(f'<span>{label} <b>{_esc(raw.get(key))}</b></span>')
     kv = (
-        f'<div class="kv">'
+        '<div class="kv">'
         f'<span>status {_badge(s["status"])}</span>'
-        f'<span>source <b>{_esc(s["source"])}</b></span>'
-        f'<span>strategy <b>{_esc(s["strategy"])}</b></span>'
-        f'<span>created <b>{_esc(s["created"])}</b></span>'
-        f'<span>updated <b>{_esc(s["updated"])}</b></span>'
-        f'</div>'
+        + (f'<span>stage <b>{_esc(s["stage"])}</b></span>' if s["status"] == "running" else "")
+        + "".join(params)
+        + f'<span>created <b>{_esc(s["created"])}</b></span>'
+        + (f'<span>duration <b>{_esc(dur)}</b></span>' if dur else "")
+        + f'<span>updated <b>{_esc(s["updated"])}</b></span>'
+        + '</div>'
     )
+    msg = f'<p class="sub">{_esc(s["message"])}</p>' if s.get("message") else ""
     err = f'<p class="sub" style="color:var(--bad)">error: {_esc(s["error"])}</p>' if s["error"] else ""
+    body = f'{kv}{msg}{err}<div class="flow">{flow_html}</div>'
+    if fragment:
+        return body
     return (
         f'<!doctype html><html><head><meta charset="utf-8"><title>{html.escape(run_dir.name)}</title>{_CSS}</head><body><div class="wrap">'
-        f'<p class="sub"><a href="../dashboard">← all runs</a></p>'
+        f'<p class="sub"><a href="../dashboard">← all runs</a> <span id="liveind" class="liveind">○ idle</span></p>'
         f'<h1>{html.escape(s["topic"] or run_dir.name)}</h1>'
         f'<p class="sub">{html.escape(run_dir.name)}</p>'
-        f'{kv}{err}'
-        f'<div class="flow">{flow_html}</div>'
-        f'</div></body></html>'
+        f'<div id="live">{body}</div>'
+        f'{_POLL_JS}</div></body></html>'
     )

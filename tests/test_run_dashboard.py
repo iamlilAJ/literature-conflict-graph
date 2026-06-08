@@ -94,3 +94,52 @@ def test_render_html_well_formed(tmp_path):
 def test_empty_runs_root(tmp_path):
     assert rd.discover_run_summaries(tmp_path / "missing") == []
     assert "No runs yet" in rd.render_dashboard_html(tmp_path)
+
+
+# ---- live fragments + richer detail --------------------------------------
+
+def test_fragment_returns_inner_only(tmp_path):
+    d = _make_run(tmp_path, papers=10)
+    _write_lines(d / "papers.jsonl", 10)
+    full = rd.render_dashboard_html(tmp_path, fragment=False)
+    frag = rd.render_dashboard_html(tmp_path, fragment=True)
+    assert full.startswith("<!doctype html>") and 'id="live"' in full and "POLL" not in frag
+    assert frag.startswith("<table>") and "<!doctype" not in frag
+    run_full = rd.render_run_flow_html(d, fragment=False)
+    run_frag = rd.render_run_flow_html(d, fragment=True)
+    assert 'id="live"' in run_full and "<!doctype" not in run_frag
+    assert 'class="flow"' in run_frag
+
+
+def test_running_run_has_live_poll(tmp_path):
+    d = _make_run(tmp_path, status="running", stage="extract", papers=5)
+    page = rd.render_run_flow_html(d)
+    assert "b-running" in page and "setTimeout(tick" in page and 'id="liveind"' in page
+
+
+def test_anomaly_type_breakdown(tmp_path):
+    d = _make_run(tmp_path, anomalies=3, papers=5, claims=9, hypotheses=2)
+    _write_lines(d / "papers.jsonl", 5)
+    (d / "anomalies.jsonl").write_text(
+        "\n".join(json.dumps({"type": t}) for t in
+                  ["benchmark_inconsistency", "benchmark_inconsistency", "bridge_opportunity"]) + "\n",
+        encoding="utf-8")
+    flow = rd.pipeline_flow(d)
+    anom = next(s for s in flow["stages"] if s["key"] == "anomalies")
+    assert anom["state"] == "done"
+    assert "benchmark_inconsistency×2" in anom["detail"] and "bridge_opportunity×1" in anom["detail"]
+
+
+def test_hypotheses_selected_detail(tmp_path):
+    d = _make_run(tmp_path, hypotheses=4, selected=2, anomalies=1, papers=3)
+    flow = rd.pipeline_flow(d)
+    hyp = next(s for s in flow["stages"] if s["key"] == "hypotheses")
+    assert "4 generated" in hyp["detail"] and "2 selected" in hyp["detail"]
+
+
+def test_duration_and_params_in_header(tmp_path):
+    d = _make_run(tmp_path, run_id="20260607-185300-xy", source="union",
+                  citation_weight=0.45, limit=40, updated_at="2026-06-07T18:54:12")
+    page = rd.render_run_flow_html(d)
+    assert "duration" in page and "1m12s" in page  # 18:53:00 -> 18:54:12
+    assert "citation_weight" in page and "0.45" in page

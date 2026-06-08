@@ -232,6 +232,104 @@ def _read_first_jsonl(path: Path) -> dict[str, Any]:
     return {}
 
 
+def _load_jsonl(path: Path, limit: int | None = None) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    try:
+        with path.open(encoding="utf-8") as f:
+            for ln in f:
+                ln = ln.strip()
+                if not ln:
+                    continue
+                try:
+                    rows.append(json.loads(ln))
+                except json.JSONDecodeError:
+                    continue
+                if limit and len(rows) >= limit:
+                    break
+    except OSError:
+        return []
+    return rows
+
+
+def _paper_link(p: dict[str, Any]) -> str:
+    """Best external link for a paper."""
+    if p.get("url"):
+        return str(p["url"])
+    for k in ("arxiv_id_base", "arxiv_id_full"):
+        if p.get(k):
+            return f"https://arxiv.org/abs/{p[k]}"
+    oa = p.get("openalex_id")
+    if oa:
+        return str(oa) if str(oa).startswith("http") else f"https://openalex.org/{oa}"
+    if p.get("doi"):
+        return f"https://doi.org/{p['doi']}"
+    return ""
+
+
+def run_ideas(run_dir: Path, limit: int = 24) -> list[dict[str, Any]]:
+    """The run's hypotheses, each resolved to the source PAPERS it used
+    (explains_claims → claim.paper_id → paper) + its anomaly + novelty audit."""
+    hyps = _load_jsonl(run_dir / "hypotheses.jsonl") or _load_jsonl(run_dir / "hypotheses_scored.jsonl")
+    claims = {c.get("claim_id"): c for c in _load_jsonl(run_dir / "claims.jsonl")}
+    papers = {p.get("paper_id"): p for p in _load_jsonl(run_dir / "papers.jsonl")}
+    anoms = {a.get("anomaly_id"): a for a in _load_jsonl(run_dir / "anomalies.jsonl")}
+    out: list[dict[str, Any]] = []
+    for h in hyps[:limit]:
+        used_papers: list[dict[str, Any]] = []
+        used_claims: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for cid in (h.get("explains_claims") or []):
+            c = claims.get(cid)
+            if not c:
+                continue
+            pid = c.get("paper_id")
+            used_claims.append({"claim_id": cid, "text": (c.get("claim_text") or "")[:220],
+                                "direction": c.get("direction"), "paper_id": pid})
+            if pid and pid not in seen:
+                seen.add(pid)
+                p = papers.get(pid) or {"paper_id": pid}
+                used_papers.append({"paper_id": pid, "title": p.get("title") or pid,
+                                    "year": p.get("year"), "url": _paper_link(p)})
+        an = anoms.get(h.get("anomaly_id")) or {}
+        out.append({
+            "id": h.get("hypothesis_id"), "hypothesis": h.get("hypothesis") or "",
+            "mechanism": h.get("mechanism") or "", "predictions": h.get("predictions") or [],
+            "minimal_test": h.get("minimal_test") or "", "novelty_audit": h.get("novelty_audit"),
+            "anomaly_type": an.get("type") or "", "central_question": an.get("central_question") or "",
+            "papers": used_papers, "claims": used_claims,
+        })
+    return out
+
+
+def run_graph(run_dir: Path) -> dict[str, Any]:
+    """Star graph (星球图) data: topic in the centre, hypotheses around it, each
+    linked to its anomaly and the papers it used. Self-contained {nodes,edges}."""
+    ideas = run_ideas(run_dir, limit=40)
+    topic = _read_status(run_dir).get("topic") or run_dir.name
+    nodes: list[dict[str, Any]] = [{"id": "topic", "label": topic[:60], "kind": "topic"}]
+    seen = {"topic"}
+    edges: list[dict[str, Any]] = []
+
+    def add(nid: str, label: str, kind: str) -> None:
+        if nid not in seen:
+            seen.add(nid)
+            nodes.append({"id": nid, "label": label, "kind": kind})
+
+    for idea in ideas:
+        hid = str(idea["id"])
+        add(hid, (idea["hypothesis"] or hid)[:48], "hypothesis")
+        edges.append({"source": "topic", "target": hid})
+        if idea["anomaly_type"]:
+            aid = "anom:" + (idea["central_question"] or idea["anomaly_type"])[:48]
+            add(aid, idea["anomaly_type"], "anomaly")
+            edges.append({"source": hid, "target": aid})
+        for p in idea["papers"][:6]:
+            pid = "p:" + str(p["paper_id"])
+            add(pid, (p["title"] or "")[:42], "paper")
+            edges.append({"source": hid, "target": pid})
+    return {"nodes": nodes, "edges": edges, "topic": topic, "id": run_dir.name}
+
+
 def discover_run_summaries(runs_root: Path) -> list[dict[str, Any]]:
     """All runs that have a status.json, newest first."""
     out: list[dict[str, Any]] = []
@@ -286,6 +384,18 @@ td.topic{white-space:normal;max-width:320px}
 .kv{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 16px;color:var(--mut);font-size:13px}.kv b{color:var(--fg)}
 .empty-note{color:var(--mut);padding:30px;text-align:center}
 .liveind{font-size:12px;color:var(--mut);font-weight:400;margin-left:8px}
+.ideas{margin:26px 0 0}.ideas h2{font-size:15px;margin:0 0 10px}
+.glink{display:inline-block;margin:0 0 16px;padding:8px 13px;background:var(--card);border:1px solid var(--bd);border-radius:9px;font-weight:600}
+details.idea{background:var(--card);border:1px solid var(--bd);border-radius:10px;margin:0 0 8px}
+details.idea>summary{cursor:pointer;padding:11px 14px;font-weight:600;list-style:none;display:flex;gap:8px;align-items:baseline}
+details.idea>summary::-webkit-details-marker{display:none}
+details.idea>summary::before{content:"▸ ";color:var(--mut)}details.idea[open]>summary::before{content:"▾ "}
+.idea .body{padding:2px 14px 12px}.idea .lbl{color:var(--mut);font-size:11px;margin:11px 0 3px;text-transform:uppercase;letter-spacing:.04em}
+.idea ul{margin:3px 0;padding-left:18px}.idea li{margin:2px 0}
+.idea .mech{color:var(--fg)}
+.chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;background:#11141c;border:1px solid var(--bd);color:var(--mut);margin-left:auto;flex:none}
+.nov-novel{color:var(--ok)}.nov-covered{color:var(--bad)}.nov-unknown{color:var(--warn)}
+.dir-negative{color:var(--bad)}.dir-positive{color:var(--ok)}.dir-mixed{color:var(--warn)}
 </style>
 """
 
@@ -434,7 +544,8 @@ def render_run_flow_html(run_dir: Path, fragment: bool = False) -> str:
     )
     msg = f'<p class="sub">{_esc(s["message"])}</p>' if s.get("message") else ""
     err = f'<p class="sub" style="color:var(--bad)">error: {_esc(s["error"])}</p>' if s["error"] else ""
-    body = f'{kv}{msg}{err}<div class="flow">{flow_html}</div>'
+    ideas_html = render_ideas_section(run_ideas(run_dir), run_dir.name)
+    body = f'{kv}{msg}{err}<div class="flow">{flow_html}</div>{ideas_html}'
     if fragment:
         return body
     return (
@@ -445,3 +556,89 @@ def render_run_flow_html(run_dir: Path, fragment: bool = False) -> str:
         f'<div id="live">{body}</div>'
         f'{_POLL_JS}</div></body></html>'
     )
+
+
+def render_ideas_section(ideas: list[dict[str, Any]], run_id: str) -> str:
+    """Collapsible idea cards — click an idea to see its mechanism, predictions,
+    novelty audit, and the source PAPERS it used (with links)."""
+    if not ideas:
+        return ""
+    cards = ""
+    for it in ideas:
+        if it["papers"]:
+            plist = "".join(
+                (f'<li><a href="{html.escape(p["url"])}" target="_blank" rel="noopener">{html.escape(p["title"])}</a>'
+                 if p.get("url") else f'<li>{html.escape(p["title"])}')
+                + (f' <span class="chip">{_esc(p["year"])}</span>' if p.get("year") else "") + '</li>'
+                for p in it["papers"]
+            )
+            papers_html = f'<div class="lbl">Papers used ({len(it["papers"])})</div><ul>{plist}</ul>'
+        else:
+            papers_html = '<div class="lbl">Papers used</div><div class="sub">— none linked —</div>'
+        mech = f'<div class="lbl">Mechanism</div><div class="mech">{html.escape(it["mechanism"])}</div>' if it["mechanism"] else ""
+        preds = ('<div class="lbl">Predictions</div><ul>'
+                 + "".join(f"<li>{html.escape(str(x))}</li>" for x in it["predictions"]) + "</ul>") if it["predictions"] else ""
+        test = f'<div class="lbl">Minimal test</div><div>{html.escape(it["minimal_test"])}</div>' if it["minimal_test"] else ""
+        a = it.get("novelty_audit")
+        nov = (f'<div class="lbl">Novelty audit</div><div class="nov-{html.escape(a["state"])}">'
+               f'state={html.escape(a["state"])} (corpus={_esc(a.get("corpus_verdict"))}, web={_esc(a.get("web_verdict"))})</div>'
+               ) if isinstance(a, dict) and a.get("state") else ""
+        anom = f'<span class="chip">{html.escape(it["anomaly_type"])}</span>' if it["anomaly_type"] else ""
+        cards += (
+            f'<details class="idea"><summary>{html.escape(it["hypothesis"] or str(it["id"]))}{anom}</summary>'
+            f'<div class="body">{mech}{preds}{test}{nov}{papers_html}</div></details>'
+        )
+    return (
+        f'<div class="ideas"><h2>Ideas / hypotheses ({len(ideas)})</h2>'
+        f'<a class="glink" href="{html.escape(run_id)}/graph">🌐 Conflict graph (星球图) ↗</a>'
+        f'{cards}</div>'
+    )
+
+
+_GRAPH_PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>__ID__ · graph</title>
+<style>
+body{margin:0;background:#0f1117;color:#e6e8ee;font:14px -apple-system,Segoe UI,Roboto,sans-serif}
+.bar{padding:11px 20px;border-bottom:1px solid #2a2f3d}.bar a{color:#388bfd;text-decoration:none}
+svg{width:100vw;height:calc(100vh - 46px);display:block}.lk{stroke:#2a2f3d;stroke-width:1.1}
+text{fill:#cfd4e0;font-size:10px;pointer-events:none}
+.lg{position:fixed;right:14px;top:58px;background:#1a1d27;border:1px solid #2a2f3d;border-radius:8px;padding:8px 11px;font-size:12px}
+.lg div{margin:3px 0}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.empty{padding:40px;color:#8b93a7;text-align:center}
+</style></head><body>
+<div class="bar"><a href="../__ID__">← back to flow</a> &nbsp;·&nbsp; <b>星球图</b> · __TOPIC__</div>
+<div class="lg" id="lg"></div><svg></svg>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+var G=__DATA__;
+if(!G.nodes||G.nodes.length<=1){document.querySelector("svg").outerHTML='<div class="empty">No graph yet — this run produced no hypotheses/anomalies to link.</div>';}
+else{
+var COL={topic:"#e6e8ee",hypothesis:"#388bfd",anomaly:"#d29922",paper:"#3fb950",entity:"#8b93a7"};
+var SZ={topic:16,hypothesis:9,anomaly:7,paper:5,entity:5};
+var W=window.innerWidth,H=window.innerHeight-46;
+var svg=d3.select("svg"),g=svg.append("g");
+svg.call(d3.zoom().on("zoom",function(e){g.attr("transform",e.transform)}));
+var sim=d3.forceSimulation(G.nodes)
+ .force("link",d3.forceLink(G.edges).id(function(d){return d.id}).distance(60))
+ .force("charge",d3.forceManyBody().strength(-170))
+ .force("center",d3.forceCenter(W/2,H/2)).force("collide",d3.forceCollide(15));
+var link=g.selectAll("line").data(G.edges).join("line").attr("class","lk");
+var node=g.selectAll("g.n").data(G.nodes).join("g").attr("class","n").call(drag(sim));
+node.append("circle").attr("r",function(d){return SZ[d.kind]||5}).attr("fill",function(d){return COL[d.kind]||"#8b93a7"}).attr("stroke","#0f1117").attr("stroke-width",1.5);
+node.append("title").text(function(d){return d.label});
+node.append("text").attr("x",function(d){return (SZ[d.kind]||5)+3}).attr("y",3).text(function(d){return d.label});
+sim.on("tick",function(){
+ link.attr("x1",function(d){return d.source.x}).attr("y1",function(d){return d.source.y}).attr("x2",function(d){return d.target.x}).attr("y2",function(d){return d.target.y});
+ node.attr("transform",function(d){return "translate("+d.x+","+d.y+")"});});
+var kinds={};G.nodes.forEach(function(n){kinds[n.kind]=(kinds[n.kind]||0)+1});
+document.getElementById("lg").innerHTML=Object.keys(kinds).map(function(k){return '<div><span class="dot" style="background:'+(COL[k]||"#888")+'"></span>'+k+' ('+kinds[k]+')</div>'}).join("");
+function drag(sim){function s(e,d){if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y}function m(e,d){d.fx=e.x;d.fy=e.y}function en(e,d){if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}return d3.drag().on("start",s).on("drag",m).on("end",en)}
+}
+</script></body></html>"""
+
+
+def render_graph_page(run_dir: Path) -> str:
+    g = run_graph(run_dir)
+    return (_GRAPH_PAGE
+            .replace("__DATA__", json.dumps(g, ensure_ascii=False))
+            .replace("__ID__", html.escape(run_dir.name))
+            .replace("__TOPIC__", html.escape(g["topic"])))

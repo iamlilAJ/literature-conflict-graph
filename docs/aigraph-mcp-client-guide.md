@@ -307,6 +307,7 @@ produced. Plain HTTP (no Host-header restriction, unlike `/mcp/`):
 | `GET /dashboard/{run_id}` | The run's **stage-by-stage flow** (fetch → semantic gate → extract → taxonomy → graph → anomalies → open-questions → creator → hypotheses → insights → render) with per-stage state + audit detail; **💡 Generated ideas** (`forward_ideas.jsonl`, from `generate_ideas`/`research_ideas`) above the precursor **conflict-grounded hypotheses** — each idea expands to its mechanism, predictions, novelty audit, and **source papers** (links). |
 | `GET /dashboard/{run_id}/graph` | Interactive **D3 conflict graph (星球图)**: topic → hypotheses → anomalies + papers. |
 | `GET /api/dashboard` · `/api/dashboard/{run_id}` · `/api/dashboard/{run_id}/graph` | JSON: run summaries · `pipeline_flow` · graph `{nodes,edges}`. |
+| `GET /api/queries` | JSON: recent **read-only query log** (get_idea_report / query_hypotheses / research_e2e calls that don't create a run). Also shown as a "Read-only queries" section on `/dashboard`. |
 | `GET /runs/{run_id}/{file}` | Path-safe raw artifact (`*.jsonl/json/md`). |
 | `GET /` · `/run/{run_id}` · `/query` · `/query/graph` | Original corpus-query UI + the topic-filtered D3 graph the OMC frontend reads. |
 
@@ -449,6 +450,23 @@ The Idea Generator (employee `00008`) consumes this MCP automatically:
 **Start ordering matters**: aigraph must be running before the OMC process
 imports `common_tools`, otherwise the MCP tool registration silently skips
 and Stage 3 has no `get_idea_report` to call.
+
+**Backend visibility (2026-06-08).** Read-only Stage-3 calls (`get_idea_report`,
+`query_hypotheses`, `research_e2e`) answer from an existing corpus and create NO
+run, so they were invisible in the dashboard. They now log to
+`<runs_root>/query_log.jsonl` and surface in the dashboard's **Read-only
+queries** section + `GET /api/queries` (topic, run, `n_matched/n_total`,
+coverage). So a Memento/OMC Stage-3 grounding call is no longer invisible.
+
+**Recommended Stage-3 call.** For a topic the pre-built corpus covers well,
+`get_idea_report(run=…)` is fine (fast, read-only). For a NICHE topic where the
+coverage banner returns `weak`/`none` (e.g. "tree search for math" → 14/78
+*moderate* on the generic reasoning corpus), prefer **`research_e2e(topic)`** — a
+single call that builds-or-reuses a *topic-specific* corpus and returns the idea
+report + cascade ideas + the star-graph `{nodes,edges}` + a self-contained
+`graph_html` (星球图) frontend + dashboard/graph URLs. It also creates a run (so
+it appears in the dashboard) and saves the agent from chaining
+`start_run → get_idea_report → get_conflict_graph` itself.
 
 ## 7. Known limitations
 

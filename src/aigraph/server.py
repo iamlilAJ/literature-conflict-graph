@@ -21,6 +21,7 @@ from queue import Queue
 from typing import Any, Callable
 from urllib.parse import parse_qs, unquote, urlparse
 
+from . import claim_cache
 from .anomalies import detect_anomalies
 from .community import community_digest, ingest_run, read_community_status
 from .corpus import hydrate_papers_from_corpus
@@ -686,8 +687,46 @@ def extract_claims_with_status(
     reader_debug_rows: list[dict[str, Any]] = []
     reader_mode = configured_reader_mode()
     reader_max_candidates = configured_reader_max_candidates()
+    # Cross-run claim cache: skip the reader + frozen extractor for papers
+    # already extracted under this same (model, reader, content) config. Purely
+    # a cost optimisation — temp=0.0 makes a hit identical to a fresh run.
+    cache_dir = claim_cache.cache_dir_for(output)
+    extractor_model = getattr(extractor, "model", None)
 
     def run_one(index: int, paper: Paper) -> tuple[int, Paper, list[Claim], dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
+        cache_key = (
+            claim_cache.compute_key(
+                paper,
+                model=extractor_model,
+                reader_mode=reader_mode,
+                reader_max_candidates=reader_max_candidates,
+            )
+            if cache_dir is not None
+            else None
+        )
+        cached = claim_cache.load(cache_dir, cache_key)
+        if cached is not None:
+            pstatus = {
+                "run_id": base_status.get("run_id"),
+                "paper_id": paper.paper_id,
+                "paper_title": paper.title,
+                "extraction_status": "cached",
+                "attempts": 0,
+                "claim_count": len(cached),
+            }
+            metrics = {
+                "event": "paper_reader",
+                "run_id": base_status.get("run_id"),
+                "paper_id": paper.paper_id,
+                "reader_mode": "cache",
+                "reader_latency_sec": 0.0,
+                "reader_candidate_count": 0,
+                "reader_verified_claim_count": len(cached),
+                "reader_fallback_used": False,
+                "reader_prefilter_count": 0,
+            }
+            return index, paper, cached, metrics, [], pstatus
+
         read_result = read_paper_candidates(
             paper,
             mode=reader_mode,
@@ -701,6 +740,16 @@ def extract_claims_with_status(
             local_claims = extractor.extract(paper, start_index=index * 1000, candidates=read_result.candidates)
             if local_claims:
                 break
+        # Cache only a NON-EMPTY result (empty is the retry-able failure signal).
+        if local_claims and cache_key is not None:
+            claim_cache.store(
+                cache_dir,
+                cache_key,
+                local_claims,
+                paper=paper,
+                model=extractor_model,
+                reader_mode=reader_mode,
+            )
         pstatus = {
             "run_id": base_status.get("run_id"),
             "paper_id": paper.paper_id,
@@ -778,6 +827,7 @@ def extract_claims_with_status(
         _write_jsonl_dicts(output.parent / "extraction_status.jsonl", status_rows)
     papers_with_claims = sum(1 for r in status_rows if r["claim_count"] > 0)
     coverage = papers_with_claims / max(1, len(papers))
+    cache_hits = sum(1 for r in status_rows if r.get("extraction_status") == "cached")
     extraction_quality = "empty" if not claims else ("weak" if coverage < _EXTRACT_COVERAGE_FLOOR else "ok")
     report = {
         "extraction_quality": extraction_quality,
@@ -786,12 +836,14 @@ def extract_claims_with_status(
         "coverage": round(coverage, 3),
         "claims_total": len(claims),
         "retried_papers": sum(1 for r in status_rows if r["attempts"] > 1),
+        "cache_hits": cache_hits,
     }
+    cache_note = f" ({cache_hits} from cache)" if cache_hits else ""
     status(
         status="running",
         stage="extracting",
         progress=0.66,
-        message=f"Extracted {len(claims)} claims from {len(papers)} papers.",
+        message=f"Extracted {len(claims)} claims from {len(papers)} papers{cache_note}.",
         papers=len(papers),
         claims=len(claims),
         reader_mode=reader_mode,

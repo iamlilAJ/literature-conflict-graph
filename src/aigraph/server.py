@@ -819,7 +819,7 @@ def serve(host: str = "127.0.0.1", port: int = 7860, runs_dir: str | Path = "out
 
 def make_handler(service: SearchService) -> type[BaseHTTPRequestHandler]:
     class SearchHandler(BaseHTTPRequestHandler):
-        server_version = "aigraph-search/0.1"
+        server_version = "aigraph-search/0.7"
 
         def do_GET(self) -> None:  # noqa: N802 - stdlib API
             redirect = public_redirect_url(self.headers.get("Host", ""), self.path)

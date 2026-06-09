@@ -56,6 +56,7 @@ def _paper(pid: str) -> Paper:
 
 
 def test_retry_recovers_empty_then_succeeds(tmp_path, monkeypatch):
+    monkeypatch.setenv("AIGRAPH_CLAIM_CACHE", "0")  # test pure extraction, not caching
     monkeypatch.setattr(server, "read_paper_candidates", lambda *a, **k: _FakeRead())
     monkeypatch.setenv("AIGRAPH_EXTRACT_MAX_ATTEMPTS", "3")
 
@@ -93,6 +94,7 @@ def test_retry_recovers_empty_then_succeeds(tmp_path, monkeypatch):
 
 
 def test_empty_corpus_quality_empty(tmp_path, monkeypatch):
+    monkeypatch.setenv("AIGRAPH_CLAIM_CACHE", "0")  # test pure extraction, not caching
     monkeypatch.setattr(server, "read_paper_candidates", lambda *a, **k: _FakeRead())
 
     class _Empty:
@@ -104,3 +106,38 @@ def test_empty_corpus_quality_empty(tmp_path, monkeypatch):
         [_paper("p1")], tmp_path / "c.jsonl", status=lambda *a, **k: None,
         base_status={"run_id": "r"})
     assert claims == [] and report["extraction_quality"] == "empty"
+
+
+def test_claim_cache_reuses_extraction_across_runs(tmp_path, monkeypatch):
+    """Second run over the same papers hits the cache: no re-extraction, same claims."""
+    monkeypatch.setenv("AIGRAPH_CLAIM_CACHE", "1")
+    monkeypatch.setenv("AIGRAPH_CLAIM_CACHE_DIR", str(tmp_path / "cache"))  # isolated
+    monkeypatch.setattr(server, "read_paper_candidates", lambda *a, **k: _FakeRead())
+
+    calls = {"n": 0}
+
+    class _FakeExtractor:
+        model = "FakeModel-v1"
+
+        def extract(self, paper, start_index=0, candidates=None):
+            calls["n"] += 1
+            return [Claim(claim_id=f"{paper.paper_id}#c01", paper_id=paper.paper_id,
+                          claim_text="t", direction="positive",
+                          claim_type="performance_improvement")]
+
+    monkeypatch.setattr(server, "LLMClaimExtractor", lambda *a, **k: _FakeExtractor())
+    papers = [_paper("p_a"), _paper("p_b"), _paper("p_c")]
+
+    c1, r1 = server.extract_claims_with_status(
+        papers, tmp_path / "run1" / "claims.jsonl",
+        status=lambda *a, **k: None, base_status={"run_id": "r1"})
+    assert calls["n"] == 3 and r1["cache_hits"] == 0      # cold: all extracted
+
+    c2, r2 = server.extract_claims_with_status(
+        papers, tmp_path / "run2" / "claims.jsonl",
+        status=lambda *a, **k: None, base_status={"run_id": "r2"})
+    assert calls["n"] == 3 and r2["cache_hits"] == 3      # warm: nothing re-extracted
+    # identical delivered claims (ids are renumbered c001.. deterministically)
+    assert [c.claim_text for c in c1] == [c.claim_text for c in c2]
+    assert [c.claim_id for c in c1] == [c.claim_id for c in c2]
+    assert r2["claims_total"] == 3

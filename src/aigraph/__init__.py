@@ -1,6 +1,6 @@
 """aigraph: a graph-based literature conflict explorer for AI paper claims."""
 
-__version__ = "0.1.0"
+__version__ = "0.7.0"
 
 
 def __getattr__(name: str):

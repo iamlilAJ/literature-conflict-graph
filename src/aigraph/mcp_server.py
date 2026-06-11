@@ -577,4 +577,195 @@ def build_mcp(
         return {"status": "building", "run_id": run_id, "poll_with": "get_run_status",
                 "next": f"once status=done, call research_e2e(topic='{topic}') again — reuse will hit the built corpus"}
 
+    @mcp.tool()
+    def smart_research(topic: str, run: str = "", k: int = 8, kind: str = "creator",
+                       allow_build: bool = True, max_papers: int = 30,
+                       min_ideas: int = 5, wait_seconds: int = 900) -> dict:
+        """LLM-planned, self-correcting research over the rigid LEXICAL query layer.
+
+        Wraps get_idea_report / research_e2e with ONE mandatory LLM call that
+        rewrites whatever you type — a typo, a full sentence, a niche phrase —
+        into a query optimised for the bag-of-words matcher (canonical
+        hyphenated field terms + domain anchors + distinctive content words),
+        then PROBES coverage (0-LLM) and self-corrects:
+
+          1. plan_query(topic)            — mandatory LLM normalize + broader fallbacks
+          2. probe each candidate query   — pick the best-coverage one (raw topic
+                                            is always a candidate → never worse than baseline)
+          3a strong/moderate coverage     — return the full deliverable bundle
+          3b weak/none + allow_build      — build a topic-specific corpus, then bundle
+          3c weak/none + not allow_build  — return the weak bundle + should_build hint
+
+        Returns the same bundle as research_e2e (idea_report_markdown, ideas,
+        graph, graph_html, dashboard/graph urls, coverage) PLUS a `query_plan`
+        trace (raw→query, alternates, per-candidate coverage, decision). The
+        trace is also written to query_log so the dashboard records the call.
+
+        `run`: pin to a specific corpus; empty = auto-resolve the best match.
+        `allow_build`: on weak coverage, build a fresh topic-specific corpus
+        (paid; only when a SearchService is configured and not readonly).
+        `wait_seconds` clamped 0..1500 for the build path (0 = submit-and-return)."""
+        import time as _time
+        import idea_cascade as ic
+        from aigraph_query import query as _query
+        from .run_dashboard import (render_graph_page as _graph_page,
+                                    run_graph as _run_graph, _coverage_level)
+        from .query_planner import plan_query, candidate_queries
+
+        k = max(1, min(20, int(k)))
+        min_ideas = max(1, min(20, int(min_ideas)))
+        wait_seconds = max(0, min(1500, int(wait_seconds)))
+        _RANK = {"none": 0, "weak": 1, "moderate": 2, "strong": 3}
+
+        # 1. mandatory LLM normalize of the rigid lexical input
+        plan = plan_query(topic)
+        cands = candidate_queries(plan)
+
+        def _probe(run_dir: Path, q: str):
+            md, st = _query(run_dir, q, k=k, max_hypotheses=12, mmr_lambda=0.85,
+                            min_anomalies=3, hyp_kind=kind, min_atlas_overlap=3)
+            n = int(st.get("n_matched", 0) or 0)
+            tot = int(st.get("n_hypotheses_total", 0) or 0)
+            r = int(st.get("top_relevance", 0) or 0)
+            return md, st, _coverage_level(n, tot, r)
+
+        def _best_over(run_dir: Path):
+            """Probe every candidate query on run_dir; return (winner, probes)."""
+            best = None  # (key, query, md, stats, level)
+            probes: list[dict] = []
+            for q in cands:
+                try:
+                    md, st, level = _probe(run_dir, q)
+                except Exception:
+                    continue
+                n = int(st.get("n_matched", 0) or 0)
+                r = int(st.get("top_relevance", 0) or 0)
+                probes.append({"query": q, "coverage": level, "n_matched": n,
+                               "n_total": int(st.get("n_hypotheses_total", 0) or 0),
+                               "top_relevance": r})
+                key = (_RANK.get(level, 0), n, r)
+                if best is None or key > best[0]:
+                    best = (key, q, md, st, level)
+            return best, probes
+
+        def _assemble(run_id, win_q, win_md, win_st, win_level, *, reused, escalated,
+                      probes, decision):
+            rdir = _safe_run_dir(runs_root, run_id)
+            report_md = (f"# Stage 3: Idea Generation — {win_q}\n\n"
+                         + _coverage_banner(win_st) + (win_md or ""))
+            try:
+                ideas_res = ic.generate_ideas(rdir, win_q, min_ideas=min_ideas, allow_llm=not readonly)
+            except Exception as exc:
+                ideas_res = {"ideas": [], "stats": {"error": str(exc)}}
+            try:
+                graph, graph_html = _run_graph(rdir), _graph_page(rdir)
+            except Exception as exc:
+                graph, graph_html = {"nodes": [], "edges": [], "error": str(exc)}, ""
+            _log_query(runs_root, tool="smart_research", topic=topic, run=run_id,
+                       query_used=win_q, planned=plan.get("query"), llm_applied=plan.get("applied"),
+                       coverage=win_level, escalated=escalated, decision=decision,
+                       n_matched=win_st.get("n_matched"), n_total=win_st.get("n_hypotheses_total"),
+                       top_relevance=win_st.get("top_relevance"))
+            return {
+                "status": "done", "run": run_id, "reused": reused, "escalated": escalated,
+                "query_plan": {
+                    "raw": plan.get("raw"), "planned_query": plan.get("query"),
+                    "query_used": win_q, "alternates": plan.get("alternates"),
+                    "canonical_terms": plan.get("canonical_terms"),
+                    "domain_anchors": plan.get("domain_anchors"),
+                    "is_niche": plan.get("is_niche"), "llm_applied": plan.get("applied"),
+                    "probes": probes, "decision": decision,
+                },
+                "coverage": {"level": win_level, "n_matched": win_st.get("n_matched"),
+                             "n_total": win_st.get("n_hypotheses_total"),
+                             "top_relevance": win_st.get("top_relevance")},
+                "idea_report_markdown": report_md,
+                "ideas_markdown": ic.render_ideas_markdown(ideas_res) if isinstance(ideas_res, dict) else "",
+                "ideas": ideas_res.get("ideas", []) if isinstance(ideas_res, dict) else [],
+                "graph": graph, "graph_html": graph_html,
+                "dashboard_url": f"/dashboard/{run_id}", "graph_url": f"/dashboard/{run_id}/graph",
+            }
+
+        # 2. resolve the target corpus (pinned, or best lexical match on the plan)
+        target = None
+        if run:
+            rd = _safe_run_dir(runs_root, run)
+            if rd is None or not rd.exists():
+                return {"error": f"unknown run: {run}",
+                        "query_plan": {"planned_query": plan.get("query")}}
+            target = run
+        else:
+            for probe_topic in (plan.get("query"), plan.get("raw"), topic):
+                try:
+                    rid = ic.resolve_best_run(runs_root, probe_topic or "")
+                except Exception:
+                    rid = None
+                if rid:
+                    target = rid
+                    break
+
+        # 3. probe + decide on the resolved corpus
+        if target is not None:
+            best, probes = _best_over(_safe_run_dir(runs_root, target))
+            if best is not None:
+                _key, win_q, win_md, win_st, win_level = best
+                if _RANK.get(win_level, 0) >= _RANK["moderate"]:
+                    return _assemble(target, win_q, win_md, win_st, win_level,
+                                     reused=True, escalated=False, probes=probes,
+                                     decision="reuse-coverage-ok")
+                if not (allow_build and search_service is not None and not readonly):
+                    out = _assemble(target, win_q, win_md, win_st, win_level,
+                                    reused=True, escalated=False, probes=probes,
+                                    decision="weak-no-build")
+                    out["should_build"] = True
+                    out["recommendation"] = (
+                        "Coverage is weak on the generic corpus. Re-call with "
+                        "allow_build=true (or use research_e2e) to build a "
+                        f"topic-specific corpus for '{plan.get('query')}'.")
+                    return out
+            # no probe succeeded → fall through to build
+
+        # 4. escalate: build a fresh topic-specific corpus
+        if not (allow_build and search_service is not None and not readonly):
+            return {"status": "no_corpus",
+                    "query_plan": {"raw": plan.get("raw"), "planned_query": plan.get("query"),
+                                   "is_niche": plan.get("is_niche"), "llm_applied": plan.get("applied")},
+                    "recommendation": "No matching corpus and build is disabled "
+                    "(allow_build=false / readonly / no SearchService). Call with "
+                    "allow_build=true to build one."}
+        build_q = plan.get("query") or topic
+        try:
+            req = search_service.submit(topic=build_q, limit=max(1, min(500, int(max_papers))),
+                                        insight_generator="llm", source="union")
+        except Exception as exc:
+            return {"error": f"submit failed: {type(exc).__name__}: {exc}"}
+        run_id = req.run_id
+        run_dir = _safe_run_dir(runs_root, run_id)
+        waited = 0
+        while waited < wait_seconds:
+            _time.sleep(5)
+            waited += 5
+            sp = (run_dir / "status.json") if run_dir else None
+            if sp is None or not sp.exists():
+                continue
+            try:
+                st = json.loads(sp.read_text())
+            except Exception:
+                continue
+            if st.get("status") == "done":
+                best, probes = _best_over(run_dir)
+                if best is None:
+                    return {"status": "done", "run": run_id, "reused": False, "escalated": True,
+                            "query_plan": {"planned_query": plan.get("query"), "probes": []},
+                            "note": "corpus built but no hypotheses matched any candidate query"}
+                _key, win_q, win_md, win_st, win_level = best
+                return _assemble(run_id, win_q, win_md, win_st, win_level,
+                                 reused=False, escalated=True, probes=probes,
+                                 decision="escalated-build")
+            if st.get("status") == "error":
+                return {"status": "error", "run": run_id, "message": st.get("message") or "run failed"}
+        return {"status": "building", "run_id": run_id, "poll_with": "get_run_status",
+                "query_plan": {"planned_query": plan.get("query"), "is_niche": plan.get("is_niche")},
+                "next": f"once status=done, call smart_research(topic='{topic}') again — reuse will hit the built corpus"}
+
     return mcp

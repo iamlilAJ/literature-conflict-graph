@@ -455,15 +455,18 @@ def _select(
     # Demote weak community-bridge anomalies by RESTRICTING the candidate pool
     # (not just re-sorting): select_mmr (frozen, scoring.py) re-ranks purely by
     # utility, so a matched-order demotion is undone. Holding weak bridges out of
-    # the pool when there are already >= k substantive conflicts is the only
-    # lever select_mmr can't reverse. When substantive conflicts are scarce
-    # (< k), keep the weak ones so the top-k can still be filled. n_matched
-    # (coverage) still reflects the full topical match, not this selection pool.
+    # the pool is the only lever select_mmr can't reverse. Cap the weak bridges
+    # at (k - #substantive) so substantive conflicts always fill the top-k first
+    # and weak ones only top up the remaining slots — even when substantive
+    # conflicts are scarce (e.g. 5 evidence-gaps vs 10 community bridges, where a
+    # ">= k or nothing" rule would surface zero substantive). Pure-weak corpora
+    # are unaffected. n_matched (coverage) still reflects the full topical match.
     pool = matched
     if demote_weak_anomalies:
         substantive = [hr for hr in matched if not _is_weak_anomaly(hr[0], anom_lookup)]
-        if len(substantive) >= k:
-            pool = substantive
+        if substantive:
+            weak = [hr for hr in matched if _is_weak_anomaly(hr[0], anom_lookup)]
+            pool = substantive + weak[: max(0, k - len(substantive))]
     candidates = [h for (h, _) in pool[:max_hypotheses]]
     breakdowns = score_all(candidates, anoms, claims)
     selected = select_mmr(

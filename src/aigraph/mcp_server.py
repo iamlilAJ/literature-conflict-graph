@@ -753,6 +753,14 @@ def build_mcp(
             except Exception:
                 continue
             if st.get("status") == "done":
+                # Ground the freshly-built corpus's templated hypotheses before
+                # bundling, so the deliverable shows evidence-grounded text rather
+                # than the frozen "moderator variable" template. Best-effort.
+                try:
+                    from .hypothesis_enricher import enrich_run as _enrich
+                    _enrich(run_dir)
+                except Exception:
+                    pass
                 best, probes = _best_over(run_dir)
                 if best is None:
                     return {"status": "done", "run": run_id, "reused": False, "escalated": True,
@@ -767,5 +775,42 @@ def build_mcp(
         return {"status": "building", "run_id": run_id, "poll_with": "get_run_status",
                 "query_plan": {"planned_query": plan.get("query"), "is_niche": plan.get("is_niche")},
                 "next": f"once status=done, call smart_research(topic='{topic}') again — reuse will hit the built corpus"}
+
+    @mcp.tool()
+    def enrich_hypotheses(run: str, limit: int = 24, force: bool = False) -> dict:
+        """Ground a run's TEMPLATED hypotheses in their real evidence claims.
+
+        The frozen pipeline emits a generic template for every anomaly ("an
+        unreported moderator variable drives the conflict…"). This runs ONE LLM
+        call per hypothesis that reads the anomaly's actual evidence claims
+        (paper, finding, stance, method, dataset) and rewrites the statement /
+        mechanism / predictions / minimal_test into something specific to THOSE
+        papers, persisting to a `hypotheses_enriched.jsonl` sidecar. Subsequent
+        `get_idea_report` / `query_hypotheses` / `smart_research` calls overlay
+        the grounded version automatically (0-LLM).
+
+        Paid (LLM): up to `limit` *new* enrichments per call; already-enriched
+        hypotheses are skipped unless `force`. Fresh corpora built via
+        `smart_research` are enriched automatically — use this for older runs.
+        Fail-open: no key / errors leave the templated text untouched."""
+        run_dir = _safe_run_dir(runs_root, run)
+        if run_dir is None or not run_dir.exists():
+            return {"error": f"unknown run: {run}"}
+        try:
+            from .hypothesis_enricher import enrich_run, enricher_enabled
+            if not enricher_enabled():
+                return {"status": "disabled", "run": run,
+                        "note": "enricher off or no API key configured (set OPENAI_API_KEY)"}
+            before = sum(1 for _ in (run_dir / "hypotheses_enriched.jsonl").open()) \
+                if (run_dir / "hypotheses_enriched.jsonl").exists() else 0
+            enriched = enrich_run(run_dir, limit=max(1, min(100, int(limit))), force=bool(force))
+            _log_query(runs_root, tool="enrich_hypotheses", run=run,
+                       n_enriched=len(enriched), limit=limit, force=force)
+            return {"status": "done", "run": run, "n_enriched_total": len(enriched),
+                    "n_new": max(0, len(enriched) - before),
+                    "sidecar": "hypotheses_enriched.jsonl",
+                    "note": "grounded hypotheses now overlay automatically in get_idea_report / smart_research"}
+        except Exception as exc:
+            return {"error": f"{type(exc).__name__}: {exc}"}
 
     return mcp

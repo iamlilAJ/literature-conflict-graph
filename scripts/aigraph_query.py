@@ -413,19 +413,17 @@ def _select(
     # high-semantic / low-token hypothesis isn't demoted (×10 scales cosine into
     # the same ballpark as token-hit counts for typical topics).
     # Optional: demote weak community-bridge anomalies below substantive
-    # conflicts (kept, not dropped) so scattered corpora lead with on-topic
-    # conflicts. The flag is a no-op (0 for every row) when off, so default
-    # ordering is unchanged.
-    def _weak(h: Hypothesis) -> int:
-        return 1 if (demote_weak_anomalies and _is_weak_anomaly(h, anom_lookup)) else 0
+    # conflicts. (The demotion itself is enforced by restricting the candidate
+    # pool below — select_mmr re-ranks by utility, so a sort-order demotion would
+    # be undone; the sort here keeps the original concrete-ahead-of-boilerplate
+    # ordering only.)
     if semantic:
         matched.sort(key=lambda hr: (
             _is_boilerplate(hr[0]),
-            _weak(hr[0]),
             -max(hr[1], sem_by_id.get(hr[0].hypothesis_id, 0.0) * 10),
         ))
     else:
-        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), _weak(hr[0]), -hr[1]))
+        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
     # Cap near-duplicate frames per anomaly: the frozen generator emits EXACTLY
     # 3 near-identical hypotheses per anomaly (differ only by moderator). MMR
     # handles cross-anomaly diversity; this removes the within-anomaly dups it
@@ -454,7 +452,19 @@ def _select(
                           wall_seconds=round(time.monotonic() - t0, 3))
         return None, None, anoms, claims, papers, base_stats
 
-    candidates = [h for (h, _) in matched[:max_hypotheses]]
+    # Demote weak community-bridge anomalies by RESTRICTING the candidate pool
+    # (not just re-sorting): select_mmr (frozen, scoring.py) re-ranks purely by
+    # utility, so a matched-order demotion is undone. Holding weak bridges out of
+    # the pool when there are already >= k substantive conflicts is the only
+    # lever select_mmr can't reverse. When substantive conflicts are scarce
+    # (< k), keep the weak ones so the top-k can still be filled. n_matched
+    # (coverage) still reflects the full topical match, not this selection pool.
+    pool = matched
+    if demote_weak_anomalies:
+        substantive = [hr for hr in matched if not _is_weak_anomaly(hr[0], anom_lookup)]
+        if len(substantive) >= k:
+            pool = substantive
+    candidates = [h for (h, _) in pool[:max_hypotheses]]
     breakdowns = score_all(candidates, anoms, claims)
     selected = select_mmr(
         candidates, breakdowns,

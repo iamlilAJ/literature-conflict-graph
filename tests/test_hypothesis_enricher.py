@@ -42,7 +42,8 @@ def _paper(pid="p1"):
 
 
 _GOOD = json.dumps({
-    "statement": "SCoT beats CoT by 13.79% on HumanEval but may not generalize",
+    "statement": "Benchmark SCoT vs CoT on HumanEval and MBPP under matched few-shot examples",
+    "motivation": "SCoT reports +13.79% Pass@1 over CoT but only on HumanEval",
     "mechanism": "SCoT mirrors source-code control flow, aligning with HumanEval",
     "predictions": ["On MBPP the gap shrinks to <5%", "On CodeContests CoT may win"],
     "minimal_test": "Run SCoT vs CoT on HumanEval and MBPP, same LLM, compare Pass@1",
@@ -115,9 +116,12 @@ def test_enrich_writes_sidecar_and_parses(tmp_path, monkeypatch):
     out = he.enrich_run(tmp_path)
     assert set(out) == {"h1"}
     rec = out["h1"]
-    assert "13.79%" in rec["statement"]
+    assert "SCoT" in rec["statement"]
+    assert rec["motivation"]
     assert len(rec["predictions"]) == 2
     assert rec["anomaly_type"] == "impact_conflict"
+    # impact_conflict draws its register from the impact_conflict pool
+    assert rec["register"] in {"refutation", "benchmark", "mechanism"}
     assert (tmp_path / he.ENRICH_FILENAME).exists()
 
 
@@ -164,9 +168,12 @@ def test_apply_enrichment_overlays_in_place(tmp_path, monkeypatch):
                      predictions=["t"], minimal_test="t")
     n = he.apply_enrichment([hyp], tmp_path)
     assert n == 1
-    assert "13.79%" in hyp.hypothesis
+    assert "SCoT" in hyp.hypothesis
     assert "source-code" in hyp.mechanism
-    assert hyp.enriched == {"applied": True, "anomaly_type": "impact_conflict"}
+    assert hyp.enriched["applied"] is True
+    assert hyp.enriched["anomaly_type"] == "impact_conflict"
+    assert hyp.enriched["register"] in {"refutation", "benchmark", "mechanism"}
+    assert hyp.enriched["motivation"]
 
 
 def test_apply_enrichment_noop_without_sidecar(tmp_path):
@@ -181,13 +188,34 @@ def test_load_enriched_round_trip(tmp_path, monkeypatch):
     _run(tmp_path, [_hyp()], [_claim()], [_anom()], [_paper()])
     he.enrich_run(tmp_path)
     loaded = he.load_enriched(tmp_path)
-    assert "h1" in loaded and "13.79%" in loaded["h1"]["statement"]
+    assert "h1" in loaded and "SCoT" in loaded["h1"]["statement"]
 
 
 def test_parse_tolerates_prose_and_fences():
     rec = he._parse('Sure!```json\n' + _GOOD + '\n``` done')
-    assert rec is not None and "13.79%" in rec["statement"]
+    assert rec is not None and "SCoT" in rec["statement"] and rec["motivation"]
 
 
 def test_parse_rejects_empty_payload():
     assert he._parse('{"predictions": []}') is None  # no statement/mechanism
+
+
+def test_register_rotates_within_type(tmp_path, monkeypatch):
+    # 3 community_disconnect hyps → registers rotate through that type's pool
+    # (synthesis / transfer / proposal), not the same framing 3×.
+    _enable(monkeypatch)
+    seen = []
+    monkeypatch.setattr(he, "call_llm_text",
+                        lambda *a, **k: (seen.append(json.loads(k["user"])["register"]), _GOOD)[1])
+    hyps = [_hyp(hid=f"h{i}", claims=("c1",)) for i in range(3)]
+    _run(tmp_path, hyps, [_claim()], [_anom(typ="community_disconnect")], [_paper()])
+    he.enrich_run(tmp_path)
+    assert seen == ["synthesis", "transfer", "proposal"]  # rotated, all distinct
+
+
+def test_register_for_helper():
+    counter: dict = {}
+    pool = he._TYPE_POOLS["impact_conflict"]
+    got = [he._register_for("impact_conflict", counter) for _ in range(len(pool) + 1)]
+    assert got[: len(pool)] == pool          # cycles the full pool
+    assert got[len(pool)] == pool[0]         # then wraps

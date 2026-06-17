@@ -301,6 +301,10 @@ class Hypothesis(LooseModel):
     # #52 multi-layer novelty audit (optional, additive): per-layer verdicts +
     # an explicit state in {novel, covered, unknown}. None when not computed.
     novelty_audit: Optional[dict] = None
+    # hypothesis_enricher provenance (optional, additive): set by the non-frozen
+    # delivery-time overlay when the templated text was replaced by an
+    # evidence-grounded version. None when not enriched.
+    enriched: Optional[dict] = None
 
 
 class ScoreBreakdown(LooseModel):

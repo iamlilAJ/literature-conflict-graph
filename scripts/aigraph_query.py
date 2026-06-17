@@ -476,6 +476,13 @@ def query(
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
+    # Overlay grounded enrichment onto the templated hypotheses (0-LLM; reads the
+    # hypotheses_enriched.jsonl sidecar if present, else no-op keeping templates).
+    try:
+        from aigraph.hypothesis_enricher import apply_enrichment
+        stats["n_enriched"] = apply_enrichment(selected, run_dir)
+    except Exception:
+        pass
     md = render_report(
         selected=selected,
         anomalies=anoms,
@@ -528,6 +535,13 @@ def query_records(
     )
     if selected is None:
         return [], stats
+
+    # Overlay grounded enrichment onto the templated hypotheses (0-LLM sidecar).
+    try:
+        from aigraph.hypothesis_enricher import apply_enrichment
+        stats["n_enriched"] = apply_enrichment(selected, run_dir)
+    except Exception:
+        pass
 
     anom_lookup = {a.anomaly_id: a for a in anoms}
     claim_lookup = {c.claim_id: c for c in claims}

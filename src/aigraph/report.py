@@ -220,7 +220,9 @@ def _render_anomaly(
 def _render_hypothesis(h: Hypothesis, scores: dict[str, ScoreBreakdown]) -> list[str]:
     s = scores.get(h.hypothesis_id)
     lines: list[str] = []
-    lines.append(f"### {h.hypothesis_id} — {h.hypothesis}")
+    enriched = getattr(h, "enriched", None)
+    badge = " _(evidence-grounded)_" if isinstance(enriched, dict) and enriched.get("applied") else ""
+    lines.append(f"### {h.hypothesis_id} — {h.hypothesis}{badge}")
     lines.append("")
     if h.mechanism:
         lines.append(f"**Mechanism.** {h.mechanism}")

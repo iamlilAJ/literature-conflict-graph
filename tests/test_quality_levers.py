@@ -121,6 +121,19 @@ def test_demotion_keeps_weak_when_substantive_scarce(tmp_path):
     assert "community_disconnect" in types  # weak needed to reach k
 
 
+def test_demotion_caps_weak_to_fill_remaining_slots(tmp_path):
+    # 5 substantive < k=6, 5 weak: weak is capped at k-5=1 so all 5 substantive
+    # surface and exactly one weak tops up the 6th slot (mirrors the real
+    # self-correction run: 5 evidence-gaps vs 10 community bridges).
+    run = _run_with(tmp_path, n_sub=5, n_weak=5)
+    recs, _ = query_records(run, "reasoning", k=6, max_hypotheses=10, min_anomalies=1,
+                            drop_self_conflict=False, demote_weak_anomalies=True)
+    types = [r["anomaly_type"] for r in recs]
+    assert len(recs) == 6
+    assert types.count("impact_conflict") == 5
+    assert types.count("community_disconnect") == 1
+
+
 def test_no_demotion_does_not_restrict(tmp_path):
     # with the flag off, the pool is not restricted (weak bridges remain eligible).
     run = _run_with(tmp_path, n_sub=3, n_weak=3)

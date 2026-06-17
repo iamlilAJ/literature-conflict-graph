@@ -69,50 +69,63 @@ def _write_run(tmp_path, hyps, anoms, claims, papers):
     return run
 
 
-def _weak_then_strong_run(tmp_path):
-    # weak (community_disconnect) listed FIRST, substantive (impact_conflict)
-    # second; equal topic relevance so only the demotion flag breaks the tie.
-    hyps = [
-        Hypothesis(hypothesis_id="hw", anomaly_id="aw", hypothesis="reasoning method study",
-                   predictions=["p"], minimal_test="t", explains_claims=["c1"]),
-        Hypothesis(hypothesis_id="hs", anomaly_id="as", hypothesis="reasoning method study",
-                   predictions=["p"], minimal_test="t", explains_claims=["c2"]),
-    ]
-    anoms = [
-        Anomaly(anomaly_id="aw", type="community_disconnect",
-                central_question="reasoning conflict", claim_ids=["c1"]),
-        Anomaly(anomaly_id="as", type="impact_conflict",
-                central_question="reasoning conflict", claim_ids=["c2"]),
-    ]
-    claims = [Claim(claim_id="c1", paper_id="p1", claim_text="reasoning result"),
-              Claim(claim_id="c2", paper_id="p2", claim_text="reasoning result")]
-    papers = [Paper(paper_id="p1", title="A", year=2024, venue="x"),
-              Paper(paper_id="p2", title="B", year=2024, venue="x")]
+def _run_with(tmp_path, n_sub, n_weak):
+    """A run with n_sub substantive (impact_conflict) + n_weak weak
+    (community_disconnect) hypotheses, all equal topic relevance."""
+    hyps, anoms, claims, papers = [], [], [], []
+    for i in range(n_sub):
+        hyps.append(Hypothesis(hypothesis_id=f"hs{i}", anomaly_id=f"as{i}",
+                    hypothesis="reasoning method study", predictions=["p"],
+                    minimal_test="t", explains_claims=[f"cs{i}"]))
+        anoms.append(Anomaly(anomaly_id=f"as{i}", type="impact_conflict",
+                     central_question="reasoning conflict", claim_ids=[f"cs{i}"]))
+        claims.append(Claim(claim_id=f"cs{i}", paper_id=f"ps{i}", claim_text="reasoning result"))
+        papers.append(Paper(paper_id=f"ps{i}", title="S", year=2024, venue="x"))
+    for i in range(n_weak):
+        hyps.append(Hypothesis(hypothesis_id=f"hw{i}", anomaly_id=f"aw{i}",
+                    hypothesis="reasoning method study", predictions=["p"],
+                    minimal_test="t", explains_claims=[f"cw{i}"]))
+        anoms.append(Anomaly(anomaly_id=f"aw{i}", type="community_disconnect",
+                     central_question="reasoning conflict", claim_ids=[f"cw{i}"]))
+        claims.append(Claim(claim_id=f"cw{i}", paper_id=f"pw{i}", claim_text="reasoning result"))
+        papers.append(Paper(paper_id=f"pw{i}", title="W", year=2024, venue="x"))
     return _write_run(tmp_path, hyps, anoms, claims, papers)
 
 
-def test_is_weak_anomaly_helper(tmp_path):
+def test_is_weak_anomaly_helper():
     aw = Anomaly(anomaly_id="aw", type="community_disconnect", central_question="q")
     as_ = Anomaly(anomaly_id="as", type="impact_conflict", central_question="q")
     lut = {"aw": aw, "as": as_}
-    hw = Hypothesis(hypothesis_id="h", anomaly_id="aw", hypothesis="x")
-    hs = Hypothesis(hypothesis_id="h", anomaly_id="as", hypothesis="x")
-    assert _is_weak_anomaly(hw, lut) is True
-    assert _is_weak_anomaly(hs, lut) is False
+    assert _is_weak_anomaly(Hypothesis(hypothesis_id="h", anomaly_id="aw", hypothesis="x"), lut) is True
+    assert _is_weak_anomaly(Hypothesis(hypothesis_id="h", anomaly_id="as", hypothesis="x"), lut) is False
 
 
-def test_demotion_surfaces_substantive_conflict_first(tmp_path):
-    run = _weak_then_strong_run(tmp_path)
-    # max_hypotheses=1 truncates the candidate pool to the top-ranked match.
-    recs, _ = query_records(run, "reasoning", k=1, max_hypotheses=1, min_anomalies=1,
+def test_demotion_excludes_weak_when_enough_substantive(tmp_path):
+    # 3 substantive >= k=3 → pool restricted to substantive; select_mmr (which
+    # would otherwise re-rank weak bridges back in by utility) never sees them.
+    run = _run_with(tmp_path, n_sub=3, n_weak=3)
+    recs, _ = query_records(run, "reasoning", k=3, max_hypotheses=10, min_anomalies=1,
                             drop_self_conflict=False, demote_weak_anomalies=True)
-    assert len(recs) == 1
-    assert recs[0]["anomaly_type"] == "impact_conflict"  # weak bridge demoted out
+    types = [r["anomaly_type"] for r in recs]
+    assert len(recs) == 3
+    assert "community_disconnect" not in types  # all substantive
 
 
-def test_no_demotion_keeps_input_order(tmp_path):
-    run = _weak_then_strong_run(tmp_path)
-    recs, _ = query_records(run, "reasoning", k=1, max_hypotheses=1, min_anomalies=1,
-                            drop_self_conflict=False, demote_weak_anomalies=False)
-    assert len(recs) == 1
-    assert recs[0]["anomaly_type"] == "community_disconnect"  # default order unchanged
+def test_demotion_keeps_weak_when_substantive_scarce(tmp_path):
+    # only 1 substantive < k=3 → pool keeps the weak bridges so top-k fills.
+    run = _run_with(tmp_path, n_sub=1, n_weak=3)
+    recs, _ = query_records(run, "reasoning", k=3, max_hypotheses=10, min_anomalies=1,
+                            drop_self_conflict=False, demote_weak_anomalies=True)
+    types = [r["anomaly_type"] for r in recs]
+    assert len(recs) == 3
+    assert "community_disconnect" in types  # weak needed to reach k
+
+
+def test_no_demotion_does_not_restrict(tmp_path):
+    # with the flag off, the pool is not restricted (weak bridges remain eligible).
+    run = _run_with(tmp_path, n_sub=3, n_weak=3)
+    recs_off, _ = query_records(run, "reasoning", k=6, max_hypotheses=10, min_anomalies=1,
+                                drop_self_conflict=False, demote_weak_anomalies=False)
+    # all 6 (3 sub + 3 weak) are eligible and selected when k=6
+    assert len(recs_off) == 6
+    assert any(r["anomaly_type"] == "community_disconnect" for r in recs_off)

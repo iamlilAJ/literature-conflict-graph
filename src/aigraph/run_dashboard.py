@@ -378,13 +378,14 @@ def read_query_log(runs_root: Path, limit: int = 60) -> list[dict[str, Any]]:
 
 def _coverage_level(n: int, tot: int, r: int = 0) -> str:
     """Mirror of mcp_server._coverage_banner so the dashboard labels coverage
-    consistently with the Stage-3 deliverable banner."""
+    consistently with the Stage-3 deliverable banner. strong/moderate require an
+    absolute matched-count floor so a 2/2 thin corpus can't read "strong"."""
     frac = (n / tot) if tot else 0.0
     if not n:
         return "none"
-    if frac >= 0.40 or (r >= 3 and n >= 80):
+    if (frac >= 0.40 or (r >= 3 and n >= 80)) and n >= 8:
         return "strong"
-    if frac >= 0.12 or (r >= 2 and n >= 30):
+    if (frac >= 0.12 or (r >= 2 and n >= 30)) and n >= 4:
         return "moderate"
     return "weak"
 

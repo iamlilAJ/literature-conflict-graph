@@ -67,6 +67,15 @@ def _log_query(runs_root: Path, **fields: Any) -> None:
         pass
 
 
+# Absolute matched-count floors: a corpus with only a couple of matching
+# hypotheses cannot be "strong"/"moderate" however high its fraction is — a 2/2
+# (frac=1.0) match on a 2-hypothesis leftover run is thin, not strong. The floor
+# prevents tiny corpora from masquerading as well-covered (the fraction test
+# alone called 2/2 "strong"). A focused 22/24 corpus (n=22) still reads strong.
+_STRONG_N_FLOOR = 8
+_MODERATE_N_FLOOR = 4
+
+
 def _coverage_banner(stats: dict) -> str:
     """A one-line coverage assessment for a topic query, so the Stage 3 reader
     (critic / downstream) knows how tightly the corpus actually covers the
@@ -75,18 +84,18 @@ def _coverage_banner(stats: dict) -> str:
     n = int(stats.get("n_matched", 0) or 0)
     r = int(stats.get("top_relevance", 0) or 0)
     tot = int(stats.get("n_hypotheses_total", 0) or 0)
-    # Use the FRACTION matched, not absolute count, so the assessment is fair
-    # across corpus sizes (a focused 45-hypothesis topic corpus shouldn't look
-    # "weak" just because it has fewer total hypotheses than a 300+ one).
+    # FRACTION matched keeps the assessment fair across corpus sizes (a focused
+    # 45-hyp topic corpus shouldn't look "weak" vs a 300+ one), but gate it on an
+    # absolute matched-count floor so a 2/2 thin corpus can't read "strong".
     frac = (n / tot) if tot else 0.0
     if n == 0:
         level, note = "none", "the corpus has no matching hypotheses — build a topic-specific corpus with `start_run`."
-    elif frac >= 0.40 or (r >= 3 and n >= 80):
+    elif (frac >= 0.40 or (r >= 3 and n >= 80)) and n >= _STRONG_N_FLOOR:
         level, note = "strong", "the corpus covers this topic well."
-    elif frac >= 0.12 or (r >= 2 and n >= 30):
+    elif (frac >= 0.12 or (r >= 2 and n >= 30)) and n >= _MODERATE_N_FLOOR:
         level, note = "moderate", "partial coverage; some hypotheses may be loosely related."
     else:
-        level, note = "weak", "hypotheses may not tightly address the topic — consider `start_run` for a topic-specific corpus."
+        level, note = "weak", "few matching hypotheses — the corpus may not tightly cover the topic; consider `start_run` for a topic-specific corpus."
     return (f"> **Corpus coverage: {level}** "
             f"({n}/{tot} hypotheses matched, top relevance {r}). {note}\n\n")
 
@@ -262,7 +271,7 @@ def build_mcp(
                 md, _stats = query(run_dir, topic, k=k,
                                    max_hypotheses=12, mmr_lambda=0.85,
                                    min_anomalies=3, hyp_kind=kind,
-                                   min_atlas_overlap=3)
+                                   min_atlas_overlap=3, demote_weak_anomalies=True)
                 doc = heading + _coverage_banner(_stats) + md
                 _log_query(runs_root, tool="get_idea_report", topic=topic, run=run, k=k, kind=kind,
                            n_matched=_stats.get("n_matched"), n_total=_stats.get("n_hypotheses_total"),
@@ -508,7 +517,8 @@ def build_mcp(
             rdir = _safe_run_dir(runs_root, run_id)
             try:
                 md, _stats = _query(rdir, topic, k=k, max_hypotheses=12, mmr_lambda=0.85,
-                                    min_anomalies=3, hyp_kind="creator", min_atlas_overlap=3)
+                                    min_anomalies=3, hyp_kind="creator", min_atlas_overlap=3,
+                                    demote_weak_anomalies=True)
                 report_md = f"# Stage 3: Idea Generation — {topic}\n\n" + _coverage_banner(_stats) + md
             except Exception as exc:
                 report_md, _stats = f"# Stage 3: Idea Generation — {topic}\n\n_report failed: {exc}_\n", {}
@@ -623,7 +633,8 @@ def build_mcp(
 
         def _probe(run_dir: Path, q: str):
             md, st = _query(run_dir, q, k=k, max_hypotheses=12, mmr_lambda=0.85,
-                            min_anomalies=3, hyp_kind=kind, min_atlas_overlap=3)
+                            min_anomalies=3, hyp_kind=kind, min_atlas_overlap=3,
+                            demote_weak_anomalies=True)
             n = int(st.get("n_matched", 0) or 0)
             tot = int(st.get("n_hypotheses_total", 0) or 0)
             r = int(st.get("top_relevance", 0) or 0)

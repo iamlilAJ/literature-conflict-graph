@@ -64,6 +64,19 @@ ENRICH_FILENAME = "hypotheses_enriched.jsonl"
 _MAX_EVIDENCE = 8
 _CLAIM_CHARS = 280
 _DEFAULT_LIMIT = 24
+# Output-token budget. Thinking models (e.g. Kimi-K2.6) spend most of the budget
+# on reasoning_content before emitting the JSON, so a small cap returns EMPTY
+# content (finish_reason=length). 4000 leaves room for ~1-2k reasoning tokens +
+# the JSON; env-tunable for slower/cheaper models. Harmless on non-thinking
+# models (they stop early).
+_DEFAULT_MAX_TOKENS = 4000
+
+
+def _max_tokens() -> int:
+    try:
+        return max(700, int(os.environ.get("AIGRAPH_ENRICH_MAX_TOKENS", _DEFAULT_MAX_TOKENS)))
+    except (TypeError, ValueError):
+        return _DEFAULT_MAX_TOKENS
 
 _SYSTEM = (
     "You are a research scientist turning a detected cross-paper anomaly and its "
@@ -222,7 +235,7 @@ def enrich_one(
         raw = call_llm_text(
             client, model=model, system=_SYSTEM,
             user=json.dumps(payload, ensure_ascii=False),
-            temperature=0.3, max_tokens=900,
+            temperature=0.3, max_tokens=_max_tokens(),
         )
     except Exception:
         return None

@@ -207,7 +207,9 @@ def score_relevance(
                 system=_SYSTEM,
                 user=json.dumps(payload, ensure_ascii=False),
                 temperature=0.0,
-                max_tokens=400,
+                # Thinking models (Kimi-K2.6) spend the budget on reasoning before
+                # the JSON scores; a small cap returns empty content. Env-tunable.
+                max_tokens=max(400, int(os.environ.get("AIGRAPH_GATE_MAX_TOKENS", "2000"))),
             )
         except Exception:
             continue  # fail-open for this batch

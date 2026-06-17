@@ -185,7 +185,10 @@ def plan_query(
             system=_SYSTEM,
             user=json.dumps({"topic": _clean(raw_topic)}, ensure_ascii=False),
             temperature=0.0,
-            max_tokens=300,
+            # Thinking models (Kimi-K2.6) spend the budget on reasoning before the
+            # JSON; a small cap returns empty content. Env-tunable; harmless on
+            # non-thinking models (they stop early).
+            max_tokens=max(300, int(os.environ.get("AIGRAPH_PLANNER_MAX_TOKENS", "2000"))),
         )
     except Exception:
         return _passthrough(raw_topic, "llm_error")

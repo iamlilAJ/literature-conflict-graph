@@ -66,24 +66,61 @@ _CLAIM_CHARS = 280
 _DEFAULT_LIMIT = 24
 
 _SYSTEM = (
-    "You are a research scientist. You are given a detected cross-paper ANOMALY "
-    "and the REAL evidence claims behind it (each: paper, finding, stance, "
-    "method, dataset). The existing explanation is a generic template (e.g. 'an "
-    "unreported moderator variable drives the conflict'). Replace it with a "
-    "SPECIFIC, grounded hypothesis about THESE papers. Do NOT be generic: ground "
-    "every part in the actual findings, methods, datasets, and stances shown, "
-    "naming them explicitly. If the claims genuinely conflict, explain the "
-    "conditions under which each holds. Return STRICT JSON ONLY, no prose, no "
-    "markdown:\n"
-    '{"statement": "the specific scientific claim or conflict, naming the real '
-    'methods/datasets", '
-    '"mechanism": "a concrete causal mechanism explaining WHY these specific '
-    'findings diverge or hold, grounded in the named methods/conditions — NOT a '
-    'generic confound", '
+    "You are a research scientist turning a detected cross-paper anomaly and its "
+    "REAL evidence claims (each: paper, finding, stance, method, dataset) into a "
+    "FORWARD, ACTIONABLE research item. You are told which REGISTER to write in. "
+    "Do NOT write an interrogative critique of the literature ('why do papers "
+    "disagree', 'is there an unreported moderator variable', 'could X and Y be "
+    "connected') — that framing is the MOTIVATION, not the deliverable. Write a "
+    "DECLARATIVE research item in the assigned register, grounded in the actual "
+    "methods/datasets/findings shown (name them explicitly, do not be generic). "
+    "Return STRICT JSON ONLY, no prose, no markdown:\n"
+    '{"statement": "the declarative research item written IN THE ASSIGNED '
+    'REGISTER, naming the real methods/datasets — NOT a question", '
+    '"motivation": "one sentence: the conflict/gap that makes this non-obvious, '
+    'grounded in the evidence", '
+    '"mechanism": "how it works / why it would resolve or exploit the gap, in '
+    'the named methods/conditions", '
     '"predictions": ["a falsifiable prediction with a benchmark/number", "..."], '
     '"minimal_test": "a concrete experiment using the actual benchmarks/methods '
     'named in the claims"}'
 )
+
+# Forward, declarative registers — the framing each enriched hypothesis is cast
+# in. Rotating these across a run kills the monotone "why do these papers
+# disagree / is there a moderator variable" critic signature (external feedback).
+_REGISTERS = {
+    "proposal":   "PROPOSAL — propose a concrete NEW METHOD or approach; lead with what you build and how it works.",
+    "benchmark":  "BENCHMARK — propose a controlled evaluation/benchmark that isolates the disputed variable and would settle the question.",
+    "refutation": "REFUTATION — propose a falsification study: directly test whether the claimed effect actually holds under controlled conditions, or a counter-example probe.",
+    "mechanism":  "MECHANISM PROBE — propose an intervention/ablation that isolates WHY the effect occurs or fails.",
+    "synthesis":  "SYNTHESIS — propose a unifying method/framework connecting the two lines of work into one approach, and a task where the unification pays off.",
+    "transfer":   "TRANSFER — propose transferring a technique from one setting to the other, with the concrete adaptation and where it should win.",
+}
+
+# Per anomaly-type pool of FITTING registers, rotated within type so even a
+# single-type corpus (e.g. all community_disconnect) gets varied framings.
+_TYPE_POOLS = {
+    "impact_conflict":              ["refutation", "benchmark", "mechanism"],
+    "benchmark_inconsistency":      ["benchmark", "refutation"],
+    "metric_mismatch":              ["benchmark", "mechanism"],
+    "setting_mismatch":             ["benchmark", "mechanism"],
+    "replication_conflict":         ["refutation", "benchmark"],
+    "evidence_gap":                 ["proposal", "benchmark", "mechanism"],
+    "community_disconnect":         ["synthesis", "transfer", "proposal"],
+    "bridge_opportunity":           ["synthesis", "transfer"],
+    "bottleneck_open_q_alignment":  ["proposal", "mechanism"],
+}
+_DEFAULT_POOL = ["proposal", "benchmark", "mechanism"]
+
+
+def _register_for(anomaly_type: str | None, counter: dict[str, int]) -> str:
+    """Assign a register by anomaly type, rotating within the type's pool so the
+    same type yields varied framings across a run."""
+    pool = _TYPE_POOLS.get(anomaly_type or "", _DEFAULT_POOL)
+    i = counter.get(anomaly_type or "", 0)
+    counter[anomaly_type or ""] = i + 1
+    return pool[i % len(pool)]
 
 
 def enricher_enabled() -> bool:
@@ -154,6 +191,7 @@ def _parse(raw: str) -> Optional[dict[str, Any]]:
     predictions = [_clean(p) for p in preds_raw if _clean(p)][:4]
     return {
         "statement": statement,
+        "motivation": _clean(data.get("motivation")),
         "mechanism": mechanism,
         "predictions": predictions,
         "minimal_test": _clean(data.get("minimal_test")),
@@ -165,14 +203,17 @@ def enrich_one(
     anomaly: Optional[Anomaly],
     evidence: list[dict],
     *,
+    register: str,
     client: Any,
     model: str,
 ) -> Optional[dict[str, Any]]:
-    """Enrich a single hypothesis from its real evidence. Returns the enriched
-    fields, or ``None`` on any failure (fail-open)."""
+    """Enrich a single hypothesis from its real evidence, cast in ``register``.
+    Returns the enriched fields, or ``None`` on any failure (fail-open)."""
     if not evidence:
         return None
     payload = {
+        "register": register,
+        "register_instruction": _REGISTERS.get(register, ""),
         "anomaly_type": getattr(anomaly, "type", None),
         "central_question": _clean(getattr(anomaly, "central_question", "")),
         "evidence_claims": evidence,
@@ -181,7 +222,7 @@ def enrich_one(
         raw = call_llm_text(
             client, model=model, system=_SYSTEM,
             user=json.dumps(payload, ensure_ascii=False),
-            temperature=0.2, max_tokens=700,
+            temperature=0.3, max_tokens=900,
         )
     except Exception:
         return None
@@ -190,6 +231,7 @@ def enrich_one(
         return None
     parsed["hypothesis_id"] = hyp.hypothesis_id
     parsed["anomaly_type"] = getattr(anomaly, "type", None)
+    parsed["register"] = register
     return parsed
 
 
@@ -235,16 +277,22 @@ def enrich_run(
 
     out = dict(existing)
     made = 0
+    reg_counter: dict[str, int] = {}
     for hyp in hyps:
         if made >= max(0, int(limit)):
             break
         if not force and hyp.hypothesis_id in out:
             continue
         anomaly = anom_by_id.get(hyp.anomaly_id)
-        if type_filter is not None and getattr(anomaly, "type", None) not in type_filter:
+        atype = getattr(anomaly, "type", None)
+        if type_filter is not None and atype not in type_filter:
             continue
         evidence = _evidence_for(hyp, anomaly, claims_by_id, paper_lookup)
-        enriched = enrich_one(hyp, anomaly, evidence, client=client, model=model)
+        # Assign a forward register by type, rotated, so the run shows varied
+        # framings (proposal / benchmark / refutation / …) not a monotone critique.
+        register = _register_for(atype, reg_counter)
+        enriched = enrich_one(hyp, anomaly, evidence, register=register,
+                              client=client, model=model)
         if enriched is not None:
             out[hyp.hypothesis_id] = enriched
             made += 1
@@ -312,7 +360,9 @@ def apply_enrichment(selected: list[Hypothesis], run_dir: Path | str) -> int:
         if rec.get("minimal_test"):
             hyp.minimal_test = rec["minimal_test"]
         try:
-            hyp.enriched = {"applied": True, "anomaly_type": rec.get("anomaly_type")}
+            hyp.enriched = {"applied": True, "anomaly_type": rec.get("anomaly_type"),
+                            "register": rec.get("register"),
+                            "motivation": rec.get("motivation")}
         except Exception:
             pass
         n += 1

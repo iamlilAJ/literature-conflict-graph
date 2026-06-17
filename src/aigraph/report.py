@@ -221,9 +221,23 @@ def _render_hypothesis(h: Hypothesis, scores: dict[str, ScoreBreakdown]) -> list
     s = scores.get(h.hypothesis_id)
     lines: list[str] = []
     enriched = getattr(h, "enriched", None)
-    badge = " _(evidence-grounded)_" if isinstance(enriched, dict) and enriched.get("applied") else ""
+    is_enriched = isinstance(enriched, dict) and enriched.get("applied")
+    # The enriched statement is a forward, declarative research item; badge it
+    # with its register (proposal / benchmark / refutation / …) so a report reads
+    # as a varied research agenda, not a monotone list of conflict questions.
+    if is_enriched and enriched.get("register"):
+        badge = f" _({enriched['register']})_"
+    elif is_enriched:
+        badge = " _(evidence-grounded)_"
+    else:
+        badge = ""
     lines.append(f"### {h.hypothesis_id} — {h.hypothesis}{badge}")
     lines.append("")
+    # The detected conflict/gap is the MOTIVATION behind the proposal, not the
+    # deliverable — render it as one line, demoting the interrogative framing.
+    if is_enriched and enriched.get("motivation"):
+        lines.append(f"_Motivated by:_ {enriched['motivation']}")
+        lines.append("")
     if h.mechanism:
         lines.append(f"**Mechanism.** {h.mechanism}")
         lines.append("")

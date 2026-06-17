@@ -258,6 +258,17 @@ def test_coverage_level():
     assert rd._coverage_level(2, 78, 1) == "weak"
 
 
+def test_coverage_level_absolute_floor():
+    # a 2/2 thin corpus has frac=1.0 but only 2 matches → not "strong"
+    assert rd._coverage_level(2, 2, 4) == "weak"
+    # a focused corpus with enough absolute matches stays strong
+    assert rd._coverage_level(22, 24, 4) == "strong"     # frac .92, n=22 >= 8
+    # frac clears the strong bar but n is below the floor → caps at moderate
+    assert rd._coverage_level(5, 10, 2) == "moderate"    # frac .5 but n=5 < 8
+    # below the moderate floor too → weak
+    assert rd._coverage_level(3, 4, 2) == "weak"         # frac .75 but n=3 < 4
+
+
 def test_queries_section_and_page(tmp_path):
     (tmp_path / "query_log.jsonl").write_text(
         json.dumps({"ts": "2026-06-08T20:00:00", "tool": "get_idea_report",

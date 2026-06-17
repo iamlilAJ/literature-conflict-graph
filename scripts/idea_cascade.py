@@ -51,6 +51,11 @@ from aigraph.llm_client import (  # noqa: E402
 )
 from aigraph_query import query_records, _tokenize  # noqa: E402
 
+# Hypothesis-count at/above which a corpus is "rich enough" for reuse, so topic
+# overlap (not size) decides among substantive corpora; below it, richness scales
+# the reuse score down so a thin leftover run can't win on overlap alone.
+_REUSE_RICH_FLOOR = 30
+
 
 # --------------------------------------------------------------------------- #
 # Idea record helpers
@@ -1020,7 +1025,24 @@ def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
                 pass
         return score
 
-    # rank by (topic overlap, completeness); tie-break favors finished corpora
+    def _richness(d: Path) -> float:
+        # A 2-hypothesis leftover run is nearly useless for reuse however well its
+        # topic overlaps — it forms no cross-paper conflicts and yields a few
+        # community-bridge ideas. Weight overlap by a saturating richness factor
+        # (n_hyps / floor, capped at 1.0) so a rich 300-hyp corpus beats a thin
+        # same-topic leftover, while overlap still decides among substantive
+        # corpora. Below the floor, richness scales the score down.
+        for name in ("hypotheses_scored.jsonl", "hypotheses.jsonl"):
+            p = d / name
+            if p.exists():
+                try:
+                    n = sum(1 for _ in p.open(encoding="utf-8"))
+                except Exception:
+                    n = 0
+                return min(1.0, n / _REUSE_RICH_FLOOR)
+        return 0.0
+
+    # rank by (richness-weighted overlap, completeness); tie-break favors finished corpora
     best_id, best_key = None, (0.0, -1)
     for d in sorted(runs_root.iterdir()):
         if not d.is_dir() or d.name.startswith("_"):
@@ -1057,7 +1079,7 @@ def resolve_best_run(runs_root: Path, topic: str, *, min_overlap: float = 0.34,
             cf = d / "claims.jsonl"
             if not cf.exists() or cf.stat().st_size == 0:
                 continue
-        key = (round(overlap, 4), _completeness(d))
+        key = (round(overlap * _richness(d), 4), _completeness(d))
         if key > best_key:
             best_id, best_key = d.name, key
     return best_id

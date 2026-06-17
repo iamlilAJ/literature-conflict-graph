@@ -77,6 +77,20 @@ def _is_boilerplate(hyp: Hypothesis) -> bool:
     return bool(_BOILERPLATE_RE.search(hyp.hypothesis or ""))
 
 
+# Anomaly types that are weak "could X and Y be connected?" community bridges
+# rather than substantive same-method-conflicting-results anomalies. They
+# dominate scattered corpora (10/17 on a fresh self-correction build) and drag
+# delivery off-topic. The opt-in demotion in _select sorts them *after* the
+# substantive conflict types (impact_conflict / metric_mismatch / evidence_gap /
+# …) without dropping them, so they fill only when nothing stronger is on-topic.
+_WEAK_ANOMALY_TYPES = {"community_disconnect"}
+
+
+def _is_weak_anomaly(hyp: Hypothesis, anom_lookup: dict) -> bool:
+    a = anom_lookup.get(hyp.anomaly_id)
+    return bool(a is not None and getattr(a, "type", None) in _WEAK_ANOMALY_TYPES)
+
+
 def _is_untestable(hyp: Hypothesis) -> bool:
     """True if the hypothesis carries no minimal_test AND no concrete
     predictions — nothing to actually run as an experiment.
@@ -279,10 +293,16 @@ def _select(
     semantic: bool = False,
     semantic_threshold: float = 0.05,
     min_atlas_overlap: int = 0,
+    demote_weak_anomalies: bool = False,
 ):
     """Shared core: topic-filter + MMR-select. Returns
     ``(selected, breakdowns, anoms, claims, papers, stats)`` or
     ``(None, None, anoms, claims, papers, stats)`` on no-match.
+
+    ``demote_weak_anomalies`` (opt-in, default off): rank substantive
+    conflict hypotheses ahead of weak community-bridge ones (see
+    :data:`_WEAK_ANOMALY_TYPES`) without dropping them, so scattered corpora
+    surface on-topic conflicts first.
     """
     t0 = time.monotonic()
     hyps, anoms, claims, papers = _load_run_dir(run_dir, hyp_kind)
@@ -392,13 +412,20 @@ def _select(
     # When semantic is enabled, blend bag-of-words count with TF-IDF cosine so a
     # high-semantic / low-token hypothesis isn't demoted (×10 scales cosine into
     # the same ballpark as token-hit counts for typical topics).
+    # Optional: demote weak community-bridge anomalies below substantive
+    # conflicts (kept, not dropped) so scattered corpora lead with on-topic
+    # conflicts. The flag is a no-op (0 for every row) when off, so default
+    # ordering is unchanged.
+    def _weak(h: Hypothesis) -> int:
+        return 1 if (demote_weak_anomalies and _is_weak_anomaly(h, anom_lookup)) else 0
     if semantic:
         matched.sort(key=lambda hr: (
             _is_boilerplate(hr[0]),
+            _weak(hr[0]),
             -max(hr[1], sem_by_id.get(hr[0].hypothesis_id, 0.0) * 10),
         ))
     else:
-        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), -hr[1]))
+        matched.sort(key=lambda hr: (_is_boilerplate(hr[0]), _weak(hr[0]), -hr[1]))
     # Cap near-duplicate frames per anomaly: the frozen generator emits EXACTLY
     # 3 near-identical hypotheses per anomaly (differ only by moderator). MMR
     # handles cross-anomaly diversity; this removes the within-anomaly dups it
@@ -458,12 +485,15 @@ def query(
     semantic: bool = False,
     semantic_threshold: float = 0.05,
     min_atlas_overlap: int = 0,
+    demote_weak_anomalies: bool = False,
 ) -> tuple[str, dict]:
     """Filter cached hypotheses by topic relevance and MMR-select top-K.
 
     ``hyp_kind``: "critic" (conflict explanations), "creator" (new-method
     proposals — the forward-looking research ideas), or "both".
-    Returns (markdown, stats). Zero LLM calls.
+    ``demote_weak_anomalies`` ranks substantive conflicts ahead of weak
+    community-bridge anomalies (kept, not dropped). Returns (markdown, stats).
+    Zero LLM calls.
     """
     selected, breakdowns, anoms, claims, papers, stats = _select(
         run_dir, topic, k=k, max_hypotheses=max_hypotheses,
@@ -473,6 +503,7 @@ def query(
         drop_untestable=drop_untestable,
         semantic=semantic, semantic_threshold=semantic_threshold,
         min_atlas_overlap=min_atlas_overlap,
+        demote_weak_anomalies=demote_weak_anomalies,
     )
     if selected is None:
         return f"# Selected Hypotheses\n\n_No matches for topic_ `{topic}`.\n", stats
@@ -512,6 +543,7 @@ def query_records(
     semantic: bool = False,
     semantic_threshold: float = 0.05,
     min_atlas_overlap: int = 0,
+    demote_weak_anomalies: bool = False,
 ) -> tuple[list[dict], dict]:
     """Like ``query()`` but returns structured hypothesis records (for
     MCP / programmatic clients) instead of rendered markdown.
@@ -532,6 +564,7 @@ def query_records(
         drop_untestable=drop_untestable,
         semantic=semantic, semantic_threshold=semantic_threshold,
         min_atlas_overlap=min_atlas_overlap,
+        demote_weak_anomalies=demote_weak_anomalies,
     )
     if selected is None:
         return [], stats

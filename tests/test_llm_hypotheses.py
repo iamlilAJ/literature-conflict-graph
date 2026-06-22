@@ -1,8 +1,7 @@
 import json
-from typing import get_args
 
-from aigraph.llm_hypotheses import LLMHypothesisGenerator, SYSTEM_PROMPTS
-from aigraph.models import Anomaly, AnomalyType, Claim
+from aigraph.llm_hypotheses import LLMHypothesisGenerator, _SYSTEM
+from aigraph.models import Anomaly, Claim
 
 
 class _FakeMessage:
@@ -128,89 +127,100 @@ def _claim(claim_id: str) -> Claim:
     )
 
 
-# The 8 frozen v0.7 anomaly types that llm_hypotheses.py (frozen) is
-# contractually responsible for. Joint/Atlas-grounded types (e.g.
-# bottleneck_open_q_alignment) are produced by the optional, non-frozen
-# joint_anomalies module and intentionally fall back to _DEFAULT_PROMPT —
-# the empirical test (docs/atlas-value-test-findings.md) showed a dedicated
-# prompt does not improve their hypotheses, so they stay outside the frozen
-# prompt set.
-_FROZEN_ANOMALY_TYPES = {
-    "benchmark_inconsistency", "setting_mismatch", "bridge_opportunity",
-    "metric_mismatch", "evidence_gap", "community_disconnect",
-    "impact_conflict", "replication_conflict",
-}
+# --------------------------------------------------------------------------- #
+# §7 Thaw #4: the forward-design contract. The generator no longer routes a
+# distinct prompt per anomaly type — one type-agnostic FORWARD prompt is used
+# for every type (the type + central_question travel in the user payload, see
+# test_payload_includes_signals_block). These tests re-pin the thawed behavior.
+# --------------------------------------------------------------------------- #
 
-
-def test_system_prompts_covers_every_frozen_anomaly_type():
-    """Every FROZEN v0.7 anomaly type must have a specialized prompt. Adding a
-    new frozen type without a prompt entry should fail CI rather than silently
-    fall through to _DEFAULT_PROMPT. (Joint types are exempt by design.)"""
-    missing = _FROZEN_ANOMALY_TYPES - set(SYSTEM_PROMPTS.keys())
-    assert not missing, f"SYSTEM_PROMPTS missing entries for: {sorted(missing)}"
-    # sanity: the frozen set really is a subset of the AnomalyType literal
-    assert _FROZEN_ANOMALY_TYPES <= set(get_args(AnomalyType))
-
-
-def test_joint_anomaly_type_falls_back_to_default_prompt():
-    """Non-frozen joint types are not in SYSTEM_PROMPTS — they use the
-    default prompt rather than crashing."""
-    assert "bottleneck_open_q_alignment" in set(get_args(AnomalyType))
-    assert "bottleneck_open_q_alignment" not in SYSTEM_PROMPTS
-
-
-def test_distinct_anomaly_types_route_to_distinct_prompts(monkeypatch):
-    """Two different anomaly types must produce two different system prompts
-    in the LLM call. Forcing AIGRAPH_LLM_ENDPOINT=chat keeps the existing
-    _FakeClient mock pattern (which only stubs .chat.completions)."""
+def test_forward_prompt_is_type_agnostic_and_bans_boilerplate(monkeypatch):
+    """Every anomaly type uses the SAME forward system prompt, and that prompt
+    explicitly bans the pre-thaw retrospective boilerplate."""
     monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
     fake = _FakeClient(json.dumps({"hypotheses": []}))
     gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
 
-    a_rep = _make_anomaly("a1", "replication_conflict")
-    a_bri = _make_anomaly("a2", "bridge_opportunity")
-    claims = {"c001": _claim("c001")}
-    gen.generate(a_rep, claims)
-    gen.generate(a_bri, claims)
+    for i, atype in enumerate(("replication_conflict", "bridge_opportunity",
+                               "metric_mismatch", "totally_fake_type")):
+        gen.generate(_make_anomaly(f"a{i}", atype), {"c001": _claim("c001")})
 
-    calls = fake.chat.completions.calls
-    assert len(calls) == 2
-    systems = [c["messages"][0]["content"] for c in calls]
-    assert systems[0] != systems[1]
-    # Replication framing should mention reproduction/replication; bridge
-    # framing should mention transfer/forward-looking experiments.
-    assert "replication" in systems[0].lower() or "reproduce" in systems[0].lower()
-    assert "transfer" in systems[1].lower() or "forward-looking" in systems[1].lower()
+    systems = [c["messages"][0]["content"] for c in fake.chat.completions.calls]
+    assert len(systems) == 4
+    assert all(s == _SYSTEM for s in systems)          # one prompt for all types
+    low = _SYSTEM.lower()
+    assert "banned" in low and "forward" in low
+    assert "unreported moderator" in low               # the boilerplate it forbids
+    assert "interior_optimum" in low and "mechanism" in low
 
 
-def test_unknown_anomaly_type_falls_back_to_default_and_logs(monkeypatch, caplog):
-    """An anomaly with a type not in SYSTEM_PROMPTS must fall back to
-    _DEFAULT_PROMPT and emit one INFO log line per unknown type per process."""
+def _multi_payload(items: list[dict]) -> str:
+    return json.dumps({"hypotheses": items})
+
+
+def test_parse_stamps_shape_into_scope_conditions(monkeypatch):
+    """The generator's own shape label is recorded in scope_conditions so
+    downstream/eval can read it without re-judging."""
     monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
-    # Reset the dedup set so the test sees its own log entry even if a prior
-    # test in the same process already warned about this same type.
-    import aigraph.llm_hypotheses as mod
-    mod._warned_unknown_types.clear()
-
-    fake = _FakeClient(json.dumps({"hypotheses": []}))
+    payload = _multi_payload([
+        {"shape": "interior_optimum",
+         "hypothesis": "RAG top-k helps multi-hop QA up to ~10 then hurts.",
+         "mechanism": "Beyond the optimum, distractor passages dilute support.",
+         "explains_claims": ["c001"],
+         "predictions": ["Accuracy is unimodal in k.", "Peak near k=10."],
+         "minimal_test": "Sweep top-k 1..30 on HotpotQA; F1; falsifier: no decline."},
+    ])
+    fake = _FakeClient(payload)
     gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
-    a = _make_anomaly("aX", "totally_fake_type")
+    out = gen.generate(_make_anomaly("a1", "benchmark_inconsistency"), {"c001": _claim("c001")})
+    assert len(out) == 1
+    assert out[0].scope_conditions.get("shape") == "interior_optimum"
 
-    with caplog.at_level("INFO", logger="aigraph.llm_hypotheses"):
-        gen.generate(a, {"c001": _claim("c001")})
 
-    system_used = fake.chat.completions.calls[0]["messages"][0]["content"]
-    assert system_used == mod._DEFAULT_PROMPT
-    assert any("totally_fake_type" in r.message for r in caplog.records), (
-        "Expected an INFO log mentioning the unknown anomaly type"
-    )
-    # Second call with the same unknown type must NOT log again — dedup test.
-    caplog.clear()
-    with caplog.at_level("INFO", logger="aigraph.llm_hypotheses"):
-        gen.generate(a, {"c001": _claim("c001")})
-    assert not any("totally_fake_type" in r.message for r in caplog.records), (
-        "Second call with same unknown type should be deduped"
-    )
+def test_parse_caps_retrospective_conflict_attribution(monkeypatch):
+    """At most ONE retrospective conflict-attribution item survives per anomaly,
+    so the thawed generator cannot regress to the pre-thaw monoculture. Forward
+    items are unaffected, and the count is NOT padded to a fixed 3."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    retro = {
+        "shape": "conflict_attribution",
+        "hypothesis": "An unreported moderator variable drives the conflicting results.",
+        "mechanism": "A confound in preprocessing correlates with outcome direction.",
+        "explains_claims": ["c001"],
+        "predictions": ["Holding it fixed shrinks variance.", "Covariate analysis explains the flip."],
+        "minimal_test": "Replay all claims in a common harness with identical prompts and decoding.",
+    }
+    fwd = {
+        "shape": "mechanism",
+        "hypothesis": "RAG helps only when the answer needs multi-document synthesis.",
+        "mechanism": "Single-doc questions are already answerable without retrieval.",
+        "explains_claims": ["c001"],
+        "predictions": ["Gains concentrate on multi-hop items.", "Single-hop gains ~0."],
+        "minimal_test": "Split HotpotQA into single/multi-hop; compare RAG F1; falsifier: equal gains.",
+    }
+    fake = _FakeClient(_multi_payload([retro, retro, retro, fwd]))
+    gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
+    out = gen.generate(_make_anomaly("a1", "impact_conflict"), {"c001": _claim("c001")})
+
+    shapes = [h.scope_conditions.get("shape") for h in out]
+    assert shapes.count("conflict_attribution") == 1   # 3 retro collapse to 1
+    assert "mechanism" in shapes                        # forward item kept
+    assert len(out) == 2                                # not padded to 3
+
+
+def test_variable_count_is_not_forced_to_three(monkeypatch):
+    """Two forward hypotheses in → two out (the EXACTLY-3 rule is gone)."""
+    monkeypatch.setenv("AIGRAPH_LLM_ENDPOINT", "chat")
+    items = [
+        {"shape": "interior_optimum", "hypothesis": f"H{i} sweet spot exists.",
+         "mechanism": "m", "explains_claims": ["c001"],
+         "predictions": ["p1", "p2"], "minimal_test": "sweep; metric; falsifier."}
+        for i in range(2)
+    ]
+    fake = _FakeClient(_multi_payload(items))
+    gen = LLMHypothesisGenerator(model="stub", client=fake, api_key="test-key")
+    out = gen.generate(_make_anomaly("a1", "evidence_gap"), {"c001": _claim("c001")})
+    assert len(out) == 2
 
 
 def test_payload_includes_signals_block(monkeypatch):

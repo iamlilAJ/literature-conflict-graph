@@ -1,4 +1,23 @@
-"""LLM-backed possible-explanation generator for detected anomalies."""
+"""LLM-backed hypothesis generator for detected anomalies.
+
+§7 THAW #4 (2026-06-22, see docs/v0.7-pipeline-freeze.md): the per-anomaly-type
+RETROSPECTIVE back-explanation contract (8 type framings + a hard "EXACTLY 3"
+rule) was replaced with a single FORWARD-DESIGN contract. For each anomaly the
+generator now emits 2-4 deliberately shape-diverse FORWARD research hypotheses —
+interior-optimum (a design knob with a sweet spot), mechanism (a specific causal
+mechanism with differential predictions), and scaling/transfer — grounded in the
+same claim cluster. At most one retrospective conflict-explanation may survive
+per anomaly, so the delivered set cannot regress to the old monoculture.
+
+Empirical justification (the §4 freeze bars quality edits WITHOUT measured
+evidence): scripts/hyp_ab_generators.py ran a blind, calibration-passing A/B on
+arxiv-reasoning-v0.7-100p (18 anomalies, all 6 live types, same model, same
+anomaly seeds, judged by scripts/hyp_quality_oracle.py). Forward beat the frozen
+generator on EVERY axis — forward_design +0.46, falsifiability +0.28 (→5.00),
+mechanism_specificity +0.28, grounding +0.19, novelty +0.13 — and flipped the
+delivered shape mix: conflict_attribution 37% → 4%. Owner-authorized thaw;
+reproduce the pre-thaw control generator from the `v0.7-frozen` git tag.
+"""
 
 from __future__ import annotations
 
@@ -25,183 +44,78 @@ from .models import Anomaly, Claim, GraphBridge, Hypothesis
 logger = logging.getLogger(__name__)
 
 
-# Shared structural rules — these apply to every anomaly-type prompt and define
-# the JSON contract + epistemic guardrails. Kept in one place so the schema,
-# evidence-citation discipline, and "do not assert truth" rule live ONCE.
-_SHARED_RULES = """SHARED RULES — apply to every response:
-- Output STRICT JSON, schema { "hypotheses": [ ... ] }; no markdown, no fences, no prose
-- Generate EXACTLY 3 hypotheses, each distinct from the others
-- Each hypothesis must include all of: hypothesis, mechanism, explains_claims,
-  predictions (exactly 2 short concrete strings), minimal_test, scope_conditions,
-  evidence_gap, graph_bridge
-- explains_claims must reference real claim_ids from the user payload (≥1 id)
-- Do not assert any hypothesis as true — these are candidates for human review
-- graph_bridge.from / graph_bridge.to should reference shared_entities or
-  claim metadata from the user payload, not invented terms
+# --------------------------------------------------------------------------- #
+# Forward-design generation contract (§7 Thaw #4).
+#
+# One type-agnostic system prompt: the anomaly's type + central_question are
+# carried in the user payload (see _prompt_payload), so the model adapts per
+# type without a separate prompt per type. The prompt BANS the old boilerplate
+# explicitly and requires shape diversity.
+# --------------------------------------------------------------------------- #
+_SYSTEM = """You design FORWARD research hypotheses from a cluster of related ML/AI paper claims.
 
-The anomaly.signals object provides numeric context: evidence_impact
-(cumulative log-citation impact of the involved papers), recent_activity
-(recent citations / age — high means the conflict is still being argued),
-impact_balance (0 = lopsided sides, 1 = balanced), citation_bridge_score,
-replication_score (0 = no replication signal, 1 = replication-conflict
-framing), topology_score (combined). Use these to calibrate hypothesis
-emphasis — e.g. high recent_activity warrants a hypothesis about active
-disagreement; low impact_balance suggests one side may be a minority view;
-high replication_score is the strongest signal that reproduction-failure
-framings are appropriate.
+You are given one "anomaly" (a method/task cluster the literature has flagged)
+plus the real claims that define it. Your job is NOT to explain why past papers
+disagree. Your job is to propose concrete, testable research DIRECTIONS a team
+could start next week, grounded in these specific claims.
 
-JSON schema:
+BANNED (these are the failure mode you are replacing):
+- "An unreported moderator variable / confound drives the conflicting results."
+- "Replay all claims in a common harness with identical prompts and decoding."
+- Any purely retrospective explanation of why existing numbers differ.
+If your hypothesis would still be true after merely re-running old experiments
+in a shared harness, it is BANNED — rewrite it as a forward design.
+
+Produce 2-4 DISTINCT hypotheses that span DIFFERENT structural shapes. Cover at
+least TWO of these shapes (never 3 of the same shape):
+
+  [interior_optimum] A design knob with an internal sweet spot. State the knob
+     (sample count, depth, #agents, temperature, retrieval-k, model scale...),
+     the predicted optimum region, and the SPECIFIC mechanism that makes more
+     of it eventually HURT. Form: "<knob> helps <task/metric> up to ~<N>,
+     beyond which it degrades because <named mechanism>."
+
+  [mechanism] A specific causal mechanism for why the method works, stated so it
+     makes DIFFERENTIAL predictions: it should hold where task-property P is
+     present and FAIL where P is absent. Name P concretely (e.g. "tasks with
+     verifiable intermediate steps", "long-range coreference", "compositional
+     depth > 3"). Not "some confound" — a named mechanism.
+
+  [scaling_transfer] How the benefit scales with a measurable property, OR the
+     result of porting the method to a NAMED new task/dataset. State the
+     predicted direction and the property/target by name.
+
+You MAY include at most ONE [mechanism]-style grounded explanation of a genuine
+high-signal conflict if the claims strongly support it — but it must still make
+a forward, falsifiable prediction, and it must not be the majority of the set.
+
+GROUNDING RULES (hard):
+- Every hypothesis cites >=1 real claim_id from the payload in explains_claims.
+- Reference real methods / datasets / metrics from the payload, never invented.
+- minimal_test names the dataset(s), the variable swept OR the mechanism-
+  isolating manipulation, the metric, and what result would FALSIFY it.
+- predictions: EXACTLY 2 short, discriminative strings, quantitative where the
+  claims allow.
+- Do not assert any hypothesis as true; these are candidates for human review.
+
+The anomaly.signals object carries numeric context (evidence_impact,
+recent_activity, impact_balance, citation_bridge_score, replication_score,
+topology_score). Use it to choose which shapes to emphasise — e.g. a high
+replication_score cluster is a good candidate for a mechanism hypothesis with a
+controlled re-run as its minimal_test.
+
+Output STRICT JSON ONLY, schema { "hypotheses": [ ... ] }, no markdown/prose:
 {
   "hypotheses": [
     {
-      "hypothesis": "one-sentence statement",
-      "mechanism": "causal mechanism or moderator",
-      "explains_claims": ["c001", "c002"],
-      "predictions": ["prediction 1", "prediction 2"],
-      "minimal_test": "specific experiment or analysis",
+      "shape": "interior_optimum | mechanism | scaling_transfer",
+      "hypothesis": "one-sentence forward design",
+      "mechanism": "the specific causal mechanism",
+      "explains_claims": ["c001"],
+      "predictions": ["p1", "p2"],
+      "minimal_test": "named dataset + swept variable + metric + falsifier",
       "scope_conditions": {"method": "...", "task": "..."},
-      "evidence_gap": "what evidence is still missing",
-      "graph_bridge": {"from": "source concept", "to": "target concept"}
-    }
-  ]
-}"""
-
-
-# Per-type framing strings. Each describes the cognitive task for THIS anomaly
-# type. Concatenated with _SHARED_RULES at module-import time so the model
-# anchors on the type-specific framing first, then the shared output rules act
-# as the closing constraint block (recency-bias-friendly).
-
-_FRAMING_BENCHMARK = """You generate competing explanations for a benchmark inconsistency.
-
-Two or more papers report contradictory results for the same method on the
-same task. Generate exactly 3 competing, testable explanations focused on
-**moderator variables that could flip the sign** of the effect — dataset
-composition, distribution shift, prompt format, retrieval recall, model
-scale, decoding strategy, or evaluation protocol differences. Each
-hypothesis is a back-explanation of why the contradiction exists; each
-minimal_test is an experiment that holds the alleged moderator fixed and
-checks whether the contradiction disappears."""
-
-_FRAMING_REPLICATION = """You generate root-cause hypotheses for a replication failure.
-
-Paper B explicitly attempts to reproduce Paper A's method on the same task
-but reports the opposite direction. Generate exactly 3 candidate root
-causes drawn from: implementation differences, hyperparameter choices,
-data preprocessing or version drift, leakage or test-set contamination,
-metric definition mismatch, seed variance, hardware/precision (fp16 vs
-fp32 / bf16), or under-specified algorithm details. Each prediction must
-be **distinguishable by re-running B's code on A's exact dataset, seed,
-and hardware** — that is the empirical bar. minimal_test must describe
-the controlled re-run that would isolate the responsible factor."""
-
-_FRAMING_BRIDGE = """You generate forward-looking transfer hypotheses for a bridge opportunity.
-
-Two clusters of work share underlying concepts but have no citation path
-between them. Generate exactly 3 **forward-looking** hypotheses: what
-would happen if methods/findings from one cluster were applied to the
-other cluster's task? Each hypothesis is a research direction that has
-NOT yet been tried, not a retrospective explanation of past results.
-minimal_test must specify a concrete, runnable transfer experiment:
-which method, which dataset, which baseline, which metric — phrased so a
-researcher could start it tomorrow."""
-
-_FRAMING_COMMUNITY = """You generate hypotheses about a community disconnect.
-
-Two research communities address overlapping problems with shared
-mechanisms or failure modes, yet do not cite each other. Generate
-exactly 3 hypotheses split between (a) **why the disconnect persists**
-(terminology drift, venue separation, language barrier, methodological
-priors, generational lag) and (b) **what cross-pollination would look
-like** (which technique from community A would be most useful in
-community B, and vice versa). predictions should be testable via a
-focused literature comparison or a small replication study that imports
-one community's tooling into the other's benchmark."""
-
-_FRAMING_EVIDENCE_GAP = """You generate hypotheses about an evidence gap.
-
-All available claims point in one direction (positive or negative) but
-the evidence base is thin or one-sided. Generate exactly 3 hypotheses
-covering (a) **whether the effect is real and robust** vs an artifact of
-selective reporting, file-drawer bias, or under-tested settings, and
-(b) **what specific missing evidence** would confirm or refute it.
-minimal_test must specify the exact data that would close the gap —
-which experimental conditions are missing, which negative controls have
-not been run, which adversarial settings have not been probed."""
-
-_FRAMING_SETTING_MISMATCH = """You generate hypotheses for a setting mismatch.
-
-The same method on the same task produces conflicting outcomes across
-papers, and the runs differ along at least one Setting field
-(retriever / top_k / context_length / task_type / etc). Generate
-exactly 3 hypotheses about **which setting variable is responsible for
-the divergence**. Each prediction must hold all other settings fixed and
-vary only the candidate variable; minimal_test must be a parameter sweep
-over that single setting on at least one of the original benchmarks."""
-
-_FRAMING_METRIC_MISMATCH = """You generate hypotheses for a metric mismatch.
-
-Same method, same task, different metrics, conflicting outcomes.
-Generate exactly 3 hypotheses about **which metric is measuring what**
-and how the metrics' definitional gap drives the divergence — e.g. one
-metric rewards calibration where the other rewards rank, or one is
-sensitive to surface form where the other is not. Each prediction must
-involve **cross-scoring the same model outputs with both metrics** on a
-shared eval set; minimal_test must specify how to obtain or generate
-that paired prediction set."""
-
-
-def _build_prompt(framing: str) -> str:
-    """Concatenate per-type framing then shared rules. Format chosen so the
-    output-shaping constraints are last (recency bias)."""
-    return f"{framing.strip()}\n\n{_SHARED_RULES.strip()}\n"
-
-
-# Map every AnomalyType value to its specialized prompt. The
-# test_system_prompts_covers_every_anomaly_type test asserts this dict's keys
-# match `typing.get_args(AnomalyType)` — adding a new anomaly type without a
-# prompt will fail CI rather than silently fall through to the default.
-SYSTEM_PROMPTS: dict[str, str] = {
-    "benchmark_inconsistency": _build_prompt(_FRAMING_BENCHMARK),
-    "impact_conflict": _build_prompt(_FRAMING_BENCHMARK),
-    "replication_conflict": _build_prompt(_FRAMING_REPLICATION),
-    "bridge_opportunity": _build_prompt(_FRAMING_BRIDGE),
-    "community_disconnect": _build_prompt(_FRAMING_COMMUNITY),
-    "evidence_gap": _build_prompt(_FRAMING_EVIDENCE_GAP),
-    "setting_mismatch": _build_prompt(_FRAMING_SETTING_MISMATCH),
-    "metric_mismatch": _build_prompt(_FRAMING_METRIC_MISMATCH),
-}
-
-
-# Fallback prompt — kept as the original generic text for safety. A new
-# AnomalyType value not covered by SYSTEM_PROMPTS will route here and log
-# once. See _select_prompt below.
-_DEFAULT_PROMPT = """You generate possible explanations for conflicts in AI literature.
-
-You will receive one detected anomaly and the evidence claims that define it.
-Return STRICT JSON only, no markdown, no analysis prose.
-
-Generate exactly 3 competing, testable explanations. Keep every string concise.
-Each explanation must:
-- explain the anomaly using the provided claims only;
-- cite concrete claim_ids in explains_claims;
-- be distinct from the others;
-- include exactly two discriminative predictions;
-- include a concrete minimal_test;
-- state the remaining evidence_gap;
-- avoid saying the claim is true; these are candidate explanations for human inspection.
-
-JSON schema:
-{
-  "hypotheses": [
-    {
-      "hypothesis": "one-sentence explanation",
-      "mechanism": "causal mechanism or moderator",
-      "explains_claims": ["c001", "c002"],
-      "predictions": ["prediction 1", "prediction 2"],
-      "minimal_test": "specific experiment or analysis",
-      "scope_conditions": {"key": "value"},
-      "evidence_gap": "what evidence is still missing",
+      "evidence_gap": "what is still unmeasured",
       "graph_bridge": {"from": "source concept", "to": "target concept"}
     }
   ]
@@ -209,31 +123,43 @@ JSON schema:
 """
 
 
-# Module-level dedup so a corpus with N anomalies of an unknown type produces
-# one INFO line per type per process, not N. Module-level (not instance-level)
-# so a pipeline that constructs many LLMHypothesisGenerator objects still
-# benefits from the dedup.
-_warned_unknown_types: set[str] = set()
+def _temperature() -> float:
+    """Generation temperature. Slightly warmer than the pre-thaw 0.2 — forward
+    design benefits from spread while staying grounded. The legacy
+    AIGRAPH_HYPOTHESIS_TEMPERATURE env var still applies (default now 0.4)."""
+    return float(os.environ.get("AIGRAPH_HYPOTHESIS_TEMPERATURE", "0.4"))
 
 
-def _select_prompt(anomaly_type: str) -> str:
-    """Look up the prompt for an anomaly type; fall back to _DEFAULT_PROMPT
-    on unknown types and log a single INFO line per unknown type per process."""
-    prompt = SYSTEM_PROMPTS.get(anomaly_type)
-    if prompt is not None:
-        return prompt
-    if anomaly_type not in _warned_unknown_types:
-        _warned_unknown_types.add(anomaly_type)
-        logger.info(
-            "llm_hypotheses: no specialized prompt for anomaly type %r; "
-            "falling back to _DEFAULT_PROMPT",
-            anomaly_type,
-        )
-    return _DEFAULT_PROMPT
+def _max_tokens() -> int:
+    """A 2-4 forward set is larger than the old 3-back-explanation set, and
+    thinking models (Kimi) need headroom. Legacy AIGRAPH_HYPOTHESIS_MAX_TOKENS
+    still applies."""
+    return max(700, int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", str(DEFAULT_MAX_TOKENS))))
+
+
+def _max_per_anomaly() -> int:
+    return max(1, int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_PER_ANOMALY", "4")))
+
+
+_RETRO_MARKERS = (
+    "unreported moderator",
+    "a confound in",
+    "common harness with identical prompts",
+    "between-claim variance",
+)
+
+
+def _looks_retrospective(item: dict[str, Any]) -> bool:
+    """Cheap lexical guard against the banned boilerplate sneaking back in."""
+    blob = " ".join(
+        str(item.get(k, "")) for k in ("hypothesis", "mechanism", "minimal_test")
+    ).lower()
+    return any(m in blob for m in _RETRO_MARKERS)
 
 
 class LLMHypothesisGenerator(HypothesisGenerator):
-    """Use an OpenAI-compatible chat model to generate anomaly explanations."""
+    """Use an OpenAI-compatible chat model to generate forward-design
+    hypotheses for an anomaly (§7 Thaw #4)."""
 
     def __init__(
         self,
@@ -279,10 +205,10 @@ class LLMHypothesisGenerator(HypothesisGenerator):
         return call_llm_text(
             client,
             model=self.model,
-            system=_select_prompt(anomaly.type),
+            system=_SYSTEM,
             user=_prompt_payload(anomaly, claims),
-            temperature=float(os.environ.get("AIGRAPH_HYPOTHESIS_TEMPERATURE", "0.2")),
-            max_tokens=int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
+            temperature=_temperature(),
+            max_tokens=_max_tokens(),
         )
 
     def _parse_response(
@@ -299,13 +225,31 @@ class LLMHypothesisGenerator(HypothesisGenerator):
             return []
 
         allowed_claims = set(anomaly.claim_ids)
+        cap = _max_per_anomaly()
         out: list[Hypothesis] = []
-        for item in items[:5]:
+        conflict_kept = 0
+        for item in items:
+            if len(out) >= cap:
+                break
             if not isinstance(item, dict):
                 continue
+            shape = str(item.get("shape", "")).strip().lower()
+            # Guardrail: at most one retrospective conflict-attribution item may
+            # survive per anomaly, so the generator cannot silently regress to
+            # the pre-thaw dominant shape.
+            if shape in {"conflict_attribution", "conflict", ""} and _looks_retrospective(item):
+                if conflict_kept >= 1:
+                    continue
+                conflict_kept += 1
             normalized = _normalize_hypothesis_dict(item, anomaly, allowed_claims)
             if normalized is None:
                 continue
+            # Stamp the generator's own shape label so downstream/eval can read
+            # it without re-judging. Lives in scope_conditions (already a free-
+            # form str->str dict in the schema) to avoid any model change.
+            if shape:
+                normalized.setdefault("scope_conditions", {})
+                normalized["scope_conditions"]["shape"] = shape
             normalized["hypothesis_id"] = f"h{start_index + len(out) + 1:03d}"
             normalized["anomaly_id"] = anomaly.anomaly_id
             try:

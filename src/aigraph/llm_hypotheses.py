@@ -132,9 +132,13 @@ def _temperature() -> float:
 
 def _max_tokens() -> int:
     """A 2-4 forward set is larger than the old 3-back-explanation set, and
-    thinking models (Kimi) need headroom. Legacy AIGRAPH_HYPOTHESIS_MAX_TOKENS
-    still applies."""
-    return max(700, int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", str(DEFAULT_MAX_TOKENS))))
+    thinking models (Kimi-K2.6) spend the budget on reasoning_content BEFORE the
+    JSON — at 4000 they return empty/truncated content and the generator falls
+    back to the boilerplate template. Default doubled to 8000 so the forward
+    contract works out-of-the-box on thinking models; AIGRAPH_HYPOTHESIS_MAX_TOKENS
+    overrides. Verified on box (Kimi): 4000 -> template fallback, 8000 -> 3 clean
+    forward hyps."""
+    return max(700, int(os.environ.get("AIGRAPH_HYPOTHESIS_MAX_TOKENS", str(2 * DEFAULT_MAX_TOKENS))))
 
 
 def _max_per_anomaly() -> int:

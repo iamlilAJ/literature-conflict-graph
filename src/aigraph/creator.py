@@ -314,7 +314,9 @@ def generate_creator_hypotheses(
                 system=CREATOR_SYSTEM_PROMPT,
                 user=body,
                 temperature=float(os.environ.get("AIGRAPH_CREATOR_TEMPERATURE", "0.3")),
-                max_tokens=int(os.environ.get("AIGRAPH_CREATOR_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
+                # Default doubled to 8000: thinking models (Kimi) spend the budget
+                # on reasoning before the JSON; 4000 truncates a 1-3 method set.
+                max_tokens=int(os.environ.get("AIGRAPH_CREATOR_MAX_TOKENS", 2 * DEFAULT_MAX_TOKENS)),
             )
         except Exception as exc:  # pragma: no cover
             logger.warning("Creator LLM failed for %s: %s", anomaly.anomaly_id, exc)
@@ -608,7 +610,8 @@ def _call_creator_pass(
             system=system_prompt,
             user=user_body,
             temperature=float(os.environ.get("AIGRAPH_CREATOR_TEMPERATURE", "0.3")),
-            max_tokens=int(os.environ.get("AIGRAPH_CREATOR_MAX_TOKENS", DEFAULT_MAX_TOKENS)),
+            # Default doubled to 8000 (see single-pass note above): Kimi headroom.
+            max_tokens=int(os.environ.get("AIGRAPH_CREATOR_MAX_TOKENS", 2 * DEFAULT_MAX_TOKENS)),
         )
     except Exception as exc:  # pragma: no cover
         logger.warning("Multi-grain creator LLM failed for %s: %s", anomaly.anomaly_id, exc)

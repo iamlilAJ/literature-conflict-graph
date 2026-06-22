@@ -92,10 +92,16 @@ a forward, falsifiable prediction, and it must not be the majority of the set.
 GROUNDING RULES (hard):
 - Every hypothesis cites >=1 real claim_id from the payload in explains_claims.
 - Reference real methods / datasets / metrics from the payload, never invented.
+- NO FABRICATED NUMBERS. Any numeric result about a PAST method or baseline must
+  be copied verbatim from a cited claim. If the claims give no number, do NOT
+  invent one — stay qualitative ("higher than the RAG baseline", never an
+  invented "+6.2 F1" or "52% cost cut"). A made-up baseline number is a hard
+  failure, worse than stating no number.
 - minimal_test names the dataset(s), the variable swept OR the mechanism-
   isolating manipulation, the metric, and what result would FALSIFY it.
-- predictions: EXACTLY 2 short, discriminative strings, quantitative where the
-  claims allow.
+- predictions are TARGETS for the proposed test, not established facts. Phrase
+  them as targets ("expected to beat the cited baseline"), and use a concrete
+  number ONLY if it appears in a cited claim — otherwise stay qualitative.
 - Do not assert any hypothesis as true; these are candidates for human review.
 
 The anomaly.signals object carries numeric context (evidence_impact,

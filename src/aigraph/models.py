@@ -305,6 +305,11 @@ class Hypothesis(LooseModel):
     # delivery-time overlay when the templated text was replaced by an
     # evidence-grounded version. None when not enriched.
     enriched: Optional[dict] = None
+    # numeric_gate provenance (optional, additive): short labels for numbers the
+    # hypothesis asserts about past methods/baselines that are NOT supported by
+    # its cited claims. None/empty when clean. Set by the non-frozen delivery-
+    # time numeric-grounding gate.
+    numeric_flags: Optional[list] = None
 
 
 class ScoreBreakdown(LooseModel):

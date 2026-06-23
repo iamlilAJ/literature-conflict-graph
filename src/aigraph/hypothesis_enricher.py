@@ -87,6 +87,11 @@ _SYSTEM = (
     "connected') — that framing is the MOTIVATION, not the deliverable. Write a "
     "DECLARATIVE research item in the assigned register, grounded in the actual "
     "methods/datasets/findings shown (name them explicitly, do not be generic). "
+    "NO FABRICATED NUMBERS: never state a numeric result for a PAST method or "
+    "baseline that is not present in the evidence claims. If the evidence is "
+    "qualitative, keep your claim qualitative (\"beats the RAG baseline\", not an "
+    "invented percentage). Predictions are TARGETS for the proposed test, not "
+    "established facts.\n"
     "Return STRICT JSON ONLY, no prose, no markdown:\n"
     '{"statement": "the declarative research item written IN THE ASSIGNED '
     'REGISTER, naming the real methods/datasets — NOT a question", '
@@ -94,7 +99,8 @@ _SYSTEM = (
     'grounded in the evidence", '
     '"mechanism": "how it works / why it would resolve or exploit the gap, in '
     'the named methods/conditions", '
-    '"predictions": ["a falsifiable prediction with a benchmark/number", "..."], '
+    '"predictions": ["a falsifiable prediction; cite a number ONLY if it appears '
+    'in the evidence claims, else state it qualitatively vs a named baseline", "..."], '
     '"minimal_test": "a concrete experiment using the actual benchmarks/methods '
     'named in the claims"}'
 )

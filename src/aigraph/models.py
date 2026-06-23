@@ -310,6 +310,10 @@ class Hypothesis(LooseModel):
     # its cited claims. None/empty when clean. Set by the non-frozen delivery-
     # time numeric-grounding gate.
     numeric_flags: Optional[list] = None
+    # novelty_gate provenance (optional, additive): prior-art collision verdict
+    # set ONLY when the method proposal is confidently judged NOT novel
+    # ({is_novel: False, similar_papers, rationale}). None = novel or unchecked.
+    novelty_flag: Optional[dict] = None
 
 
 class ScoreBreakdown(LooseModel):

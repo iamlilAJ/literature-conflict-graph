@@ -256,6 +256,16 @@ def _render_hypothesis(h: Hypothesis, scores: dict[str, ScoreBreakdown]) -> list
         lines.append("⚠️ **Unverified numbers** (not in cited claims): "
                      + "; ".join(str(x) for x in flags))
         lines.append("")
+    # Novelty gate: prior-art collision for method proposals (likely not novel).
+    nov = getattr(h, "novelty_flag", None)
+    if isinstance(nov, dict) and nov.get("is_novel") is False:
+        sim = nov.get("similar_papers") or []
+        titles = "; ".join(
+            (p.get("title") if isinstance(p, dict) else str(p)) for p in sim[:3]) or "see rationale"
+        lines.append(f"⚠️ **Prior art** (likely not novel — {titles})")
+        if nov.get("rationale"):
+            lines.append(f"_{nov['rationale']}_")
+        lines.append("")
     if h.scope_conditions:
         cond = ", ".join(f"{k}={v}" for k, v in h.scope_conditions.items())
         lines.append(f"**Scope.** {cond}")

@@ -772,6 +772,13 @@ def build_mcp(
                     _enrich(run_dir)
                 except Exception:
                     pass
+                # Number-check the (enriched) hypotheses so fabricated/misattributed
+                # past-result numbers are flagged in the delivered report.
+                try:
+                    from .numeric_gate import gate_run as _gate
+                    _gate(run_dir)
+                except Exception:
+                    pass
                 best, probes = _best_over(run_dir)
                 if best is None:
                     return {"status": "done", "run": run_id, "reused": False, "escalated": True,
@@ -815,12 +822,21 @@ def build_mcp(
             before = sum(1 for _ in (run_dir / "hypotheses_enriched.jsonl").open()) \
                 if (run_dir / "hypotheses_enriched.jsonl").exists() else 0
             enriched = enrich_run(run_dir, limit=max(1, min(100, int(limit))), force=bool(force))
+            # Number-check the enriched hypotheses (best-effort, fail-open).
+            n_flagged = 0
+            try:
+                from .numeric_gate import gate_run
+                flags = gate_run(run_dir, limit=max(1, min(200, int(limit))), force=bool(force))
+                n_flagged = sum(1 for r in flags.values() if r.get("flags"))
+            except Exception:
+                pass
             _log_query(runs_root, tool="enrich_hypotheses", run=run,
                        n_enriched=len(enriched), limit=limit, force=force)
             return {"status": "done", "run": run, "n_enriched_total": len(enriched),
                     "n_new": max(0, len(enriched) - before),
+                    "n_numeric_flagged": n_flagged,
                     "sidecar": "hypotheses_enriched.jsonl",
-                    "note": "grounded hypotheses now overlay automatically in get_idea_report / smart_research"}
+                    "note": "grounded + number-checked hypotheses overlay automatically in get_idea_report / smart_research"}
         except Exception as exc:
             return {"error": f"{type(exc).__name__}: {exc}"}
 

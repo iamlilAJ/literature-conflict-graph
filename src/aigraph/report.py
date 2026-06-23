@@ -249,6 +249,13 @@ def _render_hypothesis(h: Hypothesis, scores: dict[str, ScoreBreakdown]) -> list
     if h.minimal_test:
         lines.append(f"**Minimal test.** {h.minimal_test}")
         lines.append("")
+    # Numeric-grounding gate: surface any past-result number the hypothesis
+    # asserts that is NOT supported by its cited claims (fabricated/misattributed).
+    flags = getattr(h, "numeric_flags", None)
+    if flags:
+        lines.append("⚠️ **Unverified numbers** (not in cited claims): "
+                     + "; ".join(str(x) for x in flags))
+        lines.append("")
     if h.scope_conditions:
         cond = ", ".join(f"{k}={v}" for k, v in h.scope_conditions.items())
         lines.append(f"**Scope.** {cond}")

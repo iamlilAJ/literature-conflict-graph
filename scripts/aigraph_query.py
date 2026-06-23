@@ -527,6 +527,13 @@ def query(
         stats["n_enriched"] = apply_enrichment(selected, run_dir)
     except Exception:
         pass
+    # Overlay numeric-grounding flags (0-LLM; reads numeric_flags.jsonl sidecar if
+    # present) so fabricated/misattributed past-result numbers are surfaced.
+    try:
+        from aigraph.numeric_gate import apply_flags
+        stats["n_numeric_flagged"] = apply_flags(selected, run_dir)
+    except Exception:
+        pass
     md = render_report(
         selected=selected,
         anomalies=anoms,
@@ -586,6 +593,11 @@ def query_records(
     try:
         from aigraph.hypothesis_enricher import apply_enrichment
         stats["n_enriched"] = apply_enrichment(selected, run_dir)
+    except Exception:
+        pass
+    try:
+        from aigraph.numeric_gate import apply_flags
+        stats["n_numeric_flagged"] = apply_flags(selected, run_dir)
     except Exception:
         pass
 

@@ -779,6 +779,13 @@ def build_mcp(
                     _gate(run_dir)
                 except Exception:
                     pass
+                # Prior-art check the method proposals (off unless
+                # AIGRAPH_NOVELTY_GATE=1 — it makes an arXiv request per hyp).
+                try:
+                    from .novelty_gate import novelty_run as _nov
+                    _nov(run_dir)
+                except Exception:
+                    pass
                 best, probes = _best_over(run_dir)
                 if best is None:
                     return {"status": "done", "run": run_id, "reused": False, "escalated": True,

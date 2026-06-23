@@ -534,6 +534,12 @@ def query(
         stats["n_numeric_flagged"] = apply_flags(selected, run_dir)
     except Exception:
         pass
+    # Overlay prior-art (novelty) flags onto method proposals (0-LLM sidecar).
+    try:
+        from aigraph.novelty_gate import apply_novelty
+        stats["n_prior_art"] = apply_novelty(selected, run_dir)
+    except Exception:
+        pass
     md = render_report(
         selected=selected,
         anomalies=anoms,
@@ -598,6 +604,12 @@ def query_records(
     try:
         from aigraph.numeric_gate import apply_flags
         stats["n_numeric_flagged"] = apply_flags(selected, run_dir)
+    except Exception:
+        pass
+    # Overlay prior-art (novelty) flags onto method proposals (0-LLM sidecar).
+    try:
+        from aigraph.novelty_gate import apply_novelty
+        stats["n_prior_art"] = apply_novelty(selected, run_dir)
     except Exception:
         pass
 
